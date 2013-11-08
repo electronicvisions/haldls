@@ -226,6 +226,50 @@ class pyhid_cube(pyhid.pyhidaccess):
         self.__read_result(('sendBytePMIC', 'send byte to PMIC'),
                            0x16, 0)
 
+    def readInitStatus(self, fpgano):
+        self.__check_value(('readInitStatus', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        buf = [0] * 64
+        buf[0] = 0x20
+        buf[1] = fpgano
+        self.writeHID(buf)
+        data = self.__read_result(('readInitStatus',
+                                   'read FPGA initialization status'),
+                                  0x20, 2)
+        return data[0] | ( data[1] << 8 )
+
+    def readSysmonChannel(self, fpgano, channel):
+        self.__check_value(('readSysmonChannel', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('readSysmonChannel', 'System monitor channel'),
+                           channel, 0x00, 0x0C)
+        buf = [0] * 64
+        buf[0] = 0x21
+        buf[1] = fpgano
+        buf[2] = channel
+        self.writeHID(buf)
+        data = self.__read_result(('readSysmonChannel',
+                                   'read FPGA system monitor channel'),
+                                  0x21, 2)
+        val = data[0] | ( data[1] << 8 )
+        if channel == 0 or channel == 4 or channel == 8:
+            return val / 64.
+        return val / 4096.
+
+    def enableHICANNChannel(self, fpgano, channel):
+        self.__check_value(('enableHICANNChannel', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('enableHICANNChannel', 'HICANN channel'),
+                           channel, 0x00, 0x07)
+        buf = [0] * 64
+        buf[0] = 0x22
+        buf[1] = fpgano
+        buf[2] = channel
+        self.writeHID(buf)
+        self.__read_result(('enableHICANNChannel',
+                            'enable HICANN channel'),
+                           0x22, 0)
+
     def resetEthPhy(self):
         buf = [0] * 64
         buf[0] = 0x70
@@ -256,8 +300,8 @@ class pyhid_cube(pyhid.pyhidaccess):
                            0x00, 0xFFFF)
         buf = [0] * 64
         buf[0] = 0x72
-	buf[1] = phyaddr
-	buf[2] = regaddr
+        buf[1] = phyaddr
+        buf[2] = regaddr
         buf[3] = data & 0xFF
         buf[4] = ( data >> 8 ) & 0xFF
         self.writeHID(buf)
