@@ -226,6 +226,36 @@ class pyhid_cube(pyhid.pyhidaccess):
         self.__read_result(('sendBytePMIC', 'send byte to PMIC'),
                            0x16, 0)
 
+    def readPMICStatus(self, ucdno):
+        self.__check_value('PMIC number', ucdno, 0, 3)
+        buf = [0] * 64
+        buf[0] = 0x30
+        buf[1] = ucdno
+        self.writeHID(buf)
+        block = self.__read_result(('readPMICStatus', 'read PMIC status'),
+                                    0x30, 28)
+        valid = ( block[0] << 8 ) | block[1]
+        data = [None] * 13
+        for i in range(0, 13):
+            if ( valid & ( 1 << i ) ):
+                data[i] = ( block[2 * i + 2] << 8 ) | block[2 * i + 3]
+        return data
+
+    def readFPGAStatus(self, fpgano):
+        self.__check_value('FPGA number', fpgano, 0, 3)
+        buf = [0] * 64
+        buf[0] = 0x31
+        buf[1] = fpgano
+        self.writeHID(buf)
+        block = self.__read_result(('readFPGAStatus', 'read FPGA status'),
+                                    0x31, 30)
+        valid = ( block[0] << 8 ) | block[1]
+        data = [None] * 14
+        for i in range(0, 14):
+            if ( valid & ( 1 << i ) ):
+                data[i] = ( block[2 * i + 2] << 8 ) | block[2 * i + 3]
+        return data
+
     def readInitStatus(self, fpgano):
         self.__check_value(('readInitStatus', 'FPGA number'),
                            fpgano, 0x00, 0x03)
@@ -316,10 +346,3 @@ class pyhid_cube(pyhid.pyhidaccess):
                                   'read Ethernet PHY interrupt status'),
                                  0x72, 1)
         return buf[0]
-
-def linear11ToFloat(code):
-    data = ( code >> 11 ) & 0x1F
-    exponent = data
-    if ( data & 0x10 ) == 0x10:
-        exponent = -( ~data & 0xF ) - 1
-    return ( code & 0x7ff ) * 2 ** exponent
