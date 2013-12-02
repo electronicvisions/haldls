@@ -88,8 +88,13 @@ class cube_thread(threading.Thread):
             if self.__pyhid_cube is not None:
                 for pmic in range(0, 4):
 
+                    data = None
+
                     self.__lock.acquire()
-                    data = self.__pyhid_cube.readPMICStatus(ucdno=pmic)
+                    try:
+                        data = self.__pyhid_cube.readPMICStatus(ucdno=pmic)
+                    except:
+                        pass
                     self.__lock.release()
 
                     self.__pmic_voltage[pmic] = self.__linear11ToFloat(data[0])
@@ -137,6 +142,36 @@ class cube_thread(threading.Thread):
 
             if self.__stop:
                 break
+
+    def __hicannChannelPower(self, channel, en):
+        if self.__pyhid_cube is None:
+            return
+        self.__lock.acquire()
+        try:
+            if en:
+                self.__pyhid_cube.enableHICANNChannel(fpgano=self.__fpga,
+                                                      channel=channel)
+            else:
+                self.__pyhid_cube.disableHICANNChannel(fpgano=self.__fpga,
+                                                       channel=channel)
+        except:
+            pass
+        self.__lock.release()
+
+    def __hicannChannelPE(self, channel, en):
+        if self.__pyhid_cube is None:
+            return
+        self.__lock.acquire()
+        try:
+            if en:
+                self.__pyhid_cube.enableHICANNChannelPE(fpgano=self.__fpga,
+                                                        channel=channel)
+            else:
+                self.__pyhid_cube.disableHICANNChannelPE(fpgano=self.__fpga,
+                                                         channel=channel)
+        except:
+            pass
+        self.__lock.release()
 
     def stopThread(self):
         self.__stop = True
@@ -193,6 +228,31 @@ class cube_thread(threading.Thread):
     def getFPGAStatus(self):
         return self.__fpga_status[self.__fpga]
 
+    def hicannPowerEnable(self, channel):
+        self.__hicannChannelPower(channel, True)
+
+    def hicannPowerDisable(self, channel):
+        self.__hicannChannelPower(channel, False)
+
+    def hicannEnableChannelPE(self, channel):
+        self.__hicannChannelPE(channel, True)
+
+    def hicannDisableChannelPE(self, channel):
+        self.__hicannChannelPE(channel, False)
+
+    def hicannEqControl(self, en):
+        if self.__pyhid_cube is None:
+            return
+        self.__lock.acquire()
+        try:
+            if en:
+                self.__pyhid_cube.enableHICANNEq(fpgano=self.__fpga)
+            else:
+                self.__pyhid_cube.disableHICANNEq(fpgano=self.__fpga)
+        except:
+            pass
+        self.__lock.release()
+
     def hidActive(self):
         if self.__pyhid_cube is None:
             return False
@@ -200,9 +260,11 @@ class cube_thread(threading.Thread):
 
 class cube_ctrl(object):
 
-    WND_PMIC  = 1
-    WND_FPGA  = 2
-    WND_POWER = 3
+    WND_PMIC    = 1
+    WND_FPGA    = 2
+    WND_POWER   = 3
+    WND_CHANNEL = 4
+    WND_HICANN  = 5
 
     def __init__(self):
         self.__stdscr      = None
@@ -215,6 +277,7 @@ class cube_ctrl(object):
         self.__pmic        = 0
         self.__fpga        = 0
         self.__pmic_active = True
+        self.__hicann_op   = 0
 
     def __navigateSubmenu(self, direction):
         self.__subpos += direction
@@ -232,23 +295,47 @@ class cube_ctrl(object):
             self.__subwin.addstr(3+i, 1, self.__subitems[i], mode)
 
     def __drawSubWindow(self, wndtype):
+        xpos1 = 33
+        xpos2 = 14
         if wndtype == cube_ctrl.WND_POWER:
             self.__subitems = ['    Off    ', '    On     ']
+        elif wndtype == cube_ctrl.WND_HICANN:
+            self.__subitems = [' Power Up Channel          ',
+                               ' Power Down Channel        ',
+                               ' Enable Channel Emphasis   ',
+                               ' Disable Channel Emphasis  ',
+                               ' Enable Channel Equalizer  ',
+                               ' Disable Channel Equalizer ']
+            xpos1 = 25
+            xpos2 = 30
+        elif wndtype == cube_ctrl.WND_CHANNEL:
+            self.__subitems = ['  Channel 1   ', '  Channel 2   ',
+                               '  Channel 3   ', '  Channel 4   ',
+                               '  Channel 5   ', '  Channel 6   ',
+                               '  Channel 7   ', '  Channel 8   ',
+                               ' All channels ']
+            xpos1 = 34
+            xpos2 = 16
         else:
             self.__subitems = ['  Socket 1 ', '  Socket 2 ',
                                '  Socket 3 ', '  Socket 4 ']
 
         self.__subwin = self.__mainwin.subwin(4 + len(self.__subitems),
-                                              14, 8, 35)
+                                              xpos2, 10 - len(self.__subitems) / 2,
+                                              xpos1)
         self.__subwin.nodelay(1)
         self.__subwin.erase()
         self.__subwin.border()
-        self.__subwin.hline(2, 1, 0, 12)
+        self.__subwin.hline(2, 1, 0, xpos2 - 2)
 
         if wndtype == cube_ctrl.WND_POWER:
             self.__subwin.addstr(1, 1, '   Power')
         elif wndtype == cube_ctrl.WND_PMIC:
             self.__subwin.addstr(1, 1, '    PMIC')
+        elif wndtype == cube_ctrl.WND_CHANNEL:
+            self.__subwin.addstr(1, 1, '   Channel')
+        elif wndtype == cube_ctrl.WND_HICANN:
+            self.__subwin.addstr(1, 1, '      HICANN Interface')
         else:
             self.__subwin.addstr(1, 1, '    FPGA')
 
@@ -304,8 +391,8 @@ class cube_ctrl(object):
         self.__mainwin.addstr(23, 2,
                               '1: Select PMIC     '
                               '2: Select FPGA     '
-                              '3: Power Control     '
-                              'Q or X: Quit')
+                              '3: %s Control     '
+                              'Q or X: Quit' % device)
 
         if not hidActive:
             self.__mainwin.addstr(10, 26, 'No valid HID device found.')
@@ -416,6 +503,22 @@ class cube_ctrl(object):
 
         self.__mainwin.refresh()
 
+    def __doHicannOp(self):
+        if self.__hicann_op == 0:
+            doFunc = self.__thread.hicannPowerEnable
+        elif self.__hicann_op == 1:
+            doFunc = self.__thread.hicannPowerDisable
+        elif self.__hicann_op == 2:
+            doFunc = self.__thread.hicannEnableChannelPE
+        elif self.__hicann_op == 3:
+            doFunc = self.__thread.hicannDisableChannelPE
+
+        if self.__subpos < 8:
+            doFunc(channel=self.__subpos)
+        else:
+            for i in xrange(8):
+                doFunc(channel=i)
+
     def __mainloop(self):
         self.__stdscr.nodelay(1)
 
@@ -452,20 +555,30 @@ class cube_ctrl(object):
                             self.__pmic_active = False
                             self.__drawMainWindow(self.__thread.hidActive())
                     elif instr == '3':
-                        status = self.__thread.getPMICStatusWord()
-                        if status is None:
-                            self.__subpos = 0
-                        elif ( status & 0x0840 ) == 0:
-                            self.__subpos = 1
-                        else:
-                            self.__subpos = 0
+                        if self.__pmic_active:
+                            status = self.__thread.getPMICStatusWord()
+                            if status is None:
+                                self.__subpos = 0
+                            elif ( status & 0x0840 ) == 0:
+                                self.__subpos = 1
+                            else:
+                                self.__subpos = 0
 
-                        self.__drawSubWindow(cube_ctrl.WND_POWER)
+                            if self.__drawSubWindow(cube_ctrl.WND_POWER):
+                                if self.__subpos == 1:
+                                    self.__thread.enablePowerPMIC()
+                                else:
+                                    self.__thread.disablePowerPMIC()
 
-                        if self.__subpos == 1:
-                            self.__thread.enablePowerPMIC()
-                        else:
-                            self.__thread.disablePowerPMIC()
+                        elif self.__drawSubWindow(cube_ctrl.WND_HICANN):
+                            self.__hicann_op = self.__subpos
+                            if self.__subpos < 4:
+                                if self.__drawSubWindow(cube_ctrl.WND_CHANNEL):
+                                    self.__doHicannChannelOp()
+                            elif self.__subpos == 4:
+                                self.__thread.hicannEqControl(True)
+                            elif self.__subpos == 5:
+                                self.__thread.hicannEqControl(False)
 
             self.__updateData()
 

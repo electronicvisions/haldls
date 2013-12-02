@@ -300,6 +300,70 @@ class pyhid_cube(pyhid.pyhidaccess):
                             'enable HICANN channel'),
                            0x22, 0)
 
+    def disableHICANNChannel(self, fpgano, channel):
+        self.__check_value(('disableHICANNChannel', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('disableHICANNChannel', 'HICANN channel'),
+                           channel, 0x00, 0x07)
+        buf = [0] * 64
+        buf[0] = 0x23
+        buf[1] = fpgano
+        buf[2] = channel
+        self.writeHID(buf)
+        self.__read_result(('disableHICANNChannel',
+                            'disable HICANN channel'),
+                           0x23, 0)
+
+    def enableHICANNEq(self, fpgano):
+        self.__check_value(('enableHICANNEq', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        buf = [0] * 64
+        buf[0] = 0x24
+        buf[1] = fpgano
+        self.writeHID(buf)
+        self.__read_result(('enableHICANNEq',
+                            'enable HICANN channel equalizer'),
+                           0x24, 0)
+
+    def disableHICANNEq(self, fpgano):
+        self.__check_value(('disableHICANNEq', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        buf = [0] * 64
+        buf[0] = 0x25
+        buf[1] = fpgano
+        self.writeHID(buf)
+        self.__read_result(('disableHICANNEq',
+                            'disable HICANN channel equalizer'),
+                           0x25, 0)
+
+    def enableHICANNChannelPE(self, fpgano, channel):
+        self.__check_value(('enableHICANNChannelPE', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('enableHICANNChannelPE', 'HICANN channel'),
+                           channel, 0x00, 0x07)
+        buf = [0] * 64
+        buf[0] = 0x26
+        buf[1] = fpgano
+        buf[2] = channel
+        self.writeHID(buf)
+        self.__read_result(('enableHICANNChannelPE',
+                            'enable HICANN channel emphasis'),
+                           0x26, 0)
+
+    def disableHICANNChannelPE(self, fpgano, channel):
+        self.__check_value(('disableHICANNChannelPE', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('disableHICANNChannelPE', 'HICANN channel'),
+                           channel, 0x00, 0x07)
+        buf = [0] * 64
+        buf[0] = 0x27
+        buf[1] = fpgano
+        buf[2] = channel
+        self.writeHID(buf)
+        self.__read_result(('disableHICANNChannelPE',
+                            'disable HICANN channel emphasis'),
+                           0x27, 0)
+
     def resetEthPhy(self):
         buf = [0] * 64
         buf[0] = 0x70
