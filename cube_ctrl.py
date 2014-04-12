@@ -42,29 +42,34 @@ import curses
 import time
 import pyhid_cube
 import threading
+import pyhid
 
 class cube_thread(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
 
-        self.__pmic_rvoltage = [[None for x in xrange(4)] for x in xrange(4)]
-        self.__pmic_rtemp    = [[None for x in xrange(2)] for x in xrange(4)]
-        self.__pmic_rcurrent = [[None for x in xrange(4)] for x in xrange(4)]
-        self.__pmic_temp     = [None]*4
-        self.__pmic_voltage  = [None]*4
-        self.__pmic_status   = [None]*4
-        self.__pmic          = 0
-        self.__fpga          = 0
+        self.__pmic_rvoltage    = [[None for x in xrange(4)] for x in xrange(4)]
+        self.__pmic_rtemp       = [[None for x in xrange(2)] for x in xrange(4)]
+        self.__pmic_rcurrent    = [[None for x in xrange(4)] for x in xrange(4)]
+        self.__pmic_temp        = [None]*4
+        self.__pmic_voltage     = [None]*4
+        self.__pmic_status      = [[None for x in xrange(13)] for x in xrange(4)]
+        self.__pmic_status_word = [None]*4
+        self.__pmic             = 0
+        self.__fpga             = 0
 
-        self.__fpga_sysmon   = [[None for x in xrange(13)] for x in xrange(4)]
-        self.__fpga_status   = [None]*4
+        self.__fpga_sysmon      = [[None for x in xrange(13)] for x in xrange(4)]
+        self.__fpga_status      = [[None for x in xrange(14)] for x in xrange(4)]
+        self.__fpga_init_status = [None]*4
 
-        self.__stop          = False
-        self.__lock          = threading.Lock()
+        self.__stop             = False
+        self.__lock             = threading.Lock()
 
         try:
-            self.__pyhid_cube = pyhid_cube.pyhid_cube()
+            hid = pyhid.pyhidaccess()
+            hid.openHID(vid=0x0451, pid=0x4253)
+            self.__pyhid_cube = pyhid_cube.pyhid_cube(hid)
         except IOError as e:
             self.__pyhid_cube = None
             pass
@@ -88,11 +93,12 @@ class cube_thread(threading.Thread):
             if self.__pyhid_cube is not None:
                 for pmic in range(0, 4):
 
-                    data = None
+                    data = [0]*13
+                    status = [0x01]*13
 
                     self.__lock.acquire()
                     try:
-                        data = self.__pyhid_cube.readPMICStatus(ucdno=pmic)
+                        (status, data) = self.__pyhid_cube.readPMICStatus(ucdno=pmic)
                     except:
                         pass
                     self.__lock.release()
@@ -114,26 +120,34 @@ class cube_thread(threading.Thread):
                     val = self.__linear11ToFloat(data[11])
                     self.__pmic_rtemp[pmic][1] = val
 
-                    self.__pmic_status[pmic] = data[12]
+                    self.__pmic_status_word[pmic] = data[12]
+
+                    for i in range(0, 13):
+                        self.__pmic_status[pmic][i] = status[i];
 
                     if self.__stop:
                         break
 
                 for fpga in range(0, 4):
+                    data = [0]*14
+                    status = [0x01]*14
                     self.__lock.acquire()
-                    data = self.__pyhid_cube.readFPGAStatus(fpgano=fpga)
+                    try:
+                        (status, data) = self.__pyhid_cube.readFPGAStatus(fpgano=fpga)
+                    except:
+                        pass
                     self.__lock.release()
 
                     for j in range(0, 13):
-                        val = None
-                        if data[j] is not None:
-                            if ( j & 0x3 ) == 0 and j != 12:
-                                val = data[j] / 64.
-                            else:
-                                val = data[j] / 4096.
+                        if ( j & 0x3 ) == 0 and j != 12:
+                            val = data[j] / 64.
+                        else:
+                            val = data[j] / 4096.
                         self.__fpga_sysmon[fpga][j] = val
+                        self.__fpga_status[fpga][j] = status[j]
 
-                    self.__fpga_status[fpga] = data[13]
+                    self.__fpga_init_status[fpga] = data[13]
+                    self.__fpga_status[fpga][j] = status[13]
 
                     if self.__stop:
                         break
@@ -199,34 +213,42 @@ class cube_thread(threading.Thread):
         self.__lock.release()
 
     def getPMICStatusWord(self):
-        return self.__pmic_status[self.__pmic]
+        return (self.__pmic_status[self.__pmic][12],
+                self.__pmic_status_word[self.__pmic])
 
     def setCurrentPMIC(self, pmic):
         self.__pmic = pmic
 
     def getPMICRailVoltage(self, domain):
-        return self.__pmic_rvoltage[self.__pmic][domain]
+        return (self.__pmic_status[self.__pmic][domain + 2],
+                self.__pmic_rvoltage[self.__pmic][domain])
 
     def getPMICRailCurrent(self, domain):
-        return self.__pmic_rcurrent[self.__pmic][domain]
+        return (self.__pmic_status[self.__pmic][domain + 6],
+                self.__pmic_rcurrent[self.__pmic][domain])
 
     def getPMICRailTemp(self, domain):
-        return self.__pmic_rtemp[self.__pmic][domain]
+        return (self.__pmic_status[self.__pmic][domain + 10],
+                self.__pmic_rtemp[self.__pmic][domain])
 
     def getPMICVoltage(self):
-        return self.__pmic_voltage[self.__pmic]
+        return (self.__pmic_status[self.__pmic][0],
+                self.__pmic_voltage[self.__pmic])
 
     def getPMICTemp(self):
-        return self.__pmic_temp[self.__pmic]
+        return (self.__pmic_status[self.__pmic][1],
+                self.__pmic_temp[self.__pmic])
 
     def setCurrentFPGA(self, fpga):
         self.__fpga = fpga
 
     def getFPGASysmon(self, channel):
-        return self.__fpga_sysmon[self.__fpga][channel]
+        return (self.__fpga_status[self.__fpga][channel],
+                self.__fpga_sysmon[self.__fpga][channel])
 
     def getFPGAStatus(self):
-        return self.__fpga_status[self.__fpga]
+        return (self.__fpga_status[self.__fpga][13],
+                self.__fpga_init_status[self.__fpga])
 
     def hicannPowerEnable(self, channel):
         self.__hicannChannelPower(channel, True)
@@ -454,32 +476,48 @@ class cube_ctrl(object):
         if not self.__thread.hidActive():
             return
         if self.__pmic_active:
+            (status, voltage) = self.__thread.getPMICVoltage()
+            if status != 0x00:
+                voltage = None
             self.__mainwin.addstr(4, 24,
                                   self.__toString('%2.3f V',
-                                                  self.__thread.getPMICVoltage()))
+                                                  voltage))
+            (status, temp) = self.__thread.getPMICTemp()
+            if status != 0x00:
+                temp = None
             self.__mainwin.addstr(4, 64,
                                   self.__toString('%1.2f C',
-                                                  self.__thread.getPMICTemp()))
+                                                  temp))
             for domain in range(0, 4):
-                voltage = self.__thread.getPMICRailVoltage(domain)
+                (status, voltage) = self.__thread.getPMICRailVoltage(domain)
+                if status != 0x00:
+                    voltage = None
                 self.__mainwin.addstr(6 + 2 * domain, 24,
                                       self.__toString('%2.3f V', voltage))
-                current = self.__thread.getPMICRailCurrent(domain)
+                (status, current) = self.__thread.getPMICRailCurrent(domain)
+                if status != 0x00:
+                    current = None
                 self.__mainwin.addstr(14 + 2 * domain, 24,
                                       self.__toString('%2.3f A', current))
             for domain in range(0, 2):
-                temp = self.__thread.getPMICRailTemp(domain)
+                (status, temp) = self.__thread.getPMICRailTemp(domain)
+                if status != 0x00:
+                    temp = None
                 self.__mainwin.addstr(6 + 2 * domain, 64,
                                       self.__toString('%1.2f C', temp))
 
-            status = self.__thread.getPMICStatusWord()
+            (status, status_word) = self.__thread.getPMICStatusWord()
+            if status != 0x00:
+                status_word = None
             self.__mainwin.addstr(10, 64,
-                                  self.__toStringYesNo(status, 6))
+                                  self.__toStringYesNo(status_word, 6))
             self.__mainwin.addstr(12, 64,
-                                  self.__toStringYesNo(status, 11, True))
+                                  self.__toStringYesNo(status_word, 11, True))
         else:
             for channel in range(0, 13):
-                sysmon = self.__thread.getFPGASysmon(channel)
+                (status, sysmon) = self.__thread.getFPGASysmon(channel)
+                if status != 0x00:
+                    sysmon = None
                 if ( channel & 0x3 ) == 0 and channel != 12:
                     text = '%1.2f C'
                 else:
@@ -497,9 +535,9 @@ class cube_ctrl(object):
                 self.__mainwin.addstr(ypos, xpos,
                                       self.__toString(text, sysmon))
 
-            status = self.__thread.getFPGAStatus()
+            (status, init_status) = self.__thread.getFPGAStatus()
             self.__mainwin.addstr(20, 64,
-                                  self.__toString("%04X", status))
+                                  self.__toString("%04X", init_status))
 
         self.__mainwin.refresh()
 
@@ -556,10 +594,10 @@ class cube_ctrl(object):
                             self.__drawMainWindow(self.__thread.hidActive())
                     elif instr == '3':
                         if self.__pmic_active:
-                            status = self.__thread.getPMICStatusWord()
-                            if status is None:
+                            (status, status_word) = self.__thread.getPMICStatusWord()
+                            if status == 0:
                                 self.__subpos = 0
-                            elif ( status & 0x0840 ) == 0:
+                            elif ( status_word & 0x0840 ) == 0:
                                 self.__subpos = 1
                             else:
                                 self.__subpos = 0
