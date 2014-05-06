@@ -323,28 +323,6 @@ class pyhid_cube(object):
                             'disable HICANN channel'),
                            0x23, 0)
 
-    def enableHICANNEq(self, fpgano):
-        self.__check_value(('enableHICANNEq', 'FPGA number'),
-                           fpgano, 0x00, 0x03)
-        buf = [0] * 64
-        buf[0] = 0x24
-        buf[1] = fpgano
-        self.__pyhidobj.writeHID(buf)
-        self.__read_result(('enableHICANNEq',
-                            'enable HICANN channel equalizer'),
-                           0x24, 0)
-
-    def disableHICANNEq(self, fpgano):
-        self.__check_value(('disableHICANNEq', 'FPGA number'),
-                           fpgano, 0x00, 0x03)
-        buf = [0] * 64
-        buf[0] = 0x25
-        buf[1] = fpgano
-        self.__pyhidobj.writeHID(buf)
-        self.__read_result(('disableHICANNEq',
-                            'disable HICANN channel equalizer'),
-                           0x25, 0)
-
     def enableHICANNChannelPE(self, fpgano, channel):
         self.__check_value(('enableHICANNChannelPE', 'FPGA number'),
                            fpgano, 0x00, 0x03)
@@ -483,6 +461,90 @@ class pyhid_cube(object):
         self.__read_result(('writeEthMgmt',
                             'write management register'),
                            0x2E)
+
+    def auroraReset(self, fpgano):
+        self.__check_value(('auroraReset', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        buf = [0] * 64
+        buf[0] = 0x40
+        buf[1] = fpgano
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('auroraReset',
+                            'reset Aurora core'),
+                           0x40)
+
+
+    def readAuroraStatus(self, fpgano):
+        self.__check_value(('readAuroraStatus', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        buf = [0] * 64
+        buf[0] = 0x41
+        buf[1] = fpgano
+        self.__pyhidobj.writeHID(buf)
+        data = self.__read_result(('auroraStatus',
+                                   'read Aurora status'),
+                                  0x41, 2)
+        return (data[1], data[0])
+
+    def enableAuroraPowerdown(self, fpgano, mask):
+        self.__check_value(('enableAuroraPowerdown', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('enableAuroraPowerdown', 'Channel mask'),
+                           mask, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x42
+        buf[1] = fpgano
+        buf[2] = mask
+        buf[3] = 0x01
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('enableAuroraPowerdown',
+                            'enable Aurora power down mode'),
+                           0x42)
+
+    def disableAuroraPowerdown(self, fpgano, mask):
+        self.__check_value(('disableAuroraPowerdown', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('disableAuroraPowerdown', 'Channel mask'),
+                           mask, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x42
+        buf[1] = fpgano
+        buf[2] = mask
+        buf[3] = 0x00
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('disableAuroraPowerdown',
+                            'disable Aurora power down mode'),
+                           0x42)
+
+    def enableAuroraLoopback(self, fpgano, mask):
+        self.__check_value(('enableAuroraLoopback', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('enableAuroraLoopback', 'Channel mask'),
+                           mask, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x43
+        buf[1] = fpgano
+        buf[2] = mask
+        buf[3] = 0x01
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('enableAuroraLoopback',
+                            'enable Aurora loopback mode'),
+                           0x43)
+
+    def disableAuroraLoopback(self, fpgano, mask):
+        self.__check_value(('disableAuroraLoopback', 'FPGA number'),
+                           fpgano, 0x00, 0x03)
+        self.__check_value(('disableAuroraLoopback', 'Channel mask'),
+                           mask, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x43
+        buf[1] = fpgano
+        buf[2] = mask
+        buf[3] = 0x00
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('disableAuroraLoopback',
+                            'disable Aurora loopback mode'),
+                           0x43)
 
     def resetEthPhy(self):
         buf = [0] * 64

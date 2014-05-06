@@ -262,19 +262,6 @@ class cube_thread(threading.Thread):
     def hicannDisableChannelPE(self, channel):
         self.__hicannChannelPE(channel, False)
 
-    def hicannEqControl(self, en):
-        if self.__pyhid_cube is None:
-            return
-        self.__lock.acquire()
-        try:
-            if en:
-                self.__pyhid_cube.enableHICANNEq(fpgano=self.__fpga)
-            else:
-                self.__pyhid_cube.disableHICANNEq(fpgano=self.__fpga)
-        except:
-            pass
-        self.__lock.release()
-
     def hidActive(self):
         if self.__pyhid_cube is None:
             return False
@@ -325,9 +312,7 @@ class cube_ctrl(object):
             self.__subitems = [' Power Up Channel          ',
                                ' Power Down Channel        ',
                                ' Enable Channel Emphasis   ',
-                               ' Disable Channel Emphasis  ',
-                               ' Enable Channel Equalizer  ',
-                               ' Disable Channel Equalizer ']
+                               ' Disable Channel Emphasis  ']
             xpos1 = 25
             xpos2 = 30
         elif wndtype == cube_ctrl.WND_CHANNEL:
@@ -613,10 +598,6 @@ class cube_ctrl(object):
                             if self.__subpos < 4:
                                 if self.__drawSubWindow(cube_ctrl.WND_CHANNEL):
                                     self.__doHicannChannelOp()
-                            elif self.__subpos == 4:
-                                self.__thread.hicannEqControl(True)
-                            elif self.__subpos == 5:
-                                self.__thread.hicannEqControl(False)
 
             self.__updateData()
 
