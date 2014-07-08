@@ -60,17 +60,19 @@ class cube_thread(threading.Thread):
         self.__fpga             = 0
 
         self.__fpga_sysmon      = [[None for x in xrange(13)] for x in xrange(4)]
-        self.__fpga_status      = [[None for x in xrange(14)] for x in xrange(4)]
+        self.__fpga_status      = [[None for x in xrange(15)] for x in xrange(4)]
         self.__fpga_init_status = [None]*4
+        self.__fpga_wafer_id    = [None]*4
 
         self.__stop             = False
         self.__lock             = threading.Lock()
+        self.__hid              = None
 
         try:
-            hid = pyhid.pyhidaccess()
-            hid.openHID(vid=0x0451, pid=0x4253)
-            self.__pyhid_cube = pyhid_cube.pyhid_cube(hid)
-        except IOError as e:
+            self.__hid = pyhid.pyhidaccess()
+            self.__hid.openHID(vid=0x0451, pid=0x4253)
+            self.__pyhid_cube = pyhid_cube.pyhid_cube(self.__hid)
+        except pyhid.HIDError as e:
             self.__pyhid_cube = None
             pass
 
@@ -90,50 +92,72 @@ class cube_thread(threading.Thread):
 
     def run(self):
         while 1:
-            if self.__pyhid_cube is not None:
-                for pmic in range(0, 4):
+            if self.__pyhid_cube is None:
+                try:
+                    if self.__hid is None:
+                        self.__hid = pyhid.pyhidaccess()
+                    self.__hid.openHID(vid=0x0451, pid=0x4253)
+                    self.__pyhid_cube = pyhid_cube.pyhid_cube(self.__hid)
+                except pyhid.HIDError:
+                    pass
 
-                    data = [0]*13
-                    status = [0x01]*13
+            for pmic in range(0, 4):
 
-                    self.__lock.acquire()
-                    try:
-                        (status, data) = self.__pyhid_cube.readPMICStatus(ucdno=pmic)
-                    except:
-                        pass
-                    self.__lock.release()
+                data = [0]*13
+                status = [0x01]*13
 
-                    self.__pmic_voltage[pmic] = self.__linear11ToFloat(data[0])
-                    self.__pmic_temp[pmic]    = self.__linear11ToFloat(data[1])
+                self.__lock.acquire()
+                try:
+                    if self.__pyhid_cube is not None:
+                        (status,
+                         data) = self.__pyhid_cube.readPMICStatus(ucdno=pmic)
+                except pyhid.HIDError as e:
+                    if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                        self.__hid.closeHID()
+                        self.__pyhid_cube = None
+                    pass
+                except:
+                    pass
+                self.__lock.release()
 
-                    for j in range(0, 4):
-                        val = self.__linear16ToFloat(data[2+j])
-                        self.__pmic_rvoltage[pmic][j] = val
+                self.__pmic_voltage[pmic] = self.__linear11ToFloat(data[0])
+                self.__pmic_temp[pmic]    = self.__linear11ToFloat(data[1])
 
-                    for j in range(0, 4):
-                        val = self.__linear11ToFloat(data[6+j])
-                        self.__pmic_rcurrent[pmic][j] = val
+                for j in range(0, 4):
+                    val = self.__linear16ToFloat(data[2+j])
+                    self.__pmic_rvoltage[pmic][j] = val
 
-                    val = self.__linear11ToFloat(data[10])
-                    self.__pmic_rtemp[pmic][0] = val
+                for j in range(0, 4):
+                    val = self.__linear11ToFloat(data[6+j])
+                    self.__pmic_rcurrent[pmic][j] = val
 
-                    val = self.__linear11ToFloat(data[11])
-                    self.__pmic_rtemp[pmic][1] = val
+                val = self.__linear11ToFloat(data[10])
+                self.__pmic_rtemp[pmic][0] = val
 
-                    self.__pmic_status_word[pmic] = data[12]
+                val = self.__linear11ToFloat(data[11])
+                self.__pmic_rtemp[pmic][1] = val
 
-                    for i in range(0, 13):
-                        self.__pmic_status[pmic][i] = status[i];
+                self.__pmic_status_word[pmic] = data[12]
 
-                    if self.__stop:
-                        break
+                for i in range(0, 13):
+                    self.__pmic_status[pmic][i] = status[i];
+
+                if self.__stop:
+                    break
 
                 for fpga in range(0, 4):
-                    data = [0]*14
-                    status = [0x01]*14
+                    data = [0]*15
+                    status = [0x01]*15
                     self.__lock.acquire()
                     try:
-                        (status, data) = self.__pyhid_cube.readFPGAStatus(fpgano=fpga)
+                        if self.__pyhid_cube is not None:
+                            (status,
+                             data) = self.__pyhid_cube.readFPGAStatus(fpgano=fpga)
+                    except pyhid.HIDError:
+                        if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                            self.__hid.closeHID()
+                            self.__pyhid_cube = None
+                        pass
                     except:
                         pass
                     self.__lock.release()
@@ -147,7 +171,10 @@ class cube_thread(threading.Thread):
                         self.__fpga_status[fpga][j] = status[j]
 
                     self.__fpga_init_status[fpga] = data[13]
-                    self.__fpga_status[fpga][j] = status[13]
+                    self.__fpga_status[fpga][13] = status[13]
+
+                    self.__fpga_wafer_id[fpga] = data[14]
+                    self.__fpga_status[fpga][14] = status[14]
 
                     if self.__stop:
                         break
@@ -168,7 +195,7 @@ class cube_thread(threading.Thread):
             else:
                 self.__pyhid_cube.disableHICANNChannel(fpgano=self.__fpga,
                                                        channel=channel)
-        except:
+        except pyhid.HIDError:
             pass
         self.__lock.release()
 
@@ -183,7 +210,7 @@ class cube_thread(threading.Thread):
             else:
                 self.__pyhid_cube.disableHICANNChannelPE(fpgano=self.__fpga,
                                                          channel=channel)
-        except:
+        except pyhid.HIDError:
             pass
         self.__lock.release()
 
@@ -197,7 +224,7 @@ class cube_thread(threading.Thread):
         try:
             self.__pyhid_cube.powerControlPMIC(ucdno=self.__pmic,
                                                powerup=True)
-        except:
+        except pyhid.HIDError:
             pass
         self.__lock.release()
 
@@ -208,7 +235,7 @@ class cube_thread(threading.Thread):
         try:
             self.__pyhid_cube.powerControlPMIC(ucdno=self.__pmic,
                                                powerup=False)
-        except:
+        except pyhid.HIDError:
             pass
         self.__lock.release()
 
@@ -249,6 +276,10 @@ class cube_thread(threading.Thread):
     def getFPGAStatus(self):
         return (self.__fpga_status[self.__fpga][13],
                 self.__fpga_init_status[self.__fpga])
+
+    def getWaferID(self):
+        return (self.__fpga_status[self.__fpga][14],
+                self.__fpga_wafer_id[self.__fpga])
 
     def hicannPowerEnable(self, channel):
         self.__hicannChannelPower(channel, True)
@@ -303,7 +334,7 @@ class cube_ctrl(object):
                 mode = curses.A_NORMAL
             self.__subwin.addstr(3+i, 1, self.__subitems[i], mode)
 
-    def __drawSubWindow(self, wndtype):
+    def __drawSubWindowForm(self, wndtype):
         xpos1 = 33
         xpos2 = 14
         if wndtype == cube_ctrl.WND_POWER:
@@ -349,6 +380,9 @@ class cube_ctrl(object):
         self.__printSubmenuItems()
         self.__subwin.refresh()
 
+    def __drawSubWindow(self, wndtype):
+        self.__drawSubWindowForm(wndtype=wndtype)
+
         while 1:
             inch = self.__subwin.getch()
             if inch == 27:
@@ -361,14 +395,16 @@ class cube_ctrl(object):
                         self.__navigateSubmenu(1)
                 elif inch2 == -1:
                     break
-                self.__printSubmenuItems()
-                self.__subwin.refresh()
             elif inch == 10:
                 return True
 
             self.__updateData()
+            self.__drawSubWindowForm(wndtype=wndtype)
+            self.__printSubmenuItems()
+            self.__subwin.refresh()
 
             time.sleep(0.05)
+
         return False
 
     def __drawMainWindow(self, hidActive):
@@ -433,6 +469,11 @@ class cube_ctrl(object):
                 self.__mainwin.addstr(6 , 43, 'Max. VCCINT     : ')
                 self.__mainwin.addstr(8 , 43, 'Max. VCCAUX     : ')
                 self.__mainwin.addstr(10, 43, 'Max. VCCBRAM    : ')
+                self.__mainwin.addstr(12, 43, 'Init. Done      : ')
+                self.__mainwin.addstr(14, 43, 'Init. Error     : ')
+                self.__mainwin.addstr(16, 43, 'Wafer ID        : ')
+                self.__mainwin.addstr(18, 43, 'Edge/Socket ID  : ')
+                self.__mainwin.addstr(20, 43, 'IP LSB          : ')
 
         self.__mainwin.refresh()
 
@@ -521,8 +562,31 @@ class cube_ctrl(object):
                                       self.__toString(text, sysmon))
 
             (status, init_status) = self.__thread.getFPGAStatus()
-            self.__mainwin.addstr(20, 64,
-                                  self.__toString("%04X", init_status))
+            if status != 0x00:
+                init_status = None
+            self.__mainwin.addstr(12, 64,
+                                  self.__toStringYesNo(init_status, 0))
+            self.__mainwin.addstr(14, 64,
+                                  self.__toStringYesNo(init_status, 1))
+            if init_status is not None:
+                if init_status & 0x4:
+                    (wstatus, wafer_id) = self.__thread.getWaferID()
+                    if wstatus != 0x00:
+                        wafer_id = None
+                    self.__mainwin.addstr(16, 64,
+                                          self.__toString('%d', wafer_id))
+                edge_id   = ( init_status >> 9  ) & 0x3
+                socket_id = ( init_status >> 11 ) & 0xF
+                self.__mainwin.addstr(18, 64,
+                                      self.__toString('%d', edge_id) + '/' +
+                                      self.__toString('%d', socket_id - 1))
+                self.__mainwin.addstr(20, 64,
+                                      self.__toString('%d',
+                                                      ( edge_id << 4 ) | socket_id))
+            else:
+                self.__mainwin.addstr(16, 64, 'N/A')
+                self.__mainwin.addstr(18, 64, 'N/A')
+                self.__mainwin.addstr(20, 64, 'N/A')
 
         self.__mainwin.refresh()
 
@@ -552,9 +616,9 @@ class cube_ctrl(object):
 
         while 1:
             inch = self.__stdscr.getch()
-            if curses.is_term_resized:
-                self.__drawMainWindow(self.__thread.hidActive())
             if inch != -1:
+                if inch == curses.KEY_RESIZE:
+                    self.__drawMainWindow(self.__thread.hidActive())
                 try:
                     instr = str(chr(inch))
                 except:
@@ -569,18 +633,18 @@ class cube_ctrl(object):
                             self.__pmic = self.__subpos
                             self.__thread.setCurrentPMIC(self.__pmic)
                             self.__pmic_active = True
-                            self.__drawMainWindow(self.__thread.hidActive())
+                        self.__drawMainWindow(self.__thread.hidActive())
                     elif instr == '2':
                         self.__subpos = self.__fpga
                         if self.__drawSubWindow(cube_ctrl.WND_FPGA):
                             self.__fpga = self.__subpos
                             self.__thread.setCurrentFPGA(self.__fpga)
                             self.__pmic_active = False
-                            self.__drawMainWindow(self.__thread.hidActive())
+                        self.__drawMainWindow(self.__thread.hidActive())
                     elif instr == '3':
                         if self.__pmic_active:
                             (status, status_word) = self.__thread.getPMICStatusWord()
-                            if status == 0:
+                            if status != 0:
                                 self.__subpos = 0
                             elif ( status_word & 0x0840 ) == 0:
                                 self.__subpos = 1
@@ -592,12 +656,17 @@ class cube_ctrl(object):
                                     self.__thread.enablePowerPMIC()
                                 else:
                                     self.__thread.disablePowerPMIC()
-
-                        elif self.__drawSubWindow(cube_ctrl.WND_HICANN):
-                            self.__hicann_op = self.__subpos
-                            if self.__subpos < 4:
-                                if self.__drawSubWindow(cube_ctrl.WND_CHANNEL):
-                                    self.__doHicannChannelOp()
+                            self.__drawMainWindow(self.__thread.hidActive())
+                        else:
+                            if self.__drawSubWindow(cube_ctrl.WND_HICANN):
+                                self.__hicann_op = self.__subpos
+                                if self.__subpos < 4:
+                                    self.__drawMainWindow(self.__thread.hidActive())
+                                    if self.__drawSubWindow(cube_ctrl.WND_CHANNEL):
+                                        self.__doHicannChannelOp()
+                                self.__drawMainWindow(self.__thread.hidActive())
+                            else:
+                                self.__drawMainWindow(self.__thread.hidActive())
 
             self.__updateData()
 

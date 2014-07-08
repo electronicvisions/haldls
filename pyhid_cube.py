@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##-----------------------------------------------------------------
 ##
-## Copyright (c) 2013 TU-Dresden  All rights reserved.
+## Copyright (c) 2014 TU-Dresden  All rights reserved.
 ##
 ## Unless otherwise stated, the software on this site is distributed
 ## in the hope that it will be useful, but WITHOUT ANY WARRANTY;
@@ -90,7 +90,7 @@ class pyhid_cube(object):
         return None
 
     def readFirmwareVersion(self):
-        buf = [0] * 64
+        buf = [0] * 65
         self.__pyhidobj.writeHID(buf)
         data = self.__read_result(('readFirmwareVersion', 'read firmware version'),
                                   0x00, 2)
@@ -242,7 +242,7 @@ class pyhid_cube(object):
         buf[1] = ucdno
         self.__pyhidobj.writeHID(buf)
         block = self.__read_result(('readPMICStatus', 'read PMIC status'),
-                                    0x30, 50)
+                                    0x30, 40)
         data = [0x0] * 13
         status = [0x1] * 13
         for i in range(0, 13):
@@ -257,10 +257,10 @@ class pyhid_cube(object):
         buf[1] = fpgano
         self.__pyhidobj.writeHID(buf)
         block = self.__read_result(('readFPGAStatus', 'read FPGA status'),
-                                    0x31, 43)
-        data = [0x0] * 14
-        status = [0x1] * 14
-        for i in range(0, 14):
+                                    0x31, 46)
+        data = [0x0] * 15
+        status = [0x1] * 15
+        for i in range(0, 15):
             data[i] = ( block[3 * i + 1] << 8 ) | block[3 * i + 2]
             status[i] = block[3 * i + 3]
         return (status, data)
