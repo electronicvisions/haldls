@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##-----------------------------------------------------------------
 ##
-## Copyright (c) 2013 TU-Dresden  All rights reserved.
+## Copyright (c) 2014 TU-Dresden  All rights reserved.
 ##
 ## Unless otherwise stated, the software on this site is distributed
 ## in the hope that it will be useful, but WITHOUT ANY WARRANTY;
@@ -153,7 +153,7 @@ class cube_thread(threading.Thread):
                         if self.__pyhid_cube is not None:
                             (status,
                              data) = self.__pyhid_cube.readFPGAStatus(fpgano=fpga)
-                    except pyhid.HIDError:
+                    except pyhid.HIDError as e:
                         if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
                             self.__hid.closeHID()
                             self.__pyhid_cube = None
@@ -614,7 +614,11 @@ class cube_ctrl(object):
 
         self.__drawMainWindow(self.__thread.hidActive())
 
+        hidActive = self.__thread.hidActive()
         while 1:
+            if self.__thread.hidActive() != hidActive:
+                self.__drawMainWindow(self.__thread.hidActive())
+                hidActive = self.__thread.hidActive()
             inch = self.__stdscr.getch()
             if inch != -1:
                 if inch == curses.KEY_RESIZE:
