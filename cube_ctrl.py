@@ -431,15 +431,16 @@ class cube_ctrl(object):
         self.__mainwin.addstr(1, 16, 'Cube System Monitor and Control ('
                               '%s Socket %d)' % (device,socket))
         self.__mainwin.hline(22, 1, 0, 78)
-        self.__mainwin.addstr(23, 2,
-                              '1: Select PMIC     '
-                              '2: Select FPGA     '
-                              '3: %s Control     '
-                              'Q or X: Quit' % device)
 
         if not hidActive:
+            self.__mainwin.addstr(23, 60, 'Q or X: Quit')
             self.__mainwin.addstr(10, 26, 'No valid HID device found.')
         else:
+            self.__mainwin.addstr(23, 2,
+                                  '1: Select PMIC     '
+                                  '2: Select FPGA     '
+                                  '3: %s Control     '
+                                  'Q or X: Quit' % device)
             if self.__pmic_active:
                 self.__mainwin.addstr(4 , 3 , 'Input Voltage    : ')
                 self.__mainwin.addstr(4 , 43, 'PMIC Temperature : ')
@@ -631,21 +632,21 @@ class cube_ctrl(object):
                     if instr.upper() == 'X' or instr.upper() == 'Q':
                         self.__updateData()
                         break
-                    elif instr == '1':
+                    elif instr == '1' and hidActive:
                         self.__subpos = self.__pmic
                         if self.__drawSubWindow(cube_ctrl.WND_PMIC):
                             self.__pmic = self.__subpos
                             self.__thread.setCurrentPMIC(self.__pmic)
                             self.__pmic_active = True
                         self.__drawMainWindow(self.__thread.hidActive())
-                    elif instr == '2':
+                    elif instr == '2' and hidActive:
                         self.__subpos = self.__fpga
                         if self.__drawSubWindow(cube_ctrl.WND_FPGA):
                             self.__fpga = self.__subpos
                             self.__thread.setCurrentFPGA(self.__fpga)
                             self.__pmic_active = False
                         self.__drawMainWindow(self.__thread.hidActive())
-                    elif instr == '3':
+                    elif instr == '3' and hidActive:
                         if self.__pmic_active:
                             (status, status_word) = self.__thread.getPMICStatusWord()
                             if status != 0:
