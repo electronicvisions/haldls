@@ -663,12 +663,14 @@ class cube_ctrl(object):
                                     self.__thread.disablePowerPMIC()
                             self.__drawMainWindow(self.__thread.hidActive())
                         else:
+                            self.__subpos = self.__hicann_op
                             if self.__drawSubWindow(cube_ctrl.WND_HICANN):
                                 self.__hicann_op = self.__subpos
                                 if self.__subpos < 4:
+                                    self.__subpos = 0
                                     self.__drawMainWindow(self.__thread.hidActive())
                                     if self.__drawSubWindow(cube_ctrl.WND_CHANNEL):
-                                        self.__doHicannChannelOp()
+                                        self.__doHicannOp()
                                 self.__drawMainWindow(self.__thread.hidActive())
                             else:
                                 self.__drawMainWindow(self.__thread.hidActive())
