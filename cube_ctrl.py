@@ -575,15 +575,15 @@ class cube_ctrl(object):
                     if wstatus != 0x00:
                         wafer_id = None
                     self.__mainwin.addstr(16, 64,
-                                          self.__toString('%d', wafer_id))
+                                          self.__toString('%d  ', wafer_id))
                 edge_id   = ( init_status >> 9  ) & 0x3
                 socket_id = ( init_status >> 11 ) & 0xF
                 self.__mainwin.addstr(18, 64,
                                       self.__toString('%d', edge_id) + '/' +
                                       self.__toString('%d', socket_id - 1))
                 self.__mainwin.addstr(20, 64,
-                                      self.__toString('%d',
-                                                      ( edge_id << 4 ) | socket_id))
+                                      self.__toString('%d ',
+                                                      ( edge_id << 5 ) | socket_id))
             else:
                 self.__mainwin.addstr(16, 64, 'N/A')
                 self.__mainwin.addstr(18, 64, 'N/A')
