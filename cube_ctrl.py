@@ -582,7 +582,7 @@ class cube_ctrl(object):
                                       self.__toString('%d', edge_id) + '/' +
                                       self.__toString('%d', socket_id - 1))
                 self.__mainwin.addstr(20, 64,
-                                      self.__toString('%d ',
+                                      self.__toString('%d  ',
                                                       ( edge_id << 5 ) | socket_id))
             else:
                 self.__mainwin.addstr(16, 64, 'N/A')
