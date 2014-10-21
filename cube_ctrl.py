@@ -318,6 +318,7 @@ class cube_ctrl(object):
         self.__fpga        = 0
         self.__pmic_active = True
         self.__hicann_op   = 0
+        self.__fpga_page   = 0
 
     def __navigateSubmenu(self, direction):
         self.__subpos += direction
@@ -456,7 +457,7 @@ class cube_ctrl(object):
                 self.__mainwin.addstr(8 , 43, 'Temp. 1.8V/3.3V  : ')
                 self.__mainwin.addstr(10, 43, 'Output OFF       : ')
                 self.__mainwin.addstr(12, 43, 'Power Good       : ')
-            else:
+            elif self.__fpga_page == 0:
                 self.__mainwin.addstr(4 , 3 , 'Current Temp.   : ')
                 self.__mainwin.addstr(6 , 3 , 'Current VCCINT  : ')
                 self.__mainwin.addstr(8 , 3 , 'Current VCCAUX  : ')
@@ -475,6 +476,25 @@ class cube_ctrl(object):
                 self.__mainwin.addstr(16, 43, 'Wafer ID        : ')
                 self.__mainwin.addstr(18, 43, 'Edge/Socket ID  : ')
                 self.__mainwin.addstr(20, 43, 'IP LSB          : ')
+            else:
+                self.__mainwin.addstr(4 , 3 , 'IP              : ')
+                self.__mainwin.addstr(6 , 3 , 'Subnet          : ')
+                self.__mainwin.addstr(8 , 3 , 'Gateway         : ')
+                self.__mainwin.addstr(10, 3 , 'MAC-Address     : ')
+                self.__mainwin.addstr(12, 3 , 'Init. Done      : ')
+                self.__mainwin.addstr(14, 3 , 'Init. Error     : ')
+                self.__mainwin.addstr(16, 3 , 'Wafer ID Locked : ')
+                self.__mainwin.addstr(18, 3 , 'System Reset    : ')
+                self.__mainwin.addstr(20, 3 , 'PLL Reset       : ')
+                self.__mainwin.addstr(4 , 43, 'PLL Error       : ')
+                self.__mainwin.addstr(6 , 43, 'PLL Lock Error  : ')
+                self.__mainwin.addstr(8 , 43, 'PLL Lock Lost   : ')
+                self.__mainwin.addstr(10, 43, 'PLL Init. Error : ')
+                self.__mainwin.addstr(12, 43, 'Eth. Init. Err. : ')
+
+            if not self.__pmic_active:
+                self.__mainwin.addstr(3 , 78, '^')
+                self.__mainwin.addstr(21, 78, 'v')
 
         self.__mainwin.refresh()
 
@@ -497,6 +517,18 @@ class cube_ctrl(object):
                 val = 'Yes'
             else:
                 val = 'No '
+        return val
+
+    def __toStringActive(self, value, bit):
+        if value is None:
+            val = 'N/A'
+        else:
+            mask = 1 << bit
+            bit = True if value & mask else False
+            if bit:
+                val = 'Active  '
+            else:
+                val = 'Inactive'
         return val
 
     def __updateData(self):
@@ -540,7 +572,7 @@ class cube_ctrl(object):
                                   self.__toStringYesNo(status_word, 6))
             self.__mainwin.addstr(12, 64,
                                   self.__toStringYesNo(status_word, 11, True))
-        else:
+        elif self.__fpga_page == 0:
             for channel in range(0, 13):
                 (status, sysmon) = self.__thread.getFPGASysmon(channel)
                 if status != 0x00:
@@ -562,32 +594,76 @@ class cube_ctrl(object):
                 self.__mainwin.addstr(ypos, xpos,
                                       self.__toString(text, sysmon))
 
+        if not self.__pmic_active:
+            wafer_id  = None
+            edge_id   = None
+            socket_id = None
             (status, init_status) = self.__thread.getFPGAStatus()
             if status != 0x00:
                 init_status = None
-            self.__mainwin.addstr(12, 64,
-                                  self.__toStringYesNo(init_status, 0))
-            self.__mainwin.addstr(14, 64,
-                                  self.__toStringYesNo(init_status, 1))
             if init_status is not None:
                 if init_status & 0x4:
                     (wstatus, wafer_id) = self.__thread.getWaferID()
                     if wstatus != 0x00:
                         wafer_id = None
-                    self.__mainwin.addstr(16, 64,
-                                          self.__toString('%d  ', wafer_id))
                 edge_id   = ( init_status >> 9  ) & 0x3
                 socket_id = ( init_status >> 11 ) & 0xF
-                self.__mainwin.addstr(18, 64,
-                                      self.__toString('%d', edge_id) + '/' +
-                                      self.__toString('%d', socket_id - 1))
-                self.__mainwin.addstr(20, 64,
-                                      self.__toString('%d  ',
-                                                      ( edge_id << 5 ) | socket_id))
+                ip_lsb = ( edge_id << 5 ) | socket_id
+
+            if self.__fpga_page == 0:
+                self.__mainwin.addstr(12, 64,
+                                      self.__toStringYesNo(init_status, 0))
+                self.__mainwin.addstr(14, 64,
+                                      self.__toStringYesNo(init_status, 1))
+                self.__mainwin.addstr(16, 64,
+                                      self.__toString('%d  ', wafer_id))
+                if ( edge_id is not None and
+                     socket_id is not None ):
+                    self.__mainwin.addstr(18, 64,
+                                          self.__toString('%d', edge_id) + '/' +
+                                          self.__toString('%d', socket_id - 1))
+                    self.__mainwin.addstr(20, 64,
+                                          self.__toString('%d  ', ip_lsb))
+                else:
+                    self.__mainwin.addstr(18, 64, 'N/A')
+                    self.__mainwin.addstr(20, 64, 'N/A')
             else:
-                self.__mainwin.addstr(16, 64, 'N/A')
-                self.__mainwin.addstr(18, 64, 'N/A')
-                self.__mainwin.addstr(20, 64, 'N/A')
+                if ( edge_id is not None and
+                     socket_id is not None and
+                     wafer_id is not None ) :
+                    self.__mainwin.addstr(4, 24, '192.168.%d.%d' %
+                                          (wafer_id, ip_lsb))
+                    self.__mainwin.addstr(6, 24, '255.255.255.0')
+                    self.__mainwin.addstr(8, 24, '192.168.%d.254' %
+                                          (wafer_id))
+                    self.__mainwin.addstr(10, 24, '5F:23:45:35:%02X:%02X' %
+                                          (wafer_id, ip_lsb))
+                else:
+                    self.__mainwin.addstr(4, 24, 'N/A')
+                    self.__mainwin.addstr(6, 24, 'N/A')
+                    self.__mainwin.addstr(8, 24, 'N/A')
+                    self.__mainwin.addstr(10, 24, 'N/A')
+
+                self.__mainwin.addstr(12, 24,
+                                      self.__toStringYesNo(init_status, 0))
+                self.__mainwin.addstr(14, 24,
+                                      self.__toStringYesNo(init_status, 1))
+                self.__mainwin.addstr(16, 24,
+                                      self.__toStringYesNo(init_status, 2))
+                self.__mainwin.addstr(18, 24,
+                                      self.__toStringActive(init_status, 3))
+                self.__mainwin.addstr(20, 24,
+                                      self.__toStringActive(init_status, 4))
+                self.__mainwin.addstr(4, 64,
+                                      self.__toStringYesNo(init_status, 5))
+                self.__mainwin.addstr(6, 64,
+                                      self.__toStringYesNo(init_status, 6))
+                self.__mainwin.addstr(8, 64,
+                                      self.__toStringYesNo(init_status, 8))
+                self.__mainwin.addstr(10, 64,
+                                      self.__toStringYesNo(init_status, 15))
+                self.__mainwin.addstr(12, 64,
+                                          self.__toStringYesNo(init_status, 7))
 
         self.__mainwin.refresh()
 
@@ -624,6 +700,18 @@ class cube_ctrl(object):
             if inch != -1:
                 if inch == curses.KEY_RESIZE:
                     self.__drawMainWindow(self.__thread.hidActive())
+                elif ( not self.__pmic_active and inch == 66 and
+                       self.__thread.hidActive() ):
+                    self.__fpga_page += 1
+                    if self.__fpga_page > 1:
+                        self.__fpga_page = 0
+                    self.__drawMainWindow(self.__thread.hidActive())
+                elif ( not self.__pmic_active and inch == 65 and
+                       self.__thread.hidActive() ):
+                    self.__fpga_page -= 1
+                    if self.__fpga_page < 0:
+                        self.__fpga_page = 1
+                    self.__drawMainWindow(self.__thread.hidActive())
                 try:
                     instr = str(chr(inch))
                 except:
@@ -645,10 +733,12 @@ class cube_ctrl(object):
                             self.__fpga = self.__subpos
                             self.__thread.setCurrentFPGA(self.__fpga)
                             self.__pmic_active = False
+                            self.__fpga_page = 0
                         self.__drawMainWindow(self.__thread.hidActive())
                     elif instr == '3' and hidActive:
                         if self.__pmic_active:
-                            (status, status_word) = self.__thread.getPMICStatusWord()
+                            (status,
+                             status_word) = self.__thread.getPMICStatusWord()
                             if status != 0:
                                 self.__subpos = 0
                             elif ( status_word & 0x0840 ) == 0:
