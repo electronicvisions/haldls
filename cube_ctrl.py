@@ -64,6 +64,8 @@ class cube_thread(threading.Thread):
         self.__fpga_init_status = [None]*4
         self.__fpga_wafer_id    = [None]*4
         self.__fpga_eth_status  = [None]*4
+        self.__fpga_eth_ip      = [None]*4
+        self.__fpga_eth_cnt     = [[None for x in xrange(6)] for x in xrange(4)]
 
         self.__stop             = False
         self.__lock             = threading.Lock()
@@ -92,6 +94,14 @@ class cube_thread(threading.Thread):
         if ( data_exp & 0x10 ) == 0x10:
             exponent = -( ~data_exp & 0xF ) - 1
         return ( data & 0x7ff ) * 2 ** exponent
+
+    def __formatIP(self, ip):
+        if ip is None:
+            return 'N/A'
+        return ( '%d.%d.%d.%d' % ((ip >> 24) & 0xFF,
+                                  (ip >> 16) & 0xFF,
+                                  (ip >> 8) & 0xFF,
+                                  ip & 0xFF) )
 
     def run(self):
         while 1:
@@ -153,11 +163,35 @@ class cube_thread(threading.Thread):
                 for fpga in range(0, 4):
                     data = [0]*15
                     status = [0x01]*15
+                    if self.__pmic_status_word[fpga] is not None:
+                        if self.__pmic_status_word[fpga] & 0x800:
+                            continue
+                    else:
+                        continue
+
                     self.__lock.acquire()
                     try:
                         if self.__pyhid_cube is not None:
                             (status,
                              data) = self.__pyhid_cube.readFPGAStatus(fpgano=fpga)
+                            eth_status = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                                       addr=0x0C)
+                            self.__fpga_eth_status[fpga] = eth_status
+                            eth_ip = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                                   addr=0x00)
+                            self.__fpga_eth_ip[fpga] = eth_ip
+                    except pyhid.HIDError as e:
+                        if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                            self.__hid.closeHID()
+                            self.__pyhid_cube = None
+                        pass
+                    except:
+                        self.__fpga_eth_status[fpga] = None
+                        self.__fpga_eth_ip[fpga] = None
+                        pass
+
+                    try:
+                        if self.__pyhid_cube is not None:
                             eth_status = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
                                                                        addr=0x0C)
                             self.__fpga_eth_status[fpga] = eth_status
@@ -169,6 +203,39 @@ class cube_thread(threading.Thread):
                     except:
                         self.__fpga_eth_status[fpga] = None
                         pass
+
+                    try:
+                        if self.__pyhid_cube is not None:
+                            eth_ip = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                                   addr=0x00)
+                            self.__fpga_eth_ip[fpga] = eth_ip
+                    except pyhid.HIDError as e:
+                        if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                            self.__hid.closeHID()
+                            self.__pyhid_cube = None
+                        pass
+                    except:
+                        self.__fpga_eth_ip[fpga] = None
+                        pass
+
+                    for j in range(0,6):
+                        try:
+                            if self.__pyhid_cube is not None:
+                                if j < 4:
+                                    addr = j + 0x10
+                                else:
+                                    addr = j + 0x14
+                                eth_cnt = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                                        addr=addr)
+                                self.__fpga_eth_cnt[fpga][j] = eth_cnt
+                        except pyhid.HIDError as e:
+                            if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                                self.__hid.closeHID()
+                                self.__pyhid_cube = None
+                            pass
+                        except:
+                            self.__fpga_eth_cnt[fpga][j] = None
+                            pass
                     self.__lock.release()
 
                     for j in range(0, 13):
@@ -315,6 +382,12 @@ class cube_thread(threading.Thread):
             return 'N/A'
         return ( '%d.%d' % (self.__fw_version[0],
                             self.__fw_version[1]) )
+
+    def getEthIP(self):
+        return self.__formatIP(self.__fpga_eth_ip[self.__fpga])
+
+    def getEthCnt(self, counter):
+        return self.__fpga_eth_cnt[self.__fpga][counter]
 
 class cube_ctrl(object):
 
@@ -495,7 +568,7 @@ class cube_ctrl(object):
                 self.__mainwin.addstr(16, 43, 'Wafer ID        : ')
                 self.__mainwin.addstr(18, 43, 'Edge/Socket ID  : ')
                 self.__mainwin.addstr(20, 43, 'IP LSB          : ')
-            else:
+            elif self.__fpga_page == 1:
                 self.__mainwin.addstr(4 , 3 , 'IP              : ')
                 self.__mainwin.addstr(6 , 3 , 'Subnet          : ')
                 self.__mainwin.addstr(8 , 3 , 'Gateway         : ')
@@ -514,6 +587,13 @@ class cube_ctrl(object):
                 self.__mainwin.addstr(16, 43, 'Eth. PHY Valid  : ')
                 self.__mainwin.addstr(18, 43, 'Eth. PHY Link   : ')
                 self.__mainwin.addstr(20, 43, 'Eth. PHY Speed  : ')
+            else:
+                self.__mainwin.addstr(4 , 3 , 'RX Frames       : ')
+                self.__mainwin.addstr(6 , 3 , 'RX Errors       : ')
+                self.__mainwin.addstr(4 , 43, 'TX Frames       : ')
+                self.__mainwin.addstr(6 , 43, 'TX Errors       : ')
+                self.__mainwin.addstr(8 , 3 , 'RX IP Frames    : ')
+                self.__mainwin.addstr(10, 3 , 'RX IP Errors    : ')
 
             if not self.__pmic_active:
                 self.__mainwin.addstr(3 , 78, '^')
@@ -650,12 +730,11 @@ class cube_ctrl(object):
                 else:
                     self.__mainwin.addstr(18, 64, 'N/A')
                     self.__mainwin.addstr(20, 64, 'N/A')
-            else:
+            elif self.__fpga_page == 1:
+                self.__mainwin.addstr(4, 24, self.__thread.getEthIP())
                 if ( edge_id is not None and
                      socket_id is not None and
                      wafer_id is not None ) :
-                    self.__mainwin.addstr(4, 24, '192.168.%d.%d' %
-                                          (wafer_id, ip_lsb))
                     self.__mainwin.addstr(6, 24, '255.255.255.0')
                     self.__mainwin.addstr(8, 24, '192.168.%d.254' %
                                           (wafer_id))
@@ -709,6 +788,25 @@ class cube_ctrl(object):
                 else:
                     self.__mainwin.addstr(18, 64, 'N/A  ')
                     self.__mainwin.addstr(20, 64, 'N/A      ')
+            else:
+                cnt = self.__thread.getEthCnt(0)
+                self.__mainwin.addstr(4, 24,
+                                      self.__toString('%d', cnt))
+                cnt = self.__thread.getEthCnt(1)
+                self.__mainwin.addstr(6, 24,
+                                      self.__toString('%d', cnt))
+                cnt = self.__thread.getEthCnt(2)
+                self.__mainwin.addstr(4, 64,
+                                      self.__toString('%d', cnt))
+                cnt = self.__thread.getEthCnt(3)
+                self.__mainwin.addstr(6, 64,
+                                      self.__toString('%d', cnt))
+                cnt = self.__thread.getEthCnt(4)
+                self.__mainwin.addstr(8, 24,
+                                      self.__toString('%d', cnt))
+                cnt = self.__thread.getEthCnt(5)
+                self.__mainwin.addstr(10, 24,
+                                      self.__toString('%d', cnt))
 
         self.__mainwin.refresh()
 
@@ -753,7 +851,7 @@ class cube_ctrl(object):
                 elif ( not self.__pmic_active and inch == 66 and
                        self.__thread.hidActive() ):
                     self.__fpga_page += 1
-                    if self.__fpga_page > 1:
+                    if self.__fpga_page > 2:
                         self.__fpga_page = 0
                     self.__drawMainWindow(self.__thread.hidActive(),
                                           fwVersion)
@@ -761,7 +859,7 @@ class cube_ctrl(object):
                        self.__thread.hidActive() ):
                     self.__fpga_page -= 1
                     if self.__fpga_page < 0:
-                        self.__fpga_page = 1
+                        self.__fpga_page = 2
                     self.__drawMainWindow(self.__thread.hidActive(),
                                           fwVersion)
                 try:
