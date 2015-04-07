@@ -39,6 +39,7 @@
 ## 0.1       | hartmann   | 19 Jun 2013   |  initial version
 ## ----------------------------------------------------------------
 import pyhid
+import string
 
 class pyhid_cube(object):
 
@@ -132,6 +133,70 @@ class pyhid_cube(object):
         self.__pyhidobj.writeHID(buf)
         self.__read_result(('resetPMIC', 'reset PMICs'),
                            0x03)
+
+    def readGitStatus(self, fpgano):
+        buf = [0] * 64
+        buf[0] = 0x06
+        buf[1] = fpgano
+        self.__pyhidobj.writeHID(buf)
+        return self.__read_result(('readGitStatus', 'read Git status'),
+                                  0x06, 1)[0]
+
+    def readGitCommit(self, fpgano):
+        buf = [0] * 64
+        buf[0] = 0x07
+        buf[1] = fpgano
+        self.__pyhidobj.writeHID(buf)
+        data = self.__read_result(('readGitCommit', 'read Git commit hash'),
+                                  0x07, None)
+        res = ''.join(chr(s) for s in data)
+        if not res.isalnum():
+            raise ValueError('readGitCommit() Git commit hash contains '
+                             'unprintable characters.')
+        return res
+
+    def readGitBranch(self, fpgano):
+        buf = [0] * 64
+        buf[0] = 0x08
+        buf[1] = fpgano
+        self.__pyhidobj.writeHID(buf)
+        data = self.__read_result(('readGitBranch', 'read Git branch'),
+                                  0x08, None)
+        res = ''
+        for s in data:
+            if s == 0:
+                break
+            res += chr(s)
+        if not all(c in string.printable for c in res):
+            raise ValueError('readGitBranch() Git branch contains '
+                             'unprintable characters.')
+        return res
+
+    def readDesignName(self, fpgano):
+        buf = [0] * 64
+        buf[0] = 0x09
+        buf[1] = fpgano
+        self.__pyhidobj.writeHID(buf)
+        data = self.__read_result(('readDesignName', 'read design name'),
+                                  0x09, None)
+        res = ''
+        for s in data:
+            if s == 0:
+                break
+            res += chr(s)
+        if not all(c in string.printable for c in res):
+            raise ValueError('readDesignName() Design name contains '
+                             'unprintable characters.')
+        return res
+
+    def readDesignVersion(self, fpgano):
+        buf = [0] * 64
+        buf[0] = 0x0A
+        buf[1] = fpgano
+        self.__pyhidobj.writeHID(buf)
+        data = self.__read_result(('readDesignVersion', 'read design version'),
+                                  0x0A, 2)
+        return (data[1], data[0])
 
     def readBytePMIC(self, ucdno, cc, page=None):
         self.__check_pmic_params('readBytePMIC', ucdno, cc, page)
