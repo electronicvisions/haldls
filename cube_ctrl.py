@@ -820,22 +820,22 @@ class cube_ctrl(object):
             else:
                 cnt = self.__thread.getEthCnt(0)
                 self.__mainwin.addstr(4, 24,
-                                      self.__toString('%d', cnt))
+                                      self.__toString('%d  ', cnt))
                 cnt = self.__thread.getEthCnt(1)
                 self.__mainwin.addstr(6, 24,
-                                      self.__toString('%d', cnt))
+                                      self.__toString('%d  ', cnt))
                 cnt = self.__thread.getEthCnt(2)
                 self.__mainwin.addstr(4, 64,
-                                      self.__toString('%d', cnt))
+                                      self.__toString('%d  ', cnt))
                 cnt = self.__thread.getEthCnt(3)
                 self.__mainwin.addstr(6, 64,
-                                      self.__toString('%d', cnt))
+                                      self.__toString('%d  ', cnt))
                 cnt = self.__thread.getEthCnt(4)
                 self.__mainwin.addstr(8, 24,
-                                      self.__toString('%d', cnt))
+                                      self.__toString('%d  ', cnt))
                 cnt = self.__thread.getEthCnt(5)
                 self.__mainwin.addstr(10, 24,
-                                      self.__toString('%d', cnt))
+                                      self.__toString('%d  ', cnt))
 
         self.__mainwin.refresh()
 
