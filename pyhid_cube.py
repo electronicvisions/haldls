@@ -47,7 +47,7 @@ class pyhid_cube(object):
         if not isinstance(pyhidobj, pyhid.pyhidaccess):
             raise IOError('__init__() Need instance of PyHID class.')
         self.__pyhidobj = pyhidobj
-        self.__usb_timeout = 1000
+        self.__usb_timeout = 2000
         self.__usb_response_retries = 5
 
     def closeDevice(self):
