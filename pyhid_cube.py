@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##-----------------------------------------------------------------
 ##
-## Copyright (c) 2014 TU-Dresden  All rights reserved.
+## Copyright (c) 2015 TU-Dresden  All rights reserved.
 ##
 ## Unless otherwise stated, the software on this site is distributed
 ## in the hope that it will be useful, but WITHOUT ANY WARRANTY;
@@ -610,6 +610,68 @@ class pyhid_cube(object):
         self.__read_result(('disableAuroraLoopback',
                             'disable Aurora loopback mode'),
                            0x43)
+
+    def writeByteCommon(self, saddr, addr, data=0):
+        self.__check_value(('writeByteCommon', 'data byte'),
+                           data, 0x00, 0xFF)
+        self.__check_value(('writeByteCommon', 'slave address'),
+                           saddr, 0x00, 0xFF)
+        self.__check_value(('writeByteCommon', 'data address'),
+                           addr, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x50
+        buf[1] = saddr
+        buf[2] = addr
+        buf[3] = data
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('writeByteCommon', 'write byte to common I2C'),
+                           0x50, 0)
+
+    def writeWordCommon(self, saddr, addr, data=0):
+        self.__check_value(('writeWordCommon', 'data word'),
+                           data, 0x0000, 0xFFFF)
+        self.__check_value(('writeWordCommon', 'slave address'),
+                           saddr, 0x00, 0xFF)
+        self.__check_value(('writeWordCommon', 'data address'),
+                           addr, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x51
+        buf[1] = saddr
+        buf[2] = addr
+        buf[3] = data & 0xFF
+        buf[4] = ( data >> 8 ) & 0xFF
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('writeWordCommon', 'write word to common I2C'),
+                           0x51, 0)
+
+    def readByteCommon(self, saddr, addr):
+        self.__check_value(('readByteCommon', 'slave address'),
+                           saddr, 0x00, 0xFF)
+        self.__check_value(('readByteCommon', 'data address'),
+                           addr, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x52
+        buf[1] = saddr
+        buf[2] = addr
+        self.__pyhidobj.writeHID(buf)
+        return self.__read_result(('readByteCommon',
+                                   'read byte from common I2C'),
+                                  0x52, 1)[0]
+
+    def readWordCommon(self, saddr, addr):
+        self.__check_value(('readWordCommon', 'slave address'),
+                           saddr, 0x00, 0xFF)
+        self.__check_value(('readWordCommon', 'data address'),
+                           addr, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x53
+        buf[1] = saddr
+        buf[2] = addr
+        self.__pyhidobj.writeHID(buf)
+        buf = self.__read_result(('readWordCommon',
+                                  'read word from common I2C'),
+                                 0x53, 2)
+        return buf[0] | ( buf[1] << 8 )
 
     def resetEthPhy(self):
         buf = [0] * 64
