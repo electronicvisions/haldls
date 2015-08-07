@@ -611,6 +611,19 @@ class pyhid_cube(object):
                             'disable Aurora loopback mode'),
                            0x43)
 
+    def sendByteCommon(self, saddr, data=0):
+        self.__check_value(('sendByteCommon', 'data byte'),
+                           data, 0x00, 0xFF)
+        self.__check_value(('sendByteCommon', 'slave address'),
+                           saddr, 0x00, 0xFF)
+        buf = [0] * 64
+        buf[0] = 0x54
+        buf[1] = saddr
+        buf[2] = data
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('sendByteCommon', 'sent byte to common I2C'),
+                           0x54, 0)
+
     def writeByteCommon(self, saddr, addr, data=0):
         self.__check_value(('writeByteCommon', 'data byte'),
                            data, 0x00, 0xFF)
