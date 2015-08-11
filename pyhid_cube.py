@@ -651,8 +651,8 @@ class pyhid_cube(object):
         buf[0] = 0x51
         buf[1] = saddr
         buf[2] = addr
-        buf[3] = data & 0xFF
-        buf[4] = ( data >> 8 ) & 0xFF
+        buf[3] = ( data >> 8 ) & 0xFF
+        buf[4] = data & 0xFF
         self.__pyhidobj.writeHID(buf)
         self.__read_result(('writeWordCommon', 'write word to common I2C'),
                            0x51, 0)
