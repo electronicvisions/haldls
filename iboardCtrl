@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cwd=${PWD}/`dirname $0`
+
+if [ -n "${PYTHONPATH}" ]; then
+	export PYTHONPATH="${cwd}/../../../pyhid:${cwd}:${PYTHONPATH}"
+else
+	export PYTHONPATH="${cwd}/../../../pyhid:${cwd}"
+fi
+
+exec python ${cwd}/iboard_ctrl.py $*
