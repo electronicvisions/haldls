@@ -421,6 +421,51 @@ class cube_thread(threading.Thread):
             except:
                 pass
 
+    def getFPGAInfo(self):
+        if self.__pyhid_cube is None:
+            return 'unknown-unknown (Git: unknown)'
+
+        self.__lock.acquire()
+
+        try:
+            status = self.__pyhid_cube.readGitStatus(fpgano=self.__fpga)
+            commit = self.__pyhid_cube.readGitCommit(fpgano=self.__fpga)
+            branch = self.__pyhid_cube.readGitBranch(fpgano=self.__fpga)
+
+            gitinfo  = branch + '-'
+            gitinfo += commit
+            if status & 0x2:
+                gitinfo += '-dirty'
+            else:
+                gitinfo += '-clean'
+            if status & 0x1:
+                gitinfo += '-utd'
+        except:
+            gitinfo = 'unknown'
+            pass
+
+        try:
+            design  = self.__pyhid_cube.readDesignName(fpgano=self.__fpga)
+        except:
+            design = 'unknown'
+            pass
+
+        try:
+            version = self.__pyhid_cube.readDesignVersion(fpgano=self.__fpga)
+            if version == (0,0):
+                version = 'unknown'
+            else:
+                version = 'v%d.%d' % version
+        except:
+            version = 'unknown'
+
+        self.__lock.release()
+
+        design += '-'
+        design += version
+
+        return '%s (Git: %s)' % (design,gitinfo)
+
 class cube_ctrl(object):
 
     WND_PMIC    = 1
@@ -531,16 +576,16 @@ class cube_ctrl(object):
 
         return False
 
-    def __drawMainWindow(self, hidActive, fwVersion):
+    def __drawMainWindow(self, hidActive, fwVersion, fpgainfo):
         (y, x) = self.__stdscr.getmaxyx()
-        if y < 25:
+        if y < 24:
             raise Exception('Terminal height is too small. '
-                            'Must be at least 25 rows.')
+                            'Must be at least 24 rows.')
         if x < 80:
             raise Exception('Terminal width is too small. '
                             'Must be at least 80 columns.')
         if self.__mainwin is None:
-            self.__mainwin = self.__stdscr.subwin(25, 80, 0, 0)
+            self.__mainwin = self.__stdscr.subwin(24, 80, 0, 0)
 
         if self.__pmic_active:
             device = 'PMIC'
@@ -551,17 +596,19 @@ class cube_ctrl(object):
 
         self.__mainwin.erase()
         self.__mainwin.border()
-        self.__mainwin.hline(2, 1, 0, 78)
+        self.__mainwin.hline(3, 1, 0, 78)
         self.__mainwin.addstr(1, 16, 'Cube System Monitor and Control ('
                               '%s Socket %d)' % (device,socket))
         self.__mainwin.addstr(1, 70, 'FW: ' + fwVersion)
-        self.__mainwin.hline(22, 1, 0, 78)
+        if not self.__pmic_active:
+            self.__mainwin.addstr(2, ( 78 - len(fpgainfo) ) >> 1, fpgainfo)
+        self.__mainwin.hline(21, 1, 0, 78)
 
         if not hidActive:
-            self.__mainwin.addstr(23, 60, 'Q or X: Quit')
+            self.__mainwin.addstr(22, 60, 'Q or X: Quit')
             self.__mainwin.addstr(10, 26, 'No valid HID device found.')
         else:
-            self.__mainwin.addstr(23, 2,
+            self.__mainwin.addstr(22, 2,
                                   '1: Select PMIC     '
                                   '2: Select FPGA     '
                                   '3: %s Control     '
@@ -628,8 +675,8 @@ class cube_ctrl(object):
                 self.__mainwin.addstr(10, 3 , 'RX IP Errors    : ')
 
             if not self.__pmic_active:
-                self.__mainwin.addstr(3 , 78, '^')
-                self.__mainwin.addstr(21, 78, 'v')
+                self.__mainwin.addstr(4 , 78, '^')
+                self.__mainwin.addstr(20, 78, 'v')
 
         self.__mainwin.refresh()
 
@@ -862,35 +909,40 @@ class cube_ctrl(object):
         self.__thread.start()
 
         self.__drawMainWindow(self.__thread.hidActive(),
-                              self.__thread.getFirmwareVersion())
+                              self.__thread.getFirmwareVersion(),
+                              self.__thread.getFPGAInfo())
 
         hidActive = self.__thread.hidActive()
         fwVersion = self.__thread.getFirmwareVersion()
         while 1:
             if self.__thread.hidActive() != hidActive:
                 self.__drawMainWindow(self.__thread.hidActive(),
-                                      self.__thread.getFirmwareVersion())
+                                      self.__thread.getFirmwareVersion(),
+                                      self.__thread.getFPGAInfo())
                 hidActive = self.__thread.hidActive()
                 fwVersion = self.__thread.getFirmwareVersion()
             inch = self.__stdscr.getch()
             if inch != -1:
                 if inch == curses.KEY_RESIZE:
                     self.__drawMainWindow(self.__thread.hidActive(),
-                                          fwVersion)
+                                          fwVersion,
+                                          self.__thread.getFPGAInfo())
                 elif ( not self.__pmic_active and inch == 66 and
                        self.__thread.hidActive() ):
                     self.__fpga_page += 1
                     if self.__fpga_page > 2:
                         self.__fpga_page = 0
                     self.__drawMainWindow(self.__thread.hidActive(),
-                                          fwVersion)
+                                          fwVersion,
+                                          self.__thread.getFPGAInfo())
                 elif ( not self.__pmic_active and inch == 65 and
                        self.__thread.hidActive() ):
                     self.__fpga_page -= 1
                     if self.__fpga_page < 0:
                         self.__fpga_page = 2
                     self.__drawMainWindow(self.__thread.hidActive(),
-                                          fwVersion)
+                                          fwVersion,
+                                          self.__thread.getFPGAInfo())
                 try:
                     instr = str(chr(inch))
                 except:
@@ -908,7 +960,8 @@ class cube_ctrl(object):
                             self.__thread.setCurrentPMIC(self.__pmic)
                             self.__pmic_active = True
                         self.__drawMainWindow(self.__thread.hidActive(),
-                                              fwVersion)
+                                              fwVersion,
+                                              self.__thread.getFPGAInfo())
                     elif instr == '2' and hidActive:
                         self.__subpos = self.__fpga
                         if self.__drawSubWindow(cube_ctrl.WND_FPGA):
@@ -917,7 +970,8 @@ class cube_ctrl(object):
                             self.__pmic_active = False
                             self.__fpga_page = 0
                         self.__drawMainWindow(self.__thread.hidActive(),
-                                              fwVersion)
+                                              fwVersion,
+                                              self.__thread.getFPGAInfo())
                     elif instr == '3' and hidActive:
                         if self.__pmic_active:
                             (status,
@@ -935,7 +989,8 @@ class cube_ctrl(object):
                                 else:
                                     self.__thread.disablePowerPMIC()
                             self.__drawMainWindow(self.__thread.hidActive(),
-                                                  fwVersion)
+                                                  fwVersion,
+                                                  self.__thread.getFPGAInfo())
                         else:
                             self.__subpos = self.__hicann_op
                             if self.__drawSubWindow(cube_ctrl.WND_HICANN):
@@ -943,14 +998,17 @@ class cube_ctrl(object):
                                 if self.__subpos < 4:
                                     self.__subpos = 0
                                     self.__drawMainWindow(self.__thread.hidActive(),
-                                                          fwVersion)
+                                                          fwVersion,
+                                                          self.__thread.getFPGAInfo())
                                     if self.__drawSubWindow(cube_ctrl.WND_CHANNEL):
                                         self.__doHicannOp()
                                 self.__drawMainWindow(self.__thread.hidActive(),
-                                                      fwVersion)
+                                                      fwVersion,
+                                                      self.__thread.getFPGAInfo())
                             else:
                                 self.__drawMainWindow(self.__thread.hidActive(),
-                                                      fwVersion)
+                                                      fwVersion,
+                                                      self.__thread.getFPGAInfo())
 
             self.__updateData()
 
