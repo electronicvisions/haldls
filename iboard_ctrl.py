@@ -229,16 +229,27 @@ class iboard_ctrl(object):
             raise RuntimeError("Invalid number of bytes")
 
 
-if __name__ == '__main__':
+def main():
     import pyhid_cube
     import pyhid
+    import re
+    import os
     from argparse import ArgumentParser
 
-    parser = ArgumentParser()
+    parser = ArgumentParser(
+        description="Set iboard settings via the CUBE I2C interface. The tool "
+                    "will check, that the required SLURM resources are "
+                    "available, this can be disabled by using the "
+                    "--ignore_slurm_gres option.")
     parser.add_argument(
         '--iboard', choices=(1, 2, 3), type=int, required=True,
         help="Select iboard to configure, iboard 1 is connected to socket 1, "
              "iboard 2 to socket 4")
+    parser.add_argument(
+        '--ignore_slurm_gres', action='store_true',
+        help="Omit the check for correct SLURM GRES. Be careful, this can"
+             " negativly affect other users. If in doubt ask somebody.")
+
     subparsers = parser.add_subparsers(dest='command')
     command_set_voltage = subparsers.add_parser(
         'set_voltage', help="Set a iboard voltage to the requested value")
@@ -258,13 +269,30 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    if not args.ignore_slurm_gres:
+        print "Checking SLRUM GRES:",
+        my_gres = os.environ.get("MY_SLURM_GRES", "").split(',')
+        re_iboard_gres = re.compile(
+            '(?P<cube_res>cube\d+)iboard{}$'.format(args.iboard))
+        valid_iboard_gres = [
+            m for m in (re_iboard_gres.match(gres) for gres in my_gres) if m]
+
+        if not valid_iboard_gres:
+            print "iboard gres missing, abort"
+            exit(-1)
+        cube_gres = valid_iboard_gres[0].group('cube_res')
+        if cube_gres not in my_gres:
+            print "cube gres missing, abourt"
+            exit(-1)
+        print "OK"
+
     hid = pyhid.pyhidaccess()
     hid.openHID(vid=0x0451, pid=0x4253)
     pyhid_cube = pyhid_cube.pyhid_cube(hid)
     print "Connected to CUBE:", pyhid_cube.readFirmwareVersion()
     iboard = iboard_ctrl(args.iboard, pyhid_cube)
-    print "Configuring iboard {}".format(args.iboard)
 
+    print "Configuring iboard {}".format(args.iboard)
     if args.command == 'on':
         iboard.set_defaults()
         print "All voltages have been set to default"
@@ -280,3 +308,6 @@ if __name__ == '__main__':
             args.hicann)
     else:
         parser.usage()
+
+if __name__ == '__main__':
+    main()
