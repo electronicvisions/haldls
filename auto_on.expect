@@ -1,0 +1,203 @@
+set PMIC_ID 1
+set POWER_ON 1
+
+set log_user 0
+
+foreach arg $argv {
+        if {[string match "--fpga=*" $arg]} {
+                set PMIC_ID [string range $arg 7 200]
+        } elseif {[string match "1" $arg]} {
+                set POWER_ON 1
+        } elseif {[string match "0" $arg]} {
+                set POWER_ON 0
+        } else {
+                send_user "Usage: --fpga=X (default=1) \[0, 1(default)\]\n"
+                exit 1
+        }
+}
+
+set FPGA_ID $PMIC_ID
+
+
+# time unit here: 0.1s * X
+set POWERON_TIMEOUT 30
+set BITFILE_TIMEOUT 300
+
+set KEY_UP '\[A'
+set KEY_DOWN '\[B'
+set KEY_END '\[4~'
+
+spawn ./cubeCtrl
+
+
+proc redrawScreen args {
+	sleep 0.05
+	send -- "r"
+	sleep 0.05
+}
+
+proc closeCubeCtrl args {
+	redrawScreen
+	send "x"
+	sleep 0.1
+	close
+}
+
+proc exitGood args {
+	send_user "\nOKOKMAGICOKOK\n"
+	exit 0
+}
+
+# install special exit handler
+exit -onexit {
+	send "x"
+	sleep 0.1
+	close
+}
+
+# check for CLI coming up
+expect {
+	timeout {
+		send_user "\nERROR: No response (or unhandled error.)\n"
+		exit 1
+	}
+	"IOError:" {
+		send_user "\nERROR: USB device down or in failed state?!?\n"
+		exit 1
+	}
+	"No valid HID device found." {
+		send_user "\nERROR: No valid HID device found.\n"
+		exit 1
+	}
+	"Select PMIC" {}
+}
+
+# go to PMIC control menu
+send "1"
+
+redrawScreen
+expect {
+	timeout {
+		send_user "\nERROR: No response (or unhandled error.)"
+		exit 1
+	}
+	"Socket $PMIC_ID" {}
+}
+
+# go to nth PMIC X
+for {set i 1} {$i < $PMIC_ID} {incr i 1} {
+	send $KEY_DOWN
+	sleep 0.1
+}
+send "\r"
+
+redrawScreen
+expect {
+	timeout {
+		send_user "\nERROR: No response (or unhandled error.)A"
+		exit 1
+	}
+	"Cube System Monitor and Control (PMIC Socket $PMIC_ID)"
+}
+
+expect {
+	timeout {
+		send_user "\nERROR: No response (or unhandled error.)X\n"
+		exit 1
+	}
+	"Output OFF       :   Yes" {
+		if {$POWER_ON == 1} {
+			send "3${KEY_DOWN}\r"
+		} else {
+			closeCubeCtrl
+			exitGood
+		}
+	}
+	"Output OFF       :   No" {
+		if {$POWER_ON == 0} {
+			send "3${KEY_DOWN}\r"
+		}
+	}
+}
+
+# power up takes some time...
+for {set ii 1} {$ii < $POWERON_TIMEOUT} {incr i 1} {
+	redrawScreen
+	expect {
+		# abort wait as soon as we get the expected output
+		"Output OFF       :   Yes" {
+			if {$POWER_ON == 0} {
+				closeCubeCtrl
+				exitGood
+			}
+		}
+		"Output OFF       :   No"  { if {$POWER_ON == 1} break }
+	}
+}
+
+redrawScreen
+expect {
+	timeout {
+		send_user "\nERROR: No response (or unhandled error.)!\n"
+		exit 1
+	}
+	"Output OFF       :   Yes" {
+		if {$POWER_ON == 1} {
+			closeCubeCtrl
+			send_user "\nERROR: Could not switch on PMIC/FPGA $PMIC_ID!\n"
+			exit 1
+		}
+	}
+	"Power Good       :   Yes" {}
+	"Power Good       :   No" {
+		if {$POWER_ON == 1 } {
+			closeCubeCtrl
+			send_user "\nERROR: PMIC $PMIC_ID did not come up!\n"
+			exit 1
+		}
+	}
+}
+
+# select FPGA menu
+send "2"
+sleep 0.1
+
+# select matching FPGA
+for {set i 1} {$i < $FPGA_ID} {incr i 1} {
+	send $KEY_DOWN
+	sleep 0.1
+}
+send -- "\r"
+sleep 0.1
+
+
+# power up takes some time...
+for {set ii 1} {$ii < $BITFILE_TIMEOUT} {incr i 1} {
+	redrawScreen
+	expect {
+		# abort wait as soon as we get the expected output
+		"startup_top* (Git:" { break }
+		# more?
+	}
+}
+
+expect {
+	timeout {
+		send_user "\nERROR: FPGA/Bitfile did not come up at all?\n"
+		exit 1
+	}
+	"startup_top* (Git:" {}
+}
+
+
+# now turn on the channels
+send "3\r"
+sleep 0.1
+
+# all channels
+send "$KEY_UP\r"
+sleep 0.1
+
+
+
+exitGood
