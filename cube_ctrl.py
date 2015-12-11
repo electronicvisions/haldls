@@ -951,6 +951,8 @@ class cube_ctrl(object):
                     if instr.upper() == 'X' or instr.upper() == 'Q':
                         self.__updateData()
                         break
+                    elif instr.upper() == 'R':
+                        self.__stdscr.redrawwin()
                     elif instr == '4' and hidActive:
                         self.__thread.enablePause()
                     elif instr == '1' and hidActive:
