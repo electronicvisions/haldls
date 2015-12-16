@@ -171,106 +171,106 @@ class cube_thread(threading.Thread):
                 if self.__stop:
                     break
 
-                for fpga in range(0, 4):
-                    data = [0]*15
-                    status = [0x01]*15
-                    if self.__pmic_status_word[fpga] is not None:
-                        if self.__pmic_status_word[fpga] & 0x800:
-                            continue
-                    else:
+            for fpga in range(0, 4):
+                data = [0]*15
+                status = [0x01]*15
+                if self.__pmic_status_word[fpga] is not None:
+                    if self.__pmic_status_word[fpga] & 0x800:
                         continue
+                else:
+                    continue
 
-                    self.__lock.acquire()
+                self.__lock.acquire()
+                try:
+                    if self.__pyhid_cube is not None:
+                        (status,
+                         data) = self.__pyhid_cube.readFPGAStatus(fpgano=fpga)
+                except pyhid.HIDError as e:
+                    if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                        self.__hid.closeHID()
+
+                try:
+                    if self.__pyhid_cube is not None:
+                        eth_status = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                                   addr=0x0C)
+                        self.__fpga_eth_status[fpga] = eth_status
+                except pyhid.HIDError as e:
+                    if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                        self.__hid.closeHID()
+                        self.__pyhid_cube = None
+                    pass
+                except:
+                    self.__fpga_eth_status[fpga] = None
+                    pass
+
+                try:
+                    if self.__pyhid_cube is not None:
+                        eth_ip = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                               addr=0x00)
+                        self.__fpga_eth_ip[fpga] = eth_ip
+                except pyhid.HIDError as e:
+                    if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                        self.__hid.closeHID()
+                        self.__pyhid_cube = None
+                    pass
+                except:
+                    self.__fpga_eth_ip[fpga] = None
+                    pass
+
+                try:
+                    if self.__pyhid_cube is not None:
+                        eth_mac = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                                addr=0x06)
+                        eth_mac = eth_mac << 16
+                        eth_mac += ( 0xFFFF &
+                                     self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                                   addr=0x08) )
+                        self.__fpga_eth_mac[fpga] = eth_mac
+                except pyhid.HIDError as e:
+                    if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
+                        self.__hid.closeHID()
+                        self.__pyhid_cube = None
+                    pass
+                except:
+                    self.__fpga_eth_mac[fpga] = None
+                    pass
+
+                for j in range(0,6):
                     try:
                         if self.__pyhid_cube is not None:
-                            (status,
-                             data) = self.__pyhid_cube.readFPGAStatus(fpgano=fpga)
-                    except pyhid.HIDError as e:
-                        if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
-                            self.__hid.closeHID()
-
-                    try:
-                        if self.__pyhid_cube is not None:
-                            eth_status = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
-                                                                       addr=0x0C)
-                            self.__fpga_eth_status[fpga] = eth_status
+                            if j < 4:
+                                addr = j + 0x10
+                            else:
+                                addr = j + 0x14
+                            eth_cnt = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
+                                                                    addr=addr)
+                            self.__fpga_eth_cnt[fpga][j] = eth_cnt
                     except pyhid.HIDError as e:
                         if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
                             self.__hid.closeHID()
                             self.__pyhid_cube = None
                         pass
                     except:
-                        self.__fpga_eth_status[fpga] = None
+                        self.__fpga_eth_cnt[fpga][j] = None
                         pass
+                self.__lock.release()
 
-                    try:
-                        if self.__pyhid_cube is not None:
-                            eth_ip = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
-                                                                   addr=0x00)
-                            self.__fpga_eth_ip[fpga] = eth_ip
-                    except pyhid.HIDError as e:
-                        if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
-                            self.__hid.closeHID()
-                            self.__pyhid_cube = None
-                        pass
-                    except:
-                        self.__fpga_eth_ip[fpga] = None
-                        pass
+                for j in range(0, 13):
+                    if ( j & 0x3 ) == 0 and j != 12:
+                        val = data[j] / 64.
+                    else:
+                        val = data[j] / 4096.
+                    self.__fpga_sysmon[fpga][j] = val
+                    self.__fpga_status[fpga][j] = status[j]
 
-                    try:
-                        if self.__pyhid_cube is not None:
-                            eth_mac = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
-                                                                    addr=0x06)
-                            eth_mac = eth_mac << 16
-                            eth_mac += ( 0xFFFF &
-                                         self.__pyhid_cube.readEthMgmt(fpgano=fpga,
-                                                                       addr=0x08) )
-                            self.__fpga_eth_mac[fpga] = eth_mac
-                    except pyhid.HIDError as e:
-                        if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
-                            self.__hid.closeHID()
-                            self.__pyhid_cube = None
-                        pass
-                    except:
-                        self.__fpga_eth_mac[fpga] = None
-                        pass
+                self.__fpga_init_status[fpga] = data[13]
+                self.__fpga_status[fpga][13] = status[13]
 
-                    for j in range(0,6):
-                        try:
-                            if self.__pyhid_cube is not None:
-                                if j < 4:
-                                    addr = j + 0x10
-                                else:
-                                    addr = j + 0x14
-                                eth_cnt = self.__pyhid_cube.readEthMgmt(fpgano=fpga,
-                                                                        addr=addr)
-                                self.__fpga_eth_cnt[fpga][j] = eth_cnt
-                        except pyhid.HIDError as e:
-                            if e.args[1] == pyhid.LIBUSB_ERROR_NO_DEVICE:
-                                self.__hid.closeHID()
-                                self.__pyhid_cube = None
-                            pass
-                        except:
-                            self.__fpga_eth_cnt[fpga][j] = None
-                            pass
-                    self.__lock.release()
+                self.__fpga_wafer_id[fpga] = data[14]
+                self.__fpga_status[fpga][14] = status[14]
 
-                    for j in range(0, 13):
-                        if ( j & 0x3 ) == 0 and j != 12:
-                            val = data[j] / 64.
-                        else:
-                            val = data[j] / 4096.
-                        self.__fpga_sysmon[fpga][j] = val
-                        self.__fpga_status[fpga][j] = status[j]
-
-                    self.__fpga_init_status[fpga] = data[13]
-                    self.__fpga_status[fpga][13] = status[13]
-
-                    self.__fpga_wafer_id[fpga] = data[14]
-                    self.__fpga_status[fpga][14] = status[14]
-
-                    if self.__stop:
-                        break
+                if self.__stop:
+                    break
 
             time.sleep(0.2)
 
