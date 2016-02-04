@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 
 class iboard_ctrl(object):
     """iBoard controll class
@@ -158,7 +160,7 @@ class iboard_ctrl(object):
             # log(Logger::ERROR) << "DAC input value larger than vrefdac!"
             return False
 
-        dacval = int(dacvout / self.vrefdac * float((1<<self.dacres)-1))
+        dacval = int(dacvout / self.vrefdac * float((1 << self.dacres)-1))
         self.enable_i2c_master()
         self.i2c_write(dacaddr >> 1, daccmd, dacval, bytes=2)
 
@@ -282,7 +284,7 @@ def main():
             exit(-1)
         cube_gres = valid_iboard_gres[0].group('cube_res')
         if cube_gres not in my_gres:
-            print "cube gres missing, abourt"
+            print "cube gres missing, abort"
             exit(-1)
         print "OK"
 
