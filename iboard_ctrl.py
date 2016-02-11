@@ -232,8 +232,6 @@ class iboard_ctrl(object):
 
 
 def main():
-    import pyhid_cube
-    import pyhid
     import re
     import os
     from argparse import ArgumentParser
@@ -282,34 +280,40 @@ def main():
         if not valid_iboard_gres:
             print "iboard gres missing, abort"
             exit(-1)
-        cube_gres = valid_iboard_gres[0].group('cube_res')
-        if cube_gres not in my_gres:
-            print "cube gres missing, abort"
-            exit(-1)
         print "OK"
 
-    hid = pyhid.pyhidaccess()
-    hid.openHID(vid=0x0451, pid=0x4253)
-    pyhid_cube = pyhid_cube.pyhid_cube(hid)
-    print "Connected to CUBE:", pyhid_cube.readFirmwareVersion()
-    iboard = iboard_ctrl(args.iboard, pyhid_cube)
+    from fasteners.process_lock import interprocess_locked
 
-    print "Configuring iboard {}".format(args.iboard)
-    if args.command == 'on':
-        iboard.set_defaults()
-        print "All voltages have been set to default"
-    elif args.command == 'off':
-        iboard.power_down()
-        print "All voltages have been set to 0V"
-    elif args.command == 'set_voltage':
-        iboard.set_voltage(args.voltage, args.value)
-        print "Voltage {} set to {}V".format(args.voltage, args.value)
-    elif args.command == 'switch_mux':
-        iboard.switch_mux(7 - args.hicann)
-        print "Analog output muxes set to HICANN {} (counted from top)".format(
-            args.hicann)
-    else:
-        parser.usage()
+    # This is for one cube per node
+    @interprocess_locked('/var/lock/cube_setup')
+    def run():
+        import pyhid
+        import pyhid_cube
+
+        hid = pyhid.pyhidaccess()
+        hid.openHID(vid=0x0451, pid=0x4253)
+        cube = pyhid_cube.pyhid_cube(hid)
+        print "Connected to CUBE:", cube.readFirmwareVersion()
+        iboard = iboard_ctrl(args.iboard, cube)
+
+        print "Configuring iboard {}".format(args.iboard)
+        if args.command == 'on':
+            iboard.set_defaults()
+            print "All voltages have been set to default"
+        elif args.command == 'off':
+            iboard.power_down()
+            print "All voltages have been set to 0V"
+        elif args.command == 'set_voltage':
+            iboard.set_voltage(args.voltage, args.value)
+            print "Voltage {} set to {}V".format(args.voltage, args.value)
+        elif args.command == 'switch_mux':
+            iboard.switch_mux(7 - args.hicann)
+            print "Analog output muxes set to HICANN {} (counted from top)".format(
+                args.hicann)
+        else:
+            parser.usage()
+
+    run()
 
 if __name__ == '__main__':
     main()
