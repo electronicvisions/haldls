@@ -300,7 +300,7 @@ def main():
         # lockfile-based mutex for access to USB device
         LOCK_FILE = '/var/lock/f9/cube_setup'
         prepare_lockdir(LOCK_FILE)
-        mylock = lock.lock(LOCK_FILE)
+        mylock = lock.lock(LOCK_FILE, timeout=10)
 
         import pyhid
         import pyhid_cube
