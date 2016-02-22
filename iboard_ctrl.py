@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from mercurial import lock
+import os, stat
 
 class iboard_ctrl(object):
     """iBoard controll class
@@ -282,11 +284,24 @@ def main():
             exit(-1)
         print "OK"
 
-    from fasteners.process_lock import interprocess_locked
+
+    def prepare_lockdir(dpath):
+        LOCK_DIR = os.path.dirname(dpath)
+        if not os.path.exists(LOCK_DIR):
+            os.mkdir(LOCK_DIR)
+        # 666 and sticky bit
+        TARGET_MODE = stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO | stat.S_ISVTX
+        if not stat.S_IMODE(os.stat(LOCK_DIR).st_mode) == TARGET_MODE:
+            os.chmod(LOCK_DIR, TARGET_MODE)
+
 
     # This is for one cube per node
-    @interprocess_locked('/var/lock/cube_setup')
     def run():
+        # lockfile-based mutex for access to USB device
+        LOCK_FILE = '/var/lock/f9/cube_setup'
+        prepare_lockdir(LOCK_FILE)
+        mylock = lock.lock(LOCK_FILE)
+
         import pyhid
         import pyhid_cube
 
@@ -312,6 +327,9 @@ def main():
                 args.hicann)
         else:
             parser.usage()
+
+        # unlock, but that's not needed
+        mylock.release()
 
     run()
 
