@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from mercurial import lock
+from mercurial.__version__ import version as mercurial_version
+from mercurial import scmutil
 import os, stat
 
 class iboard_ctrl(object):
