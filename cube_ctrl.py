@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ##-----------------------------------------------------------------
 ##
-## Copyright (c) 2014 TU-Dresden  All rights reserved.
+## Copyright (c) 2016 TU-Dresden  All rights reserved.
 ##
 ## Unless otherwise stated, the software on this site is distributed
 ## in the hope that it will be useful, but WITHOUT ANY WARRANTY;
@@ -50,15 +50,16 @@ class cube_thread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
-        self.__pmic_rvoltage    = [[None for x in xrange(4)] for x in xrange(4)]
-        self.__pmic_rtemp       = [[None for x in xrange(2)] for x in xrange(4)]
-        self.__pmic_rcurrent    = [[None for x in xrange(4)] for x in xrange(4)]
-        self.__pmic_temp        = [None]*4
-        self.__pmic_voltage     = [None]*4
-        self.__pmic_status      = [[None for x in xrange(13)] for x in xrange(4)]
-        self.__pmic_status_word = [None]*4
-        self.__pmic             = 0
-        self.__fpga             = 0
+        self.__pmic_rvoltage     = [[None for x in xrange(4)] for x in xrange(4)]
+        self.__pmic_rtemp        = [[None for x in xrange(2)] for x in xrange(4)]
+        self.__pmic_rcurrent     = [[None for x in xrange(4)] for x in xrange(4)]
+        self.__pmic_rcurrent_max = [[None for x in xrange(4)] for x in xrange(4)]
+        self.__pmic_temp         = [None]*4
+        self.__pmic_voltage      = [None]*4
+        self.__pmic_status       = [[None for x in xrange(13)] for x in xrange(4)]
+        self.__pmic_status_word  = [None]*4
+        self.__pmic              = 0
+        self.__fpga              = 0
 
         self.__fpga_sysmon      = [[None for x in xrange(13)] for x in xrange(4)]
         self.__fpga_status      = [[None for x in xrange(15)] for x in xrange(4)]
@@ -156,6 +157,10 @@ class cube_thread(threading.Thread):
 
                 for j in range(0, 4):
                     val = self.__linear11ToFloat(data[6+j])
+                    if self.__pmic_rcurrent_max[pmic][j] is None:
+                        self.__pmic_rcurrent_max[pmic][j] = val
+                    elif self.__pmic_rcurrent_max[pmic][j] < val:
+                        self.__pmic_rcurrent_max[pmic][j] = val
                     self.__pmic_rcurrent[pmic][j] = val
 
                 val = self.__linear11ToFloat(data[10])
@@ -347,6 +352,9 @@ class cube_thread(threading.Thread):
     def getPMICRailCurrent(self, domain):
         return (self.__pmic_status[self.__pmic][domain + 6],
                 self.__pmic_rcurrent[self.__pmic][domain])
+
+    def getPMICRailCurrentMax(self, domain):
+        return self.__pmic_rcurrent_max[self.__pmic][domain]
 
     def getPMICRailTemp(self, domain):
         return (self.__pmic_status[self.__pmic][domain + 10],
@@ -615,20 +623,24 @@ class cube_ctrl(object):
                                   '3: %s Control     '
                                   'Q or X: Quit' % device)
             if self.__pmic_active:
-                self.__mainwin.addstr(4 , 3 , 'Input Voltage    : ')
-                self.__mainwin.addstr(4 , 43, 'PMIC Temperature : ')
-                self.__mainwin.addstr(6 , 3 , 'VDD Core         : ')
-                self.__mainwin.addstr(8 , 3 , 'VDD 1.5V         : ')
-                self.__mainwin.addstr(10, 3 , 'VDD 1.8V         : ')
-                self.__mainwin.addstr(12, 3 , 'VDD 3.3V         : ')
-                self.__mainwin.addstr(14, 3 , 'Current Core     : ')
-                self.__mainwin.addstr(16, 3 , 'Current 1.5V     : ')
-                self.__mainwin.addstr(18, 3 , 'Current 1.8V     : ')
-                self.__mainwin.addstr(20, 3 , 'Current 3.3V     : ')
-                self.__mainwin.addstr(6 , 43, 'Temp. Core/1.5V  : ')
-                self.__mainwin.addstr(8 , 43, 'Temp. 1.8V/3.3V  : ')
-                self.__mainwin.addstr(10, 43, 'Output OFF       : ')
-                self.__mainwin.addstr(12, 43, 'Power Good       : ')
+                self.__mainwin.addstr(4 , 3 , 'Input Voltage     : ')
+                self.__mainwin.addstr(4 , 43, 'PMIC Temperature  : ')
+                self.__mainwin.addstr(6 , 3 , 'VDD Core          : ')
+                self.__mainwin.addstr(8 , 3 , 'VDD 1.5V          : ')
+                self.__mainwin.addstr(10, 3 , 'VDD 1.8V          : ')
+                self.__mainwin.addstr(12, 3 , 'VDD 3.3V          : ')
+                self.__mainwin.addstr(14, 3 , 'Current Core      : ')
+                self.__mainwin.addstr(16, 3 , 'Current 1.5V      : ')
+                self.__mainwin.addstr(18, 3 , 'Current 1.8V      : ')
+                self.__mainwin.addstr(20, 3 , 'Current 3.3V      : ')
+                self.__mainwin.addstr(14, 43, 'Max. Current Core : ')
+                self.__mainwin.addstr(16, 43, 'Max. Current 1.5V : ')
+                self.__mainwin.addstr(18, 43, 'Max. Current 1.8V : ')
+                self.__mainwin.addstr(20, 43, 'Max. Current 3.3V : ')
+                self.__mainwin.addstr(6 , 43, 'Temp. Core/1.5V   : ')
+                self.__mainwin.addstr(8 , 43, 'Temp. 1.8V/3.3V   : ')
+                self.__mainwin.addstr(10, 43, 'Output OFF        : ')
+                self.__mainwin.addstr(12, 43, 'Power Good        : ')
             elif self.__fpga_page == 0:
                 self.__mainwin.addstr(4 , 3 , 'Current Temp.   : ')
                 self.__mainwin.addstr(6 , 3 , 'Current VCCINT  : ')
@@ -740,6 +752,9 @@ class cube_ctrl(object):
                 if status != 0x00:
                     current = None
                 self.__mainwin.addstr(14 + 2 * domain, 24,
+                                      self.__toString('%2.3f A', current))
+                current = self.__thread.getPMICRailCurrentMax(domain)
+                self.__mainwin.addstr(14 + 2 * domain, 64,
                                       self.__toString('%2.3f A', current))
             for domain in range(0, 2):
                 (status, temp) = self.__thread.getPMICRailTemp(domain)
