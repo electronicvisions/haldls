@@ -190,6 +190,7 @@ class pyhid_cube(object):
         return res
 
     def readDesignVersion(self, fpgano):
+        self.__check_value('FPGA number', fpgano, 0, 3)
         buf = [0] * 64
         buf[0] = 0x0A
         buf[1] = fpgano
@@ -197,6 +198,17 @@ class pyhid_cube(object):
         data = self.__read_result(('readDesignVersion', 'read design version'),
                                   0x0A, 2)
         return (data[1], data[0])
+
+    def rebootFPGA(self, fpgano, addr):
+        self.__check_value('FPGA number', fpgano, 0, 3)
+        self.__check_value('FPGA reboot address', addr, 0x00, 0x7F)
+        buf = [0] * 64
+        buf[0] = 0x0B
+        buf[1] = fpgano
+        buf[2] = addr
+        self.__pyhidobj.writeHID(buf)
+        self.__read_result(('rebootFPGA', 'set FPGA reboot trigger'),
+                           0x0B, 0)
 
     def readBytePMIC(self, ucdno, cc, page=None):
         self.__check_pmic_params('readBytePMIC', ucdno, cc, page)
