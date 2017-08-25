@@ -16,6 +16,9 @@ class Chip;
 class CommonNeuronConfig
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct PostCorrelationSignalLength
 		: public halco::common::detail::
 			  RantWrapper<PostCorrelationSignalLength, uint_fast16_t, 15, 0>
@@ -51,6 +54,9 @@ private:
 class NeuronDigitalConfig
 {
 public:
+	typedef halco::hicann_dls::v2::NeuronOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	enum class FireOutMode : uint_fast8_t
 	{
 		disabled = 0,

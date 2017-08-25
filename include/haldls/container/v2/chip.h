@@ -6,6 +6,7 @@
 #include "haldls/common/optional.h"
 #include "haldls/common/visibility.h"
 #include "haldls/container/v2/capmem.h"
+#include "haldls/container/v2/common.h"
 #include "haldls/container/v2/correlation.h"
 #include "haldls/container/v2/neuron.h"
 #include "haldls/container/v2/ppu.h"
@@ -20,6 +21,9 @@ namespace v2 {
 class Chip
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::false_type has_local_data;
+
 	Chip() HALDLS_VISIBLE;
 
 	// external current input and voltage output are only allowed to be enabled for
@@ -117,6 +121,8 @@ public:
 	bool operator==(Chip const& other) const HALDLS_VISIBLE;
 	bool operator!=(Chip const& other) const HALDLS_VISIBLE;
 
+	friend detail::VisitPreorderImpl<Chip>;
+
 private:
 	halco::common::typed_array<NeuronDigitalConfig, halco::hicann_dls::v2::NeuronOnDLS>
 		m_neuron_digital_configs;
@@ -139,6 +145,57 @@ private:
 	CommonNeuronConfig m_neuron_config;
 	CorrelationConfig m_correlation_config;
 };
+
+namespace detail {
+
+template <>
+struct VisitPreorderImpl<Chip> {
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+		ContainerT& config, halco::common::Unique const& coord, VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::v2;
+
+		visitor(coord, config);
+
+		// No std::forward for visitor argument, as we want to pass a reference to the
+		// nested visitor in any case, even if it was passed as an rvalue to this function.
+
+		halco::common::Unique const unique;
+
+		// CommonSynramConfig _has_ to be configured before attempting changes to the synram.
+		visit_preorder(config.m_synram_config, unique, visitor);
+
+		for (auto const neuron : iter_all<NeuronOnDLS>()) {
+			visit_preorder(config.m_neuron_digital_configs[neuron], neuron, visitor);
+		}
+
+		for (auto const synapse_block : iter_all<SynapseBlockOnDLS>()) {
+			visit_preorder(config.m_synapse_blocks[synapse_block], synapse_block, visitor);
+		}
+
+		for (auto const column_block : iter_all<ColumnBlockOnDLS>()) {
+			visit_preorder(config.m_correlation_blocks[column_block], column_block, visitor);
+		}
+
+		for (auto const column_block : iter_all<ColumnBlockOnDLS>()) {
+			visit_preorder(config.m_current_blocks[column_block], column_block, visitor);
+		}
+
+		visit_preorder(config.m_capmem, unique, visitor);
+		visit_preorder(config.m_ppu_memory, unique, visitor);
+		visit_preorder(config.m_ppu_control_register, unique, visitor);
+		visit_preorder(config.m_ppu_status_register, unique, visitor);
+		visit_preorder(config.m_rate_counter, unique, visitor);
+		visit_preorder(config.m_synapse_drivers, unique, visitor);
+		visit_preorder(config.m_capmem_config, unique, visitor);
+		visit_preorder(config.m_neuron_config, unique, visitor);
+		visit_preorder(config.m_correlation_config, unique, visitor);
+	}
+};
+
+} // namespace detail
 
 } // namespace v2
 } // namespace container

@@ -83,6 +83,24 @@ void CapMemCell::set_value(CapMemCell::Value const& value)
 	m_value = value;
 }
 
+std::array<hardware_address_type, CapMemCell::config_size_in_words> CapMemCell::addresses(coordinate_type const& cell) const
+{
+	hardware_address_type constexpr base_address = 0x18000000;
+	hardware_address_type constexpr row_stride = 32;
+	return {{static_cast<hardware_address_type>(
+		base_address + row_stride * cell.toCapMemColumnOnDLS() + cell.toCapMemRowOnDLS())}};
+}
+
+std::array<hardware_word_type, CapMemCell::config_size_in_words> CapMemCell::encode() const
+{
+	return {{static_cast<hardware_word_type>(get_value())}};
+}
+
+void CapMemCell::decode(std::array<hardware_word_type, CapMemCell::config_size_in_words> const& data)
+{
+	set_value(Value(data[0]));
+}
+
 bool CapMemCell::operator==(CapMemCell const& other) const
 {
 	return m_value == other.get_value();

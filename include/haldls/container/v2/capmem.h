@@ -6,6 +6,7 @@
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "haldls/common/visibility.h"
+#include "haldls/container/v2/common.h"
 
 namespace haldls {
 namespace container {
@@ -14,6 +15,9 @@ namespace v2 {
 class CapMemCell
 {
 public:
+	typedef halco::hicann_dls::v2::CapMemCellOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct Value
 		: public halco::common::detail::RantWrapper<Value, uint_fast16_t, 1023, 0>
 	{
@@ -26,6 +30,11 @@ public:
 	Value get_value() const HALDLS_VISIBLE;
 	void set_value(Value const& value) HALDLS_VISIBLE;
 
+	static size_t constexpr config_size_in_words = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& cell) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+
 	bool operator==(CapMemCell const& other) const HALDLS_VISIBLE;
 	bool operator!=(CapMemCell const& other) const HALDLS_VISIBLE;
 
@@ -36,6 +45,9 @@ private:
 class CapMem
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::false_type has_local_data;
+
 	/// \brief Default constructor, yielding safe default values.
 	CapMem() HALDLS_VISIBLE;
 
@@ -58,6 +70,8 @@ public:
 	bool operator==(CapMem const& other) const HALDLS_VISIBLE;
 	bool operator!=(CapMem const& other) const HALDLS_VISIBLE;
 
+	friend detail::VisitPreorderImpl<CapMem>;
+
 private:
 	halco::common::typed_array<CapMemCell, halco::hicann_dls::v2::CapMemCellOnDLS> m_capmem_cells;
 };
@@ -66,6 +80,9 @@ private:
 class CommonCapMemConfig
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct OutAmpBias
 		: public halco::common::detail::RantWrapper<OutAmpBias, uint_fast16_t, 15, 0>
 	{
@@ -245,6 +262,28 @@ private:
 	BoostA m_boost_a;
 	BoostB m_boost_b;
 };
+
+namespace detail {
+
+template <>
+struct VisitPreorderImpl<CapMem> {
+	template <typename ContainerT, typename VisitorT>
+	static void call(ContainerT& config, halco::common::Unique const& coord, VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::v2;
+
+		visitor(coord, config);
+
+		for (auto const cell : iter_all<CapMemCellOnDLS>()) {
+			// No std::forward for visitor argument, as we want to pass a reference to the
+			// nested visitor in any case, even if it was passed as an rvalue to this function.
+			visit_preorder(config.m_capmem_cells[cell], cell, visitor);
+		}
+	}
+};
+
+} // namespace detail
 
 } // namespace v2
 } // namespace container

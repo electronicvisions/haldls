@@ -14,6 +14,9 @@ namespace v2 {
 class CommonSynramConfig
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct PCConf : public halco::common::detail::RantWrapper<PCConf, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit PCConf(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
@@ -50,6 +53,9 @@ private:
 class SynapseBlock
 {
 public:
+	typedef halco::hicann_dls::v2::SynapseBlockOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	/// \brief Single synapse containing a 6 bit weight and address.
 	/// For each synapse, individual calibration bits can control the STDP time constant
 	/// and amplitude and may be used to compensate the synapse-to-synapse variations of
@@ -125,6 +131,9 @@ private:
 class ColumnCorrelationBlock
 {
 public:
+	typedef halco::hicann_dls::v2::ColumnBlockOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct ColumnCorrelationSwitch
 	{
 		enum class Config : uint_fast8_t
@@ -173,6 +182,9 @@ private:
 class ColumnCurrentBlock
 {
 public:
+	typedef halco::hicann_dls::v2::ColumnBlockOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct ColumnCurrentSwitch
 	{
 		enum class Config : uint_fast8_t
@@ -221,6 +233,9 @@ private:
 class SynapseDrivers
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct PulseLength
 		: public halco::common::detail::RantWrapper<PulseLength, uint_fast16_t, 31, 0>
 	{

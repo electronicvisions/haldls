@@ -13,6 +13,9 @@ namespace v2 {
 class CorrelationConfig
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct Delay
 		: public halco::common::detail::RantWrapper<Delay, uint_fast16_t, 4095, 0>
 	{

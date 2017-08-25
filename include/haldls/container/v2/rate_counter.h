@@ -12,6 +12,9 @@ namespace v2 {
 class RateCounter
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct Count
 		: public halco::common::detail::RantWrapper<Count, uint_fast16_t, 1023, 0>
 	{

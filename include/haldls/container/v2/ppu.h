@@ -6,6 +6,7 @@
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "haldls/common/visibility.h"
+#include "haldls/container/v2/common.h"
 
 namespace haldls {
 namespace container {
@@ -14,6 +15,9 @@ namespace v2 {
 class PPUMemoryWord
 {
 public:
+	typedef halco::hicann_dls::v2::PPUMemoryWordOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct Value
 		: public halco::common::detail::RantWrapper<Value, uint_fast32_t, 0xffffffff, 0>
 	{
@@ -36,6 +40,9 @@ private:
 class PPUMemory
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::false_type has_local_data;
+
 	typedef std::array<PPUMemoryWord, halco::hicann_dls::v2::PPUMemoryWordOnDLS::size>
 		words_type;
 
@@ -52,6 +59,8 @@ public:
 	bool operator==(PPUMemory const& other) const HALDLS_VISIBLE;
 	bool operator!=(PPUMemory const& other) const HALDLS_VISIBLE;
 
+	friend detail::VisitPreorderImpl<PPUMemory>;
+
 private:
 	words_type m_words;
 };
@@ -59,6 +68,9 @@ private:
 class PPUControlRegister
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	PPUControlRegister() HALDLS_VISIBLE;
 
 	bool get_inhibit_reset() const HALDLS_VISIBLE;
@@ -86,6 +98,9 @@ private:
 class PPUStatusRegister
 {
 public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	PPUStatusRegister() HALDLS_VISIBLE;
 
 	// Read only property
@@ -97,6 +112,28 @@ public:
 private:
 	bool m_sleep;
 };
+
+namespace detail {
+
+template <>
+struct VisitPreorderImpl<PPUMemory> {
+	template <typename ContainerT, typename VisitorT>
+	static void call(ContainerT& config, halco::common::Unique const& coord, VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::v2;
+
+		visitor(coord, config);
+
+		for (auto const word : iter_all<PPUMemoryWordOnDLS>()) {
+			// No std::forward for visitor argument, as we want to pass a reference to the
+			// nested visitor in any case, even if it was passed as an rvalue to this function.
+			visit_preorder(config.m_words[word], word, visitor);
+		}
+	}
+};
+
+} // namespace detail
 
 } // namespace v2
 } // namespace container
