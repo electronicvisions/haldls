@@ -236,6 +236,12 @@ public:
 	BoostB get_boost_b() const HALDLS_VISIBLE;
 	void set_boost_b(BoostB const& value) HALDLS_VISIBLE;
 
+	static size_t constexpr config_size_in_words = 10;
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& unique) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+
 	bool operator==(CommonCapMemConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(CommonCapMemConfig const& other) const HALDLS_VISIBLE;
 

@@ -268,3 +268,63 @@ TEST(CommonCapMemConfig, General)
 	ASSERT_NE(config, config_ne);
 	ASSERT_FALSE(config != config_eq);
 }
+
+
+TEST(CommonCapMemConfig, EncodeDecode)
+{
+	CommonCapMemConfig config;
+	config.set_enable_capmem(true);
+	config.set_debug_readout_enable(true);
+	config.set_debug_capmem_coord(CapMemCellOnDLS(Enum(10)));
+	config.set_debug_v_ref_select(CommonCapMemConfig::VRefSelect::v_ref_i);
+	config.set_debug_i_out_select(CommonCapMemConfig::IOutSelect::i_out_ramp);
+	config.set_debug_out_amp_bias(CommonCapMemConfig::OutAmpBias(8));
+	config.set_debug_source_follower_bias(CommonCapMemConfig::SourceFollowerBias(9));
+	config.set_debug_level_shifter_bias(CommonCapMemConfig::LevelShifterBias(10));
+	config.set_v_global_bias(CommonCapMemConfig::VGlobalBias(9));
+	config.set_current_cell_res(CommonCapMemConfig::CurrentCellRes(23));
+	config.set_boost_factor(CommonCapMemConfig::BoostFactor(6));
+	config.set_enable_boost(true);
+	config.set_enable_autoboost(true);
+	config.set_prescale_pause(CommonCapMemConfig::PrescalePause(6));
+	config.set_prescale_ramp(CommonCapMemConfig::PrescaleRamp(2));
+	config.set_sub_counter(CommonCapMemConfig::SubCounter(16));
+	config.set_pause_counter(CommonCapMemConfig::PauseCounter(18));
+	config.set_pulse_a(CommonCapMemConfig::PulseA(15));
+	config.set_pulse_b(CommonCapMemConfig::PulseB(123));
+	config.set_boost_a(CommonCapMemConfig::BoostA(13));
+	config.set_boost_b(CommonCapMemConfig::BoostB(134));
+
+	Unique coord;
+	std::array<hardware_address_type, 10> ref_addresses = {
+		{0x18010000, 0x18010001, 0x18010002, 0x18010003, 0x18010004, 0x18010005, 0x18010006,
+		 0x18010007, 0x18010008, 0x18010009}};
+	EXPECT_EQ(ref_addresses, config.addresses(coord));
+
+	std::array<hardware_word_type, 10> ref_data = {
+		{0x1, 0xa, 0x2, 0x000089A9, 0x17, 0x2, 0x66270010, 0x000F007B, 0x000D0086, 0x12}};
+	EXPECT_EQ(ref_data, config.encode());
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(
+			config, coord, haldls::io::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(
+			config, coord, haldls::io::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, haldls::io::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	CommonCapMemConfig config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
