@@ -219,7 +219,8 @@ bool NeuronDigitalConfig::get_enable_external_current_input() const
 	return m_external_current_input;
 }
 
-void NeuronDigitalConfig::set_enable_external_current_input(bool value, const common::Passkey<Chip>& /*passkey*/)
+void NeuronDigitalConfig::set_enable_external_current_input(
+	bool value, common::Passkey<Chip, io::v2::PlaybackProgram> const& /*passkey*/)
 {
 	m_external_current_input = value;
 }
@@ -229,7 +230,8 @@ bool NeuronDigitalConfig::get_enable_external_voltage_output() const
 	return m_external_voltage_output;
 }
 
-void NeuronDigitalConfig::set_enable_external_voltage_output(bool value, const common::Passkey<Chip>& /*passkey*/)
+void NeuronDigitalConfig::set_enable_external_voltage_output(
+	bool value, common::Passkey<Chip, io::v2::PlaybackProgram> const& /*passkey*/)
 {
 	m_external_voltage_output = value;
 }

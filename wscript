@@ -4,7 +4,8 @@ from subprocess import check_output, CalledProcessError
 def depends(ctx):
     ctx('logger')
     ctx('halco')
-
+    ctx('uni')
+    ctx('frickel-dls')
 
 def options(opt):
     opt.load('compiler_cxx')
@@ -35,10 +36,26 @@ def build(bld):
     )
 
     bld.shlib(
+        target = 'haldls_common',
+        source = bld.path.ant_glob('src/common/*.cpp'),
+        install_path = '${PREFIX}/lib',
+        use = ['haldls_inc', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
+        uselib = 'HALDLS_LIBRARIES',
+    )
+
+    bld.shlib(
         target = 'haldls_container_v2',
         source = bld.path.ant_glob('src/container/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['haldls_inc', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2', 'bitter'],
+        use = ['haldls_common', 'bitter'],
+        uselib = 'HALDLS_LIBRARIES',
+    )
+
+    bld.shlib(
+        target = 'haldls_io_v2',
+        source = bld.path.ant_glob('src/io/v2/*.cpp'),
+        install_path = '${PREFIX}/lib',
+        use = ['haldls_common','uni', 'frickel_dls'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
@@ -48,4 +65,18 @@ def build(bld):
         source = bld.path.ant_glob('tests/container/v2/test-*.cpp'),
         use = ['haldls_container_v2', 'GMOCK4HALDLS', 'GTEST'],
         install_path = '${PREFIX}/bin',
+    )
+
+    bld(
+        target = 'haldls_io_v2_tests',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/io/v2/hwtest-*.cpp'),
+        use = [
+            'haldls_container_v2',
+            'haldls_io_v2',
+            'GMOCK4HALDLS',
+            'GTEST',
+        ],
+        install_path = '${PREFIX}/bin',
+        skip_run = True,
     )

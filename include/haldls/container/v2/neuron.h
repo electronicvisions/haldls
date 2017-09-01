@@ -9,6 +9,12 @@
 #include "haldls/container/v2/common.h"
 
 namespace haldls {
+namespace io {
+namespace v2 {
+class PlaybackProgram;
+} // namespace v2
+} // namespace io
+
 namespace container {
 namespace v2 {
 
@@ -106,7 +112,9 @@ public:
 	///       this setting is disabled for single neurons.
 	/// \see Chip::enable_external_current_input() and
 	///      Chip::disable_external_current_input().
-	void set_enable_external_current_input(bool const value, common::Passkey<Chip> const& passkey) HALDLS_VISIBLE;
+	void set_enable_external_current_input(
+		bool const value,
+		common::Passkey<Chip, io::v2::PlaybackProgram> const& passkey) HALDLS_VISIBLE;
 
 	bool get_enable_external_voltage_output() const HALDLS_VISIBLE;
 
@@ -115,7 +123,9 @@ public:
 	///       setting is disabled for single neurons.
 	/// \see Chip::enable_external_voltage_output() and
 	///      Chip::disable_external_voltage_output().
-	void set_enable_external_voltage_output(bool const value, common::Passkey<Chip> const& passkey) HALDLS_VISIBLE;
+	void set_enable_external_voltage_output(
+		bool const value,
+		common::Passkey<Chip, io::v2::PlaybackProgram> const& passkey) HALDLS_VISIBLE;
 
 	bool operator==(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
