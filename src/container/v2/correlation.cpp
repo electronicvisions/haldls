@@ -48,6 +48,24 @@ bool CorrelationConfig::operator!=(CorrelationConfig const& other) const
 	return !(*this == other);
 }
 
+std::array<hardware_address_type, CorrelationConfig::config_size_in_words>
+CorrelationConfig::addresses(coordinate_type const& /*unique*/) const
+{
+	return {{0x0c000000, 0x0C000001, 0x0C000002}};
+}
+
+std::array<hardware_word_type, CorrelationConfig::config_size_in_words> CorrelationConfig::encode()
+	const
+{
+	return {{m_sense_delay, m_reset_delay_1, m_reset_delay_2}};
+}
+
+void CorrelationConfig::decode(std::array<hardware_word_type, config_size_in_words> const& data) {
+	m_sense_delay = Delay(data[0]);
+	m_reset_delay_1 = Delay(data[1]);
+	m_reset_delay_2 = Delay(data[2]);
+}
+
 } // namespace v2
 } // namespace container
 } // namespace haldls
