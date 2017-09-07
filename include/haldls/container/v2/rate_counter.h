@@ -4,6 +4,7 @@
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "haldls/common/visibility.h"
+#include "haldls/container/v2/common.h"
 
 namespace haldls {
 namespace container {
@@ -37,6 +38,12 @@ public:
 
 	bool operator==(RateCounter const& other) const HALDLS_VISIBLE;
 	bool operator!=(RateCounter const& other) const HALDLS_VISIBLE;
+
+	static size_t constexpr config_size_in_words = halco::hicann_dls::v2::NeuronOnDLS::size + 2;
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& unique) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
 
 private:
 	halco::common::typed_array<Count, halco::hicann_dls::v2::NeuronOnDLS> m_counts;
