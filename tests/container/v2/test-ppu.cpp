@@ -1,10 +1,15 @@
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "haldls/container/v2/ppu.h"
+#include "haldls/io/visitors.h"
 
 using namespace haldls::container::v2;
 using namespace halco::hicann_dls::v2;
 using namespace halco::common;
+
+typedef std::vector<hardware_address_type> addresses_type;
+typedef std::vector<hardware_word_type> words_type;
 
 TEST(PPUMemoryWord, General)
 {
@@ -28,6 +33,40 @@ TEST(PPUMemoryWord, General)
 	ASSERT_FALSE(word != word_eq);
 }
 
+TEST(PPUMemoryWord, EncodeDecode)
+{
+	PPUMemoryWord config;
+
+	config.set_value(PPUMemoryWord::Value(555));
+
+	PPUMemoryWordOnDLS coord(0x123);
+
+	std::array<hardware_address_type, PPUMemoryWord::config_size_in_words> ref_addresses = {{0x123ul}};
+	std::array<hardware_word_type, PPUMemoryWord::config_size_in_words> ref_data = {{555ul}};
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(
+			config, coord, haldls::io::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(
+			config, coord, haldls::io::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, haldls::io::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	PPUMemoryWord config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
 
 TEST(PPUMemory, General)
 {
@@ -53,6 +92,53 @@ TEST(PPUMemory, General)
 	ASSERT_EQ(memory_eq, memory);
 	memory_ne.set_word(PPUMemoryWordOnDLS(14), PPUMemoryWord(PPUMemoryWord::Value(0x43u)));
 	ASSERT_NE(memory_ne, memory);
+}
+
+TEST(PPUMemory, EncodeDecode)
+{
+	PPUMemory config;
+
+	Unique coord;
+
+	PPUMemory::words_type memory{{}};
+
+	std::array<hardware_address_type, halco::hicann_dls::v2::PPUMemoryWordOnDLS::size>
+		ref_addresses{{}};
+	std::array<hardware_word_type, halco::hicann_dls::v2::PPUMemoryWordOnDLS::size> ref_data{{}};
+
+	ASSERT_EQ(ref_addresses.size(), memory.size());
+	ASSERT_EQ(ref_data.size(), memory.size());
+
+	for (size_t ii = 0; ii < memory.size(); ++ii) {
+		ref_addresses[ii] = ii;
+		ref_data[ii] = 50 + ii;
+		memory[ii].set_value(PPUMemoryWord::Value(ref_data[ii]));
+	}
+
+	config.set_words(memory);
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(
+			config, coord, haldls::io::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(
+			config, coord, haldls::io::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, haldls::io::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	PPUMemory config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
 }
 
 TEST(PPUControlRegister, General)
@@ -82,4 +168,79 @@ TEST(PPUControlRegister, General)
 	ASSERT_FALSE(register_ne == ppu_control_register);
 	ASSERT_NE(register_ne, ppu_control_register);
 	ASSERT_FALSE(register_eq != ppu_control_register);
+}
+
+TEST(PPUControlRegister, EncodeDecode)
+{
+	PPUControlRegister config;
+
+	config.set_inhibit_reset(true);
+	config.set_force_clock_on(false);
+	config.set_force_clock_off(true);
+
+	Unique coord;
+
+	std::array<hardware_address_type, PPUControlRegister::config_size_in_words> ref_addresses = {{0x20000ul}};
+	std::array<hardware_word_type, PPUControlRegister::config_size_in_words> ref_data = {{0b0101ul}};
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(
+			config, coord, haldls::io::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(
+			config, coord, haldls::io::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, haldls::io::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	PPUControlRegister config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(PPUStatusRegister, EncodeDecode)
+{
+	PPUStatusRegister config;
+
+	Unique coord;
+
+	std::array<hardware_address_type, PPUStatusRegister::config_size_in_words> ref_addresses = {{0x20001ul}};
+	std::array<hardware_word_type, PPUStatusRegister::config_size_in_words> ref_data = {{0b0ul}};
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(
+			config, coord, haldls::io::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(
+			config, coord, haldls::io::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, haldls::io::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	PPUStatusRegister config_copy;
+	visit_preorder(config_copy, coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+	ASSERT_FALSE(config_copy.get_sleep());
+
+	data.clear();
+	data.push_back(0b1ul);
+	visit_preorder(config_copy, coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_TRUE(config_copy.get_sleep());
 }

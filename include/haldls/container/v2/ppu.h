@@ -33,6 +33,11 @@ public:
 	bool operator==(PPUMemoryWord const& other) const HALDLS_VISIBLE;
 	bool operator!=(PPUMemoryWord const& other) const HALDLS_VISIBLE;
 
+	static size_t constexpr config_size_in_words = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& word) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+
 private:
 	Value m_value;
 };
@@ -89,6 +94,11 @@ public:
 	bool operator==(PPUControlRegister const& other) const HALDLS_VISIBLE;
 	bool operator!=(PPUControlRegister const& other) const HALDLS_VISIBLE;
 
+	static size_t constexpr config_size_in_words = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& unique) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+
 private:
 	bool m_inhibit_reset;
 	bool m_force_clock_on;
@@ -108,6 +118,11 @@ public:
 
 	bool operator==(PPUStatusRegister const& other) const HALDLS_VISIBLE;
 	bool operator!=(PPUStatusRegister const& other) const HALDLS_VISIBLE;
+
+	static size_t constexpr config_size_in_words = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& unique) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
 
 private:
 	bool m_sleep;

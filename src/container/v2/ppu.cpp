@@ -30,6 +30,21 @@ bool PPUMemoryWord::operator!=(PPUMemoryWord const& other) const
 	return !(*this == other);
 }
 
+std::array<hardware_address_type, PPUMemoryWord::config_size_in_words> PPUMemoryWord::addresses(coordinate_type const& word) const
+{
+	return {{static_cast<hardware_address_type>(word)}};
+}
+
+std::array<hardware_word_type, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
+{
+	return {{static_cast<hardware_word_type>(get_value())}};
+}
+
+void PPUMemoryWord::decode(std::array<hardware_word_type, PPUMemoryWord::config_size_in_words> const& data)
+{
+	set_value(Value(data[0]));
+}
+
 PPUMemory::PPUMemory() : m_words() {}
 
 PPUMemory::PPUMemory(words_type const& words) : m_words(words) {}
@@ -111,6 +126,55 @@ bool PPUControlRegister::operator!=(PPUControlRegister const& other) const
 	return !(*this == other);
 }
 
+namespace {
+
+struct PPUControlRegisterBitfield {
+	union {
+		hardware_word_type raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			hardware_word_type inhibit_reset   :  1; // 0
+			hardware_word_type force_clock_on  :  1; // 1
+			hardware_word_type force_clock_off :  1; // 2
+			hardware_word_type                 : 29; // 3-32
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	PPUControlRegisterBitfield() {
+		u.raw = 0u;
+	}
+
+	PPUControlRegisterBitfield(hardware_word_type data) {
+		u.raw = data & 0b0111ul;
+	}
+};
+
+} // namespace
+
+std::array<hardware_address_type, PPUControlRegister::config_size_in_words> PPUControlRegister::addresses(coordinate_type const& /*unique*/) const
+{
+	return {{0x00020000ul}};
+}
+
+std::array<hardware_word_type, PPUControlRegister::config_size_in_words> PPUControlRegister::encode() const
+{
+	PPUControlRegisterBitfield bitfield;
+	bitfield.u.m.inhibit_reset = m_inhibit_reset;
+	bitfield.u.m.force_clock_on = m_force_clock_on;
+	bitfield.u.m.force_clock_off = m_force_clock_off;
+	return {{bitfield.u.raw}};
+}
+
+void PPUControlRegister::decode(std::array<hardware_word_type, PPUControlRegister::config_size_in_words> const& data)
+{
+	PPUControlRegisterBitfield bitfield(data[0]);
+	m_inhibit_reset = bitfield.u.m.inhibit_reset;
+	m_force_clock_on = bitfield.u.m.force_clock_on;
+	m_force_clock_off = bitfield.u.m.force_clock_off;
+}
+
 PPUStatusRegister::PPUStatusRegister() : m_sleep(false) {}
 
 bool PPUStatusRegister::get_sleep() const
@@ -126,6 +190,21 @@ bool PPUStatusRegister::operator==(PPUStatusRegister const& other) const
 bool PPUStatusRegister::operator!=(PPUStatusRegister const& other) const
 {
 	return !(*this == other);
+}
+
+std::array<hardware_address_type, PPUStatusRegister::config_size_in_words> PPUStatusRegister::addresses(coordinate_type const& /*unique*/) const
+{
+	return {{0x00020001ul}};
+}
+
+std::array<hardware_word_type, PPUStatusRegister::config_size_in_words> PPUStatusRegister::encode() const
+{
+	return {{m_sleep}};
+}
+
+void PPUStatusRegister::decode(std::array<hardware_word_type, PPUStatusRegister::config_size_in_words> const& data)
+{
+	m_sleep = bool(data[0]);
 }
 
 } // namespace v2
