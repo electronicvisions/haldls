@@ -66,6 +66,60 @@ bool CommonNeuronConfig::operator!=(CommonNeuronConfig const& b) const
 	return !(*this == b);
 }
 
+namespace {
+
+struct CommonNeuronConfigBitfield {
+	union {
+		hardware_word_type raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			hardware_word_type digital_out                    :  1; // 0
+			hardware_word_type post_correlation_signal_length :  4; // 1 - 4
+			hardware_word_type external_correlation_signal    :  1; // 5
+			hardware_word_type inhibit_spike_comparator       :  1; // 6
+			hardware_word_type                                : 25;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	CommonNeuronConfigBitfield() {
+		u.raw = 0u;
+	}
+
+	CommonNeuronConfigBitfield(hardware_word_type data) {
+		u.raw = data & 0b0111'1111ul;
+	}
+};
+
+} // namespace
+
+std::array<hardware_address_type, CommonNeuronConfig::config_size_in_words> CommonNeuronConfig::addresses(halco::common::Unique const& /*unique*/) const
+{
+	return {{0x1a000000}};
+}
+
+std::array<hardware_word_type, CommonNeuronConfig::config_size_in_words> CommonNeuronConfig::encode() const
+{
+	CommonNeuronConfigBitfield bitfield;
+	bitfield.u.m.digital_out = m_digital_out;
+	bitfield.u.m.post_correlation_signal_length = m_post_correlation_signal_length;
+	bitfield.u.m.external_correlation_signal = m_external_correlation_signal;
+	bitfield.u.m.inhibit_spike_comparator = m_inhibit_spike_comparator;
+	return {{bitfield.u.raw}};
+}
+
+void CommonNeuronConfig::decode(std::array<hardware_word_type, CommonNeuronConfig::config_size_in_words> const& data)
+{
+	CommonNeuronConfigBitfield bitfield(data[0]);
+
+	m_digital_out = bitfield.u.m.digital_out;
+	m_post_correlation_signal_length =
+		PostCorrelationSignalLength(bitfield.u.m.post_correlation_signal_length);
+	m_external_correlation_signal = bitfield.u.m.external_correlation_signal;
+	m_inhibit_spike_comparator = bitfield.u.m.inhibit_spike_comparator;
+}
+
 NeuronDigitalConfig::NeuronDigitalConfig()
 	: m_synapse_input_exc(false),
 	  m_synapse_input_inh(false),
@@ -200,6 +254,84 @@ bool NeuronDigitalConfig::operator==(NeuronDigitalConfig const& other) const
 bool NeuronDigitalConfig::operator!=(NeuronDigitalConfig const& other) const
 {
 	return !(*this == other);
+}
+
+namespace {
+
+struct NeuronDigitalConfigBitfield {
+	union {
+		hardware_word_type raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			hardware_word_type                         :  1; // 0
+			hardware_word_type fire_out_mode           :  2; // 1, 2
+			hardware_word_type                         :  1; // 3
+			hardware_word_type synapse_input_exc       :  1; // 4
+			hardware_word_type synapse_input_inh       :  1; // 5
+			hardware_word_type leak_high_conductance   :  1; // 6
+			hardware_word_type external_current_input  :  1; // 7
+			hardware_word_type external_voltage_output :  1; // 8
+			hardware_word_type                         :  1; // 9
+			hardware_word_type leak                    :  1; // 10
+			hardware_word_type                         :  1; // 11
+			hardware_word_type                         :  1; // 12
+			hardware_word_type                         :  1; // 13
+			hardware_word_type mux_readout_mode        :  2; // 14, 15
+			hardware_word_type bigcap                  :  1; // 16
+			hardware_word_type smallcap                :  1; // 17
+			hardware_word_type                         : 14; // 18-32
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	NeuronDigitalConfigBitfield() {
+		u.raw = 0u;
+	}
+
+	NeuronDigitalConfigBitfield(hardware_word_type data) {
+		u.raw = data & 0b0011'1100'0101'1111'0110ul;
+	}
+};
+
+} // namespace
+
+std::array<hardware_address_type, NeuronDigitalConfig::config_size_in_words> NeuronDigitalConfig::addresses(
+	coordinate_type const& neuron) const
+{
+	hardware_word_type constexpr base_address = 0x1a000001;
+	return {{static_cast<hardware_address_type>(base_address + neuron)}};
+}
+
+std::array<hardware_word_type, NeuronDigitalConfig::config_size_in_words> NeuronDigitalConfig::encode() const
+{
+	NeuronDigitalConfigBitfield bitfield;
+	bitfield.u.m.synapse_input_exc = m_synapse_input_exc;
+	bitfield.u.m.synapse_input_inh = m_synapse_input_inh;
+	bitfield.u.m.leak_high_conductance = m_leak_high_conductance;
+	bitfield.u.m.leak = m_leak;
+	bitfield.u.m.bigcap = m_bigcap;
+	bitfield.u.m.smallcap = m_smallcap;
+	bitfield.u.m.fire_out_mode = static_cast<hardware_word_type>(m_fire_out_mode);
+	bitfield.u.m.mux_readout_mode = static_cast<hardware_word_type>(m_mux_readout_mode);
+	bitfield.u.m.external_current_input = m_external_current_input;
+	bitfield.u.m.external_voltage_output = m_external_voltage_output;
+	return {{bitfield.u.raw}};
+}
+
+void NeuronDigitalConfig::decode(std::array<hardware_word_type, NeuronDigitalConfig::config_size_in_words> const& data)
+{
+	NeuronDigitalConfigBitfield bitfield(data[0]);
+	m_synapse_input_exc = bitfield.u.m.synapse_input_exc;
+	m_synapse_input_inh = bitfield.u.m.synapse_input_inh;
+	m_leak_high_conductance = bitfield.u.m.leak_high_conductance;
+	m_leak = bitfield.u.m.leak;
+	m_bigcap = bitfield.u.m.bigcap;
+	m_smallcap = bitfield.u.m.smallcap;
+	m_fire_out_mode = FireOutMode(bitfield.u.m.fire_out_mode);
+	m_mux_readout_mode = MuxReadoutMode(bitfield.u.m.mux_readout_mode);
+	m_external_current_input = bitfield.u.m.external_current_input;
+	m_external_voltage_output = bitfield.u.m.external_voltage_output;
 }
 
 } // namespace v2

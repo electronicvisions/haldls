@@ -6,6 +6,7 @@
 
 #include "haldls/common/passkey.h"
 #include "haldls/common/visibility.h"
+#include "haldls/container/v2/common.h"
 
 namespace haldls {
 namespace container {
@@ -41,6 +42,11 @@ public:
 
 	bool operator==(CommonNeuronConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(CommonNeuronConfig const& other) const HALDLS_VISIBLE;
+
+	static size_t constexpr config_size_in_words = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& unique) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
 
 private:
 	bool m_digital_out;
@@ -113,6 +119,11 @@ public:
 
 	bool operator==(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
+
+	static size_t constexpr config_size_in_words = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& neurn) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
 
 private:
 	bool m_synapse_input_exc;
