@@ -6,6 +6,7 @@
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "haldls/common/visibility.h"
+#include "haldls/container/v2/common.h"
 
 namespace haldls {
 namespace container {
@@ -39,6 +40,13 @@ public:
 	void set_w_conf(WConf const& value) HALDLS_VISIBLE;
 	WaitCtrClear get_wait_ctr_clear() const HALDLS_VISIBLE;
 	void set_wait_ctr_clear(WaitCtrClear const& value) HALDLS_VISIBLE;
+
+	static size_t constexpr config_size_in_words = 3;
+
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const&) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
 
 	bool operator==(CommonSynramConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(CommonSynramConfig const& other) const HALDLS_VISIBLE;
@@ -121,6 +129,13 @@ public:
 		halco::hicann_dls::v2::SynapseOnSynapseBlock const& synapse,
 		Synapse const& value) HALDLS_VISIBLE;
 
+	static size_t constexpr config_size_in_words = 2;
+
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& coord) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+
 	bool operator==(SynapseBlock const& other) const HALDLS_VISIBLE;
 	bool operator!=(SynapseBlock const& other) const HALDLS_VISIBLE;
 
@@ -168,6 +183,13 @@ public:
 	void set_switch(
 		halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock const& correlation_switch,
 		ColumnCorrelationSwitch const& value) HALDLS_VISIBLE;
+
+	static size_t constexpr config_size_in_words = 2;
+
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& coord) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
 
 	bool operator==(ColumnCorrelationBlock const& other) const HALDLS_VISIBLE;
 	bool operator!=(ColumnCorrelationBlock const& other) const HALDLS_VISIBLE;
@@ -220,6 +242,13 @@ public:
 		halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock const& current_switch,
 		ColumnCurrentSwitch const& value) HALDLS_VISIBLE;
 
+	static size_t constexpr config_size_in_words = 2;
+
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& coord) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+
 	bool operator==(ColumnCurrentBlock const& other) const HALDLS_VISIBLE;
 	bool operator!=(ColumnCurrentBlock const& other) const HALDLS_VISIBLE;
 
@@ -266,6 +295,13 @@ public:
 
 	bool operator==(SynapseDrivers const& other) const HALDLS_VISIBLE;
 	bool operator!=(SynapseDrivers const& other) const HALDLS_VISIBLE;
+
+	static hardware_address_type constexpr config_size_in_words = 3;
+
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& /*coord*/) const HALDLS_VISIBLE;
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
 
 private:
 	PulseLength m_pulse_length;

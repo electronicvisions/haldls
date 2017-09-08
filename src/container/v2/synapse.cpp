@@ -1,5 +1,7 @@
 #include "haldls/container/v2/synapse.h"
 
+#include "halco/common/iter_all.h"
+
 namespace haldls {
 namespace container {
 namespace v2 {
@@ -47,6 +49,28 @@ bool CommonSynramConfig::operator!=(CommonSynramConfig const& other) const
 	return !(*this == other);
 }
 
+std::array<hardware_address_type, CommonSynramConfig::config_size_in_words>
+CommonSynramConfig::addresses(CommonSynramConfig::coordinate_type const& /*coord*/) const
+{
+	hardware_address_type const pc_conf_addr = 0x08000000;
+	hardware_address_type const w_conf_addr = pc_conf_addr + 1;
+	hardware_address_type const wait_ctr_clear_addr = pc_conf_addr + 2;
+	return {{pc_conf_addr, w_conf_addr, wait_ctr_clear_addr}};
+}
+
+std::array<hardware_address_type, CommonSynramConfig::config_size_in_words>
+CommonSynramConfig::encode() const
+{
+	return {{m_pc_conf, m_w_conf, m_wait_ctr_clear}};
+}
+
+void CommonSynramConfig::decode(
+	std::array<hardware_word_type, CommonSynramConfig::config_size_in_words> const& data)
+{
+	m_pc_conf = PCConf(data.at(0));
+	m_w_conf = WConf(data.at(1));
+	m_wait_ctr_clear = WaitCtrClear(data.at(2));
+}
 
 SynapseBlock::Synapse::Synapse() : m_weight(0), m_address(0), m_time_calib(0), m_amp_calib(0) {}
 
@@ -125,6 +149,132 @@ bool SynapseBlock::operator!=(SynapseBlock const& other) const
 	return !(*this == other);
 }
 
+std::array<hardware_address_type, SynapseBlock::config_size_in_words> SynapseBlock::addresses(
+	SynapseBlock::coordinate_type const& coord) const
+{
+	using namespace halco::hicann_dls::v2;
+	hardware_address_type const base_address = 0x0001f000;
+	hardware_address_type const address_offset =
+		(coord.y() * NeuronOnDLS::size * config_size_in_words / SynapseOnSynapseBlock::size) +
+		coord.x();
+	return {
+		{base_address + address_offset,
+		 base_address + address_offset +
+			 static_cast<hardware_address_type>(NeuronOnDLS::size / SynapseOnSynapseBlock::size)}};
+}
+
+namespace {
+
+struct SynapseBlockBitfield
+{
+	union
+	{
+		std::array<hardware_word_type, SynapseBlock::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			hardware_word_type weight_3         : 6;
+			hardware_word_type time_calib_3     : 2;
+
+			hardware_word_type weight_2         : 6;
+			hardware_word_type time_calib_2     : 2;
+
+			hardware_word_type weight_1         : 6;
+			hardware_word_type time_calib_1     : 2;
+
+			hardware_word_type weight_0         : 6;
+			hardware_word_type time_calib_0     : 2;
+
+			hardware_word_type address_3        : 6;
+			hardware_word_type amp_calib_3      : 2;
+
+			hardware_word_type address_2        : 6;
+			hardware_word_type amp_calib_2      : 2;
+
+			hardware_word_type address_1        : 6;
+			hardware_word_type amp_calib_1      : 2;
+
+			hardware_word_type address_0        : 6;
+			hardware_word_type amp_calib_0      : 2;
+
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	SynapseBlockBitfield() { u.raw = {{0}}; }
+	SynapseBlockBitfield(
+		std::array<hardware_word_type, SynapseBlock::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+// FIXME: why is this magic trafo needed?
+hardware_word_type magic_weight_trafo(hardware_word_type const& weight)
+{
+	std::bitset<6> before(weight);
+	std::bitset<6> after;
+	after[5] = before[5];
+	after[4] = before[0];
+	after[3] = before[1];
+	after[2] = before[2];
+	after[1] = before[3];
+	after[0] = before[4];
+	return after.to_ulong();
+}
+
+} // namespace
+
+
+std::array<hardware_word_type, SynapseBlock::config_size_in_words> SynapseBlock::encode() const
+{
+	using namespace halco::hicann_dls::v2;
+	SynapseBlockBitfield bitfield;
+
+#define SYNAPSE_ENCODE(index)                                                                      \
+	{                                                                                              \
+		SynapseBlock::Synapse const& config = m_synapses.at(SynapseOnSynapseBlock(index));         \
+		bitfield.u.m.time_calib_##index = config.get_time_calib();                                 \
+		bitfield.u.m.weight_##index = magic_weight_trafo(config.get_weight());                     \
+		bitfield.u.m.amp_calib_##index = config.get_amp_calib();                                   \
+		bitfield.u.m.address_##index = config.get_address();                                       \
+	}
+
+	SYNAPSE_ENCODE(0)
+	SYNAPSE_ENCODE(1)
+	SYNAPSE_ENCODE(2)
+	SYNAPSE_ENCODE(3)
+#undef SYNAPSE_ENCODE
+
+	return bitfield.u.raw;
+}
+
+
+void SynapseBlock::decode(
+	std::array<hardware_word_type, SynapseBlock::config_size_in_words> const& data)
+{
+	using namespace halco::hicann_dls::v2;
+	SynapseBlockBitfield bitfield(data);
+
+#define SYNAPSE_DECODE(index)                                                                      \
+	{                                                                                              \
+		SynapseBlock::Synapse config;                                                              \
+		config.set_time_calib(SynapseBlock::Synapse::TimeCalib(bitfield.u.m.time_calib_##index));  \
+		config.set_weight(                                                                         \
+			SynapseBlock::Synapse::Weight(magic_weight_trafo(bitfield.u.m.weight_##index)));       \
+		config.set_amp_calib(SynapseBlock::Synapse::AmpCalib(bitfield.u.m.amp_calib_##index));     \
+		config.set_address(SynapseBlock::Synapse::Address(bitfield.u.m.address_##index));          \
+		m_synapses.at(SynapseOnSynapseBlock(index)) = config;                                      \
+	}
+
+	SYNAPSE_DECODE(0)
+	SYNAPSE_DECODE(1)
+	SYNAPSE_DECODE(2)
+	SYNAPSE_DECODE(3)
+#undef SYNAPSE_DECODE
+}
+
+
 ColumnCorrelationBlock::ColumnCorrelationSwitch::ColumnCorrelationSwitch()
 	: m_causal(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::disabled),
 	  m_acausal(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::disabled)
@@ -189,6 +339,126 @@ bool ColumnCorrelationBlock::operator==(ColumnCorrelationBlock const& other) con
 bool ColumnCorrelationBlock::operator!=(ColumnCorrelationBlock const& other) const
 {
 	return !(*this == other);
+}
+
+std::array<hardware_address_type, ColumnCorrelationBlock::config_size_in_words>
+ColumnCorrelationBlock::addresses(coordinate_type const& coord) const
+{
+	using namespace halco::hicann_dls::v2;
+	hardware_address_type const base_address = 0x0001f200 + 16;
+	auto const address = base_address + static_cast<hardware_address_type>(coord);
+	auto const offset =
+		static_cast<hardware_address_type>(NeuronOnDLS::size / SynapseOnSynapseBlock::size);
+	return {{address, address + offset}};
+}
+
+namespace {
+
+struct ColumnCorrelationBlockBitfield
+{
+	union
+	{
+		std::array<hardware_word_type, ColumnCorrelationBlock::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			hardware_word_type                  : 6;
+			hardware_word_type int_config_3     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type int_config_2     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type int_config_1     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type int_config_0     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type ext_config_3     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type ext_config_2     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type ext_config_1     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type ext_config_0     : 2;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ColumnCorrelationBlockBitfield() { u.raw = {{0}}; }
+	ColumnCorrelationBlockBitfield(
+		std::array<hardware_word_type, ColumnCorrelationBlock::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+
+std::array<hardware_word_type, ColumnCorrelationBlock::config_size_in_words>
+ColumnCorrelationBlock::encode() const
+{
+	using namespace halco::hicann_dls::v2;
+	ColumnCorrelationBlockBitfield bitfield;
+
+#define CORRELATION_ENCODE(index)                                                                  \
+	{                                                                                              \
+		ColumnCorrelationSwitch const& config =                                                    \
+			m_switches.at(ColumnCorrelationSwitchOnColumnBlock(index));                            \
+		if ((config.get_acausal_config() == ColumnCorrelationSwitch::Config::internal) ||          \
+			(config.get_acausal_config() == ColumnCorrelationSwitch::Config::readout))             \
+			bitfield.u.m.int_config_##index |= 0b10;                                               \
+		if ((config.get_acausal_config() == ColumnCorrelationSwitch::Config::external) ||          \
+			(config.get_acausal_config() == ColumnCorrelationSwitch::Config::readout))             \
+			bitfield.u.m.ext_config_##index |= 0b10;                                               \
+		if ((config.get_causal_config() == ColumnCorrelationSwitch::Config::internal) ||           \
+			(config.get_causal_config() == ColumnCorrelationSwitch::Config::readout))              \
+			bitfield.u.m.int_config_##index |= 0b01;                                               \
+		if ((config.get_causal_config() == ColumnCorrelationSwitch::Config::external) ||           \
+			(config.get_causal_config() == ColumnCorrelationSwitch::Config::readout))              \
+			bitfield.u.m.ext_config_##index |= 0b01;                                               \
+	}
+
+	CORRELATION_ENCODE(0);
+	CORRELATION_ENCODE(1);
+	CORRELATION_ENCODE(2);
+	CORRELATION_ENCODE(3);
+#undef CORRELATION_ENCODE
+
+	return bitfield.u.raw;
+}
+
+
+void ColumnCorrelationBlock::decode(
+	std::array<hardware_word_type, ColumnCorrelationBlock::config_size_in_words> const& data)
+{
+	using namespace halco::hicann_dls::v2;
+	ColumnCorrelationBlockBitfield bitfield(data);
+
+#define CORRELATION_DECODE(index)                                                                  \
+	{                                                                                              \
+		ColumnCorrelationSwitch config;                                                            \
+		hardware_word_type acausal =                                                               \
+			((bitfield.u.m.int_config_##index & 0b10) |                                            \
+			 ((bitfield.u.m.ext_config_##index & 0b10) >> 1));                                     \
+		hardware_word_type causal =                                                                \
+			(((bitfield.u.m.int_config_##index & 0b01) << 1) |                                     \
+			 (bitfield.u.m.ext_config_##index & 0b01));                                            \
+		config.set_acausal_config(ColumnCorrelationSwitch::Config(acausal));                       \
+		config.set_causal_config(ColumnCorrelationSwitch::Config(causal));                         \
+		m_switches.at(ColumnCorrelationSwitchOnColumnBlock(index)) = config;                       \
+	}
+
+	CORRELATION_DECODE(0)
+	CORRELATION_DECODE(1)
+	CORRELATION_DECODE(2)
+	CORRELATION_DECODE(3)
+#undef CORRELATION_DECODE
 }
 
 ColumnCurrentBlock::ColumnCurrentSwitch::ColumnCurrentSwitch()
@@ -257,6 +527,126 @@ bool ColumnCurrentBlock::operator!=(ColumnCurrentBlock const& other) const
 	return !(*this == other);
 }
 
+std::array<hardware_address_type, ColumnCurrentBlock::config_size_in_words>
+ColumnCurrentBlock::addresses(coordinate_type const& coord) const
+{
+	using namespace halco::hicann_dls::v2;
+	hardware_address_type const base_address = 0x0001f200;
+	auto const address = base_address + static_cast<hardware_address_type>(coord);
+	auto const offset =
+		static_cast<hardware_address_type>(NeuronOnDLS::size / SynapseOnSynapseBlock::size);
+	return {{address, address + offset}};
+}
+
+namespace {
+
+struct ColumnCurrentBlockBitfield
+{
+	union
+	{
+		std::array<hardware_word_type, ColumnCurrentBlock::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			hardware_word_type                  : 6;
+			hardware_word_type int_config_3     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type int_config_2     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type int_config_1     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type int_config_0     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type ext_config_3     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type ext_config_2     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type ext_config_1     : 2;
+
+			hardware_word_type                  : 6;
+			hardware_word_type ext_config_0     : 2;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ColumnCurrentBlockBitfield() { u.raw = {{0}}; }
+	ColumnCurrentBlockBitfield(
+		std::array<hardware_word_type, ColumnCurrentBlock::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+
+std::array<hardware_word_type, ColumnCurrentBlock::config_size_in_words>
+ColumnCurrentBlock::encode() const
+{
+	using namespace halco::hicann_dls::v2;
+	ColumnCurrentBlockBitfield bitfield;
+
+#define CURRENT_ENCODE(index)                                                                      \
+	{                                                                                              \
+		ColumnCurrentSwitch const& config =                                                        \
+			m_switches.at(ColumnCurrentSwitchOnColumnBlock(index));                                \
+		if ((config.get_inh_config() == ColumnCurrentSwitch::Config::internal) ||                  \
+			(config.get_inh_config() == ColumnCurrentSwitch::Config::readout))                     \
+			bitfield.u.m.int_config_##index |= 0b10;                                               \
+		if ((config.get_inh_config() == ColumnCurrentSwitch::Config::external) ||                  \
+			(config.get_inh_config() == ColumnCurrentSwitch::Config::readout))                     \
+			bitfield.u.m.ext_config_##index |= 0b10;                                               \
+		if ((config.get_exc_config() == ColumnCurrentSwitch::Config::internal) ||                  \
+			(config.get_exc_config() == ColumnCurrentSwitch::Config::readout))                     \
+			bitfield.u.m.int_config_##index |= 0b01;                                               \
+		if ((config.get_exc_config() == ColumnCurrentSwitch::Config::external) ||                  \
+			(config.get_exc_config() == ColumnCurrentSwitch::Config::readout))                     \
+			bitfield.u.m.ext_config_##index |= 0b01;                                               \
+	}
+
+	CURRENT_ENCODE(0);
+	CURRENT_ENCODE(1);
+	CURRENT_ENCODE(2);
+	CURRENT_ENCODE(3);
+#undef CURRENT_ENCODE
+
+	return bitfield.u.raw;
+}
+
+
+void ColumnCurrentBlock::decode(
+	std::array<hardware_word_type, ColumnCurrentBlock::config_size_in_words> const& data)
+{
+	using namespace halco::hicann_dls::v2;
+	ColumnCurrentBlockBitfield bitfield(data);
+
+#define CURRENT_DECODE(index)                                                                      \
+	{                                                                                              \
+		ColumnCurrentSwitch config;                                                                \
+		hardware_word_type inh =                                                                   \
+			((bitfield.u.m.int_config_##index & 0b10) |                                            \
+			 ((bitfield.u.m.ext_config_##index & 0b10) >> 1));                                     \
+		hardware_word_type exc =                                                                   \
+			(((bitfield.u.m.int_config_##index & 0b01) << 1) |                                     \
+			 (bitfield.u.m.ext_config_##index & 0b01));                                            \
+		config.set_inh_config(ColumnCurrentSwitch::Config(inh));                                   \
+		config.set_exc_config(ColumnCurrentSwitch::Config(exc));                                   \
+		m_switches.at(ColumnCurrentSwitchOnColumnBlock(index)) = config;                           \
+	}
+
+	CURRENT_DECODE(0)
+	CURRENT_DECODE(1)
+	CURRENT_DECODE(2)
+	CURRENT_DECODE(3)
+#undef CURRENT_DECODE
+}
+
 SynapseDrivers::SynapseDrivers() : m_pulse_length(0), m_states() {}
 
 auto SynapseDrivers::get_states() const -> states_type
@@ -300,6 +690,56 @@ bool SynapseDrivers::operator!=(SynapseDrivers const& other) const
 {
 	return !(*this == other);
 }
+
+std::array<hardware_address_type, SynapseDrivers::config_size_in_words>
+SynapseDrivers::addresses(coordinate_type const& /*coord*/) const
+{
+	hardware_address_type const base_addr = 0x1c000000;
+	hardware_address_type const excitator_addr = base_addr + 0;
+	hardware_address_type const inhibitory_addr = base_addr + 1;
+	hardware_address_type const pulse_length_addr = base_addr + 2;
+	return {{excitator_addr, inhibitory_addr, pulse_length_addr}};
+}
+
+std::array<hardware_word_type, SynapseDrivers::config_size_in_words>
+SynapseDrivers::encode() const
+{
+	using namespace halco::common;
+	using namespace halco::hicann_dls::v2;
+	std::bitset<SynapseDriverOnDLS::size> inhibitory;
+	std::bitset<SynapseDriverOnDLS::size> excitatory;
+	for (auto const drv : iter_all<SynapseDriverOnDLS>()) {
+		size_t const value = drv.value();
+		size_t const complement = SynapseDriverOnDLS::max - value;
+		if (m_states.at(value) == State::inhibitory)
+			inhibitory[complement] = 1;
+		if (m_states.at(value) == State::excitatory)
+			excitatory[complement] = 1;
+	}
+	return {{static_cast<hardware_word_type>(excitatory.to_ulong()),
+			 static_cast<hardware_word_type>(inhibitory.to_ulong()), m_pulse_length}};
+}
+
+void SynapseDrivers::decode(
+	std::array<hardware_word_type, SynapseDrivers::config_size_in_words> const& data)
+{
+	using namespace halco::common;
+	using namespace halco::hicann_dls::v2;
+	std::bitset<SynapseDriverOnDLS::size> excitatory(data.at(0));
+	std::bitset<SynapseDriverOnDLS::size> inhibitory(data.at(1));
+	for (auto const drv : iter_all<SynapseDriverOnDLS>()) {
+		size_t const value = drv.value();
+		size_t const complement = SynapseDriverOnDLS::max - value;
+		if (excitatory[complement])
+			m_states.at(value) = State::excitatory;
+		else if (inhibitory[complement])
+			m_states.at(value) = State::inhibitory;
+		else
+			m_states.at(value) = State::disabled;
+	}
+	m_pulse_length = PulseLength(data.at(2));
+}
+
 
 } // namespace v2
 } // namespace container

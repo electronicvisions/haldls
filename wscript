@@ -38,7 +38,7 @@ def build(bld):
         target = 'haldls_container_v2',
         source = bld.path.ant_glob('src/container/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['haldls_inc', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
+        use = ['haldls_inc', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2', 'bitter'],
         uselib = 'HALDLS_LIBRARIES',
     )
 

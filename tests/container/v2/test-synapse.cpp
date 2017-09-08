@@ -1,6 +1,9 @@
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "haldls/container/v2/synapse.h"
+#include "haldls/io/visitors.h"
+
 
 using namespace haldls::container::v2;
 using namespace halco::hicann_dls::v2;
@@ -33,6 +36,49 @@ TEST(CommonSynramConfig, General)
 
 	ASSERT_NE(config, config_ne);
 	ASSERT_FALSE(config != config_eq);
+}
+
+TEST(CommonSynramConfig, EncodeDecode)
+{
+	CommonSynramConfig config;
+	config.set_pc_conf(CommonSynramConfig::PCConf(5));
+	config.set_w_conf(CommonSynramConfig::WConf(50));
+	config.set_wait_ctr_clear(CommonSynramConfig::WaitCtrClear(2));
+
+	std::array<hardware_address_type, CommonSynramConfig::config_size_in_words> ref_addresses = {
+		{0x08000000, 0x08000001, 0x08000002}};
+	std::array<hardware_word_type, CommonSynramConfig::config_size_in_words> ref_data = {
+		{5, 50, 2}};
+
+	halco::common::Unique coord;
+
+	{ // write addresses
+		std::vector<hardware_address_type> write_addresses;
+		visit_preorder(
+			config, coord,
+			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		std::vector<hardware_address_type> read_addresses;
+		visit_preorder(
+			config, coord,
+			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	std::vector<hardware_word_type> data;
+	visit_preorder(
+		config, coord, haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	CommonSynramConfig config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(
+		config_copy, coord,
+		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+	ASSERT_EQ(config, config_copy);
 }
 
 TEST(SynapseBlock_Synapse, General)
@@ -88,6 +134,53 @@ TEST(SynapseBlock, General)
 	ASSERT_FALSE(block != block_eq);
 }
 
+TEST(SynapseBlock, EncodeDecode)
+{
+	SynapseOnSynapseBlock synapse_coord(2);
+	SynapseBlockOnDLS block_coord(X(3), Y(1));
+	SynapseBlock synapse_block;
+	SynapseBlock::Synapse synapse;
+	synapse.set_weight(SynapseBlock::Synapse::Weight(61));
+	synapse.set_address(SynapseBlock::Synapse::Address(63));
+	synapse.set_time_calib(SynapseBlock::Synapse::TimeCalib(0x2));
+	synapse.set_amp_calib(SynapseBlock::Synapse::AmpCalib(0x1));
+	synapse_block.set_synapse(synapse_coord, synapse);
+
+	std::array<hardware_address_type, SynapseBlock::config_size_in_words> ref_addresses = {
+		{0x0001F013, 0x0001F01B}};
+	std::array<hardware_word_type, SynapseBlock::config_size_in_words> ref_data = {
+		{0x0000B700, 0x00007F00}};
+
+	{ // write addresses
+		std::vector<hardware_address_type> write_addresses;
+		visit_preorder(
+			synapse_block, block_coord,
+			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		std::vector<hardware_address_type> read_addresses;
+		visit_preorder(
+			synapse_block, block_coord,
+			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	std::vector<hardware_word_type> data;
+	visit_preorder(
+		synapse_block, block_coord,
+		haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	SynapseBlock block_copy;
+	ASSERT_NE(synapse_block, block_copy);
+	visit_preorder(
+		block_copy, block_coord,
+		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+	ASSERT_EQ(synapse_block, block_copy);
+}
+
 TEST(ColumnCorrelationBlock_ColumnCorrelationSwitch, General)
 {
 	ColumnCorrelationBlock::ColumnCorrelationSwitch corrswitch;
@@ -136,6 +229,58 @@ TEST(ColumnCorrelationBlock, General)
 	ASSERT_FALSE(block != block_eq);
 }
 
+TEST(ColumnCorrelationBlock, EncodeDecode)
+{
+	ColumnCorrelationSwitchOnColumnBlock switch_coord_1(2);
+	ColumnCorrelationSwitchOnColumnBlock switch_coord_2(3);
+	ColumnBlockOnDLS block_coord(1);
+	ColumnCorrelationBlock column_block;
+	ColumnCorrelationBlock::ColumnCorrelationSwitch col_switch_1;
+	ColumnCorrelationBlock::ColumnCorrelationSwitch col_switch_2;
+	col_switch_1.set_causal_config(
+		ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::external);
+	col_switch_1.set_acausal_config(
+		ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::internal);
+	col_switch_2.set_causal_config(
+		ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::readout);
+	column_block.set_switch(switch_coord_1, col_switch_1);
+	column_block.set_switch(switch_coord_2, col_switch_2);
+
+	std::array<hardware_address_type, ColumnCurrentBlock::config_size_in_words> ref_addresses = {
+		{0x0001F211, 0x0001F219}};
+	std::array<hardware_word_type, ColumnCorrelationBlock::config_size_in_words> ref_data = {
+		{0x00008040, 0x00004040}};
+
+	{ // write addresses
+		std::vector<hardware_address_type> write_addresses;
+		visit_preorder(
+			column_block, block_coord,
+			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		std::vector<hardware_address_type> read_addresses;
+		visit_preorder(
+			column_block, block_coord,
+			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	std::vector<hardware_word_type> data;
+	visit_preorder(
+		column_block, block_coord,
+		haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	ColumnCorrelationBlock block_copy;
+	ASSERT_NE(column_block, block_copy);
+	visit_preorder(
+		block_copy, block_coord,
+		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+	ASSERT_EQ(column_block, block_copy);
+}
+
 TEST(ColumnCurrentBlock_ColumnCurrentSwitch, General)
 {
 	ColumnCurrentBlock::ColumnCurrentSwitch currswitch;
@@ -179,6 +324,55 @@ TEST(ColumnCurrentBlock, General)
 	ASSERT_FALSE(block != block_eq);
 }
 
+TEST(ColumnCurrentBlock, EncodeDecode)
+{
+	ColumnCurrentSwitchOnColumnBlock switch_coord_1(2);
+	ColumnCurrentSwitchOnColumnBlock switch_coord_2(3);
+	ColumnBlockOnDLS block_coord(1);
+	ColumnCurrentBlock column_block;
+	ColumnCurrentBlock::ColumnCurrentSwitch cur_switch_1;
+	ColumnCurrentBlock::ColumnCurrentSwitch cur_switch_2;
+	cur_switch_1.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::external);
+	cur_switch_1.set_inh_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::internal);
+	cur_switch_2.set_inh_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::readout);
+	column_block.set_switch(switch_coord_1, cur_switch_1);
+	column_block.set_switch(switch_coord_2, cur_switch_2);
+
+	std::array<hardware_address_type, ColumnCorrelationBlock::config_size_in_words> ref_addresses =
+		{{0x0001F201, 0x0001F209}};
+	std::array<hardware_word_type, ColumnCurrentBlock::config_size_in_words> ref_data = {
+		{0x00008080, 0x00004080}};
+
+	{ // write addresses
+		std::vector<hardware_address_type> write_addresses;
+		visit_preorder(
+			column_block, block_coord,
+			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		std::vector<hardware_address_type> read_addresses;
+		visit_preorder(
+			column_block, block_coord,
+			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	std::vector<hardware_word_type> data;
+	visit_preorder(
+		column_block, block_coord,
+		haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	ColumnCurrentBlock block_copy;
+	ASSERT_NE(column_block, block_copy);
+	visit_preorder(
+		block_copy, block_coord,
+		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+	ASSERT_EQ(column_block, block_copy);
+}
+
 TEST(SynapseDriverConfig, General)
 {
 	SynapseDrivers config;
@@ -205,4 +399,54 @@ TEST(SynapseDriverConfig, General)
 
 	ASSERT_NE(config, config_ne);
 	ASSERT_FALSE(config_eq != config);
+}
+
+TEST(SynapseDriverConfig, EncodeDecode)
+{
+	SynapseDrivers config;
+	SynapseDrivers::states_type states;
+	for (size_t index = 0; index < states.size(); index++) {
+		if (index % 2)
+			states.at(index) = SynapseDrivers::State::excitatory;
+		else
+			states.at(index) = SynapseDrivers::State::inhibitory;
+	}
+
+	config.set_pulse_length(SynapseDrivers::PulseLength(5));
+	config.set_states(states);
+
+	std::array<hardware_address_type, SynapseDrivers::config_size_in_words> ref_addresses = {
+		{0x1c000000, 0x1c000001, 0x1c000002}};
+	std::array<hardware_word_type, SynapseDrivers::config_size_in_words> ref_data = {
+		{0x55555555, 0xAAAAAAAA, 5}};
+
+	halco::common::Unique coord;
+
+	{ // write addresses
+		std::vector<hardware_address_type> write_addresses;
+		visit_preorder(
+			config, coord,
+			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		std::vector<hardware_address_type> read_addresses;
+		visit_preorder(
+			config, coord,
+			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	std::vector<hardware_word_type> data;
+	visit_preorder(
+		config, coord, haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	SynapseDrivers config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(
+		config_copy, coord,
+		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+	ASSERT_EQ(config, config_copy);
 }
