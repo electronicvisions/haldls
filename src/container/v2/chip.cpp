@@ -28,15 +28,13 @@ Chip::Chip()
 void Chip::enable_external_current_input(halco::hicann_dls::v2::NeuronOnDLS const& neuron)
 {
 	disable_external_current_input();
-	m_neuron_digital_configs.at(neuron).set_enable_external_current_input(
-		true, common::Passkey<Chip>());
+	m_neuron_digital_configs.at(neuron).set_enable_external_current_input(true, {});
 }
 
 void Chip::disable_external_current_input()
 {
 	for (auto neuron : halco::common::iter_all<halco::hicann_dls::v2::NeuronOnDLS>()) {
-		m_neuron_digital_configs.at(neuron)
-			.set_enable_external_current_input(false, common::Passkey<Chip>());
+		m_neuron_digital_configs.at(neuron).set_enable_external_current_input(false, {});
 	}
 }
 
@@ -54,15 +52,13 @@ Chip::get_external_current_input_neuron() const
 void Chip::enable_external_voltage_output(halco::hicann_dls::v2::NeuronOnDLS const& neuron)
 {
 	disable_external_voltage_output();
-	m_neuron_digital_configs.at(neuron).set_enable_external_voltage_output(
-		true, common::Passkey<Chip>());
+	m_neuron_digital_configs.at(neuron).set_enable_external_voltage_output(true, {});
 }
 
 void Chip::disable_external_voltage_output()
 {
 	for (auto neuron : halco::common::iter_all<halco::hicann_dls::v2::NeuronOnDLS>()) {
-		m_neuron_digital_configs.at(neuron)
-			.set_enable_external_voltage_output(false, common::Passkey<Chip>());
+		m_neuron_digital_configs.at(neuron).set_enable_external_voltage_output(false, {});
 	}
 }
 
@@ -81,8 +77,8 @@ NeuronDigitalConfig Chip::get_neuron_digital_config(
 	halco::hicann_dls::v2::NeuronOnDLS const& neuron) const
 {
 	NeuronDigitalConfig config = m_neuron_digital_configs.at(neuron);
-	config.set_enable_external_current_input(false, common::Passkey<Chip>());
-	config.set_enable_external_voltage_output(false, common::Passkey<Chip>());
+	config.set_enable_external_current_input(false, {});
+	config.set_enable_external_voltage_output(false, {});
 	return config;
 }
 
@@ -90,10 +86,8 @@ void Chip::set_neuron_digital_config(
 	halco::hicann_dls::v2::NeuronOnDLS const& neuron, NeuronDigitalConfig value)
 {
 	NeuronDigitalConfig& config = m_neuron_digital_configs.at(neuron);
-	value.set_enable_external_current_input(
-		config.get_enable_external_current_input(), common::Passkey<Chip>());
-	value.set_enable_external_voltage_output(
-		config.get_enable_external_voltage_output(), common::Passkey<Chip>());
+	value.set_enable_external_current_input(config.get_enable_external_current_input(), {});
+	value.set_enable_external_voltage_output(config.get_enable_external_voltage_output(), {});
 	config = value;
 }
 
