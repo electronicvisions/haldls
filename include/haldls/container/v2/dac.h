@@ -6,6 +6,7 @@
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "haldls/common/visibility.h"
+#include "haldls/container/v2/common.h"
 
 
 namespace haldls {
@@ -18,6 +19,9 @@ namespace v2 {
 class DAC
 {
 public:
+	typedef halco::hicann_dls::v2::DACOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	struct Value
 		: public halco::common::detail::RantWrapper<Value, uint_fast16_t, 4095, 0>
 	{
@@ -37,6 +41,11 @@ public:
 
 	bool operator==(DAC const& other) const HALDLS_VISIBLE;
 	bool operator!=(DAC const& other) const HALDLS_VISIBLE;
+
+	static size_t constexpr config_size_in_words = 1 + Channel::size;
+	std::array<ocp_address_type, config_size_in_words> addresses(coordinate_type const& dac) const
+		HALDLS_VISIBLE;
+	std::array<ocp_word_type, config_size_in_words> encode(coordinate_type const& dac) const HALDLS_VISIBLE;
 
 private:
 	halco::common::typed_array<Value, Channel> m_channels;

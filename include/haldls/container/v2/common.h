@@ -12,6 +12,14 @@ typedef std::uint32_t hardware_address_type;
 typedef std::uint32_t hardware_word_type;
 typedef std::uint64_t hardware_time_type;
 
+struct ocp_address_type {
+	std::uint32_t value;
+};
+
+struct ocp_word_type {
+	std::uint32_t value;
+};
+
 namespace detail {
 
 /// \brief Implementation detail of the visit_preorder() free function (q.v.).

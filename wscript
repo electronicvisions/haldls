@@ -2,6 +2,7 @@
 from subprocess import check_output, CalledProcessError
 
 def depends(ctx):
+    ctx('bitter')
     ctx('logger')
     ctx('halco')
     ctx('uni')
