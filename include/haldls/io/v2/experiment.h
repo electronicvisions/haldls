@@ -7,6 +7,13 @@
 #include "haldls/common/visibility.h"
 
 namespace haldls {
+namespace container {
+namespace v2 {
+class Board;
+class Chip;
+} // namespace v2
+} // namespace container
+
 namespace io {
 namespace v2 {
 
@@ -25,6 +32,8 @@ public:
 	~ExperimentControl();
 
 	void soft_reset() HALDLS_VISIBLE;
+
+	void configure_static(container::v2::Board const& board, container::v2::Chip const& chip) HALDLS_VISIBLE;
 
 	void transfer(PlaybackProgram const& playback_program) HALDLS_VISIBLE;
 	void execute() HALDLS_VISIBLE;

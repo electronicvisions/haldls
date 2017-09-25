@@ -10,10 +10,12 @@
 #include "uni/decoder.h"
 #include "uni/program_builder.h"
 
+#include "haldls/container/v2/board.h"
 #include "haldls/container/v2/chip.h"
 #include "haldls/container/v2/common.h"
 #include "haldls/container/v2/spike.h"
 #include "haldls/io/v2/playback.h"
+#include "haldls/io/visitors.h"
 
 namespace {
 
@@ -136,6 +138,54 @@ void ExperimentControl::soft_reset()
 		throw std::logic_error("unexpected access to moved-from object");
 
 	frickel_dls::soft_reset(m_impl->connection);
+}
+
+void ExperimentControl::configure_static(
+	container::v2::Board const& board, container::v2::Chip const& chip)
+{
+	if (!m_impl)
+		throw std::logic_error("unexpected access to moved-from object");
+
+	// An experiment always happens as follows:
+	// * Soft reset of the FPGA
+	// * Set the external DACs
+	// * Set the spike router
+	// * Set the digital config and wait for the cap-mem to settle
+
+	frickel_dls::soft_reset(m_impl->connection);
+
+	typedef std::vector<haldls::container::v2::ocp_address_type> ocp_addresses_type;
+	typedef std::vector<haldls::container::v2::ocp_word_type> ocp_words_type;
+
+	halco::common::Unique const coord;
+
+	ocp_addresses_type addresses;
+	visit_preorder(board, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{addresses});
+
+	ocp_words_type words;
+	visit_preorder(board, coord, haldls::io::EncodeVisitor<ocp_words_type>{words});
+
+	if (words.size() != addresses.size())
+		throw std::logic_error("number of OCP addresses and words do not match");
+
+	auto& com = *(m_impl->connection.com());
+	auto const loc = com.locate().chip(0);
+	auto addr_it = addresses.cbegin();
+	for (auto const& word : words) {
+		rw_api::flyspi::ocpWrite(com, loc, addr_it->value, word.value);
+		++addr_it;
+	}
+
+	// Chip configuration program
+	PlaybackProgramBuilder setup_builder;
+	setup_builder.set_time(0);
+	setup_builder.set_container(halco::common::Unique(), chip);
+	// Wait for the cap-mem to settle (based on empirical measurement by DS)
+	setup_builder.wait_for(2'000'000); // ~ 20.8 ms for 96 MHz
+	setup_builder.halt();
+	PlaybackProgram setup = setup_builder.done();
+
+	run(setup);
 }
 
 void ExperimentControl::transfer(PlaybackProgram const& playback_program)
