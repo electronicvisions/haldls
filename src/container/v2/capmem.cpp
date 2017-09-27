@@ -172,7 +172,7 @@ bool CapMem::operator!=(CapMem const& other) const
 }
 
 CommonCapMemConfig::CommonCapMemConfig()
-	: m_enable_capmem(false),
+	: m_enable_capmem(true),
 	  m_debug_readout_enable(false),
 	  m_debug_capmem_coord(CapMemCellOnDLS()),
 	  m_debug_v_ref_select(CommonCapMemConfig::VRefSelect::disabled),
