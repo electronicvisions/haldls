@@ -72,6 +72,7 @@ def build(bld):
         target = 'haldls_io_v2_tests',
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/io/v2/hwtest-*.cpp'),
+        test_main = 'tests/test_with_logger.cpp',
         use = [
             'haldls_container_v2',
             'haldls_io_v2',
