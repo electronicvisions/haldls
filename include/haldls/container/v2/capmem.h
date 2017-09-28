@@ -51,21 +51,21 @@ public:
 	/// \brief Default constructor, yielding safe default values.
 	CapMem() HALDLS_VISIBLE;
 
-	CapMemCell get(halco::hicann_dls::v2::CapMemCellOnDLS const& cell) const HALDLS_VISIBLE;
-	void set(halco::hicann_dls::v2::CapMemCellOnDLS const& cell, CapMemCell const& value) HALDLS_VISIBLE;
+	CapMemCell::Value get(halco::hicann_dls::v2::CapMemCellOnDLS const& cell) const HALDLS_VISIBLE;
+	void set(halco::hicann_dls::v2::CapMemCellOnDLS const& cell, CapMemCell::Value const& value) HALDLS_VISIBLE;
 
-	CapMemCell get(
+	CapMemCell::Value get(
 		halco::hicann_dls::v2::NeuronOnDLS const& neuron,
 		halco::hicann_dls::v2::NeuronParameter const& neuron_parameter) const HALDLS_VISIBLE;
 	void set(
 		halco::hicann_dls::v2::NeuronOnDLS const& neuron,
 		halco::hicann_dls::v2::NeuronParameter const& neuron_parameter,
-		CapMemCell const& value) HALDLS_VISIBLE;
-	CapMemCell get(
+		CapMemCell::Value const& value) HALDLS_VISIBLE;
+	CapMemCell::Value get(
 		halco::hicann_dls::v2::CommonNeuronParameter const& common_parameter) const HALDLS_VISIBLE;
 	void set(
 		halco::hicann_dls::v2::CommonNeuronParameter const& common_parameter,
-		CapMemCell const& value) HALDLS_VISIBLE;
+		CapMemCell::Value const& value) HALDLS_VISIBLE;
 
 	bool operator==(CapMem const& other) const HALDLS_VISIBLE;
 	bool operator!=(CapMem const& other) const HALDLS_VISIBLE;

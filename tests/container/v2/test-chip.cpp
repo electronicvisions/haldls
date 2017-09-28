@@ -53,7 +53,7 @@ TEST(Chip, General)
 	// TODO Test Current switches
 
 	CapMem capmem;
-	capmem.set(CapMemCellOnDLS(Enum(4)), CapMemCell(CapMemCell::Value(123)));
+	capmem.set(CapMemCellOnDLS(Enum(4)), CapMemCell::Value(123));
 	chip.set_capmem(capmem);
 	ASSERT_EQ(chip.get_capmem(), capmem);
 

@@ -53,25 +53,25 @@ protected:
 
 		// Set the cap mem
 		auto capmem_config = chip.get_capmem();
-		capmem_config.set(neuron, NeuronParameter::v_leak, CapMemCell(CapMemCell::Value(400)));
-		capmem_config.set(neuron, NeuronParameter::v_treshold, CapMemCell(CapMemCell::Value(600)));
-		capmem_config.set(neuron, NeuronParameter::v_exc_syn_input_reference, CapMemCell(CapMemCell::Value(670)));
-		capmem_config.set(neuron, NeuronParameter::v_inh_syn_input_reference, CapMemCell(CapMemCell::Value(690)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_spike_comparator, CapMemCell(CapMemCell::Value(650)));
-		capmem_config.set(neuron, NeuronParameter::i_spike_comparator_delay, CapMemCell(CapMemCell::Value(130)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_leak_main, CapMemCell(CapMemCell::Value(200)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_leak_sd, CapMemCell(CapMemCell::Value(500)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_readout_buffer, CapMemCell(CapMemCell::Value(1022)));
-		capmem_config.set(neuron, NeuronParameter::i_refractory_time, CapMemCell(CapMemCell::Value(300)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_main, CapMemCell(CapMemCell::Value(1022)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_sd, CapMemCell(CapMemCell::Value(1022)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_resistor, CapMemCell(CapMemCell::Value(200)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_offset, CapMemCell(CapMemCell::Value(650)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_resistor, CapMemCell(CapMemCell::Value(200)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_main, CapMemCell(CapMemCell::Value(1022)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_sd, CapMemCell(CapMemCell::Value(1022)));
-		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_offset, CapMemCell(CapMemCell::Value(400)));
-		capmem_config.set(CommonNeuronParameter::e_reset, CapMemCell(CapMemCell::Value(300)));
+		capmem_config.set(neuron, NeuronParameter::v_leak, CapMemCell::Value(400));
+		capmem_config.set(neuron, NeuronParameter::v_treshold, CapMemCell::Value(600));
+		capmem_config.set(neuron, NeuronParameter::v_exc_syn_input_reference, CapMemCell::Value(670));
+		capmem_config.set(neuron, NeuronParameter::v_inh_syn_input_reference, CapMemCell::Value(690));
+		capmem_config.set(neuron, NeuronParameter::i_bias_spike_comparator, CapMemCell::Value(650));
+		capmem_config.set(neuron, NeuronParameter::i_spike_comparator_delay, CapMemCell::Value(130));
+		capmem_config.set(neuron, NeuronParameter::i_bias_leak_main, CapMemCell::Value(200));
+		capmem_config.set(neuron, NeuronParameter::i_bias_leak_sd, CapMemCell::Value(500));
+		capmem_config.set(neuron, NeuronParameter::i_bias_readout_buffer, CapMemCell::Value(1022));
+		capmem_config.set(neuron, NeuronParameter::i_refractory_time, CapMemCell::Value(300));
+		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_main, CapMemCell::Value(1022));
+		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_sd, CapMemCell::Value(1022));
+		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_resistor, CapMemCell::Value(200));
+		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_offset, CapMemCell::Value(650));
+		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_resistor, CapMemCell::Value(200));
+		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_main, CapMemCell::Value(1022));
+		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_sd, CapMemCell::Value(1022));
+		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_offset, CapMemCell::Value(400));
+		capmem_config.set(CommonNeuronParameter::e_reset, CapMemCell::Value(300));
 		chip.set_capmem(capmem_config);
 
 		// Set connectivity

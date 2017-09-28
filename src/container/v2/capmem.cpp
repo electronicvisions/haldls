@@ -127,38 +127,38 @@ CapMem::CapMem()
 	}
 }
 
-CapMemCell CapMem::get(CapMemCellOnDLS const& coord) const
+CapMemCell::Value CapMem::get(CapMemCellOnDLS const& coord) const
 {
-	return m_capmem_cells.at(coord);
+	return m_capmem_cells.at(coord).get_value();
 }
 
-void CapMem::set(CapMemCellOnDLS const& coord, CapMemCell const& value)
+void CapMem::set(CapMemCellOnDLS const& coord, CapMemCell::Value const& value)
 {
-	m_capmem_cells.at(coord) = value;
+	m_capmem_cells.at(coord).set_value(value);
 }
 
-CapMemCell CapMem::get(
+CapMemCell::Value CapMem::get(
 	NeuronOnDLS const& neuron, NeuronParameter const& neuron_parameter) const
 {
-	return m_capmem_cells.at(CapMemCellOnDLS(neuron, neuron_parameter));
+	return m_capmem_cells.at(CapMemCellOnDLS(neuron, neuron_parameter)).get_value();
 }
 
 void CapMem::set(
 	NeuronOnDLS const& neuron,
 	NeuronParameter const& neuron_parameter,
-	CapMemCell const& value)
+	CapMemCell::Value const& value)
 {
-	m_capmem_cells.at(CapMemCellOnDLS(neuron, neuron_parameter)) = value;
+	m_capmem_cells.at(CapMemCellOnDLS(neuron, neuron_parameter)).set_value(value);
 }
 
-CapMemCell CapMem::get(CommonNeuronParameter const& common_parameter) const
+CapMemCell::Value CapMem::get(CommonNeuronParameter const& common_parameter) const
 {
-	return m_capmem_cells.at(CapMemCellOnDLS(common_parameter));
+	return m_capmem_cells.at(CapMemCellOnDLS(common_parameter)).get_value();
 }
 
-void CapMem::set(CommonNeuronParameter const& common_parameter, CapMemCell const& value)
+void CapMem::set(CommonNeuronParameter const& common_parameter, CapMemCell::Value const& value)
 {
-	m_capmem_cells.at(CapMemCellOnDLS(common_parameter)) = value;
+	m_capmem_cells.at(CapMemCellOnDLS(common_parameter)).set_value(value);
 }
 
 bool CapMem::operator==(CapMem const& other) const

@@ -30,22 +30,20 @@ TEST_F(PlaybackTest, CapMem) {
 	CapMem capmem_config;
 
 	for (auto cell : iter_all<CapMemCellOnDLS>()) {
-		capmem_config.set(cell, CapMemCell(CapMemCell::Value(cell.toEnum())));
+		capmem_config.set(cell, CapMemCell::Value(cell.toEnum()));
 	}
 
-	CapMemCell capmemcell0(CapMemCell::Value(123));
-	CapMemCell capmemcell1(CapMemCell::Value(321));
-	CapMemCell capmemcell2(CapMemCell::Value(334));
-	capmem_config.set(CapMemCellOnDLS(halco::common::Enum(0)), capmemcell0);
-	capmem_config.set(CapMemCellOnDLS(halco::common::Enum(1)), capmemcell1);
-	capmem_config.set(CapMemCellOnDLS(halco::common::Enum(2)), capmemcell2);
+	CapMemCellOnDLS const cell(Enum(2));
+	CapMemCell::Value const capmemvalue(334);
+	capmem_config.set(CapMemCellOnDLS(Enum(0)), CapMemCell::Value(123));
+	capmem_config.set(CapMemCellOnDLS(Enum(1)), CapMemCell::Value(321));
+	capmem_config.set(cell, capmemvalue);
 
 	PlaybackProgramBuilder builder;
 	builder.set_container(unique, capmem_config);
 	builder.wait_until(100);
 	auto capmem_ticket = builder.get_container(unique, capmem_config);
-	auto capmemcell_ticket =
-		builder.get_container<CapMemCell>(CapMemCellOnDLS(halco::common::Enum(2)));
+	auto capmemcell_ticket = builder.get_container<CapMemCell>(cell);
 	builder.halt();
 
 	auto program = builder.done();
@@ -75,7 +73,7 @@ TEST_F(PlaybackTest, CapMem) {
 	auto capmemcell_copy = program.get(capmemcell_ticket);
 
 	EXPECT_EQ(capmem_config, capmem_copy);
-	EXPECT_EQ(capmemcell2, capmemcell_copy);
+	EXPECT_EQ(capmemvalue, capmemcell_copy.get_value());
 }
 
 TEST_F(PlaybackTest, InvalidState) {

@@ -74,42 +74,32 @@ TEST(CapMem, General)
 	// test default constructor
 	// neuron capmem
 	ASSERT_EQ(
-		capmem.get(
-			CapMemCellOnDLS(CapMemColumnOnDLS(Enum(0)), CapMemRowOnDLS(Enum(1)))),
-		CapMemCell(CapMemCell::Value(600)));
+		CapMemCell::Value(600),
+		capmem.get(CapMemCellOnDLS(CapMemColumnOnDLS(Enum(0)), CapMemRowOnDLS(Enum(1)))));
 	ASSERT_EQ(
-		capmem.get(
-			CapMemCellOnDLS(CapMemColumnOnDLS(Enum(4)), CapMemRowOnDLS(Enum(10)))),
-		CapMemCell(CapMemCell::Value(130)));
+		CapMemCell::Value(130),
+		capmem.get(CapMemCellOnDLS(CapMemColumnOnDLS(Enum(4)), CapMemRowOnDLS(Enum(10)))));
 	// global capmem
 	ASSERT_EQ(
-		capmem.get(
-			CapMemCellOnDLS(CapMemColumnOnDLS(Enum(32)), CapMemRowOnDLS(Enum(0)))),
-		CapMemCell(CapMemCell::Value(100)));
+		CapMemCell::Value(100),
+		capmem.get(CapMemCellOnDLS(CapMemColumnOnDLS(Enum(32)), CapMemRowOnDLS(Enum(0)))));
 	ASSERT_EQ(
-		capmem.get(
-			CapMemCellOnDLS(CapMemColumnOnDLS(Enum(32)), CapMemRowOnDLS(Enum(1)))),
-		CapMemCell(CapMemCell::Value(0)));
+		CapMemCell::Value(0),
+		capmem.get(CapMemCellOnDLS(CapMemColumnOnDLS(Enum(32)), CapMemRowOnDLS(Enum(1)))));
 
 	// test getter/setter
-	capmem.set(CapMemCellOnDLS(Enum(2)), CapMemCell(CapMemCell::Value(5)));
-	ASSERT_EQ(capmem.get(CapMemCellOnDLS(Enum(2))), CapMemCell(CapMemCell::Value(5)));
+	capmem.set(CapMemCellOnDLS(Enum(2)), CapMemCell::Value(5));
+	ASSERT_EQ(capmem.get(CapMemCellOnDLS(Enum(2))), CapMemCell::Value(5));
 
-	capmem.set(
-		NeuronOnDLS(Enum(0)), NeuronParameter::v_leak, CapMemCell(CapMemCell::Value(123)));
-	ASSERT_EQ(
-		capmem.get(NeuronOnDLS(Enum(0)), NeuronParameter::v_leak),
-		CapMemCell(CapMemCell::Value(123)));
+	capmem.set(NeuronOnDLS(Enum(0)), NeuronParameter::v_leak, CapMemCell::Value(123));
+	ASSERT_EQ(capmem.get(NeuronOnDLS(Enum(0)), NeuronParameter::v_leak), CapMemCell::Value(123));
 
-	capmem.set(
-		CommonNeuronParameter::e_reset, CapMemCell(CapMemCell::Value(234)));
-	ASSERT_EQ(
-		capmem.get(CommonNeuronParameter::e_reset),
-		CapMemCell(CapMemCell::Value(234)));
+	capmem.set(CommonNeuronParameter::e_reset, CapMemCell::Value(234));
+	ASSERT_EQ(capmem.get(CommonNeuronParameter::e_reset), CapMemCell::Value(234));
 
 	CapMem capmem_eq = capmem;
 	CapMem capmem_ne(capmem);
-	capmem_ne.set(CapMemCellOnDLS(Enum(67)), CapMemCell(CapMemCell::Value(123)));
+	capmem_ne.set(CapMemCellOnDLS(Enum(67)), CapMemCell::Value(123));
 
 	ASSERT_EQ(capmem, capmem_eq);
 	ASSERT_FALSE(capmem == capmem_ne);
@@ -123,7 +113,7 @@ TEST(CapMem, EncodeDecode)
 {
 	CapMem config;
 	for (auto cell : iter_all<CapMemCellOnDLS>()) {
-		config.set(cell, CapMemCell(CapMemCell::Value(cell.toEnum())));
+		config.set(cell, CapMemCell::Value(cell.toEnum()));
 	}
 
 	Unique coord;
