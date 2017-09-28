@@ -1,20 +1,9 @@
 #include "haldls/container/v2/capmem.h"
 
-#include <type_traits>
 #include <utility>
 
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
-
-namespace {
-
-template <typename E>
-constexpr auto underlying_cast(E e) -> typename std::underlying_type<E>::type
-{
-	return static_cast<typename std::underlying_type<E>::type>(e);
-}
-
-} // namespace
 
 namespace haldls {
 namespace container {
@@ -130,36 +119,27 @@ void CapMem::set(CapMemCellOnDLS const& coord, CapMemCell const& value)
 }
 
 CapMemCell CapMem::get(
-    NeuronOnDLS const& neuron, CapMem::NeuronParameter const& neuron_parameter) const
+	NeuronOnDLS const& neuron, NeuronParameter const& neuron_parameter) const
 {
-	return m_capmem_cells.at(CapMemCellOnDLS(
-	    neuron.toCapMemColumnOnDLS(), CapMemRowOnDLS(underlying_cast(neuron_parameter))));
+	return m_capmem_cells.at(CapMemCellOnDLS(neuron, neuron_parameter));
 }
 
 void CapMem::set(
-    NeuronOnDLS const& neuron,
-    CapMem::NeuronParameter const& neuron_parameter,
-    CapMemCell const& value)
+	NeuronOnDLS const& neuron,
+	NeuronParameter const& neuron_parameter,
+	CapMemCell const& value)
 {
-	m_capmem_cells.at(CapMemCellOnDLS(
-	    neuron.toCapMemColumnOnDLS(), CapMemRowOnDLS(underlying_cast(neuron_parameter)))) =
-	    CapMemCell(value);
+	m_capmem_cells.at(CapMemCellOnDLS(neuron, neuron_parameter)) = value;
 }
 
-CapMemCell CapMem::get(
-    CapMem::CommonNeuronParameter const& neuron_parameter) const
+CapMemCell CapMem::get(CommonNeuronParameter const& common_parameter) const
 {
-	return m_capmem_cells.at(CapMemCellOnDLS(
-		CapMemColumnOnDLS::SharedCapMemColumnOnDLS(),
-	    CapMemRowOnDLS(underlying_cast(neuron_parameter))));
+	return m_capmem_cells.at(CapMemCellOnDLS(common_parameter));
 }
 
-void CapMem::set(
-    CapMem::CommonNeuronParameter const& neuron_parameter, CapMemCell const& value)
+void CapMem::set(CommonNeuronParameter const& common_parameter, CapMemCell const& value)
 {
-	m_capmem_cells.at(CapMemCellOnDLS(
-		CapMemColumnOnDLS::SharedCapMemColumnOnDLS(),
-		CapMemRowOnDLS(underlying_cast(neuron_parameter)))) = value;
+	m_capmem_cells.at(CapMemCellOnDLS(common_parameter)) = value;
 }
 
 bool CapMem::operator==(CapMem const& other) const

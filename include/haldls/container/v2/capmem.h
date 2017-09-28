@@ -36,33 +36,6 @@ private:
 class CapMem
 {
 public:
-	enum class NeuronParameter : uint_fast16_t
-	{
-		v_leak = 0,
-		v_treshold = 1,
-		v_exc_syn_input_reference = 2,
-		v_inh_syn_input_reference = 3,
-		i_bias_spike_comparator = 9,
-		i_spike_comparator_delay = 10,
-		i_bias_leak_main = 11,
-		i_bias_leak_sd = 12,
-		i_bias_readout_buffer = 13,
-		i_refractory_time = 14,
-		i_bias_exc_syn_input_main = 15,
-		i_bias_exc_syn_input_sd = 16,
-		i_bias_exc_syn_input_resistor = 17,
-		i_bias_exc_syn_input_offset = 18,
-		i_bias_inh_syn_input_main = 20,
-		i_bias_inh_syn_input_sd = 22,
-		i_bias_inh_syn_input_resistor = 19,
-		i_bias_inh_syn_input_offset = 23,
-	};
-
-	enum class CommonNeuronParameter : uint_fast16_t
-	{
-		e_reset = 0
-	};
-
 	/// \brief Default constructor, yielding safe default values.
 	CapMem() HALDLS_VISIBLE;
 
@@ -70,13 +43,17 @@ public:
 	void set(halco::hicann_dls::v2::CapMemCellOnDLS const& cell, CapMemCell const& value) HALDLS_VISIBLE;
 
 	CapMemCell get(
-		halco::hicann_dls::v2::NeuronOnDLS const& neuron, NeuronParameter const& neuron_parameter) const HALDLS_VISIBLE;
+		halco::hicann_dls::v2::NeuronOnDLS const& neuron,
+		halco::hicann_dls::v2::NeuronParameter const& neuron_parameter) const HALDLS_VISIBLE;
 	void set(
 		halco::hicann_dls::v2::NeuronOnDLS const& neuron,
-		NeuronParameter const& neuron_parameter,
+		halco::hicann_dls::v2::NeuronParameter const& neuron_parameter,
 		CapMemCell const& value) HALDLS_VISIBLE;
-	CapMemCell get(CommonNeuronParameter const& neuron_parameter) const HALDLS_VISIBLE;
-	void set(CommonNeuronParameter const& neuron_parameter, CapMemCell const& value) HALDLS_VISIBLE;
+	CapMemCell get(
+		halco::hicann_dls::v2::CommonNeuronParameter const& common_parameter) const HALDLS_VISIBLE;
+	void set(
+		halco::hicann_dls::v2::CommonNeuronParameter const& common_parameter,
+		CapMemCell const& value) HALDLS_VISIBLE;
 
 	bool operator==(CapMem const& other) const HALDLS_VISIBLE;
 	bool operator!=(CapMem const& other) const HALDLS_VISIBLE;

@@ -54,15 +54,15 @@ TEST(CapMem, General)
 	ASSERT_EQ(capmem.get(CapMemCellOnDLS(Enum(2))), CapMemCell(CapMemCell::Value(5)));
 
 	capmem.set(
-		NeuronOnDLS(Enum(0)), CapMem::NeuronParameter::v_leak, CapMemCell(CapMemCell::Value(123)));
+		NeuronOnDLS(Enum(0)), NeuronParameter::v_leak, CapMemCell(CapMemCell::Value(123)));
 	ASSERT_EQ(
-		capmem.get(NeuronOnDLS(Enum(0)), CapMem::NeuronParameter::v_leak),
+		capmem.get(NeuronOnDLS(Enum(0)), NeuronParameter::v_leak),
 		CapMemCell(CapMemCell::Value(123)));
 
 	capmem.set(
-		CapMem::CommonNeuronParameter::e_reset, CapMemCell(CapMemCell::Value(234)));
+		CommonNeuronParameter::e_reset, CapMemCell(CapMemCell::Value(234)));
 	ASSERT_EQ(
-		capmem.get(CapMem::CommonNeuronParameter::e_reset),
+		capmem.get(CommonNeuronParameter::e_reset),
 		CapMemCell(CapMemCell::Value(234)));
 
 	CapMem capmem_eq = capmem;
