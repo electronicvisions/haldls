@@ -27,7 +27,6 @@ struct ReadAddressVisitor
 		-> decltype(container.addresses(coord), void())
 	{
 		auto const read_addresses = container.addresses(coord);
-		addresses.reserve(addresses.size() + read_addresses.size());
 		addresses.insert(addresses.end(), read_addresses.begin(), read_addresses.end());
 	}
 
@@ -36,7 +35,6 @@ struct ReadAddressVisitor
 		-> decltype(container.read_addresses(coord), void())
 	{
 		auto const read_addresses = container.read_addresses(coord);
-		addresses.reserve(addresses.size() + read_addresses.size());
 		addresses.insert(addresses.end(), read_addresses.begin(), read_addresses.end());
 	}
 
@@ -66,7 +64,6 @@ struct WriteAddressVisitor
 		-> decltype(container.addresses(coord), void())
 	{
 		auto const write_addresses = container.addresses(coord);
-		addresses.reserve(addresses.size() + write_addresses.size());
 		addresses.insert(addresses.end(), write_addresses.begin(), write_addresses.end());
 	}
 
@@ -75,7 +72,6 @@ struct WriteAddressVisitor
 		-> decltype(container.write_addresses(coord), void())
 	{
 		auto const write_addresses = container.write_addresses(coord);
-		addresses.reserve(addresses.size() + write_addresses.size());
 		addresses.insert(addresses.end(), write_addresses.begin(), write_addresses.end());
 	}
 
@@ -202,7 +198,6 @@ private:
 		std::array<value_type, N> (ContainerT::*encode)(CoordinateT const&) const)
 	{
 		auto const words = (container.*encode)(coord);
-		m_data.reserve(m_data.size() + N);
 		m_data.insert(m_data.end(), words.begin(), words.end());
 	}
 
@@ -213,7 +208,6 @@ private:
 		std::array<value_type, N> (ContainerT::*encode)() const)
 	{
 		auto const words = (container.*encode)();
-		m_data.reserve(m_data.size() + N);
 		m_data.insert(m_data.end(), words.begin(), words.end());
 	}
 };
