@@ -10,19 +10,19 @@ PPUMemoryWord::PPUMemoryWord() : PPUMemoryWord(PPUMemoryWord::Value(0)) {}
 
 PPUMemoryWord::PPUMemoryWord(PPUMemoryWord::Value const& value) : m_value(value) {}
 
-PPUMemoryWord::Value PPUMemoryWord::get_value() const
+PPUMemoryWord::Value PPUMemoryWord::get() const
 {
 	return m_value;
 }
 
-void PPUMemoryWord::set_value(PPUMemoryWord::Value const& value)
+void PPUMemoryWord::set(PPUMemoryWord::Value const& value)
 {
 	m_value = value;
 }
 
 bool PPUMemoryWord::operator==(PPUMemoryWord const& other) const
 {
-	return m_value == other.get_value();
+	return m_value == other.get();
 }
 
 bool PPUMemoryWord::operator!=(PPUMemoryWord const& other) const
@@ -37,12 +37,12 @@ std::array<hardware_address_type, PPUMemoryWord::config_size_in_words> PPUMemory
 
 std::array<hardware_word_type, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
 {
-	return {{static_cast<hardware_word_type>(get_value())}};
+	return {{static_cast<hardware_word_type>(get())}};
 }
 
 void PPUMemoryWord::decode(std::array<hardware_word_type, PPUMemoryWord::config_size_in_words> const& data)
 {
-	set_value(Value(data[0]));
+	set(Value(data[0]));
 }
 
 PPUMemory::PPUMemory() : m_words() {}
@@ -60,15 +60,15 @@ void PPUMemory::set_words(words_type const& words)
 	m_words = words;
 }
 
-PPUMemoryWord PPUMemory::get_word(halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos) const
+PPUMemoryWord::Value PPUMemory::get_word(halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos) const
 {
-	return m_words.at(pos.value());
+	return m_words.at(pos.value()).get();
 }
 
 void PPUMemory::set_word(
-	halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos, PPUMemoryWord const& word)
+	halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos, PPUMemoryWord::Value const& value)
 {
-	m_words.at(pos.value()) = word;
+	m_words.at(pos.value()) = PPUMemoryWord(value);
 }
 
 bool PPUMemory::operator==(PPUMemory const& other) const

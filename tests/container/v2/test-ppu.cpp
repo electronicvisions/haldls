@@ -18,8 +18,8 @@ TEST(PPUMemoryWord, General)
 
 	//test getter/setter
 	PPUMemoryWord word;
-	word.set_value(PPUMemoryWord::Value(145));
-	ASSERT_EQ(word.get_value(),PPUMemoryWord::Value(145));
+	word.set(PPUMemoryWord::Value(145));
+	ASSERT_EQ(word.get(),PPUMemoryWord::Value(145));
 
 	//test assign
 	PPUMemoryWord word_eq = word;
@@ -37,7 +37,7 @@ TEST(PPUMemoryWord, EncodeDecode)
 {
 	PPUMemoryWord config;
 
-	config.set_value(PPUMemoryWord::Value(555));
+	config.set(PPUMemoryWord::Value(555));
 
 	PPUMemoryWordOnDLS coord(0x123);
 
@@ -81,8 +81,8 @@ TEST(PPUMemory, General)
 	memory.set_words(test_mem);
 	ASSERT_EQ(memory.get_words(), test_mem);
 
-	memory.set_word(PPUMemoryWordOnDLS(14), PPUMemoryWord(PPUMemoryWord::Value(0x42u)));
-	ASSERT_EQ(memory.get_word(PPUMemoryWordOnDLS(14)), PPUMemoryWord(PPUMemoryWord::Value(0x42u)));
+	memory.set_word(PPUMemoryWordOnDLS(14), PPUMemoryWord::Value(0x42u));
+	ASSERT_EQ(memory.get_word(PPUMemoryWordOnDLS(14)), PPUMemoryWord::Value(0x42u));
 
 	// test assign
 	PPUMemory memory_eq = memory;
@@ -90,7 +90,7 @@ TEST(PPUMemory, General)
 
 	// test compare
 	ASSERT_EQ(memory_eq, memory);
-	memory_ne.set_word(PPUMemoryWordOnDLS(14), PPUMemoryWord(PPUMemoryWord::Value(0x43u)));
+	memory_ne.set_word(PPUMemoryWordOnDLS(14), PPUMemoryWord::Value(0x43u));
 	ASSERT_NE(memory_ne, memory);
 }
 
@@ -112,7 +112,7 @@ TEST(PPUMemory, EncodeDecode)
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
 		ref_addresses[ii] = ii;
 		ref_data[ii] = 50 + ii;
-		memory[ii].set_value(PPUMemoryWord::Value(ref_data[ii]));
+		memory[ii].set(PPUMemoryWord::Value(ref_data[ii]));
 	}
 
 	config.set_words(memory);

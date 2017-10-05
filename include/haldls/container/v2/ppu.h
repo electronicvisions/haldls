@@ -27,8 +27,8 @@ public:
 	PPUMemoryWord() HALDLS_VISIBLE;
 	explicit PPUMemoryWord(Value const& value) HALDLS_VISIBLE;
 
-	Value get_value() const HALDLS_VISIBLE;
-	void set_value(Value const& value) HALDLS_VISIBLE;
+	Value get() const HALDLS_VISIBLE;
+	void set(Value const& value) HALDLS_VISIBLE;
 
 	bool operator==(PPUMemoryWord const& other) const HALDLS_VISIBLE;
 	bool operator!=(PPUMemoryWord const& other) const HALDLS_VISIBLE;
@@ -57,9 +57,9 @@ public:
 	words_type get_words() const HALDLS_VISIBLE;
 	void set_words(words_type const& words) HALDLS_VISIBLE;
 
-	PPUMemoryWord get_word(halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos) const HALDLS_VISIBLE;
+	PPUMemoryWord::Value get_word(halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos) const HALDLS_VISIBLE;
 	void set_word(
-		halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos, PPUMemoryWord const& word) HALDLS_VISIBLE;
+		halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos, PPUMemoryWord::Value const& word) HALDLS_VISIBLE;
 
 	bool operator==(PPUMemory const& other) const HALDLS_VISIBLE;
 	bool operator!=(PPUMemory const& other) const HALDLS_VISIBLE;
