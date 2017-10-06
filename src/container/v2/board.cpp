@@ -121,7 +121,7 @@ struct FPGAConfigBitfield {
 	}
 
 	FPGAConfigBitfield(hardware_word_type data) {
-		u.raw = {data & 0xC0003FFFul};
+		u.raw = {data & 0xC0003FFFu};
 	}
 };
 
