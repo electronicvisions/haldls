@@ -57,7 +57,9 @@ CorrelationConfig::addresses(coordinate_type const& /*unique*/) const
 std::array<hardware_word_type, CorrelationConfig::config_size_in_words> CorrelationConfig::encode()
 	const
 {
-	return {{m_sense_delay, m_reset_delay_1, m_reset_delay_2}};
+	return {{static_cast<hardware_word_type>(m_sense_delay),
+	         static_cast<hardware_word_type>(m_reset_delay_1),
+	         static_cast<hardware_word_type>(m_reset_delay_2)}};
 }
 
 void CorrelationConfig::decode(std::array<hardware_word_type, config_size_in_words> const& data) {

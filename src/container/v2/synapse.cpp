@@ -61,7 +61,8 @@ CommonSynramConfig::addresses(CommonSynramConfig::coordinate_type const& /*coord
 std::array<hardware_address_type, CommonSynramConfig::config_size_in_words>
 CommonSynramConfig::encode() const
 {
-	return {{m_pc_conf, m_w_conf, m_wait_ctr_clear}};
+	return {{static_cast<hardware_word_type>(m_pc_conf), static_cast<hardware_word_type>(m_w_conf),
+	         static_cast<hardware_word_type>(m_wait_ctr_clear)}};
 }
 
 void CommonSynramConfig::decode(
@@ -717,7 +718,8 @@ SynapseDrivers::encode() const
 			excitatory[complement] = 1;
 	}
 	return {{static_cast<hardware_word_type>(excitatory.to_ulong()),
-			 static_cast<hardware_word_type>(inhibitory.to_ulong()), m_pulse_length}};
+	         static_cast<hardware_word_type>(inhibitory.to_ulong()),
+	         static_cast<hardware_word_type>(m_pulse_length)}};
 }
 
 void SynapseDrivers::decode(

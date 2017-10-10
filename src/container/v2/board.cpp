@@ -87,7 +87,7 @@ auto FPGAConfig::addresses(coordinate_type const& /*unique*/) const
 	-> std::array<ocp_address_type, config_size_in_words>
 {
 	static std::uint32_t constexpr base_address = 0x8000;
-	return {{base_address + 0x20}};
+	return {{{base_address + 0x20}}};
 }
 
 namespace {
@@ -121,7 +121,8 @@ struct FPGAConfigBitfield {
 	}
 
 	FPGAConfigBitfield(hardware_word_type data) {
-		u.raw = {data & 0xC0003FFFu};
+		data &= 0xC0003FFFul;
+		u.raw = {data};
 	}
 };
 

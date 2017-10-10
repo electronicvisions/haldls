@@ -74,6 +74,18 @@ PlaybackProgram& PlaybackProgram::operator=(PlaybackProgram&& other) noexcept {
 PlaybackProgram::~PlaybackProgram() = default;
 
 template <typename T>
+void PlaybackProgram::ensure_container_invariants(T& /*config*/)
+{}
+
+template <>
+void PlaybackProgram::ensure_container_invariants<container::v2::NeuronDigitalConfig>(
+	container::v2::NeuronDigitalConfig& config)
+{
+	// Only instances contained in container::v2::Chip are allowed to have these bits enabled.
+	config.set_enable_buffered_readout(false, {});
+}
+
+template <typename T>
 T PlaybackProgram::get(ContainerTicket<T> const& ticket) const
 {
 	if (!m_impl)
@@ -125,18 +137,6 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgram::create_ticket(
 
 	assert(m_serial_number != invalid_serial_number);
 	return {m_serial_number, coord, offset, length};
-}
-
-template <typename T>
-void PlaybackProgram::ensure_container_invariants(T& /*config*/)
-{}
-
-template <>
-void PlaybackProgram::ensure_container_invariants<container::v2::NeuronDigitalConfig>(
-	container::v2::NeuronDigitalConfig& config)
-{
-	// Only instances contained in container::v2::Chip are allowed to have these bits enabled.
-	config.set_enable_buffered_readout(false, {});
 }
 
 std::vector<std::vector<std::uint8_t> > const& PlaybackProgram::instruction_byte_blocks() const
