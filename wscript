@@ -41,6 +41,7 @@ def build(bld):
         source = bld.path.ant_glob('src/common/*.cpp'),
         install_path = '${PREFIX}/lib',
         use = ['haldls_inc', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
+        cxxflgas = ['-Werror'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
