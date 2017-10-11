@@ -104,6 +104,7 @@ TEST(NeuronDigitalConfig, General)
 	ASSERT_EQ(neuron.get_enable_smallcap(), true);
 	ASSERT_EQ(neuron.get_fire_out_mode(), NeuronDigitalConfig::FireOutMode::disabled);
 	ASSERT_EQ(neuron.get_mux_readout_mode(), NeuronDigitalConfig::MuxReadoutMode::v_mem);
+	ASSERT_EQ(neuron.get_enable_unbuffered_readout(), false);
 
 	neuron.set_enable_synapse_input_excitatory(true);
 	ASSERT_EQ(neuron.get_enable_synapse_input_excitatory(), true);
@@ -128,6 +129,9 @@ TEST(NeuronDigitalConfig, General)
 
 	neuron.set_mux_readout_mode(NeuronDigitalConfig::MuxReadoutMode::i_psp);
 	ASSERT_EQ(neuron.get_mux_readout_mode(), NeuronDigitalConfig::MuxReadoutMode::i_psp);
+
+	neuron.set_enable_unbuffered_readout(true);
+	ASSERT_EQ(neuron.get_enable_unbuffered_readout(), true);
 
 	NeuronDigitalConfig neuron2 = neuron;
 	NeuronDigitalConfig neuron3 = neuron;

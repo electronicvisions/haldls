@@ -136,8 +136,7 @@ void PlaybackProgram::ensure_container_invariants<container::v2::NeuronDigitalCo
 	container::v2::NeuronDigitalConfig& config)
 {
 	// Only instances contained in container::v2::Chip are allowed to have these bits enabled.
-	config.set_enable_external_current_input(false, {});
-	config.set_enable_external_voltage_output(false, {});
+	config.set_enable_buffered_readout(false, {});
 }
 
 std::vector<std::vector<std::uint8_t> > const& PlaybackProgram::instruction_byte_blocks() const

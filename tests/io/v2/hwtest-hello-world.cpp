@@ -111,7 +111,7 @@ protected:
 		neuron_config.set_fire_out_mode(NeuronDigitalConfig::FireOutMode::disabled);
 		neuron_config.set_mux_readout_mode(NeuronDigitalConfig::MuxReadoutMode::v_mem);
 		chip.set_neuron_digital_config(neuron, neuron_config);
-		chip.enable_external_voltage_output(neuron);
+		chip.enable_buffered_readout(neuron);
 	}
 
 	void test_run_program(PlaybackProgram& program)

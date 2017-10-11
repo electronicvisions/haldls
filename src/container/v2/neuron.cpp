@@ -129,8 +129,8 @@ NeuronDigitalConfig::NeuronDigitalConfig()
 	  m_smallcap(true),
 	  m_fire_out_mode(FireOutMode::disabled),
 	  m_mux_readout_mode(MuxReadoutMode::v_mem),
-	  m_external_current_input(false),
-	  m_external_voltage_output(false)
+	  m_unbuffered_readout(false),
+	  m_buffered_readout(false)
 {}
 
 bool NeuronDigitalConfig::get_enable_synapse_input_excitatory() const
@@ -214,26 +214,25 @@ void NeuronDigitalConfig::set_mux_readout_mode(
 	m_mux_readout_mode = value;
 }
 
-bool NeuronDigitalConfig::get_enable_external_current_input() const
+bool NeuronDigitalConfig::get_enable_unbuffered_readout() const
 {
-	return m_external_current_input;
+	return m_unbuffered_readout;
 }
 
-void NeuronDigitalConfig::set_enable_external_current_input(
+void NeuronDigitalConfig::set_enable_unbuffered_readout(bool value)
+{
+	m_unbuffered_readout = value;
+}
+
+bool NeuronDigitalConfig::get_enable_buffered_readout() const
+{
+	return m_buffered_readout;
+}
+
+void NeuronDigitalConfig::set_enable_buffered_readout(
 	bool value, common::Passkey<Chip, io::v2::PlaybackProgram> const& /*passkey*/)
 {
-	m_external_current_input = value;
-}
-
-bool NeuronDigitalConfig::get_enable_external_voltage_output() const
-{
-	return m_external_voltage_output;
-}
-
-void NeuronDigitalConfig::set_enable_external_voltage_output(
-	bool value, common::Passkey<Chip, io::v2::PlaybackProgram> const& /*passkey*/)
-{
-	m_external_voltage_output = value;
+	m_buffered_readout = value;
 }
 
 bool NeuronDigitalConfig::operator==(NeuronDigitalConfig const& other) const
@@ -248,8 +247,8 @@ bool NeuronDigitalConfig::operator==(NeuronDigitalConfig const& other) const
 		m_smallcap == other.get_enable_smallcap() &&
 		m_fire_out_mode == other.get_fire_out_mode() &&
 		m_mux_readout_mode == other.get_mux_readout_mode() &&
-		m_external_current_input == other.get_enable_external_current_input() &&
-		m_external_voltage_output == other.get_enable_external_voltage_output());
+		m_unbuffered_readout == other.get_enable_unbuffered_readout() &&
+		m_buffered_readout == other.get_enable_buffered_readout());
 	// clang-format on
 }
 
@@ -271,8 +270,8 @@ struct NeuronDigitalConfigBitfield {
 			hardware_word_type synapse_input_exc       :  1; // 4
 			hardware_word_type synapse_input_inh       :  1; // 5
 			hardware_word_type leak_high_conductance   :  1; // 6
-			hardware_word_type external_current_input  :  1; // 7
-			hardware_word_type external_voltage_output :  1; // 8
+			hardware_word_type unbuffered_readout      :  1; // 7
+			hardware_word_type buffered_readout        :  1; // 8
 			hardware_word_type                         :  1; // 9
 			hardware_word_type leak                    :  1; // 10
 			hardware_word_type                         :  1; // 11
@@ -316,8 +315,8 @@ std::array<hardware_word_type, NeuronDigitalConfig::config_size_in_words> Neuron
 	bitfield.u.m.smallcap = m_smallcap;
 	bitfield.u.m.fire_out_mode = static_cast<hardware_word_type>(m_fire_out_mode);
 	bitfield.u.m.mux_readout_mode = static_cast<hardware_word_type>(m_mux_readout_mode);
-	bitfield.u.m.external_current_input = m_external_current_input;
-	bitfield.u.m.external_voltage_output = m_external_voltage_output;
+	bitfield.u.m.unbuffered_readout = m_unbuffered_readout;
+	bitfield.u.m.buffered_readout = m_buffered_readout;
 	return {{bitfield.u.raw}};
 }
 
@@ -332,8 +331,8 @@ void NeuronDigitalConfig::decode(std::array<hardware_word_type, NeuronDigitalCon
 	m_smallcap = bitfield.u.m.smallcap;
 	m_fire_out_mode = FireOutMode(bitfield.u.m.fire_out_mode);
 	m_mux_readout_mode = MuxReadoutMode(bitfield.u.m.mux_readout_mode);
-	m_external_current_input = bitfield.u.m.external_current_input;
-	m_external_voltage_output = bitfield.u.m.external_voltage_output;
+	m_unbuffered_readout = bitfield.u.m.unbuffered_readout;
+	m_buffered_readout = bitfield.u.m.buffered_readout;
 }
 
 } // namespace v2

@@ -25,48 +25,24 @@ Chip::Chip()
 	  m_correlation_config()
 {}
 
-void Chip::enable_external_current_input(halco::hicann_dls::v2::NeuronOnDLS const& neuron)
+void Chip::enable_buffered_readout(halco::hicann_dls::v2::NeuronOnDLS const& neuron)
 {
-	disable_external_current_input();
-	m_neuron_digital_configs.at(neuron).set_enable_external_current_input(true, {});
+	disable_buffered_readout();
+	m_neuron_digital_configs.at(neuron).set_enable_buffered_readout(true, {});
 }
 
-void Chip::disable_external_current_input()
+void Chip::disable_buffered_readout()
 {
 	for (auto neuron : halco::common::iter_all<halco::hicann_dls::v2::NeuronOnDLS>()) {
-		m_neuron_digital_configs.at(neuron).set_enable_external_current_input(false, {});
+		m_neuron_digital_configs.at(neuron).set_enable_buffered_readout(false, {});
 	}
 }
 
 common::optional<halco::hicann_dls::v2::NeuronOnDLS>
-Chip::get_external_current_input_neuron() const
+Chip::get_buffered_readout_neuron() const
 {
 	for (auto neuron : halco::common::iter_all<halco::hicann_dls::v2::NeuronOnDLS>()) {
-		if (m_neuron_digital_configs.at(neuron).get_enable_external_current_input()) {
-			return neuron;
-		}
-	}
-	return {};
-}
-
-void Chip::enable_external_voltage_output(halco::hicann_dls::v2::NeuronOnDLS const& neuron)
-{
-	disable_external_voltage_output();
-	m_neuron_digital_configs.at(neuron).set_enable_external_voltage_output(true, {});
-}
-
-void Chip::disable_external_voltage_output()
-{
-	for (auto neuron : halco::common::iter_all<halco::hicann_dls::v2::NeuronOnDLS>()) {
-		m_neuron_digital_configs.at(neuron).set_enable_external_voltage_output(false, {});
-	}
-}
-
-common::optional<halco::hicann_dls::v2::NeuronOnDLS>
-Chip::get_external_voltage_output_neuron() const
-{
-	for (auto neuron : halco::common::iter_all<halco::hicann_dls::v2::NeuronOnDLS>()) {
-		if (m_neuron_digital_configs.at(neuron).get_enable_external_voltage_output()) {
+		if (m_neuron_digital_configs.at(neuron).get_enable_buffered_readout()) {
 			return neuron;
 		}
 	}
@@ -77,8 +53,7 @@ NeuronDigitalConfig Chip::get_neuron_digital_config(
 	halco::hicann_dls::v2::NeuronOnDLS const& neuron) const
 {
 	NeuronDigitalConfig config = m_neuron_digital_configs.at(neuron);
-	config.set_enable_external_current_input(false, {});
-	config.set_enable_external_voltage_output(false, {});
+	config.set_enable_buffered_readout(false, {});
 	return config;
 }
 
@@ -86,8 +61,7 @@ void Chip::set_neuron_digital_config(
 	halco::hicann_dls::v2::NeuronOnDLS const& neuron, NeuronDigitalConfig value)
 {
 	NeuronDigitalConfig& config = m_neuron_digital_configs.at(neuron);
-	value.set_enable_external_current_input(config.get_enable_external_current_input(), {});
-	value.set_enable_external_voltage_output(config.get_enable_external_voltage_output(), {});
+	value.set_enable_buffered_readout(config.get_enable_buffered_readout(), {});
 	config = value;
 }
 

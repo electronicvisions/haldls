@@ -31,17 +31,13 @@ TEST_F(ReadbackTest, ExternalNeuronSwitchesAreDisabled) {
 
 	Unique const unique;
 	NeuronOnDLS const output_neuron{0};
-	NeuronOnDLS const input_neuron{5};
 
-	chip.enable_external_voltage_output(output_neuron);
-	EXPECT_EQ(output_neuron, chip.get_external_voltage_output_neuron());
-	chip.enable_external_current_input(input_neuron);
-	EXPECT_EQ(input_neuron, chip.get_external_current_input_neuron());
+	chip.enable_buffered_readout(output_neuron);
+	EXPECT_EQ(output_neuron, chip.get_buffered_readout_neuron());
 
 	PlaybackProgramBuilder builder;
 	auto chip_ticket = builder.get_container<Chip>(unique);
 	auto output_neuron_ticket = builder.get_container<NeuronDigitalConfig>(output_neuron);
-	auto input_neuron_ticket = builder.get_container<NeuronDigitalConfig>(input_neuron);
 	builder.halt();
 	auto program = builder.done();
 
@@ -50,12 +46,8 @@ TEST_F(ReadbackTest, ExternalNeuronSwitchesAreDisabled) {
 	ctrl.run(program);
 
 	auto const chip_config = program.get(chip_ticket);
-	EXPECT_EQ(output_neuron, chip_config.get_external_voltage_output_neuron());
-	EXPECT_EQ(input_neuron, chip.get_external_current_input_neuron());
+	EXPECT_EQ(output_neuron, chip_config.get_buffered_readout_neuron());
 
 	auto const output_neuron_config = program.get(output_neuron_ticket);
-	EXPECT_FALSE(output_neuron_config.get_enable_external_voltage_output());
-
-	auto const input_neuron_config = program.get(input_neuron_ticket);
-	EXPECT_FALSE(input_neuron_config.get_enable_external_current_input());
+	EXPECT_FALSE(output_neuron_config.get_enable_buffered_readout());
 }

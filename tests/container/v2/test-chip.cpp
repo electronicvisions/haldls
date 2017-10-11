@@ -114,54 +114,40 @@ TEST(Chip, General)
 	NeuronOnDLS test_neuron_coord(14);
 	NeuronOnDLS test_neuron_coord2(10);
 
-	ASSERT_FALSE(chip.get_external_current_input_neuron());
-	ASSERT_FALSE(chip.get_external_voltage_output_neuron());
+	ASSERT_FALSE(chip.get_buffered_readout_neuron());
 
-	chip.enable_external_current_input(test_neuron_coord);
-	chip.enable_external_voltage_output(test_neuron_coord);
+	chip.enable_buffered_readout(test_neuron_coord);
 
-	ASSERT_TRUE(bool(chip.get_external_current_input_neuron()));
-	ASSERT_TRUE(bool(chip.get_external_voltage_output_neuron()));
-	ASSERT_EQ(chip.get_external_current_input_neuron(), test_neuron_coord);
-	ASSERT_EQ(chip.get_external_voltage_output_neuron(), test_neuron_coord);
+	ASSERT_TRUE(bool(chip.get_buffered_readout_neuron()));
+	ASSERT_EQ(chip.get_buffered_readout_neuron(), test_neuron_coord);
 
 	for (auto neuron : iter_all<NeuronOnDLS>()) {
 		auto config = chip.get_neuron_digital_config(neuron);
-		ASSERT_FALSE(config.get_enable_external_current_input());
-		ASSERT_FALSE(config.get_enable_external_voltage_output());
+		ASSERT_FALSE(config.get_enable_buffered_readout());
 	}
 
-	chip.enable_external_current_input(test_neuron_coord2);
-	chip.enable_external_voltage_output(test_neuron_coord2);
-	ASSERT_EQ(chip.get_external_current_input_neuron(), test_neuron_coord2);
-	ASSERT_EQ(chip.get_external_voltage_output_neuron(), test_neuron_coord2);
+	chip.enable_buffered_readout(test_neuron_coord2);
+	ASSERT_EQ(chip.get_buffered_readout_neuron(), test_neuron_coord2);
 
 	for (auto neuron : iter_all<NeuronOnDLS>()) {
 		auto config = chip.get_neuron_digital_config(neuron);
-		ASSERT_FALSE(config.get_enable_external_current_input());
-		ASSERT_FALSE(config.get_enable_external_voltage_output());
+		ASSERT_FALSE(config.get_enable_buffered_readout());
 	}
 
-	ASSERT_EQ(chip.get_external_current_input_neuron(), test_neuron_coord2);
-	ASSERT_EQ(chip.get_external_voltage_output_neuron(), test_neuron_coord2);
+	ASSERT_EQ(chip.get_buffered_readout_neuron(), test_neuron_coord2);
 
 	auto config2 = chip.get_neuron_digital_config(test_neuron_coord2);
-	ASSERT_FALSE(config2.get_enable_external_current_input());
-	ASSERT_FALSE(config2.get_enable_external_voltage_output());
+	ASSERT_FALSE(config2.get_enable_buffered_readout());
 
 	chip.set_neuron_digital_config(test_neuron_coord, config2);
 	auto config = chip.get_neuron_digital_config(test_neuron_coord);
-	ASSERT_FALSE(config.get_enable_external_current_input());
-	ASSERT_FALSE(config.get_enable_external_voltage_output());
+	ASSERT_FALSE(config.get_enable_buffered_readout());
 	ASSERT_EQ(config2, config);
 
 	// Unaffected by the call to set_neuron_digital_config().
-	ASSERT_EQ(chip.get_external_current_input_neuron(), test_neuron_coord2);
-	ASSERT_EQ(chip.get_external_voltage_output_neuron(), test_neuron_coord2);
+	ASSERT_EQ(chip.get_buffered_readout_neuron(), test_neuron_coord2);
 
-	chip.disable_external_current_input();
-	chip.disable_external_voltage_output();
-	ASSERT_FALSE(chip.get_external_current_input_neuron());
-	ASSERT_FALSE(chip.get_external_voltage_output_neuron());
+	chip.disable_buffered_readout();
+	ASSERT_FALSE(chip.get_buffered_readout_neuron());
 
 }

@@ -26,19 +26,10 @@ public:
 
 	Chip() HALDLS_VISIBLE;
 
-	// external current input and voltage output are only allowed to be enabled for
-	// one neuron at a time, we therefore set this here
-	// to check if a certain neuron has active current input or voltage output
-	// check neuron directly.
-	void enable_external_current_input(halco::hicann_dls::v2::NeuronOnDLS const& neuron) HALDLS_VISIBLE;
-	void disable_external_current_input() HALDLS_VISIBLE;
+	void enable_buffered_readout(halco::hicann_dls::v2::NeuronOnDLS const& neuron) HALDLS_VISIBLE;
+	void disable_buffered_readout() HALDLS_VISIBLE;
 	common::optional<halco::hicann_dls::v2::NeuronOnDLS>
-	get_external_current_input_neuron() const HALDLS_VISIBLE;
-
-	void enable_external_voltage_output(halco::hicann_dls::v2::NeuronOnDLS const& neuron) HALDLS_VISIBLE;
-	void disable_external_voltage_output() HALDLS_VISIBLE;
-	common::optional<halco::hicann_dls::v2::NeuronOnDLS>
-	get_external_voltage_output_neuron() const HALDLS_VISIBLE;
+	get_buffered_readout_neuron() const HALDLS_VISIBLE;
 
 	/// \brief Returns the digital configuration of the specified neuron.
 	/// \note To prevent misconfiguration, enabling the external current input and
@@ -50,9 +41,8 @@ public:
 
 	/// \brief Changes the digital configuration of the specified neuron.
 	/// \note The state of the external current input and external voltage output switches
-	///       is solely controlled through enable_external_current_input() and
-	///       enable_external_voltage_output().  Corresponding settings of the passed-in
-	///       configuration have no effect on the stored instance.
+	///       is solely controlled through enable_buffered_readout(). Corresponding
+	///       settings of the passed-in configuration have no effect on the stored instance.
 	void set_neuron_digital_config(
 		halco::hicann_dls::v2::NeuronOnDLS const& neuron, NeuronDigitalConfig value) HALDLS_VISIBLE;
 

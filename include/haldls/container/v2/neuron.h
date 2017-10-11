@@ -104,26 +104,17 @@ public:
 	void set_fire_out_mode(FireOutMode const value) HALDLS_VISIBLE;
 	MuxReadoutMode get_mux_readout_mode() const HALDLS_VISIBLE;
 	void set_mux_readout_mode(MuxReadoutMode const value) HALDLS_VISIBLE;
+	bool get_enable_unbuffered_readout() const HALDLS_VISIBLE;
+	void set_enable_unbuffered_readout(bool const value) HALDLS_VISIBLE;
 
-	bool get_enable_external_current_input() const HALDLS_VISIBLE;
-
-	/// \brief Enable or disable external current input for this neuron.
-	/// \note As only one neuron per chip can receive external current input, access to
-	///       this setting is disabled for single neurons.
-	/// \see Chip::enable_external_current_input() and
-	///      Chip::disable_external_current_input().
-	void set_enable_external_current_input(
-		bool const value,
-		common::Passkey<Chip, io::v2::PlaybackProgram> const& passkey) HALDLS_VISIBLE;
-
-	bool get_enable_external_voltage_output() const HALDLS_VISIBLE;
+	bool get_enable_buffered_readout() const HALDLS_VISIBLE;
 
 	/// \brief Enable or disable external voltage output for this neuron.
 	/// \note As only one neuron per chip can provide voltage output, access to this
 	///       setting is disabled for single neurons.
-	/// \see Chip::enable_external_voltage_output() and
-	///      Chip::disable_external_voltage_output().
-	void set_enable_external_voltage_output(
+	/// \see Chip::enable_buffered_readout() and
+	///      Chip::disable_buffered_readout().
+	void set_enable_buffered_readout(
 		bool const value,
 		common::Passkey<Chip, io::v2::PlaybackProgram> const& passkey) HALDLS_VISIBLE;
 
@@ -144,8 +135,8 @@ private:
 	bool m_smallcap;
 	FireOutMode m_fire_out_mode;
 	MuxReadoutMode m_mux_readout_mode;
-	bool m_external_current_input;
-	bool m_external_voltage_output;
+	bool m_unbuffered_readout;
+	bool m_buffered_readout;
 };
 
 }  // namespace v2
