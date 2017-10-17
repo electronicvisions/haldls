@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "halco/common/genpybind.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
@@ -10,15 +11,15 @@
 
 namespace haldls {
 namespace container {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
-class CapMemCell
+class GENPYBIND(visible) CapMemCell
 {
 public:
 	typedef halco::hicann_dls::v2::CapMemCellOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	struct Value
+	struct GENPYBIND(inline_base("*")) Value
 		: public halco::common::detail::RantWrapper<Value, uint_fast16_t, 1023, 0>
 	{
 		constexpr explicit Value(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
@@ -30,10 +31,13 @@ public:
 	Value get_value() const HALDLS_VISIBLE;
 	void set_value(Value const& value) HALDLS_VISIBLE;
 
-	static size_t constexpr config_size_in_words = 1;
-	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& cell) const HALDLS_VISIBLE;
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& cell) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE
+		GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE
+		GENPYBIND(hidden);
 
 	bool operator==(CapMemCell const& other) const HALDLS_VISIBLE;
 	bool operator!=(CapMemCell const& other) const HALDLS_VISIBLE;
@@ -42,7 +46,7 @@ private:
 	Value m_value;
 };
 
-class CapMem
+class GENPYBIND(visible) CapMem
 {
 public:
 	typedef halco::common::Unique coordinate_type;
@@ -77,81 +81,81 @@ private:
 };
 
 
-class CommonCapMemConfig
+class GENPYBIND(visible) CommonCapMemConfig
 {
 public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	struct OutAmpBias
+	struct GENPYBIND(inline_base("*")) OutAmpBias
 		: public halco::common::detail::RantWrapper<OutAmpBias, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit OutAmpBias(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct SourceFollowerBias
+	struct GENPYBIND(inline_base("*")) SourceFollowerBias
 		: public halco::common::detail::RantWrapper<SourceFollowerBias, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit SourceFollowerBias(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct LevelShifterBias
+	struct GENPYBIND(inline_base("*")) LevelShifterBias
 		: public halco::common::detail::RantWrapper<LevelShifterBias, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit LevelShifterBias(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
 
-	struct VGlobalBias
+	struct GENPYBIND(inline_base("*")) VGlobalBias
 		: public halco::common::detail::RantWrapper<VGlobalBias, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit VGlobalBias(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct CurrentCellRes
+	struct GENPYBIND(inline_base("*")) CurrentCellRes
 		: public halco::common::detail::RantWrapper<CurrentCellRes, uint_fast16_t, 63, 0>
 	{
 		constexpr explicit CurrentCellRes(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct BoostFactor
+	struct GENPYBIND(inline_base("*")) BoostFactor
 		: public halco::common::detail::RantWrapper<BoostFactor, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit BoostFactor(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct PrescalePause
+	struct GENPYBIND(inline_base("*")) PrescalePause
 		: public halco::common::detail::RantWrapper<PrescalePause, uint_fast16_t, 6, 0>
 	{
 		constexpr explicit PrescalePause(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct PrescaleRamp
+	struct GENPYBIND(inline_base("*")) PrescaleRamp
 		: public halco::common::detail::RantWrapper<PrescaleRamp, uint_fast16_t, 6, 0>
 	{
 		constexpr explicit PrescaleRamp(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct SubCounter
+	struct GENPYBIND(inline_base("*")) SubCounter
 		: public halco::common::detail::
 			  RantWrapper<SubCounter, uint_fast16_t, 65535 /* 2^16*-1 */, 0>
 	{
 		constexpr explicit SubCounter(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct PauseCounter
+	struct GENPYBIND(inline_base("*")) PauseCounter
 		: public halco::common::detail::
 			  RantWrapper<PauseCounter, uint_fast32_t, 4294967295 /* 2^32-1 */, 0>
 	{
 		constexpr explicit PauseCounter(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct PulseA
+	struct GENPYBIND(inline_base("*")) PulseA
 		: public halco::common::detail::RantWrapper<PulseA, uint_fast16_t, 65535, 0>
 	{
 		constexpr explicit PulseA(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct PulseB
+	struct GENPYBIND(inline_base("*")) PulseB
 		: public halco::common::detail::RantWrapper<PulseB, uint_fast16_t, 65535, 0>
 	{
 		constexpr explicit PulseB(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct BoostA
+	struct GENPYBIND(inline_base("*")) BoostA
 		: public halco::common::detail::RantWrapper<BoostA, uint_fast16_t, 65535, 0>
 	{
 		constexpr explicit BoostA(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
 	};
-	struct BoostB
+	struct GENPYBIND(inline_base("*")) BoostB
 		: public halco::common::detail::RantWrapper<BoostB, uint_fast16_t, 65535, 0>
 	{
 		constexpr explicit BoostB(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
@@ -236,11 +240,11 @@ public:
 	BoostB get_boost_b() const HALDLS_VISIBLE;
 	void set_boost_b(BoostB const& value) HALDLS_VISIBLE;
 
-	static size_t constexpr config_size_in_words = 10;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 10;
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& unique) const HALDLS_VISIBLE;
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
 
 	bool operator==(CommonCapMemConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(CommonCapMemConfig const& other) const HALDLS_VISIBLE;

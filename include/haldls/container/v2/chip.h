@@ -1,5 +1,6 @@
 #pragma once
 
+#include "halco/common/genpybind.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
@@ -17,9 +18,9 @@
 
 namespace haldls {
 namespace container {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
-class Chip
+class GENPYBIND(visible) Chip
 {
 public:
 	typedef halco::common::Unique coordinate_type;

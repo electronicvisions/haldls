@@ -104,7 +104,7 @@ bool CommonSynramConfig::operator!=(CommonSynramConfig const& other) const
 }
 
 std::array<hardware_address_type, CommonSynramConfig::config_size_in_words>
-CommonSynramConfig::addresses(CommonSynramConfig::coordinate_type const& /*coord*/) const
+CommonSynramConfig::addresses(CommonSynramConfig::coordinate_type const& /*unique*/) const
 {
 	hardware_address_type const base_addr = 0x08000000;
 	std::array<hardware_address_type, config_size_in_words> addr;
@@ -254,13 +254,13 @@ bool SynapseBlock::operator!=(SynapseBlock const& other) const
 }
 
 std::array<hardware_address_type, SynapseBlock::config_size_in_words> SynapseBlock::addresses(
-	SynapseBlock::coordinate_type const& coord) const
+	SynapseBlock::coordinate_type const& block) const
 {
 	using namespace halco::hicann_dls::v2;
 	hardware_address_type const base_address = 0x0001f000;
 	hardware_address_type const address_offset =
-		(coord.y() * NeuronOnDLS::size * config_size_in_words / SynapseOnSynapseBlock::size) +
-		coord.x();
+		(block.y() * NeuronOnDLS::size * config_size_in_words / SynapseOnSynapseBlock::size) +
+		block.x();
 	return {
 		{base_address + address_offset,
 		 base_address + address_offset +
@@ -446,11 +446,11 @@ bool ColumnCorrelationBlock::operator!=(ColumnCorrelationBlock const& other) con
 }
 
 std::array<hardware_address_type, ColumnCorrelationBlock::config_size_in_words>
-ColumnCorrelationBlock::addresses(coordinate_type const& coord) const
+ColumnCorrelationBlock::addresses(coordinate_type const& block) const
 {
 	using namespace halco::hicann_dls::v2;
 	hardware_address_type const base_address = 0x0001f200 + 16;
-	auto const address = base_address + static_cast<hardware_address_type>(coord);
+	auto const address = base_address + static_cast<hardware_address_type>(block);
 	auto const offset =
 		static_cast<hardware_address_type>(NeuronOnDLS::size / SynapseOnSynapseBlock::size);
 	return {{address, address + offset}};
@@ -632,11 +632,11 @@ bool ColumnCurrentBlock::operator!=(ColumnCurrentBlock const& other) const
 }
 
 std::array<hardware_address_type, ColumnCurrentBlock::config_size_in_words>
-ColumnCurrentBlock::addresses(coordinate_type const& coord) const
+ColumnCurrentBlock::addresses(coordinate_type const& block) const
 {
 	using namespace halco::hicann_dls::v2;
 	hardware_address_type const base_address = 0x0001f200;
-	auto const address = base_address + static_cast<hardware_address_type>(coord);
+	auto const address = base_address + static_cast<hardware_address_type>(block);
 	auto const offset =
 		static_cast<hardware_address_type>(NeuronOnDLS::size / SynapseOnSynapseBlock::size);
 	return {{address, address + offset}};

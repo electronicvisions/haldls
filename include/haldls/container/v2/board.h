@@ -1,5 +1,6 @@
 #pragma once
 
+#include "halco/common/genpybind.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
@@ -10,9 +11,9 @@
 
 namespace haldls {
 namespace container {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
-class FPGAConfig {
+class GENPYBIND(visible) FPGAConfig {
 public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
@@ -25,10 +26,10 @@ public:
 	bool operator==(FPGAConfig const& other) const;
 	bool operator!=(FPGAConfig const& other) const;
 
-	static size_t constexpr config_size_in_words = 1;
-	std::array<ocp_address_type, config_size_in_words> addresses(coordinate_type const& unique) const
-		HALDLS_VISIBLE;
-	std::array<ocp_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<ocp_address_type, config_size_in_words> addresses(
+		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<ocp_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_reset_to_dls;
@@ -44,7 +45,7 @@ private:
 	bool m_loopback_to_dls;
 }; // FPGAConfig
 
-class SpikeRouter
+class GENPYBIND(visible) SpikeRouter
 {
 public:
 	typedef halco::common::Unique coordinate_type;
@@ -52,7 +53,7 @@ public:
 
 	SpikeRouter() HALDLS_VISIBLE;
 
-	struct Delay
+	struct GENPYBIND(inline_base("*")) Delay
 		: public halco::common::detail::RantWrapper<Delay, uint_fast16_t, 0x4000 - 1, 0>
 	{
 		constexpr explicit Delay(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
@@ -84,11 +85,11 @@ public:
 	bool operator==(SpikeRouter const& other) const;
 	bool operator!=(SpikeRouter const& other) const;
 
-	static size_t constexpr config_size_in_words =
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) =
 		2 * halco::hicann_dls::v2::NeuronOnDLS::size + 1;
-	std::array<ocp_address_type, config_size_in_words> addresses(coordinate_type const& unique) const
-		HALDLS_VISIBLE;
-	std::array<ocp_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
+	std::array<ocp_address_type, config_size_in_words> addresses(
+		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<ocp_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_squeeze_mode_enabled;
@@ -101,7 +102,7 @@ private:
 		m_target_rows_by_neuron;
 }; // SpikeRouter
 
-class Board {
+class GENPYBIND(visible) Board {
 public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::false_type has_local_data;

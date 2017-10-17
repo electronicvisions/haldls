@@ -1,3 +1,12 @@
+#include "halco/common/genpybind.h"
+
+GENPYBIND(tag(haldls_container_v2))
+GENPYBIND_MANUAL({
+	parent.attr("__variant__") = "pybind11";
+	parent->py::module::import("pyhalco_hicann_dls_v2");
+})
+
+#include "board.h"
 #include "capmem.h"
 #include "chip.h"
 #include "common.h"

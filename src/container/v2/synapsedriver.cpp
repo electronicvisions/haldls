@@ -51,7 +51,7 @@ bool SynapseDrivers::operator!=(SynapseDrivers const& other) const
 }
 
 std::array<hardware_address_type, SynapseDrivers::config_size_in_words>
-SynapseDrivers::addresses(coordinate_type const& /*coord*/) const
+SynapseDrivers::addresses(coordinate_type const& /*unique*/) const
 {
 	hardware_address_type const base_addr = 0x1c000000;
 	hardware_address_type const excitator_addr = base_addr + 0;

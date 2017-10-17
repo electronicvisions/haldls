@@ -29,6 +29,9 @@ def configure(cfg):
         '-fvisibility-inlines-hidden',
     ]
 
+    if cfg.env.build_python_bindings:
+        cfg.recurse("pyhaldls")
+
 
 def build(bld):
     bld(
@@ -83,3 +86,6 @@ def build(bld):
         install_path = '${PREFIX}/bin',
         skip_run = True,
     )
+
+    if bld.env.build_python_bindings:
+        bld.recurse("pyhaldls")

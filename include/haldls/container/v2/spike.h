@@ -2,6 +2,7 @@
 
 #include <ostream>
 
+#include "halco/common/genpybind.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "haldls/common/visibility.h"
@@ -10,9 +11,9 @@
 
 namespace haldls {
 namespace container {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
-class PlaybackSpike
+class GENPYBIND(visible) PlaybackSpike
 {
 public:
 	PlaybackSpike() HALDLS_VISIBLE;
@@ -33,6 +34,7 @@ public:
 	bool operator<=(PlaybackSpike const& other) const HALDLS_VISIBLE;
 	bool operator>=(PlaybackSpike const& other) const HALDLS_VISIBLE;
 
+	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PlaybackSpike const& spike) HALDLS_VISIBLE;
 
 private:
@@ -41,7 +43,7 @@ private:
 	halco::hicann_dls::v2::SynapseDriverOnDLS m_synapse_driver;
 }; // PlaybackSpike
 
-class RecordedSpike
+class GENPYBIND(visible) RecordedSpike
 {
 public:
 	RecordedSpike() HALDLS_VISIBLE;
@@ -60,6 +62,7 @@ public:
 	bool operator<=(RecordedSpike const& other) const HALDLS_VISIBLE;
 	bool operator>=(RecordedSpike const& other) const HALDLS_VISIBLE;
 
+	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, RecordedSpike const& spike) HALDLS_VISIBLE;
 
 private:

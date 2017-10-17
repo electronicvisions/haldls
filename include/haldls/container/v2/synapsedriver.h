@@ -8,15 +8,15 @@
 
 namespace haldls {
 namespace container {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
-class SynapseDrivers
+class GENPYBIND(visible) SynapseDrivers
 {
 public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	struct PulseLength
+	struct GENPYBIND(inline_base("*")) PulseLength
 		: public halco::common::detail::RantWrapper<PulseLength, uint_fast16_t, 31, 0>
 	{
 		constexpr explicit PulseLength(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
@@ -47,12 +47,12 @@ public:
 	bool operator==(SynapseDrivers const& other) const HALDLS_VISIBLE;
 	bool operator!=(SynapseDrivers const& other) const HALDLS_VISIBLE;
 
-	static hardware_address_type constexpr config_size_in_words = 3;
+	static hardware_address_type constexpr config_size_in_words GENPYBIND(hidden) = 3;
 
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& /*coord*/) const HALDLS_VISIBLE;
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
 
 private:
 	PulseLength m_pulse_length;

@@ -2,6 +2,7 @@
 
 #include <ostream>
 
+#include "halco/common/genpybind.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "haldls/common/passkey.h"
@@ -16,17 +17,17 @@ class PlaybackProgram;
 } // namespace io
 
 namespace container {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
 class Chip;
 
-class CommonNeuronConfig
+class GENPYBIND(visible) CommonNeuronConfig
 {
 public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	struct PostCorrelationSignalLength
+	struct GENPYBIND(inline_base("*")) PostCorrelationSignalLength
 		: public halco::common::detail::
 			  RantWrapper<PostCorrelationSignalLength, uint_fast16_t, 15, 0>
 	{
@@ -49,10 +50,11 @@ public:
 	bool operator==(CommonNeuronConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(CommonNeuronConfig const& other) const HALDLS_VISIBLE;
 
-	static size_t constexpr config_size_in_words = 1;
-	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& unique) const HALDLS_VISIBLE;
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_digital_out;
@@ -63,7 +65,7 @@ private:
 
 /// \brief Digital configuration of a single neuron.
 /// \see Figure 1b of the paper "A highly tunable 65-nm CMOS LIF neuron for a large scale neuromorphic system".
-class NeuronDigitalConfig
+class GENPYBIND(visible) NeuronDigitalConfig
 {
 public:
 	typedef halco::hicann_dls::v2::NeuronOnDLS coordinate_type;
@@ -121,10 +123,11 @@ public:
 	bool operator==(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
 
-	static size_t constexpr config_size_in_words = 1;
-	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& neurn) const HALDLS_VISIBLE;
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<hardware_address_type, config_size_in_words> addresses(
+		coordinate_type const& neurn) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_synapse_input_exc;

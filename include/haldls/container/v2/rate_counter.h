@@ -1,5 +1,6 @@
 #pragma once
 
+#include "halco/common/genpybind.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
@@ -8,15 +9,15 @@
 
 namespace haldls {
 namespace container {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
-class RateCounter
+class GENPYBIND(visible) RateCounter
 {
 public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	struct Count
+	struct GENPYBIND(inline_base("*")) Count
 		: public halco::common::detail::RantWrapper<Count, uint_fast16_t, 1023, 0>
 	{
 		constexpr explicit Count(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
@@ -39,11 +40,11 @@ public:
 	bool operator==(RateCounter const& other) const HALDLS_VISIBLE;
 	bool operator!=(RateCounter const& other) const HALDLS_VISIBLE;
 
-	static size_t constexpr config_size_in_words = halco::hicann_dls::v2::NeuronOnDLS::size + 2;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = halco::hicann_dls::v2::NeuronOnDLS::size + 2;
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& unique) const HALDLS_VISIBLE;
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
+		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
 
 private:
 	halco::common::typed_array<Count, halco::hicann_dls::v2::NeuronOnDLS> m_counts;
