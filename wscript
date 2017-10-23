@@ -57,7 +57,7 @@ def build(bld):
         target = 'haldls_io_v2',
         source = bld.path.ant_glob('src/io/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['haldls_common','uni', 'frickel_dls'],
+        use = ['haldls_common', 'haldls_container_v2', 'uni', 'frickel_dls'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
