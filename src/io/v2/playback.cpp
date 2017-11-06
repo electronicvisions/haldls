@@ -110,7 +110,7 @@ T PlaybackProgram::get(ContainerTicket<T> const& ticket) const
 	return config;
 }
 
-#define PLAYBACK_CONTAINER(Type)                                                                   \
+#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template Type PlaybackProgram::get<Type>(ContainerTicket<Type> const&) const;
 #include "haldls/container/v2/container.def"
 
@@ -273,12 +273,12 @@ PlaybackProgram PlaybackProgramBuilder::done()
 	return result;
 }
 
-#define PLAYBACK_CONTAINER(Type)                                                                   \
+#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template void PlaybackProgramBuilder::set_container<Type>(                                     \
 		Type::coordinate_type const& coord, Type const& config);
 #include "haldls/container/v2/container.def"
 
-#define PLAYBACK_CONTAINER(Type)                                                                   \
+#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::get_container<Type>(   \
 		Type::coordinate_type const& coord);
 #include "haldls/container/v2/container.def"

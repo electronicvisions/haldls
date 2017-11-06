@@ -45,12 +45,42 @@ def build(bld):
     )
 
     bld(
+        target='pyhaldls_io_v2',
+        source='../include/haldls/io/v2/io.h',
+        genpybind_tags='haldls_io_v2',
+        features='genpybind cxx cxxshlib pyext post_task',
+        use=['haldls_io_v2', 'PYBIND11HALDLS'],
+        install_path='${PREFIX}/lib',
+        linkflags='-Wl,-z,defs',
+        post_task=['pyhalco_hicann_dls_v2', 'hwtest_pyhaldls_io_v2'],
+    )
+
+    bld(
         name='test_pyhaldls_container_v2',
         tests='test/test_pyhaldls_container_v2.py',
         features='use pytest',
         use=['pyhalco_hicann_dls_v2', 'pyhaldls_container_v2'],
         install_path='${PREFIX}/bin',
         pythonpath=['test'],
+    )
+
+    bld(
+        name='test_pyhaldls_io_v2',
+        tests='test/test_pyhaldls_io_v2.py',
+        features='use pytest',
+        use=['pyhalco_hicann_dls_v2', 'pyhaldls_io_v2'],
+        install_path='${PREFIX}/bin',
+        pythonpath=['test'],
+    )
+
+    bld(
+        name='hwtest_pyhaldls_io_v2',
+        tests='test/hwtest_pyhaldls_io_v2.py',
+        features='use pytest',
+        use=['pyhalco_hicann_dls_v2', 'pyhaldls_io_v2'],
+        install_path='${PREFIX}/bin',
+        pythonpath=['test'],
+        skip_run=True,
     )
 
     bld.add_post_fun(summary)

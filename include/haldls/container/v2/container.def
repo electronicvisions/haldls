@@ -2,25 +2,25 @@
 // vim:ft=cpp
 
 #ifndef PLAYBACK_CONTAINER
-#define PLAYBACK_CONTAINER(Type)
+#define PLAYBACK_CONTAINER(Name, Type)
 #endif
 
-PLAYBACK_CONTAINER(haldls::container::v2::CapMem)
-PLAYBACK_CONTAINER(haldls::container::v2::CapMemCell)
-PLAYBACK_CONTAINER(haldls::container::v2::Chip)
-PLAYBACK_CONTAINER(haldls::container::v2::ColumnCorrelationBlock)
-PLAYBACK_CONTAINER(haldls::container::v2::ColumnCurrentBlock)
-PLAYBACK_CONTAINER(haldls::container::v2::CommonCapMemConfig)
-PLAYBACK_CONTAINER(haldls::container::v2::CommonNeuronConfig)
-PLAYBACK_CONTAINER(haldls::container::v2::CommonSynramConfig)
-PLAYBACK_CONTAINER(haldls::container::v2::CorrelationConfig)
-PLAYBACK_CONTAINER(haldls::container::v2::NeuronDigitalConfig)
-PLAYBACK_CONTAINER(haldls::container::v2::PPUControlRegister)
-PLAYBACK_CONTAINER(haldls::container::v2::PPUMemory)
-PLAYBACK_CONTAINER(haldls::container::v2::PPUMemoryWord)
-PLAYBACK_CONTAINER(haldls::container::v2::PPUStatusRegister)
-PLAYBACK_CONTAINER(haldls::container::v2::RateCounter)
-PLAYBACK_CONTAINER(haldls::container::v2::SynapseBlock)
-PLAYBACK_CONTAINER(haldls::container::v2::SynapseDrivers)
+PLAYBACK_CONTAINER(CapMem, haldls::container::v2::CapMem)
+PLAYBACK_CONTAINER(CapMemCell, haldls::container::v2::CapMemCell)
+PLAYBACK_CONTAINER(Chip, haldls::container::v2::Chip)
+PLAYBACK_CONTAINER(ColumnCorrelationBlock, haldls::container::v2::ColumnCorrelationBlock)
+PLAYBACK_CONTAINER(ColumnCurrentBlock, haldls::container::v2::ColumnCurrentBlock)
+PLAYBACK_CONTAINER(CommonCapMemConfig, haldls::container::v2::CommonCapMemConfig)
+PLAYBACK_CONTAINER(CommonNeuronConfig, haldls::container::v2::CommonNeuronConfig)
+PLAYBACK_CONTAINER(CommonSynramConfig, haldls::container::v2::CommonSynramConfig)
+PLAYBACK_CONTAINER(CorrelationConfig, haldls::container::v2::CorrelationConfig)
+PLAYBACK_CONTAINER(NeuronDigitalConfig, haldls::container::v2::NeuronDigitalConfig)
+PLAYBACK_CONTAINER(PPUControlRegister, haldls::container::v2::PPUControlRegister)
+PLAYBACK_CONTAINER(PPUMemory, haldls::container::v2::PPUMemory)
+PLAYBACK_CONTAINER(PPUMemoryWord, haldls::container::v2::PPUMemoryWord)
+PLAYBACK_CONTAINER(PPUStatusRegister, haldls::container::v2::PPUStatusRegister)
+PLAYBACK_CONTAINER(RateCounter, haldls::container::v2::RateCounter)
+PLAYBACK_CONTAINER(SynapseBlock, haldls::container::v2::SynapseBlock)
+PLAYBACK_CONTAINER(SynapseDrivers, haldls::container::v2::SynapseDrivers)
 
 #undef PLAYBACK_CONTAINER

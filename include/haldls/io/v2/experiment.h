@@ -5,21 +5,16 @@
 #include <vector>
 
 #include "haldls/common/visibility.h"
+#include "haldls/container/v2/board.h"
+#include "haldls/container/v2/chip.h"
 
 namespace haldls {
-namespace container {
-namespace v2 {
-class Board;
-class Chip;
-} // namespace v2
-} // namespace container
-
 namespace io {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_io_v2)) {
 
 class PlaybackProgram;
 
-class ExperimentControl {
+class GENPYBIND(visible) ExperimentControl {
 	ExperimentControl(std::string const& usb_serial_number);
 
 public:
@@ -48,9 +43,9 @@ private:
 	std::unique_ptr<Impl> m_impl;
 }; // ExperimentControl
 
-ExperimentControl connect(std::string const& usb_serial_number) HALDLS_VISIBLE;
+ExperimentControl connect(std::string const& usb_serial_number) HALDLS_VISIBLE GENPYBIND(visible);
 
-std::vector<std::string> available_board_usb_serial_numbers() HALDLS_VISIBLE;
+std::vector<std::string> available_board_usb_serial_numbers() HALDLS_VISIBLE GENPYBIND(visible);
 
 } // namespace v2
 } // namespace io

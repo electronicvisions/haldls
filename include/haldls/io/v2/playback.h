@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "halco/common/genpybind.h"
+
 #include "haldls/common/visibility.h"
 #include "haldls/container/v2/common.h"
 #include "haldls/container/v2/spike.h"
@@ -13,12 +15,12 @@
 
 namespace haldls {
 namespace io {
-namespace v2 {
+namespace v2 GENPYBIND(tag(haldls_io_v2)) {
 
 class ExperimentControl;
 class PlaybackProgramBuilder;
 
-class PlaybackProgram {
+class GENPYBIND(visible) PlaybackProgram {
 public:
 	typedef std::vector<container::v2::RecordedSpike> spikes_type;
 	typedef std::size_t serial_number_type;
@@ -41,6 +43,13 @@ public:
 		std::size_t offset;
 		std::size_t length;
 	}; // ContainerTicket
+
+#ifdef __GENPYBIND__
+// Explicit instantiation of template class for all valid playback container types.
+#define PLAYBACK_CONTAINER(Name, Type)                                                             \
+	typedef PlaybackProgram::ContainerTicket<Type> _##Name##ContainerTicket GENPYBIND(opaque);
+#include "haldls/container/v2/container.def"
+#endif // __GENPYBIND__
 
 	PlaybackProgram();
 	PlaybackProgram(PlaybackProgram const& other);
@@ -87,7 +96,7 @@ private:
 	serial_number_type m_serial_number = invalid_serial_number;
 }; // PlaybackProgram
 
-class PlaybackProgramBuilder {
+class GENPYBIND(visible) PlaybackProgramBuilder {
 public:
 	typedef container::v2::hardware_time_type time_type;
 
@@ -107,9 +116,12 @@ public:
 	template <class T>
 	void set_container(typename T::coordinate_type const& coord, T const& config) HALDLS_VISIBLE;
 
+	/// \note As this variant requires an explicitly specified template parameter it is
+	///       not exposed to the python wrapping.
 	template <class T>
 	PlaybackProgram::ContainerTicket<T> get_container(typename T::coordinate_type const& coord) HALDLS_VISIBLE;
 
+	/// \note The extra argument is only used to select the correct template instantiation.
 	template <class T>
 	PlaybackProgram::ContainerTicket<T> get_container(
 		typename T::coordinate_type const& coord, T const& /*config*/)
@@ -123,6 +135,18 @@ private:
 	static std::atomic<PlaybackProgram::serial_number_type> next_serial_number;
 	PlaybackProgram m_program;
 }; // PlaybackProgramBuilder
+
+#ifdef __GENPYBIND__
+// Explicit instantiation of template member functions for all valid playback container types.
+#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
+	extern template void PlaybackProgramBuilder::set_container<Type>(                              \
+		Type::coordinate_type const&, Type const&);                                                \
+	extern template PlaybackProgram::ContainerTicket<Type>                                         \
+	PlaybackProgramBuilder::get_container<Type>(Type::coordinate_type const&, Type const&);        \
+	extern template Type PlaybackProgram::get(                                                     \
+		PlaybackProgram::ContainerTicket<Type> const& ticket) const;
+#include "haldls/container/v2/container.def"
+#endif // __GENPYBIND__
 
 } // namespace v2
 } // namespace io
