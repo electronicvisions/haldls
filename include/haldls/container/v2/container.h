@@ -8,3 +8,4 @@
 #include "rate_counter.h"
 #include "spike.h"
 #include "synapse.h"
+#include "synapsedriver.h"

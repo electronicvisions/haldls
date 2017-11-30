@@ -12,6 +12,7 @@
 #include "haldls/container/v2/ppu.h"
 #include "haldls/container/v2/rate_counter.h"
 #include "haldls/container/v2/synapse.h"
+#include "haldls/container/v2/synapsedriver.h"
 
 
 namespace haldls {

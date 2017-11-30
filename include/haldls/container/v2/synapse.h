@@ -258,56 +258,6 @@ private:
 			m_switches;
 };
 
-
-class SynapseDrivers
-{
-public:
-	typedef halco::common::Unique coordinate_type;
-	typedef std::true_type is_leaf_node;
-
-	struct PulseLength
-		: public halco::common::detail::RantWrapper<PulseLength, uint_fast16_t, 31, 0>
-	{
-		constexpr explicit PulseLength(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
-	};
-
-	enum class State : uint_fast8_t
-	{
-		disabled = 0,
-		excitatory,
-		inhibitory
-	};
-
-	typedef std::array<State, halco::hicann_dls::v2::SynapseDriverOnDLS::size> states_type;
-
-	SynapseDrivers() HALDLS_VISIBLE;
-
-	states_type get_states() const HALDLS_VISIBLE;
-	void set_states(states_type const& values) HALDLS_VISIBLE;
-
-	State get_state(halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver) const
-		HALDLS_VISIBLE;
-	void set_state(halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver, State value)
-		HALDLS_VISIBLE;
-
-	PulseLength get_pulse_length() const HALDLS_VISIBLE;
-	void set_pulse_length(PulseLength const& value) HALDLS_VISIBLE;
-
-	bool operator==(SynapseDrivers const& other) const HALDLS_VISIBLE;
-	bool operator!=(SynapseDrivers const& other) const HALDLS_VISIBLE;
-
-	static hardware_address_type constexpr config_size_in_words = 3;
-
-	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& /*coord*/) const HALDLS_VISIBLE;
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE;
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE;
-
-private:
-	PulseLength m_pulse_length;
-	states_type m_states;
-};
-
 } // namespace v2
 } // namespace container
 } // namespace haldls
@@ -321,6 +271,5 @@ HALCO_GEOMETRY_HASH_CLASS(haldls::container::v2::SynapseBlock::Synapse::Weight)
 HALCO_GEOMETRY_HASH_CLASS(haldls::container::v2::SynapseBlock::Synapse::Address)
 HALCO_GEOMETRY_HASH_CLASS(haldls::container::v2::SynapseBlock::Synapse::TimeCalib)
 HALCO_GEOMETRY_HASH_CLASS(haldls::container::v2::SynapseBlock::Synapse::AmpCalib)
-HALCO_GEOMETRY_HASH_CLASS(haldls::container::v2::SynapseDrivers::PulseLength)
 
 } // namespace std
