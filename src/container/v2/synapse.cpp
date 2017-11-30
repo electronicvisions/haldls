@@ -210,8 +210,8 @@ struct SynapseBlockBitfield
 	}
 };
 
-// FIXME: why is this magic trafo needed?
-hardware_word_type magic_weight_trafo(hardware_word_type const& weight)
+// synapse ram cells are permuted connected to the DAC
+hardware_word_type weight_permutation(hardware_word_type const& weight)
 {
 	std::bitset<6> before(weight);
 	std::bitset<6> after;
@@ -236,7 +236,7 @@ std::array<hardware_word_type, SynapseBlock::config_size_in_words> SynapseBlock:
 	{                                                                                              \
 		SynapseBlock::Synapse const& config = m_synapses.at(SynapseOnSynapseBlock(index));         \
 		bitfield.u.m.time_calib_##index = config.get_time_calib();                                 \
-		bitfield.u.m.weight_##index = magic_weight_trafo(config.get_weight());                     \
+		bitfield.u.m.weight_##index = weight_permutation(config.get_weight());                     \
 		bitfield.u.m.amp_calib_##index = config.get_amp_calib();                                   \
 		bitfield.u.m.address_##index = config.get_address();                                       \
 	}
@@ -262,7 +262,7 @@ void SynapseBlock::decode(
 		SynapseBlock::Synapse config;                                                              \
 		config.set_time_calib(SynapseBlock::Synapse::TimeCalib(bitfield.u.m.time_calib_##index));  \
 		config.set_weight(                                                                         \
-			SynapseBlock::Synapse::Weight(magic_weight_trafo(bitfield.u.m.weight_##index)));       \
+			SynapseBlock::Synapse::Weight(weight_permutation(bitfield.u.m.weight_##index)));       \
 		config.set_amp_calib(SynapseBlock::Synapse::AmpCalib(bitfield.u.m.amp_calib_##index));     \
 		config.set_address(SynapseBlock::Synapse::Address(bitfield.u.m.address_##index));          \
 		m_synapses.at(SynapseOnSynapseBlock(index)) = config;                                      \
