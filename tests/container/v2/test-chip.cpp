@@ -50,7 +50,17 @@ TEST(Chip, General)
 	//test if single correlation switch setter modifies correct block
 	ASSERT_EQ(chip.get_column_correlation_block(ColumnBlockOnDLS(0)), corr_block);
 
-	// TODO Test Current switches
+	ColumnCurrentBlock::ColumnCurrentSwitch curr_switch;
+	curr_switch.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::internal);
+	chip.set_column_current_switch(ColumnCurrentSwitchOnDLS(2), curr_switch);
+	ASSERT_EQ(chip.get_column_current_switch(ColumnCurrentSwitchOnDLS(2)), curr_switch);
+
+	ColumnCurrentBlock curr_block;
+	curr_block.set_switch(ColumnCurrentSwitchOnColumnBlock(2), curr_switch);
+	chip.set_column_current_block(ColumnBlockOnDLS(6), curr_block);
+	ASSERT_EQ(chip.get_column_current_block(ColumnBlockOnDLS(6)), curr_block);
+	//test if single current switch setter modifies correct block
+	ASSERT_EQ(chip.get_column_current_block(ColumnBlockOnDLS(0)), curr_block);
 
 	CapMem capmem;
 	capmem.set(CapMemCellOnDLS(Enum(4)), CapMemCell::Value(123));
@@ -66,6 +76,11 @@ TEST(Chip, General)
 	ppu_memory.set_words(test_mem);
 	chip.set_ppu_memory(ppu_memory);
 	ASSERT_EQ(chip.get_ppu_memory(), ppu_memory);
+
+	PPUControlRegister control_register;
+	control_register.set_inhibit_reset(true);
+	chip.set_ppu_control_register(control_register);
+	ASSERT_EQ(chip.get_ppu_control_register(), control_register);
 
 	RateCounter rate;
 	rate.set_neuron_enable(NeuronOnDLS(4), true);
