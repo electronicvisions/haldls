@@ -143,7 +143,7 @@ private:
 		if (N > remaining())
 			throw std::runtime_error("end of buffer during decoding");
 
-		std::array<value_type, N> buf;
+		std::array<value_type, N> buf{{}};
 
 		auto prev_it = m_it;
 		std::advance(m_it, N);
