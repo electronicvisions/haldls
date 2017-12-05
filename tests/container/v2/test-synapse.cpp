@@ -14,6 +14,7 @@ TEST(CommonSynramConfig, General)
 	CommonSynramConfig config;
 	EXPECT_ANY_THROW(CommonSynramConfig::PCConf(16));
 	EXPECT_NO_THROW(CommonSynramConfig::PCConf(15));
+	EXPECT_ANY_THROW(CommonSynramConfig::WConf(256));
 	EXPECT_NO_THROW(CommonSynramConfig::WConf(255));
 	EXPECT_ANY_THROW(CommonSynramConfig::WaitCtrClear(8));
 	EXPECT_NO_THROW(CommonSynramConfig::WaitCtrClear(7));
@@ -26,6 +27,18 @@ TEST(CommonSynramConfig, General)
 
 	config.set_wait_ctr_clear(CommonSynramConfig::WaitCtrClear(7));
 	ASSERT_EQ(config.get_wait_ctr_clear(), CommonSynramConfig::WaitCtrClear(7));
+
+	config.set_use_internal_i_bias_correlation_output(true);
+	ASSERT_EQ(config.get_use_internal_i_bias_correlation_output(), true);
+
+	config.set_use_internal_i_bias_vstore(true);
+	ASSERT_EQ(config.get_use_internal_i_bias_vstore(), true);
+
+	config.set_use_internal_i_bias_vramp(true);
+	ASSERT_EQ(config.get_use_internal_i_bias_vramp(), true);
+
+	config.set_use_internal_i_bias_vdac(true);
+	ASSERT_EQ(config.get_use_internal_i_bias_vdac(), true);
 
 	CommonSynramConfig config_eq = config;
 	CommonSynramConfig config_ne(config);
@@ -44,11 +57,15 @@ TEST(CommonSynramConfig, EncodeDecode)
 	config.set_pc_conf(CommonSynramConfig::PCConf(5));
 	config.set_w_conf(CommonSynramConfig::WConf(50));
 	config.set_wait_ctr_clear(CommonSynramConfig::WaitCtrClear(2));
+	config.set_use_internal_i_bias_correlation_output(true);
+	config.set_use_internal_i_bias_vstore(false);
+	config.set_use_internal_i_bias_vramp(true);
+	config.set_use_internal_i_bias_vdac(false);
 
 	std::array<hardware_address_type, CommonSynramConfig::config_size_in_words> ref_addresses = {
-		{0x08000000, 0x08000001, 0x08000002}};
+	    {0x08000000, 0x08000001, 0x08000002, 0x08000003}};
 	std::array<hardware_word_type, CommonSynramConfig::config_size_in_words> ref_data = {
-		{5, 50, 2}};
+	    {5, 50, 2, 0b0101}};
 
 	halco::common::Unique coord;
 

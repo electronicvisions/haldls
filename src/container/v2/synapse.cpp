@@ -6,7 +6,16 @@ namespace haldls {
 namespace container {
 namespace v2 {
 
-CommonSynramConfig::CommonSynramConfig() : m_pc_conf(0), m_w_conf(0), m_wait_ctr_clear(0) {}
+CommonSynramConfig::CommonSynramConfig()
+    : m_pc_conf(0),
+      m_w_conf(0xFF),
+      m_wait_ctr_clear(1),
+      m_use_internal_i_bias_correlation_output(false),
+      m_use_internal_i_bias_vstore(false),
+      m_use_internal_i_bias_vramp(false),
+      m_use_internal_i_bias_vdac(false)
+{
+}
 
 CommonSynramConfig::PCConf CommonSynramConfig::get_pc_conf() const
 {
@@ -38,10 +47,55 @@ void CommonSynramConfig::set_wait_ctr_clear(CommonSynramConfig::WaitCtrClear con
 	m_wait_ctr_clear = value;
 }
 
+bool CommonSynramConfig::get_use_internal_i_bias_correlation_output() const
+{
+	return m_use_internal_i_bias_correlation_output;
+}
+
+void CommonSynramConfig::set_use_internal_i_bias_correlation_output(bool const value)
+{
+	m_use_internal_i_bias_correlation_output = value;
+}
+
+bool CommonSynramConfig::get_use_internal_i_bias_vstore() const
+{
+	return m_use_internal_i_bias_vstore;
+}
+
+void CommonSynramConfig::set_use_internal_i_bias_vstore(bool const value)
+{
+	m_use_internal_i_bias_vstore = value;
+}
+
+bool CommonSynramConfig::get_use_internal_i_bias_vramp() const
+{
+	return m_use_internal_i_bias_vramp;
+}
+
+void CommonSynramConfig::set_use_internal_i_bias_vramp(bool const value)
+{
+	m_use_internal_i_bias_vramp = value;
+}
+
+bool CommonSynramConfig::get_use_internal_i_bias_vdac() const
+{
+	return m_use_internal_i_bias_vdac;
+}
+
+void CommonSynramConfig::set_use_internal_i_bias_vdac(bool const value)
+{
+	m_use_internal_i_bias_vdac = value;
+}
+
 bool CommonSynramConfig::operator==(CommonSynramConfig const& other) const
 {
 	return m_pc_conf == other.get_pc_conf() && m_w_conf == other.get_w_conf() &&
-		   m_wait_ctr_clear == other.get_wait_ctr_clear();
+	       m_wait_ctr_clear == other.get_wait_ctr_clear() &&
+	       m_use_internal_i_bias_correlation_output ==
+	           other.get_use_internal_i_bias_correlation_output() &&
+	       m_use_internal_i_bias_vstore == other.get_use_internal_i_bias_vstore() &&
+	       m_use_internal_i_bias_vramp == other.get_use_internal_i_bias_vramp() &&
+	       m_use_internal_i_bias_vdac == other.get_use_internal_i_bias_vdac();
 }
 
 bool CommonSynramConfig::operator!=(CommonSynramConfig const& other) const
@@ -52,25 +106,74 @@ bool CommonSynramConfig::operator!=(CommonSynramConfig const& other) const
 std::array<hardware_address_type, CommonSynramConfig::config_size_in_words>
 CommonSynramConfig::addresses(CommonSynramConfig::coordinate_type const& /*coord*/) const
 {
-	hardware_address_type const pc_conf_addr = 0x08000000;
-	hardware_address_type const w_conf_addr = pc_conf_addr + 1;
-	hardware_address_type const wait_ctr_clear_addr = pc_conf_addr + 2;
-	return {{pc_conf_addr, w_conf_addr, wait_ctr_clear_addr}};
+	hardware_address_type const base_addr = 0x08000000;
+	std::array<hardware_address_type, config_size_in_words> addr;
+	for (size_t counter = 0; counter < config_size_in_words; counter++) {
+		addr.at(counter) = base_addr + counter;
+	}
+	return addr;
 }
+
+namespace {
+
+struct CommonSynramConfigBitfield
+{
+	union
+	{
+		std::array<hardware_word_type, CommonSynramConfig::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			hardware_word_type pc_conf            :  4;
+			hardware_word_type                    : 28;
+			hardware_word_type w_conf             :  8;
+			hardware_word_type                    : 24;
+			hardware_word_type wait_ctr_clear     :  3;
+			hardware_word_type                    : 29;
+			hardware_word_type use_coroutbias     :  1;
+			hardware_word_type use_vstore         :  1;
+			hardware_word_type use_vramp          :  1;
+			hardware_word_type use_vdac           :  1;
+			hardware_word_type                    : 28;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	CommonSynramConfigBitfield() { u.raw = {{0}}; }
+	CommonSynramConfigBitfield(
+	    std::array<hardware_word_type, CommonSynramConfig::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+} // anonymous namespace
 
 std::array<hardware_address_type, CommonSynramConfig::config_size_in_words>
 CommonSynramConfig::encode() const
 {
-	return {{static_cast<hardware_word_type>(m_pc_conf), static_cast<hardware_word_type>(m_w_conf),
-	         static_cast<hardware_word_type>(m_wait_ctr_clear)}};
+	CommonSynramConfigBitfield bitfield;
+	bitfield.u.m.pc_conf = m_pc_conf.value();
+	bitfield.u.m.w_conf = m_w_conf.value();
+	bitfield.u.m.wait_ctr_clear = m_wait_ctr_clear.value();
+	bitfield.u.m.use_coroutbias = m_use_internal_i_bias_correlation_output;
+	bitfield.u.m.use_vstore = m_use_internal_i_bias_vstore;
+	bitfield.u.m.use_vramp = m_use_internal_i_bias_vramp;
+	bitfield.u.m.use_vdac = m_use_internal_i_bias_vdac;
+	return bitfield.u.raw;
 }
 
 void CommonSynramConfig::decode(
 	std::array<hardware_word_type, CommonSynramConfig::config_size_in_words> const& data)
 {
-	m_pc_conf = PCConf(data.at(0));
-	m_w_conf = WConf(data.at(1));
-	m_wait_ctr_clear = WaitCtrClear(data.at(2));
+	CommonSynramConfigBitfield bitfield(data);
+	m_pc_conf = PCConf(bitfield.u.m.pc_conf);
+	m_w_conf = WConf(bitfield.u.m.w_conf);
+	m_wait_ctr_clear = WaitCtrClear(bitfield.u.m.wait_ctr_clear);
+	m_use_internal_i_bias_correlation_output = bitfield.u.m.use_coroutbias;
+	m_use_internal_i_bias_vstore = bitfield.u.m.use_vstore;
+	m_use_internal_i_bias_vramp = bitfield.u.m.use_vramp;
+	m_use_internal_i_bias_vdac = bitfield.u.m.use_vdac;
 }
 
 SynapseBlock::Synapse::Synapse() : m_weight(0), m_address(0), m_time_calib(0), m_amp_calib(0) {}

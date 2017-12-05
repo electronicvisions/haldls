@@ -40,8 +40,17 @@ public:
 	void set_w_conf(WConf const& value) HALDLS_VISIBLE;
 	WaitCtrClear get_wait_ctr_clear() const HALDLS_VISIBLE;
 	void set_wait_ctr_clear(WaitCtrClear const& value) HALDLS_VISIBLE;
+	bool get_use_internal_i_bias_correlation_output() const HALDLS_VISIBLE;
+	void set_use_internal_i_bias_correlation_output(bool const value) HALDLS_VISIBLE;
+	bool get_use_internal_i_bias_vstore() const HALDLS_VISIBLE;
+	void set_use_internal_i_bias_vstore(bool const value) HALDLS_VISIBLE;
+	bool get_use_internal_i_bias_vramp() const HALDLS_VISIBLE;
+	void set_use_internal_i_bias_vramp(bool const value) HALDLS_VISIBLE;
+	bool get_use_internal_i_bias_vdac() const HALDLS_VISIBLE;
+	void set_use_internal_i_bias_vdac(bool const value) HALDLS_VISIBLE;
 
-	static size_t constexpr config_size_in_words = 3;
+
+	static size_t constexpr config_size_in_words = 4;
 
 	std::array<hardware_address_type, config_size_in_words> addresses(
 		coordinate_type const&) const HALDLS_VISIBLE;
@@ -55,6 +64,10 @@ private:
 	PCConf m_pc_conf;
 	WConf m_w_conf;
 	WaitCtrClear m_wait_ctr_clear;
+	bool m_use_internal_i_bias_correlation_output;
+	bool m_use_internal_i_bias_vstore;
+	bool m_use_internal_i_bias_vramp;
+	bool m_use_internal_i_bias_vdac;
 };
 
 
