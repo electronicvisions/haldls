@@ -1,5 +1,7 @@
 #include "haldls/container/v2/rate_counter.h"
 
+#include <numeric>
+
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
