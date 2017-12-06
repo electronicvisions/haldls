@@ -1,3 +1,5 @@
+#include <tuple>
+
 #include <gtest/gtest.h>
 
 #include "halco/hicann-dls/v2/coordinates.h"
@@ -53,21 +55,21 @@ TEST_F(PlaybackTest, CapMem) {
 	EXPECT_NE(program.serial_number(), empty_new_program.serial_number());
 
 	// No data available yet
-	EXPECT_THROW(auto capmem_copy = program.get(capmem_ticket), std::runtime_error);
-	EXPECT_THROW(auto capmemcell_copy = program.get(capmemcell_ticket), std::runtime_error);
+	EXPECT_THROW(std::ignore = program.get(capmem_ticket), std::runtime_error);
+	EXPECT_THROW(std::ignore = program.get(capmemcell_ticket), std::runtime_error);
 
 	auto capmem_ticket_ = builder.get_container(unique, capmem_config);
 	auto program_ = builder.done();
 
 	// Using Ticket issued for a different program
-	EXPECT_THROW(auto capmem_copy = program.get(capmem_ticket_), std::invalid_argument);
-	EXPECT_THROW(auto capmem_copy = program_.get(capmem_ticket), std::invalid_argument);
+	EXPECT_THROW(std::ignore = program.get(capmem_ticket_), std::invalid_argument);
+	EXPECT_THROW(std::ignore = program_.get(capmem_ticket), std::invalid_argument);
 
 	ExperimentControl ctrl = connect(test_board);
 	ctrl.soft_reset();
 	ctrl.run(program);
 
-	EXPECT_THROW(auto capmem_copy = program.get(capmem_ticket_), std::invalid_argument);
+	EXPECT_THROW(std::ignore = program.get(capmem_ticket_), std::invalid_argument);
 
 	auto capmem_copy = program.get(capmem_ticket);
 	auto capmemcell_copy = program.get(capmemcell_ticket);

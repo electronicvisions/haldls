@@ -198,8 +198,9 @@ protected:
 			size_t time = spike.get_time();
 			auto actual_neuron = spike.get_neuron();
 			EXPECT_EQ(neuron, actual_neuron) << actual_neuron;
-			if (last_time > 0)
+			if (last_time > 0) {
 				EXPECT_NEAR(isi, time - last_time, 10);
+			}
 			last_time = time;
 		}
 	}
