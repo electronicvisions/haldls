@@ -122,9 +122,7 @@ protected:
 
 		ExperimentControl ctrl = connect(board_ids.front());
 		ctrl.configure_static(board, chip);
-		ctrl.transfer(program);
-		ctrl.execute();
-		ctrl.fetch(program);
+		ctrl.run(program);
 	}
 
 	Board board;
