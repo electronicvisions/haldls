@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import unittest
 import pyhalco_common as Co
 import pyhalco_hicann_dls_v2 as C
