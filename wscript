@@ -65,7 +65,7 @@ def build(bld):
     )
 
     bld(
-        target = 'haldls_container_v2_tests',
+        target = 'haldls_test_container_v2',
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/container/v2/test-*.cpp'),
         use = ['haldls_container_v2', 'GMOCK4HALDLS', 'GTEST'],
@@ -73,7 +73,7 @@ def build(bld):
     )
 
     bld(
-        target = 'haldls_io_v2_tests',
+        target = 'haldls_hwtest_io_v2',
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/io/v2/hwtest-*.cpp'),
         test_main = 'tests/test_with_logger.cpp',

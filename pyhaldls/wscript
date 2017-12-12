@@ -41,7 +41,7 @@ def build(bld):
         use=['haldls_container_v2', 'PYBIND11HALDLS'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
-        post_task=['pyhalco_hicann_dls_v2', 'test_pyhaldls_container_v2'],
+        post_task=['pyhalco_hicann_dls_v2', 'pyhaldls_test_container_v2'],
     )
 
     bld(
@@ -52,12 +52,16 @@ def build(bld):
         use=['haldls_io_v2', 'PYBIND11HALDLS'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
-        post_task=['pyhalco_hicann_dls_v2', 'hwtest_pyhaldls_io_v2'],
+        post_task=[
+            'pyhalco_hicann_dls_v2',
+            'pyhaldls_test_io_v2',
+            'pyhaldls_hwtest_io_v2',
+        ],
     )
 
     bld(
-        name='test_pyhaldls_container_v2',
-        tests='test/test_pyhaldls_container_v2.py',
+        name='pyhaldls_test_container_v2',
+        tests='test/pyhaldls_test_container_v2.py',
         features='use pytest',
         use=['pyhalco_hicann_dls_v2', 'pyhaldls_container_v2'],
         install_path='${PREFIX}/bin',
@@ -65,8 +69,8 @@ def build(bld):
     )
 
     bld(
-        name='test_pyhaldls_io_v2',
-        tests='test/test_pyhaldls_io_v2.py',
+        name='pyhaldls_test_io_v2',
+        tests='test/pyhaldls_test_io_v2.py',
         features='use pytest',
         use=['pyhalco_hicann_dls_v2', 'pyhaldls_io_v2'],
         install_path='${PREFIX}/bin',
@@ -74,8 +78,8 @@ def build(bld):
     )
 
     bld(
-        name='hwtest_pyhaldls_io_v2',
-        tests='test/hwtest_pyhaldls_io_v2.py',
+        name='pyhaldls_hwtest_io_v2',
+        tests='test/pyhaldls_hwtest_io_v2.py',
         features='use pytest',
         use=['pyhalco_hicann_dls_v2', 'pyhaldls_io_v2'],
         install_path='${PREFIX}/bin',
