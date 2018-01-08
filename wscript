@@ -17,13 +17,6 @@ def configure(cfg):
     cfg.load('compiler_cxx')
     cfg.load('gtest')
 
-    cfg.check_cxx(
-        uselib_store='GMOCK4HALDLS',
-        mandatory=True,
-        header_name='gmock/gmock.h',
-        lib='gmock',
-    )
-
     cfg.env.LINKFLAGS_HALDLS_LIBRARIES = [
         '-fvisibility=hidden',
         '-fvisibility-inlines-hidden',
@@ -68,7 +61,7 @@ def build(bld):
         target = 'haldls_test_container_v2',
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/container/v2/test-*.cpp'),
-        use = ['haldls_container_v2', 'GMOCK4HALDLS', 'GTEST'],
+        use = ['haldls_container_v2', 'GTEST'],
         install_path = '${PREFIX}/bin',
     )
 
@@ -77,12 +70,7 @@ def build(bld):
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/io/v2/hwtest-*.cpp'),
         test_main = 'tests/test_with_logger.cpp',
-        use = [
-            'haldls_container_v2',
-            'haldls_io_v2',
-            'GMOCK4HALDLS',
-            'GTEST',
-        ],
+        use = ['haldls_container_v2', 'haldls_io_v2', 'GTEST'],
         install_path = '${PREFIX}/bin',
         skip_run = True,
     )
