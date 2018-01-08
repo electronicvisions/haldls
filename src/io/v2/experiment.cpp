@@ -2,10 +2,10 @@
 
 #include <sstream>
 
+#include "flyspi-rw_api/flyspi_com.h"
 #include "frickel-dls/com.h"
 #include "frickel-dls/execute.h"
 #include "halco/common/iter_all.h"
-#include "rw_api/flyspi_com.h"
 #include "uni/bytewise_output_iterator.h"
 #include "uni/decoder.h"
 #include "uni/program_builder.h"
