@@ -8,43 +8,6 @@ using namespace haldls::container::v2;
 using namespace halco::hicann_dls::v2;
 using namespace halco::common;
 
-TEST(FPGAConfig, Encode)
-{
-	FPGAConfig config;
-	Unique const coord;
-
-	config.set_enable_spike_router(true);
-
-	std::array<std::uint32_t, 1> const ref_addresses = {{0x8020ul}};
-	std::array<std::uint32_t, 1> const ref_data = {{0x8000008eul}};
-
-	typedef std::vector<ocp_address_type> ocp_addresses_type;
-	typedef std::vector<ocp_word_type> ocp_words_type;
-
-	{ // write addresses
-		ocp_addresses_type ocp_addresses;
-		visit_preorder(
-			config, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
-
-		std::vector<std::uint32_t> addresses;
-		addresses.reserve(ocp_addresses.size());
-		for (auto word : ocp_addresses)
-			addresses.push_back(word.value);
-		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
-	}
-
-	//  --- with default settings ----------------------------------------------
-
-	ocp_words_type ocp_data;
-	visit_preorder(config, coord, haldls::io::EncodeVisitor<ocp_words_type>{ocp_data});
-
-	std::vector<std::uint32_t> data;
-	data.reserve(ocp_data.size());
-	for (auto word : ocp_data)
-		data.push_back(word.value);
-	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
-}
-
 TEST(SpikeRouter, Encode)
 {
 	SpikeRouter config;

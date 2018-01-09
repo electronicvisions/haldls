@@ -13,11 +13,13 @@ typedef std::uint32_t hardware_word_type;
 typedef std::uint64_t hardware_time_type;
 
 struct ocp_address_type {
-	std::uint32_t value;
+	typedef std::uint32_t value_type;
+	value_type value;
 };
 
 struct ocp_word_type {
-	std::uint32_t value;
+	typedef std::uint32_t value_type;
+	value_type value;
 };
 
 namespace detail {

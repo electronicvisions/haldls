@@ -51,102 +51,6 @@ const std::array<DAC::Value, number_of_parameters> dac_default_values{{
 
 } // namespace
 
-FPGAConfig::FPGAConfig()
-	: m_reset_to_dls(true), // note that this effects a partial reset of the chip configuration
-	  m_soft_reset(false),
-	  m_tg_ctrl(0),
-	  m_enable_spike_router(false),
-	  m_i_phase_sel(false),
-	  m_o_phase_sel(false),
-	  m_train(false),
-	  m_txrx_en(true),
-	  m_en_lvds_rx(true),
-	  m_analog_power_en(true),
-	  m_loopback_to_dls(false)
-{}
-
-void FPGAConfig::set_enable_spike_router(bool const value) {
-	m_enable_spike_router = value;
-}
-
-bool FPGAConfig::get_enable_spike_router() const {
-	return m_enable_spike_router;
-}
-
-bool FPGAConfig::operator==(FPGAConfig const& /*other*/) const
-{
-	return true;
-}
-
-bool FPGAConfig::operator!=(FPGAConfig const& other) const
-{
-	return !(*this == other);
-}
-
-auto FPGAConfig::addresses(coordinate_type const& /*unique*/) const
-	-> std::array<ocp_address_type, config_size_in_words>
-{
-	static std::uint32_t constexpr base_address = 0x8000;
-	return {{{base_address + 0x20}}};
-}
-
-namespace {
-
-struct FPGAConfigBitfield {
-	union {
-		ocp_word_type raw;
-		// clang-format off
-		struct __attribute__((packed)) {
-			hardware_word_type loopback_to_dls                :  1; //  0
-			hardware_word_type analog_power_en                :  1; //  1
-			hardware_word_type en_lvds_rx                     :  1; //  2
-			hardware_word_type txrx_en                        :  1; //  3
-			hardware_word_type train                          :  1; //  4
-			hardware_word_type o_phase_sel                    :  1; //  5
-			hardware_word_type i_phase_sel                    :  1; //  6
-			hardware_word_type enable_spike_router            :  1; //  7
-			hardware_word_type tg_ctrl                        :  6; //  8
-			hardware_word_type                                : 16; // 14-29
-			hardware_word_type soft_reset                     :  1; // 30
-			hardware_word_type reset_to_dls                   :  1; // 31
-		} m;
-		// clang-format on
-		static_assert(
-			sizeof(raw) == sizeof(m) && sizeof(raw) == sizeof(std::uint32_t),
-			"sizes of union types should match");
-	} u;
-
-	FPGAConfigBitfield() {
-		u.raw = {0u};
-	}
-
-	FPGAConfigBitfield(hardware_word_type data) {
-		data &= 0xC0003FFFul;
-		u.raw = {data};
-	}
-};
-
-} // namespace
-
-auto FPGAConfig::encode() const -> std::array<ocp_word_type, config_size_in_words>
-{
-	FPGAConfigBitfield bitfield;
-
-	bitfield.u.m.loopback_to_dls = m_loopback_to_dls;
-	bitfield.u.m.analog_power_en = m_analog_power_en;
-	bitfield.u.m.en_lvds_rx = m_en_lvds_rx;
-	bitfield.u.m.txrx_en = m_txrx_en;
-	bitfield.u.m.train = m_train;
-	bitfield.u.m.o_phase_sel = m_o_phase_sel;
-	bitfield.u.m.i_phase_sel = m_i_phase_sel;
-	bitfield.u.m.enable_spike_router = m_enable_spike_router;
-	bitfield.u.m.tg_ctrl = m_tg_ctrl.to_ulong();
-	bitfield.u.m.soft_reset = m_soft_reset;
-	bitfield.u.m.reset_to_dls = m_reset_to_dls;
-
-	return {{bitfield.u.raw}};
-}
-
 SpikeRouter::SpikeRouter()
 	: m_squeeze_mode_enabled(false),
 	  m_squeeze_mode_address(),
@@ -250,7 +154,8 @@ auto SpikeRouter::encode() const
 	return result;
 }
 
-Board::Board() : m_fpga(), m_spike_router(), m_dacs() {
+Board::Board() : m_flyspi_config(), m_flyspi_exception(), m_spike_router(), m_dacs()
+{
 	for (size_t ii = 0; ii < number_of_parameters; ++ii) {
 		set_parameter(Parameter(ii), dac_default_values[ii]);
 	}
@@ -272,14 +177,14 @@ DAC::Value Board::get_parameter(Parameter const& parameter) const
 	return m_dacs[dac].get(channel);
 }
 
-FPGAConfig Board::get_fpga_config() const
+FlyspiConfig Board::get_flyspi_config() const
 {
-	return m_fpga;
+	return m_flyspi_config;
 }
 
-void Board::set_fpga_config(FPGAConfig const& config)
+void Board::set_flyspi_config(FlyspiConfig const& config)
 {
-	m_fpga = config;
+	m_flyspi_config = config;
 }
 
 SpikeRouter Board::get_spike_router() const
@@ -291,11 +196,17 @@ void Board::set_spike_router(SpikeRouter const& config)
 	m_spike_router = config;
 }
 
+FlyspiException Board::get_flyspi_exception() const
+{
+	return m_flyspi_exception;
+}
+
 bool Board::operator==(Board const& other) const
 {
 	// clang-format off
 	return (
-		m_fpga == other.m_fpga &&
+		m_flyspi_config == other.m_flyspi_config &&
+		m_flyspi_exception == other.m_flyspi_exception &&
 		m_spike_router == other.m_spike_router &&
 		m_dacs == other.m_dacs);
 	// clang-format on

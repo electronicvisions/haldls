@@ -7,43 +7,12 @@
 #include "haldls/common/visibility.h"
 #include "haldls/container/v2/common.h"
 #include "haldls/container/v2/dac.h"
+#include "haldls/container/v2/register.h"
 #include "haldls/container/v2/synapse.h"
 
 namespace haldls {
 namespace container {
 namespace v2 GENPYBIND(tag(haldls_container_v2)) {
-
-class GENPYBIND(visible) FPGAConfig {
-public:
-	typedef halco::common::Unique coordinate_type;
-	typedef std::true_type is_leaf_node;
-
-	FPGAConfig() HALDLS_VISIBLE;
-
-	void set_enable_spike_router(bool const value) HALDLS_VISIBLE;
-	bool get_enable_spike_router() const HALDLS_VISIBLE;
-
-	bool operator==(FPGAConfig const& other) const HALDLS_VISIBLE;
-	bool operator!=(FPGAConfig const& other) const HALDLS_VISIBLE;
-
-	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<ocp_address_type, config_size_in_words> addresses(
-		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<ocp_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-
-private:
-	bool m_reset_to_dls;
-	bool m_soft_reset;
-	std::bitset<6> m_tg_ctrl;
-	bool m_enable_spike_router;
-	bool m_i_phase_sel;
-	bool m_o_phase_sel;
-	bool m_train;
-	bool m_txrx_en;
-	bool m_en_lvds_rx;
-	bool m_analog_power_en;
-	bool m_loopback_to_dls;
-}; // FPGAConfig
 
 class GENPYBIND(visible) SpikeRouter
 {
@@ -128,14 +97,18 @@ public:
 
 	Board() HALDLS_VISIBLE;
 
+	// accessors
 	void set_parameter(Parameter const& parameter, DAC::Value const& value) HALDLS_VISIBLE;
 	DAC::Value get_parameter(Parameter const& parameter) const HALDLS_VISIBLE;
 
-	FPGAConfig get_fpga_config() const HALDLS_VISIBLE;
-	void set_fpga_config(FPGAConfig const& config) HALDLS_VISIBLE;
+	FlyspiConfig get_flyspi_config() const HALDLS_VISIBLE;
+	void set_flyspi_config(FlyspiConfig const& config) HALDLS_VISIBLE;
 
 	SpikeRouter get_spike_router() const HALDLS_VISIBLE;
 	void set_spike_router(SpikeRouter const& config) HALDLS_VISIBLE;
+
+	// read-only accessor
+	FlyspiException get_flyspi_exception() const HALDLS_VISIBLE;
 
 	bool operator==(Board const& other) const HALDLS_VISIBLE;
 	bool operator!=(Board const& other) const HALDLS_VISIBLE;
@@ -143,7 +116,8 @@ public:
 	friend detail::VisitPreorderImpl<Board>;
 
 private:
-	FPGAConfig m_fpga;
+	FlyspiConfig m_flyspi_config;
+	FlyspiException m_flyspi_exception;
 	SpikeRouter m_spike_router;
 	halco::common::typed_array<DAC, halco::hicann_dls::v2::DACOnBoard> m_dacs;
 }; // Board
@@ -169,7 +143,8 @@ struct VisitPreorderImpl<Board> {
 		}
 
 		halco::common::Unique const unique;
-		visit_preorder(config.m_fpga, unique, visitor);
+		visit_preorder(config.m_flyspi_config, unique, visitor);
+		visit_preorder(config.m_flyspi_exception, unique, visitor);
 		visit_preorder(config.m_spike_router, unique, visitor);
 	}
 };
