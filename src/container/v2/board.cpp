@@ -107,7 +107,7 @@ bool SpikeRouter::operator!=(SpikeRouter const& other) const
 	return !(*this == other);
 }
 
-auto SpikeRouter::addresses(coordinate_type const& /*unique*/) const
+auto SpikeRouter::write_addresses(coordinate_type const& /*unique*/) const
 	-> std::array<ocp_address_type, config_size_in_words>
 {
 	static std::uint32_t constexpr base_address = 0x8000;
@@ -124,6 +124,12 @@ auto SpikeRouter::addresses(coordinate_type const& /*unique*/) const
 	// ...and set the control register to the appropriate final values.
 	result[config_size_in_words - 1].value = control_address;
 	return result;
+}
+
+auto SpikeRouter::read_addresses(coordinate_type const& /*unique*/) const
+	-> std::array<ocp_address_type, 0>
+{
+	return {{}};
 }
 
 auto SpikeRouter::encode() const
@@ -152,6 +158,11 @@ auto SpikeRouter::encode() const
 
 	result[config_size_in_words - 1].value = control_final.to_ulong();
 	return result;
+}
+
+void SpikeRouter::decode(std::array<ocp_word_type, 0> const& /*words*/)
+{
+	// Write only register
 }
 
 Board::Board() : m_flyspi_config(), m_flyspi_exception(), m_spike_router(), m_dacs()

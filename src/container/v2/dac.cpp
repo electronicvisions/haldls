@@ -117,7 +117,7 @@ bool DAC::operator!=(DAC const& other) const
 	return !(*this == other);
 }
 
-auto DAC::addresses(coordinate_type const& dac) const
+auto DAC::write_addresses(coordinate_type const& dac) const
 	-> std::array<ocp_address_type, config_size_in_words>
 {
 	std::array<ocp_address_type, config_size_in_words> result;
@@ -126,6 +126,11 @@ auto DAC::addresses(coordinate_type const& dac) const
 		result[ii].value = data[ii];
 	}
 	return result;
+}
+
+auto DAC::read_addresses(coordinate_type const& /*dac*/) const -> std::array<ocp_address_type, 0>
+{
+	return {{}};
 }
 
 auto DAC::encode(coordinate_type const& dac) const
@@ -137,6 +142,11 @@ auto DAC::encode(coordinate_type const& dac) const
 		result[ii].value = data[ii];
 	}
 	return result;
+}
+
+void DAC::decode(coordinate_type const& /*dac*/, std::array<ocp_word_type, 0> const& /*words*/)
+{
+	// Not implemented or supported (see task #2695)
 }
 
 } // namespace v2

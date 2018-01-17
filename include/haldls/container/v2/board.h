@@ -56,9 +56,12 @@ public:
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) =
 		2 * halco::hicann_dls::v2::NeuronOnDLS::size + 1;
-	std::array<ocp_address_type, config_size_in_words> addresses(
+	std::array<ocp_address_type, config_size_in_words> write_addresses(
 		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<ocp_address_type, 0> read_addresses(coordinate_type const& unique) const
+		HALDLS_VISIBLE GENPYBIND(hidden);
 	std::array<ocp_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<ocp_word_type, 0> const& words) HALDLS_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_squeeze_mode_enabled;
