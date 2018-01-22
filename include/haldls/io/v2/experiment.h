@@ -18,13 +18,13 @@ class GENPYBIND(visible) ExperimentControl {
 	ExperimentControl(std::string const& usb_serial_number);
 
 public:
-	ExperimentControl(ExperimentControl&& other) noexcept;
-	ExperimentControl& operator=(ExperimentControl&& other) noexcept;
+	ExperimentControl(ExperimentControl&& other) noexcept HALDLS_VISIBLE;
+	ExperimentControl& operator=(ExperimentControl&& other) noexcept HALDLS_VISIBLE;
 
 	ExperimentControl(ExperimentControl const& other) = delete;
 	ExperimentControl& operator=(ExperimentControl const& other) = delete;
 
-	~ExperimentControl();
+	~ExperimentControl() HALDLS_VISIBLE;
 
 	void soft_reset() HALDLS_VISIBLE;
 

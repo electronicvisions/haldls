@@ -23,8 +23,8 @@ public:
 	void set_enable_spike_router(bool const value) HALDLS_VISIBLE;
 	bool get_enable_spike_router() const HALDLS_VISIBLE;
 
-	bool operator==(FPGAConfig const& other) const;
-	bool operator!=(FPGAConfig const& other) const;
+	bool operator==(FPGAConfig const& other) const HALDLS_VISIBLE;
+	bool operator!=(FPGAConfig const& other) const HALDLS_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	std::array<ocp_address_type, config_size_in_words> addresses(
@@ -82,8 +82,8 @@ public:
 		SynapseBlock::Synapse::Address const& address,
 		target_rows_type const& target_rows) HALDLS_VISIBLE;
 
-	bool operator==(SpikeRouter const& other) const;
-	bool operator!=(SpikeRouter const& other) const;
+	bool operator==(SpikeRouter const& other) const HALDLS_VISIBLE;
+	bool operator!=(SpikeRouter const& other) const HALDLS_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) =
 		2 * halco::hicann_dls::v2::NeuronOnDLS::size + 1;
@@ -137,8 +137,8 @@ public:
 	SpikeRouter get_spike_router() const HALDLS_VISIBLE;
 	void set_spike_router(SpikeRouter const& config) HALDLS_VISIBLE;
 
-	bool operator==(Board const& other) const;
-	bool operator!=(Board const& other) const;
+	bool operator==(Board const& other) const HALDLS_VISIBLE;
+	bool operator!=(Board const& other) const HALDLS_VISIBLE;
 
 	friend detail::VisitPreorderImpl<Board>;
 

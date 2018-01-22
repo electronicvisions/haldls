@@ -17,6 +17,10 @@ def configure(cfg):
     cfg.load('compiler_cxx')
     cfg.load('gtest')
 
+    cfg.env.CXXFLAGS_HALDLS_LIBRARIES = [
+        '-fvisibility=hidden',
+        '-fvisibility-inlines-hidden',
+    ]
     cfg.env.LINKFLAGS_HALDLS_LIBRARIES = [
         '-fvisibility=hidden',
         '-fvisibility-inlines-hidden',

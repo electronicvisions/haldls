@@ -24,7 +24,7 @@ class GENPYBIND(visible) PlaybackProgram {
 public:
 	typedef std::vector<container::v2::RecordedSpike> spikes_type;
 	typedef std::size_t serial_number_type;
-	static constexpr serial_number_type invalid_serial_number = 0;
+	static constexpr serial_number_type invalid_serial_number HALDLS_VISIBLE = 0;
 
 	template <typename T>
 	class ContainerTicket {
@@ -51,21 +51,21 @@ public:
 #include "haldls/container/v2/container.def"
 #endif // __GENPYBIND__
 
-	PlaybackProgram();
-	PlaybackProgram(PlaybackProgram const& other);
-	PlaybackProgram& operator=(PlaybackProgram const& other);
-	PlaybackProgram(PlaybackProgram&& other) noexcept;
-	PlaybackProgram& operator=(PlaybackProgram&& other) noexcept;
-	~PlaybackProgram();
+	PlaybackProgram() HALDLS_VISIBLE;
+	PlaybackProgram(PlaybackProgram const& other) HALDLS_VISIBLE;
+	PlaybackProgram& operator=(PlaybackProgram const& other) HALDLS_VISIBLE;
+	PlaybackProgram(PlaybackProgram&& other) noexcept HALDLS_VISIBLE;
+	PlaybackProgram& operator=(PlaybackProgram&& other) noexcept HALDLS_VISIBLE;
+	~PlaybackProgram() HALDLS_VISIBLE;
 
 	template <typename T>
-	T get(ContainerTicket<T> const& ticket) const HALDLS_VISIBLE;
+	T get(ContainerTicket<T> const& ticket) const;
 
-	spikes_type const& get_spikes() const;
+	spikes_type const& get_spikes() const HALDLS_VISIBLE;
 
 	serial_number_type serial_number() const HALDLS_VISIBLE;
 
-	std::string dump_program() const;
+	std::string dump_program() const HALDLS_VISIBLE;
 
 	friend ExperimentControl;
 	friend PlaybackProgramBuilder;
@@ -100,26 +100,26 @@ class GENPYBIND(visible) PlaybackProgramBuilder {
 public:
 	typedef container::v2::hardware_time_type time_type;
 
-	PlaybackProgramBuilder();
+	PlaybackProgramBuilder() HALDLS_VISIBLE;
 
 	void set_time(time_type t) HALDLS_VISIBLE;
 	void wait_until(time_type t) HALDLS_VISIBLE;
 	void wait_for(time_type t) HALDLS_VISIBLE;
 	void fire(
 		std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> const& synapse_driver_mask,
-		container::v2::SynapseBlock::Synapse::Address const& address);
+		container::v2::SynapseBlock::Synapse::Address const& address) HALDLS_VISIBLE;
 	void fire(
 		halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver,
-		container::v2::SynapseBlock::Synapse::Address const& address);
+		container::v2::SynapseBlock::Synapse::Address const& address) HALDLS_VISIBLE;
 	void halt() HALDLS_VISIBLE;
 
 	template <class T>
-	void set_container(typename T::coordinate_type const& coord, T const& config) HALDLS_VISIBLE;
+	void set_container(typename T::coordinate_type const& coord, T const& config);
 
 	/// \note As this variant requires an explicitly specified template parameter it is
 	///       not exposed to the python wrapping.
 	template <class T>
-	PlaybackProgram::ContainerTicket<T> get_container(typename T::coordinate_type const& coord) HALDLS_VISIBLE;
+	PlaybackProgram::ContainerTicket<T> get_container(typename T::coordinate_type const& coord);
 
 	/// \note The extra argument is only used to select the correct template instantiation.
 	template <class T>
