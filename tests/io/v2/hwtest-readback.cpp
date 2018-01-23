@@ -41,9 +41,11 @@ TEST_F(ReadbackTest, ExternalNeuronSwitchesAreDisabled) {
 	builder.halt();
 	auto program = builder.done();
 
-	ExperimentControl ctrl = connect(test_board);
-	ctrl.configure_static(board, chip);
-	ctrl.run(program);
+	{
+		ExperimentControl ctrl(test_board);
+		ctrl.configure_static(board, chip);
+		ctrl.run(program);
+	}
 
 	auto const chip_config = program.get(chip_ticket);
 	EXPECT_EQ(output_neuron, chip_config.get_buffered_readout_neuron());

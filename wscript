@@ -6,7 +6,7 @@ def depends(ctx):
     ctx('logger')
     ctx('halco')
     ctx('uni')
-    ctx('frickel-dls')
+    ctx('flyspi-rw_api')
 
 def options(opt):
     opt.load('compiler_cxx')
@@ -57,7 +57,7 @@ def build(bld):
         target = 'haldls_io_v2',
         source = bld.path.ant_glob('src/io/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['haldls_common', 'haldls_container_v2', 'uni', 'frickel_dls'],
+        use = ['haldls_common', 'haldls_container_v2', 'uni', 'flyspi-rw_api'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
@@ -82,7 +82,7 @@ def build(bld):
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/io/v2/hwtest-*.cpp'),
         test_main = 'tests/test_with_logger.cpp',
-        use = ['haldls_container_v2', 'haldls_io_v2', 'GTEST'],
+        use = ['haldls_container_v2', 'haldls_io_v2', 'logger_obj', 'GTEST'],
         install_path = '${PREFIX}/bin',
         skip_run = True,
     )

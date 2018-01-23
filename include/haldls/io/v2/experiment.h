@@ -15,9 +15,10 @@ namespace v2 GENPYBIND(tag(haldls_io_v2)) {
 class PlaybackProgram;
 
 class GENPYBIND(visible) ExperimentControl {
-	ExperimentControl(std::string const& usb_serial_number);
-
 public:
+	/// \brief creates Flyspi communication object and calls soft_reset
+	ExperimentControl(std::string const& usb_serial_number) HALDLS_VISIBLE;
+
 	ExperimentControl(ExperimentControl&& other) noexcept HALDLS_VISIBLE;
 	ExperimentControl& operator=(ExperimentControl&& other) noexcept HALDLS_VISIBLE;
 
@@ -26,24 +27,25 @@ public:
 
 	~ExperimentControl() HALDLS_VISIBLE;
 
+	/// \brief toggle soft reset and chip reset and restore fpga to default config
 	void soft_reset() HALDLS_VISIBLE;
 
 	void configure_static(container::v2::Board const& board, container::v2::Chip const& chip) HALDLS_VISIBLE;
 
+	/// \brief transfers the program and sets the program size and address
+	///        registers
 	void transfer(PlaybackProgram const& playback_program) HALDLS_VISIBLE;
+	/// \brief toggle the execute flag and wait until turned off again
 	void execute() HALDLS_VISIBLE;
 	void fetch(PlaybackProgram& playback_program) HALDLS_VISIBLE;
 
+	/// \brief this just wraps the sequence transfer-execute-fetch
 	void run(PlaybackProgram& playback_program) HALDLS_VISIBLE;
-
-	friend ExperimentControl connect(std::string const& usb_serial_number);
 
 private:
 	class Impl;
 	std::unique_ptr<Impl> m_impl;
 }; // ExperimentControl
-
-ExperimentControl connect(std::string const& usb_serial_number) HALDLS_VISIBLE GENPYBIND(visible);
 
 std::vector<std::string> available_board_usb_serial_numbers() HALDLS_VISIBLE GENPYBIND(visible);
 

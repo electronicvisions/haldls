@@ -1,11 +1,12 @@
 #include "haldls/io/v2/experiment.h"
 
+#include <chrono>
 #include <sstream>
+#include <thread>
 
 #include "flyspi-rw_api/flyspi_com.h"
-#include "frickel-dls/com.h"
-#include "frickel-dls/execute.h"
 #include "halco/common/iter_all.h"
+#include "log4cxx/logger.h"
 #include "uni/bytewise_output_iterator.h"
 #include "uni/decoder.h"
 #include "uni/program_builder.h"
@@ -14,6 +15,8 @@
 #include "haldls/container/v2/chip.h"
 #include "haldls/container/v2/common.h"
 #include "haldls/container/v2/spike.h"
+#include "haldls/exception/exceptions.h"
+#include "haldls/io/v2/ocp.h"
 #include "haldls/io/v2/playback.h"
 #include "haldls/io/visitors.h"
 
@@ -109,22 +112,22 @@ public:
 	typedef container::v2::hardware_word_type hardware_word_type;
 	typedef container::v2::hardware_address_type hardware_address_type;
 
-	Impl(std::string const& usb_serial_number) : connection(frickel_dls::connect(usb_serial_number))
-	{}
+	Impl(std::string const& usb_serial_number) : com(usb_serial_number) {}
 
-	frickel_dls::Connection connection;
+	rw_api::FlyspiCom com;
 
 	PlaybackProgram::serial_number_type program_serial_number =
 		PlaybackProgram::invalid_serial_number;
 	static constexpr hardware_address_type program_address = 0;
 	hardware_address_type program_size = 0;
 	static constexpr hardware_address_type result_address = 0;
-	hardware_address_type result_size = 0;
 };
 
 ExperimentControl::ExperimentControl(std::string const& usb_serial_number)
 	: m_impl(new Impl(usb_serial_number))
-{}
+{
+	soft_reset();
+}
 
 ExperimentControl::ExperimentControl(ExperimentControl&&) noexcept = default;
 
@@ -137,7 +140,16 @@ void ExperimentControl::soft_reset()
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	frickel_dls::soft_reset(m_impl->connection);
+	halco::common::Unique unique;
+
+	// Set dls and soft reset
+	container::v2::FlyspiConfig reset_config;
+	reset_config.set_dls_reset(true);
+	reset_config.set_soft_reset(true);
+	ocp_write(m_impl->com, unique, reset_config);
+
+	// Set default config
+	ocp_write(m_impl->com, unique, container::v2::FlyspiConfig());
 }
 
 void ExperimentControl::configure_static(
@@ -147,45 +159,36 @@ void ExperimentControl::configure_static(
 		throw std::logic_error("unexpected access to moved-from object");
 
 	// An experiment always happens as follows:
-	// * Soft reset of the FPGA
-	// * Set the external DACs
+	// * Set the board config, including DACs, spike router and FPGA config
 	// * Set the spike router
 	// * Set the digital config and wait for the cap-mem to settle
 
-	frickel_dls::soft_reset(m_impl->connection);
-
-	typedef std::vector<haldls::container::v2::ocp_address_type> ocp_addresses_type;
-	typedef std::vector<haldls::container::v2::ocp_word_type> ocp_words_type;
-
 	halco::common::Unique const coord;
 
-	ocp_addresses_type addresses;
-	visit_preorder(board, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{addresses});
+	// Set the board
+	ocp_write(m_impl->com, coord, board);
 
-	ocp_words_type words;
-	visit_preorder(board, coord, haldls::io::EncodeVisitor<ocp_words_type>{words});
+	// If the dls is in reset during playback of a playback program, the FPGA
+	// will never stop execution for v2 and freeze the FPGA. Therefore, the
+	// playback of programs is prohibited if the DLS is in reset.
+	if (board.get_flyspi_config().get_dls_reset()) {
+		auto log = log4cxx::Logger::getLogger(__func__);
+		LOG4CXX_WARN(log, "DLS in reset during configuration");
+		LOG4CXX_WARN(log, "The chip configuration cannot be written");
+	} else {
+		// Chip configuration program
+		PlaybackProgramBuilder setup_builder;
+		setup_builder.set_time(0);
+		setup_builder.set_container(halco::common::Unique(), chip);
+		// Wait for the cap-mem to settle (based on empirical measurement by DS)
+		// clang-format off
+		setup_builder.wait_for(2'000'000); // ~ 20.8 ms for 96 MHz
+		// clang-format on
+		setup_builder.halt();
+		PlaybackProgram setup = setup_builder.done();
 
-	if (words.size() != addresses.size())
-		throw std::logic_error("number of OCP addresses and words do not match");
-
-	auto& com = *(m_impl->connection.com());
-	auto const loc = com.locate().chip(0);
-	auto addr_it = addresses.cbegin();
-	for (auto const& word : words) {
-		rw_api::flyspi::ocpWrite(com, loc, addr_it->value, word.value);
-		++addr_it;
+		run(setup);
 	}
-
-	// Chip configuration program
-	PlaybackProgramBuilder setup_builder;
-	setup_builder.set_time(0);
-	setup_builder.set_container(halco::common::Unique(), chip);
-	// Wait for the cap-mem to settle (based on empirical measurement by DS)
-	setup_builder.wait_for(2'000'000); // ~ 20.8 ms for 96 MHz
-	setup_builder.halt();
-	PlaybackProgram setup = setup_builder.done();
-
-	run(setup);
 }
 
 void ExperimentControl::transfer(PlaybackProgram const& playback_program)
@@ -198,7 +201,6 @@ void ExperimentControl::transfer(PlaybackProgram const& playback_program)
 		throw std::logic_error("trying to transfer program with invalid state");
 
 	m_impl->program_serial_number = program_serial_number;
-	m_impl->result_size = 0;
 
 	// vvv ------8<----------- (legacy code copied from frickel-dls)
 
@@ -206,7 +208,7 @@ void ExperimentControl::transfer(PlaybackProgram const& playback_program)
 
 	std::vector<SdramBlockWriteQuery> queries;
 	std::vector<SdramRequest> reqs;
-	Sdram_block_write_allocator alloc(*m_impl->connection.com(), m_impl->program_address);
+	Sdram_block_write_allocator alloc(m_impl->com, m_impl->program_address);
 
 	// copy to USB buffer memory and transfer
 	for (auto const& container : playback_program.instruction_byte_blocks()) {
@@ -231,10 +233,23 @@ void ExperimentControl::transfer(PlaybackProgram const& playback_program)
 	// ^^^ ------8<-----------
 
 	m_impl->program_size = alloc.address - m_impl->program_address;
+
+	// write program address, size and result pointer
+	container::v2::FlyspiProgramAddress program_address(m_impl->program_address);
+	container::v2::FlyspiProgramSize program_size(m_impl->program_size);
+	container::v2::FlyspiResultAddress result_address(m_impl->result_address);
+
+	halco::common::Unique unique;
+
+	ocp_write(m_impl->com, unique, program_address);
+	ocp_write(m_impl->com, unique, program_size);
+	ocp_write(m_impl->com, unique, result_address);
 }
 
 void ExperimentControl::execute()
 {
+	auto log = log4cxx::Logger::getLogger(__func__);
+
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
@@ -242,9 +257,36 @@ void ExperimentControl::execute()
 		m_impl->program_size == 0)
 		throw std::runtime_error("no valid playback program has been transferred yet");
 
-	frickel_dls::start_execution(
-		m_impl->connection, m_impl->program_address, m_impl->program_size, m_impl->result_address);
-	m_impl->result_size = frickel_dls::wait_for_execution(m_impl->connection);
+	halco::common::Unique unique;
+
+	// check that the DLS is not in reset
+	auto config = ocp_read<container::v2::FlyspiConfig>(m_impl->com, unique);
+	if (config.get_dls_reset()) {
+		LOG4CXX_ERROR(log, "Asking to execute a program although the DLS is in reset.");
+		LOG4CXX_ERROR(log, "This is prohibited for v2 as it will freeze the system.");
+		throw exception::InvalidConfiguration(
+			"Refuse to execute playback program with DLSv2 in reset");
+	}
+
+	// start execution by setting the execute bit
+	container::v2::FlyspiControl control;
+	control.set_execute(true);
+	LOG4CXX_DEBUG(log, "start execution");
+	ocp_write(m_impl->com, unique, control);
+
+	// wait until execute bit is cleared again
+	{
+		std::chrono::microseconds sleep_till_poll(50);
+		while (control.get_execute()) {
+			LOG4CXX_DEBUG(
+				log, "execute flag not yet cleared, sleep for " << sleep_till_poll.count() << "us");
+			std::this_thread::sleep_for(sleep_till_poll);
+			control = ocp_read<container::v2::FlyspiControl>(m_impl->com, unique);
+			// Increase exponential sleep time
+			sleep_till_poll *= 2;
+		}
+	}
+	LOG4CXX_DEBUG(log, "execution finished");
 }
 
 void ExperimentControl::fetch(PlaybackProgram& playback_program)
@@ -256,13 +298,20 @@ void ExperimentControl::fetch(PlaybackProgram& playback_program)
 		m_impl->program_size == 0)
 		throw std::runtime_error("no valid playback program has been transferred yet");
 
+	// get result size
+	halco::common::Unique unique;
+	auto result_size = ocp_read<container::v2::FlyspiResultSize>(m_impl->com, unique);
+	if (!result_size.get_value()) {
+		throw std::logic_error("no result size read from board");
+	}
+
 	// vvv ------8<----------- (legacy code copied from frickel-dls)
 
 	using namespace rw_api::flyspi;
 
 	// transfer data back
-	auto loc = m_impl->connection.com()->locate().chip(0);
-	SdramBlockReadQuery q_read(*m_impl->connection.com(), loc, m_impl->result_size);
+	auto loc = (m_impl->com).locate().chip(0);
+	SdramBlockReadQuery q_read((m_impl->com), loc, result_size.get_value().value());
 	q_read.addr(0x08000000 + m_impl->result_address);
 
 	auto r_read = q_read.commit();
@@ -283,11 +332,6 @@ void ExperimentControl::run(PlaybackProgram& playback_program)
 	transfer(playback_program);
 	execute();
 	fetch(playback_program);
-}
-
-ExperimentControl connect(std::string const& usb_serial_number)
-{
-	return {usb_serial_number};
 }
 
 std::vector<std::string> available_board_usb_serial_numbers()

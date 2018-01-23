@@ -4,6 +4,7 @@
 
 #include "halco/hicann-dls/v2/coordinates.h"
 #include "haldls/container/v2/capmem.h"
+#include "haldls/exception/exceptions.h"
 #include "haldls/io/v2/experiment.h"
 #include "haldls/io/v2/playback.h"
 
@@ -65,9 +66,10 @@ TEST_F(PlaybackTest, CapMem) {
 	EXPECT_THROW(std::ignore = program.get(capmem_ticket_), std::invalid_argument);
 	EXPECT_THROW(std::ignore = program_.get(capmem_ticket), std::invalid_argument);
 
-	ExperimentControl ctrl = connect(test_board);
-	ctrl.soft_reset();
-	ctrl.run(program);
+	{
+		ExperimentControl ctrl(test_board);
+		ctrl.run(program);
+	}
 
 	EXPECT_THROW(std::ignore = program.get(capmem_ticket_), std::invalid_argument);
 
@@ -82,7 +84,31 @@ TEST_F(PlaybackTest, InvalidState) {
 	PlaybackProgram invalid_program; // not obtained via builder
 	EXPECT_EQ(PlaybackProgram::invalid_serial_number, invalid_program.serial_number());
 
-	ExperimentControl ctrl = connect(test_board);
+	ExperimentControl ctrl(test_board);
 	EXPECT_THROW(ctrl.transfer(invalid_program), std::logic_error);
 	EXPECT_THROW(ctrl.run(invalid_program), std::logic_error);
+}
+
+TEST_F(PlaybackTest, InvalidFPGA)
+{
+	Board board;
+	Chip chip;
+
+	// enable dls reset in the flyspi config
+	auto config = board.get_flyspi_config();
+	config.set_dls_reset(true);
+	board.set_flyspi_config(config);
+
+	// prepare dummy program
+	PlaybackProgramBuilder builder;
+	builder.wait_for(10000);
+	builder.halt();
+
+	auto program = builder.done();
+
+	ExperimentControl ctrl(test_board);
+	ctrl.configure_static(board, chip);
+	ctrl.transfer(program);
+	EXPECT_THROW(ctrl.execute(), haldls::exception::InvalidConfiguration);
+	EXPECT_THROW(ctrl.run(program), haldls::exception::InvalidConfiguration);
 }

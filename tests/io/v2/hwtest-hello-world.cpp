@@ -120,7 +120,7 @@ protected:
 		std::vector<std::string> board_ids = available_board_usb_serial_numbers();
 		ASSERT_EQ(1, board_ids.size()) << "number of allocated boards is not one";
 
-		ExperimentControl ctrl = connect(board_ids.front());
+		ExperimentControl ctrl(board_ids.front());
 		ctrl.configure_static(board, chip);
 		ctrl.run(program);
 	}
