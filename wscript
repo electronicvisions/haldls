@@ -38,7 +38,7 @@ def build(bld):
 
     bld.shlib(
         target = 'haldls_common',
-        source = bld.path.ant_glob('src/common/*.cpp'),
+        source = bld.path.ant_glob('src/common/*.cpp') + bld.path.ant_glob('src/exception/*.cpp'),
         install_path = '${PREFIX}/lib',
         use = ['haldls_inc'],
         cxxflgas = ['-Werror'],
@@ -59,6 +59,14 @@ def build(bld):
         install_path = '${PREFIX}/lib',
         use = ['haldls_common', 'haldls_container_v2', 'uni', 'frickel_dls'],
         uselib = 'HALDLS_LIBRARIES',
+    )
+
+    bld(
+        target = 'haldls_test_common',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/common/test-*.cpp'),
+        use = ['haldls_common', 'GTEST'],
+        install_path = '${PREFIX}/bin',
     )
 
     bld(
