@@ -2,7 +2,7 @@
 
 #include "flyspi-rw_api/flyspi_com.h"
 
-#include "haldls/container/v2/register.h"
+#include "haldls/v2/register.h"
 #include "stadls/v2/experiment.h"
 #include "stadls/v2/ocp.h"
 
@@ -23,7 +23,7 @@ protected:
 
 TEST_F(OcpTest, FlyspiProgramAddress)
 {
-	namespace con = haldls::container::v2;
+	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
@@ -47,7 +47,7 @@ TEST_F(OcpTest, FlyspiProgramAddress)
 
 TEST_F(OcpTest, FlyspiProgramSize)
 {
-	namespace con = haldls::container::v2;
+	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
@@ -71,7 +71,7 @@ TEST_F(OcpTest, FlyspiProgramSize)
 
 TEST_F(OcpTest, FlyspiResultAddress)
 {
-	namespace con = haldls::container::v2;
+	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
@@ -95,7 +95,7 @@ TEST_F(OcpTest, FlyspiResultAddress)
 
 TEST_F(OcpTest, FlyspiResultSize)
 {
-	namespace con = haldls::container::v2;
+	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
@@ -115,7 +115,7 @@ TEST_F(OcpTest, FlyspiResultSize)
 
 TEST_F(OcpTest, FlyspiState)
 {
-	namespace con = haldls::container::v2;
+	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
@@ -135,7 +135,7 @@ TEST_F(OcpTest, FlyspiState)
 
 TEST_F(OcpTest, FlyspiConfig)
 {
-	namespace con = haldls::container::v2;
+	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
@@ -158,7 +158,7 @@ TEST_F(OcpTest, FlyspiConfig)
 
 TEST_F(OcpTest, FlyspiException)
 {
-	namespace con = haldls::container::v2;
+	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
 	halco::common::Unique coord;

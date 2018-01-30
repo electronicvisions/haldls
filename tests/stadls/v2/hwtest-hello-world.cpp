@@ -1,15 +1,15 @@
 #include <gtest/gtest.h>
 
 #include "halco/hicann-dls/v2/coordinates.h"
-#include "haldls/container/v2/board.h"
-#include "haldls/container/v2/chip.h"
-#include "haldls/container/v2/capmem.h"
-#include "haldls/container/v2/playback.h"
+#include "haldls/v2/board.h"
+#include "haldls/v2/chip.h"
+#include "haldls/v2/capmem.h"
+#include "haldls/v2/playback.h"
 #include "stadls/v2/experiment.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;
-using namespace haldls::container::v2;
+using namespace haldls::v2;
 using namespace stadls::v2;
 
 class IntegrationHelloWorld : public ::testing::Test

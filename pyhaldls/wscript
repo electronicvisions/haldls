@@ -34,22 +34,22 @@ def build(bld):
         bld.fatal('building pyhaldls requires pybind')
 
     bld(
-        target='pyhaldls_container_v2',
-        source='../include/haldls/container/v2/container.h',
-        genpybind_tags='haldls_container_v2',
+        target='pyhaldls_v2',
+        source='../include/haldls/v2/container.h',
+        genpybind_tags='haldls_v2',
         features='genpybind cxx cxxshlib pyext post_task',
-        use=['haldls_container_v2', 'PYBIND11HALDLS'],
+        use=['haldls_v2', 'PYBIND11HALDLS'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
-        post_task=['pyhalco_hicann_dls_v2', 'pyhaldls_test_container_v2'],
+        post_task=['pyhalco_hicann_dls_v2', 'pyhaldls_test_v2'],
     )
 
 
     bld(
-        name='pyhaldls_test_container_v2',
-        tests='test/pyhaldls_test_container_v2.py',
+        name='pyhaldls_test_v2',
+        tests='test/pyhaldls_test_v2.py',
         features='use pytest',
-        use=['pyhalco_hicann_dls_v2', 'pyhaldls_container_v2'],
+        use=['pyhalco_hicann_dls_v2', 'pyhaldls_v2'],
         install_path='${PREFIX}/bin',
         pythonpath=['test'],
     )

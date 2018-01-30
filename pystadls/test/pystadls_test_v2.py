@@ -3,7 +3,7 @@
 import unittest
 import pyhalco_common as Co
 import pyhalco_hicann_dls_v2 as C
-import pyhaldls_container_v2 as Ct
+import pyhaldls_v2 as Ct
 import pystadls_v2 as IO
 
 

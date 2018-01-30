@@ -2,7 +2,7 @@
 
 #include "halco/common/genpybind.h"
 
-#include "haldls/container/v2/board.h"
+#include "haldls/v2/board.h"
 
 namespace rw_api {
 class FlyspiCom;
@@ -24,15 +24,15 @@ namespace v2 GENPYBIND(tag(stadls_v2))
 		rw_api::FlyspiCom&, Type::coordinate_type const&, Type const&);                            \
 	extern template Type ocp_read<Type>(rw_api::FlyspiCom&, Type::coordinate_type const&);
 
-	OCP_CONTAINER(haldls::container::v2::Board)
-	OCP_CONTAINER(haldls::container::v2::FlyspiProgramAddress)
-	OCP_CONTAINER(haldls::container::v2::FlyspiProgramSize)
-	OCP_CONTAINER(haldls::container::v2::FlyspiResultAddress)
-	OCP_CONTAINER(haldls::container::v2::FlyspiResultSize)
-	OCP_CONTAINER(haldls::container::v2::FlyspiState)
-	OCP_CONTAINER(haldls::container::v2::FlyspiControl)
-	OCP_CONTAINER(haldls::container::v2::FlyspiConfig)
-	OCP_CONTAINER(haldls::container::v2::FlyspiException)
+	OCP_CONTAINER(haldls::v2::Board)
+	OCP_CONTAINER(haldls::v2::FlyspiProgramAddress)
+	OCP_CONTAINER(haldls::v2::FlyspiProgramSize)
+	OCP_CONTAINER(haldls::v2::FlyspiResultAddress)
+	OCP_CONTAINER(haldls::v2::FlyspiResultSize)
+	OCP_CONTAINER(haldls::v2::FlyspiState)
+	OCP_CONTAINER(haldls::v2::FlyspiControl)
+	OCP_CONTAINER(haldls::v2::FlyspiConfig)
+	OCP_CONTAINER(haldls::v2::FlyspiException)
 
 #undef OCP_CONTAINER
 #endif // __GENPYBIND__
