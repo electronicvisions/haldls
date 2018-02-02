@@ -14,10 +14,10 @@
 #include "haldls/container/v2/board.h"
 #include "haldls/container/v2/chip.h"
 #include "haldls/container/v2/common.h"
+#include "haldls/container/v2/playback.h"
 #include "haldls/container/v2/spike.h"
 #include "haldls/exception/exceptions.h"
 #include "haldls/io/v2/ocp.h"
-#include "haldls/io/v2/playback.h"
 #include "haldls/io/visitors.h"
 
 namespace {
@@ -116,8 +116,8 @@ public:
 
 	rw_api::FlyspiCom com;
 
-	PlaybackProgram::serial_number_type program_serial_number =
-		PlaybackProgram::invalid_serial_number;
+	container::v2::PlaybackProgram::serial_number_type program_serial_number =
+		container::v2::PlaybackProgram::invalid_serial_number;
 	static constexpr hardware_address_type program_address = 0;
 	hardware_address_type program_size = 0;
 	static constexpr hardware_address_type result_address = 0;
@@ -177,7 +177,7 @@ void ExperimentControl::configure_static(
 		LOG4CXX_WARN(log, "The chip configuration cannot be written");
 	} else {
 		// Chip configuration program
-		PlaybackProgramBuilder setup_builder;
+		container::v2::PlaybackProgramBuilder setup_builder;
 		setup_builder.set_time(0);
 		setup_builder.set_container(halco::common::Unique(), chip);
 		// Wait for the cap-mem to settle (based on empirical measurement by DS)
@@ -185,19 +185,19 @@ void ExperimentControl::configure_static(
 		setup_builder.wait_for(2'000'000); // ~ 20.8 ms for 96 MHz
 		// clang-format on
 		setup_builder.halt();
-		PlaybackProgram setup = setup_builder.done();
+		container::v2::PlaybackProgram setup = setup_builder.done();
 
 		run(setup);
 	}
 }
 
-void ExperimentControl::transfer(PlaybackProgram const& playback_program)
+void ExperimentControl::transfer(container::v2::PlaybackProgram const& playback_program)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
 	auto const program_serial_number = playback_program.serial_number();
-	if (program_serial_number == PlaybackProgram::invalid_serial_number)
+	if (program_serial_number == container::v2::PlaybackProgram::invalid_serial_number)
 		throw std::logic_error("trying to transfer program with invalid state");
 
 	m_impl->program_serial_number = program_serial_number;
@@ -253,7 +253,7 @@ void ExperimentControl::execute()
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	if (m_impl->program_serial_number == PlaybackProgram::invalid_serial_number ||
+	if (m_impl->program_serial_number == container::v2::PlaybackProgram::invalid_serial_number ||
 		m_impl->program_size == 0)
 		throw std::runtime_error("no valid playback program has been transferred yet");
 
@@ -289,12 +289,12 @@ void ExperimentControl::execute()
 	LOG4CXX_DEBUG(log, "execution finished");
 }
 
-void ExperimentControl::fetch(PlaybackProgram& playback_program)
+void ExperimentControl::fetch(container::v2::PlaybackProgram& playback_program)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	if (m_impl->program_serial_number == PlaybackProgram::invalid_serial_number ||
+	if (m_impl->program_serial_number == container::v2::PlaybackProgram::invalid_serial_number ||
 		m_impl->program_size == 0)
 		throw std::runtime_error("no valid playback program has been transferred yet");
 
@@ -327,7 +327,7 @@ void ExperimentControl::fetch(PlaybackProgram& playback_program)
 	playback_program.set_spikes(std::move(decoder.spikes));
 }
 
-void ExperimentControl::run(PlaybackProgram& playback_program)
+void ExperimentControl::run(container::v2::PlaybackProgram& playback_program)
 {
 	transfer(playback_program);
 	execute();

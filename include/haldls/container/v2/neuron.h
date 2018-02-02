@@ -10,16 +10,11 @@
 #include "haldls/container/v2/common.h"
 
 namespace haldls {
-namespace io {
-namespace v2 {
-class PlaybackProgram;
-} // namespace v2
-} // namespace io
-
 namespace container {
 namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
 class Chip;
+class PlaybackProgram;
 
 class GENPYBIND(visible) CommonNeuronConfig
 {
@@ -118,7 +113,7 @@ public:
 	///      Chip::disable_buffered_readout().
 	void set_enable_buffered_readout(
 		bool const value,
-		common::Passkey<Chip, io::v2::PlaybackProgram> const& passkey) HALDLS_VISIBLE;
+		common::Passkey<Chip, PlaybackProgram> const& passkey) HALDLS_VISIBLE;
 
 	bool operator==(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
 	bool operator!=(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;

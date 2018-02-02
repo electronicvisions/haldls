@@ -4,9 +4,9 @@
 
 #include "halco/hicann-dls/v2/coordinates.h"
 #include "haldls/container/v2/capmem.h"
+#include "haldls/container/v2/playback.h"
 #include "haldls/exception/exceptions.h"
 #include "haldls/io/v2/experiment.h"
-#include "haldls/io/v2/playback.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;

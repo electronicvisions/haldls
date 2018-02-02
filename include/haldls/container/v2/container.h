@@ -12,6 +12,7 @@ GENPYBIND_MANUAL({
 #include "common.h"
 #include "correlation.h"
 #include "dac.h"
+#include "playback.h"
 #include "neuron.h"
 #include "ppu.h"
 #include "rate_counter.h"

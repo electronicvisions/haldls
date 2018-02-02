@@ -49,7 +49,7 @@ def build(bld):
         target = 'haldls_container_v2',
         source = bld.path.ant_glob('src/container/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['haldls_common', 'bitter', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
+        use = ['haldls_common', 'bitter', 'uni', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
@@ -57,7 +57,7 @@ def build(bld):
         target = 'haldls_io_v2',
         source = bld.path.ant_glob('src/io/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['haldls_common', 'haldls_container_v2', 'uni', 'flyspi-rw_api'],
+        use = ['haldls_common', 'haldls_container_v2', 'flyspi-rw_api'],
         uselib = 'HALDLS_LIBRARIES',
     )
 

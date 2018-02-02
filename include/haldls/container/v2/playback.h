@@ -15,9 +15,14 @@
 
 namespace haldls {
 namespace io {
-namespace v2 GENPYBIND(tag(haldls_io_v2)) {
+namespace v2 {
+	class ExperimentControl;
+} // io
+} // v2
 
-class ExperimentControl;
+namespace container {
+namespace v2 GENPYBIND(tag(haldls_container_v2)) {
+
 class PlaybackProgramBuilder;
 
 class GENPYBIND(visible) PlaybackProgram {
@@ -67,7 +72,7 @@ public:
 
 	std::string dump_program() const HALDLS_VISIBLE;
 
-	friend ExperimentControl;
+	friend io::v2::ExperimentControl;
 	friend PlaybackProgramBuilder;
 
 private:
@@ -82,13 +87,13 @@ private:
 	static void ensure_container_invariants(T& config);
 
 	/// \see ExperimentControl
-	std::vector<std::vector<std::uint8_t> > const& instruction_byte_blocks() const;
+	std::vector<std::vector<std::uint8_t> > const& instruction_byte_blocks() const HALDLS_VISIBLE;
 
 	/// \see ExperimentControl
-	void set_results(std::vector<container::v2::hardware_word_type>&& results);
+	void set_results(std::vector<container::v2::hardware_word_type>&& results) HALDLS_VISIBLE;
 
 	/// \see ExperimentControl
-	void set_spikes(spikes_type&& spikes);
+	void set_spikes(spikes_type&& spikes) HALDLS_VISIBLE;
 
 	struct Impl;
 	std::unique_ptr<Impl> m_impl;
@@ -149,5 +154,5 @@ private:
 #endif // __GENPYBIND__
 
 } // namespace v2
-} // namespace io
+} // namespace container
 } // namespace haldls

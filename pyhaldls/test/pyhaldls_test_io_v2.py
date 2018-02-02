@@ -9,7 +9,7 @@ import pyhaldls_io_v2 as IO
 
 class TestPyhaldlsIOV2(unittest.TestCase):
     def test_program_builder(self):
-        builder = IO.PlaybackProgramBuilder()
+        builder = Ct.PlaybackProgramBuilder()
         builder.set_container(Co.unique, Ct.CapMem())
         builder.wait_until(100)
         capmem_ticket = builder.get_container(Co.unique, Ct.CapMem())

@@ -230,7 +230,7 @@ bool NeuronDigitalConfig::get_enable_buffered_readout() const
 }
 
 void NeuronDigitalConfig::set_enable_buffered_readout(
-	bool value, common::Passkey<Chip, io::v2::PlaybackProgram> const& /*passkey*/)
+	bool value, common::Passkey<Chip, PlaybackProgram> const& /*passkey*/)
 {
 	m_buffered_readout = value;
 }

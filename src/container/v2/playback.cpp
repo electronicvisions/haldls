@@ -1,15 +1,24 @@
-#include "haldls/io/v2/playback.h"
+#include "haldls/container/v2/playback.h"
 
 #include <sstream>
 
 #include "uni/decoder.h"
 #include "uni/program_builder.h"
 
-#include "haldls/container/v2/container.h"
+#include "haldls/container/v2/board.h"
+#include "haldls/container/v2/capmem.h"
+#include "haldls/container/v2/chip.h"
+#include "haldls/container/v2/common.h"
+#include "haldls/container/v2/correlation.h"
+#include "haldls/container/v2/dac.h"
+#include "haldls/container/v2/neuron.h"
+#include "haldls/container/v2/ppu.h"
+#include "haldls/container/v2/rate_counter.h"
+#include "haldls/container/v2/synapsedriver.h"
 #include "haldls/io/visitors.h"
 
 namespace haldls {
-namespace io {
+namespace container {
 namespace v2 {
 
 struct PlaybackProgram::Impl
@@ -105,7 +114,7 @@ T PlaybackProgram::get(ContainerTicket<T> const& ticket) const
 					std::next(results.begin(), ticket.offset + ticket.length)};
 
 	T config;
-	visit_preorder(config, ticket.coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	visit_preorder(config, ticket.coord, io::DecodeVisitor<words_type>{std::move(data)});
 	ensure_container_invariants(config);
 	return config;
 }
@@ -219,11 +228,11 @@ void PlaybackProgramBuilder::set_container(
 
 	typedef std::vector<container::v2::hardware_address_type> addresses_type;
 	addresses_type write_addresses;
-	visit_preorder(config, coord, WriteAddressVisitor<addresses_type>{write_addresses});
+	visit_preorder(config, coord, io::WriteAddressVisitor<addresses_type>{write_addresses});
 
 	typedef std::vector<container::v2::hardware_word_type> words_type;
 	words_type words;
-	visit_preorder(config, coord, EncodeVisitor<words_type>{words});
+	visit_preorder(config, coord, io::EncodeVisitor<words_type>{words});
 
 	if (words.size() != write_addresses.size())
 		throw std::logic_error("number of addresses and words do not match");
@@ -246,7 +255,7 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::get_container(
 	addresses_type read_addresses;
 	{
 		T config;
-		visit_preorder(config, coord, ReadAddressVisitor<addresses_type>{read_addresses});
+		visit_preorder(config, coord, io::ReadAddressVisitor<addresses_type>{read_addresses});
 	}
 
 	auto& impl = *m_program.m_impl;
@@ -284,5 +293,5 @@ PlaybackProgram PlaybackProgramBuilder::done()
 #include "haldls/container/v2/container.def"
 
 } // namespace v2
-} // namespace io
+} // namespace container
 } // namespace haldls

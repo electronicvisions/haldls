@@ -7,12 +7,11 @@
 #include "haldls/common/visibility.h"
 #include "haldls/container/v2/board.h"
 #include "haldls/container/v2/chip.h"
+#include "haldls/container/v2/playback.h"
 
 namespace haldls {
 namespace io {
 namespace v2 GENPYBIND(tag(haldls_io_v2)) {
-
-class PlaybackProgram;
 
 class GENPYBIND(visible) ExperimentControl {
 public:
@@ -34,13 +33,13 @@ public:
 
 	/// \brief transfers the program and sets the program size and address
 	///        registers
-	void transfer(PlaybackProgram const& playback_program) HALDLS_VISIBLE;
+	void transfer(container::v2::PlaybackProgram const& playback_program) HALDLS_VISIBLE;
 	/// \brief toggle the execute flag and wait until turned off again
 	void execute() HALDLS_VISIBLE;
-	void fetch(PlaybackProgram& playback_program) HALDLS_VISIBLE;
+	void fetch(container::v2::PlaybackProgram& playback_program) HALDLS_VISIBLE;
 
 	/// \brief this just wraps the sequence transfer-execute-fetch
-	void run(PlaybackProgram& playback_program) HALDLS_VISIBLE;
+	void run(container::v2::PlaybackProgram& playback_program) HALDLS_VISIBLE;
 
 private:
 	class Impl;

@@ -28,7 +28,7 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
             C.CapMemCellOnDLS(Co.Enum(1)), Ct.CapMemCell.Value(321))
         capmem_config.set(cell, capmemvalue)
 
-        builder = IO.PlaybackProgramBuilder()
+        builder = Ct.PlaybackProgramBuilder()
         builder.set_container(Co.unique, capmem_config)
         builder.wait_until(100)
         capmem_ticket = builder.get_container(Co.unique, capmem_config)
@@ -170,7 +170,7 @@ class TestHelloWorldHardware(unittest.TestCase):
         ctrl.run(program)
 
     def test_silence(self):
-        builder = IO.PlaybackProgramBuilder()
+        builder = Ct.PlaybackProgramBuilder()
         builder.wait_for(10000)
         builder.halt()
         program = builder.done()
@@ -188,7 +188,7 @@ class TestHelloWorldHardware(unittest.TestCase):
         self.chip.set_neuron_digital_config(self.neuron, neuron_config)
 
         # Create a playback program (all times are in FPGA cycles / 96MHz)
-        builder = IO.PlaybackProgramBuilder()
+        builder = Ct.PlaybackProgramBuilder()
         builder.set_time(0)
         for idx in range(NUM_SPIKES):
             builder.wait_until(OFFSET + idx * ISI) # Absolute wait
