@@ -6,7 +6,7 @@
 #include "halco/common/genpybind.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
-#include "haldls/common/visibility.h"
+#include "hate/visibility.h"
 #include "haldls/v2/common.h"
 
 namespace haldls {
@@ -21,22 +21,22 @@ public:
 	struct GENPYBIND(inline_base("*")) Value
 		: public halco::common::detail::RantWrapper<Value, uint_fast32_t, 0xffffffff, 0>
 	{
-		constexpr explicit Value(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+		constexpr explicit Value(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
-	PPUMemoryWord() HALDLS_VISIBLE;
-	explicit PPUMemoryWord(Value const& value) HALDLS_VISIBLE;
+	PPUMemoryWord() SYMBOL_VISIBLE;
+	explicit PPUMemoryWord(Value const& value) SYMBOL_VISIBLE;
 
-	Value get() const HALDLS_VISIBLE;
-	void set(Value const& value) HALDLS_VISIBLE;
+	Value get() const SYMBOL_VISIBLE;
+	void set(Value const& value) SYMBOL_VISIBLE;
 
-	bool operator==(PPUMemoryWord const& other) const HALDLS_VISIBLE;
-	bool operator!=(PPUMemoryWord const& other) const HALDLS_VISIBLE;
+	bool operator==(PPUMemoryWord const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUMemoryWord const& other) const SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& word) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	Value m_value;
@@ -51,18 +51,18 @@ public:
 	typedef std::array<PPUMemoryWord, halco::hicann_dls::v2::PPUMemoryWordOnDLS::size>
 		words_type;
 
-	PPUMemory() HALDLS_VISIBLE;
-	explicit PPUMemory(words_type const& words) HALDLS_VISIBLE;
+	PPUMemory() SYMBOL_VISIBLE;
+	explicit PPUMemory(words_type const& words) SYMBOL_VISIBLE;
 
-	words_type get_words() const HALDLS_VISIBLE;
-	void set_words(words_type const& words) HALDLS_VISIBLE;
+	words_type get_words() const SYMBOL_VISIBLE;
+	void set_words(words_type const& words) SYMBOL_VISIBLE;
 
-	PPUMemoryWord::Value get_word(halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos) const HALDLS_VISIBLE;
+	PPUMemoryWord::Value get_word(halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos) const SYMBOL_VISIBLE;
 	void set_word(
-		halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos, PPUMemoryWord::Value const& word) HALDLS_VISIBLE;
+		halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos, PPUMemoryWord::Value const& word) SYMBOL_VISIBLE;
 
-	bool operator==(PPUMemory const& other) const HALDLS_VISIBLE;
-	bool operator!=(PPUMemory const& other) const HALDLS_VISIBLE;
+	bool operator==(PPUMemory const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUMemory const& other) const SYMBOL_VISIBLE;
 
 	friend detail::VisitPreorderImpl<PPUMemory>;
 
@@ -76,28 +76,28 @@ public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	PPUControlRegister() HALDLS_VISIBLE;
+	PPUControlRegister() SYMBOL_VISIBLE;
 
-	bool get_inhibit_reset() const HALDLS_VISIBLE;
-	void set_inhibit_reset(bool const value) HALDLS_VISIBLE;
+	bool get_inhibit_reset() const SYMBOL_VISIBLE;
+	void set_inhibit_reset(bool const value) SYMBOL_VISIBLE;
 
 	/* - force_clock_on: Forces the clock to be on, even if the ppu is sleeping
 	 * - force_clock_off: Forces the clock to be off, which is weaker than
 	 *   forcing the clock on
 	 * None of these is needed in normal operation. Setting the inhibit_reset
 	 * bit starts the execution. If the program finishes, the clock is stopped again. */
-	bool get_force_clock_on() const HALDLS_VISIBLE;
-	void set_force_clock_on(bool const value) HALDLS_VISIBLE;
-	bool get_force_clock_off() const HALDLS_VISIBLE;
-	void set_force_clock_off(bool const value) HALDLS_VISIBLE;
+	bool get_force_clock_on() const SYMBOL_VISIBLE;
+	void set_force_clock_on(bool const value) SYMBOL_VISIBLE;
+	bool get_force_clock_off() const SYMBOL_VISIBLE;
+	void set_force_clock_off(bool const value) SYMBOL_VISIBLE;
 
-	bool operator==(PPUControlRegister const& other) const HALDLS_VISIBLE;
-	bool operator!=(PPUControlRegister const& other) const HALDLS_VISIBLE;
+	bool operator==(PPUControlRegister const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUControlRegister const& other) const SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& unique) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_inhibit_reset;
@@ -111,18 +111,18 @@ public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	PPUStatusRegister() HALDLS_VISIBLE;
+	PPUStatusRegister() SYMBOL_VISIBLE;
 
 	// Read only property
-	bool get_sleep() const HALDLS_VISIBLE;
+	bool get_sleep() const SYMBOL_VISIBLE;
 
-	bool operator==(PPUStatusRegister const& other) const HALDLS_VISIBLE;
-	bool operator!=(PPUStatusRegister const& other) const HALDLS_VISIBLE;
+	bool operator==(PPUStatusRegister const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUStatusRegister const& other) const SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& unique) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_sleep;

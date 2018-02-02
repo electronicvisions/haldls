@@ -4,8 +4,8 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
-#include "haldls/common/optional.h"
-#include "haldls/common/visibility.h"
+#include "hate/optional.h"
+#include "hate/visibility.h"
 #include "haldls/v2/capmem.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/correlation.h"
@@ -25,12 +25,12 @@ public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::false_type has_local_data;
 
-	Chip() HALDLS_VISIBLE;
+	Chip() SYMBOL_VISIBLE;
 
-	void enable_buffered_readout(halco::hicann_dls::v2::NeuronOnDLS const& neuron) HALDLS_VISIBLE;
-	void disable_buffered_readout() HALDLS_VISIBLE;
-	common::optional<halco::hicann_dls::v2::NeuronOnDLS>
-	get_buffered_readout_neuron() const HALDLS_VISIBLE;
+	void enable_buffered_readout(halco::hicann_dls::v2::NeuronOnDLS const& neuron) SYMBOL_VISIBLE;
+	void disable_buffered_readout() SYMBOL_VISIBLE;
+	hate::optional<halco::hicann_dls::v2::NeuronOnDLS>
+	get_buffered_readout_neuron() const SYMBOL_VISIBLE;
 
 	/// \brief Returns the digital configuration of the specified neuron.
 	/// \note To prevent misconfiguration, enabling the external current input and
@@ -38,79 +38,79 @@ public:
 	///       Consequently the corresponding bits of the returned configuration container
 	///       are always disabled.
 	NeuronDigitalConfig get_neuron_digital_config(
-		halco::hicann_dls::v2::NeuronOnDLS const& neuron) const HALDLS_VISIBLE;
+		halco::hicann_dls::v2::NeuronOnDLS const& neuron) const SYMBOL_VISIBLE;
 
 	/// \brief Changes the digital configuration of the specified neuron.
 	/// \note The state of the external current input and external voltage output switches
 	///       is solely controlled through enable_buffered_readout(). Corresponding
 	///       settings of the passed-in configuration have no effect on the stored instance.
 	void set_neuron_digital_config(
-		halco::hicann_dls::v2::NeuronOnDLS const& neuron, NeuronDigitalConfig value) HALDLS_VISIBLE;
+		halco::hicann_dls::v2::NeuronOnDLS const& neuron, NeuronDigitalConfig value) SYMBOL_VISIBLE;
 
-	SynapseBlock get_synapse_block(halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const HALDLS_VISIBLE;
+	SynapseBlock get_synapse_block(halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const SYMBOL_VISIBLE;
 	void set_synapse_block(
-		halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block, SynapseBlock const& value) HALDLS_VISIBLE;
+		halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block, SynapseBlock const& value) SYMBOL_VISIBLE;
 
-	SynapseBlock::Synapse get_synapse(halco::hicann_dls::v2::SynapseOnDLS const& synapse) const HALDLS_VISIBLE;
+	SynapseBlock::Synapse get_synapse(halco::hicann_dls::v2::SynapseOnDLS const& synapse) const SYMBOL_VISIBLE;
 	void set_synapse(
-		halco::hicann_dls::v2::SynapseOnDLS const& synapse, SynapseBlock::Synapse const& value) HALDLS_VISIBLE;
+		halco::hicann_dls::v2::SynapseOnDLS const& synapse, SynapseBlock::Synapse const& value) SYMBOL_VISIBLE;
 
 	ColumnCorrelationBlock get_column_correlation_block(
-		halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block) const HALDLS_VISIBLE;
+		halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block) const SYMBOL_VISIBLE;
 	void set_column_correlation_block(
 		halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block,
-		ColumnCorrelationBlock const& value) HALDLS_VISIBLE;
+		ColumnCorrelationBlock const& value) SYMBOL_VISIBLE;
 
 	ColumnCorrelationBlock::ColumnCorrelationSwitch get_column_correlation_switch(
-		halco::hicann_dls::v2::ColumnCorrelationSwitchOnDLS const& correlation_switch) const HALDLS_VISIBLE;
+		halco::hicann_dls::v2::ColumnCorrelationSwitchOnDLS const& correlation_switch) const SYMBOL_VISIBLE;
 	void set_column_correlation_switch(
 		halco::hicann_dls::v2::ColumnCorrelationSwitchOnDLS const& correlation_switch,
-		ColumnCorrelationBlock::ColumnCorrelationSwitch const& value) HALDLS_VISIBLE;
+		ColumnCorrelationBlock::ColumnCorrelationSwitch const& value) SYMBOL_VISIBLE;
 
 	ColumnCurrentBlock get_column_current_block(
-		halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block) const HALDLS_VISIBLE;
+		halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block) const SYMBOL_VISIBLE;
 	void set_column_current_block(
 		halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block,
-		ColumnCurrentBlock const& value) HALDLS_VISIBLE;
+		ColumnCurrentBlock const& value) SYMBOL_VISIBLE;
 
 	ColumnCurrentBlock::ColumnCurrentSwitch get_column_current_switch(
-		halco::hicann_dls::v2::ColumnCurrentSwitchOnDLS const& current_switch) const HALDLS_VISIBLE;
+		halco::hicann_dls::v2::ColumnCurrentSwitchOnDLS const& current_switch) const SYMBOL_VISIBLE;
 	void set_column_current_switch(
 		halco::hicann_dls::v2::ColumnCurrentSwitchOnDLS const& current_switch,
-		ColumnCurrentBlock::ColumnCurrentSwitch const& value) HALDLS_VISIBLE;
+		ColumnCurrentBlock::ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
 
-	CapMem get_capmem() const HALDLS_VISIBLE;
-	void set_capmem(CapMem const& value) HALDLS_VISIBLE;
+	CapMem get_capmem() const SYMBOL_VISIBLE;
+	void set_capmem(CapMem const& value) SYMBOL_VISIBLE;
 
-	PPUMemory get_ppu_memory() const HALDLS_VISIBLE;
-	void set_ppu_memory(PPUMemory const& value) HALDLS_VISIBLE;
+	PPUMemory get_ppu_memory() const SYMBOL_VISIBLE;
+	void set_ppu_memory(PPUMemory const& value) SYMBOL_VISIBLE;
 
-	PPUControlRegister get_ppu_control_register() const HALDLS_VISIBLE;
-	void set_ppu_control_register(PPUControlRegister const& value) HALDLS_VISIBLE;
+	PPUControlRegister get_ppu_control_register() const SYMBOL_VISIBLE;
+	void set_ppu_control_register(PPUControlRegister const& value) SYMBOL_VISIBLE;
 
 	// Read-only property, available when reading the chip config
-	PPUStatusRegister get_ppu_status_register() const HALDLS_VISIBLE;
+	PPUStatusRegister get_ppu_status_register() const SYMBOL_VISIBLE;
 
-	RateCounter get_rate_counter() const HALDLS_VISIBLE;
-	void set_rate_counter(RateCounter const& value) HALDLS_VISIBLE;
+	RateCounter get_rate_counter() const SYMBOL_VISIBLE;
+	void set_rate_counter(RateCounter const& value) SYMBOL_VISIBLE;
 
-	SynapseDrivers get_synapse_drivers() const HALDLS_VISIBLE;
-	void set_synapse_drivers(SynapseDrivers const& value) HALDLS_VISIBLE;
+	SynapseDrivers get_synapse_drivers() const SYMBOL_VISIBLE;
+	void set_synapse_drivers(SynapseDrivers const& value) SYMBOL_VISIBLE;
 
-	CommonSynramConfig get_common_synram_config() const HALDLS_VISIBLE;
-	void set_common_synram_config(CommonSynramConfig const& value) HALDLS_VISIBLE;
+	CommonSynramConfig get_common_synram_config() const SYMBOL_VISIBLE;
+	void set_common_synram_config(CommonSynramConfig const& value) SYMBOL_VISIBLE;
 
-	CommonCapMemConfig get_common_capmem_config() const HALDLS_VISIBLE;
-	void set_common_capmem_config(CommonCapMemConfig const& value) HALDLS_VISIBLE;
+	CommonCapMemConfig get_common_capmem_config() const SYMBOL_VISIBLE;
+	void set_common_capmem_config(CommonCapMemConfig const& value) SYMBOL_VISIBLE;
 
-	CommonNeuronConfig get_common_neuron_config() const HALDLS_VISIBLE;
-	void set_common_neuron_config(CommonNeuronConfig const& value) HALDLS_VISIBLE;
+	CommonNeuronConfig get_common_neuron_config() const SYMBOL_VISIBLE;
+	void set_common_neuron_config(CommonNeuronConfig const& value) SYMBOL_VISIBLE;
 
-	CorrelationConfig get_correlation_config() const HALDLS_VISIBLE;
-	void set_correlation_config(CorrelationConfig const& value) HALDLS_VISIBLE;
+	CorrelationConfig get_correlation_config() const SYMBOL_VISIBLE;
+	void set_correlation_config(CorrelationConfig const& value) SYMBOL_VISIBLE;
 
-	bool operator==(Chip const& other) const HALDLS_VISIBLE;
-	bool operator!=(Chip const& other) const HALDLS_VISIBLE;
+	bool operator==(Chip const& other) const SYMBOL_VISIBLE;
+	bool operator!=(Chip const& other) const SYMBOL_VISIBLE;
 
 	friend detail::VisitPreorderImpl<Chip>;
 

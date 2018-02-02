@@ -59,7 +59,7 @@ void FlyspiRWRegister<Address>::decode(std::array<ocp_word_type, 1> const& data)
 }
 
 template <ocp_address_type::value_type Address>
-common::optional<ocp_word_type::value_type> FlyspiRORegister<Address>::get_value() const
+hate::optional<ocp_word_type::value_type> FlyspiRORegister<Address>::get_value() const
 {
 	return m_value;
 }
@@ -447,67 +447,67 @@ FlyspiException::FlyspiException()
 	  m_encode_overflow()
 {}
 
-common::optional<bool> FlyspiException::get_result_read_error() const
+hate::optional<bool> FlyspiException::get_result_read_error() const
 {
 	return m_result_read_error;
 }
 
-common::optional<bool> FlyspiException::get_result_read_overflow() const
+hate::optional<bool> FlyspiException::get_result_read_overflow() const
 {
 	return m_result_read_overflow;
 }
 
-common::optional<bool> FlyspiException::get_result_write_error() const
+hate::optional<bool> FlyspiException::get_result_write_error() const
 {
 	return m_result_write_error;
 }
 
-common::optional<bool> FlyspiException::get_result_write_underrun() const
+hate::optional<bool> FlyspiException::get_result_write_underrun() const
 {
 	return m_result_write_underrun;
 }
 
-common::optional<bool> FlyspiException::get_playback_read_error() const
+hate::optional<bool> FlyspiException::get_playback_read_error() const
 {
 	return m_playback_read_error;
 }
 
-common::optional<bool> FlyspiException::get_playback_read_overflow() const
+hate::optional<bool> FlyspiException::get_playback_read_overflow() const
 {
 	return m_playback_read_overflow;
 }
 
-common::optional<bool> FlyspiException::get_playback_write_error() const
+hate::optional<bool> FlyspiException::get_playback_write_error() const
 {
 	return m_playback_write_error;
 }
 
-common::optional<bool> FlyspiException::get_playback_write_underrun() const
+hate::optional<bool> FlyspiException::get_playback_write_underrun() const
 {
 	return m_playback_write_underrun;
 }
 
-common::optional<bool> FlyspiException::get_program_exception() const
+hate::optional<bool> FlyspiException::get_program_exception() const
 {
 	return m_program_exception;
 }
 
-common::optional<bool> FlyspiException::get_serdes_overflow() const
+hate::optional<bool> FlyspiException::get_serdes_overflow() const
 {
 	return m_serdes_overflow;
 }
 
-common::optional<bool> FlyspiException::get_serdes_pll_unlocked() const
+hate::optional<bool> FlyspiException::get_serdes_pll_unlocked() const
 {
 	return m_serdes_pll_unlocked;
 }
 
-common::optional<bool> FlyspiException::get_serdes_race() const
+hate::optional<bool> FlyspiException::get_serdes_race() const
 {
 	return m_serdes_race;
 }
 
-common::optional<bool> FlyspiException::get_encode_overflow() const
+hate::optional<bool> FlyspiException::get_encode_overflow() const
 {
 	return m_encode_overflow;
 }

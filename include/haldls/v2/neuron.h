@@ -5,8 +5,8 @@
 #include "halco/common/genpybind.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
-#include "haldls/common/passkey.h"
-#include "haldls/common/visibility.h"
+#include "hate/passkey.h"
+#include "hate/visibility.h"
 #include "haldls/v2/common.h"
 
 namespace haldls {
@@ -25,30 +25,30 @@ public:
 		: public halco::common::detail::
 			  RantWrapper<PostCorrelationSignalLength, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit PostCorrelationSignalLength(uintmax_t const val = 0) HALDLS_VISIBLE
+		constexpr explicit PostCorrelationSignalLength(uintmax_t const val = 0) SYMBOL_VISIBLE
 			: rant_t(val)
 		{}
 	};
 
-	CommonNeuronConfig() HALDLS_VISIBLE;
+	CommonNeuronConfig() SYMBOL_VISIBLE;
 
-	bool get_enable_digital_out() const HALDLS_VISIBLE;
-	void set_enable_digital_out(bool const value) HALDLS_VISIBLE;
-	PostCorrelationSignalLength get_post_correlation_signal_length() const HALDLS_VISIBLE;
-	void set_post_correlation_signal_length(PostCorrelationSignalLength const& value) HALDLS_VISIBLE;
-	bool get_enable_external_post_correlation_signal() const HALDLS_VISIBLE;
-	void set_enable_external_post_correlation_signal(bool const value) HALDLS_VISIBLE;
-	bool get_inhibit_spike_comparator() const HALDLS_VISIBLE;
-	void set_inhibit_spike_comparator(bool const value) HALDLS_VISIBLE;
+	bool get_enable_digital_out() const SYMBOL_VISIBLE;
+	void set_enable_digital_out(bool const value) SYMBOL_VISIBLE;
+	PostCorrelationSignalLength get_post_correlation_signal_length() const SYMBOL_VISIBLE;
+	void set_post_correlation_signal_length(PostCorrelationSignalLength const& value) SYMBOL_VISIBLE;
+	bool get_enable_external_post_correlation_signal() const SYMBOL_VISIBLE;
+	void set_enable_external_post_correlation_signal(bool const value) SYMBOL_VISIBLE;
+	bool get_inhibit_spike_comparator() const SYMBOL_VISIBLE;
+	void set_inhibit_spike_comparator(bool const value) SYMBOL_VISIBLE;
 
-	bool operator==(CommonNeuronConfig const& other) const HALDLS_VISIBLE;
-	bool operator!=(CommonNeuronConfig const& other) const HALDLS_VISIBLE;
+	bool operator==(CommonNeuronConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CommonNeuronConfig const& other) const SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+		coordinate_type const& unique) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_digital_out;
@@ -81,29 +81,29 @@ public:
 		spike = 3
 	};
 
-	NeuronDigitalConfig() HALDLS_VISIBLE;
+	NeuronDigitalConfig() SYMBOL_VISIBLE;
 
 	// accessors
-	bool get_enable_synapse_input_excitatory() const HALDLS_VISIBLE;
-	void set_enable_synapse_input_excitatory(bool const value) HALDLS_VISIBLE;
-	bool get_enable_synapse_input_inhibitory() const HALDLS_VISIBLE;
-	void set_enable_synapse_input_inhibitory(bool const value) HALDLS_VISIBLE;
-	bool get_enable_high_conductance_leak() const HALDLS_VISIBLE;
-	void set_enable_high_conductance_leak(bool const value) HALDLS_VISIBLE;
-	bool get_enable_leak() const HALDLS_VISIBLE;
-	void set_enable_leak(bool const value) HALDLS_VISIBLE;
-	bool get_enable_bigcap() const HALDLS_VISIBLE;
-	void set_enable_bigcap(bool const value) HALDLS_VISIBLE;
-	bool get_enable_smallcap() const HALDLS_VISIBLE;
-	void set_enable_smallcap(bool const value) HALDLS_VISIBLE;
-	FireOutMode get_fire_out_mode() const HALDLS_VISIBLE;
-	void set_fire_out_mode(FireOutMode const value) HALDLS_VISIBLE;
-	MuxReadoutMode get_mux_readout_mode() const HALDLS_VISIBLE;
-	void set_mux_readout_mode(MuxReadoutMode const value) HALDLS_VISIBLE;
-	bool get_enable_unbuffered_readout() const HALDLS_VISIBLE;
-	void set_enable_unbuffered_readout(bool const value) HALDLS_VISIBLE;
+	bool get_enable_synapse_input_excitatory() const SYMBOL_VISIBLE;
+	void set_enable_synapse_input_excitatory(bool const value) SYMBOL_VISIBLE;
+	bool get_enable_synapse_input_inhibitory() const SYMBOL_VISIBLE;
+	void set_enable_synapse_input_inhibitory(bool const value) SYMBOL_VISIBLE;
+	bool get_enable_high_conductance_leak() const SYMBOL_VISIBLE;
+	void set_enable_high_conductance_leak(bool const value) SYMBOL_VISIBLE;
+	bool get_enable_leak() const SYMBOL_VISIBLE;
+	void set_enable_leak(bool const value) SYMBOL_VISIBLE;
+	bool get_enable_bigcap() const SYMBOL_VISIBLE;
+	void set_enable_bigcap(bool const value) SYMBOL_VISIBLE;
+	bool get_enable_smallcap() const SYMBOL_VISIBLE;
+	void set_enable_smallcap(bool const value) SYMBOL_VISIBLE;
+	FireOutMode get_fire_out_mode() const SYMBOL_VISIBLE;
+	void set_fire_out_mode(FireOutMode const value) SYMBOL_VISIBLE;
+	MuxReadoutMode get_mux_readout_mode() const SYMBOL_VISIBLE;
+	void set_mux_readout_mode(MuxReadoutMode const value) SYMBOL_VISIBLE;
+	bool get_enable_unbuffered_readout() const SYMBOL_VISIBLE;
+	void set_enable_unbuffered_readout(bool const value) SYMBOL_VISIBLE;
 
-	bool get_enable_buffered_readout() const HALDLS_VISIBLE;
+	bool get_enable_buffered_readout() const SYMBOL_VISIBLE;
 
 	/// \brief Enable or disable external voltage output for this neuron.
 	/// \note As only one neuron per chip can provide voltage output, access to this
@@ -112,16 +112,16 @@ public:
 	///      Chip::disable_buffered_readout().
 	void set_enable_buffered_readout(
 		bool const value,
-		common::Passkey<Chip, PlaybackProgram> const& passkey) HALDLS_VISIBLE;
+		hate::Passkey<Chip, PlaybackProgram> const& passkey) SYMBOL_VISIBLE;
 
-	bool operator==(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
-	bool operator!=(NeuronDigitalConfig const& other) const HALDLS_VISIBLE;
+	bool operator==(NeuronDigitalConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(NeuronDigitalConfig const& other) const SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& neurn) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+		coordinate_type const& neurn) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_synapse_input_exc;

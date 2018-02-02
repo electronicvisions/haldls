@@ -6,7 +6,7 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
-#include "haldls/common/visibility.h"
+#include "hate/visibility.h"
 #include "haldls/v2/common.h"
 
 namespace haldls {
@@ -20,43 +20,43 @@ public:
 
 	struct GENPYBIND(inline_base("*")) PCConf : public halco::common::detail::RantWrapper<PCConf, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit PCConf(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+		constexpr explicit PCConf(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) WConf : public halco::common::detail::RantWrapper<WConf, uint_fast32_t, 255, 0>
 	{
-		constexpr explicit WConf(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+		constexpr explicit WConf(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) WaitCtrClear
 		: public halco::common::detail::RantWrapper<WaitCtrClear, uint_fast16_t, 7, 0>
 	{
-		constexpr explicit WaitCtrClear(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+		constexpr explicit WaitCtrClear(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
-	CommonSynramConfig() HALDLS_VISIBLE;
+	CommonSynramConfig() SYMBOL_VISIBLE;
 
-	PCConf get_pc_conf() const HALDLS_VISIBLE;
-	void set_pc_conf(PCConf const& value) HALDLS_VISIBLE;
-	WConf get_w_conf() const HALDLS_VISIBLE;
-	void set_w_conf(WConf const& value) HALDLS_VISIBLE;
-	WaitCtrClear get_wait_ctr_clear() const HALDLS_VISIBLE;
-	void set_wait_ctr_clear(WaitCtrClear const& value) HALDLS_VISIBLE;
-	bool get_use_internal_i_bias_correlation_output() const HALDLS_VISIBLE;
-	void set_use_internal_i_bias_correlation_output(bool const value) HALDLS_VISIBLE;
-	bool get_use_internal_i_bias_vstore() const HALDLS_VISIBLE;
-	void set_use_internal_i_bias_vstore(bool const value) HALDLS_VISIBLE;
-	bool get_use_internal_i_bias_vramp() const HALDLS_VISIBLE;
-	void set_use_internal_i_bias_vramp(bool const value) HALDLS_VISIBLE;
-	bool get_use_internal_i_bias_vdac() const HALDLS_VISIBLE;
-	void set_use_internal_i_bias_vdac(bool const value) HALDLS_VISIBLE;
+	PCConf get_pc_conf() const SYMBOL_VISIBLE;
+	void set_pc_conf(PCConf const& value) SYMBOL_VISIBLE;
+	WConf get_w_conf() const SYMBOL_VISIBLE;
+	void set_w_conf(WConf const& value) SYMBOL_VISIBLE;
+	WaitCtrClear get_wait_ctr_clear() const SYMBOL_VISIBLE;
+	void set_wait_ctr_clear(WaitCtrClear const& value) SYMBOL_VISIBLE;
+	bool get_use_internal_i_bias_correlation_output() const SYMBOL_VISIBLE;
+	void set_use_internal_i_bias_correlation_output(bool const value) SYMBOL_VISIBLE;
+	bool get_use_internal_i_bias_vstore() const SYMBOL_VISIBLE;
+	void set_use_internal_i_bias_vstore(bool const value) SYMBOL_VISIBLE;
+	bool get_use_internal_i_bias_vramp() const SYMBOL_VISIBLE;
+	void set_use_internal_i_bias_vramp(bool const value) SYMBOL_VISIBLE;
+	bool get_use_internal_i_bias_vdac() const SYMBOL_VISIBLE;
+	void set_use_internal_i_bias_vdac(bool const value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 4;
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+		coordinate_type const& unique) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
-	bool operator==(CommonSynramConfig const& other) const HALDLS_VISIBLE;
-	bool operator!=(CommonSynramConfig const& other) const HALDLS_VISIBLE;
+	bool operator==(CommonSynramConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CommonSynramConfig const& other) const SYMBOL_VISIBLE;
 
 private:
 	PCConf m_pc_conf;
@@ -88,42 +88,42 @@ public:
 	{
 		struct GENPYBIND(inline_base("*")) Weight : public halco::common::detail::RantWrapper<Weight, uint_fast16_t, 63, 0>
 		{
-			constexpr explicit Weight(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+			constexpr explicit Weight(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 		};
 
 		struct GENPYBIND(inline_base("*")) Address : public halco::common::detail::RantWrapper<Address, uint_fast16_t, 63, 0>
 		{
-			constexpr explicit Address(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+			constexpr explicit Address(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 		};
 
 		// The more bits set, the shorter the time constant
 		struct GENPYBIND(inline_base("*")) TimeCalib : public halco::common::detail::RantWrapper<TimeCalib, uint_fast16_t, 3, 0>
 		{
-			constexpr explicit TimeCalib(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+			constexpr explicit TimeCalib(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 		};
 
 		// The more bits set, the lower the amplitude
 		struct GENPYBIND(inline_base("*")) AmpCalib : public halco::common::detail::RantWrapper<AmpCalib, uint_fast16_t, 3, 0>
 		{
-			constexpr explicit AmpCalib(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+			constexpr explicit AmpCalib(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 		};
 
-		Synapse() HALDLS_VISIBLE;
+		Synapse() SYMBOL_VISIBLE;
 
-		Weight get_weight() const HALDLS_VISIBLE;
-		void set_weight(Weight const& value) HALDLS_VISIBLE;
+		Weight get_weight() const SYMBOL_VISIBLE;
+		void set_weight(Weight const& value) SYMBOL_VISIBLE;
 
-		Address get_address() const HALDLS_VISIBLE;
-		void set_address(Address const& value) HALDLS_VISIBLE;
+		Address get_address() const SYMBOL_VISIBLE;
+		void set_address(Address const& value) SYMBOL_VISIBLE;
 
-		TimeCalib get_time_calib() const HALDLS_VISIBLE;
-		void set_time_calib(TimeCalib const& value) HALDLS_VISIBLE;
+		TimeCalib get_time_calib() const SYMBOL_VISIBLE;
+		void set_time_calib(TimeCalib const& value) SYMBOL_VISIBLE;
 
-		AmpCalib get_amp_calib() const HALDLS_VISIBLE;
-		void set_amp_calib(AmpCalib const& value) HALDLS_VISIBLE;
+		AmpCalib get_amp_calib() const SYMBOL_VISIBLE;
+		void set_amp_calib(AmpCalib const& value) SYMBOL_VISIBLE;
 
-		bool operator==(Synapse const& other) const HALDLS_VISIBLE;
-		bool operator!=(Synapse const& other) const HALDLS_VISIBLE;
+		bool operator==(Synapse const& other) const SYMBOL_VISIBLE;
+		bool operator!=(Synapse const& other) const SYMBOL_VISIBLE;
 
 	private:
 		Weight m_weight;
@@ -132,22 +132,22 @@ public:
 		AmpCalib m_amp_calib;
 	};
 
-	SynapseBlock() HALDLS_VISIBLE;
+	SynapseBlock() SYMBOL_VISIBLE;
 
 	Synapse get_synapse(halco::hicann_dls::v2::SynapseOnSynapseBlock const& synapse) const
-		HALDLS_VISIBLE;
+		SYMBOL_VISIBLE;
 	void set_synapse(
 		halco::hicann_dls::v2::SynapseOnSynapseBlock const& synapse,
-		Synapse const& value) HALDLS_VISIBLE;
+		Synapse const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& block) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+		coordinate_type const& block) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
-	bool operator==(SynapseBlock const& other) const HALDLS_VISIBLE;
-	bool operator!=(SynapseBlock const& other) const HALDLS_VISIBLE;
+	bool operator==(SynapseBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SynapseBlock const& other) const SYMBOL_VISIBLE;
 
 private:
 	halco::common::typed_array<Synapse, halco::hicann_dls::v2::SynapseOnSynapseBlock> m_synapses;
@@ -169,39 +169,39 @@ public:
 			readout = 3
 		};
 
-		ColumnCorrelationSwitch() HALDLS_VISIBLE;
+		ColumnCorrelationSwitch() SYMBOL_VISIBLE;
 
-		Config get_causal_config() const HALDLS_VISIBLE;
-		void set_causal_config(Config const value) HALDLS_VISIBLE;
+		Config get_causal_config() const SYMBOL_VISIBLE;
+		void set_causal_config(Config const value) SYMBOL_VISIBLE;
 
-		Config get_acausal_config() const HALDLS_VISIBLE;
-		void set_acausal_config(Config const value) HALDLS_VISIBLE;
+		Config get_acausal_config() const SYMBOL_VISIBLE;
+		void set_acausal_config(Config const value) SYMBOL_VISIBLE;
 
-		bool operator==(ColumnCorrelationSwitch const& other) const HALDLS_VISIBLE;
-		bool operator!=(ColumnCorrelationSwitch const& other) const HALDLS_VISIBLE;
+		bool operator==(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
+		bool operator!=(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
 
 	private:
 		Config m_causal;
 		Config m_acausal;
 	};
 
-	ColumnCorrelationBlock() HALDLS_VISIBLE;
+	ColumnCorrelationBlock() SYMBOL_VISIBLE;
 
 	ColumnCorrelationSwitch get_switch(
 		halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock const& correlation_switch) const
-		HALDLS_VISIBLE;
+		SYMBOL_VISIBLE;
 	void set_switch(
 		halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock const& correlation_switch,
-		ColumnCorrelationSwitch const& value) HALDLS_VISIBLE;
+		ColumnCorrelationSwitch const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& block) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+		coordinate_type const& block) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
-	bool operator==(ColumnCorrelationBlock const& other) const HALDLS_VISIBLE;
-	bool operator!=(ColumnCorrelationBlock const& other) const HALDLS_VISIBLE;
+	bool operator==(ColumnCorrelationBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ColumnCorrelationBlock const& other) const SYMBOL_VISIBLE;
 
 private:
 	halco::common::typed_array<
@@ -226,39 +226,39 @@ public:
 			readout = 3
 		};
 
-		ColumnCurrentSwitch() HALDLS_VISIBLE;
+		ColumnCurrentSwitch() SYMBOL_VISIBLE;
 
-		Config get_exc_config() const HALDLS_VISIBLE;
-		void set_exc_config(Config const value) HALDLS_VISIBLE;
+		Config get_exc_config() const SYMBOL_VISIBLE;
+		void set_exc_config(Config const value) SYMBOL_VISIBLE;
 
-		Config get_inh_config() const HALDLS_VISIBLE;
-		void set_inh_config(Config const value) HALDLS_VISIBLE;
+		Config get_inh_config() const SYMBOL_VISIBLE;
+		void set_inh_config(Config const value) SYMBOL_VISIBLE;
 
-		bool operator==(ColumnCurrentSwitch const& other) const HALDLS_VISIBLE;
-		bool operator!=(ColumnCurrentSwitch const& other) const HALDLS_VISIBLE;
+		bool operator==(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
+		bool operator!=(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
 
 	private:
 		Config m_exc;
 		Config m_inh;
 	};
 
-	ColumnCurrentBlock() HALDLS_VISIBLE;
+	ColumnCurrentBlock() SYMBOL_VISIBLE;
 
 	ColumnCurrentSwitch get_switch(
 		halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock const& current_switch) const
-		HALDLS_VISIBLE;
+		SYMBOL_VISIBLE;
 	void set_switch(
 		halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock const& current_switch,
-		ColumnCurrentSwitch const& value) HALDLS_VISIBLE;
+		ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	std::array<hardware_address_type, config_size_in_words> addresses(
-		coordinate_type const& block) const HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, config_size_in_words> const& data) HALDLS_VISIBLE GENPYBIND(hidden);
+		coordinate_type const& block) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
-	bool operator==(ColumnCurrentBlock const& other) const HALDLS_VISIBLE;
-	bool operator!=(ColumnCurrentBlock const& other) const HALDLS_VISIBLE;
+	bool operator==(ColumnCurrentBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ColumnCurrentBlock const& other) const SYMBOL_VISIBLE;
 
 private:
 	halco::common::

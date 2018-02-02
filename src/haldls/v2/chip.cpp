@@ -37,7 +37,7 @@ void Chip::disable_buffered_readout()
 	}
 }
 
-common::optional<halco::hicann_dls::v2::NeuronOnDLS>
+hate::optional<halco::hicann_dls::v2::NeuronOnDLS>
 Chip::get_buffered_readout_neuron() const
 {
 	for (auto neuron : halco::common::iter_all<halco::hicann_dls::v2::NeuronOnDLS>()) {

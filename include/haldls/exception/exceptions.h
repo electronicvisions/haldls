@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include "haldls/common/visibility.h"
+#include "hate/visibility.h"
 
 namespace haldls {
 namespace exception {
@@ -10,7 +10,7 @@ namespace exception {
 class InvalidConfiguration : public std::runtime_error
 {
 public:
-	InvalidConfiguration(std::string const& what) HALDLS_VISIBLE;
+	InvalidConfiguration(std::string const& what) SYMBOL_VISIBLE;
 };
 
 } // namespace exception

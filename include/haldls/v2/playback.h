@@ -8,7 +8,7 @@
 
 #include "halco/common/genpybind.h"
 
-#include "haldls/common/visibility.h"
+#include "hate/visibility.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/spike.h"
 #include "haldls/v2/synapse.h"
@@ -28,7 +28,7 @@ class GENPYBIND(visible) PlaybackProgram {
 public:
 	typedef std::vector<v2::RecordedSpike> spikes_type;
 	typedef std::size_t serial_number_type;
-	static constexpr serial_number_type invalid_serial_number HALDLS_VISIBLE = 0;
+	static constexpr serial_number_type invalid_serial_number SYMBOL_VISIBLE = 0;
 
 	template <typename T>
 	class ContainerTicket {
@@ -55,21 +55,21 @@ public:
 #include "haldls/v2/container.def"
 #endif // __GENPYBIND__
 
-	PlaybackProgram() HALDLS_VISIBLE;
-	PlaybackProgram(PlaybackProgram const& other) HALDLS_VISIBLE;
-	PlaybackProgram& operator=(PlaybackProgram const& other) HALDLS_VISIBLE;
-	PlaybackProgram(PlaybackProgram&& other) noexcept HALDLS_VISIBLE;
-	PlaybackProgram& operator=(PlaybackProgram&& other) noexcept HALDLS_VISIBLE;
-	~PlaybackProgram() HALDLS_VISIBLE;
+	PlaybackProgram() SYMBOL_VISIBLE;
+	PlaybackProgram(PlaybackProgram const& other) SYMBOL_VISIBLE;
+	PlaybackProgram& operator=(PlaybackProgram const& other) SYMBOL_VISIBLE;
+	PlaybackProgram(PlaybackProgram&& other) noexcept SYMBOL_VISIBLE;
+	PlaybackProgram& operator=(PlaybackProgram&& other) noexcept SYMBOL_VISIBLE;
+	~PlaybackProgram() SYMBOL_VISIBLE;
 
 	template <typename T>
 	T get(ContainerTicket<T> const& ticket) const;
 
-	spikes_type const& get_spikes() const HALDLS_VISIBLE;
+	spikes_type const& get_spikes() const SYMBOL_VISIBLE;
 
-	serial_number_type serial_number() const HALDLS_VISIBLE;
+	serial_number_type serial_number() const SYMBOL_VISIBLE;
 
-	std::string dump_program() const HALDLS_VISIBLE;
+	std::string dump_program() const SYMBOL_VISIBLE;
 
 	friend stadls::v2::ExperimentControl;
 	friend PlaybackProgramBuilder;
@@ -86,13 +86,13 @@ private:
 	static void ensure_container_invariants(T& config);
 
 	/// \see ExperimentControl
-	std::vector<std::vector<std::uint8_t> > const& instruction_byte_blocks() const HALDLS_VISIBLE;
+	std::vector<std::vector<std::uint8_t> > const& instruction_byte_blocks() const SYMBOL_VISIBLE;
 
 	/// \see ExperimentControl
-	void set_results(std::vector<v2::hardware_word_type>&& results) HALDLS_VISIBLE;
+	void set_results(std::vector<v2::hardware_word_type>&& results) SYMBOL_VISIBLE;
 
 	/// \see ExperimentControl
-	void set_spikes(spikes_type&& spikes) HALDLS_VISIBLE;
+	void set_spikes(spikes_type&& spikes) SYMBOL_VISIBLE;
 
 	struct Impl;
 	std::unique_ptr<Impl> m_impl;
@@ -104,18 +104,18 @@ class GENPYBIND(visible) PlaybackProgramBuilder {
 public:
 	typedef v2::hardware_time_type time_type;
 
-	PlaybackProgramBuilder() HALDLS_VISIBLE;
+	PlaybackProgramBuilder() SYMBOL_VISIBLE;
 
-	void set_time(time_type t) HALDLS_VISIBLE;
-	void wait_until(time_type t) HALDLS_VISIBLE;
-	void wait_for(time_type t) HALDLS_VISIBLE;
+	void set_time(time_type t) SYMBOL_VISIBLE;
+	void wait_until(time_type t) SYMBOL_VISIBLE;
+	void wait_for(time_type t) SYMBOL_VISIBLE;
 	void fire(
 		std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> const& synapse_driver_mask,
-		v2::SynapseBlock::Synapse::Address const& address) HALDLS_VISIBLE;
+		v2::SynapseBlock::Synapse::Address const& address) SYMBOL_VISIBLE;
 	void fire(
 		halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver,
-		v2::SynapseBlock::Synapse::Address const& address) HALDLS_VISIBLE;
-	void halt() HALDLS_VISIBLE;
+		v2::SynapseBlock::Synapse::Address const& address) SYMBOL_VISIBLE;
+	void halt() SYMBOL_VISIBLE;
 
 	template <class T>
 	void set_container(typename T::coordinate_type const& coord, T const& config);
@@ -133,7 +133,7 @@ public:
 		return get_container<T>(coord);
 	}
 
-	PlaybackProgram done() HALDLS_VISIBLE;
+	PlaybackProgram done() SYMBOL_VISIBLE;
 
 private:
 	static std::atomic<PlaybackProgram::serial_number_type> next_serial_number;

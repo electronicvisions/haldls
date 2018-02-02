@@ -119,7 +119,7 @@ T PlaybackProgram::get(ContainerTicket<T> const& ticket) const
 }
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template HALDLS_VISIBLE Type PlaybackProgram::get<Type>(ContainerTicket<Type> const&) const;
+	template SYMBOL_VISIBLE Type PlaybackProgram::get<Type>(ContainerTicket<Type> const&) const;
 #include "haldls/v2/container.def"
 
 PlaybackProgram::serial_number_type PlaybackProgram::serial_number() const
@@ -282,12 +282,12 @@ PlaybackProgram PlaybackProgramBuilder::done()
 }
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template HALDLS_VISIBLE void PlaybackProgramBuilder::set_container<Type>(                      \
+	template SYMBOL_VISIBLE void PlaybackProgramBuilder::set_container<Type>(                      \
 		Type::coordinate_type const& coord, Type const& config);
 #include "haldls/v2/container.def"
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template HALDLS_VISIBLE PlaybackProgram::ContainerTicket<Type>                                 \
+	template SYMBOL_VISIBLE PlaybackProgram::ContainerTicket<Type>                                 \
 	PlaybackProgramBuilder::get_container<Type>(Type::coordinate_type const& coord);
 #include "haldls/v2/container.def"
 

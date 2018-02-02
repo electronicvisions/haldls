@@ -5,6 +5,7 @@ def depends(ctx):
     ctx('bitter')
     ctx('logger')
     ctx('halco')
+    ctx('hate')
     ctx('uni')
     ctx('flyspi-rw_api')
 
@@ -41,7 +42,7 @@ def build(bld):
         target = 'dls_common',
         source = bld.path.ant_glob('src/common/*.cpp') + bld.path.ant_glob('src/exception/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['haldls_inc'],
+        use = ['haldls_inc', 'hate_inc'],
         cxxflgas = ['-Werror'],
         uselib = 'HALDLS_LIBRARIES',
     )

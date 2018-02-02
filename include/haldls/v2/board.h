@@ -4,7 +4,7 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
-#include "haldls/common/visibility.h"
+#include "hate/visibility.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/dac.h"
 #include "haldls/v2/register.h"
@@ -19,16 +19,16 @@ public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	SpikeRouter() HALDLS_VISIBLE;
+	SpikeRouter() SYMBOL_VISIBLE;
 
 	struct GENPYBIND(inline_base("*")) Delay
 		: public halco::common::detail::RantWrapper<Delay, uint_fast16_t, 0x4000 - 1, 0>
 	{
-		constexpr explicit Delay(uintmax_t const val = 0) HALDLS_VISIBLE : rant_t(val) {}
+		constexpr explicit Delay(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	/// \brief Disable routing of spikes altogether (default).
-	void reset() HALDLS_VISIBLE;
+	void reset() SYMBOL_VISIBLE;
 
 	/// \brief Enable "squeeze" mode, where every spike received in a specified interval
 	///        is combined into a single packet with a fixed spike address.
@@ -41,26 +41,26 @@ public:
 	/// single packet) to all synapse drivers, whose corresponding neuron spiked at least
 	/// once in that interval.
 	void enable_squeeze_mode(
-		SynapseBlock::Synapse::Address const& address, Delay const& delay) HALDLS_VISIBLE;
+		SynapseBlock::Synapse::Address const& address, Delay const& delay) SYMBOL_VISIBLE;
 
 	typedef std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> target_rows_type;
 
 	void set_neuron_route(
 		halco::hicann_dls::v2::NeuronOnDLS const& neuron,
 		SynapseBlock::Synapse::Address const& address,
-		target_rows_type const& target_rows) HALDLS_VISIBLE;
+		target_rows_type const& target_rows) SYMBOL_VISIBLE;
 
-	bool operator==(SpikeRouter const& other) const HALDLS_VISIBLE;
-	bool operator!=(SpikeRouter const& other) const HALDLS_VISIBLE;
+	bool operator==(SpikeRouter const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SpikeRouter const& other) const SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) =
 		2 * halco::hicann_dls::v2::NeuronOnDLS::size + 1;
 	std::array<ocp_address_type, config_size_in_words> write_addresses(
-		coordinate_type const& unique) const HALDLS_VISIBLE GENPYBIND(hidden);
+		coordinate_type const& unique) const SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<ocp_address_type, 0> read_addresses(coordinate_type const& unique) const
-		HALDLS_VISIBLE GENPYBIND(hidden);
-	std::array<ocp_word_type, config_size_in_words> encode() const HALDLS_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<ocp_word_type, 0> const& words) HALDLS_VISIBLE GENPYBIND(hidden);
+		SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<ocp_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<ocp_word_type, 0> const& words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	bool m_squeeze_mode_enabled;
@@ -97,23 +97,23 @@ public:
 	};
 
 
-	Board() HALDLS_VISIBLE;
+	Board() SYMBOL_VISIBLE;
 
 	// accessors
-	void set_parameter(Parameter const& parameter, DAC::Value const& value) HALDLS_VISIBLE;
-	DAC::Value get_parameter(Parameter const& parameter) const HALDLS_VISIBLE;
+	void set_parameter(Parameter const& parameter, DAC::Value const& value) SYMBOL_VISIBLE;
+	DAC::Value get_parameter(Parameter const& parameter) const SYMBOL_VISIBLE;
 
-	FlyspiConfig get_flyspi_config() const HALDLS_VISIBLE;
-	void set_flyspi_config(FlyspiConfig const& config) HALDLS_VISIBLE;
+	FlyspiConfig get_flyspi_config() const SYMBOL_VISIBLE;
+	void set_flyspi_config(FlyspiConfig const& config) SYMBOL_VISIBLE;
 
-	SpikeRouter get_spike_router() const HALDLS_VISIBLE;
-	void set_spike_router(SpikeRouter const& config) HALDLS_VISIBLE;
+	SpikeRouter get_spike_router() const SYMBOL_VISIBLE;
+	void set_spike_router(SpikeRouter const& config) SYMBOL_VISIBLE;
 
 	// read-only accessor
-	FlyspiException get_flyspi_exception() const HALDLS_VISIBLE;
+	FlyspiException get_flyspi_exception() const SYMBOL_VISIBLE;
 
-	bool operator==(Board const& other) const HALDLS_VISIBLE;
-	bool operator!=(Board const& other) const HALDLS_VISIBLE;
+	bool operator==(Board const& other) const SYMBOL_VISIBLE;
+	bool operator!=(Board const& other) const SYMBOL_VISIBLE;
 
 	friend detail::VisitPreorderImpl<Board>;
 

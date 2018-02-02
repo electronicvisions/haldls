@@ -57,9 +57,9 @@ T ocp_read(rw_api::FlyspiCom& com, typename T::coordinate_type const& coord)
 
 // Explicit instantiation of template functions for all valid ocp container types.
 #define OCP_CONTAINER(Type)                                                                        \
-	template HALDLS_VISIBLE void ocp_write<Type>(                                                  \
+	template SYMBOL_VISIBLE void ocp_write<Type>(                                                  \
 		rw_api::FlyspiCom&, Type::coordinate_type const&, Type const&);                            \
-	template HALDLS_VISIBLE Type ocp_read<Type>(rw_api::FlyspiCom&, Type::coordinate_type const&);
+	template SYMBOL_VISIBLE Type ocp_read<Type>(rw_api::FlyspiCom&, Type::coordinate_type const&);
 
 OCP_CONTAINER(haldls::v2::Board)
 OCP_CONTAINER(haldls::v2::FlyspiProgramAddress)
