@@ -3,7 +3,7 @@
 
 #include "halco/common/iter_all.h"
 #include "haldls/container/v2/dac.h"
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 
 using namespace haldls::container::v2;
 using namespace halco::hicann_dls::v2;
@@ -58,7 +58,7 @@ TEST(DAC, Encode)
 	{ // write addresses
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			config, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			config, coord, stadls::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<std::uint32_t> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -68,7 +68,7 @@ TEST(DAC, Encode)
 	}
 
 	ocp_words_type ocp_data;
-	visit_preorder(config, coord, haldls::io::EncodeVisitor<ocp_words_type>{ocp_data});
+	visit_preorder(config, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 
 	std::vector<std::uint32_t> data;
 	data.reserve(ocp_data.size());

@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "haldls/container/v2/board.h"
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 
 using namespace haldls::container::v2;
 using namespace halco::hicann_dls::v2;
@@ -24,7 +24,7 @@ TEST(SpikeRouter, Encode)
 	{ // write addresses
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			config, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			config, coord, stadls::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<std::uint32_t> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -36,7 +36,7 @@ TEST(SpikeRouter, Encode)
 	//  --- with default settings ----------------------------------------------
 
 	ocp_words_type ocp_data;
-	visit_preorder(config, coord, haldls::io::EncodeVisitor<ocp_words_type>{ocp_data});
+	visit_preorder(config, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 
 	std::vector<std::uint32_t> data;
 	data.reserve(ocp_data.size());
@@ -54,7 +54,7 @@ TEST(SpikeRouter, Encode)
 
 	config.enable_squeeze_mode(SynapseBlock::Synapse::Address(42), SpikeRouter::Delay(1234));
 
-	visit_preorder(config, coord, haldls::io::EncodeVisitor<ocp_words_type>{ocp_data});
+	visit_preorder(config, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 	data.reserve(ocp_data.size());
 	for (auto word : ocp_data)
 		data.push_back(word.value);
@@ -77,7 +77,7 @@ TEST(SpikeRouter, Encode)
 		config.set_neuron_route(neuron, SynapseBlock::Synapse::Address(42), target_rows);
 	}
 
-	visit_preorder(config, coord, haldls::io::EncodeVisitor<ocp_words_type>{ocp_data});
+	visit_preorder(config, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 	data.reserve(ocp_data.size());
 	for (auto word : ocp_data)
 		data.push_back(word.value);

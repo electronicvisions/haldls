@@ -13,13 +13,13 @@
 #include "haldls/container/v2/spike.h"
 #include "haldls/container/v2/synapse.h"
 
-namespace haldls {
-namespace io {
+namespace stadls {
 namespace v2 {
 	class ExperimentControl;
-} // io
-} // v2
+} // namespace v2
+} // namespace stadls
 
+namespace haldls {
 namespace container {
 namespace v2 GENPYBIND(tag(haldls_container_v2)) {
 
@@ -72,7 +72,7 @@ public:
 
 	std::string dump_program() const HALDLS_VISIBLE;
 
-	friend io::v2::ExperimentControl;
+	friend stadls::v2::ExperimentControl;
 	friend PlaybackProgramBuilder;
 
 private:

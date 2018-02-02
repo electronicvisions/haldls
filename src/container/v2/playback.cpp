@@ -15,7 +15,7 @@
 #include "haldls/container/v2/ppu.h"
 #include "haldls/container/v2/rate_counter.h"
 #include "haldls/container/v2/synapsedriver.h"
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 
 namespace haldls {
 namespace container {
@@ -114,7 +114,7 @@ T PlaybackProgram::get(ContainerTicket<T> const& ticket) const
 					std::next(results.begin(), ticket.offset + ticket.length)};
 
 	T config;
-	visit_preorder(config, ticket.coord, io::DecodeVisitor<words_type>{std::move(data)});
+	visit_preorder(config, ticket.coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ensure_container_invariants(config);
 	return config;
 }
@@ -228,11 +228,11 @@ void PlaybackProgramBuilder::set_container(
 
 	typedef std::vector<container::v2::hardware_address_type> addresses_type;
 	addresses_type write_addresses;
-	visit_preorder(config, coord, io::WriteAddressVisitor<addresses_type>{write_addresses});
+	visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
 
 	typedef std::vector<container::v2::hardware_word_type> words_type;
 	words_type words;
-	visit_preorder(config, coord, io::EncodeVisitor<words_type>{words});
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{words});
 
 	if (words.size() != write_addresses.size())
 		throw std::logic_error("number of addresses and words do not match");
@@ -255,7 +255,7 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::get_container(
 	addresses_type read_addresses;
 	{
 		T config;
-		visit_preorder(config, coord, io::ReadAddressVisitor<addresses_type>{read_addresses});
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 	}
 
 	auto& impl = *m_program.m_impl;

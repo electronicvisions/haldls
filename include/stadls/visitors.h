@@ -6,8 +6,7 @@
 #include <stdexcept>
 #include <utility>
 
-namespace haldls {
-namespace io {
+namespace stadls {
 
 /// \brief Extract addresses for reading from hardware for the visited containers.
 /// Each container can provide addresses via a `read_addresses` member function or via a
@@ -212,5 +211,4 @@ private:
 	}
 };
 
-} // namespace io
-} // namespace haldls
+} // namespace stadls

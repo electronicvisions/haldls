@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "haldls/container/v2/board.h"
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 
 using namespace haldls::container::v2;
 using namespace halco::hicann_dls::v2;
@@ -23,7 +23,7 @@ void expect_read_only()
 		typedef std::vector<ocp_address_type> ocp_addresses_type;
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			reg, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			reg, coord, stadls::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<ocp_address_type::value_type> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -36,7 +36,7 @@ void expect_read_only()
 	{
 		typedef std::vector<ocp_word_type> ocp_words_type;
 		ocp_words_type ocp_data;
-		visit_preorder(reg, coord, haldls::io::EncodeVisitor<ocp_words_type>{ocp_data});
+		visit_preorder(reg, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 
 		std::vector<ocp_address_type::value_type> data;
 		data.reserve(ocp_data.size());
@@ -72,7 +72,7 @@ TEST(FlyspiProgramAddress, encode)
 		typedef std::vector<ocp_address_type> ocp_addresses_type;
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			reg, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			reg, coord, stadls::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<ocp_address_type::value_type> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -85,7 +85,7 @@ TEST(FlyspiProgramAddress, encode)
 	{
 		typedef std::vector<ocp_word_type> ocp_words_type;
 		ocp_words_type ocp_data;
-		visit_preorder(reg, coord, haldls::io::EncodeVisitor<ocp_words_type>{ocp_data});
+		visit_preorder(reg, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 
 		std::vector<ocp_address_type::value_type> data;
 		data.reserve(ocp_data.size());
@@ -108,7 +108,7 @@ TEST(FlyspiProgramAddress, decode)
 		typedef std::vector<ocp_address_type> ocp_addresses_type;
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			reg, coord, haldls::io::ReadAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			reg, coord, stadls::ReadAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<ocp_address_type::value_type> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -121,7 +121,7 @@ TEST(FlyspiProgramAddress, decode)
 	{
 		typedef std::vector<ocp_word_type> ocp_words_type;
 		ocp_words_type ocp_data = {{0xc0ffee}};
-		visit_preorder(reg, coord, haldls::io::DecodeVisitor<ocp_words_type>{ocp_data});
+		visit_preorder(reg, coord, stadls::DecodeVisitor<ocp_words_type>{ocp_data});
 		EXPECT_EQ(ocp_data[0].value, reg.get_value());
 	}
 }
@@ -145,7 +145,7 @@ TEST(FlyspiResultSize, decode)
 		typedef std::vector<ocp_address_type> ocp_addresses_type;
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			reg, coord, haldls::io::ReadAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			reg, coord, stadls::ReadAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<ocp_address_type::value_type> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -159,7 +159,7 @@ TEST(FlyspiResultSize, decode)
 		typedef std::vector<ocp_word_type> ocp_words_type;
 		ocp_words_type ocp_data = {{0xc0ffee}};
 		ASSERT_FALSE(reg.get_value());
-		visit_preorder(reg, coord, haldls::io::DecodeVisitor<ocp_words_type>{ocp_data});
+		visit_preorder(reg, coord, stadls::DecodeVisitor<ocp_words_type>{ocp_data});
 		ASSERT_TRUE(reg.get_value());
 		EXPECT_EQ(ocp_data[0].value, reg.get_value().value());
 	}
@@ -253,7 +253,7 @@ TEST(FlyspiConfig, encode)
 	{
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			reg, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			reg, coord, stadls::WriteAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<ocp_address_type::value_type> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -265,7 +265,7 @@ TEST(FlyspiConfig, encode)
 	// encode data
 
 	ocp_words_type ocp_data;
-	visit_preorder(reg, coord, haldls::io::EncodeVisitor<ocp_words_type>{ocp_data});
+	visit_preorder(reg, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 
 	std::vector<ocp_address_type::value_type> data;
 	data.reserve(ocp_data.size());
@@ -287,7 +287,7 @@ TEST(FlyspiConfig, decode)
 		typedef std::vector<ocp_address_type> ocp_addresses_type;
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			reg, coord, haldls::io::ReadAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			reg, coord, stadls::ReadAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<ocp_address_type::value_type> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -312,7 +312,7 @@ TEST(FlyspiConfig, decode)
 		// loop over all 32 bits in one word
 		for (size_t n = 0; n < 32; n++) {
 			ocp_words_type ocp_data = {{ocp_address_type::value_type(1) << n}};
-			visit_preorder(reg, coord, haldls::io::DecodeVisitor<ocp_words_type>{ocp_data});
+			visit_preorder(reg, coord, stadls::DecodeVisitor<ocp_words_type>{ocp_data});
 
 			EXPECT_THAT(reg.get_dls_reset(), n == 31);
 			EXPECT_THAT(reg.get_soft_reset(), n == 30);
@@ -348,7 +348,7 @@ TEST(FlyspiException, decode)
 		typedef std::vector<ocp_address_type> ocp_addresses_type;
 		ocp_addresses_type ocp_addresses;
 		visit_preorder(
-			reg, coord, haldls::io::ReadAddressVisitor<ocp_addresses_type>{ocp_addresses});
+			reg, coord, stadls::ReadAddressVisitor<ocp_addresses_type>{ocp_addresses});
 
 		std::vector<ocp_address_type::value_type> addresses;
 		addresses.reserve(ocp_addresses.size());
@@ -378,7 +378,7 @@ TEST(FlyspiException, decode)
 		// loop over all 32 bits in one word
 		for (size_t n = 0; n < 32; n++) {
 			ocp_words_type ocp_data = {{ocp_address_type::value_type(1) << n}};
-			visit_preorder(reg, coord, haldls::io::DecodeVisitor<ocp_words_type>{ocp_data});
+			visit_preorder(reg, coord, stadls::DecodeVisitor<ocp_words_type>{ocp_data});
 
 			EXPECT_THAT(reg.get_result_read_error().value(), n == 0);
 			EXPECT_THAT(reg.get_result_read_overflow().value(), n == 1);

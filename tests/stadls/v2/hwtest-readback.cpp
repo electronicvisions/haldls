@@ -4,12 +4,12 @@
 #include "haldls/container/v2/board.h"
 #include "haldls/container/v2/chip.h"
 #include "haldls/container/v2/playback.h"
-#include "haldls/io/v2/experiment.h"
+#include "stadls/v2/experiment.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;
 using namespace haldls::container::v2;
-using namespace haldls::io::v2;
+using namespace stadls::v2;
 
 class ReadbackTest : public ::testing::Test {
 protected:

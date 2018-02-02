@@ -1,4 +1,4 @@
-#include "haldls/io/v2/experiment.h"
+#include "stadls/v2/experiment.h"
 
 #include <chrono>
 #include <sstream>
@@ -17,8 +17,8 @@
 #include "haldls/container/v2/playback.h"
 #include "haldls/container/v2/spike.h"
 #include "haldls/exception/exceptions.h"
-#include "haldls/io/v2/ocp.h"
-#include "haldls/io/visitors.h"
+#include "stadls/v2/ocp.h"
+#include "stadls/visitors.h"
 
 namespace {
 
@@ -102,22 +102,21 @@ struct UniDecoder
 
 } // namespace
 
-namespace haldls {
-namespace io {
+namespace stadls {
 namespace v2 {
 
 class ExperimentControl::Impl
 {
 public:
-	typedef container::v2::hardware_word_type hardware_word_type;
-	typedef container::v2::hardware_address_type hardware_address_type;
+	typedef haldls::container::v2::hardware_word_type hardware_word_type;
+	typedef haldls::container::v2::hardware_address_type hardware_address_type;
 
 	Impl(std::string const& usb_serial_number) : com(usb_serial_number) {}
 
 	rw_api::FlyspiCom com;
 
-	container::v2::PlaybackProgram::serial_number_type program_serial_number =
-		container::v2::PlaybackProgram::invalid_serial_number;
+	haldls::container::v2::PlaybackProgram::serial_number_type program_serial_number =
+		haldls::container::v2::PlaybackProgram::invalid_serial_number;
 	static constexpr hardware_address_type program_address = 0;
 	hardware_address_type program_size = 0;
 	static constexpr hardware_address_type result_address = 0;
@@ -143,17 +142,17 @@ void ExperimentControl::soft_reset()
 	halco::common::Unique unique;
 
 	// Set dls and soft reset
-	container::v2::FlyspiConfig reset_config;
+	haldls::container::v2::FlyspiConfig reset_config;
 	reset_config.set_dls_reset(true);
 	reset_config.set_soft_reset(true);
 	ocp_write(m_impl->com, unique, reset_config);
 
 	// Set default config
-	ocp_write(m_impl->com, unique, container::v2::FlyspiConfig());
+	ocp_write(m_impl->com, unique, haldls::container::v2::FlyspiConfig());
 }
 
 void ExperimentControl::configure_static(
-	container::v2::Board const& board, container::v2::Chip const& chip)
+	haldls::container::v2::Board const& board, haldls::container::v2::Chip const& chip)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
@@ -177,7 +176,7 @@ void ExperimentControl::configure_static(
 		LOG4CXX_WARN(log, "The chip configuration cannot be written");
 	} else {
 		// Chip configuration program
-		container::v2::PlaybackProgramBuilder setup_builder;
+		haldls::container::v2::PlaybackProgramBuilder setup_builder;
 		setup_builder.set_time(0);
 		setup_builder.set_container(halco::common::Unique(), chip);
 		// Wait for the cap-mem to settle (based on empirical measurement by DS)
@@ -185,19 +184,19 @@ void ExperimentControl::configure_static(
 		setup_builder.wait_for(2'000'000); // ~ 20.8 ms for 96 MHz
 		// clang-format on
 		setup_builder.halt();
-		container::v2::PlaybackProgram setup = setup_builder.done();
+		haldls::container::v2::PlaybackProgram setup = setup_builder.done();
 
 		run(setup);
 	}
 }
 
-void ExperimentControl::transfer(container::v2::PlaybackProgram const& playback_program)
+void ExperimentControl::transfer(haldls::container::v2::PlaybackProgram const& playback_program)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
 	auto const program_serial_number = playback_program.serial_number();
-	if (program_serial_number == container::v2::PlaybackProgram::invalid_serial_number)
+	if (program_serial_number == haldls::container::v2::PlaybackProgram::invalid_serial_number)
 		throw std::logic_error("trying to transfer program with invalid state");
 
 	m_impl->program_serial_number = program_serial_number;
@@ -235,9 +234,9 @@ void ExperimentControl::transfer(container::v2::PlaybackProgram const& playback_
 	m_impl->program_size = alloc.address - m_impl->program_address;
 
 	// write program address, size and result pointer
-	container::v2::FlyspiProgramAddress program_address(m_impl->program_address);
-	container::v2::FlyspiProgramSize program_size(m_impl->program_size);
-	container::v2::FlyspiResultAddress result_address(m_impl->result_address);
+	haldls::container::v2::FlyspiProgramAddress program_address(m_impl->program_address);
+	haldls::container::v2::FlyspiProgramSize program_size(m_impl->program_size);
+	haldls::container::v2::FlyspiResultAddress result_address(m_impl->result_address);
 
 	halco::common::Unique unique;
 
@@ -253,23 +252,23 @@ void ExperimentControl::execute()
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	if (m_impl->program_serial_number == container::v2::PlaybackProgram::invalid_serial_number ||
+	if (m_impl->program_serial_number == haldls::container::v2::PlaybackProgram::invalid_serial_number ||
 		m_impl->program_size == 0)
 		throw std::runtime_error("no valid playback program has been transferred yet");
 
 	halco::common::Unique unique;
 
 	// check that the DLS is not in reset
-	auto config = ocp_read<container::v2::FlyspiConfig>(m_impl->com, unique);
+	auto config = ocp_read<haldls::container::v2::FlyspiConfig>(m_impl->com, unique);
 	if (config.get_dls_reset()) {
 		LOG4CXX_ERROR(log, "Asking to execute a program although the DLS is in reset.");
 		LOG4CXX_ERROR(log, "This is prohibited for v2 as it will freeze the system.");
-		throw exception::InvalidConfiguration(
+		throw haldls::exception::InvalidConfiguration(
 			"Refuse to execute playback program with DLSv2 in reset");
 	}
 
 	// start execution by setting the execute bit
-	container::v2::FlyspiControl control;
+	haldls::container::v2::FlyspiControl control;
 	control.set_execute(true);
 	LOG4CXX_DEBUG(log, "start execution");
 	ocp_write(m_impl->com, unique, control);
@@ -281,7 +280,7 @@ void ExperimentControl::execute()
 			LOG4CXX_DEBUG(
 				log, "execute flag not yet cleared, sleep for " << sleep_till_poll.count() << "us");
 			std::this_thread::sleep_for(sleep_till_poll);
-			control = ocp_read<container::v2::FlyspiControl>(m_impl->com, unique);
+			control = ocp_read<haldls::container::v2::FlyspiControl>(m_impl->com, unique);
 			// Increase exponential sleep time
 			sleep_till_poll *= 2;
 		}
@@ -289,18 +288,18 @@ void ExperimentControl::execute()
 	LOG4CXX_DEBUG(log, "execution finished");
 }
 
-void ExperimentControl::fetch(container::v2::PlaybackProgram& playback_program)
+void ExperimentControl::fetch(haldls::container::v2::PlaybackProgram& playback_program)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	if (m_impl->program_serial_number == container::v2::PlaybackProgram::invalid_serial_number ||
+	if (m_impl->program_serial_number == haldls::container::v2::PlaybackProgram::invalid_serial_number ||
 		m_impl->program_size == 0)
 		throw std::runtime_error("no valid playback program has been transferred yet");
 
 	// get result size
 	halco::common::Unique unique;
-	auto result_size = ocp_read<container::v2::FlyspiResultSize>(m_impl->com, unique);
+	auto result_size = ocp_read<haldls::container::v2::FlyspiResultSize>(m_impl->com, unique);
 	if (!result_size.get_value()) {
 		throw std::logic_error("no result size read from board");
 	}
@@ -327,7 +326,7 @@ void ExperimentControl::fetch(container::v2::PlaybackProgram& playback_program)
 	playback_program.set_spikes(std::move(decoder.spikes));
 }
 
-void ExperimentControl::run(container::v2::PlaybackProgram& playback_program)
+void ExperimentControl::run(haldls::container::v2::PlaybackProgram& playback_program)
 {
 	transfer(playback_program);
 	execute();
@@ -348,5 +347,4 @@ std::vector<std::string> available_board_usb_serial_numbers()
 }
 
 } // namespace v2
-} // namespace io
-} // namespace haldls
+} // namespace stadls

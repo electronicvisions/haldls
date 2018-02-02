@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "haldls/container/v2/synapse.h"
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 
 
 using namespace haldls::container::v2;
@@ -73,7 +73,7 @@ TEST(CommonSynramConfig, EncodeDecode)
 		std::vector<hardware_address_type> write_addresses;
 		visit_preorder(
 			config, coord,
-			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+			stadls::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
@@ -81,20 +81,20 @@ TEST(CommonSynramConfig, EncodeDecode)
 		std::vector<hardware_address_type> read_addresses;
 		visit_preorder(
 			config, coord,
-			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+			stadls::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	std::vector<hardware_word_type> data;
 	visit_preorder(
-		config, coord, haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+		config, coord, stadls::EncodeVisitor<std::vector<hardware_word_type> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	CommonSynramConfig config_copy;
 	ASSERT_NE(config, config_copy);
 	visit_preorder(
 		config_copy, coord,
-		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+		stadls::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }
 
@@ -172,7 +172,7 @@ TEST(SynapseBlock, EncodeDecode)
 		std::vector<hardware_address_type> write_addresses;
 		visit_preorder(
 			synapse_block, block_coord,
-			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+			stadls::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
@@ -180,21 +180,21 @@ TEST(SynapseBlock, EncodeDecode)
 		std::vector<hardware_address_type> read_addresses;
 		visit_preorder(
 			synapse_block, block_coord,
-			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+			stadls::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	std::vector<hardware_word_type> data;
 	visit_preorder(
 		synapse_block, block_coord,
-		haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+		stadls::EncodeVisitor<std::vector<hardware_word_type> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	SynapseBlock block_copy;
 	ASSERT_NE(synapse_block, block_copy);
 	visit_preorder(
 		block_copy, block_coord,
-		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+		stadls::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
 	ASSERT_EQ(synapse_block, block_copy);
 }
 
@@ -272,7 +272,7 @@ TEST(ColumnCorrelationBlock, EncodeDecode)
 		std::vector<hardware_address_type> write_addresses;
 		visit_preorder(
 			column_block, block_coord,
-			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+			stadls::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
@@ -280,21 +280,21 @@ TEST(ColumnCorrelationBlock, EncodeDecode)
 		std::vector<hardware_address_type> read_addresses;
 		visit_preorder(
 			column_block, block_coord,
-			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+			stadls::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	std::vector<hardware_word_type> data;
 	visit_preorder(
 		column_block, block_coord,
-		haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+		stadls::EncodeVisitor<std::vector<hardware_word_type> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	ColumnCorrelationBlock block_copy;
 	ASSERT_NE(column_block, block_copy);
 	visit_preorder(
 		block_copy, block_coord,
-		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+		stadls::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
 	ASSERT_EQ(column_block, block_copy);
 }
 
@@ -364,7 +364,7 @@ TEST(ColumnCurrentBlock, EncodeDecode)
 		std::vector<hardware_address_type> write_addresses;
 		visit_preorder(
 			column_block, block_coord,
-			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+			stadls::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
@@ -372,20 +372,20 @@ TEST(ColumnCurrentBlock, EncodeDecode)
 		std::vector<hardware_address_type> read_addresses;
 		visit_preorder(
 			column_block, block_coord,
-			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+			stadls::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	std::vector<hardware_word_type> data;
 	visit_preorder(
 		column_block, block_coord,
-		haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+		stadls::EncodeVisitor<std::vector<hardware_word_type> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	ColumnCurrentBlock block_copy;
 	ASSERT_NE(column_block, block_copy);
 	visit_preorder(
 		block_copy, block_coord,
-		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+		stadls::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
 	ASSERT_EQ(column_block, block_copy);
 }

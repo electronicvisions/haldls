@@ -8,9 +8,8 @@ namespace rw_api {
 class FlyspiCom;
 }
 
-namespace haldls {
-namespace io {
-namespace v2 GENPYBIND(tag(haldls_io_v2))
+namespace stadls {
+namespace v2 GENPYBIND(tag(stadls_v2))
 {
 	template <class T>
 	void ocp_write(
@@ -39,5 +38,4 @@ namespace v2 GENPYBIND(tag(haldls_io_v2))
 #endif // __GENPYBIND__
 
 } // namespace v2
-} // namespace io
-} // namespace haldls
+} // namespace stadls

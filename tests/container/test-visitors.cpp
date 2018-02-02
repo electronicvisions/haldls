@@ -8,7 +8,7 @@
 #include <string>
 #include <typeinfo>
 
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 #include "haldls/container/v2/chip.h"
 
 namespace {

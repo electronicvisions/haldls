@@ -3,8 +3,8 @@
 #include "flyspi-rw_api/flyspi_com.h"
 
 #include "haldls/container/v2/register.h"
-#include "haldls/io/v2/experiment.h"
-#include "haldls/io/v2/ocp.h"
+#include "stadls/v2/experiment.h"
+#include "stadls/v2/ocp.h"
 
 class OcpTest : public ::testing::Test
 {
@@ -12,7 +12,7 @@ protected:
 	void SetUp() override
 	{
 		// get the board id
-		std::vector<std::string> board_ids = haldls::io::v2::available_board_usb_serial_numbers();
+		std::vector<std::string> board_ids = stadls::v2::available_board_usb_serial_numbers();
 		ASSERT_EQ(1, board_ids.size()) << "number of allocated boards is not one";
 
 		test_board = board_ids.front();
@@ -24,7 +24,7 @@ protected:
 TEST_F(OcpTest, FlyspiProgramAddress)
 {
 	namespace con = haldls::container::v2;
-	namespace io = haldls::io::v2;
+	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
 
@@ -48,7 +48,7 @@ TEST_F(OcpTest, FlyspiProgramAddress)
 TEST_F(OcpTest, FlyspiProgramSize)
 {
 	namespace con = haldls::container::v2;
-	namespace io = haldls::io::v2;
+	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
 
@@ -72,7 +72,7 @@ TEST_F(OcpTest, FlyspiProgramSize)
 TEST_F(OcpTest, FlyspiResultAddress)
 {
 	namespace con = haldls::container::v2;
-	namespace io = haldls::io::v2;
+	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
 
@@ -96,7 +96,7 @@ TEST_F(OcpTest, FlyspiResultAddress)
 TEST_F(OcpTest, FlyspiResultSize)
 {
 	namespace con = haldls::container::v2;
-	namespace io = haldls::io::v2;
+	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
 
@@ -116,7 +116,7 @@ TEST_F(OcpTest, FlyspiResultSize)
 TEST_F(OcpTest, FlyspiState)
 {
 	namespace con = haldls::container::v2;
-	namespace io = haldls::io::v2;
+	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
 
@@ -136,7 +136,7 @@ TEST_F(OcpTest, FlyspiState)
 TEST_F(OcpTest, FlyspiConfig)
 {
 	namespace con = haldls::container::v2;
-	namespace io = haldls::io::v2;
+	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
 
@@ -159,7 +159,7 @@ TEST_F(OcpTest, FlyspiConfig)
 TEST_F(OcpTest, FlyspiException)
 {
 	namespace con = haldls::container::v2;
-	namespace io = haldls::io::v2;
+	namespace io = stadls::v2;
 
 	halco::common::Unique coord;
 

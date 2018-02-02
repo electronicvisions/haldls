@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "haldls/container/v2/synapsedriver.h"
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 
 
 using namespace haldls::container::v2;
@@ -62,7 +62,7 @@ TEST(SynapseDriverConfig, EncodeDecode)
 		std::vector<hardware_address_type> write_addresses;
 		visit_preorder(
 			config, coord,
-			haldls::io::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+			stadls::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
@@ -70,19 +70,19 @@ TEST(SynapseDriverConfig, EncodeDecode)
 		std::vector<hardware_address_type> read_addresses;
 		visit_preorder(
 			config, coord,
-			haldls::io::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+			stadls::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	std::vector<hardware_word_type> data;
 	visit_preorder(
-		config, coord, haldls::io::EncodeVisitor<std::vector<hardware_word_type> >{data});
+		config, coord, stadls::EncodeVisitor<std::vector<hardware_word_type> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	SynapseDrivers config_copy;
 	ASSERT_NE(config, config_copy);
 	visit_preorder(
 		config_copy, coord,
-		haldls::io::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+		stadls::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }

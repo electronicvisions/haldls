@@ -28,6 +28,7 @@ def configure(cfg):
 
     if cfg.env.build_python_bindings:
         cfg.recurse("pyhaldls")
+        cfg.recurse("pystadls")
 
 
 def build(bld):
@@ -54,8 +55,8 @@ def build(bld):
     )
 
     bld.shlib(
-        target = 'haldls_io_v2',
-        source = bld.path.ant_glob('src/io/v2/*.cpp'),
+        target = 'stadls_v2',
+        source = bld.path.ant_glob('src/stadls/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
         use = ['haldls_common', 'haldls_container_v2', 'flyspi-rw_api'],
         uselib = 'HALDLS_LIBRARIES',
@@ -78,14 +79,15 @@ def build(bld):
     )
 
     bld(
-        target = 'haldls_hwtest_io_v2',
+        target = 'stadls_hwtest_v2',
         features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/io/v2/hwtest-*.cpp'),
+        source = bld.path.ant_glob('tests/stadls/v2/hwtest-*.cpp'),
         test_main = 'tests/test_with_logger.cpp',
-        use = ['haldls_container_v2', 'haldls_io_v2', 'logger_obj', 'GTEST'],
+        use = ['haldls_container_v2', 'stadls_v2', 'logger_obj', 'GTEST'],
         install_path = '${PREFIX}/bin',
         skip_run = True,
     )
 
     if bld.env.build_python_bindings:
         bld.recurse("pyhaldls")
+        bld.recurse("pystadls")

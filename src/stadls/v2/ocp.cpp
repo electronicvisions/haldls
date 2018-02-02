@@ -1,11 +1,10 @@
-#include "haldls/io/v2/ocp.h"
+#include "stadls/v2/ocp.h"
 
 #include "flyspi-rw_api/flyspi_com.h"
 
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 
-namespace haldls {
-namespace io {
+namespace stadls {
 namespace v2 {
 
 template <class T>
@@ -16,10 +15,10 @@ void ocp_write(rw_api::FlyspiCom& com, typename T::coordinate_type const& coord,
 
 	ocp_addresses_type addresses;
 	visit_preorder(
-		container, coord, haldls::io::WriteAddressVisitor<ocp_addresses_type>{addresses});
+		container, coord, WriteAddressVisitor<ocp_addresses_type>{addresses});
 
 	ocp_words_type words;
-	visit_preorder(container, coord, haldls::io::EncodeVisitor<ocp_words_type>{words});
+	visit_preorder(container, coord, EncodeVisitor<ocp_words_type>{words});
 
 	if (words.size() != addresses.size())
 		throw std::logic_error("number of OCP addresses and words do not match");
@@ -40,7 +39,7 @@ T ocp_read(rw_api::FlyspiCom& com, typename T::coordinate_type const& coord)
 
 	T container;
 	ocp_addresses_type addresses;
-	visit_preorder(container, coord, haldls::io::ReadAddressVisitor<ocp_addresses_type>{addresses});
+	visit_preorder(container, coord, ReadAddressVisitor<ocp_addresses_type>{addresses});
 
 	ocp_words_type words;
 	auto const loc = com.locate().chip(0);
@@ -51,7 +50,7 @@ T ocp_read(rw_api::FlyspiCom& com, typename T::coordinate_type const& coord)
 
 	if (words.size() != addresses.size())
 		throw std::logic_error("number of OCP addresses and words do not match");
-	visit_preorder(container, coord, haldls::io::DecodeVisitor<ocp_words_type>{words});
+	visit_preorder(container, coord, DecodeVisitor<ocp_words_type>{words});
 
 	return container;
 }
@@ -75,5 +74,4 @@ OCP_CONTAINER(haldls::container::v2::FlyspiException)
 #undef OCP_CONTAINER
 
 } // namespace v2
-} // namespace io
-} // namespace haldls
+} // namespace stadls

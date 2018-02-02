@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "haldls/container/v2/neuron.h"
-#include "haldls/io/visitors.h"
+#include "stadls/visitors.h"
 
 using namespace haldls::container::v2;
 using namespace halco::hicann_dls::v2;
@@ -71,24 +71,24 @@ TEST(CommonNeuronConfig, EncodeDecode)
 	{ // write addresses
 		addresses_type write_addresses;
 		visit_preorder(
-			config, coord, haldls::io::WriteAddressVisitor<addresses_type>{write_addresses});
+			config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	{ // read addresses
 		addresses_type read_addresses;
 		visit_preorder(
-			config, coord, haldls::io::ReadAddressVisitor<addresses_type>{read_addresses});
+			config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	words_type data;
-	visit_preorder(config, coord, haldls::io::EncodeVisitor<words_type>{data});
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	CommonNeuronConfig config_copy;
 	ASSERT_NE(config, config_copy);
-	visit_preorder(config_copy, coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }
 
@@ -165,23 +165,23 @@ TEST(NeuronDigitalConfig, EncodeDecode)
 	{ // write addresses
 		addresses_type write_addresses;
 		visit_preorder(
-			config, coord, haldls::io::WriteAddressVisitor<addresses_type>{write_addresses});
+			config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	{ // read addresses
 		addresses_type read_addresses;
 		visit_preorder(
-			config, coord, haldls::io::ReadAddressVisitor<addresses_type>{read_addresses});
+			config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	words_type data;
-	visit_preorder(config, coord, haldls::io::EncodeVisitor<words_type>{data});
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	NeuronDigitalConfig config_copy;
 	ASSERT_NE(config, config_copy);
-	visit_preorder(config_copy, coord, haldls::io::DecodeVisitor<words_type>{std::move(data)});
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }

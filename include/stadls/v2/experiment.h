@@ -9,9 +9,8 @@
 #include "haldls/container/v2/chip.h"
 #include "haldls/container/v2/playback.h"
 
-namespace haldls {
-namespace io {
-namespace v2 GENPYBIND(tag(haldls_io_v2)) {
+namespace stadls {
+namespace v2 GENPYBIND(tag(stadls_v2)) {
 
 class GENPYBIND(visible) ExperimentControl {
 public:
@@ -29,17 +28,17 @@ public:
 	/// \brief toggle soft reset and chip reset and restore fpga to default config
 	void soft_reset() HALDLS_VISIBLE;
 
-	void configure_static(container::v2::Board const& board, container::v2::Chip const& chip) HALDLS_VISIBLE;
+	void configure_static(haldls::container::v2::Board const& board, haldls::container::v2::Chip const& chip) HALDLS_VISIBLE;
 
 	/// \brief transfers the program and sets the program size and address
 	///        registers
-	void transfer(container::v2::PlaybackProgram const& playback_program) HALDLS_VISIBLE;
+	void transfer(haldls::container::v2::PlaybackProgram const& playback_program) HALDLS_VISIBLE;
 	/// \brief toggle the execute flag and wait until turned off again
 	void execute() HALDLS_VISIBLE;
-	void fetch(container::v2::PlaybackProgram& playback_program) HALDLS_VISIBLE;
+	void fetch(haldls::container::v2::PlaybackProgram& playback_program) HALDLS_VISIBLE;
 
 	/// \brief this just wraps the sequence transfer-execute-fetch
-	void run(container::v2::PlaybackProgram& playback_program) HALDLS_VISIBLE;
+	void run(haldls::container::v2::PlaybackProgram& playback_program) HALDLS_VISIBLE;
 
 private:
 	class Impl;
@@ -49,5 +48,4 @@ private:
 std::vector<std::string> available_board_usb_serial_numbers() HALDLS_VISIBLE GENPYBIND(visible);
 
 } // namespace v2
-} // namespace io
-} // namespace haldls
+} // namespace stadls
