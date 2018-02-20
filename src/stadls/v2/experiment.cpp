@@ -189,12 +189,14 @@ void ExperimentControl::configure_static(
 	}
 }
 
-void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_program)
+
+void ExperimentControl::transfer(
+	std::vector<std::vector<std::uint8_t> > const& program_bytes,
+	haldls::v2::PlaybackProgram::serial_number_type const program_serial_number)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	auto const program_serial_number = playback_program.serial_number();
 	if (program_serial_number == haldls::v2::PlaybackProgram::invalid_serial_number)
 		throw std::logic_error("trying to transfer program with invalid state");
 
@@ -209,7 +211,7 @@ void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_pro
 	Sdram_block_write_allocator alloc(m_impl->com, m_impl->program_address);
 
 	// copy to USB buffer memory and transfer
-	for (auto const& container : playback_program.instruction_byte_blocks()) {
+	for (auto const& container : program_bytes) {
 		queries.push_back(alloc.allocate(container.size() / 4));
 
 		auto it_in = std::begin(container);
@@ -242,6 +244,11 @@ void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_pro
 	ocp_write_container(m_impl->com, unique, program_address);
 	ocp_write_container(m_impl->com, unique, program_size);
 	ocp_write_container(m_impl->com, unique, result_address);
+}
+
+void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_program)
+{
+	transfer(playback_program.instruction_byte_blocks(), playback_program.serial_number());
 }
 
 void ExperimentControl::execute()

@@ -33,6 +33,9 @@ public:
 	/// \brief transfers the program and sets the program size and address
 	///        registers
 	void transfer(haldls::v2::PlaybackProgram const& playback_program) SYMBOL_VISIBLE;
+	void transfer(
+		std::vector<std::vector<std::uint8_t> > const& program_bytes,
+		haldls::v2::PlaybackProgram::serial_number_type const program_serial) SYMBOL_VISIBLE;
 	/// \brief toggle the execute flag and wait until turned off again
 	void execute() SYMBOL_VISIBLE;
 	void fetch(haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
