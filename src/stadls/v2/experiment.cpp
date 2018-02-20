@@ -152,6 +152,21 @@ void ExperimentControl::soft_reset()
 }
 
 void ExperimentControl::configure_static(
+	std::vector<haldls::v2::ocp_address_type> const& board_addresses,
+	std::vector<haldls::v2::ocp_word_type> const& board_words,
+	std::vector<std::vector<haldls::v2::instruction_word_type> > const& chip_program_bytes)
+{
+	if (!m_impl)
+		throw std::logic_error("unexpected access to moved-from object");
+
+	// Write the board config
+	ocp_write(m_impl->com, board_words, board_addresses);
+
+	transfer(chip_program_bytes);
+	execute();
+}
+
+void ExperimentControl::configure_static(
 	haldls::v2::Board const& board, haldls::v2::Chip const& chip)
 {
 	if (!m_impl)
@@ -169,6 +184,8 @@ void ExperimentControl::configure_static(
 	// If the dls is in reset during playback of a playback program, the FPGA
 	// will never stop execution for v2 and freeze the FPGA. Therefore, the
 	// playback of programs is prohibited if the DLS is in reset.
+	// TODO: Move this check to ExperimentControl::execute()?? This adds
+	// additional overhead in the execution of experiments
 	if (board.get_flyspi_config().get_dls_reset()) {
 		auto log = log4cxx::Logger::getLogger(__func__);
 		LOG4CXX_WARN(log, "DLS in reset during configuration");
@@ -191,16 +208,10 @@ void ExperimentControl::configure_static(
 
 
 void ExperimentControl::transfer(
-	std::vector<std::vector<std::uint8_t> > const& program_bytes,
-	haldls::v2::PlaybackProgram::serial_number_type const program_serial_number)
+	std::vector<std::vector<haldls::v2::instruction_word_type> > const& program_bytes)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
-
-	if (program_serial_number == haldls::v2::PlaybackProgram::invalid_serial_number)
-		throw std::logic_error("trying to transfer program with invalid state");
-
-	m_impl->program_serial_number = program_serial_number;
 
 	// vvv ------8<----------- (legacy code copied from frickel-dls)
 
@@ -248,7 +259,16 @@ void ExperimentControl::transfer(
 
 void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_program)
 {
-	transfer(playback_program.instruction_byte_blocks(), playback_program.serial_number());
+	if (!m_impl) {
+		throw std::logic_error("unexpected access to moved-from object");
+	}
+
+	if (playback_program.serial_number() == haldls::v2::PlaybackProgram::invalid_serial_number) {
+		throw std::logic_error("trying to transfer program with invalid state");
+	}
+
+	m_impl->program_serial_number = playback_program.serial_number();
+	transfer(playback_program.instruction_byte_blocks());
 }
 
 void ExperimentControl::execute()
@@ -258,9 +278,8 @@ void ExperimentControl::execute()
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	if (m_impl->program_serial_number == haldls::v2::PlaybackProgram::invalid_serial_number ||
-		m_impl->program_size == 0)
-		throw std::runtime_error("no valid playback program has been transferred yet");
+	if (m_impl->program_size == 0)
+		throw std::runtime_error("execute: no valid playback program has been transferred yet");
 
 	halco::common::Unique unique;
 
@@ -294,14 +313,13 @@ void ExperimentControl::execute()
 	LOG4CXX_DEBUG(log, "execution finished");
 }
 
-void ExperimentControl::fetch(haldls::v2::PlaybackProgram& playback_program)
+std::vector<haldls::v2::instruction_word_type> ExperimentControl::fetch()
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	if (m_impl->program_serial_number == haldls::v2::PlaybackProgram::invalid_serial_number ||
-		m_impl->program_size == 0)
-		throw std::runtime_error("no valid playback program has been transferred yet");
+	if (m_impl->program_size == 0)
+		throw std::runtime_error("fetch: no valid playback program has been transferred yet");
 
 	// get result size
 	halco::common::Unique unique;
@@ -325,11 +343,41 @@ void ExperimentControl::fetch(haldls::v2::PlaybackProgram& playback_program)
 	// ^^^ ------8<-----------
 
 	// extract read/write results from data
-	UniDecoder decoder;
-	uni::decode(uni::bytewise(std::begin(r_read)), uni::bytewise(std::end(r_read)), decoder);
 
+	std::vector<haldls::v2::instruction_word_type> bytes;
+	std::copy(
+		uni::raw_byte_iterator<rw_api::FlyspiCom::BufferType>(std::begin(r_read)),
+		uni::raw_byte_iterator<rw_api::FlyspiCom::BufferType>(std::end(r_read)),
+		std::back_inserter(bytes));
+	return bytes;
+}
+
+void ExperimentControl::fetch(haldls::v2::PlaybackProgram& playback_program)
+{
+	if (!m_impl)
+		throw std::logic_error("unexpected access to moved-from object");
+
+	if (m_impl->program_serial_number != playback_program.serial_number())
+		throw std::runtime_error("Different playback program as transferred to chip");
+	decode_result_bytes(fetch(), playback_program);
+}
+
+void ExperimentControl::decode_result_bytes(
+	std::vector<haldls::v2::instruction_word_type> const& result_bytes,
+	haldls::v2::PlaybackProgram& playback_program)
+{
+	UniDecoder decoder;
+	uni::decode(result_bytes.begin(), result_bytes.end(), decoder);
 	playback_program.set_results(std::move(decoder.words));
 	playback_program.set_spikes(std::move(decoder.spikes));
+}
+
+std::vector<haldls::v2::instruction_word_type> ExperimentControl::run(
+	std::vector<std::vector<haldls::v2::instruction_word_type> > const& program_bytes)
+{
+	transfer(program_bytes);
+	execute();
+	return fetch();
 }
 
 void ExperimentControl::run(haldls::v2::PlaybackProgram& playback_program)

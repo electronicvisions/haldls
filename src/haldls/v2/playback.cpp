@@ -147,7 +147,8 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgram::create_ticket(
 	return {m_serial_number, coord, offset, length};
 }
 
-std::vector<std::vector<std::uint8_t> > const& PlaybackProgram::instruction_byte_blocks() const
+std::vector<std::vector<instruction_word_type> > const& PlaybackProgram::instruction_byte_blocks()
+	const
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
