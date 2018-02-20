@@ -145,10 +145,10 @@ void ExperimentControl::soft_reset()
 	haldls::v2::FlyspiConfig reset_config;
 	reset_config.set_dls_reset(true);
 	reset_config.set_soft_reset(true);
-	ocp_write(m_impl->com, unique, reset_config);
+	ocp_write_container(m_impl->com, unique, reset_config);
 
 	// Set default config
-	ocp_write(m_impl->com, unique, haldls::v2::FlyspiConfig());
+	ocp_write_container(m_impl->com, unique, haldls::v2::FlyspiConfig());
 }
 
 void ExperimentControl::configure_static(
@@ -159,13 +159,12 @@ void ExperimentControl::configure_static(
 
 	// An experiment always happens as follows:
 	// * Set the board config, including DACs, spike router and FPGA config
-	// * Set the spike router
-	// * Set the digital config and wait for the cap-mem to settle
+	// * Set the chip config and wait for the cap-mem to settle
 
 	halco::common::Unique const coord;
 
 	// Set the board
-	ocp_write(m_impl->com, coord, board);
+	ocp_write_container(m_impl->com, coord, board);
 
 	// If the dls is in reset during playback of a playback program, the FPGA
 	// will never stop execution for v2 and freeze the FPGA. Therefore, the
@@ -240,9 +239,9 @@ void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_pro
 
 	halco::common::Unique unique;
 
-	ocp_write(m_impl->com, unique, program_address);
-	ocp_write(m_impl->com, unique, program_size);
-	ocp_write(m_impl->com, unique, result_address);
+	ocp_write_container(m_impl->com, unique, program_address);
+	ocp_write_container(m_impl->com, unique, program_size);
+	ocp_write_container(m_impl->com, unique, result_address);
 }
 
 void ExperimentControl::execute()
@@ -259,7 +258,7 @@ void ExperimentControl::execute()
 	halco::common::Unique unique;
 
 	// check that the DLS is not in reset
-	auto config = ocp_read<haldls::v2::FlyspiConfig>(m_impl->com, unique);
+	auto config = ocp_read_container<haldls::v2::FlyspiConfig>(m_impl->com, unique);
 	if (config.get_dls_reset()) {
 		LOG4CXX_ERROR(log, "Asking to execute a program although the DLS is in reset.");
 		LOG4CXX_ERROR(log, "This is prohibited for v2 as it will freeze the system.");
@@ -271,7 +270,7 @@ void ExperimentControl::execute()
 	haldls::v2::FlyspiControl control;
 	control.set_execute(true);
 	LOG4CXX_DEBUG(log, "start execution");
-	ocp_write(m_impl->com, unique, control);
+	ocp_write_container(m_impl->com, unique, control);
 
 	// wait until execute bit is cleared again
 	{
@@ -280,7 +279,7 @@ void ExperimentControl::execute()
 			LOG4CXX_DEBUG(
 				log, "execute flag not yet cleared, sleep for " << sleep_till_poll.count() << "us");
 			std::this_thread::sleep_for(sleep_till_poll);
-			control = ocp_read<haldls::v2::FlyspiControl>(m_impl->com, unique);
+			control = ocp_read_container<haldls::v2::FlyspiControl>(m_impl->com, unique);
 			// Increase exponential sleep time
 			sleep_till_poll *= 2;
 		}
@@ -299,7 +298,7 @@ void ExperimentControl::fetch(haldls::v2::PlaybackProgram& playback_program)
 
 	// get result size
 	halco::common::Unique unique;
-	auto result_size = ocp_read<haldls::v2::FlyspiResultSize>(m_impl->com, unique);
+	auto result_size = ocp_read_container<haldls::v2::FlyspiResultSize>(m_impl->com, unique);
 	if (!result_size.get_value()) {
 		throw std::logic_error("no result size read from board");
 	}

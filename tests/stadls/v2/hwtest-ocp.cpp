@@ -32,15 +32,15 @@ TEST_F(OcpTest, FlyspiProgramAddress)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, coord, con::FlyspiConfig());
 
 	std::vector<con::ocp_word_type::value_type> values{0, 0xffffffff, 0x01020304};
 	for (auto const value : values) {
 		// Write the program address
-		io::ocp_write(com, coord, con::FlyspiProgramAddress(value));
+		io::ocp_write_container(com, coord, con::FlyspiProgramAddress(value));
 
 		// Read the program address
-		auto result_reg = io::ocp_read<con::FlyspiProgramAddress>(com, coord);
+		auto result_reg = io::ocp_read_container<con::FlyspiProgramAddress>(com, coord);
 		EXPECT_EQ(value, result_reg.get_value());
 	}
 }
@@ -56,15 +56,15 @@ TEST_F(OcpTest, FlyspiProgramSize)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, coord, con::FlyspiConfig());
 
 	std::vector<con::ocp_word_type::value_type> values{0, 0xffffffff, 0x01020304};
 	for (auto const value : values) {
 		// Write the program size
-		io::ocp_write(com, coord, con::FlyspiProgramSize(value));
+		io::ocp_write_container(com, coord, con::FlyspiProgramSize(value));
 
 		// Read the program size
-		auto result_reg = io::ocp_read<con::FlyspiProgramSize>(com, coord);
+		auto result_reg = io::ocp_read_container<con::FlyspiProgramSize>(com, coord);
 		EXPECT_EQ(value, result_reg.get_value());
 	}
 }
@@ -80,15 +80,15 @@ TEST_F(OcpTest, FlyspiResultAddress)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, coord, con::FlyspiConfig());
 
 	std::vector<con::ocp_word_type::value_type> values{0, 0xffffffff, 0x01020304};
 	for (auto const value : values) {
 		// Write the result address
-		io::ocp_write(com, coord, con::FlyspiResultAddress(value));
+		io::ocp_write_container(com, coord, con::FlyspiResultAddress(value));
 
 		// Read the result address
-		auto result_reg = io::ocp_read<con::FlyspiResultAddress>(com, coord);
+		auto result_reg = io::ocp_read_container<con::FlyspiResultAddress>(com, coord);
 		EXPECT_EQ(value, result_reg.get_value());
 	}
 }
@@ -104,10 +104,10 @@ TEST_F(OcpTest, FlyspiResultSize)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, coord, con::FlyspiConfig());
 
 	// Read the result size
-	auto result_reg = io::ocp_read<con::FlyspiResultSize>(com, coord);
+	auto result_reg = io::ocp_read_container<con::FlyspiResultSize>(com, coord);
 
 	// Expect that the optional has a value
 	EXPECT_TRUE(result_reg.get_value());
@@ -124,10 +124,10 @@ TEST_F(OcpTest, FlyspiState)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, coord, con::FlyspiConfig());
 
 	// Read the result size
-	auto result_reg = io::ocp_read<con::FlyspiState>(com, coord);
+	auto result_reg = io::ocp_read_container<con::FlyspiState>(com, coord);
 
 	// Expect that the optional has a value
 	EXPECT_TRUE(result_reg.get_value());
@@ -147,10 +147,10 @@ TEST_F(OcpTest, FlyspiConfig)
 		// Write config with spike router en/disabled
 		con::FlyspiConfig reg;
 		reg.set_enable_spike_router(value);
-		io::ocp_write(com, coord, reg);
+		io::ocp_write_container(com, coord, reg);
 
 		// Read the program address
-		auto result_reg = io::ocp_read<con::FlyspiConfig>(com, coord);
+		auto result_reg = io::ocp_read_container<con::FlyspiConfig>(com, coord);
 		EXPECT_EQ(result_reg.get_dls_reset(), reg.get_dls_reset());
 		EXPECT_EQ(reg, result_reg);
 	}
@@ -167,10 +167,10 @@ TEST_F(OcpTest, FlyspiException)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, coord, con::FlyspiConfig());
 
 	// Read exception register
-	auto result_reg = io::ocp_read<con::FlyspiException>(com, coord);
+	auto result_reg = io::ocp_read_container<con::FlyspiException>(com, coord);
 
 	// All optionals should be filled
 	ASSERT_TRUE(result_reg.get_result_read_error());
