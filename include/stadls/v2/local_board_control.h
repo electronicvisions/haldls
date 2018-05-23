@@ -11,7 +11,7 @@
 #include "hate/visibility.h"
 
 namespace stadls {
-namespace v2 GENPYBIND(tag(stadls_v2)) {
+namespace v2 { // GENPYBIND(tag(stadls_v2)) {
 
 haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip);
 
@@ -63,6 +63,14 @@ public:
 		std::vector<std::vector<haldls::v2::instruction_word_type> > const& program_byte)
 		SYMBOL_VISIBLE;
 	void run(haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
+
+	/// \brief Run experiment on given board and chip
+	void run_experiment(
+		haldls::v2::Board const& board,
+		haldls::v2::Chip const& chip,
+		haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
+
+	constexpr static char const* const env_name_board_id = "FLYSPI_ID";
 
 private:
 	class Impl;

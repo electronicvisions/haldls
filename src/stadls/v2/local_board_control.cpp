@@ -433,6 +433,15 @@ void LocalBoardControl::run(haldls::v2::PlaybackProgram& playback_program)
 	fetch(playback_program);
 }
 
+void LocalBoardControl::run_experiment(
+	haldls::v2::Board const& board,
+	haldls::v2::Chip const& chip,
+	haldls::v2::PlaybackProgram& playback_program)
+{
+	configure_static(board, chip);
+	run(playback_program);
+}
+
 std::vector<std::string> available_board_usb_serial_numbers()
 {
 	std::vector<std::string> result;

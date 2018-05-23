@@ -245,9 +245,6 @@ struct QuickQueueClient::Impl
 	typedef typename QuickQueueServer::rcf_interface_t rcf_interface_t;
 
 	std::unique_ptr<RcfClient<rcf_interface_t> > m_client;
-
-	constexpr static char const* const env_name_ip = "QUIGGELDY_IP";
-	constexpr static char const* const env_name_port = "QUIGGELDY_PORT";
 };
 
 QuickQueueClient::Impl::Impl()

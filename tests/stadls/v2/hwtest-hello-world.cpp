@@ -7,8 +7,7 @@
 #include "haldls/v2/capmem.h"
 #include "haldls/v2/chip.h"
 #include "haldls/v2/playback.h"
-#include "stadls/v2/local_board_control.h"
-#include "stadls/v2/quick_queue.h"
+#include "stadls/v2/experiment.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;
@@ -127,18 +126,8 @@ protected:
 
 	void test_run_program(PlaybackProgram& program)
 	{
-#ifndef NO_LOCAL_BOARD
-		// get the board id
-		std::vector<std::string> board_ids = available_board_usb_serial_numbers();
-		ASSERT_EQ(1, board_ids.size()) << "number of allocated boards is not one";
-
-		LocalBoardControl ctrl(board_ids.front());
-		ctrl.configure_static(board, chip);
-		ctrl.run(program);
-#else
-		QuickQueueClient ctrl;
+		ExperimentControl ctrl;
 		ctrl.run_experiment(board, chip, program);
-#endif
 	}
 
 	Board board;

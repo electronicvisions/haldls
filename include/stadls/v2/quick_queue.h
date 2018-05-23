@@ -7,25 +7,22 @@
 
 #include "rcf-extensions/round-robin.h"
 
-#include "haldls/v2/board.h"
-#include "haldls/v2/chip.h"
-#include "haldls/v2/common.h"
-#include "haldls/v2/playback.h"
 #include "hate/visibility.h"
+
+#include "stadls/v2/local_board_control.h"
 
 namespace SF {
 
 void serialize(SF::Archive& ar, haldls::v2::ocp_address_type& addr);
 void serialize(SF::Archive& ar, haldls::v2::ocp_word_type& word);
 
-} // SF
+} // namespace SF
 
 namespace stadls {
 namespace v2 GENPYBIND(tag(stadls_v2)) {
 typedef std::vector<haldls::v2::ocp_address_type> ocp_addresses_type;
 typedef std::vector<haldls::v2::ocp_word_type> ocp_words_type;
 typedef std::vector<std::vector<haldls::v2::instruction_word_type> > program_bytes_type;
-
 
 struct QuickQueueRequest
 {
@@ -50,7 +47,6 @@ private:
 	void serialize_detail(Archive& archive, std::false_type) SYMBOL_VISIBLE;
 };
 
-
 struct QuickQueueResponse
 {
 	std::vector<haldls::v2::instruction_word_type> result_bytes;
@@ -71,12 +67,10 @@ private:
 	void serialize_detail(Archive& archive, std::false_type) SYMBOL_VISIBLE;
 };
 
-
 QuickQueueRequest create_request(
 	haldls::v2::Board const& board,
 	haldls::v2::Chip const& chip,
 	haldls::v2::PlaybackProgram& playback_program);
-
 
 class QuickQueueWorker
 {
@@ -116,13 +110,10 @@ private:
 	constexpr static char const* const m_env_name_partition = "SLURM_JOB_PARTITION";
 	std::string m_slurm_partition;
 
-
 }; // QuickQueueWorker
-
 
 // generate sechduling Quick Queue Server that operates on worker
 RR_GENERATE(QuickQueueWorker, QuickQueueServer)
-
 
 // TODO: Decide if pImpl is really needed here! --obreitwi, 06-03-18 14:12:45
 class GENPYBIND(visible) QuickQueueClient
@@ -148,6 +139,9 @@ public:
 
 	static int const max_message_length = 1280 * 1024 * 1024;
 	static int const remote_call_timeout = 3600 * 1000;
+
+	constexpr static char const* const env_name_ip = "QUIGGELDY_IP";
+	constexpr static char const* const env_name_port = "QUIGGELDY_PORT";
 
 private:
 	class Impl;
