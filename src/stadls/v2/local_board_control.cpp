@@ -1,4 +1,4 @@
-#include "stadls/v2/experiment.h"
+#include "stadls/v2/local_board_control.h"
 
 #include <chrono>
 #include <sstream>
@@ -106,7 +106,7 @@ struct UniDecoder
 namespace stadls {
 namespace v2 {
 
-class ExperimentControl::Impl
+class LocalBoardControl::Impl
 {
 public:
 	typedef haldls::v2::hardware_word_type hardware_word_type;
@@ -123,24 +123,24 @@ public:
 	static constexpr hardware_address_type result_address = 0;
 };
 
-ExperimentControl::ExperimentControl(std::string const& usb_serial_number)
+LocalBoardControl::LocalBoardControl(std::string const& usb_serial_number)
 	: m_impl(new Impl(usb_serial_number))
 {
 	soft_reset();
 }
 
-ExperimentControl::ExperimentControl(ExperimentControl&&) noexcept = default;
+LocalBoardControl::LocalBoardControl(LocalBoardControl&&) noexcept = default;
 
-ExperimentControl& ExperimentControl::operator=(ExperimentControl&&) noexcept = default;
+LocalBoardControl& LocalBoardControl::operator=(LocalBoardControl&&) noexcept = default;
 
-ExperimentControl::~ExperimentControl() = default;
+LocalBoardControl::~LocalBoardControl() = default;
 
-std::string ExperimentControl::usb_serial() const
+std::string LocalBoardControl::usb_serial() const
 {
 	return m_impl->com.usb_serial;
 }
 
-void ExperimentControl::soft_reset()
+void LocalBoardControl::soft_reset()
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
@@ -157,7 +157,7 @@ void ExperimentControl::soft_reset()
 	ocp_write_container(m_impl->com, unique, haldls::v2::FlyspiConfig());
 }
 
-void ExperimentControl::configure_static(
+void LocalBoardControl::configure_static(
 	std::vector<haldls::v2::ocp_address_type> const& board_addresses,
 	std::vector<haldls::v2::ocp_word_type> const& board_words,
 	std::vector<std::vector<haldls::v2::instruction_word_type> > const& chip_program_bytes)
@@ -172,7 +172,7 @@ void ExperimentControl::configure_static(
 	execute();
 }
 
-void ExperimentControl::configure_static(
+void LocalBoardControl::configure_static(
 	haldls::v2::Board const& board, haldls::v2::Chip const& chip)
 {
 	if (!m_impl)
@@ -190,7 +190,7 @@ void ExperimentControl::configure_static(
 	// If the dls is in reset during playback of a playback program, the FPGA
 	// will never stop execution for v2 and freeze the FPGA. Therefore, the
 	// playback of programs is prohibited if the DLS is in reset.
-	// TODO: Move this check to ExperimentControl::execute()?? This adds
+	// TODO: Move this check to LocalBoardControl::execute()?? This adds
 	// additional overhead in the execution of experiments
 	if (board.get_flyspi_config().get_dls_reset()) {
 		auto log = log4cxx::Logger::getLogger(__func__);
@@ -218,7 +218,7 @@ haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip)
 }
 
 
-void ExperimentControl::transfer(
+void LocalBoardControl::transfer(
 	std::vector<std::vector<haldls::v2::instruction_word_type> > const& program_bytes)
 {
 	if (!m_impl)
@@ -268,7 +268,7 @@ void ExperimentControl::transfer(
 	ocp_write_container(m_impl->com, unique, result_address);
 }
 
-void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_program)
+void LocalBoardControl::transfer(haldls::v2::PlaybackProgram const& playback_program)
 {
 	if (!m_impl) {
 		throw std::logic_error("unexpected access to moved-from object");
@@ -286,7 +286,7 @@ void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_pro
 	if (exception.VALUE()) {                                                                       \
 		ss << #VALUE << ": " << *exception.VALUE() << std::endl;                                   \
 	}
-void ExperimentControl::execute()
+void LocalBoardControl::execute()
 {
 	auto log = log4cxx::Logger::getLogger(__func__);
 
@@ -359,7 +359,7 @@ void ExperimentControl::execute()
 }
 #undef PRINT_OPTIONAL
 
-std::vector<haldls::v2::instruction_word_type> ExperimentControl::fetch()
+std::vector<haldls::v2::instruction_word_type> LocalBoardControl::fetch()
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
@@ -398,7 +398,7 @@ std::vector<haldls::v2::instruction_word_type> ExperimentControl::fetch()
 	return bytes;
 }
 
-void ExperimentControl::fetch(haldls::v2::PlaybackProgram& playback_program)
+void LocalBoardControl::fetch(haldls::v2::PlaybackProgram& playback_program)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
@@ -408,7 +408,7 @@ void ExperimentControl::fetch(haldls::v2::PlaybackProgram& playback_program)
 	decode_result_bytes(fetch(), playback_program);
 }
 
-void ExperimentControl::decode_result_bytes(
+void LocalBoardControl::decode_result_bytes(
 	std::vector<haldls::v2::instruction_word_type> const& result_bytes,
 	haldls::v2::PlaybackProgram& playback_program)
 {
@@ -418,7 +418,7 @@ void ExperimentControl::decode_result_bytes(
 	playback_program.set_spikes(std::move(decoder.spikes));
 }
 
-std::vector<haldls::v2::instruction_word_type> ExperimentControl::run(
+std::vector<haldls::v2::instruction_word_type> LocalBoardControl::run(
 	std::vector<std::vector<haldls::v2::instruction_word_type> > const& program_bytes)
 {
 	transfer(program_bytes);
@@ -426,7 +426,7 @@ std::vector<haldls::v2::instruction_word_type> ExperimentControl::run(
 	return fetch();
 }
 
-void ExperimentControl::run(haldls::v2::PlaybackProgram& playback_program)
+void LocalBoardControl::run(haldls::v2::PlaybackProgram& playback_program)
 {
 	transfer(playback_program);
 	execute();

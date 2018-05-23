@@ -8,14 +8,14 @@
 
 #include "halco/common/genpybind.h"
 
-#include "hate/visibility.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/spike.h"
 #include "haldls/v2/synapse.h"
+#include "hate/visibility.h"
 
 namespace stadls {
 namespace v2 {
-	class ExperimentControl;
+class LocalBoardControl;
 } // namespace v2
 } // namespace stadls
 
@@ -24,21 +24,26 @@ namespace v2 GENPYBIND(tag(haldls_v2)) {
 
 class PlaybackProgramBuilder;
 
-class GENPYBIND(visible) PlaybackProgram {
+class GENPYBIND(visible) PlaybackProgram
+{
 public:
 	typedef std::vector<v2::RecordedSpike> spikes_type;
 	typedef std::size_t serial_number_type;
 	static constexpr serial_number_type invalid_serial_number SYMBOL_VISIBLE = 0;
 
 	template <typename T>
-	class ContainerTicket {
+	class ContainerTicket
+	{
 	private:
 		friend PlaybackProgram;
 
 		typedef typename T::coordinate_type coordinate_type;
 
 		ContainerTicket(
-			serial_number_type serial_number, coordinate_type const& coord, std::size_t offset, std::size_t length)
+			serial_number_type serial_number,
+			coordinate_type const& coord,
+			std::size_t offset,
+			std::size_t length)
 			: serial_number(serial_number), coord(coord), offset(offset), length(length)
 		{}
 
@@ -74,7 +79,7 @@ public:
 	std::vector<std::vector<instruction_word_type> > const& instruction_byte_blocks() const
 		SYMBOL_VISIBLE;
 
-	friend stadls::v2::ExperimentControl;
+	friend stadls::v2::LocalBoardControl;
 	friend PlaybackProgramBuilder;
 
 private:
@@ -88,10 +93,10 @@ private:
 	template <typename T>
 	static void ensure_container_invariants(T& config);
 
-	/// \see ExperimentControl
+	/// \see LocalBoardControl
 	void set_results(std::vector<v2::hardware_word_type>&& results) SYMBOL_VISIBLE;
 
-	/// \see ExperimentControl
+	/// \see LocalBoardControl
 	void set_spikes(spikes_type&& spikes) SYMBOL_VISIBLE;
 
 	struct Impl;
@@ -100,7 +105,8 @@ private:
 	serial_number_type m_serial_number = invalid_serial_number;
 }; // PlaybackProgram
 
-class GENPYBIND(visible) PlaybackProgramBuilder {
+class GENPYBIND(visible) PlaybackProgramBuilder
+{
 public:
 	typedef v2::hardware_time_type time_type;
 

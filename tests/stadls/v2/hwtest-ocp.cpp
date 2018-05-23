@@ -3,7 +3,7 @@
 #include "flyspi-rw_api/flyspi_com.h"
 
 #include "haldls/v2/register.h"
-#include "stadls/v2/experiment.h"
+#include "stadls/v2/local_board_control.h"
 #include "stadls/v2/ocp.h"
 
 #ifndef NO_LOCAL_BOARD

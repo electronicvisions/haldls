@@ -15,19 +15,19 @@ namespace v2 GENPYBIND(tag(stadls_v2)) {
 
 haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip);
 
-class GENPYBIND(visible) ExperimentControl
+class GENPYBIND(visible) LocalBoardControl
 {
 public:
 	/// \brief creates Flyspi communication object and calls soft_reset
-	ExperimentControl(std::string const& usb_serial_number) SYMBOL_VISIBLE;
+	LocalBoardControl(std::string const& usb_serial_number) SYMBOL_VISIBLE;
 
-	ExperimentControl(ExperimentControl&& other) noexcept SYMBOL_VISIBLE;
-	ExperimentControl& operator=(ExperimentControl&& other) noexcept SYMBOL_VISIBLE;
+	LocalBoardControl(LocalBoardControl&& other) noexcept SYMBOL_VISIBLE;
+	LocalBoardControl& operator=(LocalBoardControl&& other) noexcept SYMBOL_VISIBLE;
 
-	ExperimentControl(ExperimentControl const& other) = delete;
-	ExperimentControl& operator=(ExperimentControl const& other) = delete;
+	LocalBoardControl(LocalBoardControl const& other) = delete;
+	LocalBoardControl& operator=(LocalBoardControl const& other) = delete;
 
-	~ExperimentControl() SYMBOL_VISIBLE;
+	~LocalBoardControl() SYMBOL_VISIBLE;
 
 	std::string usb_serial() const SYMBOL_VISIBLE;
 
@@ -67,7 +67,7 @@ public:
 private:
 	class Impl;
 	std::unique_ptr<Impl> m_impl;
-}; // ExperimentControl
+}; // LocalBoardControl
 
 std::vector<std::string> available_board_usb_serial_numbers() SYMBOL_VISIBLE GENPYBIND(visible);
 

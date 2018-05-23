@@ -6,7 +6,7 @@
 #include "haldls/exception/exceptions.h"
 #include "haldls/v2/capmem.h"
 #include "haldls/v2/playback.h"
-#include "stadls/v2/experiment.h"
+#include "stadls/v2/local_board_control.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;
@@ -69,7 +69,7 @@ TEST_F(PlaybackTest, CapMem) {
 	EXPECT_THROW(std::ignore = program_.get(capmem_ticket), std::invalid_argument);
 
 	{
-		ExperimentControl ctrl(test_board);
+		LocalBoardControl ctrl(test_board);
 		ctrl.run(program);
 	}
 
@@ -86,7 +86,7 @@ TEST_F(PlaybackTest, InvalidState) {
 	PlaybackProgram invalid_program; // not obtained via builder
 	EXPECT_EQ(PlaybackProgram::invalid_serial_number, invalid_program.serial_number());
 
-	ExperimentControl ctrl(test_board);
+	LocalBoardControl ctrl(test_board);
 	EXPECT_THROW(ctrl.transfer(invalid_program), std::logic_error);
 	EXPECT_THROW(ctrl.run(invalid_program), std::logic_error);
 }
@@ -108,7 +108,7 @@ TEST_F(PlaybackTest, InvalidFPGA)
 
 	auto program = builder.done();
 
-	ExperimentControl ctrl(test_board);
+	LocalBoardControl ctrl(test_board);
 	ctrl.configure_static(board, chip);
 	ctrl.transfer(program);
 	EXPECT_THROW(ctrl.execute(), haldls::exception::InvalidConfiguration);

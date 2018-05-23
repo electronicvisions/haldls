@@ -4,7 +4,7 @@
 
 #include "logger.h"
 #include "logging_ctrl.h"
-#include "stadls/v2/experiment.h"
+#include "stadls/v2/local_board_control.h"
 #include "stadls/v2/quick_queue.h"
 
 // needed to have lambdas as signal handlers

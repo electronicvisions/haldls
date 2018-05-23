@@ -4,7 +4,7 @@
 #include "haldls/v2/board.h"
 #include "haldls/v2/chip.h"
 #include "haldls/v2/playback.h"
-#include "stadls/v2/experiment.h"
+#include "stadls/v2/local_board_control.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;
@@ -44,7 +44,7 @@ TEST_F(ReadbackTest, ExternalNeuronSwitchesAreDisabled) {
 	auto program = builder.done();
 
 	{
-		ExperimentControl ctrl(test_board);
+		LocalBoardControl ctrl(test_board);
 		ctrl.configure_static(board, chip);
 		ctrl.run(program);
 	}

@@ -24,7 +24,7 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/playback.h"
 #include "haldls/v2/spike.h"
-#include "stadls/v2/experiment.h"
+#include "stadls/v2/local_board_control.h"
 #include "stadls/v2/ocp.h"
 #include "stadls/visitors.h"
 
@@ -157,15 +157,15 @@ void QuickQueueWorker::setup()
 {
 	get_slurm_allocation();
 	auto log = log4cxx::Logger::getLogger("QuickQueueWorker");
-	LOG4CXX_DEBUG(log, "Setting up ExperimentControl.");
+	LOG4CXX_DEBUG(log, "Setting up LocalBoardControl.");
 	// TODO have the experiment control timeout (e.g. when the board is unresponsive)
-	m_experiment_ptr.reset(new ExperimentControl(m_usb_serial));
+	m_local_board_ctrl.reset(new LocalBoardControl(m_usb_serial));
 	LOG4CXX_DEBUG(log, "SetUp completed!");
 }
 
 void QuickQueueWorker::teardown()
 {
-	m_experiment_ptr.reset();
+	m_local_board_ctrl.reset();
 	free_slurm_allocation();
 
 	auto log = log4cxx::Logger::getLogger("QuickQueueWorker");
@@ -209,11 +209,11 @@ QuickQueueResponse QuickQueueWorker::work(QuickQueueRequest const& req)
 	auto log = log4cxx::Logger::getLogger("QuickQueueWorker");
 	LOG4CXX_DEBUG(log, "Running experiment!");
 
-	m_experiment_ptr->configure_static(
+	m_local_board_ctrl->configure_static(
 		req.board_addresses, req.board_words, req.chip_program_bytes);
 	QuickQueueResponse response;
 	try {
-		response.result_bytes = m_experiment_ptr->run(req.playback_program_bytes);
+		response.result_bytes = m_local_board_ctrl->run(req.playback_program_bytes);
 	} catch (const rw_api::LogicError& e) {
 		// TODO: Power cycle board
 		teardown();
@@ -353,7 +353,7 @@ void QuickQueueClient::run_experiment(
 	}
 
 	// decode received bytes
-	ExperimentControl::decode_result_bytes(response.result_bytes, playback_program);
+	LocalBoardControl::decode_result_bytes(response.result_bytes, playback_program);
 }
 
 } // namespace v2

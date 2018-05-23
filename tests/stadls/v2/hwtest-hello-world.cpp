@@ -7,7 +7,7 @@
 #include "haldls/v2/capmem.h"
 #include "haldls/v2/chip.h"
 #include "haldls/v2/playback.h"
-#include "stadls/v2/experiment.h"
+#include "stadls/v2/local_board_control.h"
 #include "stadls/v2/quick_queue.h"
 
 using namespace halco::common;
@@ -132,7 +132,7 @@ protected:
 		std::vector<std::string> board_ids = available_board_usb_serial_numbers();
 		ASSERT_EQ(1, board_ids.size()) << "number of allocated boards is not one";
 
-		ExperimentControl ctrl(board_ids.front());
+		LocalBoardControl ctrl(board_ids.front());
 		ctrl.configure_static(board, chip);
 		ctrl.run(program);
 #else

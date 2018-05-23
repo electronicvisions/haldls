@@ -110,7 +110,7 @@ private:
 	void free_slurm_allocation();
 
 	// members
-	std::unique_ptr<ExperimentControl> m_experiment_ptr;
+	std::unique_ptr<LocalBoardControl> m_local_board_ctrl;
 	std::string m_usb_serial;
 	bool m_has_slurm_allocation;
 	constexpr static char const* const m_env_name_partition = "SLURM_JOB_PARTITION";
