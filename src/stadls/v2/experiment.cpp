@@ -16,6 +16,7 @@
 #include "haldls/v2/chip.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/playback.h"
+#include "haldls/v2/register.h"
 #include "haldls/v2/spike.h"
 #include "stadls/v2/ocp.h"
 #include "stadls/visitors.h"
@@ -134,6 +135,11 @@ ExperimentControl& ExperimentControl::operator=(ExperimentControl&&) noexcept = 
 
 ExperimentControl::~ExperimentControl() = default;
 
+std::string ExperimentControl::usb_serial() const
+{
+	return m_impl->com.usb_serial;
+}
+
 void ExperimentControl::soft_reset()
 {
 	if (!m_impl)
@@ -191,19 +197,24 @@ void ExperimentControl::configure_static(
 		LOG4CXX_WARN(log, "DLS in reset during configuration");
 		LOG4CXX_WARN(log, "The chip configuration cannot be written");
 	} else {
-		// Chip configuration program
-		haldls::v2::PlaybackProgramBuilder setup_builder;
-		setup_builder.set_time(0);
-		setup_builder.set_container(halco::common::Unique(), chip);
-		// Wait for the cap-mem to settle (based on empirical measurement by DS)
-		// clang-format off
-		setup_builder.wait_for(2'000'000); // ~ 20.8 ms for 96 MHz
-		// clang-format on
-		setup_builder.halt();
-		haldls::v2::PlaybackProgram setup = setup_builder.done();
+		auto setup = get_configure_program(chip);
 
 		run(setup);
 	}
+}
+
+haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip)
+{
+	// Chip configuration program
+	haldls::v2::PlaybackProgramBuilder setup_builder;
+	setup_builder.set_time(0);
+	setup_builder.set_container(halco::common::Unique(), chip);
+	// Wait for the cap-mem to settle (based on empirical measurement by DS)
+	// clang-format off
+	setup_builder.wait_for(2'000'000); // ~ 20.8 ms for 96 MHz
+	// clang-format on
+	setup_builder.halt();
+	return setup_builder.done();
 }
 
 
@@ -271,6 +282,10 @@ void ExperimentControl::transfer(haldls::v2::PlaybackProgram const& playback_pro
 	transfer(playback_program.instruction_byte_blocks());
 }
 
+#define PRINT_EXCEPTION_OPTIONAL(VALUE)                                                            \
+	if (exception.VALUE()) {                                                                       \
+		ss << #VALUE << ": " << *exception.VALUE() << std::endl;                                   \
+	}
 void ExperimentControl::execute()
 {
 	auto log = log4cxx::Logger::getLogger(__func__);
@@ -306,12 +321,43 @@ void ExperimentControl::execute()
 				log, "execute flag not yet cleared, sleep for " << sleep_till_poll.count() << "us");
 			std::this_thread::sleep_for(sleep_till_poll);
 			control = ocp_read_container<haldls::v2::FlyspiControl>(m_impl->com, unique);
+
+			// wait up to one minute for the execute flag to clear (should this
+			// be an adjustable constant? one minute seems far far more than
+			// any realistic experiment execution time
+			// --obreitwi, 23-05-18 15:26:47)
+			if (sleep_till_poll.count() > 60 /* s */ * 1000 /* ms */ * 1000 /* us */) {
+				LOG4CXX_ERROR(log, "execute flag not cleared for 1 minute, aborting!");
+				auto exception =
+					ocp_read_container<haldls::v2::FlyspiException>(m_impl->com, unique);
+				// TODO move to utility function
+				{
+					std::stringstream ss;
+					ss << "FlyspiException: " << std::endl;
+					PRINT_EXCEPTION_OPTIONAL(get_result_read_error)
+					PRINT_EXCEPTION_OPTIONAL(get_result_read_overflow)
+					PRINT_EXCEPTION_OPTIONAL(get_result_write_error)
+					PRINT_EXCEPTION_OPTIONAL(get_result_write_underrun)
+					PRINT_EXCEPTION_OPTIONAL(get_playback_read_error)
+					PRINT_EXCEPTION_OPTIONAL(get_playback_read_overflow)
+					PRINT_EXCEPTION_OPTIONAL(get_playback_write_error)
+					PRINT_EXCEPTION_OPTIONAL(get_playback_write_underrun)
+					PRINT_EXCEPTION_OPTIONAL(get_program_exception)
+					PRINT_EXCEPTION_OPTIONAL(get_serdes_overflow)
+					PRINT_EXCEPTION_OPTIONAL(get_serdes_pll_unlocked)
+					PRINT_EXCEPTION_OPTIONAL(get_serdes_race)
+					PRINT_EXCEPTION_OPTIONAL(get_encode_overflow)
+					LOG4CXX_ERROR(log, ss.str())
+				}
+				break;
+			}
 			// Increase exponential sleep time
 			sleep_till_poll *= 2;
 		}
 	}
 	LOG4CXX_DEBUG(log, "execution finished");
 }
+#undef PRINT_OPTIONAL
 
 std::vector<haldls::v2::instruction_word_type> ExperimentControl::fetch()
 {

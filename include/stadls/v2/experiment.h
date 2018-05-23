@@ -13,7 +13,10 @@
 namespace stadls {
 namespace v2 GENPYBIND(tag(stadls_v2)) {
 
-class GENPYBIND(visible) ExperimentControl {
+haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip);
+
+class GENPYBIND(visible) ExperimentControl
+{
 public:
 	/// \brief creates Flyspi communication object and calls soft_reset
 	ExperimentControl(std::string const& usb_serial_number) SYMBOL_VISIBLE;
@@ -25,6 +28,8 @@ public:
 	ExperimentControl& operator=(ExperimentControl const& other) = delete;
 
 	~ExperimentControl() SYMBOL_VISIBLE;
+
+	std::string usb_serial() const SYMBOL_VISIBLE;
 
 	/// \brief toggle soft reset and chip reset and restore fpga to default config
 	void soft_reset() SYMBOL_VISIBLE;
@@ -42,6 +47,7 @@ public:
 	void transfer(std::vector<std::vector<haldls::v2::instruction_word_type> > const& program_bytes)
 		SYMBOL_VISIBLE;
 	void transfer(haldls::v2::PlaybackProgram const& playback_program) SYMBOL_VISIBLE;
+
 	/// \brief toggle the execute flag and wait until turned off again
 	void execute() SYMBOL_VISIBLE;
 

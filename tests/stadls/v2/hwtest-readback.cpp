@@ -11,6 +11,8 @@ using namespace halco::hicann_dls::v2;
 using namespace haldls::v2;
 using namespace stadls::v2;
 
+#ifndef NO_LOCAL_BOARD
+
 class ReadbackTest : public ::testing::Test {
 protected:
 	void SetUp() override
@@ -53,3 +55,5 @@ TEST_F(ReadbackTest, ExternalNeuronSwitchesAreDisabled) {
 	auto const output_neuron_config = program.get(output_neuron_ticket);
 	EXPECT_FALSE(output_neuron_config.get_enable_buffered_readout());
 }
+
+#endif

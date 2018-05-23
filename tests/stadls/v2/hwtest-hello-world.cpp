@@ -1,11 +1,14 @@
 #include <gtest/gtest.h>
 
+#include "logger.h"
+
 #include "halco/hicann-dls/v2/coordinates.h"
 #include "haldls/v2/board.h"
-#include "haldls/v2/chip.h"
 #include "haldls/v2/capmem.h"
+#include "haldls/v2/chip.h"
 #include "haldls/v2/playback.h"
 #include "stadls/v2/experiment.h"
+#include "stadls/v2/quick_queue.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;
@@ -21,8 +24,7 @@ protected:
 	NeuronOnDLS neuron{0};
 	SynapseDriverOnDLS synapse_driver{0};
 
-	IntegrationHelloWorld()
-	{}
+	IntegrationHelloWorld() {}
 
 	IntegrationHelloWorld(NeuronOnDLS neuron_, SynapseDriverOnDLS synapse_driver_)
 		: neuron(neuron_), synapse_driver(synapse_driver_)
@@ -55,22 +57,33 @@ protected:
 		auto capmem_config = chip.get_capmem();
 		capmem_config.set(neuron, NeuronParameter::v_leak, CapMemCell::Value(400));
 		capmem_config.set(neuron, NeuronParameter::v_treshold, CapMemCell::Value(600));
-		capmem_config.set(neuron, NeuronParameter::v_exc_syn_input_reference, CapMemCell::Value(670));
-		capmem_config.set(neuron, NeuronParameter::v_inh_syn_input_reference, CapMemCell::Value(690));
+		capmem_config.set(
+			neuron, NeuronParameter::v_exc_syn_input_reference, CapMemCell::Value(670));
+		capmem_config.set(
+			neuron, NeuronParameter::v_inh_syn_input_reference, CapMemCell::Value(690));
 		capmem_config.set(neuron, NeuronParameter::i_bias_spike_comparator, CapMemCell::Value(650));
-		capmem_config.set(neuron, NeuronParameter::i_spike_comparator_delay, CapMemCell::Value(130));
+		capmem_config.set(
+			neuron, NeuronParameter::i_spike_comparator_delay, CapMemCell::Value(130));
 		capmem_config.set(neuron, NeuronParameter::i_bias_leak_main, CapMemCell::Value(200));
 		capmem_config.set(neuron, NeuronParameter::i_bias_leak_sd, CapMemCell::Value(500));
 		capmem_config.set(neuron, NeuronParameter::i_bias_readout_buffer, CapMemCell::Value(1022));
 		capmem_config.set(neuron, NeuronParameter::i_refractory_time, CapMemCell::Value(300));
-		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_main, CapMemCell::Value(1022));
-		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_sd, CapMemCell::Value(1022));
-		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_resistor, CapMemCell::Value(200));
-		capmem_config.set(neuron, NeuronParameter::i_bias_exc_syn_input_offset, CapMemCell::Value(650));
-		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_resistor, CapMemCell::Value(200));
-		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_main, CapMemCell::Value(1022));
-		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_sd, CapMemCell::Value(1022));
-		capmem_config.set(neuron, NeuronParameter::i_bias_inh_syn_input_offset, CapMemCell::Value(400));
+		capmem_config.set(
+			neuron, NeuronParameter::i_bias_exc_syn_input_main, CapMemCell::Value(1022));
+		capmem_config.set(
+			neuron, NeuronParameter::i_bias_exc_syn_input_sd, CapMemCell::Value(1022));
+		capmem_config.set(
+			neuron, NeuronParameter::i_bias_exc_syn_input_resistor, CapMemCell::Value(200));
+		capmem_config.set(
+			neuron, NeuronParameter::i_bias_exc_syn_input_offset, CapMemCell::Value(650));
+		capmem_config.set(
+			neuron, NeuronParameter::i_bias_inh_syn_input_resistor, CapMemCell::Value(200));
+		capmem_config.set(
+			neuron, NeuronParameter::i_bias_inh_syn_input_main, CapMemCell::Value(1022));
+		capmem_config.set(
+			neuron, NeuronParameter::i_bias_inh_syn_input_sd, CapMemCell::Value(1022));
+		capmem_config.set(
+			neuron, NeuronParameter::i_bias_inh_syn_input_offset, CapMemCell::Value(400));
 		capmem_config.set(CommonNeuronParameter::e_reset, CapMemCell::Value(300));
 		chip.set_capmem(capmem_config);
 
@@ -90,10 +103,8 @@ protected:
 		// Set current switches at the synaptic input
 		auto const current_switch = neuron.toColumnCurrentSwitchOnDLS();
 		auto switch_config = chip.get_column_current_switch(current_switch);
-		switch_config.set_inh_config(
-			ColumnCurrentBlock::ColumnCurrentSwitch::Config::disabled);
-		switch_config.set_exc_config(
-			ColumnCurrentBlock::ColumnCurrentSwitch::Config::internal);
+		switch_config.set_inh_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::disabled);
+		switch_config.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::internal);
 		chip.set_column_current_switch(current_switch, switch_config);
 
 		// Set synapse driver
@@ -116,6 +127,7 @@ protected:
 
 	void test_run_program(PlaybackProgram& program)
 	{
+#ifndef NO_LOCAL_BOARD
 		// get the board id
 		std::vector<std::string> board_ids = available_board_usb_serial_numbers();
 		ASSERT_EQ(1, board_ids.size()) << "number of allocated boards is not one";
@@ -123,6 +135,10 @@ protected:
 		ExperimentControl ctrl(board_ids.front());
 		ctrl.configure_static(board, chip);
 		ctrl.run(program);
+#else
+		QuickQueueClient ctrl;
+		ctrl.run_experiment(board, chip, program);
+#endif
 	}
 
 	Board board;
@@ -230,9 +246,7 @@ INSTANTIATE_TEST_CASE_P(
 	IntegrationSpikingHelloWorldOffDiagonal,
 	IntegrationSpikingHelloWorld,
 	// Working neurons depend on hardware, as we have no actual calibration data at the moment.
-	// For chip 07 the following neurons seem to work:
-	::testing::Values(
-		0, 1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 17, 19, 21, 22, 23, 25, 28, 29, 31));
+	::testing::Range(NeuronOnDLS::begin, NeuronOnDLS::end));
 
 TEST_P(IntegrationSpikingHelloWorld, Spiking)
 {

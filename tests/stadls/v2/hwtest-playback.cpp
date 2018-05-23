@@ -13,6 +13,8 @@ using namespace halco::hicann_dls::v2;
 using namespace haldls::v2;
 using namespace stadls::v2;
 
+#ifndef NO_LOCAL_BOARD
+
 class PlaybackTest : public ::testing::Test {
 protected:
 	void SetUp() override
@@ -112,3 +114,5 @@ TEST_F(PlaybackTest, InvalidFPGA)
 	EXPECT_THROW(ctrl.execute(), haldls::exception::InvalidConfiguration);
 	EXPECT_THROW(ctrl.run(program), haldls::exception::InvalidConfiguration);
 }
+
+#endif

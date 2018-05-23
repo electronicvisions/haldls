@@ -15,11 +15,23 @@ typedef std::uint8_t instruction_word_type;
 struct ocp_address_type {
 	typedef std::uint32_t value_type;
 	value_type value;
+
+	template <class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(value);
+	}
 };
 
 struct ocp_word_type {
 	typedef std::uint32_t value_type;
 	value_type value;
+
+	template <class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(value);
+	}
 };
 
 namespace detail {

@@ -71,6 +71,9 @@ public:
 
 	std::string dump_program() const SYMBOL_VISIBLE;
 
+	std::vector<std::vector<instruction_word_type> > const& instruction_byte_blocks() const
+		SYMBOL_VISIBLE;
+
 	friend stadls::v2::ExperimentControl;
 	friend PlaybackProgramBuilder;
 
@@ -84,10 +87,6 @@ private:
 
 	template <typename T>
 	static void ensure_container_invariants(T& config);
-
-	/// \see ExperimentControl
-	std::vector<std::vector<instruction_word_type> > const& instruction_byte_blocks() const
-		SYMBOL_VISIBLE;
 
 	/// \see ExperimentControl
 	void set_results(std::vector<v2::hardware_word_type>&& results) SYMBOL_VISIBLE;

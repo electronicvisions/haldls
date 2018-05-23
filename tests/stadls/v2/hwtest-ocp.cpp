@@ -6,6 +6,8 @@
 #include "stadls/v2/experiment.h"
 #include "stadls/v2/ocp.h"
 
+#ifndef NO_LOCAL_BOARD
+
 class OcpTest : public ::testing::Test
 {
 protected:
@@ -202,3 +204,5 @@ TEST_F(OcpTest, FlyspiException)
 	EXPECT_EQ(result_reg.get_serdes_race().value_or(true), false);
 	EXPECT_EQ(result_reg.get_encode_overflow().value_or(true), false);
 }
+
+#endif
