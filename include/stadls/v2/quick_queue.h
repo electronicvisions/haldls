@@ -119,9 +119,9 @@ RR_GENERATE(QuickQueueWorker, QuickQueueServer)
 class GENPYBIND(visible) QuickQueueClient
 {
 public:
-	// \brief connects to server (gets ip and port from environment)
+	/// \brief connects to server (gets ip and port from environment)
 	QuickQueueClient() SYMBOL_VISIBLE;
-	// \brief connects to server
+	/// \brief connects to server with explicit ip and port
 	QuickQueueClient(std::string const& ip, uint16_t port) SYMBOL_VISIBLE;
 
 	QuickQueueClient(QuickQueueClient&& other) noexcept SYMBOL_VISIBLE;

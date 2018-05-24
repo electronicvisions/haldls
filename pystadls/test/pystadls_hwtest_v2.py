@@ -6,6 +6,8 @@ import pyhalco_hicann_dls_v2 as C
 import pyhaldls_v2 as Ct
 import pystadls_v2 as IO
 
+import pylogging as logger
+
 
 OFFSET = 1000 # ~10 us
 ISI = 2000    # ~20 us
@@ -14,7 +16,6 @@ NUM_SPIKES = 50
 
 class TestPyhaldlsIOV2Hardware(unittest.TestCase):
     def test_playback(self):
-        test_board, = IO.available_board_usb_serial_numbers()
 
         capmem_config = Ct.CapMem()
         for cell in C.iter_all(C.CapMemCellOnDLS):
@@ -56,9 +57,8 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
         with self.assertRaises(ValueError):
             capmem_copy = program_.get(capmem_ticket)
 
-        ctrl = IO.ExperimentControl(test_board)
-        ctrl.soft_reset()
-        ctrl.run(program)
+        ctrl = IO.ExperimentControl()
+        ctrl.run_experiment(Ct.Board(), Ct.Chip(), program)
 
         with self.assertRaises(ValueError):
             capmem_copy = program.get(capmem_ticket_)
@@ -164,10 +164,8 @@ class TestHelloWorldHardware(unittest.TestCase):
         self.chip.enable_buffered_readout(self.neuron)
 
     def run_program(self, program):
-        test_board, = IO.available_board_usb_serial_numbers()
-        ctrl = IO.ExperimentControl(test_board)
-        ctrl.configure_static(self.board, self.chip)
-        ctrl.run(program)
+        ctrl = IO.ExperimentControl()
+        ctrl.run_experiment(self.board, self.chip, program)
 
     def test_silence(self):
         builder = Ct.PlaybackProgramBuilder()
@@ -223,4 +221,6 @@ class TestHelloWorldHardware(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    logger.reset()
+    logger.default_config(level=logger.LogLevel.DEBUG)
     unittest.main()

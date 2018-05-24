@@ -7,4 +7,5 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyhaldls_v2");
 })
 
+#include "experiment.h"
 #include "local_board_control.h"

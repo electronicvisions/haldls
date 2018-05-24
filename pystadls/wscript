@@ -8,6 +8,7 @@ def depends(ctx):
     ctx('pywrap')
     ctx('haldls')
     ctx('halco', 'pyhalco')
+    ctx('logger', 'pylogging')
 
 def options(opt):
     pass
@@ -38,7 +39,7 @@ def build(bld):
         source='../include/stadls/v2/io.h',
         genpybind_tags='stadls_v2',
         features='genpybind cxx cxxshlib pyext post_task',
-        use=['stadls_v2', 'PYBIND11HALDLS'],
+        use=['stadls_v2', 'PYBIND11HALDLS', 'pylogging'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
         post_task=[

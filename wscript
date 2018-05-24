@@ -10,10 +10,18 @@ def depends(ctx):
     ctx('lib-rcf', branch='v2')
     ctx('flyspi-rw_api')
 
+    # needed because otherwise pylogging is not defined/installed
+    ctx.recurse("pyhaldls")
+    ctx.recurse("pystadls")
+
+
 def options(opt):
     opt.load('compiler_cxx')
     opt.load('gtest')
     opt.load('documentation')
+
+    opt.recurse("pyhaldls")
+    opt.recurse("pystadls")
 
 
 def configure(cfg):

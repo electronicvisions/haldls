@@ -6,6 +6,8 @@ import pyhalco_hicann_dls_v2 as C
 import pyhaldls_v2 as Ct
 import pystadls_v2 as IO
 
+import pylogging as logger
+
 
 class TestPyhaldlsIOV2(unittest.TestCase):
     def test_program_builder(self):
@@ -40,4 +42,6 @@ class TestPyhaldlsIOV2(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    logger.reset()
+    logger.default_config(level=logger.LogLevel.DEBUG)
     unittest.main()
