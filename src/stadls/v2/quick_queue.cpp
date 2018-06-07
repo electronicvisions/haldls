@@ -4,8 +4,10 @@
 
 #include <chrono>
 #include <cstdlib>
+#include <functional>
 #include <sstream>
 #include <thread>
+#include <unordered_map> // needed for std::hash<std::string>
 #include <cereal/archives/binary.hpp>
 #include <cereal/cereal.hpp>
 #include <cereal/types/vector.hpp>
@@ -27,6 +29,10 @@
 #include "stadls/v2/local_board_control.h"
 #include "stadls/v2/ocp.h"
 #include "stadls/visitors.h"
+
+#ifdef USE_MUNGE_AUTH
+#include <munge.h>
+#endif
 
 namespace SF {
 
@@ -233,16 +239,33 @@ QuickQueueResponse QuickQueueWorker::work(QuickQueueRequest const& req)
 	return response;
 }
 
-bool QuickQueueWorker::verify_user(std::string const& user_data)
+std::optional<size_t> QuickQueueWorker::verify_user(std::string const& user_data)
 {
-	// TODO: implement REAL user verification --obreitwi, 20-03-18 16:57:43
-	std::stringstream ss;
-	ss << "Verifying " << user_data;
 	auto log = log4cxx::Logger::getLogger("QuickQueueWorker");
-	LOG4CXX_DEBUG(log, ss.str());
-	return true;
-}
+	{
+		std::stringstream ss;
+		ss << "Verifying " << user_data;
+		LOG4CXX_DEBUG(log, ss.str());
+	}
+#ifdef USE_MUNGE_AUTH
+	munge_err_t err;
+	uid_t uid;
+	gid_t gid;
 
+	err = munge_decode(user_data.c_str(), NULL, NULL, NULL, &uid, &gid);
+	if (err != EMUNGE_SUCCESS) {
+		std::stringstream ss;
+		ss << "ERROR: " << munge_strerror(err);
+		LOG4CXX_ERROR(log, ss.str());
+
+		return std::nullopt;
+	} else {
+		return std::make_optional(uid);
+	}
+#else
+	return std::make_optional(std::hash<std::string>{}(user_data));
+#endif
+}
 
 struct QuickQueueClient::Impl
 {
@@ -296,11 +319,22 @@ void QuickQueueClient::Impl::setup_client(const std::string& ip, uint16_t port)
 	// TODO: How long should we wait for an experiment to finish?
 	m_client->getClientStub().setRemoteCallTimeoutMs(remote_call_timeout);
 
-	// TODO: retrieve token from slurm that can be verified on the server side
-	// for now it is just enough that this is a random string identifying each
-	// user
+#ifdef USE_MUNGE_AUTH
+	char* cred;
+	munge_err_t err;
+
+	err = munge_encode(&cred, NULL, NULL, 0);
+	if (err != EMUNGE_SUCCESS) {
+		std::stringstream ss;
+		ss << "ERROR: " << munge_strerror(err);
+		LOG4CXX_ERROR(log, ss.str());
+	}
+	m_client->getClientStub().setRequestUserData(std::string(cred));
+	free(cred);
+#else
 	m_client->getClientStub().setRequestUserData(
 		std::string(std::getenv("USER")) + "-without-authentication");
+#endif
 }
 
 QuickQueueClient::Impl::~Impl()

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -89,7 +90,7 @@ public:
 	// run whenever there are any jobs to complete
 	void setup() SYMBOL_VISIBLE;
 
-	bool verify_user(std::string const& user_data) SYMBOL_VISIBLE;
+	std::optional<size_t> verify_user(std::string const& user_data) SYMBOL_VISIBLE;
 
 	QuickQueueResponse work(QuickQueueRequest const&) SYMBOL_VISIBLE;
 
