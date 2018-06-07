@@ -61,6 +61,9 @@ def configure(cfg):
                       uselib_store="MUNGE")
         cfg.env.DEFINES_MUNGE = ["USE_MUNGE_AUTH"]
 
+    cfg.check(lib='elf', header='libelf.h', uselib_store='ELF')
+    cfg.check_cxx(lib='tbb', uselib_store="TBB")
+
     if cfg.env.build_python_bindings:
         cfg.recurse("pyhaldls")
         cfg.recurse("pystadls")
@@ -148,6 +151,15 @@ def build(bld):
         features = 'cxx cxxprogram',
         source = 'tools/stadls/run_ppu_program.cpp',
         use = ['haldls_v2', 'stadls_v2', 'logger_obj'],
+        install_path = '${PREFIX}/bin',
+        linkflags = ['-lboost_program_options-mt'],
+    )
+
+    bld(
+        target = 'ppu_gdbserver',
+        features = 'cxx cxxprogram',
+        source = 'tools/stadls/ppu_gdbserver.cpp',
+        use = ['TBB','ELF','haldls_v2', 'stadls_v2', 'logger_obj','GTEST'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
     )
