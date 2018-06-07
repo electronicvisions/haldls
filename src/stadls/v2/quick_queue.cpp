@@ -97,7 +97,7 @@ QuickQueueRequest create_request(
 
 
 QuickQueueWorker::QuickQueueWorker(std::string const& usb_serial)
-	: m_usb_serial(usb_serial), m_has_slurm_allocation(false)
+	: m_usb_serial(usb_serial), m_has_slurm_allocation(false), m_mock_mode(false)
 {
 	char const* env_partition = std::getenv(m_env_name_partition);
 	if (env_partition == nullptr) {
@@ -155,19 +155,24 @@ void QuickQueueWorker::get_slurm_allocation()
 
 void QuickQueueWorker::setup()
 {
-	get_slurm_allocation();
 	auto log = log4cxx::Logger::getLogger("QuickQueueWorker");
-	LOG4CXX_DEBUG(log, "Setting up LocalBoardControl.");
-	// TODO have the experiment control timeout (e.g. when the board is unresponsive)
-	m_local_board_ctrl.reset(new LocalBoardControl(m_usb_serial));
+	if (!m_mock_mode) {
+		get_slurm_allocation();
+		LOG4CXX_DEBUG(log, "Setting up LocalBoardControl.");
+		// TODO have the experiment control timeout (e.g. when the board is unresponsive)
+		m_local_board_ctrl.reset(new LocalBoardControl(m_usb_serial));
+	} else {
+		LOG4CXX_DEBUG(log, "Operating in mock-mode - no LocalBoardControl allocated.");
+	}
 	LOG4CXX_DEBUG(log, "SetUp completed!");
 }
 
 void QuickQueueWorker::teardown()
 {
-	m_local_board_ctrl.reset();
-	free_slurm_allocation();
-
+	if (!m_mock_mode) {
+		m_local_board_ctrl.reset();
+		free_slurm_allocation();
+	}
 	auto log = log4cxx::Logger::getLogger("QuickQueueWorker");
 	LOG4CXX_DEBUG(log, "TearDown completed!");
 }
@@ -207,11 +212,16 @@ void QuickQueueWorker::free_slurm_allocation()
 QuickQueueResponse QuickQueueWorker::work(QuickQueueRequest const& req)
 {
 	auto log = log4cxx::Logger::getLogger("QuickQueueWorker");
+	QuickQueueResponse response;
+
+	if (m_mock_mode) {
+		LOG4CXX_DEBUG(log, "Running mock-experiment!");
+		return response;
+	}
 	LOG4CXX_DEBUG(log, "Running experiment!");
 
 	m_local_board_ctrl->configure_static(
 		req.board_addresses, req.board_words, req.chip_program_bytes);
-	QuickQueueResponse response;
 	try {
 		response.result_bytes = m_local_board_ctrl->run(req.playback_program_bytes);
 	} catch (const rw_api::LogicError& e) {

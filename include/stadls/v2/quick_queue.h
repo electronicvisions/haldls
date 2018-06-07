@@ -96,6 +96,11 @@ public:
 	// run whenever there are no jobs to anymore
 	void teardown() SYMBOL_VISIBLE;
 
+	// Set or unset the worker into mock-mode.
+	// If in mock-mode, no communication with any hardware is attempted and
+	// empty results are returned.
+	void set_mock_mode(bool mode_enable) SYMBOL_VISIBLE { m_mock_mode = mode_enable; };
+
 private:
 	// methods
 	std::string get_slurm_jobname() { return "board_alloc_" + get_slurm_gres(); }
@@ -109,6 +114,8 @@ private:
 	bool m_has_slurm_allocation;
 	constexpr static char const* const m_env_name_partition = "SLURM_JOB_PARTITION";
 	std::string m_slurm_partition;
+
+	bool m_mock_mode;
 
 }; // QuickQueueWorker
 

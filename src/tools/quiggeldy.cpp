@@ -94,6 +94,7 @@ int main(int argc, const char* argv[])
 	size_t log_level;
 	size_t num_threads_input;
 	size_t num_threads_output;
+	bool mock_mode;
 
 	po::options_description desc("Allowed options");
 	desc.add_options()("help,h", "produce help message")(
@@ -110,7 +111,9 @@ int main(int argc, const char* argv[])
 		"num-threads-input,n", po::value<size_t>(&num_threads_input)->default_value(8),
 		"Number of threads handling incoming connections.")(
 		"num-threads-outputs,m", po::value<size_t>(&num_threads_output)->default_value(8),
-		"Number of threads handling distribution of results.");
+		"Number of threads handling distribution of results.")(
+		"mock-mode", po::bool_switch(&mock_mode)->default_value(false),
+		"Operate in mock-mode, i.e., accept connections but return empty results.");
 
 	// populate vm variable
 	po::variables_map vm;
@@ -130,9 +133,17 @@ int main(int argc, const char* argv[])
 	// has to be called prior to QuickQueueServer
 	auto sig_thread = quiggeldy::setup_signal_handler_thread();
 
-	stadls::v2::QuickQueueServer server(
-		RCF::TcpEndpoint(ip, port), std::move(stadls::v2::QuickQueueWorker(usb_serial)),
-		num_threads_input, num_threads_output);
+	std::unique_ptr<stadls::v2::QuickQueueServer> server;
+
+	{
+		auto worker = stadls::v2::QuickQueueWorker(usb_serial);
+		if (mock_mode) {
+			LOG4CXX_INFO(log, "Setting mock-mode.");
+		}
+		worker.set_mock_mode(mock_mode);
+		server.reset(new stadls::v2::QuickQueueServer(
+			RCF::TcpEndpoint(ip, port), std::move(worker), num_threads_input, num_threads_output));
+	}
 
 	// we want to release a possible slurm allocation if the program fails under any circumstances
 	quiggeldy::signal_handler = [&server, &log](int sig) {
@@ -146,24 +157,24 @@ int main(int argc, const char* argv[])
 				if (log->isEnabledFor(log4cxx::Level::getDebug())) {
 					LOG4CXX_DEBUG(log, "Resetting idle timeout!");
 				}
-				server.reset_idle_timeout();
+				server->reset_idle_timeout();
 				return 0;
 			default:
 				if (log->isEnabledFor(log4cxx::Level::getDebug())) {
 					LOG4CXX_DEBUG(log, "Shutting down server!");
 				}
-				server.shutdown(); // worker teardown handled in shutdown
+				server->shutdown(); // worker teardown handled in shutdown
 				return -1;
 		}
 	};
 
 	// Set max message length to the same amount as in client
-	server.get_server().getServerTransport().setMaxIncomingMessageLength(
+	server->get_server().getServerTransport().setMaxIncomingMessageLength(
 		stadls::v2::QuickQueueClient::max_message_length);
-	server.set_release_interval(std::chrono::seconds(release_seconds));
+	server->set_release_interval(std::chrono::seconds(release_seconds));
 
 	LOG4CXX_INFO(log, "Quiggeldy set up!");
-	server.start_server(std::chrono::seconds(timeout_seconds));
+	server->start_server(std::chrono::seconds(timeout_seconds));
 	LOG4CXX_INFO(log, "Quiggeldy shutting down due to idle timeout.");
 
 	// cancel sighandler thread if it is still runningj
