@@ -74,6 +74,99 @@ TEST(PPUMemoryWord, EncodeDecode)
 	ASSERT_EQ(config, config_copy);
 }
 
+TEST(PPUMemoryBlock, General)
+{
+	auto min = PPUMemoryWordOnDLS(42);
+	auto max = PPUMemoryWordOnDLS(108);
+	PPUMemoryBlock::Size const container_size = PPUMemoryBlock::Size(max.toEnum() - min.toEnum() + 1);
+	PPUMemoryBlock block(container_size);
+
+	// test getter/setter
+	ASSERT_EQ(block.size(), container_size);
+
+	PPUMemoryBlock::words_type test_mem;
+	for (size_t index = 0; index < container_size; index++) {
+		test_mem.push_back(PPUMemoryWord(PPUMemoryWord::Value(std::rand())));
+	}
+	block.set_words(test_mem);
+	ASSERT_EQ(block.get_words(), test_mem);
+
+	size_t counter = container_size;
+	for (auto word : test_mem) {
+		counter--;
+		block.at(counter) = word;
+		ASSERT_EQ(block.at(counter), word);
+	}
+
+	// test default ctor
+	PPUMemoryBlock block_default;
+	ASSERT_EQ(block_default.size(), PPUMemoryWordOnDLS::size);
+
+	// test illegal calls
+	EXPECT_THROW(
+	    PPUMemoryBlock::Size(halco::hicann_dls::v2::PPUMemoryWordOnDLS::size + 1),
+	    std::overflow_error);
+	PPUMemoryBlock::words_type to_small_vec(container_size - 1);
+	PPUMemoryBlock::words_type to_big_vec(container_size + 1);
+	EXPECT_THROW(block.set_words(to_small_vec), std::range_error);
+	EXPECT_THROW(block.set_words(to_big_vec), std::range_error);
+	EXPECT_THROW(block.at(max.toEnum() + 1), std::out_of_range);
+
+	// test assign
+	PPUMemoryBlock block_eq = block;
+	PPUMemoryBlock block_ne(block);
+
+	// test compare
+	ASSERT_EQ(block_eq, block);
+	block_ne.at(2) = PPUMemoryWord(PPUMemoryWord::Value(0x43u));
+	ASSERT_NE(block_ne, block);
+}
+
+TEST(PPUMemoryBlock, EncodeDecode)
+{
+	auto const min = PPUMemoryWordOnDLS(42);
+	auto const max = PPUMemoryWordOnDLS(50);
+	PPUMemoryBlock config(PPUMemoryBlock::Size(max - min + 1));
+	PPUMemoryBlock::words_type memory(config.size());
+
+	std::array<hardware_address_type, 9> ref_addresses{{}};
+	std::array<hardware_word_type, 9> ref_data{{}};
+
+	ASSERT_EQ(ref_addresses.size(), memory.size());
+	ASSERT_EQ(ref_data.size(), memory.size());
+
+	for (size_t ii = 0; ii < memory.size(); ++ii) {
+		ref_addresses[ii] = min.toEnum() + ii;
+		ref_data[ii] = 50 + ii;
+		memory[ii].set(PPUMemoryWord::Value(ref_data[ii]));
+	}
+
+	config.set_words(memory);
+
+	PPUMemoryBlock::coordinate_type coord(min, max);
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	PPUMemoryBlock config_copy(PPUMemoryBlock::Size(max - min + 1));
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
 TEST(PPUMemory, General)
 {
 	PPUMemory memory;

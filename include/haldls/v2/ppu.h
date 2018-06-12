@@ -43,6 +43,47 @@ private:
 	Value m_value;
 };
 
+class GENPYBIND(visible) PPUMemoryBlock
+{
+public:
+	/*
+	 * Pair of PPUMemoryWordOnDLS with pair.first and pair.second describing lower and upper interval bounds
+	 * of the closed interval of included PPUMemoryWords in the PPUMemoryBlock.
+	 */
+	typedef std::pair<halco::hicann_dls::v2::PPUMemoryWordOnDLS, halco::hicann_dls::v2::PPUMemoryWordOnDLS> coordinate_type;
+	typedef std::false_type has_local_data;
+
+	typedef std::vector<PPUMemoryWord> words_type;
+
+	struct GENPYBIND(inline_base("*")) Size
+	        : public halco::common::detail::RantWrapper<Size, uint_fast32_t, halco::hicann_dls::v2::PPUMemoryWordOnDLS::size, 0>
+	{
+		constexpr explicit Size(uintmax_t const size = 0) SYMBOL_VISIBLE : rant_t(size) {}
+	};
+
+	PPUMemoryBlock() SYMBOL_VISIBLE;
+	explicit PPUMemoryBlock(Size const& size) SYMBOL_VISIBLE;
+
+	PPUMemoryWord& at(size_t index) SYMBOL_VISIBLE;
+	PPUMemoryWord const& at(size_t index) const SYMBOL_VISIBLE;
+	PPUMemoryWord& operator[](size_t index) SYMBOL_VISIBLE;
+	PPUMemoryWord const& operator[](size_t index) const SYMBOL_VISIBLE;
+
+	Size size() const SYMBOL_VISIBLE;
+
+	words_type get_words() const SYMBOL_VISIBLE;
+	void set_words(words_type const& words) SYMBOL_VISIBLE;
+
+	bool operator==(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb) SYMBOL_VISIBLE;
+
+	friend detail::VisitPreorderImpl<PPUMemoryBlock>;
+
+private:
+	words_type m_words;
+};
+
 class GENPYBIND(visible) PPUMemory
 {
 public:
@@ -150,6 +191,24 @@ struct VisitPreorderImpl<PPUMemory> {
 	}
 };
 
+template <>
+struct VisitPreorderImpl<PPUMemoryBlock>
+{
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+		ContainerT& config, PPUMemoryBlock::coordinate_type const& coord, VisitorT&& visitor)
+	{
+		using namespace halco::hicann_dls::v2;
+
+		visitor(coord, config);
+
+		for (size_t counter = 0; counter < config.size(); counter++) {
+			auto word_coord = PPUMemoryWordOnDLS(coord.first + counter);
+			visit_preorder(config.m_words.at(counter), word_coord, visitor);
+		}
+	}
+};
+
 } // namespace detail
 
 } // namespace v2
@@ -158,5 +217,6 @@ struct VisitPreorderImpl<PPUMemory> {
 namespace std {
 
 HALCO_GEOMETRY_HASH_CLASS(haldls::v2::PPUMemoryWord::Value)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::PPUMemoryBlock::Size)
 
 } // namespace std

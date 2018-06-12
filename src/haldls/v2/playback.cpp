@@ -117,6 +117,31 @@ T PlaybackProgram::get(ContainerTicket<T> const& ticket) const
 	return config;
 }
 
+template <>
+PPUMemoryBlock PlaybackProgram::get(ContainerTicket<PPUMemoryBlock> const& ticket) const
+{
+	if (!m_impl)
+		throw std::logic_error("unexpected access to moved-from object");
+
+	if (ticket.serial_number != m_serial_number)
+		throw std::invalid_argument("container ticket does not belong to this playback program");
+
+	auto const& results = m_impl->results;
+
+	if (ticket.offset >= results.size() || ticket.offset + ticket.length > results.size())
+		throw std::runtime_error(
+		    "container data not available yet (out of bounds of available results data)");
+
+	typedef std::vector<v2::hardware_word_type> words_type;
+	words_type data{std::next(results.begin(), ticket.offset),
+	                std::next(results.begin(), ticket.offset + ticket.length)};
+
+	PPUMemoryBlock config(PPUMemoryBlock::Size(ticket.coord.second - ticket.coord.first + 1));
+	visit_preorder(config, ticket.coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ensure_container_invariants(config);
+	return config;
+}
+
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template SYMBOL_VISIBLE Type PlaybackProgram::get<Type>(ContainerTicket<Type> const&) const;
 #include "haldls/v2/container.def"
@@ -280,6 +305,30 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
 	std::size_t const length = read_addresses.size();
 	impl.read_offset += length;
 	return m_program.create_ticket<T>(coord, offset, length);
+}
+
+template <>
+PlaybackProgram::ContainerTicket<PPUMemoryBlock> PlaybackProgramBuilder::read(
+    typename PPUMemoryBlock::coordinate_type const& coord)
+{
+	assert(m_program.m_impl != nullptr);
+
+	typedef std::vector<v2::hardware_address_type> addresses_type;
+	addresses_type read_addresses;
+	{
+		PPUMemoryBlock config(PPUMemoryBlock::Size(coord.second - coord.first + 1));
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+	}
+
+	auto& impl = *m_program.m_impl;
+	for (auto const& addr : read_addresses) {
+		impl.bld.read(addr);
+	}
+
+	std::size_t const offset = impl.read_offset;
+	std::size_t const length = read_addresses.size();
+	impl.read_offset += length;
+	return m_program.create_ticket<PPUMemoryBlock>(coord, offset, length);
 }
 
 PlaybackProgramBuilder::PlaybackProgramBuilder() : m_program(next_serial_number.fetch_add(1)) {}

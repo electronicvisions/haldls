@@ -56,6 +56,74 @@ void PPUMemoryWord::decode(std::array<hardware_word_type, PPUMemoryWord::config_
 	set(Value(data[0]));
 }
 
+PPUMemoryBlock::PPUMemoryBlock() : m_words(halco::hicann_dls::v2::PPUMemoryWordOnDLS::size) {}
+
+PPUMemoryBlock::PPUMemoryBlock(Size const& size)
+{
+	m_words = words_type(size.value());
+}
+
+auto PPUMemoryBlock::get_words() const -> words_type
+{
+	return m_words;
+}
+
+void PPUMemoryBlock::set_words(words_type const& words)
+{
+	if (words.size() != size()) {
+		std::stringstream ss;
+		ss << "given vector size(" << words.size() << ") does not match container size(" << size()
+		   << ")";
+		throw std::range_error(ss.str());
+	}
+	m_words = words;
+}
+
+PPUMemoryWord& PPUMemoryBlock::at(size_t index)
+{
+	if (index >= size()) {
+		std::stringstream ss;
+		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+		throw std::out_of_range(ss.str());
+	}
+	return m_words.at(index);
+}
+
+PPUMemoryWord const& PPUMemoryBlock::at(size_t index) const
+{
+	if (index >= size()) {
+		std::stringstream ss;
+		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+		throw std::out_of_range(ss.str());
+	}
+	return m_words.at(index);
+}
+
+PPUMemoryWord& PPUMemoryBlock::operator[](size_t index)
+{
+	return at(index);
+}
+
+PPUMemoryWord const& PPUMemoryBlock::operator[](size_t index) const
+{
+	return at(index);
+}
+
+PPUMemoryBlock::Size PPUMemoryBlock::size() const
+{
+	return Size(m_words.size());
+}
+
+bool PPUMemoryBlock::operator==(PPUMemoryBlock const& other) const
+{
+	return (m_words == other.get_words());
+}
+
+bool PPUMemoryBlock::operator!=(PPUMemoryBlock const& other) const
+{
+	return !(*this == other);
+}
+
 PPUMemory::PPUMemory() : m_words() {}
 
 PPUMemory::PPUMemory(words_type const& words) : m_words(words) {}
@@ -120,6 +188,35 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 			}
 		}
 		out << addr.str() << halfwords.str() << ascii.str() << std::endl;
+	}
+	os << out.str();
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
+{
+	int const words_per_line = 4;
+	auto const words = pmb.get_words();
+	std::stringstream out;
+	for (unsigned int i = 0; i < words.size(); i += words_per_line) {
+		// print halfwords in hex
+		std::stringstream halfwords;
+		halfwords << std::hex << std::internal << std::setfill('0');
+		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
+			uint32_t word = static_cast<uint32_t>(words[i + j].get());
+			halfwords << std::setw(4) << (word >> 16) << " " << std::setw(4) << (word & 0xffff)
+			          << " ";
+		}
+		// print as ascii
+		std::stringstream ascii;
+		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
+			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get()));
+			char* chars = reinterpret_cast<char*>(&word);
+			for (int k = 0; k < 4; k++) {
+				ascii << (isprint(chars[k]) ? chars[k] : '.');
+			}
+		}
+		out << halfwords.str() << ascii.str() << std::endl;
 	}
 	os << out.str();
 	return os;
