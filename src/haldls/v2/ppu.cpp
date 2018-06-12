@@ -64,6 +64,108 @@ void PPUMemoryWord::cerealize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryWord)
 
+PPUMemoryBlock::PPUMemoryBlock() : m_words(halco::hicann_dls::v2::PPUMemoryWordOnDLS::size) {}
+
+PPUMemoryBlock::PPUMemoryBlock(size_type const& size) : m_words(size.value())
+{}
+
+PPUMemoryBlock::words_type const& PPUMemoryBlock::get_words() const
+{
+	return m_words;
+}
+
+void PPUMemoryBlock::set_words(words_type const& words)
+{
+	if (words.size() != size()) {
+		std::stringstream ss;
+		ss << "given vector size(" << words.size() << ") does not match container size(" << size()
+		   << ")";
+		throw std::range_error(ss.str());
+	}
+	m_words = words;
+}
+
+PPUMemoryWord& PPUMemoryBlock::at(size_t index)
+{
+	if (index >= size()) {
+		std::stringstream ss;
+		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+		throw std::out_of_range(ss.str());
+	}
+	return m_words.at(index);
+}
+
+PPUMemoryWord const& PPUMemoryBlock::at(size_t index) const
+{
+	if (index >= size()) {
+		std::stringstream ss;
+		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+		throw std::out_of_range(ss.str());
+	}
+	return m_words.at(index);
+}
+
+PPUMemoryWord& PPUMemoryBlock::operator[](size_t index)
+{
+	return at(index);
+}
+
+PPUMemoryWord const& PPUMemoryBlock::operator[](size_t index) const
+{
+	return at(index);
+}
+
+PPUMemoryBlock PPUMemoryBlock::get_subblock(size_t begin, size_type length) const
+{
+	if (begin + length > size()) {
+		std::stringstream ss;
+		ss << "subblock from index " << begin << " of size " << length
+		   << " larger than block size of " << size();
+		throw std::out_of_range(ss.str());
+	}
+	PPUMemoryBlock subblock(length);
+	for (size_t i = 0; i < length; ++i) {
+		subblock.m_words.at(i) = m_words.at(i + begin);
+	}
+	return subblock;
+}
+
+void PPUMemoryBlock::set_subblock(size_t begin, PPUMemoryBlock const& subblock)
+{
+	if (begin + subblock.size() > size()) {
+		std::stringstream ss;
+		ss << "subblock from index " << begin << " of size " << subblock.size()
+		   << " larger than block size of " << size();
+		throw std::out_of_range(ss.str());
+	}
+	for (size_t i = 0; i < subblock.size(); ++i) {
+		m_words.at(i + begin) = subblock.m_words.at(i);
+	}
+}
+
+halco::hicann_dls::v2::PPUMemoryBlockSize PPUMemoryBlock::size() const
+{
+	return halco::hicann_dls::v2::PPUMemoryBlockSize(m_words.size());
+}
+
+bool PPUMemoryBlock::operator==(PPUMemoryBlock const& other) const
+{
+	return (m_words == other.get_words());
+}
+
+bool PPUMemoryBlock::operator!=(PPUMemoryBlock const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void PPUMemoryBlock::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_words));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryBlock)
+
 PPUMemory::PPUMemory() : m_words() {}
 
 PPUMemory::PPUMemory(words_type const& words) : m_words(words) {}
@@ -140,6 +242,35 @@ void PPUMemory::cerealize(Archive& ar)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemory)
+
+std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
+{
+	int const words_per_line = 4;
+	auto const words = pmb.get_words();
+	std::stringstream out;
+	for (unsigned int i = 0; i < words.size(); i += words_per_line) {
+		// print halfwords in hex
+		std::stringstream halfwords;
+		halfwords << std::hex << std::internal << std::setfill('0');
+		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
+			uint32_t word = static_cast<uint32_t>(words[i + j].get());
+			halfwords << std::setw(4) << (word >> 16) << " " << std::setw(4) << (word & 0xffff)
+			          << " ";
+		}
+		// print as ascii
+		std::stringstream ascii;
+		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
+			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get()));
+			char* chars = reinterpret_cast<char*>(&word);
+			for (int k = 0; k < 4; k++) {
+				ascii << (isprint(chars[k]) ? chars[k] : '.');
+			}
+		}
+		out << halfwords.str() << ascii.str() << std::endl;
+	}
+	os << out.str();
+	return os;
+}
 
 PPUControlRegister::PPUControlRegister()
 	: m_inhibit_reset(false), m_force_clock_on(false), m_force_clock_off(false)

@@ -77,6 +77,27 @@ T PlaybackProgram::ContainerTicket<T>::get() const
 	return config;
 }
 
+template <>
+PPUMemoryBlock PlaybackProgram::ContainerTicket<PPUMemoryBlock>::get() const
+{
+	assert(pbp->m_impl);
+
+	auto const& results = pbp->m_impl->results;
+
+	if (offset >= results.size() || ((offset + length) > results.size()))
+		throw std::runtime_error(
+		    "container data not available yet (out of bounds of available results data)");
+
+	typedef std::vector<v2::hardware_word_type> words_type;
+	words_type data{std::next(results.begin(), offset),
+	                std::next(results.begin(), offset + length)};
+
+	PPUMemoryBlock config(coord.toPPUMemoryBlockSize());
+	visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ensure_container_invariants(config);
+	return config;
+}
+
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template SYMBOL_VISIBLE Type PlaybackProgram::ContainerTicket<Type>::get() const;
 #include "haldls/v2/container.def"
@@ -239,6 +260,30 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
 	std::size_t const length = read_addresses.size();
 	impl.read_offset += length;
 	return m_program->create_ticket<T>(coord, offset, length);
+}
+
+template <>
+PlaybackProgram::ContainerTicket<PPUMemoryBlock> PlaybackProgramBuilder::read(
+    typename PPUMemoryBlock::coordinate_type const& coord)
+{
+	assert(m_program->m_impl);
+
+	typedef std::vector<v2::hardware_address_type> addresses_type;
+	addresses_type read_addresses;
+	{
+		PPUMemoryBlock config(coord.toPPUMemoryBlockSize());
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+	}
+
+	auto& impl = *m_program->m_impl;
+	for (auto const& addr : read_addresses) {
+		impl.bld.read(addr);
+	}
+
+	std::size_t const offset = impl.read_offset;
+	std::size_t const length = read_addresses.size();
+	impl.read_offset += length;
+	return m_program->create_ticket<PPUMemoryBlock>(coord, offset, length);
 }
 
 PlaybackProgramBuilder::PlaybackProgramBuilder()

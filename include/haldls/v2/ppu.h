@@ -49,6 +49,46 @@ private:
 	Value m_value;
 };
 
+class GENPYBIND(visible) PPUMemoryBlock
+{
+public:
+	typedef halco::hicann_dls::v2::PPUMemoryBlockOnDLS coordinate_type;
+	typedef std::false_type has_local_data;
+
+	typedef std::vector<PPUMemoryWord> words_type;
+
+	typedef halco::hicann_dls::v2::PPUMemoryBlockSize size_type;
+
+	PPUMemoryBlock() SYMBOL_VISIBLE;
+	explicit PPUMemoryBlock(size_type const& size) SYMBOL_VISIBLE;
+
+	PPUMemoryWord& at(size_t index) SYMBOL_VISIBLE;
+	PPUMemoryWord const& at(size_t index) const SYMBOL_VISIBLE;
+	PPUMemoryWord& operator[](size_t index) SYMBOL_VISIBLE;
+	PPUMemoryWord const& operator[](size_t index) const SYMBOL_VISIBLE;
+
+	PPUMemoryBlock get_subblock(size_t begin, size_type length) const SYMBOL_VISIBLE;
+	void set_subblock(size_t begin, PPUMemoryBlock const& subblock) SYMBOL_VISIBLE;
+
+	size_type size() const SYMBOL_VISIBLE;
+
+	words_type const& get_words() const SYMBOL_VISIBLE;
+	void set_words(words_type const& words) SYMBOL_VISIBLE;
+
+	bool operator==(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb) SYMBOL_VISIBLE;
+
+	friend detail::VisitPreorderImpl<PPUMemoryBlock>;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	words_type m_words;
+};
+
 class GENPYBIND(visible) PPUMemory
 {
 public:
@@ -164,6 +204,31 @@ struct VisitPreorderImpl<PPUMemory> {
 			// No std::forward for visitor argument, as we want to pass a reference to the
 			// nested visitor in any case, even if it was passed as an rvalue to this function.
 			visit_preorder(config.m_words[word], word, visitor);
+		}
+	}
+};
+
+template <>
+struct VisitPreorderImpl<PPUMemoryBlock>
+{
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config, PPUMemoryBlock::coordinate_type const& coord, VisitorT&& visitor)
+	{
+		using namespace halco::hicann_dls::v2;
+
+		if (coord.toPPUMemoryBlockSize() != config.size()) {
+			std::stringstream ss;
+			ss << "container size(" << config.size() << ") and coord(" << coord.min() << ", "
+			   << coord.max() << " do not match.";
+			throw std::runtime_error(ss.str());
+		}
+
+		visitor(coord, config);
+
+		for (size_t counter = 0; counter < config.size(); counter++) {
+			auto word_coord = PPUMemoryWordOnDLS(coord.min() + counter);
+			visit_preorder(config.m_words.at(counter), word_coord, visitor);
 		}
 	}
 };
