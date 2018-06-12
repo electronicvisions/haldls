@@ -14,3 +14,13 @@ This repository contains
 
 * HALDLS -- the data structures for configuring the hardware
 * STADLS -- code for experiment control and experiment encapsulation
+
+To build it:
+* prepare a fresh workspace: `mkdir workspace && cd workspace`
+* fetch a current copy of the waf build tool:
+  `git clone https://github.com/electronicvisions/waf -b symwaf2ic symwaf2ic && cd symwaf2ic && make && cd .. && ln -s symwaf2ic/waf`
+* clone the necessary repos
+  `./waf setup --repo-db-url=https://github.com/electronicvisions/projects --project=haldls` (`--clone-depth=1` to skip history)
+* to build:
+  `singularity exec --app visionary-defaults /path/to/container ./waf configure build`
+  (alternatively use `visionary-defaults-dls`)
