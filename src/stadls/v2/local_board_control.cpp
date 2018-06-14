@@ -282,10 +282,6 @@ void LocalBoardControl::transfer(haldls::v2::PlaybackProgram const& playback_pro
 	transfer(playback_program.instruction_byte_blocks());
 }
 
-#define PRINT_EXCEPTION_OPTIONAL(VALUE)                                                            \
-	if (exception.VALUE()) {                                                                       \
-		ss << #VALUE << ": " << *exception.VALUE() << std::endl;                                   \
-	}
 void LocalBoardControl::execute()
 {
 	auto log = log4cxx::Logger::getLogger(__func__);
@@ -330,25 +326,7 @@ void LocalBoardControl::execute()
 				LOG4CXX_ERROR(log, "execute flag not cleared for 1 minute, aborting!");
 				auto exception =
 					ocp_read_container<haldls::v2::FlyspiException>(m_impl->com, unique);
-				// TODO move to utility function
-				{
-					std::stringstream ss;
-					ss << "FlyspiException: " << std::endl;
-					PRINT_EXCEPTION_OPTIONAL(get_result_read_error)
-					PRINT_EXCEPTION_OPTIONAL(get_result_read_overflow)
-					PRINT_EXCEPTION_OPTIONAL(get_result_write_error)
-					PRINT_EXCEPTION_OPTIONAL(get_result_write_underrun)
-					PRINT_EXCEPTION_OPTIONAL(get_playback_read_error)
-					PRINT_EXCEPTION_OPTIONAL(get_playback_read_overflow)
-					PRINT_EXCEPTION_OPTIONAL(get_playback_write_error)
-					PRINT_EXCEPTION_OPTIONAL(get_playback_write_underrun)
-					PRINT_EXCEPTION_OPTIONAL(get_program_exception)
-					PRINT_EXCEPTION_OPTIONAL(get_serdes_overflow)
-					PRINT_EXCEPTION_OPTIONAL(get_serdes_pll_unlocked)
-					PRINT_EXCEPTION_OPTIONAL(get_serdes_race)
-					PRINT_EXCEPTION_OPTIONAL(get_encode_overflow)
-					LOG4CXX_ERROR(log, ss.str())
-				}
+				LOG4CXX_ERROR(log, exception)
 				break;
 			}
 			// Increase exponential sleep time
@@ -357,7 +335,6 @@ void LocalBoardControl::execute()
 	}
 	LOG4CXX_DEBUG(log, "execution finished");
 }
-#undef PRINT_OPTIONAL
 
 std::vector<haldls::v2::instruction_word_type> LocalBoardControl::fetch()
 {

@@ -203,6 +203,8 @@ public:
 	hate::optional<bool> get_serdes_race() const SYMBOL_VISIBLE;
 	hate::optional<bool> get_encode_overflow() const SYMBOL_VISIBLE;
 
+	friend std::ostream& operator<<(std::ostream& os, FlyspiException const& a) SYMBOL_VISIBLE;
+
 	// comparison
 	bool operator==(FlyspiException const& other) const SYMBOL_VISIBLE;
 	bool operator!=(FlyspiException const& other) const SYMBOL_VISIBLE;

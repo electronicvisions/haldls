@@ -512,6 +512,31 @@ hate::optional<bool> FlyspiException::get_encode_overflow() const
 	return m_encode_overflow;
 }
 
+#define PRINT_EXCEPTION(VALUE)                                                            \
+	if (VALUE()) {                                                                       \
+		os << #VALUE << ": " << *VALUE() << std::endl;                                   \
+	}
+
+std::ostream& operator<<(std::ostream& os, FlyspiException const& a)
+{
+	os << "FlyspiException: " << std::endl;
+	PRINT_EXCEPTION(a.get_result_read_error)
+	PRINT_EXCEPTION(a.get_result_read_overflow)
+	PRINT_EXCEPTION(a.get_result_write_error)
+	PRINT_EXCEPTION(a.get_result_write_underrun)
+	PRINT_EXCEPTION(a.get_playback_read_error)
+	PRINT_EXCEPTION(a.get_playback_read_overflow)
+	PRINT_EXCEPTION(a.get_playback_write_error)
+	PRINT_EXCEPTION(a.get_playback_write_underrun)
+	PRINT_EXCEPTION(a.get_program_exception)
+	PRINT_EXCEPTION(a.get_serdes_overflow)
+	PRINT_EXCEPTION(a.get_serdes_pll_unlocked)
+	PRINT_EXCEPTION(a.get_serdes_race)
+	PRINT_EXCEPTION(a.get_encode_overflow)
+	return os;
+}
+#undef PRINT_EXCEPTION
+
 bool FlyspiException::operator==(FlyspiException const& other) const
 {
 	// clang-format off
