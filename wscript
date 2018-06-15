@@ -143,6 +143,15 @@ def build(bld):
         defines = ['NO_LOCAL_BOARD'],
         **stadl_tests_kwargs)
 
+    bld(
+        target = 'run_ppu_program',
+        features = 'cxx cxxprogram',
+        source = 'tools/stadls/run_ppu_program.cpp',
+        use = ['haldls_v2', 'stadls_v2', 'logger_obj'],
+        install_path = '${PREFIX}/bin',
+        linkflags = ['-lboost_program_options-mt'],
+    )
+
     if bld.env.build_python_bindings:
         bld.recurse("pyhaldls")
         bld.recurse("pystadls")
