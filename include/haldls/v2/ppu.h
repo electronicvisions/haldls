@@ -80,6 +80,11 @@ public:
 	bool operator==(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
 	friend std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb) SYMBOL_VISIBLE;
+	/**
+	 * Print words as string discarding non-printable characters.
+	 * @return Printable characters as string in order according to PPU endianess
+	 */
+	std::string to_string() const SYMBOL_VISIBLE;
 
 	friend detail::VisitPreorderImpl<PPUMemoryBlock>;
 

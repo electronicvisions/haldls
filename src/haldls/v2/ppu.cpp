@@ -158,6 +158,24 @@ bool PPUMemoryBlock::operator!=(PPUMemoryBlock const& other) const
 	return !(*this == other);
 }
 
+std::string PPUMemoryBlock::to_string() const
+{
+	std::stringstream ss;
+	for (auto x : m_words) {
+		// access single characters in word
+		// endianess-flip due to different endianess on PPU
+		uint32_t const w = ntohl(static_cast<uint32_t>((x.get())));
+		char const* c = reinterpret_cast<char const*>(&w);
+		for (size_t i = 0; i < sizeof(uint32_t); ++i) {
+			// discard non-printable characters
+			if (isprint(c[i]) or isspace(c[i])) {
+				ss << c[i];
+			}
+		}
+	}
+	return ss.str();
+}
+
 template <class Archive>
 void PPUMemoryBlock::cerealize(Archive& ar)
 {
