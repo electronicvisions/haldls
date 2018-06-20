@@ -73,7 +73,7 @@ DAC::Value Board::get_parameter(Parameter const& parameter) const
 	return m_dacs[dac].get(channel);
 }
 
-FlyspiConfig Board::get_flyspi_config() const
+FlyspiConfig const& Board::get_flyspi_config() const
 {
 	return m_flyspi_config;
 }
@@ -83,7 +83,7 @@ void Board::set_flyspi_config(FlyspiConfig const& config)
 	m_flyspi_config = config;
 }
 
-SpikeRouter Board::get_spike_router() const
+SpikeRouter const& Board::get_spike_router() const
 {
 	return m_spike_router;
 }

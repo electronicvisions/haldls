@@ -72,7 +72,9 @@ public:
 
 	size_type size() const SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(words))
 	words_type const& get_words() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(words))
 	void set_words(words_type const& words) SYMBOL_VISIBLE;
 
 	bool operator==(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
@@ -101,7 +103,9 @@ public:
 	PPUMemory() SYMBOL_VISIBLE;
 	explicit PPUMemory(words_type const& words) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(words))
 	words_type get_words() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(words))
 	void set_words(words_type const& words) SYMBOL_VISIBLE;
 
 	PPUMemoryWord::Value get_word(halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos) const SYMBOL_VISIBLE;
@@ -130,7 +134,9 @@ public:
 
 	PPUControlRegister() SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(inhibit_reset))
 	bool get_inhibit_reset() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(inhibit_reset))
 	void set_inhibit_reset(bool const value) SYMBOL_VISIBLE;
 
 	/* - force_clock_on: Forces the clock to be on, even if the ppu is sleeping
@@ -138,9 +144,13 @@ public:
 	 *   forcing the clock on
 	 * None of these is needed in normal operation. Setting the inhibit_reset
 	 * bit starts the execution. If the program finishes, the clock is stopped again. */
+	GENPYBIND(getter_for(force_clock_on))
 	bool get_force_clock_on() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(force_clock_on))
 	void set_force_clock_on(bool const value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(force_clock_off))
 	bool get_force_clock_off() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(force_clock_off))
 	void set_force_clock_off(bool const value) SYMBOL_VISIBLE;
 
 	bool operator==(PPUControlRegister const& other) const SYMBOL_VISIBLE;
@@ -170,6 +180,7 @@ public:
 	PPUStatusRegister() SYMBOL_VISIBLE;
 
 	// Read only property
+	GENPYBIND(getter_for(sleep))
 	bool get_sleep() const SYMBOL_VISIBLE;
 
 	bool operator==(PPUStatusRegister const& other) const SYMBOL_VISIBLE;

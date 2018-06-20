@@ -44,13 +44,18 @@ public:
 	void set_parameter(Parameter const& parameter, DAC::Value const& value) SYMBOL_VISIBLE;
 	DAC::Value get_parameter(Parameter const& parameter) const SYMBOL_VISIBLE;
 
-	FlyspiConfig get_flyspi_config() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(flypsi_config), return_value_policy(reference))
+	FlyspiConfig const& get_flyspi_config() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(flypsi_config))
 	void set_flyspi_config(FlyspiConfig const& config) SYMBOL_VISIBLE;
 
-	SpikeRouter get_spike_router() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(spike_router), return_value_policy(reference))
+	SpikeRouter const& get_spike_router() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(spike_router))
 	void set_spike_router(SpikeRouter const& config) SYMBOL_VISIBLE;
 
 	// read-only accessor
+	GENPYBIND(getter_for(flyspi_exception))
 	FlyspiException get_flyspi_exception() const SYMBOL_VISIBLE;
 
 	bool operator==(Board const& other) const SYMBOL_VISIBLE;

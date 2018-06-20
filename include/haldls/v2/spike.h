@@ -24,8 +24,11 @@ public:
 		SynapseBlock::Synapse::Address const& source_address,
 		halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(time))
 	hardware_time_type get_time() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(source_address))
 	SynapseBlock::Synapse::Address get_source_address() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(synapse_driver))
 	halco::hicann_dls::v2::SynapseDriverOnDLS get_synapse_driver() const SYMBOL_VISIBLE;
 
 	bool operator==(PlaybackSpike const& other) const SYMBOL_VISIBLE;
@@ -57,7 +60,9 @@ public:
 		hardware_time_type const time,
 		halco::hicann_dls::v2::NeuronOnDLS const& neuron) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(time))
 	hardware_time_type get_time() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(neuron))
 	halco::hicann_dls::v2::NeuronOnDLS get_neuron() const SYMBOL_VISIBLE;
 
 	bool operator==(RecordedSpike const& other) const SYMBOL_VISIBLE;

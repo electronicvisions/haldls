@@ -35,7 +35,9 @@ public:
 
 	SynapseDriverBlock() SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(modes))
 	modes_type get_modes() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(modes))
 	void set_modes(modes_type const& values) SYMBOL_VISIBLE;
 
 	Mode get_mode(halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver) const
@@ -43,7 +45,9 @@ public:
 	void set_mode(halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver, Mode value)
 		SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(pulse_length))
 	PulseLength get_pulse_length() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(pulse_length))
 	void set_pulse_length(PulseLength const& value) SYMBOL_VISIBLE;
 
 	bool operator==(SynapseDriverBlock const& other) const SYMBOL_VISIBLE;

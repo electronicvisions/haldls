@@ -25,7 +25,9 @@ public:
 		: m_value(value){};
 
 	// accessor
+	GENPYBIND(getter_for(value))
 	ocp_word_type::value_type get_value() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(value))
 	void set_value(ocp_word_type::value_type const value) SYMBOL_VISIBLE;
 
 	// comparison
@@ -54,6 +56,7 @@ public:
 	constexpr explicit FlyspiRORegister() SYMBOL_VISIBLE : m_value(){};
 
 	// accessor
+	GENPYBIND(getter_for(value))
 	hate::optional<ocp_word_type::value_type> get_value() const SYMBOL_VISIBLE;
 
 	// comparison
@@ -90,11 +93,19 @@ public:
 	FlyspiControl() SYMBOL_VISIBLE;
 
 	// accessors
+	GENPYBIND(getter_for(program_loopback))
 	bool get_program_loopback() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(program_loopback))
 	void set_program_loopback(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(memory_loopback))
 	bool get_memory_loopback() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(memory_loopback))
 	void set_memory_loopback(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(execute))
 	bool get_execute() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(execute))
 	void set_execute(bool const value) SYMBOL_VISIBLE;
 
 	// comparison
@@ -131,28 +142,60 @@ public:
 	FlyspiConfig() SYMBOL_VISIBLE;
 
 	// accessors
+	GENPYBIND(getter_for(dls_reset))
 	bool get_dls_reset() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(dls_reset))
 	void set_dls_reset(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(soft_reset))
 	bool get_soft_reset() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(soft_reset))
 	void set_soft_reset(bool const value) SYMBOL_VISIBLE;
+	//
 	// dstoe 2018-01-09 tg_control may be unused. Should be verified in the fpga code.
+	GENPYBIND(getter_for(tg_control))
 	TgControl get_tg_control() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(tg_control))
 	void set_tg_control(TgControl const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_spike_router))
 	bool get_enable_spike_router() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_spike_router))
 	void set_enable_spike_router(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(i_phase_select))
 	bool get_i_phase_select() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(i_phase_select))
 	void set_i_phase_select(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(o_phase_select))
 	bool get_o_phase_select() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(o_phase_select))
 	void set_o_phase_select(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_train))
 	bool get_enable_train() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_train))
 	void set_enable_train(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_transceiver))
 	bool get_enable_transceiver() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_transceiver))
 	void set_enable_transceiver(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_lvds))
 	bool get_enable_lvds() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_lvds))
 	void set_enable_lvds(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_analog_power))
 	bool get_enable_analog_power() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_analog_power))
 	void set_enable_analog_power(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_dls_loopback))
 	bool get_enable_dls_loopback() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_dls_loopback))
 	void set_enable_dls_loopback(bool const value) SYMBOL_VISIBLE;
 
 	// comparison
@@ -195,18 +238,31 @@ public:
 	FlyspiException() SYMBOL_VISIBLE;
 
 	// read only accessors
+	GENPYBIND(getter_for(result_read_error))
 	hate::optional<bool> get_result_read_error() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(result_read_overflow))
 	hate::optional<bool> get_result_read_overflow() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(result_write_error))
 	hate::optional<bool> get_result_write_error() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(result_write_underrun))
 	hate::optional<bool> get_result_write_underrun() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(playback_read_error))
 	hate::optional<bool> get_playback_read_error() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(playback_read_overflow))
 	hate::optional<bool> get_playback_read_overflow() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(playback_write_error))
 	hate::optional<bool> get_playback_write_error() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(playback_write_underrun))
 	hate::optional<bool> get_playback_write_underrun() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(program_exception))
 	hate::optional<bool> get_program_exception() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(serdes_overflow))
 	hate::optional<bool> get_serdes_overflow() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(serdes_pll_unlocked))
 	hate::optional<bool> get_serdes_pll_unlocked() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(serdes_race))
 	hate::optional<bool> get_serdes_race() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(encode_overflow))
 	hate::optional<bool> get_encode_overflow() const SYMBOL_VISIBLE;
 
 	hate::optional<bool> check() const SYMBOL_VISIBLE;

@@ -178,7 +178,7 @@ AcausalCorrelationBlock::Correlation Chip::get_acausal_correlation(
 	    .get_correlation(synapse.toSynapseOnSynapseBlock());
 }
 
-CapMem Chip::get_capmem() const
+CapMem const& Chip::get_capmem() const
 {
 	return m_capmem;
 }
@@ -188,7 +188,7 @@ void Chip::set_capmem(CapMem const& value)
 	m_capmem = value;
 }
 
-PPUMemory Chip::get_ppu_memory() const
+PPUMemory const& Chip::get_ppu_memory() const
 {
 	return m_ppu_memory;
 }
@@ -198,7 +198,7 @@ void Chip::set_ppu_memory(PPUMemory const& value)
 	m_ppu_memory = value;
 }
 
-PPUControlRegister Chip::get_ppu_control_register() const
+PPUControlRegister const& Chip::get_ppu_control_register() const
 {
 	return m_ppu_control_register;
 }
@@ -218,7 +218,7 @@ RateCounter Chip::get_rate_counter() const
 	return m_rate_counter;
 }
 
-RateCounterConfig Chip::get_rate_counter_config() const
+RateCounterConfig const& Chip::get_rate_counter_config() const
 {
 	return m_rate_counter_config;
 }
@@ -228,7 +228,7 @@ void Chip::set_rate_counter_config(RateCounterConfig const& value)
 	m_rate_counter_config = value;
 }
 
-SynapseDriverBlock Chip::get_synapse_drivers() const
+SynapseDriverBlock const& Chip::get_synapse_drivers() const
 {
 	return m_synapse_drivers;
 }
@@ -238,7 +238,7 @@ void Chip::set_synapse_drivers(SynapseDriverBlock const& value)
 	m_synapse_drivers = value;
 }
 
-CommonSynramConfig Chip::get_common_synram_config() const
+CommonSynramConfig const& Chip::get_common_synram_config() const
 {
 	return m_synram_config;
 }
@@ -248,7 +248,7 @@ void Chip::set_common_synram_config(CommonSynramConfig const& value)
 	m_synram_config = value;
 }
 
-CapMemConfig Chip::get_capmem_config() const
+CapMemConfig const& Chip::get_capmem_config() const
 {
 	return m_capmem_config;
 }
@@ -258,7 +258,7 @@ void Chip::set_capmem_config(CapMemConfig const& value)
 	m_capmem_config = value;
 }
 
-CommonNeuronConfig Chip::get_common_neuron_config() const
+CommonNeuronConfig const& Chip::get_common_neuron_config() const
 {
 	return m_neuron_config;
 }
@@ -268,7 +268,7 @@ void Chip::set_common_neuron_config(CommonNeuronConfig const& value)
 	m_neuron_config = value;
 }
 
-CorrelationConfig Chip::get_correlation_config() const
+CorrelationConfig const& Chip::get_correlation_config() const
 {
 	return m_correlation_config;
 }

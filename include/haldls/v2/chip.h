@@ -30,6 +30,7 @@ public:
 
 	void enable_buffered_readout(halco::hicann_dls::v2::NeuronOnDLS const& neuron) SYMBOL_VISIBLE;
 	void disable_buffered_readout() SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(buffered_readout_neuron))
 	hate::optional<halco::hicann_dls::v2::NeuronOnDLS>
 	get_buffered_readout_neuron() const SYMBOL_VISIBLE;
 
@@ -81,48 +82,72 @@ public:
 		ColumnCurrentBlock::ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
 
 	// Correlation is read only parameter
+	GENPYBIND(getter_for(causal_correlation_block))
 	CausalCorrelationBlock get_causal_correlation_block(
 		halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(causal_correlation))
 	CausalCorrelationBlock::Correlation get_causal_correlation(
 		halco::hicann_dls::v2::SynapseOnDLS const& synapse) const SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(acausal_correlation_block))
 	AcausalCorrelationBlock get_acausal_correlation_block(
 		halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(acausal_correlation))
 	AcausalCorrelationBlock::Correlation get_acausal_correlation(
 		halco::hicann_dls::v2::SynapseOnDLS const& synapse) const SYMBOL_VISIBLE;
 
-	CapMem get_capmem() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(capmem), return_value_policy(reference))
+	CapMem const& get_capmem() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(capmem))
 	void set_capmem(CapMem const& value) SYMBOL_VISIBLE;
 
-	PPUMemory get_ppu_memory() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(ppu_memory), return_value_policy(reference))
+	PPUMemory const& get_ppu_memory() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(ppu_memory))
 	void set_ppu_memory(PPUMemory const& value) SYMBOL_VISIBLE;
 
-	PPUControlRegister get_ppu_control_register() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(ppu_control_register), return_value_policy(reference))
+	PPUControlRegister const& get_ppu_control_register() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(ppu_control_register))
 	void set_ppu_control_register(PPUControlRegister const& value) SYMBOL_VISIBLE;
 
 	// Read-only property, available when reading the chip config
+	GENPYBIND(getter_for(ppu_status_register))
 	PPUStatusRegister get_ppu_status_register() const SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(rate_counter))
 	RateCounter get_rate_counter() const SYMBOL_VISIBLE;
 
-	RateCounterConfig get_rate_counter_config() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(rate_counter_config), return_value_policy(reference))
+	RateCounterConfig const& get_rate_counter_config() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(rate_counter_config))
 	void set_rate_counter_config(RateCounterConfig const& value) SYMBOL_VISIBLE;
 
-	SynapseDriverBlock get_synapse_drivers() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(synapse_drivers), return_value_policy(reference))
+	SynapseDriverBlock const& get_synapse_drivers() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(synapse_drivers))
 	void set_synapse_drivers(SynapseDriverBlock const& value) SYMBOL_VISIBLE;
 
-	CommonSynramConfig get_common_synram_config() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(common_synram_config), return_value_policy(reference))
+	CommonSynramConfig const& get_common_synram_config() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(common_synram_config))
 	void set_common_synram_config(CommonSynramConfig const& value) SYMBOL_VISIBLE;
 
-	CapMemConfig get_capmem_config() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(capmem_config), return_value_policy(reference))
+	CapMemConfig const& get_capmem_config() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(capmem_config))
 	void set_capmem_config(CapMemConfig const& value) SYMBOL_VISIBLE;
 
-	CommonNeuronConfig get_common_neuron_config() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(common_neuron_config), return_value_policy(reference))
+	CommonNeuronConfig const& get_common_neuron_config() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(common_neuron_config))
 	void set_common_neuron_config(CommonNeuronConfig const& value) SYMBOL_VISIBLE;
 
-	CorrelationConfig get_correlation_config() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(correlation_config), return_value_policy(reference))
+	CorrelationConfig const& get_correlation_config() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(correlation_config))
 	void set_correlation_config(CorrelationConfig const& value) SYMBOL_VISIBLE;
 
 	bool operator==(Chip const& other) const SYMBOL_VISIBLE;

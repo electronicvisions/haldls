@@ -44,12 +44,14 @@ public:
 	 * Get enable interrupt on fire value.
 	 * @return Boolean enable value
 	 */
+	GENPYBIND(getter_for(enable_fire_interrupt))
 	bool get_enable_fire_interrupt() const SYMBOL_VISIBLE;
 
 	/**
 	 * Set enable interrupt on fire value.
 	 * @param value Boolean enable value to set
 	 */
+	GENPYBIND(setter_for(enable_fire_interrupt))
 	void set_enable_fire_interrupt(bool const value) SYMBOL_VISIBLE;
 
 	/**
@@ -57,6 +59,7 @@ public:
 	 * On true, rate counter counts are reset to RateCounterEntry::Count(0) on read operation.
 	 * @return Boolean enable value
 	 */
+	GENPYBIND(getter_for(enable_clear_on_read))
 	bool get_enable_clear_on_read() const SYMBOL_VISIBLE;
 
 	/**
@@ -64,6 +67,7 @@ public:
 	 * On true, rate counter counts are reset to RateCounterEntry::Count(0) on read operation.
 	 * @param value Boolean enable value
 	 */
+	GENPYBIND(setter_for(enable_clear_on_read))
 	void set_enable_clear_on_read(bool const value) SYMBOL_VISIBLE;
 
 	/**
@@ -124,6 +128,7 @@ public:
 	 * Get count, i.e. number of spikes since last reset.
 	 * @return Count
 	 */
+	GENPYBIND(getter_for(count))
 	Count get_count() const SYMBOL_VISIBLE;
 
 	/**

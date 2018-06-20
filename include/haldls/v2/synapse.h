@@ -48,19 +48,39 @@ public:
 
 	CommonSynramConfig() SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(pc_conf))
 	PCConf get_pc_conf() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(pc_conf))
 	void set_pc_conf(PCConf const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(w_conf))
 	WConf get_w_conf() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(w_conf))
 	void set_w_conf(WConf const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(wait_ctr_clear))
 	WaitCtrClear get_wait_ctr_clear() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(wait_ctr_clear))
 	void set_wait_ctr_clear(WaitCtrClear const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(use_internal_i_bias_correlation_output))
 	bool get_use_internal_i_bias_correlation_output() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(use_internal_i_bias_correlation_output))
 	void set_use_internal_i_bias_correlation_output(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(use_internal_i_bias_vstore))
 	bool get_use_internal_i_bias_vstore() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(use_internal_i_bias_vstore))
 	void set_use_internal_i_bias_vstore(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(use_internal_i_bias_vramp))
 	bool get_use_internal_i_bias_vramp() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(use_internal_i_bias_vramp))
 	void set_use_internal_i_bias_vramp(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(use_internal_i_bias_vdac))
 	bool get_use_internal_i_bias_vdac() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(use_internal_i_bias_vdac))
 	void set_use_internal_i_bias_vdac(bool const value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 4;
@@ -128,16 +148,24 @@ public:
 
 		Synapse() SYMBOL_VISIBLE;
 
+		GENPYBIND(getter_for(weight))
 		Weight get_weight() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(weight))
 		void set_weight(Weight const& value) SYMBOL_VISIBLE;
 
+		GENPYBIND(getter_for(address))
 		Address get_address() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(address))
 		void set_address(Address const& value) SYMBOL_VISIBLE;
 
+		GENPYBIND(getter_for(time_calib))
 		TimeCalib get_time_calib() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(time_calib))
 		void set_time_calib(TimeCalib const& value) SYMBOL_VISIBLE;
 
+		GENPYBIND(getter_for(amp_calib))
 		AmpCalib get_amp_calib() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(amp_calib))
 		void set_amp_calib(AmpCalib const& value) SYMBOL_VISIBLE;
 
 		bool operator==(Synapse const& other) const SYMBOL_VISIBLE;
@@ -197,10 +225,14 @@ public:
 
 		ColumnCorrelationSwitch() SYMBOL_VISIBLE;
 
+		GENPYBIND(getter_for(causal_config))
 		Config get_causal_config() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(causal_config))
 		void set_causal_config(Config const value) SYMBOL_VISIBLE;
 
+		GENPYBIND(getter_for(acausal_config))
 		Config get_acausal_config() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(acausal_config))
 		void set_acausal_config(Config const value) SYMBOL_VISIBLE;
 
 		bool operator==(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
@@ -262,10 +294,14 @@ public:
 
 		ColumnCurrentSwitch() SYMBOL_VISIBLE;
 
+		GENPYBIND(getter_for(exc_config))
 		Config get_exc_config() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(exc_config))
 		void set_exc_config(Config const value) SYMBOL_VISIBLE;
 
+		GENPYBIND(getter_for(inh_config))
 		Config get_inh_config() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(inh_config))
 		void set_inh_config(Config const value) SYMBOL_VISIBLE;
 
 		bool operator==(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;

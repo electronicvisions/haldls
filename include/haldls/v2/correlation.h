@@ -28,13 +28,19 @@ public:
 
 	CorrelationConfig() SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(sense_delay))
 	Delay get_sense_delay() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(sense_delay))
 	void set_sense_delay(Delay const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(reset_delay_1))
 	Delay get_reset_delay_1() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(reset_delay_1))
 	void set_reset_delay_1(Delay const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(reset_delay_2))
 	Delay get_reset_delay_2() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(reset_delay_2))
 	void set_reset_delay_2(Delay const& value) SYMBOL_VISIBLE;
 
 	bool operator==(CorrelationConfig const& other) const SYMBOL_VISIBLE;

@@ -51,7 +51,7 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
         capmemcell_copy = capmemcell_ticket.get()
 
         self.assertEqual(capmem_config, capmem_copy)
-        self.assertEqual(capmemvalue, capmemcell_copy.get_value())
+        self.assertEqual(capmemvalue, capmemcell_copy.value)
 
 
 class TestHelloWorldHardware(unittest.TestCase):
@@ -82,12 +82,12 @@ class TestHelloWorldHardware(unittest.TestCase):
         self.board.set_parameter(Ct.Board.Parameter.capmem_i_buf_bias, Ct.DAC.Value(3000))
         self.board.set_parameter(Ct.Board.Parameter.capmem_i_ref, Ct.DAC.Value(3906))
 
-        capmem_config = self.chip.get_capmem_config()
-        capmem_config.set_enable_capmem(True)
-        self.chip.set_capmem_config(capmem_config)
+        capmem_config = self.chip.capmem_config
+        capmem_config.enable_capmem = True
+        self.chip.capmem_config = capmem_config
 
         # Set the cap mem
-        capmem_config = self.chip.get_capmem()
+        capmem_config = self.chip.capmem
         capmem_config.set(self.neuron, C.NeuronParameter.v_leak, Ct.CapMemCell.Value(400))
         capmem_config.set(self.neuron, C.NeuronParameter.v_treshold, Ct.CapMemCell.Value(600))
         capmem_config.set(self.neuron, C.NeuronParameter.v_exc_syn_input_reference, Ct.CapMemCell.Value(670))
@@ -107,43 +107,41 @@ class TestHelloWorldHardware(unittest.TestCase):
         capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_sd, Ct.CapMemCell.Value(1022))
         capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_offset, Ct.CapMemCell.Value(400))
         capmem_config.set(C.CommonNeuronParameter.e_reset, Ct.CapMemCell.Value(300))
-        self.chip.set_capmem(capmem_config)
+        self.chip.capmem = capmem_config
 
         # Set connectivity
         synapse = C.SynapseOnDLS(self.neuron.toSynapseColumnOnDLS(), self.synapse_driver.toSynapseRowOnDLS())
         synapse_config = self.chip.get_synapse(synapse)
-        synapse_config.set_weight(self.weight)
-        synapse_config.set_address(self.address)
+        synapse_config.weight = self.weight
+        synapse_config.address = self.address
         self.chip.set_synapse(synapse, synapse_config)
-        common_synram_config = self.chip.get_common_synram_config()
-        common_synram_config.set_pc_conf(Ct.CommonSynramConfig.PCConf(1))
-        common_synram_config.set_w_conf(Ct.CommonSynramConfig.WConf(1))
-        common_synram_config.set_wait_ctr_clear(Ct.CommonSynramConfig.WaitCtrClear(1))
-        self.chip.set_common_synram_config(common_synram_config)
+        common_synram_config = self.chip.common_synram_config
+        common_synram_config.pc_conf = Ct.CommonSynramConfig.PCConf(1)
+        common_synram_config.w_conf = Ct.CommonSynramConfig.WConf(1)
+        common_synram_config.wait_ctr_clear = Ct.CommonSynramConfig.WaitCtrClear(1)
+        self.chip.common_synram_config = common_synram_config
 
         # Set current switches at the synaptic input
         current_switch = self.neuron.toColumnCurrentSwitchOnDLS()
         switch_config = self.chip.get_column_current_switch(current_switch)
-        switch_config.set_inh_config(
-                Ct.ColumnCurrentBlock.ColumnCurrentSwitch.Config.disabled)
-        switch_config.set_exc_config(
-                Ct.ColumnCurrentBlock.ColumnCurrentSwitch.Config.internal)
+        switch_config.inh_config = Ct.ColumnCurrentBlock.ColumnCurrentSwitch.Config.disabled
+        switch_config.exc_config = Ct.ColumnCurrentBlock.ColumnCurrentSwitch.Config.internal
         self.chip.set_column_current_switch(current_switch, switch_config)
 
         # Set synapse driver
-        syndrv_config = self.chip.get_synapse_drivers()
+        syndrv_config = self.chip.synapse_drivers
         syndrv_config.set_mode(self.synapse_driver, Ct.SynapseDriverBlock.Mode.excitatory)
-        syndrv_config.set_pulse_length(Ct.SynapseDriverBlock.PulseLength(8))
-        self.chip.set_synapse_drivers(syndrv_config)
+        syndrv_config.pulse_length = Ct.SynapseDriverBlock.PulseLength(8)
+        self.chip.synapse_drivers = syndrv_config
 
-        common_neuron_config = self.chip.get_common_neuron_config()
-        common_neuron_config.set_enable_digital_out(True)
-        self.chip.set_common_neuron_config(common_neuron_config)
+        common_neuron_config = self.chip.common_neuron_config
+        common_neuron_config.enable_digital_out = True
+        self.chip.common_neuron_config = common_neuron_config
 
         # Set neuron's debug output and disable spike output
         neuron_config = self.chip.get_neuron_digital_config(self.neuron)
-        neuron_config.set_fire_out_mode(Ct.NeuronDigitalConfig.FireOutMode.disabled)
-        neuron_config.set_mux_readout_mode(Ct.NeuronDigitalConfig.MuxReadoutMode.v_mem)
+        neuron_config.fire_out_mode = Ct.NeuronDigitalConfig.FireOutMode.disabled
+        neuron_config.mux_readout_mode = Ct.NeuronDigitalConfig.MuxReadoutMode.v_mem
         self.chip.set_neuron_digital_config(self.neuron, neuron_config)
         self.chip.enable_buffered_readout(self.neuron)
 
@@ -165,8 +163,8 @@ class TestHelloWorldHardware(unittest.TestCase):
         self.configure()
 
         neuron_config = self.chip.get_neuron_digital_config(self.neuron)
-        neuron_config.set_enable_synapse_input_excitatory(True)
-        neuron_config.set_enable_synapse_input_inhibitory(True)
+        neuron_config.enable_synapse_input_excitatory = True
+        neuron_config.enable_synapse_input_inhibitory = True
         self.chip.set_neuron_digital_config(self.neuron, neuron_config)
 
         # Create a playback program (all times are in FPGA cycles / 96MHz)
@@ -186,8 +184,8 @@ class TestHelloWorldHardware(unittest.TestCase):
 
         last_time = 0
         for spike in spikes:
-            time = spike.get_time()
-            actual_neuron = spike.get_neuron()
+            time = spike.time
+            actual_neuron = spike.neuron
             self.assertEqual(actual_neuron, self.neuron)
             if last_time > 0:
                 self.assertAlmostEqual(time - last_time, ISI, delta=10)
@@ -197,7 +195,7 @@ class TestHelloWorldHardware(unittest.TestCase):
         program = self.configure_spiking()
 
         neuron_config = self.chip.get_neuron_digital_config(self.neuron)
-        neuron_config.set_fire_out_mode(Ct.NeuronDigitalConfig.FireOutMode.bypass_exc)
+        neuron_config.fire_out_mode = Ct.NeuronDigitalConfig.FireOutMode.bypass_exc
         self.chip.set_neuron_digital_config(self.neuron, neuron_config)
 
         self.run_program(program)

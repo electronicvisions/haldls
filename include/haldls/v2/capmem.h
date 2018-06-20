@@ -29,7 +29,9 @@ public:
 	CapMemCell() SYMBOL_VISIBLE;
 	explicit CapMemCell(Value const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(value))
 	Value get_value() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(value))
 	void set_value(Value const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
@@ -186,67 +188,109 @@ public:
 
 	CapMemConfig() SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(enable_capmem))
 	bool get_enable_capmem() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_capmem))
 	void set_enable_capmem(bool const value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(debug_readout_enable))
 	bool get_debug_readout_enable() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_readout_enable))
 	void set_debug_readout_enable(bool const value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(debug_capmem_coord))
 	halco::hicann_dls::v2::CapMemCellOnDLS get_debug_capmem_coord() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_capmem_coord))
 	void set_debug_capmem_coord(halco::hicann_dls::v2::CapMemCellOnDLS const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(debug_v_ref_select))
 	VRefSelect get_debug_v_ref_select() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_v_ref_select))
 	void set_debug_v_ref_select(VRefSelect const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(debug_i_out_select))
 	IOutSelect get_debug_i_out_select() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_i_out_select))
 	void set_debug_i_out_select(IOutSelect const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(debug_out_amp_bias))
 	OutAmpBias get_debug_out_amp_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_out_amp_bias))
 	void set_debug_out_amp_bias(OutAmpBias const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(debug_source_follower_bias))
 	SourceFollowerBias get_debug_source_follower_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_source_follower_bias))
 	void set_debug_source_follower_bias(SourceFollowerBias const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(debug_level_shifter_bias))
 	LevelShifterBias get_debug_level_shifter_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_level_shifter_bias))
 	void set_debug_level_shifter_bias(LevelShifterBias const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(v_global_bias))
 	VGlobalBias get_v_global_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(v_global_bias))
 	void set_v_global_bias(VGlobalBias const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(current_cell_res))
 	CurrentCellRes get_current_cell_res() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(current_cell_res))
 	void set_current_cell_res(CurrentCellRes const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(boost_factor))
 	BoostFactor get_boost_factor() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(boost_factor))
 	void set_boost_factor(BoostFactor const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(enable_boost))
 	bool get_enable_boost() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_boost))
 	void set_enable_boost(bool const value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(enable_autoboost))
 	bool get_enable_autoboost() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_autoboost))
 	void set_enable_autoboost(bool const value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(prescale_pause))
 	PrescalePause get_prescale_pause() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(prescale_pause))
 	void set_prescale_pause(PrescalePause const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(prescale_ramp))
 	PrescaleRamp get_prescale_ramp() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(prescale_ramp))
 	void set_prescale_ramp(PrescaleRamp const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(sub_counter))
 	SubCounter get_sub_counter() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(sub_counter))
 	void set_sub_counter(SubCounter const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(pause_counter))
 	PauseCounter get_pause_counter() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(pause_counter))
 	void set_pause_counter(PauseCounter const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(pulse_a))
 	PulseA get_pulse_a() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(pulse_a))
 	void set_pulse_a(PulseA const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(pulse_b))
 	PulseB get_pulse_b() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(pulse_b))
 	void set_pulse_b(PulseB const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(boost_a))
 	BoostA get_boost_a() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(boost_a))
 	void set_boost_a(BoostA const& value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(boost_b))
 	BoostB get_boost_b() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(boost_b))
 	void set_boost_b(BoostB const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 10;

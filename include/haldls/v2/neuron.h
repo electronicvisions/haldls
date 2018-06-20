@@ -34,13 +34,24 @@ public:
 
 	CommonNeuronConfig() SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(enable_digital_out))
 	bool get_enable_digital_out() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_digital_out))
 	void set_enable_digital_out(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(post_correlation_signal_length))
 	PostCorrelationSignalLength get_post_correlation_signal_length() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(post_correlation_signal_length))
 	void set_post_correlation_signal_length(PostCorrelationSignalLength const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_external_post_correlation_signal))
 	bool get_enable_external_post_correlation_signal() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_external_post_correlation_signal))
 	void set_enable_external_post_correlation_signal(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(inhibit_spike_comparator))
 	bool get_inhibit_spike_comparator() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(inhibit_spike_comparator))
 	void set_inhibit_spike_comparator(bool const value) SYMBOL_VISIBLE;
 
 	bool operator==(CommonNeuronConfig const& other) const SYMBOL_VISIBLE;
@@ -90,25 +101,52 @@ public:
 	NeuronDigitalConfig() SYMBOL_VISIBLE;
 
 	// accessors
+	GENPYBIND(getter_for(enable_synapse_input_excitatory))
 	bool get_enable_synapse_input_excitatory() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_synapse_input_excitatory))
 	void set_enable_synapse_input_excitatory(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_synapse_input_inhibitory))
 	bool get_enable_synapse_input_inhibitory() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_synapse_input_inhibitory))
 	void set_enable_synapse_input_inhibitory(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_high_conductance_leak))
 	bool get_enable_high_conductance_leak() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_high_conductance_leak))
 	void set_enable_high_conductance_leak(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_leak))
 	bool get_enable_leak() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_leak))
 	void set_enable_leak(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_bigcap))
 	bool get_enable_bigcap() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_bigcap))
 	void set_enable_bigcap(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_smallcap))
 	bool get_enable_smallcap() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_smallcap))
 	void set_enable_smallcap(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(fire_out_mode))
 	FireOutMode get_fire_out_mode() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(fire_out_mode))
 	void set_fire_out_mode(FireOutMode const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(mux_readout_mode))
 	MuxReadoutMode get_mux_readout_mode() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(mux_readout_mode))
 	void set_mux_readout_mode(MuxReadoutMode const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_unbuffered_readout))
 	bool get_enable_unbuffered_readout() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_unbuffered_readout))
 	void set_enable_unbuffered_readout(bool const value) SYMBOL_VISIBLE;
 
+	GENPYBIND(getter_for(enable_buffered_readout))
 	bool get_enable_buffered_readout() const SYMBOL_VISIBLE;
 
 	/// \brief Enable or disable external voltage output for this neuron.
