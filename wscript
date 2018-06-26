@@ -19,6 +19,7 @@ def configure(cfg):
     cfg.load('compiler_cxx')
     cfg.load('gtest')
     cfg.check_cxx(mandatory=True, header_name='cereal/cereal.hpp')
+    cfg.load('local_rpath')
 
     cfg.env.CXXFLAGS_HALDLS_LIBRARIES = [
         '-fvisibility=hidden',
@@ -68,7 +69,7 @@ def build(bld):
         target = 'stadls_v2',
         source = bld.path.ant_glob('src/stadls/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['dls_common', 'haldls_v2', 'flyspi-rw_api', 'rcf-sf-only', 'rcf_extensions'],
+        use = ['dls_common', 'haldls_v2', 'flyspi-rw_api', 'rcf-sf-only', 'rcf_extensions', 'logger_obj'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
