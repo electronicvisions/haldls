@@ -56,7 +56,7 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
         with self.assertRaises(ValueError):
             capmem_copy = program_.get(capmem_ticket)
 
-        ctrl = IO.connect(test_board)
+        ctrl = IO.ExperimentControl(test_board)
         ctrl.soft_reset()
         ctrl.run(program)
 
@@ -165,7 +165,7 @@ class TestHelloWorldHardware(unittest.TestCase):
 
     def run_program(self, program):
         test_board, = IO.available_board_usb_serial_numbers()
-        ctrl = IO.connect(test_board)
+        ctrl = IO.ExperimentControl(test_board)
         ctrl.configure_static(self.board, self.chip)
         ctrl.run(program)
 
