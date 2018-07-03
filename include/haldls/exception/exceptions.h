@@ -7,6 +7,8 @@
 namespace haldls {
 namespace exception {
 
+/// \brief haldls-specific Exception type describing an invalid hardware
+/// configuration setting.
 class InvalidConfiguration : public std::runtime_error
 {
 public:

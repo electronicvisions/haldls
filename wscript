@@ -13,6 +13,7 @@ def depends(ctx):
 def options(opt):
     opt.load('compiler_cxx')
     opt.load('gtest')
+    opt.load('documentation')
 
 
 def configure(cfg):
@@ -20,6 +21,7 @@ def configure(cfg):
     cfg.load('gtest')
     cfg.check_cxx(mandatory=True, header_name='cereal/cereal.hpp')
     cfg.load('local_rpath')
+    cfg.load('documentation')
 
     cfg.env.CXXFLAGS_HALDLS_LIBRARIES = [
         '-fvisibility=hidden',
@@ -116,3 +118,8 @@ def build(bld):
     if bld.env.build_python_bindings:
         bld.recurse("pyhaldls")
         bld.recurse("pystadls")
+
+def doc(dox):
+    dox(features  = 'doxygen',
+        doxyfile  = 'doc/Doxyfile',
+        doxyinput = ['include'])
