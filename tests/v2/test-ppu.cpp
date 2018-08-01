@@ -31,6 +31,12 @@ TEST(PPUMemoryWord, General)
 
 	ASSERT_NE(word, word_ne);
 	ASSERT_FALSE(word != word_eq);
+
+	// test ostream operator
+	std::stringstream out;
+	word.set(PPUMemoryWord::Value(0xdeadbeef));
+	out << word;
+	ASSERT_EQ(out.str(), "0xdeadbeef");
 }
 
 TEST(PPUMemoryWord, EncodeDecode)

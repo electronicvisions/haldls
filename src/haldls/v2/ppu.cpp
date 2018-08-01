@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <utility>
 
 #include "haldls/v2/ppu.h"
@@ -27,6 +28,15 @@ bool PPUMemoryWord::operator==(PPUMemoryWord const& other) const
 bool PPUMemoryWord::operator!=(PPUMemoryWord const& other) const
 {
 	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
+{
+	uint32_t w = static_cast<uint32_t>(pmw.get());
+	std::stringstream out;
+	out << std::showbase << std::internal << std::setfill('0') << std::hex << std::setw(8) << w;
+	os << out.str();
+	return os;
 }
 
 std::array<hardware_address_type, PPUMemoryWord::config_size_in_words> PPUMemoryWord::addresses(coordinate_type const& word) const

@@ -32,6 +32,7 @@ public:
 
 	bool operator==(PPUMemoryWord const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUMemoryWord const& other) const SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	std::array<hardware_address_type, config_size_in_words> addresses(coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
