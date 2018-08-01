@@ -155,6 +155,21 @@ def build(bld):
         bld.recurse("pyhaldls")
         bld.recurse("pystadls")
 
+        bld(name='dlens',
+            features='py',
+            source = bld.path.ant_glob('dlens/**/*.py'),
+            relative_trick=True,
+            use = ['pyhaldls_v2','pystadls_v2', 'pyhalco_hicann_dls_v2', 'pyhalco_common'],
+        )
+
+        bld(name='dlens_swtest_v2',
+            tests=bld.path.ant_glob('tests/sw/dlens/v2/test-*.py'),
+            features='use pytest',
+            use=['dlens'],
+            install_path='${PREFIX}/bin',
+            pythonpath=['tests'],
+        )
+
 def doc(dox):
     dox(features  = 'doxygen',
         doxyfile  = 'doc/Doxyfile',
