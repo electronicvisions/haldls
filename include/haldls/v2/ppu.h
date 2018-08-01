@@ -64,6 +64,7 @@ public:
 
 	bool operator==(PPUMemory const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUMemory const& other) const SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, PPUMemory const& pm) SYMBOL_VISIBLE;
 
 	friend detail::VisitPreorderImpl<PPUMemory>;
 

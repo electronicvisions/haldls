@@ -1,5 +1,7 @@
+#include <cctype>
 #include <iomanip>
 #include <utility>
+#include <netinet/in.h>
 
 #include "haldls/v2/ppu.h"
 
@@ -88,6 +90,39 @@ bool PPUMemory::operator==(PPUMemory const& other) const
 bool PPUMemory::operator!=(PPUMemory const& other) const
 {
 	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
+{
+	int const words_per_line = 4;
+	auto const words = pm.get_words();
+	std::stringstream out;
+	for (unsigned int i = 0; i < words.size(); i += words_per_line) {
+		// break line and print address
+		std::stringstream addr;
+		addr << std::setfill('0') << std::hex << std::setw(6);
+		addr << (i * 4) << ": ";
+		// print halfwords in hex
+		std::stringstream halfwords;
+		halfwords << std::hex << std::internal << std::setfill('0');
+		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
+			uint32_t word = static_cast<uint32_t>(words[i + j].get());
+			halfwords << std::setw(4) << (word >> 16) << " " << std::setw(4) << (word & 0xffff)
+			          << " ";
+		}
+		// print as ascii
+		std::stringstream ascii;
+		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
+			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get()));
+			char* chars = reinterpret_cast<char*>(&word);
+			for (int k = 0; k < 4; k++) {
+				ascii << (isprint(chars[k]) ? chars[k] : '.');
+			}
+		}
+		out << addr.str() << halfwords.str() << ascii.str() << std::endl;
+	}
+	os << out.str();
+	return os;
 }
 
 PPUControlRegister::PPUControlRegister()
