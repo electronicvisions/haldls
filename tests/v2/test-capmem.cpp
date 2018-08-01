@@ -147,40 +147,40 @@ TEST(CapMem, EncodeDecode)
 	ASSERT_EQ(config, config_copy);
 }
 
-TEST(CommonCapMemConfig, General)
+TEST(CapMemConfig, General)
 {
-	CommonCapMemConfig config;
+	CapMemConfig config;
 
-	EXPECT_ANY_THROW(CommonCapMemConfig::OutAmpBias(16));
-	EXPECT_NO_THROW(CommonCapMemConfig::OutAmpBias(15));
-	EXPECT_ANY_THROW(CommonCapMemConfig::SourceFollowerBias(16));
-	EXPECT_NO_THROW(CommonCapMemConfig::SourceFollowerBias(15));
-	EXPECT_ANY_THROW(CommonCapMemConfig::LevelShifterBias(16));
-	EXPECT_NO_THROW(CommonCapMemConfig::LevelShifterBias(15));
-	EXPECT_ANY_THROW(CommonCapMemConfig::VGlobalBias(16));
-	EXPECT_NO_THROW(CommonCapMemConfig::VGlobalBias(15));
-	EXPECT_ANY_THROW(CommonCapMemConfig::CurrentCellRes(64));
-	EXPECT_NO_THROW(CommonCapMemConfig::CurrentCellRes(63));
-	EXPECT_ANY_THROW(CommonCapMemConfig::BoostFactor(16));
-	EXPECT_NO_THROW(CommonCapMemConfig::BoostFactor(15));
-	EXPECT_ANY_THROW(CommonCapMemConfig::PrescalePause(7));
-	EXPECT_NO_THROW(CommonCapMemConfig::PrescalePause(6));
-	EXPECT_ANY_THROW(CommonCapMemConfig::PrescaleRamp(7));
-	EXPECT_NO_THROW(CommonCapMemConfig::PrescaleRamp(6));
-	EXPECT_ANY_THROW(CommonCapMemConfig::SubCounter(65536));
-	EXPECT_NO_THROW(CommonCapMemConfig::SubCounter(65535));
-	EXPECT_ANY_THROW(CommonCapMemConfig::PulseA(65536));
-	EXPECT_NO_THROW(CommonCapMemConfig::PulseA(65535));
-	EXPECT_ANY_THROW(CommonCapMemConfig::PulseB(65536));
-	EXPECT_NO_THROW(CommonCapMemConfig::PulseB(65535));
-	EXPECT_ANY_THROW(CommonCapMemConfig::BoostA(65536));
-	EXPECT_NO_THROW(CommonCapMemConfig::BoostA(65535));
-	EXPECT_ANY_THROW(CommonCapMemConfig::BoostB(65536));
-	EXPECT_NO_THROW(CommonCapMemConfig::BoostB(65535));
+	EXPECT_ANY_THROW(CapMemConfig::OutAmpBias(16));
+	EXPECT_NO_THROW(CapMemConfig::OutAmpBias(15));
+	EXPECT_ANY_THROW(CapMemConfig::SourceFollowerBias(16));
+	EXPECT_NO_THROW(CapMemConfig::SourceFollowerBias(15));
+	EXPECT_ANY_THROW(CapMemConfig::LevelShifterBias(16));
+	EXPECT_NO_THROW(CapMemConfig::LevelShifterBias(15));
+	EXPECT_ANY_THROW(CapMemConfig::VGlobalBias(16));
+	EXPECT_NO_THROW(CapMemConfig::VGlobalBias(15));
+	EXPECT_ANY_THROW(CapMemConfig::CurrentCellRes(64));
+	EXPECT_NO_THROW(CapMemConfig::CurrentCellRes(63));
+	EXPECT_ANY_THROW(CapMemConfig::BoostFactor(16));
+	EXPECT_NO_THROW(CapMemConfig::BoostFactor(15));
+	EXPECT_ANY_THROW(CapMemConfig::PrescalePause(7));
+	EXPECT_NO_THROW(CapMemConfig::PrescalePause(6));
+	EXPECT_ANY_THROW(CapMemConfig::PrescaleRamp(7));
+	EXPECT_NO_THROW(CapMemConfig::PrescaleRamp(6));
+	EXPECT_ANY_THROW(CapMemConfig::SubCounter(65536));
+	EXPECT_NO_THROW(CapMemConfig::SubCounter(65535));
+	EXPECT_ANY_THROW(CapMemConfig::PulseA(65536));
+	EXPECT_NO_THROW(CapMemConfig::PulseA(65535));
+	EXPECT_ANY_THROW(CapMemConfig::PulseB(65536));
+	EXPECT_NO_THROW(CapMemConfig::PulseB(65535));
+	EXPECT_ANY_THROW(CapMemConfig::BoostA(65536));
+	EXPECT_NO_THROW(CapMemConfig::BoostA(65535));
+	EXPECT_ANY_THROW(CapMemConfig::BoostB(65536));
+	EXPECT_NO_THROW(CapMemConfig::BoostB(65535));
 
 	// test default constructor
-	ASSERT_EQ(config.get_pause_counter(), CommonCapMemConfig::PauseCounter(8096));
-	ASSERT_EQ(config.get_debug_out_amp_bias(), CommonCapMemConfig::OutAmpBias(7));
+	ASSERT_EQ(config.get_pause_counter(), CapMemConfig::PauseCounter(8096));
+	ASSERT_EQ(config.get_debug_out_amp_bias(), CapMemConfig::OutAmpBias(7));
 
 	// test getter/setter
 	config.set_enable_capmem(true);
@@ -192,29 +192,29 @@ TEST(CommonCapMemConfig, General)
 	config.set_debug_capmem_coord(CapMemCellOnDLS(Enum(10)));
 	ASSERT_EQ(config.get_debug_capmem_coord(), CapMemCellOnDLS(Enum(10)));
 
-	config.set_debug_v_ref_select(CommonCapMemConfig::VRefSelect::v_ref_i);
-	ASSERT_EQ(config.get_debug_v_ref_select(), CommonCapMemConfig::VRefSelect::v_ref_i);
+	config.set_debug_v_ref_select(CapMemConfig::VRefSelect::v_ref_i);
+	ASSERT_EQ(config.get_debug_v_ref_select(), CapMemConfig::VRefSelect::v_ref_i);
 
-	config.set_debug_i_out_select(CommonCapMemConfig::IOutSelect::i_out_ramp);
-	ASSERT_EQ(config.get_debug_i_out_select(), CommonCapMemConfig::IOutSelect::i_out_ramp);
+	config.set_debug_i_out_select(CapMemConfig::IOutSelect::i_out_ramp);
+	ASSERT_EQ(config.get_debug_i_out_select(), CapMemConfig::IOutSelect::i_out_ramp);
 
-	config.set_debug_out_amp_bias(CommonCapMemConfig::OutAmpBias(8));
-	ASSERT_EQ(config.get_debug_out_amp_bias(), CommonCapMemConfig::OutAmpBias(8));
+	config.set_debug_out_amp_bias(CapMemConfig::OutAmpBias(8));
+	ASSERT_EQ(config.get_debug_out_amp_bias(), CapMemConfig::OutAmpBias(8));
 
-	config.set_debug_source_follower_bias(CommonCapMemConfig::SourceFollowerBias(9));
-	ASSERT_EQ(config.get_debug_source_follower_bias(), CommonCapMemConfig::SourceFollowerBias(9));
+	config.set_debug_source_follower_bias(CapMemConfig::SourceFollowerBias(9));
+	ASSERT_EQ(config.get_debug_source_follower_bias(), CapMemConfig::SourceFollowerBias(9));
 
-	config.set_debug_level_shifter_bias(CommonCapMemConfig::LevelShifterBias(10));
-	ASSERT_EQ(config.get_debug_level_shifter_bias(), CommonCapMemConfig::LevelShifterBias(10));
+	config.set_debug_level_shifter_bias(CapMemConfig::LevelShifterBias(10));
+	ASSERT_EQ(config.get_debug_level_shifter_bias(), CapMemConfig::LevelShifterBias(10));
 
-	config.set_v_global_bias(CommonCapMemConfig::VGlobalBias(9));
-	ASSERT_EQ(config.get_v_global_bias(), CommonCapMemConfig::VGlobalBias(9));
+	config.set_v_global_bias(CapMemConfig::VGlobalBias(9));
+	ASSERT_EQ(config.get_v_global_bias(), CapMemConfig::VGlobalBias(9));
 
-	config.set_current_cell_res(CommonCapMemConfig::CurrentCellRes(23));
-	ASSERT_EQ(config.get_current_cell_res(), CommonCapMemConfig::CurrentCellRes(23));
+	config.set_current_cell_res(CapMemConfig::CurrentCellRes(23));
+	ASSERT_EQ(config.get_current_cell_res(), CapMemConfig::CurrentCellRes(23));
 
-	config.set_boost_factor(CommonCapMemConfig::BoostFactor(6));
-	ASSERT_EQ(config.get_boost_factor(), CommonCapMemConfig::BoostFactor(6));
+	config.set_boost_factor(CapMemConfig::BoostFactor(6));
+	ASSERT_EQ(config.get_boost_factor(), CapMemConfig::BoostFactor(6));
 
 	config.set_enable_boost(true);
 	ASSERT_EQ(config.get_enable_boost(), true);
@@ -222,34 +222,34 @@ TEST(CommonCapMemConfig, General)
 	config.set_enable_autoboost(true);
 	ASSERT_EQ(config.get_enable_autoboost(), true);
 
-	config.set_prescale_pause(CommonCapMemConfig::PrescalePause(6));
-	ASSERT_EQ(config.get_prescale_pause(), CommonCapMemConfig::PrescalePause(6));
+	config.set_prescale_pause(CapMemConfig::PrescalePause(6));
+	ASSERT_EQ(config.get_prescale_pause(), CapMemConfig::PrescalePause(6));
 
-	config.set_prescale_ramp(CommonCapMemConfig::PrescaleRamp(2));
-	ASSERT_EQ(config.get_prescale_ramp(), CommonCapMemConfig::PrescaleRamp(2));
+	config.set_prescale_ramp(CapMemConfig::PrescaleRamp(2));
+	ASSERT_EQ(config.get_prescale_ramp(), CapMemConfig::PrescaleRamp(2));
 
-	config.set_sub_counter(CommonCapMemConfig::SubCounter(16));
-	ASSERT_EQ(config.get_sub_counter(), CommonCapMemConfig::SubCounter(16));
+	config.set_sub_counter(CapMemConfig::SubCounter(16));
+	ASSERT_EQ(config.get_sub_counter(), CapMemConfig::SubCounter(16));
 
-	config.set_pause_counter(CommonCapMemConfig::PauseCounter(18));
-	ASSERT_EQ(config.get_pause_counter(), CommonCapMemConfig::PauseCounter(18));
+	config.set_pause_counter(CapMemConfig::PauseCounter(18));
+	ASSERT_EQ(config.get_pause_counter(), CapMemConfig::PauseCounter(18));
 
-	config.set_pulse_a(CommonCapMemConfig::PulseA(15));
-	ASSERT_EQ(config.get_pulse_a(), CommonCapMemConfig::PulseA(15));
+	config.set_pulse_a(CapMemConfig::PulseA(15));
+	ASSERT_EQ(config.get_pulse_a(), CapMemConfig::PulseA(15));
 
-	config.set_pulse_b(CommonCapMemConfig::PulseB(123));
-	ASSERT_EQ(config.get_pulse_b(), CommonCapMemConfig::PulseB(123));
+	config.set_pulse_b(CapMemConfig::PulseB(123));
+	ASSERT_EQ(config.get_pulse_b(), CapMemConfig::PulseB(123));
 
-	config.set_boost_a(CommonCapMemConfig::BoostA(13));
-	ASSERT_EQ(config.get_boost_a(), CommonCapMemConfig::BoostA(13));
+	config.set_boost_a(CapMemConfig::BoostA(13));
+	ASSERT_EQ(config.get_boost_a(), CapMemConfig::BoostA(13));
 
-	config.set_boost_b(CommonCapMemConfig::BoostB(134));
-	ASSERT_EQ(config.get_boost_b(), CommonCapMemConfig::BoostB(134));
+	config.set_boost_b(CapMemConfig::BoostB(134));
+	ASSERT_EQ(config.get_boost_b(), CapMemConfig::BoostB(134));
 
 
-	CommonCapMemConfig config_eq = config;
-	CommonCapMemConfig config_ne(config);
-	config_ne.set_boost_b(CommonCapMemConfig::BoostB(118));
+	CapMemConfig config_eq = config;
+	CapMemConfig config_ne(config);
+	config_ne.set_boost_b(CapMemConfig::BoostB(118));
 	config_ne.set_enable_autoboost(false);
 
 	ASSERT_EQ(config, config_eq);
@@ -260,30 +260,30 @@ TEST(CommonCapMemConfig, General)
 }
 
 
-TEST(CommonCapMemConfig, EncodeDecode)
+TEST(CapMemConfig, EncodeDecode)
 {
-	CommonCapMemConfig config;
+	CapMemConfig config;
 	config.set_enable_capmem(true);
 	config.set_debug_readout_enable(true);
 	config.set_debug_capmem_coord(CapMemCellOnDLS(Enum(10)));
-	config.set_debug_v_ref_select(CommonCapMemConfig::VRefSelect::v_ref_i);
-	config.set_debug_i_out_select(CommonCapMemConfig::IOutSelect::i_out_ramp);
-	config.set_debug_out_amp_bias(CommonCapMemConfig::OutAmpBias(8));
-	config.set_debug_source_follower_bias(CommonCapMemConfig::SourceFollowerBias(9));
-	config.set_debug_level_shifter_bias(CommonCapMemConfig::LevelShifterBias(10));
-	config.set_v_global_bias(CommonCapMemConfig::VGlobalBias(9));
-	config.set_current_cell_res(CommonCapMemConfig::CurrentCellRes(23));
-	config.set_boost_factor(CommonCapMemConfig::BoostFactor(6));
+	config.set_debug_v_ref_select(CapMemConfig::VRefSelect::v_ref_i);
+	config.set_debug_i_out_select(CapMemConfig::IOutSelect::i_out_ramp);
+	config.set_debug_out_amp_bias(CapMemConfig::OutAmpBias(8));
+	config.set_debug_source_follower_bias(CapMemConfig::SourceFollowerBias(9));
+	config.set_debug_level_shifter_bias(CapMemConfig::LevelShifterBias(10));
+	config.set_v_global_bias(CapMemConfig::VGlobalBias(9));
+	config.set_current_cell_res(CapMemConfig::CurrentCellRes(23));
+	config.set_boost_factor(CapMemConfig::BoostFactor(6));
 	config.set_enable_boost(true);
 	config.set_enable_autoboost(true);
-	config.set_prescale_pause(CommonCapMemConfig::PrescalePause(6));
-	config.set_prescale_ramp(CommonCapMemConfig::PrescaleRamp(2));
-	config.set_sub_counter(CommonCapMemConfig::SubCounter(16));
-	config.set_pause_counter(CommonCapMemConfig::PauseCounter(18));
-	config.set_pulse_a(CommonCapMemConfig::PulseA(15));
-	config.set_pulse_b(CommonCapMemConfig::PulseB(123));
-	config.set_boost_a(CommonCapMemConfig::BoostA(13));
-	config.set_boost_b(CommonCapMemConfig::BoostB(134));
+	config.set_prescale_pause(CapMemConfig::PrescalePause(6));
+	config.set_prescale_ramp(CapMemConfig::PrescaleRamp(2));
+	config.set_sub_counter(CapMemConfig::SubCounter(16));
+	config.set_pause_counter(CapMemConfig::PauseCounter(18));
+	config.set_pulse_a(CapMemConfig::PulseA(15));
+	config.set_pulse_b(CapMemConfig::PulseB(123));
+	config.set_boost_a(CapMemConfig::BoostA(13));
+	config.set_boost_b(CapMemConfig::BoostB(134));
 
 	Unique coord;
 	std::array<hardware_address_type, 10> ref_addresses = {
@@ -313,7 +313,7 @@ TEST(CommonCapMemConfig, EncodeDecode)
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
-	CommonCapMemConfig config_copy;
+	CapMemConfig config_copy;
 	ASSERT_NE(config, config_copy);
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);

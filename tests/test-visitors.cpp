@@ -52,7 +52,7 @@ TEST(Visitors, Chip) {
 			"haldls::container::v2::Chip",
 			"haldls::container::v2::ColumnCorrelationBlock",
 			"haldls::container::v2::ColumnCurrentBlock",
-			"haldls::container::v2::CommonCapMemConfig",
+			"haldls::container::v2::CapMemConfig",
 			"haldls::container::v2::CommonNeuronConfig",
 			"haldls::container::v2::CommonSynramConfig",
 			"haldls::container::v2::CorrelationConfig",

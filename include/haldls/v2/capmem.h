@@ -80,7 +80,7 @@ private:
 };
 
 
-class GENPYBIND(visible) CommonCapMemConfig
+class GENPYBIND(visible) CapMemConfig
 {
 public:
 	typedef halco::common::Unique coordinate_type;
@@ -174,7 +174,7 @@ public:
 		i_out_ramp = 2
 	};
 
-	CommonCapMemConfig() SYMBOL_VISIBLE;
+	CapMemConfig() SYMBOL_VISIBLE;
 
 	bool get_enable_capmem() const SYMBOL_VISIBLE;
 	void set_enable_capmem(bool const value) SYMBOL_VISIBLE;
@@ -245,8 +245,8 @@ public:
 	std::array<hardware_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
-	bool operator==(CommonCapMemConfig const& other) const SYMBOL_VISIBLE;
-	bool operator!=(CommonCapMemConfig const& other) const SYMBOL_VISIBLE;
+	bool operator==(CapMemConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CapMemConfig const& other) const SYMBOL_VISIBLE;
 
 private:
 	bool m_enable_capmem;
@@ -300,19 +300,19 @@ struct VisitPreorderImpl<CapMem> {
 namespace std {
 
 HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemCell::Value)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::OutAmpBias)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::SourceFollowerBias)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::LevelShifterBias)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::VGlobalBias)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::CurrentCellRes)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::BoostFactor)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::PrescalePause)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::PrescaleRamp)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::SubCounter)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::PauseCounter)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::PulseA)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::PulseB)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::BoostA)
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CommonCapMemConfig::BoostB)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::OutAmpBias)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::SourceFollowerBias)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::LevelShifterBias)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::VGlobalBias)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::CurrentCellRes)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::BoostFactor)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::PrescalePause)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::PrescaleRamp)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::SubCounter)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::PauseCounter)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::PulseA)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::PulseB)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::BoostA)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::CapMemConfig::BoostB)
 
 } // namespace std

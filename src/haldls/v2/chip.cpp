@@ -214,12 +214,12 @@ void Chip::set_common_synram_config(CommonSynramConfig const& value)
 	m_synram_config = value;
 }
 
-CommonCapMemConfig Chip::get_common_capmem_config() const
+CapMemConfig Chip::get_capmem_config() const
 {
 	return m_capmem_config;
 }
 
-void Chip::set_common_capmem_config(CommonCapMemConfig const& value)
+void Chip::set_capmem_config(CapMemConfig const& value)
 {
 	m_capmem_config = value;
 }

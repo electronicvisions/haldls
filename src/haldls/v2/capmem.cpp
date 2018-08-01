@@ -170,12 +170,12 @@ bool CapMem::operator!=(CapMem const& other) const
 	return !(*this == other);
 }
 
-CommonCapMemConfig::CommonCapMemConfig()
+CapMemConfig::CapMemConfig()
 	: m_enable_capmem(true),
 	  m_debug_readout_enable(false),
 	  m_debug_capmem_coord(CapMemCellOnDLS()),
-	  m_debug_v_ref_select(CommonCapMemConfig::VRefSelect::disabled),
-	  m_debug_i_out_select(CommonCapMemConfig::IOutSelect::disabled),
+	  m_debug_v_ref_select(CapMemConfig::VRefSelect::disabled),
+	  m_debug_i_out_select(CapMemConfig::IOutSelect::disabled),
 	  m_debug_out_amp_bias(7),
 	  m_debug_source_follower_bias(3),
 	  m_debug_level_shifter_bias(3),
@@ -195,217 +195,217 @@ CommonCapMemConfig::CommonCapMemConfig()
 {
 }
 
-bool CommonCapMemConfig::get_enable_capmem() const
+bool CapMemConfig::get_enable_capmem() const
 {
 	return m_enable_capmem;
 }
 
-void CommonCapMemConfig::set_enable_capmem(bool const value)
+void CapMemConfig::set_enable_capmem(bool const value)
 {
 	m_enable_capmem = value;
 }
 
-bool CommonCapMemConfig::get_debug_readout_enable() const
+bool CapMemConfig::get_debug_readout_enable() const
 {
 	return m_debug_readout_enable;
 }
 
-void CommonCapMemConfig::set_debug_readout_enable(bool const value)
+void CapMemConfig::set_debug_readout_enable(bool const value)
 {
 	m_debug_readout_enable = value;
 }
 
-CapMemCellOnDLS CommonCapMemConfig::get_debug_capmem_coord() const
+CapMemCellOnDLS CapMemConfig::get_debug_capmem_coord() const
 {
 	return m_debug_capmem_coord;
 }
 
-void CommonCapMemConfig::set_debug_capmem_coord(CapMemCellOnDLS const& value)
+void CapMemConfig::set_debug_capmem_coord(CapMemCellOnDLS const& value)
 {
 	m_debug_capmem_coord = value;
 }
 
-CommonCapMemConfig::VRefSelect CommonCapMemConfig::get_debug_v_ref_select() const
+CapMemConfig::VRefSelect CapMemConfig::get_debug_v_ref_select() const
 {
 	return m_debug_v_ref_select;
 }
 
-void CommonCapMemConfig::set_debug_v_ref_select(CommonCapMemConfig::VRefSelect const& value)
+void CapMemConfig::set_debug_v_ref_select(CapMemConfig::VRefSelect const& value)
 {
 	m_debug_v_ref_select = value;
 }
 
-CommonCapMemConfig::IOutSelect CommonCapMemConfig::get_debug_i_out_select() const
+CapMemConfig::IOutSelect CapMemConfig::get_debug_i_out_select() const
 {
 	return m_debug_i_out_select;
 }
 
-void CommonCapMemConfig::set_debug_i_out_select(CommonCapMemConfig::IOutSelect const& value)
+void CapMemConfig::set_debug_i_out_select(CapMemConfig::IOutSelect const& value)
 {
 	m_debug_i_out_select = value;
 }
 
-CommonCapMemConfig::OutAmpBias CommonCapMemConfig::get_debug_out_amp_bias() const
+CapMemConfig::OutAmpBias CapMemConfig::get_debug_out_amp_bias() const
 {
 	return m_debug_out_amp_bias;
 }
 
-void CommonCapMemConfig::set_debug_out_amp_bias(CommonCapMemConfig::OutAmpBias const& value)
+void CapMemConfig::set_debug_out_amp_bias(CapMemConfig::OutAmpBias const& value)
 {
 	m_debug_out_amp_bias = value;
 }
 
-CommonCapMemConfig::SourceFollowerBias CommonCapMemConfig::get_debug_source_follower_bias() const
+CapMemConfig::SourceFollowerBias CapMemConfig::get_debug_source_follower_bias() const
 {
 	return m_debug_source_follower_bias;
 }
 
-void CommonCapMemConfig::set_debug_source_follower_bias(CommonCapMemConfig::SourceFollowerBias const& value)
+void CapMemConfig::set_debug_source_follower_bias(CapMemConfig::SourceFollowerBias const& value)
 {
 	m_debug_source_follower_bias = value;
 }
 
-CommonCapMemConfig::LevelShifterBias CommonCapMemConfig::get_debug_level_shifter_bias() const
+CapMemConfig::LevelShifterBias CapMemConfig::get_debug_level_shifter_bias() const
 {
 	return m_debug_level_shifter_bias;
 }
 
-void CommonCapMemConfig::set_debug_level_shifter_bias(CommonCapMemConfig::LevelShifterBias const& value)
+void CapMemConfig::set_debug_level_shifter_bias(CapMemConfig::LevelShifterBias const& value)
 {
 	m_debug_level_shifter_bias = value;
 }
 
-CommonCapMemConfig::VGlobalBias CommonCapMemConfig::get_v_global_bias() const
+CapMemConfig::VGlobalBias CapMemConfig::get_v_global_bias() const
 {
 	return m_v_global_bias;
 }
 
-void CommonCapMemConfig::set_v_global_bias(CommonCapMemConfig::VGlobalBias const& value)
+void CapMemConfig::set_v_global_bias(CapMemConfig::VGlobalBias const& value)
 {
 	m_v_global_bias = value;
 }
 
-CommonCapMemConfig::CurrentCellRes CommonCapMemConfig::get_current_cell_res() const
+CapMemConfig::CurrentCellRes CapMemConfig::get_current_cell_res() const
 {
 	return m_current_cell_res;
 }
 
-void CommonCapMemConfig::set_current_cell_res(CommonCapMemConfig::CurrentCellRes const& value)
+void CapMemConfig::set_current_cell_res(CapMemConfig::CurrentCellRes const& value)
 {
 	m_current_cell_res = value;
 }
 
-CommonCapMemConfig::BoostFactor CommonCapMemConfig::get_boost_factor() const
+CapMemConfig::BoostFactor CapMemConfig::get_boost_factor() const
 {
 	return m_boost_factor;
 }
 
-void CommonCapMemConfig::set_boost_factor(CommonCapMemConfig::BoostFactor const& value)
+void CapMemConfig::set_boost_factor(CapMemConfig::BoostFactor const& value)
 {
 	m_boost_factor = value;
 }
 
-bool CommonCapMemConfig::get_enable_boost() const
+bool CapMemConfig::get_enable_boost() const
 {
 	return m_enable_boost;
 }
 
-void CommonCapMemConfig::set_enable_boost(bool const value)
+void CapMemConfig::set_enable_boost(bool const value)
 {
 	m_enable_boost = value;
 }
 
-bool CommonCapMemConfig::get_enable_autoboost() const
+bool CapMemConfig::get_enable_autoboost() const
 {
 	return m_enable_autoboost;
 }
 
-void CommonCapMemConfig::set_enable_autoboost(bool const value)
+void CapMemConfig::set_enable_autoboost(bool const value)
 {
 	m_enable_autoboost = value;
 }
 
-CommonCapMemConfig::PrescalePause CommonCapMemConfig::get_prescale_pause() const
+CapMemConfig::PrescalePause CapMemConfig::get_prescale_pause() const
 {
 	return m_prescale_pause;
 }
 
-void CommonCapMemConfig::set_prescale_pause(CommonCapMemConfig::PrescalePause const& value)
+void CapMemConfig::set_prescale_pause(CapMemConfig::PrescalePause const& value)
 {
 	m_prescale_pause = value;
 }
 
-CommonCapMemConfig::PrescaleRamp CommonCapMemConfig::get_prescale_ramp() const
+CapMemConfig::PrescaleRamp CapMemConfig::get_prescale_ramp() const
 {
 	return m_prescale_ramp;
 }
 
-void CommonCapMemConfig::set_prescale_ramp(CommonCapMemConfig::PrescaleRamp const& value)
+void CapMemConfig::set_prescale_ramp(CapMemConfig::PrescaleRamp const& value)
 {
 	m_prescale_ramp = value;
 }
 
-CommonCapMemConfig::SubCounter CommonCapMemConfig::get_sub_counter() const
+CapMemConfig::SubCounter CapMemConfig::get_sub_counter() const
 {
 	return m_sub_counter;
 }
 
-void CommonCapMemConfig::set_sub_counter(CommonCapMemConfig::SubCounter const& value)
+void CapMemConfig::set_sub_counter(CapMemConfig::SubCounter const& value)
 {
 	m_sub_counter = value;
 }
 
-CommonCapMemConfig::PauseCounter CommonCapMemConfig::get_pause_counter() const
+CapMemConfig::PauseCounter CapMemConfig::get_pause_counter() const
 {
 	return m_pause_counter;
 }
 
-void CommonCapMemConfig::set_pause_counter(CommonCapMemConfig::PauseCounter const& value)
+void CapMemConfig::set_pause_counter(CapMemConfig::PauseCounter const& value)
 {
 	m_pause_counter = value;
 }
 
-CommonCapMemConfig::PulseA CommonCapMemConfig::get_pulse_a() const
+CapMemConfig::PulseA CapMemConfig::get_pulse_a() const
 {
 	return m_pulse_a;
 }
 
-void CommonCapMemConfig::set_pulse_a(CommonCapMemConfig::PulseA const& value)
+void CapMemConfig::set_pulse_a(CapMemConfig::PulseA const& value)
 {
 	m_pulse_a = value;
 }
 
-CommonCapMemConfig::PulseB CommonCapMemConfig::get_pulse_b() const
+CapMemConfig::PulseB CapMemConfig::get_pulse_b() const
 {
 	return m_pulse_b;
 }
 
-void CommonCapMemConfig::set_pulse_b(CommonCapMemConfig::PulseB const& value)
+void CapMemConfig::set_pulse_b(CapMemConfig::PulseB const& value)
 {
 	m_pulse_b = value;
 }
 
-CommonCapMemConfig::BoostA CommonCapMemConfig::get_boost_a() const
+CapMemConfig::BoostA CapMemConfig::get_boost_a() const
 {
 	return m_boost_a;
 }
 
-void CommonCapMemConfig::set_boost_a(CommonCapMemConfig::BoostA const& value)
+void CapMemConfig::set_boost_a(CapMemConfig::BoostA const& value)
 {
 	m_boost_a = value;
 }
 
-CommonCapMemConfig::BoostB CommonCapMemConfig::get_boost_b() const
+CapMemConfig::BoostB CapMemConfig::get_boost_b() const
 {
 	return m_boost_b;
 }
 
-void CommonCapMemConfig::set_boost_b(CommonCapMemConfig::BoostB const& value)
+void CapMemConfig::set_boost_b(CapMemConfig::BoostB const& value)
 {
 	m_boost_b = value;
 }
 
-bool CommonCapMemConfig::operator==(CommonCapMemConfig const& other) const
+bool CapMemConfig::operator==(CapMemConfig const& other) const
 {
 	// clang-format off
 	return (
@@ -433,16 +433,16 @@ bool CommonCapMemConfig::operator==(CommonCapMemConfig const& other) const
 	// clang-format on
 }
 
-bool CommonCapMemConfig::operator!=(CommonCapMemConfig const& other) const
+bool CapMemConfig::operator!=(CapMemConfig const& other) const
 {
 	return !(*this == other);
 }
 
 namespace {
 
-struct CommonCapMemConfigBitfield
+struct CapMemConfigBitfield
 {
-	typedef std::array<hardware_word_type, CommonCapMemConfig::config_size_in_words> array_type;
+	typedef std::array<hardware_word_type, CapMemConfig::config_size_in_words> array_type;
 
 	union
 	{
@@ -486,25 +486,25 @@ struct CommonCapMemConfigBitfield
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
 	} u;
 
-	CommonCapMemConfigBitfield() { u.raw = {{0}}; }
-	CommonCapMemConfigBitfield(array_type const& data) { u.raw = data; }
+	CapMemConfigBitfield() { u.raw = {{0}}; }
+	CapMemConfigBitfield(array_type const& data) { u.raw = data; }
 };
 
 } // namespace
 
-std::array<hardware_address_type, CommonCapMemConfig::config_size_in_words>
-CommonCapMemConfig::addresses(coordinate_type const& /*unique*/) const
+std::array<hardware_address_type, CapMemConfig::config_size_in_words>
+CapMemConfig::addresses(coordinate_type const& /*unique*/) const
 {
 	hardware_address_type const base_address = 0x18010000;
-	std::array<hardware_address_type, CommonCapMemConfig::config_size_in_words> result;
+	std::array<hardware_address_type, CapMemConfig::config_size_in_words> result;
 	std::iota(result.begin(), result.end(), base_address);
 	return result;
 }
 
-std::array<hardware_word_type, CommonCapMemConfig::config_size_in_words>
-CommonCapMemConfig::encode() const
+std::array<hardware_word_type, CapMemConfig::config_size_in_words>
+CapMemConfig::encode() const
 {
-	CommonCapMemConfigBitfield bitfield;
+	CapMemConfigBitfield bitfield;
 	if (m_debug_readout_enable) {
 		auto capmem_coord = m_debug_capmem_coord;
 		bitfield.u.m.hotbit_capmem_row = 1u << capmem_coord.toCapMemRowOnDLS();
@@ -536,10 +536,10 @@ CommonCapMemConfig::encode() const
 	return bitfield.u.raw;
 }
 
-void CommonCapMemConfig::decode(
-	std::array<hardware_word_type, CommonCapMemConfig::config_size_in_words> const& data)
+void CapMemConfig::decode(
+	std::array<hardware_word_type, CapMemConfig::config_size_in_words> const& data)
 {
-	CommonCapMemConfigBitfield bitfield(data);
+	CapMemConfigBitfield bitfield(data);
 	if (bitfield.u.m.hotbit_capmem_row) {
 		m_debug_readout_enable = true;
 		hardware_word_type hotbit = bitfield.u.m.hotbit_capmem_row;

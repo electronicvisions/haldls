@@ -100,8 +100,8 @@ public:
 	CommonSynramConfig get_common_synram_config() const SYMBOL_VISIBLE;
 	void set_common_synram_config(CommonSynramConfig const& value) SYMBOL_VISIBLE;
 
-	CommonCapMemConfig get_common_capmem_config() const SYMBOL_VISIBLE;
-	void set_common_capmem_config(CommonCapMemConfig const& value) SYMBOL_VISIBLE;
+	CapMemConfig get_capmem_config() const SYMBOL_VISIBLE;
+	void set_capmem_config(CapMemConfig const& value) SYMBOL_VISIBLE;
 
 	CommonNeuronConfig get_common_neuron_config() const SYMBOL_VISIBLE;
 	void set_common_neuron_config(CommonNeuronConfig const& value) SYMBOL_VISIBLE;
@@ -132,7 +132,7 @@ private:
 
 	SynapseDrivers m_synapse_drivers;
 	CommonSynramConfig m_synram_config;
-	CommonCapMemConfig m_capmem_config;
+	CapMemConfig m_capmem_config;
 	CommonNeuronConfig m_neuron_config;
 	CorrelationConfig m_correlation_config;
 };

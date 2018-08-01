@@ -94,10 +94,10 @@ class TestPyhaldlsV2(unittest.TestCase):
         chip.set_common_synram_config(synram_config)
         self.assertEqual(chip.get_common_synram_config(), synram_config)
 
-        capmem_config = Ct.CommonCapMemConfig()
-        capmem_config.set_sub_counter(Ct.CommonCapMemConfig.SubCounter(1234))
-        chip.set_common_capmem_config(capmem_config)
-        self.assertEqual(chip.get_common_capmem_config(), capmem_config)
+        capmem_config = Ct.CapMemConfig()
+        capmem_config.set_sub_counter(Ct.CapMemConfig.SubCounter(1234))
+        chip.set_capmem_config(capmem_config)
+        self.assertEqual(chip.get_capmem_config(), capmem_config)
 
         neuron_config = Ct.CommonNeuronConfig()
         neuron_config.set_post_correlation_signal_length(
@@ -112,8 +112,8 @@ class TestPyhaldlsV2(unittest.TestCase):
 
         chip2 = Ct.Chip(chip)
         chip3 = Ct.Chip()
-        capmem_config.set_sub_counter(Ct.CommonCapMemConfig.SubCounter(4321))
-        chip3.set_common_capmem_config(capmem_config)
+        capmem_config.set_sub_counter(Ct.CapMemConfig.SubCounter(4321))
+        chip3.set_capmem_config(capmem_config)
 
         self.assertEqual(chip, chip2)
         self.assertFalse(chip == chip3)

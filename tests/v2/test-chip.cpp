@@ -97,10 +97,10 @@ TEST(Chip, General)
 	chip.set_common_synram_config(synram_config);
 	ASSERT_EQ(chip.get_common_synram_config(), synram_config);
 
-	CommonCapMemConfig capmem_config;
-	capmem_config.set_sub_counter(CommonCapMemConfig::SubCounter(1234));
-	chip.set_common_capmem_config(capmem_config);
-	ASSERT_EQ(chip.get_common_capmem_config(), capmem_config);
+	CapMemConfig capmem_config;
+	capmem_config.set_sub_counter(CapMemConfig::SubCounter(1234));
+	chip.set_capmem_config(capmem_config);
+	ASSERT_EQ(chip.get_capmem_config(), capmem_config);
 
 	CommonNeuronConfig neuron_config;
 	neuron_config.set_post_correlation_signal_length(
@@ -116,8 +116,8 @@ TEST(Chip, General)
 	// test relation operator
 	Chip chip2 = chip;
 	Chip chip3;
-	capmem_config.set_sub_counter(CommonCapMemConfig::SubCounter(4321));
-	chip3.set_common_capmem_config(capmem_config);
+	capmem_config.set_sub_counter(CapMemConfig::SubCounter(4321));
+	chip3.set_capmem_config(capmem_config);
 
 	ASSERT_EQ(chip, chip2);
 	ASSERT_EQ(chip == chip3, false);

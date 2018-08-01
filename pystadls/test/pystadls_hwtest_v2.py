@@ -98,9 +98,9 @@ class TestHelloWorldHardware(unittest.TestCase):
         self.board.set_parameter(Ct.Board.Parameter.capmem_i_buf_bias, Ct.DAC.Value(3000))
         self.board.set_parameter(Ct.Board.Parameter.capmem_i_ref, Ct.DAC.Value(3906))
 
-        common_capmem_config = self.chip.get_common_capmem_config()
-        common_capmem_config.set_enable_capmem(True)
-        self.chip.set_common_capmem_config(common_capmem_config)
+        capmem_config = self.chip.get_capmem_config()
+        capmem_config.set_enable_capmem(True)
+        self.chip.set_capmem_config(capmem_config)
 
         # Set the cap mem
         capmem_config = self.chip.get_capmem()
