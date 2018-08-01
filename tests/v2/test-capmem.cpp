@@ -285,7 +285,7 @@ TEST(CapMemConfig, EncodeDecode)
 	config.set_boost_a(CapMemConfig::BoostA(13));
 	config.set_boost_b(CapMemConfig::BoostB(134));
 
-	Unique coord;
+	CapMemConfigOnDLS coord;
 	std::array<hardware_address_type, 10> ref_addresses = {
 		{0x18010000, 0x18010001, 0x18010002, 0x18010003, 0x18010004, 0x18010005, 0x18010006,
 		 0x18010007, 0x18010008, 0x18010009}};

@@ -180,7 +180,7 @@ struct VisitPreorderImpl<Chip> {
 		visit_preorder(config.m_ppu_status_register, unique, visitor);
 		visit_preorder(config.m_rate_counter, unique, visitor);
 		visit_preorder(config.m_synapse_drivers, unique, visitor);
-		visit_preorder(config.m_capmem_config, unique, visitor);
+		visit_preorder(config.m_capmem_config, halco::hicann_dls::v2::CapMemConfigOnDLS(), visitor);
 		visit_preorder(config.m_neuron_config, unique, visitor);
 		visit_preorder(config.m_correlation_config, unique, visitor);
 	}
