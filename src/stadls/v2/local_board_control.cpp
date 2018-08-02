@@ -208,7 +208,7 @@ haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip)
 	// Chip configuration program
 	haldls::v2::PlaybackProgramBuilder setup_builder;
 	setup_builder.set_time(0);
-	setup_builder.set_container(halco::common::Unique(), chip);
+	setup_builder.write(halco::common::Unique(), chip);
 	// Wait for the cap-mem to settle (based on empirical measurement by DS)
 	// clang-format off
 	setup_builder.wait_for(2'000'000); // ~ 20.8 ms for 96 MHz

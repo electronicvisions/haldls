@@ -221,7 +221,7 @@ void PlaybackProgramBuilder::halt()
 }
 
 template <class T>
-void PlaybackProgramBuilder::set_container(
+void PlaybackProgramBuilder::write(
 	typename T::coordinate_type const& coord, T const& config)
 {
 	assert(m_program.m_impl != nullptr);
@@ -246,7 +246,7 @@ void PlaybackProgramBuilder::set_container(
 }
 
 template <class T>
-PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::get_container(
+PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
 	typename T::coordinate_type const& coord)
 {
 	assert(m_program.m_impl != nullptr);
@@ -283,13 +283,13 @@ PlaybackProgram PlaybackProgramBuilder::done()
 }
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template SYMBOL_VISIBLE void PlaybackProgramBuilder::set_container<Type>(                      \
+	template SYMBOL_VISIBLE void PlaybackProgramBuilder::write<Type>(                      \
 		Type::coordinate_type const& coord, Type const& config);
 #include "haldls/v2/container.def"
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template SYMBOL_VISIBLE PlaybackProgram::ContainerTicket<Type>                                 \
-	PlaybackProgramBuilder::get_container<Type>(Type::coordinate_type const& coord);
+	PlaybackProgramBuilder::read<Type>(Type::coordinate_type const& coord);
 #include "haldls/v2/container.def"
 
 } // namespace v2

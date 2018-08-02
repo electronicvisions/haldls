@@ -12,11 +12,11 @@ import pylogging as logger
 class TestPyhaldlsIOV2(unittest.TestCase):
     def test_program_builder(self):
         builder = Ct.PlaybackProgramBuilder()
-        builder.set_container(C.CapMemOnDLS(), Ct.CapMem())
+        builder.write(C.CapMemOnDLS(), Ct.CapMem())
         builder.wait_until(100)
-        capmem_ticket = builder.get_container(C.CapMemOnDLS(), Ct.CapMem())
+        capmem_ticket = builder.read(C.CapMemOnDLS(), Ct.CapMem())
         cell = C.CapMemCellOnDLS(Co.Enum(2))
-        capmemcell_ticket = builder.get_container(cell, Ct.CapMemCell())
+        capmemcell_ticket = builder.read(cell, Ct.CapMemCell())
         builder.halt()
 
         program = builder.done()
@@ -31,7 +31,7 @@ class TestPyhaldlsIOV2(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             capmemcell_copy = program.get(capmemcell_ticket)
 
-        capmem_ticket_ = builder.get_container(C.CapMemOnDLS(), Ct.CapMem())
+        capmem_ticket_ = builder.read(C.CapMemOnDLS(), Ct.CapMem())
         program_ = builder.done()
 
         # Using Ticket issued for a different program

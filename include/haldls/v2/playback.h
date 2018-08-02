@@ -124,19 +124,19 @@ public:
 	void halt() SYMBOL_VISIBLE;
 
 	template <class T>
-	void set_container(typename T::coordinate_type const& coord, T const& config);
+	void write(typename T::coordinate_type const& coord, T const& config);
 
 	/// \note As this variant requires an explicitly specified template parameter it is
 	///       not exposed to the python wrapping.
 	template <class T>
-	PlaybackProgram::ContainerTicket<T> get_container(typename T::coordinate_type const& coord);
+	PlaybackProgram::ContainerTicket<T> read(typename T::coordinate_type const& coord);
 
 	/// \note The extra argument is only used to select the correct template instantiation.
 	template <class T>
-	PlaybackProgram::ContainerTicket<T> get_container(
+	PlaybackProgram::ContainerTicket<T> read(
 		typename T::coordinate_type const& coord, T const& /*config*/)
 	{
-		return get_container<T>(coord);
+		return read<T>(coord);
 	}
 
 	PlaybackProgram done() SYMBOL_VISIBLE;
@@ -149,10 +149,10 @@ private:
 #ifdef __GENPYBIND__
 // Explicit instantiation of template member functions for all valid playback container types.
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	extern template void PlaybackProgramBuilder::set_container<Type>(                              \
+	extern template void PlaybackProgramBuilder::write<Type>(                                      \
 		Type::coordinate_type const&, Type const&);                                                \
 	extern template PlaybackProgram::ContainerTicket<Type>                                         \
-	PlaybackProgramBuilder::get_container<Type>(Type::coordinate_type const&, Type const&);        \
+	PlaybackProgramBuilder::read<Type>(Type::coordinate_type const&, Type const&);                 \
 	extern template Type PlaybackProgram::get(                                                     \
 		PlaybackProgram::ContainerTicket<Type> const& ticket) const;
 #include "haldls/v2/container.def"
