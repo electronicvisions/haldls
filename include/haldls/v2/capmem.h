@@ -83,7 +83,7 @@ private:
 class GENPYBIND(visible) CapMemConfig
 {
 public:
-	typedef halco::hicann_dls::v2::CapMemConfigOnDLS coordinate_type;
+	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) OutAmpBias
