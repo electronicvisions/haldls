@@ -48,7 +48,7 @@ private:
 class GENPYBIND(visible) CapMem
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::CapMemOnDLS coordinate_type;
 	typedef std::false_type has_local_data;
 
 	/// \brief Default constructor, yielding safe default values.
@@ -83,7 +83,7 @@ private:
 class GENPYBIND(visible) CapMemConfig
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::CapMemConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) OutAmpBias
@@ -277,7 +277,7 @@ namespace detail {
 template <>
 struct VisitPreorderImpl<CapMem> {
 	template <typename ContainerT, typename VisitorT>
-	static void call(ContainerT& config, halco::common::Unique const& coord, VisitorT&& visitor)
+	static void call(ContainerT& config, halco::hicann_dls::v2::CapMemOnDLS const& coord, VisitorT&& visitor)
 	{
 		using halco::common::iter_all;
 		using namespace halco::hicann_dls::v2;

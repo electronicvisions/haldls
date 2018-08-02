@@ -46,7 +46,7 @@ private:
 class GENPYBIND(visible) PPUMemory
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::PPUMemoryOnDLS coordinate_type;
 	typedef std::false_type has_local_data;
 
 	typedef std::array<PPUMemoryWord, halco::hicann_dls::v2::PPUMemoryWordOnDLS::size>
@@ -75,7 +75,7 @@ private:
 class GENPYBIND(visible) PPUControlRegister
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::PPUControlRegisterOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	PPUControlRegister() SYMBOL_VISIBLE;
@@ -110,7 +110,7 @@ private:
 class GENPYBIND(visible) PPUStatusRegister
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::PPUStatusRegisterOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	PPUStatusRegister() SYMBOL_VISIBLE;
@@ -135,7 +135,7 @@ namespace detail {
 template <>
 struct VisitPreorderImpl<PPUMemory> {
 	template <typename ContainerT, typename VisitorT>
-	static void call(ContainerT& config, halco::common::Unique const& coord, VisitorT&& visitor)
+	static void call(ContainerT& config, halco::hicann_dls::v2::PPUMemoryOnDLS const& coord, VisitorT&& visitor)
 	{
 		using halco::common::iter_all;
 		using namespace halco::hicann_dls::v2;

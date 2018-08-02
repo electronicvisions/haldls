@@ -14,7 +14,7 @@ namespace v2 GENPYBIND(tag(haldls_v2)) {
 class GENPYBIND(visible) CorrelationConfig
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::CorrelationConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) Delay

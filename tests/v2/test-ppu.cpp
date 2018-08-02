@@ -104,7 +104,7 @@ TEST(PPUMemory, EncodeDecode)
 {
 	PPUMemory config;
 
-	Unique coord;
+	PPUMemoryOnDLS coord;
 
 	PPUMemory::words_type memory{{}};
 
@@ -184,7 +184,7 @@ TEST(PPUControlRegister, EncodeDecode)
 	config.set_force_clock_on(false);
 	config.set_force_clock_off(true);
 
-	Unique coord;
+	PPUControlRegisterOnDLS coord;
 
 	std::array<hardware_address_type, PPUControlRegister::config_size_in_words> ref_addresses = {{0x20000ul}};
 	std::array<hardware_word_type, PPUControlRegister::config_size_in_words> ref_data = {{0b0101ul}};
@@ -217,7 +217,7 @@ TEST(PPUStatusRegister, EncodeDecode)
 {
 	PPUStatusRegister config;
 
-	Unique coord;
+	PPUStatusRegisterOnDLS coord;
 
 	std::array<hardware_address_type, PPUStatusRegister::config_size_in_words> ref_addresses = {{0x20001ul}};
 	std::array<hardware_word_type, PPUStatusRegister::config_size_in_words> ref_data = {{0b0ul}};

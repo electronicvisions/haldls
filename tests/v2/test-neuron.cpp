@@ -63,7 +63,7 @@ TEST(CommonNeuronConfig, EncodeDecode)
 	config.set_enable_external_post_correlation_signal(false);
 	config.set_inhibit_spike_comparator(true);
 
-	Unique coord;
+	CommonNeuronConfigOnDLS coord;
 
 	std::array<hardware_address_type, CommonNeuronConfig::config_size_in_words> ref_addresses = {{0x1a000000}};
 	std::array<hardware_word_type, CommonNeuronConfig::config_size_in_words> ref_data = {{0b0101'0111ul}};

@@ -174,15 +174,15 @@ struct VisitPreorderImpl<Chip> {
 			visit_preorder(config.m_current_blocks[column_block], column_block, visitor);
 		}
 
-		visit_preorder(config.m_capmem, unique, visitor);
-		visit_preorder(config.m_ppu_memory, unique, visitor);
-		visit_preorder(config.m_ppu_control_register, unique, visitor);
-		visit_preorder(config.m_ppu_status_register, unique, visitor);
-		visit_preorder(config.m_rate_counter, unique, visitor);
-		visit_preorder(config.m_synapse_drivers, unique, visitor);
-		visit_preorder(config.m_capmem_config, unique, visitor);
-		visit_preorder(config.m_neuron_config, unique, visitor);
-		visit_preorder(config.m_correlation_config, unique, visitor);
+		visit_preorder(config.m_capmem, halco::hicann_dls::v2::CapMemOnDLS(), visitor);
+		visit_preorder(config.m_ppu_memory, halco::hicann_dls::v2::PPUMemoryOnDLS(), visitor);
+		visit_preorder(config.m_ppu_control_register, halco::hicann_dls::v2::PPUControlRegisterOnDLS(), visitor);
+		visit_preorder(config.m_ppu_status_register, halco::hicann_dls::v2::PPUStatusRegisterOnDLS(), visitor);
+		visit_preorder(config.m_rate_counter, halco::hicann_dls::v2::RateCounterOnDLS(), visitor);
+		visit_preorder(config.m_synapse_drivers, halco::hicann_dls::v2::SynapseDriverBlockOnDLS(), visitor);
+		visit_preorder(config.m_capmem_config, halco::hicann_dls::v2::CapMemConfigOnDLS(), visitor);
+		visit_preorder(config.m_neuron_config, halco::hicann_dls::v2::CommonNeuronConfigOnDLS(), visitor);
+		visit_preorder(config.m_correlation_config, halco::hicann_dls::v2::CorrelationConfigOnDLS(), visitor);
 	}
 };
 

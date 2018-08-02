@@ -56,7 +56,7 @@ TEST(SynapseDriverConfig, EncodeDecode)
 	std::array<hardware_word_type, SynapseDriverBlock::config_size_in_words> ref_data = {
 		{0x55555555, 0xAAAAAAAA, 5}};
 
-	halco::common::Unique coord;
+	halco::hicann_dls::v2::SynapseDriverBlockOnDLS coord;
 
 	{ // write addresses
 		std::vector<hardware_address_type> write_addresses;

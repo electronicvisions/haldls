@@ -18,7 +18,7 @@ class PlaybackProgram;
 class GENPYBIND(visible) CommonNeuronConfig
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::CommonNeuronConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) PostCorrelationSignalLength

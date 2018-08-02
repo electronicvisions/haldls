@@ -30,7 +30,7 @@ protected:
 }; // PlaybackTest
 
 TEST_F(PlaybackTest, CapMem) {
-	Unique const unique;
+	CapMemOnDLS const coord;
 
 	CapMem capmem_config;
 
@@ -45,9 +45,9 @@ TEST_F(PlaybackTest, CapMem) {
 	capmem_config.set(cell, capmemvalue);
 
 	PlaybackProgramBuilder builder;
-	builder.set_container(unique, capmem_config);
+	builder.set_container(coord, capmem_config);
 	builder.wait_until(100);
-	auto capmem_ticket = builder.get_container(unique, capmem_config);
+	auto capmem_ticket = builder.get_container(coord, capmem_config);
 	auto capmemcell_ticket = builder.get_container<CapMemCell>(cell);
 	builder.halt();
 
@@ -61,7 +61,7 @@ TEST_F(PlaybackTest, CapMem) {
 	EXPECT_THROW(std::ignore = program.get(capmem_ticket), std::runtime_error);
 	EXPECT_THROW(std::ignore = program.get(capmemcell_ticket), std::runtime_error);
 
-	auto capmem_ticket_ = builder.get_container(unique, capmem_config);
+	auto capmem_ticket_ = builder.get_container(coord, capmem_config);
 	auto program_ = builder.done();
 
 	// Using Ticket issued for a different program

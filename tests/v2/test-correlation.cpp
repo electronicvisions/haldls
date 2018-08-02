@@ -53,7 +53,7 @@ TEST(CorrelationConfig, EncodeDecode)
 	config.set_reset_delay_1(CorrelationConfig::Delay(42));
 	config.set_reset_delay_2(CorrelationConfig::Delay(69));
 
-	Unique coord;
+	CorrelationConfigOnDLS coord;
 
 	std::array<hardware_address_type, 3> ref_addresses = {{0x0c000000, 0x0C000001, 0x0C000002}};
 	std::array<hardware_word_type, 3> ref_data{{12, 42, 69}};

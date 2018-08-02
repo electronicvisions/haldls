@@ -93,7 +93,7 @@ struct CommonNeuronConfigBitfield {
 
 } // namespace
 
-std::array<hardware_address_type, CommonNeuronConfig::config_size_in_words> CommonNeuronConfig::addresses(halco::common::Unique const& /*unique*/) const
+std::array<hardware_address_type, CommonNeuronConfig::config_size_in_words> CommonNeuronConfig::addresses(CommonNeuronConfig::coordinate_type const&) const
 {
 	return {{0x1a000000}};
 }
