@@ -21,6 +21,6 @@ PLAYBACK_CONTAINER(PPUMemoryWord, haldls::v2::PPUMemoryWord)
 PLAYBACK_CONTAINER(PPUStatusRegister, haldls::v2::PPUStatusRegister)
 PLAYBACK_CONTAINER(RateCounter, haldls::v2::RateCounter)
 PLAYBACK_CONTAINER(SynapseBlock, haldls::v2::SynapseBlock)
-PLAYBACK_CONTAINER(SynapseDrivers, haldls::v2::SynapseDrivers)
+PLAYBACK_CONTAINER(SynapseDriverBlock, haldls::v2::SynapseDriverBlock)
 
 #undef PLAYBACK_CONTAINER

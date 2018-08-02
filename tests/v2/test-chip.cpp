@@ -87,8 +87,8 @@ TEST(Chip, General)
 	chip.set_rate_counter(rate);
 	ASSERT_EQ(chip.get_rate_counter(), rate);
 
-	SynapseDrivers syndriver_config;
-	syndriver_config.set_pulse_length(SynapseDrivers::PulseLength(22));
+	SynapseDriverBlock syndriver_config;
+	syndriver_config.set_pulse_length(SynapseDriverBlock::PulseLength(22));
 	chip.set_synapse_drivers(syndriver_config);
 	ASSERT_EQ(chip.get_synapse_drivers(), syndriver_config);
 

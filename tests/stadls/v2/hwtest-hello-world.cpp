@@ -108,8 +108,8 @@ protected:
 
 		// Set synapse driver
 		auto syndrv_config = chip.get_synapse_drivers();
-		syndrv_config.set_state(synapse_driver, SynapseDrivers::State::excitatory);
-		syndrv_config.set_pulse_length(SynapseDrivers::PulseLength(8));
+		syndrv_config.set_state(synapse_driver, SynapseDriverBlock::State::excitatory);
+		syndrv_config.set_pulse_length(SynapseDriverBlock::PulseLength(8));
 		chip.set_synapse_drivers(syndrv_config);
 
 		auto common_neuron_config = chip.get_common_neuron_config();

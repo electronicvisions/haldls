@@ -9,7 +9,7 @@
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
 
-class GENPYBIND(visible) SynapseDrivers
+class GENPYBIND(visible) SynapseDriverBlock
 {
 public:
 	typedef halco::common::Unique coordinate_type;
@@ -30,7 +30,7 @@ public:
 
 	typedef std::array<State, halco::hicann_dls::v2::SynapseDriverOnDLS::size> states_type;
 
-	SynapseDrivers() SYMBOL_VISIBLE;
+	SynapseDriverBlock() SYMBOL_VISIBLE;
 
 	states_type get_states() const SYMBOL_VISIBLE;
 	void set_states(states_type const& values) SYMBOL_VISIBLE;
@@ -43,8 +43,8 @@ public:
 	PulseLength get_pulse_length() const SYMBOL_VISIBLE;
 	void set_pulse_length(PulseLength const& value) SYMBOL_VISIBLE;
 
-	bool operator==(SynapseDrivers const& other) const SYMBOL_VISIBLE;
-	bool operator!=(SynapseDrivers const& other) const SYMBOL_VISIBLE;
+	bool operator==(SynapseDriverBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SynapseDriverBlock const& other) const SYMBOL_VISIBLE;
 
 	static hardware_address_type constexpr config_size_in_words GENPYBIND(hidden) = 3;
 
@@ -63,6 +63,6 @@ private:
 
 namespace std {
 
-HALCO_GEOMETRY_HASH_CLASS(haldls::v2::SynapseDrivers::PulseLength)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::SynapseDriverBlock::PulseLength)
 
 } // namespace std

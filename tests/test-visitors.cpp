@@ -63,5 +63,5 @@ TEST(Visitors, Chip) {
 			"haldls::container::v2::PPUStatusRegister",
 			"haldls::container::v2::RateCounter",
 			"haldls::container::v2::SynapseBlock",
-			"haldls::container::v2::SynapseDrivers"})));
+			"haldls::container::v2::SynapseDriverBlock"})));
 }

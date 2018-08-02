@@ -148,8 +148,8 @@ class TestHelloWorldHardware(unittest.TestCase):
 
         # Set synapse driver
         syndrv_config = self.chip.get_synapse_drivers()
-        syndrv_config.set_state(self.synapse_driver, Ct.SynapseDrivers.State.excitatory)
-        syndrv_config.set_pulse_length(Ct.SynapseDrivers.PulseLength(8))
+        syndrv_config.set_state(self.synapse_driver, Ct.SynapseDriverBlock.State.excitatory)
+        syndrv_config.set_pulse_length(Ct.SynapseDriverBlock.PulseLength(8))
         self.chip.set_synapse_drivers(syndrv_config)
 
         common_neuron_config = self.chip.get_common_neuron_config()

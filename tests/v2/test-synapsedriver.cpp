@@ -11,24 +11,24 @@ using namespace halco::common;
 
 TEST(SynapseDriverConfig, General)
 {
-	SynapseDrivers config;
+	SynapseDriverBlock config;
 
-	EXPECT_ANY_THROW(SynapseDrivers::PulseLength(32));
-	EXPECT_NO_THROW(SynapseDrivers::PulseLength(31));
+	EXPECT_ANY_THROW(SynapseDriverBlock::PulseLength(32));
+	EXPECT_NO_THROW(SynapseDriverBlock::PulseLength(31));
 
-	config.set_state(SynapseDriverOnDLS(5), SynapseDrivers::State::excitatory);
+	config.set_state(SynapseDriverOnDLS(5), SynapseDriverBlock::State::excitatory);
 	ASSERT_EQ(
-		config.get_state(SynapseDriverOnDLS(5)), SynapseDrivers::State::excitatory);
-	config.set_state(SynapseDriverOnDLS(8), SynapseDrivers::State::inhibitory);
+		config.get_state(SynapseDriverOnDLS(5)), SynapseDriverBlock::State::excitatory);
+	config.set_state(SynapseDriverOnDLS(8), SynapseDriverBlock::State::inhibitory);
 	ASSERT_EQ(
-		config.get_state(SynapseDriverOnDLS(8)), SynapseDrivers::State::inhibitory);
+		config.get_state(SynapseDriverOnDLS(8)), SynapseDriverBlock::State::inhibitory);
 
-	config.set_pulse_length(SynapseDrivers::PulseLength(21));
-	ASSERT_EQ(config.get_pulse_length(), SynapseDrivers::PulseLength(21));
+	config.set_pulse_length(SynapseDriverBlock::PulseLength(21));
+	ASSERT_EQ(config.get_pulse_length(), SynapseDriverBlock::PulseLength(21));
 
-	SynapseDrivers config_eq = config;
-	SynapseDrivers config_ne(config);
-	config_ne.set_state(SynapseDriverOnDLS(5), SynapseDrivers::State::inhibitory);
+	SynapseDriverBlock config_eq = config;
+	SynapseDriverBlock config_ne(config);
+	config_ne.set_state(SynapseDriverOnDLS(5), SynapseDriverBlock::State::inhibitory);
 
 	ASSERT_EQ(config, config_eq);
 	ASSERT_FALSE(config_ne == config);
@@ -39,21 +39,21 @@ TEST(SynapseDriverConfig, General)
 
 TEST(SynapseDriverConfig, EncodeDecode)
 {
-	SynapseDrivers config;
-	SynapseDrivers::states_type states;
+	SynapseDriverBlock config;
+	SynapseDriverBlock::states_type states;
 	for (size_t index = 0; index < states.size(); index++) {
 		if (index % 2)
-			states.at(index) = SynapseDrivers::State::excitatory;
+			states.at(index) = SynapseDriverBlock::State::excitatory;
 		else
-			states.at(index) = SynapseDrivers::State::inhibitory;
+			states.at(index) = SynapseDriverBlock::State::inhibitory;
 	}
 
-	config.set_pulse_length(SynapseDrivers::PulseLength(5));
+	config.set_pulse_length(SynapseDriverBlock::PulseLength(5));
 	config.set_states(states);
 
-	std::array<hardware_address_type, SynapseDrivers::config_size_in_words> ref_addresses = {
+	std::array<hardware_address_type, SynapseDriverBlock::config_size_in_words> ref_addresses = {
 		{0x1c000000, 0x1c000001, 0x1c000002}};
-	std::array<hardware_word_type, SynapseDrivers::config_size_in_words> ref_data = {
+	std::array<hardware_word_type, SynapseDriverBlock::config_size_in_words> ref_data = {
 		{0x55555555, 0xAAAAAAAA, 5}};
 
 	halco::common::Unique coord;
@@ -79,7 +79,7 @@ TEST(SynapseDriverConfig, EncodeDecode)
 		config, coord, stadls::EncodeVisitor<std::vector<hardware_word_type> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
-	SynapseDrivers config_copy;
+	SynapseDriverBlock config_copy;
 	ASSERT_NE(config, config_copy);
 	visit_preorder(
 		config_copy, coord,

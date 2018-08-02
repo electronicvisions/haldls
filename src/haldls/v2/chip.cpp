@@ -194,12 +194,12 @@ void Chip::set_rate_counter(RateCounter const& value)
 	m_rate_counter = value;
 }
 
-SynapseDrivers Chip::get_synapse_drivers() const
+SynapseDriverBlock Chip::get_synapse_drivers() const
 {
 	return m_synapse_drivers;
 }
 
-void Chip::set_synapse_drivers(SynapseDrivers const& value)
+void Chip::set_synapse_drivers(SynapseDriverBlock const& value)
 {
 	m_synapse_drivers = value;
 }

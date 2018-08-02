@@ -84,8 +84,8 @@ class TestPyhaldlsV2(unittest.TestCase):
         chip.set_rate_counter(rate)
         self.assertEqual(chip.get_rate_counter(), rate)
 
-        syndriver_config = Ct.SynapseDrivers()
-        syndriver_config.set_pulse_length(Ct.SynapseDrivers.PulseLength(22))
+        syndriver_config = Ct.SynapseDriverBlock()
+        syndriver_config.set_pulse_length(Ct.SynapseDriverBlock.PulseLength(22))
         chip.set_synapse_drivers(syndriver_config)
         self.assertEqual(chip.get_synapse_drivers(), syndriver_config)
 

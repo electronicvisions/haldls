@@ -94,8 +94,8 @@ public:
 	RateCounter get_rate_counter() const SYMBOL_VISIBLE;
 	void set_rate_counter(RateCounter const& value) SYMBOL_VISIBLE;
 
-	SynapseDrivers get_synapse_drivers() const SYMBOL_VISIBLE;
-	void set_synapse_drivers(SynapseDrivers const& value) SYMBOL_VISIBLE;
+	SynapseDriverBlock get_synapse_drivers() const SYMBOL_VISIBLE;
+	void set_synapse_drivers(SynapseDriverBlock const& value) SYMBOL_VISIBLE;
 
 	CommonSynramConfig get_common_synram_config() const SYMBOL_VISIBLE;
 	void set_common_synram_config(CommonSynramConfig const& value) SYMBOL_VISIBLE;
@@ -130,7 +130,7 @@ private:
 	PPUStatusRegister m_ppu_status_register;
 	RateCounter m_rate_counter;
 
-	SynapseDrivers m_synapse_drivers;
+	SynapseDriverBlock m_synapse_drivers;
 	CommonSynramConfig m_synram_config;
 	CapMemConfig m_capmem_config;
 	CommonNeuronConfig m_neuron_config;

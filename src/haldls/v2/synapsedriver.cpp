@@ -5,52 +5,52 @@
 namespace haldls {
 namespace v2 {
 
-SynapseDrivers::SynapseDrivers() : m_pulse_length(0), m_states() {}
+SynapseDriverBlock::SynapseDriverBlock() : m_pulse_length(0), m_states() {}
 
-auto SynapseDrivers::get_states() const -> states_type
+auto SynapseDriverBlock::get_states() const -> states_type
 {
 	return m_states;
 }
 
-void SynapseDrivers::set_states(states_type const& values)
+void SynapseDriverBlock::set_states(states_type const& values)
 {
 	m_states = values;
 }
 
-SynapseDrivers::State SynapseDrivers::get_state(
+SynapseDriverBlock::State SynapseDriverBlock::get_state(
 	halco::hicann_dls::v2::SynapseDriverOnDLS const& syndriver) const
 {
 	return m_states.at(syndriver.value());
 }
 
-void SynapseDrivers::set_state(
-	halco::hicann_dls::v2::SynapseDriverOnDLS const& syndriver, SynapseDrivers::State value)
+void SynapseDriverBlock::set_state(
+	halco::hicann_dls::v2::SynapseDriverOnDLS const& syndriver, SynapseDriverBlock::State value)
 {
 	m_states.at(syndriver.value()) = value;
 }
 
-SynapseDrivers::PulseLength SynapseDrivers::get_pulse_length() const
+SynapseDriverBlock::PulseLength SynapseDriverBlock::get_pulse_length() const
 {
 	return m_pulse_length;
 }
 
-void SynapseDrivers::set_pulse_length(SynapseDrivers::PulseLength const& value)
+void SynapseDriverBlock::set_pulse_length(SynapseDriverBlock::PulseLength const& value)
 {
 	m_pulse_length = value;
 }
 
-bool SynapseDrivers::operator==(SynapseDrivers const& other) const
+bool SynapseDriverBlock::operator==(SynapseDriverBlock const& other) const
 {
 	return m_pulse_length == other.get_pulse_length() && m_states == other.get_states();
 }
 
-bool SynapseDrivers::operator!=(SynapseDrivers const& other) const
+bool SynapseDriverBlock::operator!=(SynapseDriverBlock const& other) const
 {
 	return !(*this == other);
 }
 
-std::array<hardware_address_type, SynapseDrivers::config_size_in_words>
-SynapseDrivers::addresses(coordinate_type const& /*unique*/) const
+std::array<hardware_address_type, SynapseDriverBlock::config_size_in_words>
+SynapseDriverBlock::addresses(coordinate_type const& /*unique*/) const
 {
 	hardware_address_type const base_addr = 0x1c000000;
 	hardware_address_type const excitator_addr = base_addr + 0;
@@ -59,8 +59,8 @@ SynapseDrivers::addresses(coordinate_type const& /*unique*/) const
 	return {{excitator_addr, inhibitory_addr, pulse_length_addr}};
 }
 
-std::array<hardware_word_type, SynapseDrivers::config_size_in_words>
-SynapseDrivers::encode() const
+std::array<hardware_word_type, SynapseDriverBlock::config_size_in_words>
+SynapseDriverBlock::encode() const
 {
 	using namespace halco::common;
 	using namespace halco::hicann_dls::v2;
@@ -79,8 +79,8 @@ SynapseDrivers::encode() const
 	         static_cast<hardware_word_type>(m_pulse_length)}};
 }
 
-void SynapseDrivers::decode(
-	std::array<hardware_word_type, SynapseDrivers::config_size_in_words> const& data)
+void SynapseDriverBlock::decode(
+	std::array<hardware_word_type, SynapseDriverBlock::config_size_in_words> const& data)
 {
 	using namespace halco::common;
 	using namespace halco::hicann_dls::v2;
