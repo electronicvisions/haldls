@@ -16,7 +16,7 @@ void expect_read_only()
 	Coord const coord;
 
 	std::array<ocp_address_type::value_type, 0> const ref_addresses = {{}}; // RO
-	std::array<ocp_address_type::value_type, 0> const ref_data = {{}};      // RO
+	std::array<ocp_word_type::value_type, 0> const ref_data = {{}};      // RO
 
 	// write addresses
 	{
@@ -38,7 +38,7 @@ void expect_read_only()
 		ocp_words_type ocp_data;
 		visit_preorder(reg, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 
-		std::vector<ocp_address_type::value_type> data;
+		std::vector<ocp_word_type::value_type> data;
 		data.reserve(ocp_data.size());
 		for (auto word : ocp_data)
 			data.push_back(word.value);
@@ -65,7 +65,7 @@ TEST(FlyspiProgramAddress, encode)
 	Unique const coord;
 
 	std::array<ocp_address_type::value_type, 1> const ref_addresses = {{0x8002}};
-	std::array<ocp_address_type::value_type, 1> const ref_data = {{0xc0ffee}};
+	std::array<ocp_word_type::value_type, 1> const ref_data = {{0xc0ffee}};
 
 	// write addresses
 	{
@@ -87,7 +87,7 @@ TEST(FlyspiProgramAddress, encode)
 		ocp_words_type ocp_data;
 		visit_preorder(reg, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 
-		std::vector<ocp_address_type::value_type> data;
+		std::vector<ocp_word_type::value_type> data;
 		data.reserve(ocp_data.size());
 		for (auto word : ocp_data)
 			data.push_back(word.value);
@@ -244,7 +244,7 @@ TEST(FlyspiConfig, encode)
 	reg.set_enable_spike_router(true);
 
 	std::array<ocp_address_type::value_type, 1> const ref_addresses = {{0x8020ul}};
-	std::array<ocp_address_type::value_type, 1> const ref_data = {{0x0000008eul}};
+	std::array<ocp_word_type::value_type, 1> const ref_data = {{0x0000008eul}};
 
 	typedef std::vector<ocp_address_type> ocp_addresses_type;
 	typedef std::vector<ocp_word_type> ocp_words_type;
@@ -267,7 +267,7 @@ TEST(FlyspiConfig, encode)
 	ocp_words_type ocp_data;
 	visit_preorder(reg, coord, stadls::EncodeVisitor<ocp_words_type>{ocp_data});
 
-	std::vector<ocp_address_type::value_type> data;
+	std::vector<ocp_word_type::value_type> data;
 	data.reserve(ocp_data.size());
 	for (auto word : ocp_data)
 		data.push_back(word.value);
@@ -311,7 +311,7 @@ TEST(FlyspiConfig, decode)
 		typedef std::vector<ocp_word_type> ocp_words_type;
 		// loop over all 32 bits in one word
 		for (size_t n = 0; n < 32; n++) {
-			ocp_words_type ocp_data = {{ocp_address_type::value_type(1) << n}};
+			ocp_words_type ocp_data = {{ocp_word_type::value_type(1) << n}};
 			visit_preorder(reg, coord, stadls::DecodeVisitor<ocp_words_type>{ocp_data});
 
 			EXPECT_THAT(reg.get_dls_reset(), n == 31);
@@ -377,7 +377,7 @@ TEST(FlyspiException, decode)
 		typedef std::vector<ocp_word_type> ocp_words_type;
 		// loop over all 32 bits in one word
 		for (size_t n = 0; n < 32; n++) {
-			ocp_words_type ocp_data = {{ocp_address_type::value_type(1) << n}};
+			ocp_words_type ocp_data = {{ocp_word_type::value_type(1) << n}};
 			visit_preorder(reg, coord, stadls::DecodeVisitor<ocp_words_type>{ocp_data});
 
 			EXPECT_THAT(reg.get_result_read_error().value(), n == 0);
