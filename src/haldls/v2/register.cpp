@@ -512,6 +512,25 @@ hate::optional<bool> FlyspiException::get_encode_overflow() const
 	return m_encode_overflow;
 }
 
+hate::optional<bool> FlyspiException::check() const
+{
+	hate::optional<bool> ret;
+	// only set value if all registers have a value
+	if (m_result_read_error && m_result_read_overflow && m_result_write_error &&
+	    m_result_write_underrun && m_playback_read_error && m_playback_read_overflow &&
+	    m_playback_write_error && m_playback_write_underrun && m_program_exception &&
+	    m_serdes_overflow && m_serdes_pll_unlocked && m_serdes_race && m_encode_overflow) {
+		ret =
+		    !(m_result_read_error.value() || m_result_read_overflow.value() ||
+		      m_result_write_error.value() || m_result_write_underrun.value() ||
+		      m_playback_read_error.value() || m_playback_read_overflow.value() ||
+		      m_playback_write_error.value() || m_playback_write_underrun.value() ||
+		      m_program_exception.value() || m_serdes_overflow.value() ||
+		      m_serdes_pll_unlocked.value() || m_serdes_race.value() || m_encode_overflow.value());
+	}
+	return ret;
+}
+
 #define PRINT_EXCEPTION(VALUE)                                                            \
 	if (VALUE()) {                                                                       \
 		os << #VALUE << ": " << *VALUE() << std::endl;                                   \

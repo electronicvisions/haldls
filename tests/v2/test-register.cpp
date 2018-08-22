@@ -374,25 +374,37 @@ TEST(FlyspiException, decode)
 		EXPECT_FALSE(reg.get_serdes_race());
 		EXPECT_FALSE(reg.get_encode_overflow());
 
+		EXPECT_FALSE(reg.check());
+
 		typedef std::vector<ocp_word_type> ocp_words_type;
-		// loop over all 32 bits in one word
-		for (size_t n = 0; n < 32; n++) {
-			ocp_words_type ocp_data = {{ocp_word_type::value_type(1) << n}};
+
+		ocp_words_type ocp_data = {{ocp_word_type::value_type(0)}};
+		visit_preorder(reg, coord, stadls::DecodeVisitor<ocp_words_type>{ocp_data});
+
+		EXPECT_TRUE(reg.check());
+		EXPECT_TRUE(reg.check().value());
+
+		std::vector<size_t> active_bit_cases = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 16, 17, 18, 20}};
+		for (auto active_bit : active_bit_cases) {
+			ocp_words_type ocp_data = {{ocp_word_type::value_type(1) << active_bit}};
 			visit_preorder(reg, coord, stadls::DecodeVisitor<ocp_words_type>{ocp_data});
 
-			EXPECT_THAT(reg.get_result_read_error().value(), n == 0);
-			EXPECT_THAT(reg.get_result_read_overflow().value(), n == 1);
-			EXPECT_THAT(reg.get_result_write_error().value(), n == 2);
-			EXPECT_THAT(reg.get_result_write_underrun().value(), n == 3);
-			EXPECT_THAT(reg.get_playback_read_error().value(), n == 4);
-			EXPECT_THAT(reg.get_playback_read_overflow().value(), n == 5);
-			EXPECT_THAT(reg.get_playback_write_error().value(), n == 6);
-			EXPECT_THAT(reg.get_playback_write_underrun().value(), n == 7);
-			EXPECT_THAT(reg.get_program_exception().value(), n == 8);
-			EXPECT_THAT(reg.get_serdes_overflow().value(), n == 16);
-			EXPECT_THAT(reg.get_serdes_pll_unlocked().value(), n == 17);
-			EXPECT_THAT(reg.get_serdes_race().value(), n == 18);
-			EXPECT_THAT(reg.get_encode_overflow().value(), n == 20);
+			EXPECT_THAT(reg.get_result_read_error().value(), active_bit == 0);
+			EXPECT_THAT(reg.get_result_read_overflow().value(), active_bit == 1);
+			EXPECT_THAT(reg.get_result_write_error().value(), active_bit == 2);
+			EXPECT_THAT(reg.get_result_write_underrun().value(), active_bit == 3);
+			EXPECT_THAT(reg.get_playback_read_error().value(), active_bit == 4);
+			EXPECT_THAT(reg.get_playback_read_overflow().value(), active_bit == 5);
+			EXPECT_THAT(reg.get_playback_write_error().value(), active_bit == 6);
+			EXPECT_THAT(reg.get_playback_write_underrun().value(), active_bit == 7);
+			EXPECT_THAT(reg.get_program_exception().value(), active_bit == 8);
+			EXPECT_THAT(reg.get_serdes_overflow().value(), active_bit == 16);
+			EXPECT_THAT(reg.get_serdes_pll_unlocked().value(), active_bit == 17);
+			EXPECT_THAT(reg.get_serdes_race().value(), active_bit == 18);
+			EXPECT_THAT(reg.get_encode_overflow().value(), active_bit == 20);
+
+			EXPECT_TRUE(reg.check());
+			EXPECT_FALSE(reg.check().value());
 		}
 	}
 }
