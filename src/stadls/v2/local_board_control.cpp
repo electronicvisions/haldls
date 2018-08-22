@@ -338,6 +338,7 @@ void LocalBoardControl::execute()
 
 std::vector<haldls::v2::instruction_word_type> LocalBoardControl::fetch()
 {
+	auto log = log4cxx::Logger::getLogger(__func__);
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
@@ -349,6 +350,16 @@ std::vector<haldls::v2::instruction_word_type> LocalBoardControl::fetch()
 	auto result_size = ocp_read_container<haldls::v2::FlyspiResultSize>(m_impl->com, unique);
 	if (!result_size.get_value()) {
 		throw std::logic_error("no result size read from board");
+	}
+	if (result_size.get_value().value() > rw_api::FlyspiCom::SdramChannel::max_size) {
+		throw std::logic_error(
+			"to be read back data(" + std::to_string(result_size.get_value().value()) +
+			") exceeds FPGA memory(" + std::to_string(rw_api::FlyspiCom::SdramChannel::max_size) + ")");
+	}
+	auto exception = ocp_read_container<haldls::v2::FlyspiException>(m_impl->com, unique);
+	if (!exception.check().value()) {
+		LOG4CXX_ERROR(log, "FPGA exception raised: " << exception);
+		throw std::logic_error("FPGA exception raised, aborting fetching");
 	}
 
 	// vvv ------8<----------- (legacy code copied from frickel-dls)
