@@ -47,7 +47,7 @@ TEST_F(PlaybackTest, CapMem) {
 	PlaybackProgramBuilder builder;
 	builder.write(coord, capmem_config);
 	builder.wait_until(100);
-	auto capmem_ticket = builder.read(coord, capmem_config);
+	auto capmem_ticket = builder.read<CapMem>(coord);
 	auto capmemcell_ticket = builder.read<CapMemCell>(cell);
 	builder.halt();
 
@@ -61,7 +61,7 @@ TEST_F(PlaybackTest, CapMem) {
 	EXPECT_THROW(std::ignore = program.get(capmem_ticket), std::runtime_error);
 	EXPECT_THROW(std::ignore = program.get(capmemcell_ticket), std::runtime_error);
 
-	auto capmem_ticket_ = builder.read(coord, capmem_config);
+	auto capmem_ticket_ = builder.read<CapMem>(coord);
 	auto program_ = builder.done();
 
 	// Using Ticket issued for a different program
