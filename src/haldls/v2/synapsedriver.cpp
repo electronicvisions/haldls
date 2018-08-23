@@ -5,28 +5,28 @@
 namespace haldls {
 namespace v2 {
 
-SynapseDriverBlock::SynapseDriverBlock() : m_pulse_length(0), m_states() {}
+SynapseDriverBlock::SynapseDriverBlock() : m_pulse_length(0), m_modes() {}
 
-auto SynapseDriverBlock::get_states() const -> states_type
+auto SynapseDriverBlock::get_modes() const -> modes_type
 {
-	return m_states;
+	return m_modes;
 }
 
-void SynapseDriverBlock::set_states(states_type const& values)
+void SynapseDriverBlock::set_modes(modes_type const& values)
 {
-	m_states = values;
+	m_modes = values;
 }
 
-SynapseDriverBlock::State SynapseDriverBlock::get_state(
+SynapseDriverBlock::Mode SynapseDriverBlock::get_mode(
 	halco::hicann_dls::v2::SynapseDriverOnDLS const& syndriver) const
 {
-	return m_states.at(syndriver.value());
+	return m_modes.at(syndriver.value());
 }
 
-void SynapseDriverBlock::set_state(
-	halco::hicann_dls::v2::SynapseDriverOnDLS const& syndriver, SynapseDriverBlock::State value)
+void SynapseDriverBlock::set_mode(
+	halco::hicann_dls::v2::SynapseDriverOnDLS const& syndriver, SynapseDriverBlock::Mode value)
 {
-	m_states.at(syndriver.value()) = value;
+	m_modes.at(syndriver.value()) = value;
 }
 
 SynapseDriverBlock::PulseLength SynapseDriverBlock::get_pulse_length() const
@@ -41,7 +41,7 @@ void SynapseDriverBlock::set_pulse_length(SynapseDriverBlock::PulseLength const&
 
 bool SynapseDriverBlock::operator==(SynapseDriverBlock const& other) const
 {
-	return m_pulse_length == other.get_pulse_length() && m_states == other.get_states();
+	return m_pulse_length == other.get_pulse_length() && m_modes == other.get_modes();
 }
 
 bool SynapseDriverBlock::operator!=(SynapseDriverBlock const& other) const
@@ -69,9 +69,9 @@ SynapseDriverBlock::encode() const
 	for (auto const drv : iter_all<SynapseDriverOnDLS>()) {
 		size_t const value = drv.value();
 		size_t const complement = SynapseDriverOnDLS::max - value;
-		if (m_states.at(value) == State::inhibitory)
+		if (m_modes.at(value) == Mode::inhibitory)
 			inhibitory[complement] = 1;
-		if (m_states.at(value) == State::excitatory)
+		if (m_modes.at(value) == Mode::excitatory)
 			excitatory[complement] = 1;
 	}
 	return {{static_cast<hardware_word_type>(excitatory.to_ulong()),
@@ -90,11 +90,11 @@ void SynapseDriverBlock::decode(
 		size_t const value = drv.value();
 		size_t const complement = SynapseDriverOnDLS::max - value;
 		if (excitatory[complement])
-			m_states.at(value) = State::excitatory;
+			m_modes.at(value) = Mode::excitatory;
 		else if (inhibitory[complement])
-			m_states.at(value) = State::inhibitory;
+			m_modes.at(value) = Mode::inhibitory;
 		else
-			m_states.at(value) = State::disabled;
+			m_modes.at(value) = Mode::disabled;
 	}
 	m_pulse_length = PulseLength(data.at(2));
 }

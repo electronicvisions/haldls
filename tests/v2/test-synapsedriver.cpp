@@ -16,19 +16,19 @@ TEST(SynapseDriverConfig, General)
 	EXPECT_ANY_THROW(SynapseDriverBlock::PulseLength(32));
 	EXPECT_NO_THROW(SynapseDriverBlock::PulseLength(31));
 
-	config.set_state(SynapseDriverOnDLS(5), SynapseDriverBlock::State::excitatory);
+	config.set_mode(SynapseDriverOnDLS(5), SynapseDriverBlock::Mode::excitatory);
 	ASSERT_EQ(
-		config.get_state(SynapseDriverOnDLS(5)), SynapseDriverBlock::State::excitatory);
-	config.set_state(SynapseDriverOnDLS(8), SynapseDriverBlock::State::inhibitory);
+		config.get_mode(SynapseDriverOnDLS(5)), SynapseDriverBlock::Mode::excitatory);
+	config.set_mode(SynapseDriverOnDLS(8), SynapseDriverBlock::Mode::inhibitory);
 	ASSERT_EQ(
-		config.get_state(SynapseDriverOnDLS(8)), SynapseDriverBlock::State::inhibitory);
+		config.get_mode(SynapseDriverOnDLS(8)), SynapseDriverBlock::Mode::inhibitory);
 
 	config.set_pulse_length(SynapseDriverBlock::PulseLength(21));
 	ASSERT_EQ(config.get_pulse_length(), SynapseDriverBlock::PulseLength(21));
 
 	SynapseDriverBlock config_eq = config;
 	SynapseDriverBlock config_ne(config);
-	config_ne.set_state(SynapseDriverOnDLS(5), SynapseDriverBlock::State::inhibitory);
+	config_ne.set_mode(SynapseDriverOnDLS(5), SynapseDriverBlock::Mode::inhibitory);
 
 	ASSERT_EQ(config, config_eq);
 	ASSERT_FALSE(config_ne == config);
@@ -40,16 +40,16 @@ TEST(SynapseDriverConfig, General)
 TEST(SynapseDriverConfig, EncodeDecode)
 {
 	SynapseDriverBlock config;
-	SynapseDriverBlock::states_type states;
-	for (size_t index = 0; index < states.size(); index++) {
+	SynapseDriverBlock::modes_type modes;
+	for (size_t index = 0; index < modes.size(); index++) {
 		if (index % 2)
-			states.at(index) = SynapseDriverBlock::State::excitatory;
+			modes.at(index) = SynapseDriverBlock::Mode::excitatory;
 		else
-			states.at(index) = SynapseDriverBlock::State::inhibitory;
+			modes.at(index) = SynapseDriverBlock::Mode::inhibitory;
 	}
 
 	config.set_pulse_length(SynapseDriverBlock::PulseLength(5));
-	config.set_states(states);
+	config.set_modes(modes);
 
 	std::array<hardware_address_type, SynapseDriverBlock::config_size_in_words> ref_addresses = {
 		{0x1c000000, 0x1c000001, 0x1c000002}};

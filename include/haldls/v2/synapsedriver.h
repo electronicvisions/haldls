@@ -21,23 +21,23 @@ public:
 		constexpr explicit PulseLength(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
-	enum class State : uint_fast8_t
+	enum class Mode : uint_fast8_t
 	{
 		disabled = 0,
 		excitatory,
 		inhibitory
 	};
 
-	typedef std::array<State, halco::hicann_dls::v2::SynapseDriverOnDLS::size> states_type;
+	typedef std::array<Mode, halco::hicann_dls::v2::SynapseDriverOnDLS::size> modes_type;
 
 	SynapseDriverBlock() SYMBOL_VISIBLE;
 
-	states_type get_states() const SYMBOL_VISIBLE;
-	void set_states(states_type const& values) SYMBOL_VISIBLE;
+	modes_type get_modes() const SYMBOL_VISIBLE;
+	void set_modes(modes_type const& values) SYMBOL_VISIBLE;
 
-	State get_state(halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver) const
+	Mode get_mode(halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver) const
 		SYMBOL_VISIBLE;
-	void set_state(halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver, State value)
+	void set_mode(halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver, Mode value)
 		SYMBOL_VISIBLE;
 
 	PulseLength get_pulse_length() const SYMBOL_VISIBLE;
@@ -55,7 +55,7 @@ public:
 
 private:
 	PulseLength m_pulse_length;
-	states_type m_states;
+	modes_type m_modes;
 };
 
 } // namespace v2
