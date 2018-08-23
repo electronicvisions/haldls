@@ -5,7 +5,6 @@
 #include "uni/decoder.h"
 #include "uni/program_builder.h"
 
-#include "haldls/v2/board.h"
 #include "haldls/v2/capmem.h"
 #include "haldls/v2/chip.h"
 #include "haldls/v2/common.h"

@@ -7,6 +7,7 @@
 #include "hate/optional.h"
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
+#include "haldls/v2/synapse.h"
 
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
@@ -239,11 +240,72 @@ private:
 	hate::optional<bool> m_encode_overflow;
 };
 
+class GENPYBIND(visible) SpikeRouter
+{
+public:
+	typedef halco::common::Unique coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	SpikeRouter() SYMBOL_VISIBLE;
+
+	struct GENPYBIND(inline_base("*")) Delay
+		: public halco::common::detail::RantWrapper<Delay, uint_fast16_t, 0x4000 - 1, 0>
+	{
+		constexpr explicit Delay(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+	};
+
+	/// \brief Disable routing of spikes altogether (default).
+	void reset() SYMBOL_VISIBLE;
+
+	/// \brief Enable "squeeze" mode, where every spike received in a specified interval
+	///        is combined into a single packet with a fixed spike address.
+	/// \note In the verilog implementation this mode is called "bypass" mode.  It is
+	///       implemented by or-ing the spike vector (target synapse drivers) of all
+	///       received spikes and assumes a fixed mapping from neurons to synapse drivers,
+	///       e.g. spike events of neuron 0, 1, 2, … will be sent to synapse drivers 0,
+	///       1, 2, ….
+	/// After a specified delay, a single spike with a fixed address will be emitted (as a
+	/// single packet) to all synapse drivers, whose corresponding neuron spiked at least
+	/// once in that interval.
+	void enable_squeeze_mode(
+		SynapseBlock::Synapse::Address const& address, Delay const& delay) SYMBOL_VISIBLE;
+
+	typedef std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> target_rows_type;
+
+	void set_neuron_route(
+		halco::hicann_dls::v2::NeuronOnDLS const& neuron,
+		SynapseBlock::Synapse::Address const& address,
+		target_rows_type const& target_rows) SYMBOL_VISIBLE;
+
+	bool operator==(SpikeRouter const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SpikeRouter const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) =
+		2 * halco::hicann_dls::v2::NeuronOnDLS::size + 1;
+	std::array<ocp_address_type, config_size_in_words> write_addresses(
+		coordinate_type const& unique) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<ocp_address_type, 0> read_addresses(coordinate_type const& unique) const
+		SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<ocp_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<ocp_word_type, 0> const& words) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	bool m_squeeze_mode_enabled;
+	SynapseBlock::Synapse::Address m_squeeze_mode_address;
+	Delay m_squeeze_mode_delay;
+
+	halco::common::typed_array<SynapseBlock::Synapse::Address, halco::hicann_dls::v2::NeuronOnDLS>
+		m_address_by_neuron;
+	halco::common::typed_array<target_rows_type, halco::hicann_dls::v2::NeuronOnDLS>
+		m_target_rows_by_neuron;
+}; // SpikeRouter
+
 } // namespace v2
 } // namespace haldls
 
 namespace std {
 
 HALCO_GEOMETRY_HASH_CLASS(haldls::v2::FlyspiConfig::TgControl)
+HALCO_GEOMETRY_HASH_CLASS(haldls::v2::SpikeRouter::Delay)
 
 } // namespace std

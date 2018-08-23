@@ -16,7 +16,7 @@
 #include "haldls/v2/chip.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/playback.h"
-#include "haldls/v2/register.h"
+#include "haldls/v2/fpga.h"
 #include "haldls/v2/spike.h"
 #include "stadls/v2/ocp.h"
 #include "stadls/visitors.h"
