@@ -203,7 +203,7 @@ void PlaybackProgramBuilder::fire(
 	v2::SynapseBlock::Synapse::Address const& address)
 {
 	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.fire_one(synapse_driver_mask.to_ulong(), address);
+	m_program.m_impl->bld.fire(synapse_driver_mask.to_ulong(), address);
 }
 
 void PlaybackProgramBuilder::fire(
@@ -211,7 +211,7 @@ void PlaybackProgramBuilder::fire(
 	v2::SynapseBlock::Synapse::Address const& address)
 {
 	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.fire_one(synapse_driver, address);
+	m_program.m_impl->bld.fire_one(synapse_driver.value(), address);
 }
 
 void PlaybackProgramBuilder::halt()
