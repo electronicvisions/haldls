@@ -148,5 +148,13 @@ void DAC::decode(coordinate_type const& /*dac*/, std::array<ocp_word_type, 0> co
 	// Not implemented or supported (see task #2695)
 }
 
+template <class Archive>
+void DAC::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_channels));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(DAC)
+
 } // namespace v2
 } // namespace haldls

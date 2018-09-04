@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/board.h"
 #include "stadls/visitors.h"
 
@@ -83,4 +84,81 @@ TEST(SpikeRouter, Encode)
 		data.push_back(word.value);
 
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+}
+
+TEST(SpikeRouter, CerealizeCoverage)
+{
+	{
+		SpikeRouter obj1,obj2;
+		obj1.enable_squeeze_mode(
+		    draw_ranged_non_default_value<SynapseBlock::Synapse::Address>(0),
+		    draw_ranged_non_default_value<SpikeRouter::Delay>(0));
+
+		std::ostringstream ostream;
+		{
+			cereal::JSONOutputArchive oa(ostream);
+			oa(obj1);
+		}
+
+		std::istringstream istream(ostream.str());
+		{
+			cereal::JSONInputArchive ia(istream);
+			ia(obj2);
+		}
+		ASSERT_EQ(obj1, obj2);
+	}
+	{
+		SpikeRouter obj1,obj2;
+		for (auto neuron: iter_all<halco::hicann_dls::v2::NeuronOnDLS>()) {
+			auto rnd = rand();
+			while(rnd == 0) {
+				rnd = rand();
+			}
+
+			obj1.set_neuron_route(
+			    neuron,
+			    draw_ranged_non_default_value<SynapseBlock::Synapse::Address>(0),
+			    SpikeRouter::target_rows_type(rnd));
+		}
+		std::ostringstream ostream;
+		{
+			cereal::JSONOutputArchive oa(ostream);
+			oa(obj1);
+		}
+
+		std::istringstream istream(ostream.str());
+		{
+			cereal::JSONInputArchive ia(istream);
+			ia(obj2);
+		}
+		ASSERT_EQ(obj1, obj2);
+	}
+}
+
+TEST(Board, CerealizeCoverage)
+{
+	Board obj1,obj2;
+	obj1.set_parameter(Board::Parameter::cadc_ramp_01, draw_ranged_non_default_value<DAC::Value>(0));
+	auto flyspi_config = obj1.get_flyspi_config();
+	flyspi_config.set_dls_reset(!flyspi_config.get_dls_reset());
+	obj1.set_flyspi_config(flyspi_config);
+	auto spike_router = obj1.get_spike_router();
+	spike_router.enable_squeeze_mode(
+	    draw_ranged_non_default_value<SynapseBlock::Synapse::Address>(0),
+	    draw_ranged_non_default_value<SpikeRouter::Delay>(0));
+	obj1.set_spike_router(spike_router);
+	// m_flyspi_exception not settable
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

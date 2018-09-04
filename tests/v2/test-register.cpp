@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/board.h"
 #include "stadls/visitors.h"
 
@@ -409,4 +410,58 @@ TEST(FlyspiException, decode)
 			}
 		}
 	}
+}
+
+TEST(FlyspiConfig, CerealizeCoverage)
+{
+	FlyspiConfig obj1,obj2;
+// take boolean member and invert its state
+#define INVERT(what)\
+	obj1.set_##what (!obj1.get_##what ());
+	INVERT(dls_reset)
+	INVERT(soft_reset)
+	INVERT(enable_spike_router)
+	INVERT(i_phase_select)
+	INVERT(o_phase_select)
+	INVERT(enable_train)
+	INVERT(enable_transceiver)
+	INVERT(enable_lvds)
+	INVERT(enable_analog_power)
+	INVERT(enable_dls_loopback)
+#undef INVERT
+	obj1.set_tg_control(draw_ranged_non_default_value<FlyspiConfig::TgControl>(0));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
+TEST(FlyspiException, CerealizeCoverage)
+{
+	FlyspiException obj1,obj2;
+	{
+		std::vector<ocp_word_type> ocp_data = {{ocp_word_type::value_type(0xffffffff)}};
+		visit_preorder(obj1, Unique{}, stadls::DecodeVisitor<std::vector<ocp_word_type>>{ocp_data});
+	}
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

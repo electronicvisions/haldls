@@ -437,6 +437,24 @@ void FlyspiConfig::decode(std::array<ocp_word_type, FlyspiConfig::config_size_in
 	m_dls_loopback = bitfield.u.m.dls_loopback;
 }
 
+template <class Archive>
+void FlyspiConfig::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_dls_reset));
+	ar(CEREAL_NVP(m_soft_reset));
+	ar(CEREAL_NVP(m_tg_control));
+	ar(CEREAL_NVP(m_spike_router));
+	ar(CEREAL_NVP(m_i_phase_select));
+	ar(CEREAL_NVP(m_o_phase_select));
+	ar(CEREAL_NVP(m_train));
+	ar(CEREAL_NVP(m_transceiver));
+	ar(CEREAL_NVP(m_lvds));
+	ar(CEREAL_NVP(m_analog_power));
+	ar(CEREAL_NVP(m_dls_loopback));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FlyspiConfig)
+
 FlyspiException::FlyspiException()
 	: m_result_read_error(),
 	  m_result_read_overflow(),
@@ -665,6 +683,26 @@ void FlyspiException::decode(
 	m_encode_overflow = static_cast<bool>(bitfield.u.m.encode_overflow);
 }
 
+template <class Archive>
+void FlyspiException::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_result_read_error));
+	ar(CEREAL_NVP(m_result_read_overflow));
+	ar(CEREAL_NVP(m_result_write_error));
+	ar(CEREAL_NVP(m_result_write_underrun));
+	ar(CEREAL_NVP(m_playback_read_error));
+	ar(CEREAL_NVP(m_playback_read_overflow));
+	ar(CEREAL_NVP(m_playback_write_error));
+	ar(CEREAL_NVP(m_playback_write_underrun));
+	ar(CEREAL_NVP(m_program_exception));
+	ar(CEREAL_NVP(m_serdes_overflow));
+	ar(CEREAL_NVP(m_serdes_pll_unlocked));
+	ar(CEREAL_NVP(m_serdes_race));
+	ar(CEREAL_NVP(m_encode_overflow));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FlyspiException)
+
 SpikeRouter::SpikeRouter()
 	: m_squeeze_mode_enabled(false),
 	  m_squeeze_mode_address(),
@@ -778,6 +816,18 @@ void SpikeRouter::decode(std::array<ocp_word_type, 0> const& /*words*/)
 {
 	// Write only register
 }
+
+template <class Archive>
+void SpikeRouter::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_squeeze_mode_enabled));
+	ar(CEREAL_NVP(m_squeeze_mode_address));
+	ar(CEREAL_NVP(m_squeeze_mode_delay));
+	ar(CEREAL_NVP(m_address_by_neuron));
+	ar(CEREAL_NVP(m_target_rows_by_neuron));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeRouter)
 
 } // namespace v2
 } // namespace haldls

@@ -8,6 +8,7 @@
 
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
+#include "haldls/cerealization.h"
 
 
 namespace haldls {
@@ -53,6 +54,10 @@ public:
 		SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	halco::common::typed_array<Value, Channel> m_channels;
 };
 

@@ -8,6 +8,7 @@
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/synapse.h"
+#include "haldls/cerealization.h"
 
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
@@ -168,6 +169,10 @@ public:
 		GENPYBIND(hidden);
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	bool m_dls_reset;
 	bool m_soft_reset;
 	TgControl m_tg_control;
@@ -225,6 +230,10 @@ public:
 		GENPYBIND(hidden);
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	hate::optional<bool> m_result_read_error;
 	hate::optional<bool> m_result_read_overflow;
 	hate::optional<bool> m_result_write_error;
@@ -290,6 +299,10 @@ public:
 	void decode(std::array<ocp_word_type, 0> const& words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	bool m_squeeze_mode_enabled;
 	SynapseBlock::Synapse::Address m_squeeze_mode_address;
 	Delay m_squeeze_mode_delay;

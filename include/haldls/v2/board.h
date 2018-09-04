@@ -9,6 +9,7 @@
 #include "haldls/v2/dac.h"
 #include "haldls/v2/fpga.h"
 #include "haldls/v2/synapse.h"
+#include "haldls/cerealization.h"
 
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
@@ -58,6 +59,10 @@ public:
 	friend detail::VisitPreorderImpl<Board>;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	FlyspiConfig m_flyspi_config;
 	FlyspiException m_flyspi_exception;
 	SpikeRouter m_spike_router;

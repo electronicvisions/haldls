@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "halco/common/iter_all.h"
 #include "haldls/v2/dac.h"
 #include "stadls/visitors.h"
@@ -75,4 +76,24 @@ TEST(DAC, Encode)
 	for (auto word : ocp_data)
 		data.push_back(word.value);
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+}
+
+TEST(DAC, CerealizeCoverage)
+{
+	DAC obj1,obj2;
+	for (auto channel: iter_all<DAC::Channel>()) {
+		obj1.set(channel, draw_ranged_non_default_value<DAC::Value>(0));
+	}
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

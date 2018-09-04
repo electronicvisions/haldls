@@ -113,5 +113,16 @@ bool Board::operator!=(Board const& other) const
 	return !(*this == other);
 }
 
+template <class Archive>
+void Board::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_flyspi_config));
+	ar(CEREAL_NVP(m_flyspi_exception));
+	ar(CEREAL_NVP(m_spike_router));
+	ar(CEREAL_NVP(m_dacs));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(Board)
+
 } // namespace v2
 } // namespace haldls
