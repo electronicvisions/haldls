@@ -87,7 +87,7 @@ protected:
 		chip.set_capmem(capmem);
 
 		// Set connectivity
-		SynapseOnDLS const synapse(neuron, synapse_driver);
+		SynapseOnDLS const synapse(neuron.toSynapseColumnOnDLS(), synapse_driver.toSynapseRowOnDLS());
 		auto synapse_config = chip.get_synapse(synapse);
 		synapse_config.set_weight(weight);
 		synapse_config.set_address(address);
