@@ -213,6 +213,20 @@ void PlaybackProgramBuilder::fire(
 	m_program.m_impl->bld.fire_one(synapse_driver.value(), address);
 }
 
+void PlaybackProgramBuilder::fire_post_correlation_signal(
+	std::bitset<halco::hicann_dls::v2::NeuronOnDLS::size> const& neuron_mask)
+{
+	assert(m_program.m_impl != nullptr);
+	m_program.m_impl->bld.write(0x1a000101, neuron_mask.to_ulong());
+}
+
+void PlaybackProgramBuilder::fire_post_correlation_signal(
+	halco::hicann_dls::v2::NeuronOnDLS const& neuron)
+{
+	assert(m_program.m_impl != nullptr);
+	m_program.m_impl->bld.write(0x1a000101, 1 << neuron.value());
+}
+
 void PlaybackProgramBuilder::halt()
 {
 	assert(m_program.m_impl != nullptr);

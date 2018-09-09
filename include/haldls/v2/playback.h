@@ -121,6 +121,10 @@ public:
 	void fire(
 		halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver,
 		v2::SynapseBlock::Synapse::Address const& address) SYMBOL_VISIBLE;
+	void fire_post_correlation_signal(
+		std::bitset<halco::hicann_dls::v2::NeuronOnDLS::size> const& neuron_mask) SYMBOL_VISIBLE;
+	void fire_post_correlation_signal(
+		halco::hicann_dls::v2::NeuronOnDLS const& neuron) SYMBOL_VISIBLE;
 	void halt() SYMBOL_VISIBLE;
 
 	template <class T>
