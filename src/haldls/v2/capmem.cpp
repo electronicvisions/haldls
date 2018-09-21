@@ -111,6 +111,14 @@ bool CapMemCell::operator!=(CapMemCell const& other) const
 	return !(*this == other);
 }
 
+template <class Archive>
+void CapMemCell::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemCell)
+
 CapMem::CapMem()
 {
 	for (auto column : halco::common::iter_all<CapMemColumnOnDLS>()) {
@@ -169,6 +177,14 @@ bool CapMem::operator!=(CapMem const& other) const
 {
 	return !(*this == other);
 }
+
+template <class Archive>
+void CapMem::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_capmem_cells));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMem)
 
 CapMemConfig::CapMemConfig()
 	: m_enable_capmem(true),
@@ -573,6 +589,34 @@ void CapMemConfig::decode(
 	m_boost_b = BoostB(bitfield.u.m.boost_b);
 	m_pause_counter = PauseCounter(bitfield.u.m.pause_counter);
 }
+
+template <class Archive>
+void CapMemConfig::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_enable_capmem));
+	ar(CEREAL_NVP(m_debug_readout_enable));
+	ar(CEREAL_NVP(m_debug_capmem_coord));
+	ar(CEREAL_NVP(m_debug_v_ref_select));
+	ar(CEREAL_NVP(m_debug_i_out_select));
+	ar(CEREAL_NVP(m_debug_out_amp_bias));
+	ar(CEREAL_NVP(m_debug_source_follower_bias));
+	ar(CEREAL_NVP(m_debug_level_shifter_bias));
+	ar(CEREAL_NVP(m_v_global_bias));
+	ar(CEREAL_NVP(m_current_cell_res));
+	ar(CEREAL_NVP(m_enable_boost));
+	ar(CEREAL_NVP(m_boost_factor));
+	ar(CEREAL_NVP(m_enable_autoboost));
+	ar(CEREAL_NVP(m_prescale_pause));
+	ar(CEREAL_NVP(m_prescale_ramp));
+	ar(CEREAL_NVP(m_sub_counter));
+	ar(CEREAL_NVP(m_pause_counter));
+	ar(CEREAL_NVP(m_pulse_a));
+	ar(CEREAL_NVP(m_pulse_b));
+	ar(CEREAL_NVP(m_boost_a));
+	ar(CEREAL_NVP(m_boost_b));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemConfig)
 
 } // namespace v2
 } // namespace haldls

@@ -15,6 +15,9 @@ class CommonSerializationTests : public ::testing::Test {};
 
 typedef ::testing::Types<Board,
                          DAC,
+                         CapMem,
+                         CapMemCell,
+                         CapMemConfig,
                          FlyspiConfig,
                          FlyspiException,
                          SpikeRouter> SerializableTypes;

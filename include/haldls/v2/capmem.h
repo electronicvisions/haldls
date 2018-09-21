@@ -9,6 +9,8 @@
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
 
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
 
@@ -42,6 +44,10 @@ public:
 	bool operator!=(CapMemCell const& other) const SYMBOL_VISIBLE;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	Value m_value;
 };
 
@@ -76,6 +82,10 @@ public:
 	friend detail::VisitPreorderImpl<CapMem>;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	halco::common::typed_array<CapMemCell, halco::hicann_dls::v2::CapMemCellOnDLS> m_capmem_cells;
 };
 
@@ -249,6 +259,10 @@ public:
 	bool operator!=(CapMemConfig const& other) const SYMBOL_VISIBLE;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	bool m_enable_capmem;
 	bool m_debug_readout_enable;
 	halco::hicann_dls::v2::CapMemCellOnDLS m_debug_capmem_coord;

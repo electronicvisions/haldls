@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/capmem.h"
 #include "stadls/visitors.h"
 
@@ -66,6 +67,25 @@ TEST(CapMemCell, EncodeDecode)
 	ASSERT_NE(config, config_copy);
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
+}
+
+TEST(CapMemCell, CerealizeCoverage)
+{
+	CapMemCell obj1,obj2;
+	obj1.set_value(draw_ranged_non_default_value<CapMemCell::Value>(0));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }
 
 TEST(CapMem, General)
@@ -146,6 +166,28 @@ TEST(CapMem, EncodeDecode)
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }
+
+TEST(CapMem, CerealizeCoverage)
+{
+	CapMem obj1,obj2;
+	for (auto cell: iter_all<halco::hicann_dls::v2::CapMemCellOnDLS>()) {
+		obj1.set(cell, draw_ranged_non_default_value<CapMemCell::Value>(0));
+	}
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 
 TEST(CapMemConfig, General)
 {
@@ -317,4 +359,47 @@ TEST(CapMemConfig, EncodeDecode)
 	ASSERT_NE(config, config_copy);
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
+}
+
+TEST(CapMemConfig, CerealizeCoverage)
+{
+	CapMemConfig obj1,obj2;
+	obj1.set_enable_capmem(!obj1.get_enable_capmem());
+	obj1.set_debug_readout_enable(!obj1.get_debug_readout_enable());
+	obj1.set_enable_boost(!obj1.get_enable_boost());
+	obj1.set_enable_autoboost(!obj1.get_enable_autoboost());
+	obj1.set_debug_capmem_coord(halco::hicann_dls::v2::CapMemCellOnDLS(
+	    draw_ranged_non_default_value<halco::hicann_dls::v2::CapMemRowOnDLS>(0),
+	    draw_ranged_non_default_value<halco::hicann_dls::v2::CapMemColumnOnDLS>(0)));
+	obj1.set_debug_v_ref_select(CapMemConfig::VRefSelect::v_ref_v);
+	obj1.set_debug_i_out_select(CapMemConfig::IOutSelect::i_out_ramp);
+#define RANDOMIZE(name, type) \
+	obj1.set_##name(draw_ranged_non_default_value<type>(obj1.get_##name()));
+	RANDOMIZE(debug_out_amp_bias,CapMemConfig::OutAmpBias)
+	RANDOMIZE(debug_source_follower_bias,CapMemConfig::SourceFollowerBias)
+	RANDOMIZE(debug_level_shifter_bias,CapMemConfig::LevelShifterBias)
+	RANDOMIZE(v_global_bias,CapMemConfig::VGlobalBias)
+	RANDOMIZE(current_cell_res,CapMemConfig::CurrentCellRes)
+	RANDOMIZE(boost_factor,CapMemConfig::BoostFactor)
+	RANDOMIZE(prescale_pause,CapMemConfig::PrescalePause)
+	RANDOMIZE(prescale_ramp,CapMemConfig::PrescaleRamp)
+	RANDOMIZE(sub_counter,CapMemConfig::SubCounter)
+	RANDOMIZE(pause_counter,CapMemConfig::PauseCounter)
+	RANDOMIZE(pulse_a,CapMemConfig::PulseA)
+	RANDOMIZE(pulse_b,CapMemConfig::PulseB)
+	RANDOMIZE(boost_a,CapMemConfig::BoostA)
+	RANDOMIZE(boost_b,CapMemConfig::BoostB)
+#undef RANDOMIZE
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }
