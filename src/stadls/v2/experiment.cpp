@@ -29,9 +29,9 @@ public:
 	~Impl() = default;
 
 	void run_experiment(
-		haldls::v2::Board const& board,
-		haldls::v2::Chip const& chip,
-		haldls::v2::PlaybackProgram& playback_program);
+	    haldls::v2::Board const& board,
+	    haldls::v2::Chip const& chip,
+	    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program);
 
 	using control_t = typename boost::variant<LocalBoardControl, QuickQueueClient>;
 
@@ -39,10 +39,10 @@ public:
 	{
 	public:
 		RunExperimentVisitor(
-			haldls::v2::Board const& board,
-			haldls::v2::Chip const& chip,
-			haldls::v2::PlaybackProgram& playback_program)
-			: m_board(board), m_chip(chip), m_playback_program(playback_program)
+		    haldls::v2::Board const& board,
+		    haldls::v2::Chip const& chip,
+		    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
+		    : m_board(board), m_chip(chip), m_playback_program(playback_program)
 		{}
 
 		template <typename T>
@@ -53,7 +53,7 @@ public:
 
 		haldls::v2::Board const& m_board;
 		haldls::v2::Chip const& m_chip;
-		haldls::v2::PlaybackProgram& m_playback_program;
+		std::shared_ptr<haldls::v2::PlaybackProgram> const& m_playback_program;
 	};
 
 	std::unique_ptr<control_t> m_control;
@@ -76,9 +76,9 @@ ExperimentControl& ExperimentControl::operator=(ExperimentControl&&) noexcept = 
 ExperimentControl::~ExperimentControl() = default;
 
 void ExperimentControl::run_experiment(
-	haldls::v2::Board const& board,
-	haldls::v2::Chip const& chip,
-	haldls::v2::PlaybackProgram& playback_program)
+    haldls::v2::Board const& board,
+    haldls::v2::Chip const& chip,
+    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	m_impl->run_experiment(board, chip, playback_program);
 }
@@ -126,9 +126,9 @@ ExperimentControl::Impl::Impl(std::string const& ip, uint16_t port)
 {}
 
 void ExperimentControl::Impl::run_experiment(
-	haldls::v2::Board const& board,
-	haldls::v2::Chip const& chip,
-	haldls::v2::PlaybackProgram& playback_program)
+    haldls::v2::Board const& board,
+    haldls::v2::Chip const& chip,
+    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	boost::apply_visitor(RunExperimentVisitor(board, chip, playback_program), *m_control);
 }

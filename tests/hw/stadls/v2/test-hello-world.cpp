@@ -124,7 +124,7 @@ protected:
 		chip.enable_buffered_readout(neuron);
 	}
 
-	void test_run_program(PlaybackProgram& program)
+	void test_run_program(std::shared_ptr<PlaybackProgram> const& program)
 	{
 		ExperimentControl ctrl;
 		ctrl.run_experiment(board, chip, program);
@@ -144,7 +144,7 @@ TEST_F(IntegrationHelloWorld, Silence)
 
 	configure();
 	test_run_program(program);
-	auto const& spikes = program.get_spikes();
+	auto const& spikes = program->get_spikes();
 	EXPECT_TRUE(spikes.empty());
 }
 
@@ -193,7 +193,7 @@ protected:
 
 	void check_spikes()
 	{
-		auto const& spikes = program.get_spikes();
+		auto const& spikes = program->get_spikes();
 		EXPECT_EQ(num_spikes, spikes.size());
 
 		size_t last_time = 0;
@@ -208,7 +208,7 @@ protected:
 		}
 	}
 
-	PlaybackProgram program;
+	std::shared_ptr<PlaybackProgram> program;
 }; // IntegrationBypassHelloWorld
 
 INSTANTIATE_TEST_CASE_P(

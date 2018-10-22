@@ -69,9 +69,8 @@ private:
 };
 
 QuickQueueRequest create_request(
-	haldls::v2::Board const& board,
-	haldls::v2::Chip const& chip,
-	haldls::v2::PlaybackProgram& playback_program);
+	haldls::v2::Board const& board, haldls::v2::Chip const& chip,
+	std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program);
 
 class QuickQueueWorker
 {
@@ -143,7 +142,7 @@ public:
 	void run_experiment(
 		haldls::v2::Board const& board,
 		haldls::v2::Chip const& chip,
-		haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
+		std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program) SYMBOL_VISIBLE;
 
 	static int const max_message_length = 1280 * 1024 * 1024;
 	static int const remote_call_timeout = 3600 * 1000;

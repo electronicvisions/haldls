@@ -116,8 +116,7 @@ public:
 
 	rw_api::FlyspiCom com;
 
-	haldls::v2::PlaybackProgram::serial_number_type program_serial_number =
-		haldls::v2::PlaybackProgram::invalid_serial_number;
+	std::shared_ptr<haldls::v2::PlaybackProgram const> last_playback_program;
 	static constexpr hardware_address_type program_address = 0;
 	hardware_address_type program_size = 0;
 	static constexpr hardware_address_type result_address = 0;
@@ -203,7 +202,7 @@ void LocalBoardControl::configure_static(
 	}
 }
 
-haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip)
+std::shared_ptr<haldls::v2::PlaybackProgram> get_configure_program(haldls::v2::Chip chip)
 {
 	// Chip configuration program
 	haldls::v2::PlaybackProgramBuilder setup_builder;
@@ -268,18 +267,19 @@ void LocalBoardControl::transfer(
 	ocp_write_container(m_impl->com, unique, result_address);
 }
 
-void LocalBoardControl::transfer(haldls::v2::PlaybackProgram const& playback_program)
+void LocalBoardControl::transfer(
+    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	if (!m_impl) {
 		throw std::logic_error("unexpected access to moved-from object");
 	}
 
-	if (playback_program.serial_number() == haldls::v2::PlaybackProgram::invalid_serial_number) {
+	if (!playback_program->valid()) {
 		throw std::logic_error("trying to transfer program with invalid state");
 	}
 
-	m_impl->program_serial_number = playback_program.serial_number();
-	transfer(playback_program.instruction_byte_blocks());
+	m_impl->last_playback_program = playback_program;
+	transfer(playback_program->instruction_byte_blocks());
 }
 
 void LocalBoardControl::execute(
@@ -407,24 +407,24 @@ std::vector<haldls::v2::instruction_word_type> LocalBoardControl::fetch()
 	return bytes;
 }
 
-void LocalBoardControl::fetch(haldls::v2::PlaybackProgram& playback_program)
+void LocalBoardControl::fetch(std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	if (m_impl->program_serial_number != playback_program.serial_number())
+	if (m_impl->last_playback_program != playback_program)
 		throw std::runtime_error("Different playback program as transferred to chip");
 	decode_result_bytes(fetch(), playback_program);
 }
 
 void LocalBoardControl::decode_result_bytes(
-	std::vector<haldls::v2::instruction_word_type> const& result_bytes,
-	haldls::v2::PlaybackProgram& playback_program)
+    std::vector<haldls::v2::instruction_word_type> const& result_bytes,
+    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	UniDecoder decoder;
 	uni::decode(result_bytes.begin(), result_bytes.end(), decoder);
-	playback_program.set_results(std::move(decoder.words));
-	playback_program.set_spikes(std::move(decoder.spikes));
+	playback_program->set_results(std::move(decoder.words));
+	playback_program->set_spikes(std::move(decoder.spikes));
 }
 
 std::vector<haldls::v2::instruction_word_type> LocalBoardControl::run(
@@ -435,7 +435,7 @@ std::vector<haldls::v2::instruction_word_type> LocalBoardControl::run(
 	return fetch();
 }
 
-void LocalBoardControl::run(haldls::v2::PlaybackProgram& playback_program)
+void LocalBoardControl::run(std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	transfer(playback_program);
 	execute();
@@ -443,9 +443,9 @@ void LocalBoardControl::run(haldls::v2::PlaybackProgram& playback_program)
 }
 
 void LocalBoardControl::run_experiment(
-	haldls::v2::Board const& board,
-	haldls::v2::Chip const& chip,
-	haldls::v2::PlaybackProgram& playback_program)
+    haldls::v2::Board const& board,
+    haldls::v2::Chip const& chip,
+    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	configure_static(board, chip);
 	run(playback_program);

@@ -38,33 +38,17 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
 
         program = builder.done()
 
-        # Builder is reset (starts a new program) every time .done() is called
-        empty_new_program = builder.done()
-        self.assertNotEqual(program.serial_number(), empty_new_program.serial_number())
-
         # No data available yet
         with self.assertRaises(RuntimeError):
-            capmem_copy = program.get(capmem_ticket)
+            capmem_copy = capmem_ticket.get()
         with self.assertRaises(RuntimeError):
-            capmemcell_copy = program.get(capmemcell_ticket)
-
-        capmem_ticket_ = builder.read(C.CapMemOnDLS())
-        program_ = builder.done()
-
-        # Using Ticket issued for a different program
-        with self.assertRaises(ValueError):
-            capmem_copy = program.get(capmem_ticket_)
-        with self.assertRaises(ValueError):
-            capmem_copy = program_.get(capmem_ticket)
+            capmemcell_copy = capmemcell_ticket.get()
 
         ctrl = IO.ExperimentControl()
         ctrl.run_experiment(Ct.Board(), Ct.Chip(), program)
 
-        with self.assertRaises(ValueError):
-            capmem_copy = program.get(capmem_ticket_)
-
-        capmem_copy = program.get(capmem_ticket)
-        capmemcell_copy = program.get(capmemcell_ticket)
+        capmem_copy = capmem_ticket.get()
+        capmemcell_copy = capmemcell_ticket.get()
 
         self.assertEqual(capmem_config, capmem_copy)
         self.assertEqual(capmemvalue, capmemcell_copy.get_value())

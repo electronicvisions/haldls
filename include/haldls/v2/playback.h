@@ -24,30 +24,32 @@ namespace v2 GENPYBIND(tag(haldls_v2)) {
 
 class PlaybackProgramBuilder;
 
-class GENPYBIND(visible) PlaybackProgram
+class GENPYBIND(visible, holder_type("std::shared_ptr<haldls::v2::PlaybackProgram>"))
+	PlaybackProgram : public std::enable_shared_from_this<PlaybackProgram>
 {
 public:
 	typedef std::vector<v2::RecordedSpike> spikes_type;
-	typedef std::size_t serial_number_type;
-	static constexpr serial_number_type invalid_serial_number SYMBOL_VISIBLE = 0;
 
 	template <typename T>
 	class ContainerTicket
 	{
+	public:
+		T get() const;
+
 	private:
-		friend PlaybackProgram;
+		friend class PlaybackProgram;
 
 		typedef typename T::coordinate_type coordinate_type;
 
 		ContainerTicket(
-			serial_number_type serial_number,
+			std::shared_ptr<PlaybackProgram const> pbp,
 			coordinate_type const& coord,
 			std::size_t offset,
 			std::size_t length)
-			: serial_number(serial_number), coord(coord), offset(offset), length(length)
+			: pbp(pbp), coord(coord), offset(offset), length(length)
 		{}
 
-		serial_number_type serial_number;
+		std::shared_ptr<PlaybackProgram const> pbp;
 		coordinate_type coord;
 		std::size_t offset;
 		std::size_t length;
@@ -61,29 +63,29 @@ public:
 #endif // __GENPYBIND__
 
 	PlaybackProgram() SYMBOL_VISIBLE;
-	PlaybackProgram(PlaybackProgram const& other) SYMBOL_VISIBLE;
-	PlaybackProgram& operator=(PlaybackProgram const& other) SYMBOL_VISIBLE;
-	PlaybackProgram(PlaybackProgram&& other) noexcept SYMBOL_VISIBLE;
-	PlaybackProgram& operator=(PlaybackProgram&& other) noexcept SYMBOL_VISIBLE;
+	PlaybackProgram(PlaybackProgram const& other) = delete;
+	PlaybackProgram& operator=(PlaybackProgram const& other) = delete;
+	PlaybackProgram(PlaybackProgram&& other) = delete;
+	PlaybackProgram& operator=(PlaybackProgram&& other) = delete;
 	~PlaybackProgram() SYMBOL_VISIBLE;
 
-	template <typename T>
-	T get(ContainerTicket<T> const& ticket) const;
-
 	spikes_type const& get_spikes() const SYMBOL_VISIBLE;
-
-	serial_number_type serial_number() const SYMBOL_VISIBLE;
 
 	std::string dump_program() const SYMBOL_VISIBLE;
 
 	std::vector<std::vector<instruction_word_type> > const& instruction_byte_blocks() const
 		SYMBOL_VISIBLE;
 
+	/**
+	 * Get information on whether the program stores valid executable instructions.
+	 * @return Boolean value
+	 */
+	bool const& valid() const SYMBOL_VISIBLE;
+
 	friend stadls::v2::LocalBoardControl;
 	friend PlaybackProgramBuilder;
 
 private:
-	PlaybackProgram(serial_number_type serial_number);
 
 	/// \see PlaybackProgramBuilder
 	template <typename T>
@@ -101,8 +103,7 @@ private:
 
 	struct Impl;
 	std::unique_ptr<Impl> m_impl;
-	/// Serial number of the build, used to differentiate container tickets.
-	serial_number_type m_serial_number = invalid_serial_number;
+	bool m_valid;
 }; // PlaybackProgram
 
 class GENPYBIND(visible) PlaybackProgramBuilder
@@ -133,22 +134,20 @@ public:
 	template <class T>
 	PlaybackProgram::ContainerTicket<T> read(typename T::coordinate_type const& coord) SYMBOL_VISIBLE;
 
-	PlaybackProgram done() SYMBOL_VISIBLE;
+	std::shared_ptr<PlaybackProgram> done() SYMBOL_VISIBLE;
 
 private:
-	static std::atomic<PlaybackProgram::serial_number_type> next_serial_number;
-	PlaybackProgram m_program;
+	std::shared_ptr<PlaybackProgram> m_program;
 }; // PlaybackProgramBuilder
 
 #ifdef __GENPYBIND__
 // Explicit instantiation of template member functions for all valid playback container types.
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	extern template void PlaybackProgramBuilder::write<Type>(                                      \
-		Type::coordinate_type const&, Type const&);                                                \
-	extern template PlaybackProgram::ContainerTicket<Type>                                         \
-	PlaybackProgramBuilder::read<Type>(Type::coordinate_type const&);                              \
-	extern template Type PlaybackProgram::get(                                                     \
-		PlaybackProgram::ContainerTicket<Type> const& ticket) const;
+	    Type::coordinate_type const&, Type const&);                                                \
+	extern template PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read<Type>(     \
+	    Type::coordinate_type const&);                                                             \
+	extern template Type PlaybackProgram::ContainerTicket<Type>::get() const;
 #include "haldls/v2/container.def"
 #endif // __GENPYBIND__
 

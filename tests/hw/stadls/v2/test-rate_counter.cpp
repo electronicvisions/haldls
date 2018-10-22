@@ -68,7 +68,7 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 			ctrl.run_experiment(board, chip, program);
 		}
 
-		auto res = program.get(counter_ticket);
+		auto res = counter_ticket.get();
 		EXPECT_EQ(RateCounter(), res);
 	}
 
@@ -91,7 +91,7 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 				ctrl.run_experiment(board, chip, program);
 			}
 
-			rate_counter = program.get(counter_ticket);
+			rate_counter = counter_ticket.get();
 			EXPECT_EQ(rate_counter.get_count(neuron), num_spikes);
 		}
 
@@ -114,7 +114,7 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 				ctrl.run_experiment(board, chip, program);
 			}
 
-			auto const rate_counter_2 = program.get(counter_ticket);
+			auto const rate_counter_2 = counter_ticket.get();
 			EXPECT_EQ(rate_counter_2.get_count(neuron), 1); // would expect 2, if not reset and num_spikes + 1 if set instead of reset.
 		}
 	}
@@ -134,8 +134,8 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 			ctrl.run_experiment(board, chip, program);
 		}
 
-		auto const rate_counter = program.get(counter_ticket);
-		auto const rate_counter_2 = program.get(counter_ticket_2);
+		auto const rate_counter = counter_ticket.get();
+		auto const rate_counter_2 = counter_ticket_2.get();
 		EXPECT_EQ(rate_counter, rate_counter_2);
 	}
 
@@ -160,8 +160,8 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 			ctrl.run_experiment(board, chip_local, program);
 		}
 
-		auto const rate_counter = program.get(counter_ticket);
-		auto const rate_counter_2 = program.get(counter_ticket_2);
+		auto const rate_counter = counter_ticket.get();
+		auto const rate_counter_2 = counter_ticket_2.get();
 		EXPECT_EQ(rate_counter.get_count(neuron), 1);
 		EXPECT_EQ(rate_counter_2.get_count(neuron), 0);
 	}

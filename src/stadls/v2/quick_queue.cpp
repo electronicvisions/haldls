@@ -86,9 +86,9 @@ template void QuickQueueResponse::serialize_detail<SF::Archive>(SF::Archive& ar,
 
 
 QuickQueueRequest create_request(
-	haldls::v2::Board const& board,
-	haldls::v2::Chip const& chip,
-	haldls::v2::PlaybackProgram& playback_program)
+    haldls::v2::Board const& board,
+    haldls::v2::Chip const& chip,
+    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	QuickQueueRequest req;
 
@@ -96,8 +96,8 @@ QuickQueueRequest create_request(
 	visit_preorder(board, coord, WriteAddressVisitor<ocp_addresses_type>{req.board_addresses});
 	visit_preorder(board, coord, EncodeVisitor<ocp_words_type>{req.board_words});
 
-	req.chip_program_bytes = get_configure_program(chip).instruction_byte_blocks();
-	req.playback_program_bytes = playback_program.instruction_byte_blocks();
+	req.chip_program_bytes = get_configure_program(chip)->instruction_byte_blocks();
+	req.playback_program_bytes = playback_program->instruction_byte_blocks();
 	return req;
 }
 
@@ -357,9 +357,9 @@ QuickQueueClient& QuickQueueClient::operator=(QuickQueueClient&&) noexcept = def
 QuickQueueClient::~QuickQueueClient() {}
 
 void QuickQueueClient::run_experiment(
-	haldls::v2::Board const& board,
-	haldls::v2::Chip const& chip,
-	haldls::v2::PlaybackProgram& playback_program)
+    haldls::v2::Board const& board,
+    haldls::v2::Chip const& chip,
+    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
 {
 	auto log = log4cxx::Logger::getLogger("QuickQueueClient");
 

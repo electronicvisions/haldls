@@ -15,7 +15,7 @@
 namespace stadls {
 namespace v2 { // GENPYBIND(tag(stadls_v2)) {
 
-haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip);
+std::shared_ptr<haldls::v2::PlaybackProgram> get_configure_program(haldls::v2::Chip chip);
 
 class GENPYBIND(visible) LocalBoardControl
 {
@@ -48,7 +48,8 @@ public:
 	///        registers
 	void transfer(std::vector<std::vector<haldls::v2::instruction_word_type> > const& program_bytes)
 		SYMBOL_VISIBLE;
-	void transfer(haldls::v2::PlaybackProgram const& playback_program) SYMBOL_VISIBLE;
+	void transfer(std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program)
+	    SYMBOL_VISIBLE;
 
 	/// \brief toggle the execute flag and wait until turned off again
 	void execute() SYMBOL_VISIBLE;
@@ -67,23 +68,23 @@ public:
 	    hate::optional<std::chrono::microseconds> expected_runtime = hate::nullopt) SYMBOL_VISIBLE;
 
 	std::vector<haldls::v2::instruction_word_type> fetch() SYMBOL_VISIBLE;
-	void fetch(haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
+	void fetch(std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program) SYMBOL_VISIBLE;
 
 	static void decode_result_bytes(
-		std::vector<haldls::v2::instruction_word_type> const& result_bytes,
-		haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
+	    std::vector<haldls::v2::instruction_word_type> const& result_bytes,
+	    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program) SYMBOL_VISIBLE;
 
 	/// \brief this just wraps the sequence transfer-execute-fetch
 	std::vector<haldls::v2::instruction_word_type> run(
 		std::vector<std::vector<haldls::v2::instruction_word_type> > const& program_byte)
 		SYMBOL_VISIBLE;
-	void run(haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
+	void run(std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program) SYMBOL_VISIBLE;
 
 	/// \brief Run experiment on given board and chip
 	void run_experiment(
-		haldls::v2::Board const& board,
-		haldls::v2::Chip const& chip,
-		haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
+	    haldls::v2::Board const& board,
+	    haldls::v2::Chip const& chip,
+	    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program) SYMBOL_VISIBLE;
 
 	constexpr static char const* const env_name_board_id = "FLYSPI_ID";
 

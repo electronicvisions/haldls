@@ -37,45 +37,9 @@ struct PlaybackProgram::Impl
 	PlaybackProgram::spikes_type spikes;
 };
 
-constexpr PlaybackProgram::serial_number_type PlaybackProgram::invalid_serial_number;
-
 PlaybackProgram::PlaybackProgram()
-	: m_impl(new Impl()), m_serial_number(invalid_serial_number)
+	: std::enable_shared_from_this<PlaybackProgram>(), m_impl(new Impl()), m_valid(false)
 {
-}
-
-PlaybackProgram::PlaybackProgram(serial_number_type serial_number)
-	: m_impl(new Impl()), m_serial_number(serial_number)
-{
-	if (serial_number == invalid_serial_number)
-		throw std::logic_error("invalid serial number");
-}
-
-PlaybackProgram::PlaybackProgram(PlaybackProgram const& other)
-	: m_impl(new Impl(*other.m_impl)), m_serial_number(other.m_serial_number)
-{}
-
-PlaybackProgram& PlaybackProgram::operator=(PlaybackProgram const& other)
-{
-	if (this != &other) {
-		m_impl.reset(new Impl(*other.m_impl));
-		m_serial_number = other.m_serial_number;
-	}
-	return *this;
-}
-
-PlaybackProgram::PlaybackProgram(PlaybackProgram&& other) noexcept
-	: m_impl(std::move(other.m_impl)), m_serial_number(other.m_serial_number) {
-	other.m_serial_number = invalid_serial_number;
-}
-
-PlaybackProgram& PlaybackProgram::operator=(PlaybackProgram&& other) noexcept {
-	if (this != &other) {
-		m_impl = std::move(other.m_impl);
-		m_serial_number = other.m_serial_number;
-		other.m_serial_number = invalid_serial_number;
-	}
-	return *this;
 }
 
 PlaybackProgram::~PlaybackProgram() = default;
@@ -93,37 +57,33 @@ void PlaybackProgram::ensure_container_invariants<v2::NeuronDigitalConfig>(
 }
 
 template <typename T>
-T PlaybackProgram::get(ContainerTicket<T> const& ticket) const
+T PlaybackProgram::ContainerTicket<T>::get() const
 {
-	if (!m_impl)
-		throw std::logic_error("unexpected access to moved-from object");
+	assert(pbp->m_impl);
 
-	if (ticket.serial_number != m_serial_number)
-		throw std::invalid_argument("container ticket does not belong to this playback program");
+	auto const& results = pbp->m_impl->results;
 
-	auto const& results = m_impl->results;
-
-	if (ticket.offset >= results.size() || ticket.offset + ticket.length > results.size())
+	if ((offset >= results.size()) || ((offset + length) > results.size()))
 		throw std::runtime_error(
 			"container data not available yet (out of bounds of available results data)");
 
 	typedef std::vector<v2::hardware_word_type> words_type;
-	words_type data{std::next(results.begin(), ticket.offset),
-					std::next(results.begin(), ticket.offset + ticket.length)};
+	words_type data{std::next(results.begin(), offset),
+	                std::next(results.begin(), offset + length)};
 
 	T config;
-	visit_preorder(config, ticket.coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ensure_container_invariants(config);
 	return config;
 }
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template SYMBOL_VISIBLE Type PlaybackProgram::get<Type>(ContainerTicket<Type> const&) const;
+	template SYMBOL_VISIBLE Type PlaybackProgram::ContainerTicket<Type>::get() const;
 #include "haldls/v2/container.def"
 
-PlaybackProgram::serial_number_type PlaybackProgram::serial_number() const
+bool const& PlaybackProgram::valid() const
 {
-	return m_serial_number;
+	return m_valid;
 }
 
 std::string PlaybackProgram::dump_program() const
@@ -141,9 +101,8 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgram::create_ticket(
 {
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
-
-	assert(m_serial_number != invalid_serial_number);
-	return {m_serial_number, coord, offset, length};
+	std::shared_ptr<PlaybackProgram const> new_sp = shared_from_this();
+	return {new_sp, coord, offset, length};
 }
 
 std::vector<std::vector<instruction_word_type> > const& PlaybackProgram::instruction_byte_blocks()
@@ -181,63 +140,63 @@ void PlaybackProgram::set_spikes(spikes_type&& spikes)
 
 void PlaybackProgramBuilder::set_time(time_type t)
 {
-	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.set_time(t);
+	assert(m_program->m_impl);
+	m_program->m_impl->bld.set_time(t);
 }
 
 void PlaybackProgramBuilder::wait_until(time_type t)
 {
-	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.wait_until(t);
+	assert(m_program->m_impl);
+	m_program->m_impl->bld.wait_until(t);
 }
 
 void PlaybackProgramBuilder::wait_for(time_type t)
 {
-	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.wait_for(t);
+	assert(m_program->m_impl);
+	m_program->m_impl->bld.wait_for(t);
 }
 
 void PlaybackProgramBuilder::fire(
 	std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> const& synapse_driver_mask,
 	v2::SynapseBlock::Synapse::Address const& address)
 {
-	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.fire(synapse_driver_mask.to_ulong(), address);
+	assert(m_program->m_impl);
+	m_program->m_impl->bld.fire(synapse_driver_mask.to_ulong(), address);
 }
 
 void PlaybackProgramBuilder::fire(
 	halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver,
 	v2::SynapseBlock::Synapse::Address const& address)
 {
-	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.fire_one(synapse_driver.value(), address);
+	assert(m_program->m_impl);
+	m_program->m_impl->bld.fire_one(synapse_driver.value(), address);
 }
 
 void PlaybackProgramBuilder::fire_post_correlation_signal(
 	std::bitset<halco::hicann_dls::v2::NeuronOnDLS::size> const& neuron_mask)
 {
-	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.write(0x1a000101, neuron_mask.to_ulong());
+	assert(m_program->m_impl);
+	m_program->m_impl->bld.write(0x1a000101, neuron_mask.to_ulong());
 }
 
 void PlaybackProgramBuilder::fire_post_correlation_signal(
 	halco::hicann_dls::v2::NeuronOnDLS const& neuron)
 {
-	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.write(0x1a000101, 1 << neuron.value());
+	assert(m_program->m_impl);
+	m_program->m_impl->bld.write(0x1a000101, 1 << neuron.value());
 }
 
 void PlaybackProgramBuilder::halt()
 {
-	assert(m_program.m_impl != nullptr);
-	m_program.m_impl->bld.halt();
+	assert(m_program->m_impl);
+	m_program->m_impl->bld.halt();
 }
 
 template <class T>
 void PlaybackProgramBuilder::write(
 	typename T::coordinate_type const& coord, T const& config)
 {
-	assert(m_program.m_impl != nullptr);
+	assert(m_program->m_impl);
 
 	typedef std::vector<v2::hardware_address_type> addresses_type;
 	addresses_type write_addresses;
@@ -250,7 +209,7 @@ void PlaybackProgramBuilder::write(
 	if (words.size() != write_addresses.size())
 		throw std::logic_error("number of addresses and words do not match");
 
-	auto& impl = *m_program.m_impl;
+	auto& impl = *m_program->m_impl;
 	auto addr_it = write_addresses.cbegin();
 	for (auto const& word : words) {
 		impl.bld.write(*addr_it, word);
@@ -262,7 +221,7 @@ template <class T>
 PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
 	typename T::coordinate_type const& coord)
 {
-	assert(m_program.m_impl != nullptr);
+	assert(m_program->m_impl);
 
 	typedef std::vector<v2::hardware_address_type> addresses_type;
 	addresses_type read_addresses;
@@ -271,7 +230,7 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
 		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 	}
 
-	auto& impl = *m_program.m_impl;
+	auto& impl = *m_program->m_impl;
 	for (auto const& addr : read_addresses) {
 		impl.bld.read(addr);
 	}
@@ -279,19 +238,21 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
 	std::size_t const offset = impl.read_offset;
 	std::size_t const length = read_addresses.size();
 	impl.read_offset += length;
-	return m_program.create_ticket<T>(coord, offset, length);
+	return m_program->create_ticket<T>(coord, offset, length);
 }
 
-PlaybackProgramBuilder::PlaybackProgramBuilder() : m_program(next_serial_number.fetch_add(1)) {}
-
-std::atomic<PlaybackProgram::serial_number_type> PlaybackProgramBuilder::next_serial_number{1};
-
-PlaybackProgram PlaybackProgramBuilder::done()
+PlaybackProgramBuilder::PlaybackProgramBuilder()
+    : m_program(std::make_shared<PlaybackProgram>())
 {
-	assert(m_program.m_impl != nullptr);
+}
 
-	PlaybackProgram result = std::move(m_program);
-	m_program = PlaybackProgram(next_serial_number.fetch_add(1));
+std::shared_ptr<PlaybackProgram> PlaybackProgramBuilder::done()
+{
+	assert(m_program->m_impl);
+
+	std::shared_ptr<PlaybackProgram> result(m_program);
+	m_program = std::make_shared<PlaybackProgram>();
+	result->m_valid = true;
 	return result;
 }
 

@@ -12,7 +12,7 @@
 
 namespace stadls {
 namespace v2 GENPYBIND(tag(stadls_v2)) {
-haldls::v2::PlaybackProgram get_configure_program(haldls::v2::Chip chip);
+std::shared_ptr<haldls::v2::PlaybackProgram> get_configure_program(haldls::v2::Chip chip);
 
 class GENPYBIND(visible) ExperimentControl
 {
@@ -37,9 +37,9 @@ public:
 
 	/// \brief Run experiment on given board and chip
 	void run_experiment(
-		haldls::v2::Board const& board,
-		haldls::v2::Chip const& chip,
-		haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
+	    haldls::v2::Board const& board,
+	    haldls::v2::Chip const& chip,
+	    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program) SYMBOL_VISIBLE;
 
 private:
 	class Impl;

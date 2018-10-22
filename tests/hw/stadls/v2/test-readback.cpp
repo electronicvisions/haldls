@@ -49,10 +49,10 @@ TEST_F(ReadbackTest, ExternalNeuronSwitchesAreDisabled) {
 		ctrl.run(program);
 	}
 
-	auto const chip_config = program.get(chip_ticket);
+	auto const chip_config = chip_ticket.get();
 	EXPECT_EQ(output_neuron, chip_config.get_buffered_readout_neuron());
 
-	auto const output_neuron_config = program.get(output_neuron_ticket);
+	auto const output_neuron_config = output_neuron_ticket.get();
 	EXPECT_FALSE(output_neuron_config.get_enable_buffered_readout());
 }
 

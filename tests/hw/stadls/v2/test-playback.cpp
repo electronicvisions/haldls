@@ -55,36 +55,27 @@ TEST_F(PlaybackTest, CapMem) {
 
 	// Builder is reset (starts a new program) every time .done() is called
 	auto empty_new_program = builder.done();
-	EXPECT_NE(program.serial_number(), empty_new_program.serial_number());
+	EXPECT_NE(program, empty_new_program);
 
 	// No data available yet
-	EXPECT_THROW(std::ignore = program.get(capmem_ticket), std::runtime_error);
-	EXPECT_THROW(std::ignore = program.get(capmemcell_ticket), std::runtime_error);
-
-	auto capmem_ticket_ = builder.read<CapMem>(coord);
-	auto program_ = builder.done();
-
-	// Using Ticket issued for a different program
-	EXPECT_THROW(std::ignore = program.get(capmem_ticket_), std::invalid_argument);
-	EXPECT_THROW(std::ignore = program_.get(capmem_ticket), std::invalid_argument);
+	EXPECT_THROW(std::ignore = capmem_ticket.get(), std::runtime_error);
+	EXPECT_THROW(std::ignore = capmemcell_ticket.get(), std::runtime_error);
 
 	{
 		LocalBoardControl ctrl(test_board);
 		ctrl.run(program);
 	}
 
-	EXPECT_THROW(std::ignore = program.get(capmem_ticket_), std::invalid_argument);
-
-	auto capmem_copy = program.get(capmem_ticket);
-	auto capmemcell_copy = program.get(capmemcell_ticket);
+	auto capmem_copy = capmem_ticket.get();
+	auto capmemcell_copy = capmemcell_ticket.get();
 
 	EXPECT_EQ(capmem_config, capmem_copy);
 	EXPECT_EQ(capmemvalue, capmemcell_copy.get_value());
 }
 
 TEST_F(PlaybackTest, InvalidState) {
-	PlaybackProgram invalid_program; // not obtained via builder
-	EXPECT_EQ(PlaybackProgram::invalid_serial_number, invalid_program.serial_number());
+	std::shared_ptr<PlaybackProgram> invalid_program; // not obtained via builder
+	ASSERT_FALSE(invalid_program->valid());
 
 	LocalBoardControl ctrl(test_board);
 	EXPECT_THROW(ctrl.transfer(invalid_program), std::logic_error);
