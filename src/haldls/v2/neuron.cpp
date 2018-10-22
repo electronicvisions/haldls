@@ -119,6 +119,17 @@ void CommonNeuronConfig::decode(std::array<hardware_word_type, CommonNeuronConfi
 	m_inhibit_spike_comparator = bitfield.u.m.inhibit_spike_comparator;
 }
 
+template <class Archive>
+void CommonNeuronConfig::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_digital_out));
+	ar(CEREAL_NVP(m_post_correlation_signal_length));
+	ar(CEREAL_NVP(m_external_correlation_signal));
+	ar(CEREAL_NVP(m_inhibit_spike_comparator));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronConfig)
+
 NeuronDigitalConfig::NeuronDigitalConfig()
 	: m_synapse_input_exc(false),
 	  m_synapse_input_inh(false),
@@ -333,6 +344,24 @@ void NeuronDigitalConfig::decode(std::array<hardware_word_type, NeuronDigitalCon
 	m_unbuffered_readout = bitfield.u.m.unbuffered_readout;
 	m_buffered_readout = bitfield.u.m.buffered_readout;
 }
+
+
+template <class Archive>
+void NeuronDigitalConfig::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_synapse_input_exc));
+	ar(CEREAL_NVP(m_synapse_input_inh));
+	ar(CEREAL_NVP(m_leak_high_conductance));
+	ar(CEREAL_NVP(m_leak));
+	ar(CEREAL_NVP(m_bigcap));
+	ar(CEREAL_NVP(m_smallcap));
+	ar(CEREAL_NVP(m_fire_out_mode));
+	ar(CEREAL_NVP(m_mux_readout_mode));
+	ar(CEREAL_NVP(m_unbuffered_readout));
+	ar(CEREAL_NVP(m_buffered_readout));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronDigitalConfig)
 
 } // namespace v2
 } // namespace haldls

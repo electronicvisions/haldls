@@ -9,6 +9,8 @@
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
 
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
 
@@ -45,6 +47,10 @@ public:
 	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	Delay m_sense_delay;
 	Delay m_reset_delay_1;
 	Delay m_reset_delay_2;
@@ -102,6 +108,10 @@ public:
 private:
 	halco::common::typed_array<Correlation, halco::hicann_dls::v2::SynapseOnSynapseBlock>
 		m_correlations;
+protected:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
 };
 
 } // namespace detail
@@ -129,6 +139,10 @@ private:
 		const SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<hardware_address_type, read_config_size_in_words> read_addresses_implementation(
 		coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
 };
 
 /**
@@ -154,6 +168,10 @@ private:
 		const SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<hardware_address_type, read_config_size_in_words> read_addresses_implementation(
 		coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
 };
 
 template class detail::CorrelationBlockBase<CausalCorrelationBlock>;

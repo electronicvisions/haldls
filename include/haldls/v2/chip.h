@@ -6,6 +6,7 @@
 
 #include "hate/optional.h"
 #include "hate/visibility.h"
+#include "haldls/cerealization.h"
 #include "haldls/v2/capmem.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/correlation.h"
@@ -128,6 +129,10 @@ public:
 	friend detail::VisitPreorderImpl<Chip>;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	halco::common::typed_array<NeuronDigitalConfig, halco::hicann_dls::v2::NeuronOnDLS>
 		m_neuron_digital_configs;
 	halco::common::typed_array<SynapseBlock, halco::hicann_dls::v2::SynapseBlockOnDLS>

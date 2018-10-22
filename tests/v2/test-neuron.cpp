@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/neuron.h"
 #include "stadls/visitors.h"
 
@@ -90,6 +91,28 @@ TEST(CommonNeuronConfig, EncodeDecode)
 	ASSERT_NE(config, config_copy);
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
+}
+
+TEST(CommonNeuronConfig, CerealizeCoverage)
+{
+	CommonNeuronConfig obj1,obj2;
+	obj1.set_enable_digital_out(!obj1.get_enable_digital_out());
+	obj1.set_enable_external_post_correlation_signal(!obj1.get_enable_external_post_correlation_signal());
+	obj1.set_inhibit_spike_comparator(!obj1.get_inhibit_spike_comparator());
+	obj1.set_post_correlation_signal_length(draw_ranged_non_default_value<CommonNeuronConfig::PostCorrelationSignalLength>(obj1.get_post_correlation_signal_length()));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }
 
 TEST(NeuronDigitalConfig, General)
@@ -185,3 +208,37 @@ TEST(NeuronDigitalConfig, EncodeDecode)
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }
+
+TEST(NeuronDigitalConfig, CerealizeCoverage)
+{
+	NeuronDigitalConfig obj1,obj2;
+
+// take boolean member and invert its state
+#define INVERT(what)\
+	obj1.set_##what (!obj1.get_##what ());
+	INVERT(enable_synapse_input_excitatory)
+	INVERT(enable_synapse_input_inhibitory)
+	INVERT(enable_high_conductance_leak)
+	INVERT(enable_leak)
+	INVERT(enable_bigcap)
+	INVERT(enable_smallcap)
+	INVERT(enable_unbuffered_readout)
+#undef INVERT
+	obj1.set_fire_out_mode(NeuronDigitalConfig::FireOutMode::enabled);
+	obj1.set_mux_readout_mode(NeuronDigitalConfig::MuxReadoutMode::spike);
+	// buffered readout tested for chip, as not settable at a single neuron container
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+

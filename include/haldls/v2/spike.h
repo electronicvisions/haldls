@@ -9,6 +9,8 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/synapse.h"
 
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
 
@@ -37,6 +39,10 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PlaybackSpike const& spike) SYMBOL_VISIBLE;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	hardware_time_type m_time;
 	SynapseBlock::Synapse::Address m_source_address;
 	halco::hicann_dls::v2::SynapseDriverOnDLS m_synapse_driver;
@@ -65,6 +71,10 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, RecordedSpike const& spike) SYMBOL_VISIBLE;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	hardware_time_type m_time;
 	halco::hicann_dls::v2::NeuronOnDLS m_neuron;
 }; // RecordedSpike

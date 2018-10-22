@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/chip.h"
 #include "halco/common/iter_all.h"
+#include "stadls/visitors.h"
 
 using namespace haldls::v2;
 using namespace halco::hicann_dls::v2;
@@ -165,4 +167,92 @@ TEST(Chip, General)
 	chip.disable_buffered_readout();
 	ASSERT_FALSE(chip.get_buffered_readout_neuron());
 
+}
+
+TEST(Chip, CerealizeCoverage)
+{
+	Chip obj1,obj2;
+
+	{
+		auto config = obj1.get_common_synram_config();
+		config.set_use_internal_i_bias_vdac(!config.get_use_internal_i_bias_vdac());
+		obj1.set_common_synram_config(config);
+	}
+	{
+		auto config = obj1.get_capmem_config();
+		config.set_enable_capmem(!config.get_enable_capmem());
+		obj1.set_capmem_config(config);
+	}
+	{
+		auto config = obj1.get_common_neuron_config();
+		config.set_enable_digital_out(!config.get_enable_digital_out());
+		obj1.set_common_neuron_config(config);
+	}
+	{
+		auto config = obj1.get_correlation_config();
+		config.set_sense_delay(draw_ranged_non_default_value<CorrelationConfig::Delay>(config.get_sense_delay()));
+		obj1.set_correlation_config(config);
+	}
+	{
+		auto config = obj1.get_synapse_drivers();
+		config.set_mode(SynapseDriverOnDLS(0), SynapseDriverBlock::Mode::inhibitory);
+		obj1.set_synapse_drivers(config);
+	}
+	{
+		auto config = obj1.get_rate_counter();
+		config.set_fire_interrupt(!config.get_fire_interrupt());
+		obj1.set_rate_counter(config);
+	}
+	// PPUStatusRegister not settable
+	{
+		auto config = obj1.get_ppu_control_register();
+		config.set_inhibit_reset(!config.get_inhibit_reset());
+		obj1.set_ppu_control_register(config);
+	}
+	{
+		auto config = obj1.get_ppu_memory();
+		auto word = draw_ranged_non_default_value<PPUMemoryWord::Value>(config.get_word(PPUMemoryWordOnDLS(0)).value());
+		config.set_word(PPUMemoryWordOnDLS(0), word);
+		obj1.set_ppu_memory(config);
+	}
+	{
+		auto config = obj1.get_capmem();
+		config.set(NeuronOnDLS(0), halco::hicann_dls::v2::NeuronParameter::v_leak, draw_ranged_non_default_value<CapMemCell::Value>(config.get(NeuronOnDLS(0), halco::hicann_dls::v2::NeuronParameter::v_leak)));
+		obj1.set_capmem(config);
+	}
+	{
+		auto config = obj1.get_column_current_switch(ColumnCurrentSwitchOnDLS(0));
+		config.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::readout);
+		obj1.set_column_current_switch(ColumnCurrentSwitchOnDLS(0), config);
+	}
+	{
+		auto config = obj1.get_column_correlation_switch(ColumnCorrelationSwitchOnDLS(0));
+		config.set_causal_config(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::readout);
+		obj1.set_column_correlation_switch(ColumnCorrelationSwitchOnDLS(0), config);
+	}
+	// {Causal,Acausal}CorrelationBlock not settable
+	for (auto syn: iter_all<SynapseOnDLS>()) {
+		auto config = obj1.get_synapse(syn);
+		config.set_weight(draw_ranged_non_default_value<SynapseBlock::Synapse::Weight>(0));
+		obj1.set_synapse(syn, config);
+	}
+	for (auto neuron: iter_all<NeuronOnDLS>()) {
+		auto config = obj1.get_neuron_digital_config(neuron);
+		config.set_enable_synapse_input_excitatory(!config.get_enable_synapse_input_excitatory());
+		obj1.set_neuron_digital_config(neuron, config);
+	}
+	obj1.enable_buffered_readout(NeuronOnDLS(rand() % NeuronOnDLS::size));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

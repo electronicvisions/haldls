@@ -72,6 +72,16 @@ std::ostream& operator<<(std::ostream& os, PlaybackSpike const& spike)
 			  << spike.get_synapse_driver() << ")";
 }
 
+template <class Archive>
+void PlaybackSpike::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_time));
+	ar(CEREAL_NVP(m_source_address));
+	ar(CEREAL_NVP(m_synapse_driver));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PlaybackSpike)
+
 RecordedSpike::RecordedSpike() : m_time(0), m_neuron(0) {}
 
 RecordedSpike::RecordedSpike(
@@ -128,6 +138,15 @@ std::ostream& operator<<(std::ostream& os, RecordedSpike const& spike)
 {
 	return os << "RecordedSpike(" << spike.get_time() << ", " << spike.get_neuron() << ")";
 }
+
+template <class Archive>
+void RecordedSpike::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_time));
+	ar(CEREAL_NVP(m_neuron));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(RecordedSpike)
 
 } // namespace v2
 } // namespace haldls

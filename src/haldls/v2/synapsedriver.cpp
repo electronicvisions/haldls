@@ -100,5 +100,14 @@ void SynapseDriverBlock::decode(
 }
 
 
+template <class Archive>
+void SynapseDriverBlock::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_pulse_length));
+	ar(CEREAL_NVP(m_modes));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseDriverBlock)
+
 } // namespace v2
 } // namespace haldls

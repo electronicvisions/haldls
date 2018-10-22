@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/spike.h"
 
 using namespace haldls::v2;
@@ -55,6 +56,25 @@ TEST(PlaybackSpike, General)
 	ASSERT_LT(spike5, spike3);
 }
 
+TEST(PlaybackSpike, CerealizeCoverage)
+{
+	PlaybackSpike obj1(static_cast<hardware_time_type>(rand()), draw_ranged_non_default_value<SynapseBlock::Synapse::Address>(0), draw_ranged_non_default_value<halco::hicann_dls::v2::SynapseDriverOnDLS>(0));
+	PlaybackSpike obj2;
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 TEST(RecordedSpike, General)
 {
 	hardware_time_type time_0 = 20;
@@ -96,4 +116,23 @@ TEST(RecordedSpike, General)
 	ASSERT_GT(spike3, spike4);
 
 	ASSERT_LT(spike4, spike3);
+}
+
+TEST(RecordedSpike, CerealizeCoverage)
+{
+	RecordedSpike obj1(static_cast<hardware_time_type>(rand()), draw_ranged_non_default_value<halco::hicann_dls::v2::NeuronOnDLS>(0));
+	RecordedSpike obj2;
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

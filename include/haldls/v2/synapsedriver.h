@@ -6,6 +6,8 @@
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
 
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
 
@@ -54,6 +56,10 @@ public:
 	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	PulseLength m_pulse_length;
 	modes_type m_modes;
 };

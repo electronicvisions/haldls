@@ -67,6 +67,15 @@ void CorrelationConfig::decode(std::array<hardware_word_type, config_size_in_wor
 	m_reset_delay_2 = Delay(data[2]);
 }
 
+template <class Archive>
+void CorrelationConfig::cerealize(Archive& ar) {
+	ar(CEREAL_NVP(m_sense_delay));
+	ar(CEREAL_NVP(m_reset_delay_1));
+	ar(CEREAL_NVP(m_reset_delay_2));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CorrelationConfig)
+
 namespace detail {
 
 template <class T>
@@ -161,6 +170,12 @@ void CorrelationBlockBase<T>::decode(
 	    CorrelationBlockBase<T>::Correlation(bitfield.u.m.correlation_value_3);
 }
 
+template <class T>
+template <class Archive>
+void CorrelationBlockBase<T>::cerealize(Archive& ar) {
+	ar(CEREAL_NVP(m_correlations));
+}
+
 } // namespace detail
 
 CausalCorrelationBlock::CausalCorrelationBlock()
@@ -200,6 +215,15 @@ void CausalCorrelationBlock::decode(
 	return detail::CorrelationBlockBase<CausalCorrelationBlock>::decode(data);
 }
 
+template <class Archive>
+void CausalCorrelationBlock::cerealize(Archive& ar)
+{
+	CorrelationBlockBase<CausalCorrelationBlock>::cerealize<Archive>(ar);
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(detail::CorrelationBlockBase<CausalCorrelationBlock>)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CausalCorrelationBlock)
+
 AcausalCorrelationBlock::AcausalCorrelationBlock()
     : detail::CorrelationBlockBase<AcausalCorrelationBlock>()
 {
@@ -236,6 +260,15 @@ void AcausalCorrelationBlock::decode(
 {
 	return detail::CorrelationBlockBase<AcausalCorrelationBlock>::decode(data);
 }
+
+template <class Archive>
+void AcausalCorrelationBlock::cerealize(Archive& ar)
+{
+	CorrelationBlockBase<AcausalCorrelationBlock>::cerealize<Archive>(ar);
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(detail::CorrelationBlockBase<AcausalCorrelationBlock>)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(AcausalCorrelationBlock)
 
 } // namespace v2
 } // namespace haldls

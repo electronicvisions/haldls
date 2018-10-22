@@ -296,5 +296,28 @@ bool Chip::operator!=(Chip const& other) const
 	return !(*this == other);
 }
 
+template <class Archive>
+void Chip::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_neuron_digital_configs));
+	ar(CEREAL_NVP(m_synapse_blocks));
+	ar(CEREAL_NVP(m_causal_correlation_blocks));
+	ar(CEREAL_NVP(m_acausal_correlation_blocks));
+	ar(CEREAL_NVP(m_correlation_blocks));
+	ar(CEREAL_NVP(m_current_blocks));
+	ar(CEREAL_NVP(m_capmem));
+	ar(CEREAL_NVP(m_ppu_memory));
+	ar(CEREAL_NVP(m_ppu_control_register));
+	ar(CEREAL_NVP(m_ppu_status_register));
+	ar(CEREAL_NVP(m_rate_counter));
+	ar(CEREAL_NVP(m_synapse_drivers));
+	ar(CEREAL_NVP(m_synram_config));
+	ar(CEREAL_NVP(m_capmem_config));
+	ar(CEREAL_NVP(m_neuron_config));
+	ar(CEREAL_NVP(m_correlation_config));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(Chip)
+
 } // namespace v2
 } // namespace haldls

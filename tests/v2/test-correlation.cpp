@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "halco/common/iter_all.h"
 #include "haldls/v2/correlation.h"
 #include "stadls/visitors.h"
@@ -82,6 +83,27 @@ TEST(CorrelationConfig, EncodeDecode)
 	ASSERT_EQ(config, config_copy);
 }
 
+TEST(CorrelationConfig, CerealizeCoverage)
+{
+	CorrelationConfig obj1,obj2;
+	obj1.set_sense_delay(draw_ranged_non_default_value<CorrelationConfig::Delay>(0));
+	obj1.set_reset_delay_1(draw_ranged_non_default_value<CorrelationConfig::Delay>(0));
+	obj1.set_reset_delay_2(draw_ranged_non_default_value<CorrelationConfig::Delay>(0));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 template <class T>
 void correlationblock_tester(
     SynapseOnSynapseBlock const& synapse_coord,
@@ -144,6 +166,26 @@ TEST(CausalCorrelationBlock, General)
 	correlationblock_tester<CausalCorrelationBlock>(synapse_coord, block_coord, read_ref_addresses);
 }
 
+TEST(CausalCorrelationBlock, CerealizeCoverage)
+{
+	CausalCorrelationBlock obj1,obj2;
+	std::array<hardware_word_type, CausalCorrelationBlock::read_config_size_in_words> data = {{static_cast<hardware_word_type>(rand())}};
+	obj1.decode(data);
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 TEST(AcausalCorrelationBlock, General)
 {
 	// some random test coordinates
@@ -154,4 +196,24 @@ TEST(AcausalCorrelationBlock, General)
 	// corresponding read address
 	correlationblock_tester<AcausalCorrelationBlock>(
 	    synapse_coord, block_coord, read_ref_addresses);
+}
+
+TEST(AcausalCorrelationBlock, CerealizeCoverage)
+{
+	AcausalCorrelationBlock obj1,obj2;
+	std::array<hardware_word_type, AcausalCorrelationBlock::read_config_size_in_words> data = {{static_cast<uint32_t>(rand())}};
+	obj1.decode(data);
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

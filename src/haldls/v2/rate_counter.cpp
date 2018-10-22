@@ -102,5 +102,16 @@ void RateCounter::decode(std::array<hardware_word_type, config_size_in_words> co
 	m_fire_interrupt = switches & 0b0001ul;
 }
 
+template <class Archive>
+void RateCounter::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_counts));
+	ar(CEREAL_NVP(m_neuron_enable));
+	ar(CEREAL_NVP(m_clear_on_read));
+	ar(CEREAL_NVP(m_fire_interrupt));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(RateCounter)
+
 } // namespace v2
 } // namespace haldls

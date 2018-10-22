@@ -56,6 +56,14 @@ void PPUMemoryWord::decode(std::array<hardware_word_type, PPUMemoryWord::config_
 	set(Value(data[0]));
 }
 
+template <class Archive>
+void PPUMemoryWord::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryWord)
+
 PPUMemory::PPUMemory() : m_words() {}
 
 PPUMemory::PPUMemory(words_type const& words) : m_words(words) {}
@@ -124,6 +132,14 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 	os << out.str();
 	return os;
 }
+
+template <class Archive>
+void PPUMemory::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_words));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemory)
 
 PPUControlRegister::PPUControlRegister()
 	: m_inhibit_reset(false), m_force_clock_on(false), m_force_clock_off(false)
@@ -219,6 +235,16 @@ void PPUControlRegister::decode(std::array<hardware_word_type, PPUControlRegiste
 	m_force_clock_off = bitfield.u.m.force_clock_off;
 }
 
+template <class Archive>
+void PPUControlRegister::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_inhibit_reset));
+	ar(CEREAL_NVP(m_force_clock_on));
+	ar(CEREAL_NVP(m_force_clock_off));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUControlRegister)
+
 PPUStatusRegister::PPUStatusRegister() : m_sleep(false) {}
 
 bool PPUStatusRegister::get_sleep() const
@@ -250,6 +276,15 @@ void PPUStatusRegister::decode(std::array<hardware_word_type, PPUStatusRegister:
 {
 	m_sleep = bool(data[0]);
 }
+
+template <class Archive>
+void PPUStatusRegister::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_sleep));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUStatusRegister)
+
 
 } // namespace v2
 } // namespace haldls

@@ -9,6 +9,8 @@
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
 
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
 
@@ -51,6 +53,10 @@ public:
 	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	bool m_digital_out;
 	PostCorrelationSignalLength m_post_correlation_signal_length;
 	bool m_external_correlation_signal;
@@ -124,6 +130,10 @@ public:
 	void decode(std::array<hardware_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	bool m_synapse_input_exc;
 	bool m_synapse_input_inh;
 	bool m_leak_high_conductance;

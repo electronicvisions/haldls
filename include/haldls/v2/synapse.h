@@ -9,6 +9,8 @@
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
 
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 GENPYBIND(tag(haldls_v2)) {
 
@@ -59,6 +61,10 @@ public:
 	bool operator!=(CommonSynramConfig const& other) const SYMBOL_VISIBLE;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	PCConf m_pc_conf;
 	WConf m_w_conf;
 	WaitCtrClear m_wait_ctr_clear;
@@ -126,6 +132,10 @@ public:
 		bool operator!=(Synapse const& other) const SYMBOL_VISIBLE;
 
 	private:
+		friend class cereal::access;
+		template <class Archive>
+		void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 		Weight m_weight;
 		Address m_address;
 		TimeCalib m_time_calib;
@@ -150,6 +160,10 @@ public:
 	bool operator!=(SynapseBlock const& other) const SYMBOL_VISIBLE;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	halco::common::typed_array<Synapse, halco::hicann_dls::v2::SynapseOnSynapseBlock> m_synapses;
 };
 
@@ -181,6 +195,10 @@ public:
 		bool operator!=(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
 
 	private:
+		friend class cereal::access;
+		template <class Archive>
+		void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 		Config m_causal;
 		Config m_acausal;
 	};
@@ -204,6 +222,10 @@ public:
 	bool operator!=(ColumnCorrelationBlock const& other) const SYMBOL_VISIBLE;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	halco::common::typed_array<
 		ColumnCorrelationSwitch,
 		halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock>
@@ -238,6 +260,10 @@ public:
 		bool operator!=(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
 
 	private:
+		friend class cereal::access;
+		template <class Archive>
+		void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 		Config m_exc;
 		Config m_inh;
 	};
@@ -261,6 +287,10 @@ public:
 	bool operator!=(ColumnCurrentBlock const& other) const SYMBOL_VISIBLE;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
 	halco::common::
 		typed_array<ColumnCurrentSwitch, halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock>
 			m_switches;

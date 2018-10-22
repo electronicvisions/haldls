@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/synapsedriver.h"
 #include "stadls/visitors.h"
 
@@ -85,4 +86,28 @@ TEST(SynapseDriverConfig, EncodeDecode)
 		config_copy, coord,
 		stadls::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
 	ASSERT_EQ(config, config_copy);
+}
+
+TEST(SynapseDriverBlock, CerealizeCoverage)
+{
+	SynapseDriverBlock obj1,obj2;
+	auto modes = obj1.get_modes();
+	for (auto& mode: modes) {
+		mode = SynapseDriverBlock::Mode::inhibitory; // arbitrary
+	}
+	obj1.set_modes(modes);
+	obj1.set_pulse_length(draw_ranged_non_default_value<SynapseDriverBlock::PulseLength>(obj1.get_pulse_length()));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

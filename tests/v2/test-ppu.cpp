@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/ppu.h"
 #include "stadls/visitors.h"
 
@@ -72,6 +73,25 @@ TEST(PPUMemoryWord, EncodeDecode)
 	ASSERT_NE(config, config_copy);
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
+}
+
+TEST(PPUMemoryWord, CerealizeCoverage)
+{
+	PPUMemoryWord obj1,obj2;
+	obj1.set(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }
 
 TEST(PPUMemory, General)
@@ -147,6 +167,29 @@ TEST(PPUMemory, EncodeDecode)
 	ASSERT_EQ(config, config_copy);
 }
 
+TEST(PPUMemory, CerealizeCoverage)
+{
+	PPUMemory obj1,obj2;
+	PPUMemory::words_type data;
+	for (auto& word: data) {
+		word = PPUMemoryWord(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
+	}
+	obj1.set_words(data);
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 TEST(PPUControlRegister, General)
 {
 	PPUControlRegister ppu_control_register;
@@ -213,6 +256,27 @@ TEST(PPUControlRegister, EncodeDecode)
 	ASSERT_EQ(config, config_copy);
 }
 
+TEST(PPUControlRegister, CerealizeCoverage)
+{
+	PPUControlRegister obj1,obj2;
+	obj1.set_inhibit_reset(!obj1.get_inhibit_reset());
+	obj1.set_force_clock_on(!obj1.get_force_clock_on());
+	obj1.set_force_clock_off(!obj1.get_force_clock_off());
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 TEST(PPUStatusRegister, EncodeDecode)
 {
 	PPUStatusRegister config;
@@ -249,4 +313,24 @@ TEST(PPUStatusRegister, EncodeDecode)
 	data.push_back(0b1ul);
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_TRUE(config_copy.get_sleep());
+}
+
+TEST(PPUStatusRegister, CerealizeCoverage)
+{
+	PPUStatusRegister obj1,obj2;
+	std::array<hardware_word_type, PPUStatusRegister::config_size_in_words> data = {{static_cast<uint32_t>(rand())}};
+	obj1.decode(data);
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

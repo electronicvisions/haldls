@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "test-helper.h"
 #include "haldls/v2/synapse.h"
 #include "stadls/visitors.h"
 
@@ -98,6 +99,31 @@ TEST(CommonSynramConfig, EncodeDecode)
 	ASSERT_EQ(config, config_copy);
 }
 
+TEST(CommonSynramConfig, CerealizeCoverage)
+{
+	CommonSynramConfig obj1,obj2;
+	obj1.set_use_internal_i_bias_correlation_output(!obj1.get_use_internal_i_bias_correlation_output());
+	obj1.set_use_internal_i_bias_vstore(!obj1.get_use_internal_i_bias_vstore());
+	obj1.set_use_internal_i_bias_vramp(!obj1.get_use_internal_i_bias_vramp());
+	obj1.set_use_internal_i_bias_vdac(!obj1.get_use_internal_i_bias_vdac());
+	obj1.set_pc_conf(draw_ranged_non_default_value<CommonSynramConfig::PCConf>(obj1.get_pc_conf()));
+	obj1.set_w_conf(draw_ranged_non_default_value<CommonSynramConfig::WConf>(obj1.get_w_conf()));
+	obj1.set_wait_ctr_clear(draw_ranged_non_default_value<CommonSynramConfig::WaitCtrClear>(obj1.get_wait_ctr_clear()));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 TEST(SynapseBlock_Synapse, General)
 {
 	SynapseBlock::Synapse synapse;
@@ -128,6 +154,28 @@ TEST(SynapseBlock_Synapse, General)
 
 	ASSERT_NE(synapse, synapse_ne);
 	ASSERT_EQ(synapse != synapse_eq, false);
+}
+
+TEST(SynapseBlock_Synapse, CerealizeCoverage)
+{
+	SynapseBlock::Synapse obj1,obj2;
+	obj1.set_weight(draw_ranged_non_default_value<SynapseBlock::Synapse::Weight>(obj1.get_weight()));
+	obj1.set_address(draw_ranged_non_default_value<SynapseBlock::Synapse::Address>(obj1.get_address()));
+	obj1.set_time_calib(draw_ranged_non_default_value<SynapseBlock::Synapse::TimeCalib>(obj1.get_time_calib()));
+	obj1.set_amp_calib(draw_ranged_non_default_value<SynapseBlock::Synapse::AmpCalib>(obj1.get_amp_calib()));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }
 
 TEST(SynapseBlock, General)
@@ -198,6 +246,32 @@ TEST(SynapseBlock, EncodeDecode)
 	ASSERT_EQ(synapse_block, block_copy);
 }
 
+TEST(SynapseBlock, CerealizeCoverage)
+{
+	SynapseBlock obj1,obj2;
+	for (auto syn: iter_all<halco::hicann_dls::v2::SynapseOnSynapseBlock>()) {
+		SynapseBlock::Synapse synapse;
+		synapse.set_weight(draw_ranged_non_default_value<SynapseBlock::Synapse::Weight>(synapse.get_weight()));
+		synapse.set_address(draw_ranged_non_default_value<SynapseBlock::Synapse::Address>(synapse.get_address()));
+		synapse.set_time_calib(draw_ranged_non_default_value<SynapseBlock::Synapse::TimeCalib>(synapse.get_time_calib()));
+		synapse.set_amp_calib(draw_ranged_non_default_value<SynapseBlock::Synapse::AmpCalib>(synapse.get_amp_calib()));
+		obj1.set_synapse(syn, synapse);
+	}
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 TEST(ColumnCorrelationBlock_ColumnCorrelationSwitch, General)
 {
 	ColumnCorrelationBlock::ColumnCorrelationSwitch corrswitch;
@@ -223,6 +297,26 @@ TEST(ColumnCorrelationBlock_ColumnCorrelationSwitch, General)
 
 	ASSERT_NE(corrswitch, corrswitch_ne);
 	ASSERT_EQ(corrswitch_eq != corrswitch, false);
+}
+
+TEST(ColumnCorrelationBlock_ColumnCorrelationSwitch, CerealizeCoverage)
+{
+	ColumnCorrelationBlock::ColumnCorrelationSwitch obj1,obj2;
+	obj1.set_causal_config(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::readout);
+	obj1.set_acausal_config(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::readout);
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }
 
 TEST(ColumnCorrelationBlock, General)
@@ -298,6 +392,32 @@ TEST(ColumnCorrelationBlock, EncodeDecode)
 	ASSERT_EQ(column_block, block_copy);
 }
 
+TEST(ColumnCorrelationBlock, CerealizeCoverage)
+{
+	ColumnCorrelationBlock obj1,obj2;
+	for (auto sw: iter_all<ColumnCorrelationSwitchOnColumnBlock>()) {
+		auto config = obj1.get_switch(sw);
+		config.set_causal_config(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::readout);
+		config.set_acausal_config(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::readout);
+
+		obj1.set_switch(sw, config);
+	}
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
+
 TEST(ColumnCurrentBlock_ColumnCurrentSwitch, General)
 {
 	ColumnCurrentBlock::ColumnCurrentSwitch currswitch;
@@ -320,6 +440,27 @@ TEST(ColumnCurrentBlock_ColumnCurrentSwitch, General)
 	ASSERT_NE(currswitch, currswitch_ne);
 	ASSERT_EQ(currswitch_eq != currswitch, false);
 }
+
+TEST(ColumnCurrentBlock_ColumnCurrentSwitch, CerealizeCoverage)
+{
+	ColumnCurrentBlock::ColumnCurrentSwitch obj1,obj2;
+	obj1.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::readout);
+	obj1.set_inh_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::readout);
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
 
 TEST(ColumnCurrentBlock, General)
 {
@@ -389,3 +530,29 @@ TEST(ColumnCurrentBlock, EncodeDecode)
 		stadls::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
 	ASSERT_EQ(column_block, block_copy);
 }
+
+TEST(ColumnCurrentBlock, CerealizeCoverage)
+{
+	ColumnCurrentBlock obj1,obj2;
+	for (auto sw: iter_all<ColumnCurrentSwitchOnColumnBlock>()) {
+		auto config = obj1.get_switch(sw);
+		config.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::readout);
+		config.set_inh_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::readout);
+		obj1.set_switch(sw, config);
+	}
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
+

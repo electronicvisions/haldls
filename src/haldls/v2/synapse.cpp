@@ -175,6 +175,20 @@ void CommonSynramConfig::decode(
 	m_use_internal_i_bias_vdac = bitfield.u.m.use_vdac;
 }
 
+template <class Archive>
+void CommonSynramConfig::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_pc_conf));
+	ar(CEREAL_NVP(m_w_conf));
+	ar(CEREAL_NVP(m_wait_ctr_clear));
+	ar(CEREAL_NVP(m_use_internal_i_bias_correlation_output));
+	ar(CEREAL_NVP(m_use_internal_i_bias_vstore));
+	ar(CEREAL_NVP(m_use_internal_i_bias_vramp));
+	ar(CEREAL_NVP(m_use_internal_i_bias_vdac));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonSynramConfig)
+
 SynapseBlock::Synapse::Synapse() : m_weight(0), m_address(0), m_time_calib(0), m_amp_calib(0) {}
 
 SynapseBlock::Synapse::Weight SynapseBlock::Synapse::get_weight() const
@@ -227,6 +241,17 @@ bool SynapseBlock::Synapse::operator!=(SynapseBlock::Synapse const& other) const
 {
 	return !(*this == other);
 }
+
+template <class Archive>
+void SynapseBlock::Synapse::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_weight));
+	ar(CEREAL_NVP(m_address));
+	ar(CEREAL_NVP(m_time_calib));
+	ar(CEREAL_NVP(m_amp_calib));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseBlock::Synapse)
 
 SynapseBlock::SynapseBlock() : m_synapses() {}
 
@@ -377,6 +402,13 @@ void SynapseBlock::decode(
 #undef SYNAPSE_DECODE
 }
 
+template <class Archive>
+void SynapseBlock::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_synapses));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseBlock)
 
 ColumnCorrelationBlock::ColumnCorrelationSwitch::ColumnCorrelationSwitch()
 	: m_causal(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::disabled),
@@ -418,6 +450,15 @@ bool ColumnCorrelationBlock::ColumnCorrelationSwitch::operator!=(
 {
 	return !(*this == other);
 }
+
+template <class Archive>
+void ColumnCorrelationBlock::ColumnCorrelationSwitch::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_causal));
+	ar(CEREAL_NVP(m_acausal));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCorrelationBlock::ColumnCorrelationSwitch)
 
 ColumnCorrelationBlock::ColumnCorrelationBlock() : m_switches() {}
 
@@ -564,6 +605,14 @@ void ColumnCorrelationBlock::decode(
 #undef CORRELATION_DECODE
 }
 
+template <class Archive>
+void ColumnCorrelationBlock::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_switches));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCorrelationBlock)
+
 ColumnCurrentBlock::ColumnCurrentSwitch::ColumnCurrentSwitch()
 	: m_exc(ColumnCurrentBlock::ColumnCurrentSwitch::Config::disabled),
 	  m_inh(ColumnCurrentBlock::ColumnCurrentSwitch::Config::disabled)
@@ -604,6 +653,15 @@ bool ColumnCurrentBlock::ColumnCurrentSwitch::operator!=(
 {
 	return !(*this == other);
 }
+
+template <class Archive>
+void ColumnCurrentBlock::ColumnCurrentSwitch::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_exc));
+	ar(CEREAL_NVP(m_inh));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentBlock::ColumnCurrentSwitch)
 
 ColumnCurrentBlock::ColumnCurrentBlock() : m_switches() {}
 
@@ -749,6 +807,14 @@ void ColumnCurrentBlock::decode(
 	CURRENT_DECODE(3)
 #undef CURRENT_DECODE
 }
+
+template <class Archive>
+void ColumnCurrentBlock::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_switches));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentBlock)
 
 } // namespace v2
 } // namespace haldls

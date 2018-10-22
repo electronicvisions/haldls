@@ -1,3 +1,4 @@
+#include <random>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -105,4 +106,26 @@ TEST(RateCounter, EncodeDecode)
 	for (auto neuron : iter_all<NeuronOnDLS>()) {
 		EXPECT_EQ((neuron % 2) == 0 ? (100 + neuron.value()) : 0, config_copy.get_count(neuron).value());
 	}
+}
+
+TEST(RateCounter, CerealizeCoverage)
+{
+	RateCounter obj1,obj2;
+	std::array<hardware_word_type, RateCounter::config_size_in_words> data;
+	for (auto& word: data) {
+		word = static_cast<hardware_word_type>(rand());
+	}
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }
