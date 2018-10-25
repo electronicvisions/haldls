@@ -49,7 +49,7 @@ def build(bld):
         name='pyhaldls_test_v2',
         tests='test/pyhaldls_test_v2.py',
         features='use pytest',
-        use=['pyhalco_hicann_dls_v2', 'pyhaldls_v2'],
+        use=['pyhalco_hicann_dls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
         pythonpath=['test'],
     )

@@ -53,7 +53,7 @@ def build(bld):
         name='pystadls_test_v2',
         tests='test/pystadls_test_v2.py',
         features='use pytest',
-        use=['pyhalco_hicann_dls_v2', 'pystadls_v2'],
+        use=['pyhalco_hicann_dls_v2', 'pystadls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
         pythonpath=['test'],
     )
@@ -62,7 +62,7 @@ def build(bld):
         name='pystadls_hwtest_v2',
         tests='test/pystadls_hwtest_v2.py',
         features='use pytest',
-        use=['pyhalco_hicann_dls_v2', 'pytadls_v2'],
+        use=['pyhalco_hicann_dls_v2', 'pystadls_v2', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
         pythonpath=['test'],
         skip_run=True,
