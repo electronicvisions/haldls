@@ -6,7 +6,7 @@ namespace haldls {
 namespace v2 {
 
 CommonSynramConfig::CommonSynramConfig()
-    : m_pc_conf(0),
+    : m_pc_conf(1),
       m_w_conf(0xFF),
       m_wait_ctr_clear(1),
       m_use_internal_i_bias_correlation_output(false),
