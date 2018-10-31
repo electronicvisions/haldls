@@ -404,7 +404,9 @@ TEST(FlyspiException, decode)
 			EXPECT_THAT(reg.get_encode_overflow().value(), active_bit == 20);
 
 			EXPECT_TRUE(reg.check());
-			EXPECT_FALSE(reg.check().value());
+			if (active_bit != 16) { // serdes_overflow ignored, see Issue #2998
+				EXPECT_FALSE(reg.check().value());
+			}
 		}
 	}
 }

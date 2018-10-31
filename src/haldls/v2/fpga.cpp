@@ -1,5 +1,6 @@
 #include "haldls/v2/fpga.h"
 
+#include "log4cxx/logger.h"
 #include "halco/common/iter_all.h"
 
 using namespace halco::hicann_dls::v2;
@@ -530,8 +531,13 @@ hate::optional<bool> FlyspiException::check() const
 		      m_result_write_error.value() || m_result_write_underrun.value() ||
 		      m_playback_read_error.value() || m_playback_read_overflow.value() ||
 		      m_playback_write_error.value() || m_playback_write_underrun.value() ||
-		      m_program_exception.value() || m_serdes_overflow.value() ||
+		      // ignore serdes_overflow in return value, see Issue #2998
+		      m_program_exception.value() || //m_serdes_overflow.value() ||
 		      m_serdes_pll_unlocked.value() || m_serdes_race.value() || m_encode_overflow.value());
+		if (m_serdes_overflow.value()) {
+			auto log = log4cxx::Logger::getLogger(__func__);
+			LOG4CXX_WARN(log, "FPGA exception raised: serdes_overflow: 1");
+		}
 	}
 	return ret;
 }
