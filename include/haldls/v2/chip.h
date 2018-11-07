@@ -79,6 +79,19 @@ public:
 		halco::hicann_dls::v2::ColumnCurrentSwitchOnDLS const& current_switch,
 		ColumnCurrentBlock::ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
 
+	// Correlation is read only parameter
+	CausalCorrelationBlock get_causal_correlation_block(
+		halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const SYMBOL_VISIBLE;
+
+	CausalCorrelationBlock::Correlation get_causal_correlation(
+		halco::hicann_dls::v2::SynapseOnDLS const& synapse) const SYMBOL_VISIBLE;
+
+	AcausalCorrelationBlock get_acausal_correlation_block(
+		halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const SYMBOL_VISIBLE;
+
+	AcausalCorrelationBlock::Correlation get_acausal_correlation(
+		halco::hicann_dls::v2::SynapseOnDLS const& synapse) const SYMBOL_VISIBLE;
+
 	CapMem get_capmem() const SYMBOL_VISIBLE;
 	void set_capmem(CapMem const& value) SYMBOL_VISIBLE;
 
@@ -124,6 +137,10 @@ private:
 			m_correlation_blocks;
 	halco::common::typed_array<ColumnCurrentBlock, halco::hicann_dls::v2::ColumnBlockOnDLS>
 		m_current_blocks;
+	halco::common::typed_array<CausalCorrelationBlock, halco::hicann_dls::v2::SynapseBlockOnDLS>
+		m_causal_correlation_blocks;
+	halco::common::typed_array<AcausalCorrelationBlock, halco::hicann_dls::v2::SynapseBlockOnDLS>
+		m_acausal_correlation_blocks;
 	CapMem m_capmem;
 	PPUMemory m_ppu_memory;
 	PPUControlRegister m_ppu_control_register;
@@ -172,6 +189,16 @@ struct VisitPreorderImpl<Chip> {
 
 		for (auto const column_block : iter_all<ColumnBlockOnDLS>()) {
 			visit_preorder(config.m_current_blocks[column_block], column_block, visitor);
+		}
+
+		for (auto const synapse_block : iter_all<SynapseBlockOnDLS>()) {
+			visit_preorder(
+				config.m_causal_correlation_blocks[synapse_block], synapse_block, visitor);
+		}
+
+		for (auto const synapse_block : iter_all<SynapseBlockOnDLS>()) {
+			visit_preorder(
+				config.m_acausal_correlation_blocks[synapse_block], synapse_block, visitor);
 		}
 
 		visit_preorder(config.m_capmem, halco::hicann_dls::v2::CapMemOnDLS(), visitor);

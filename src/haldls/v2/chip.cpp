@@ -8,20 +8,22 @@ namespace haldls {
 namespace v2 {
 
 Chip::Chip()
-	: m_neuron_digital_configs(),
-	  m_synapse_blocks(),
-	  m_correlation_blocks(),
-	  m_current_blocks(),
-	  m_capmem(),
-	  m_ppu_memory(),
-	  m_ppu_control_register(),
-	  m_ppu_status_register(),
-	  m_rate_counter(),
-	  m_synapse_drivers(),
-	  m_synram_config(),
-	  m_capmem_config(),
-	  m_neuron_config(),
-	  m_correlation_config()
+    : m_neuron_digital_configs(),
+      m_synapse_blocks(),
+      m_correlation_blocks(),
+      m_current_blocks(),
+      m_causal_correlation_blocks(),
+      m_acausal_correlation_blocks(),
+      m_capmem(),
+      m_ppu_memory(),
+      m_ppu_control_register(),
+      m_ppu_status_register(),
+      m_rate_counter(),
+      m_synapse_drivers(),
+      m_synram_config(),
+      m_capmem_config(),
+      m_neuron_config(),
+      m_correlation_config()
 {}
 
 void Chip::enable_buffered_readout(halco::hicann_dls::v2::NeuronOnDLS const& neuron)
@@ -147,6 +149,32 @@ void Chip::set_column_current_switch(
 	auto block = current_switch.toColumnBlockOnDLS();
 	auto switch_on_block = current_switch.toColumnCurrentSwitchOnColumnBlock();
 	m_current_blocks.at(block).set_switch(switch_on_block, value);
+}
+
+CausalCorrelationBlock Chip::get_causal_correlation_block(
+    halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const
+{
+	return m_causal_correlation_blocks.at(synapse_block);
+}
+
+CausalCorrelationBlock::Correlation Chip::get_causal_correlation(
+    halco::hicann_dls::v2::SynapseOnDLS const& synapse) const
+{
+	return m_causal_correlation_blocks.at(synapse.toSynapseBlockOnDLS())
+	    .get_correlation(synapse.toSynapseOnSynapseBlock());
+}
+
+AcausalCorrelationBlock Chip::get_acausal_correlation_block(
+    halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const
+{
+	return m_acausal_correlation_blocks.at(synapse_block);
+}
+
+AcausalCorrelationBlock::Correlation Chip::get_acausal_correlation(
+    halco::hicann_dls::v2::SynapseOnDLS const& synapse) const
+{
+	return m_acausal_correlation_blocks.at(synapse.toSynapseBlockOnDLS())
+	    .get_correlation(synapse.toSynapseOnSynapseBlock());
 }
 
 CapMem Chip::get_capmem() const

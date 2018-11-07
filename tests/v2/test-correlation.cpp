@@ -81,3 +81,77 @@ TEST(CorrelationConfig, EncodeDecode)
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }
+
+template <class T>
+void correlationblock_tester(
+    SynapseOnSynapseBlock const& synapse_coord,
+    SynapseBlockOnDLS const& block_coord,
+    std::array<hardware_address_type, T::read_config_size_in_words> const& read_ref_addresses)
+{
+	T block;
+	// some random test data
+	typename T::Correlation correlation(0xAF);
+
+	std::array<hardware_address_type, T::write_config_size_in_words> write_ref_addresses = {{}};
+	std::array<hardware_word_type, T::read_config_size_in_words> read_ref_data = {{0x0000AF00}};
+	std::array<hardware_word_type, T::write_config_size_in_words> write_ref_data = {{}};
+
+	words_type data(read_ref_data.begin(), read_ref_data.end());
+	visit_preorder(
+	    block, block_coord,
+	    stadls::DecodeVisitor<std::vector<hardware_word_type> >{std::move(data)});
+
+	ASSERT_EQ(block.get_correlation(synapse_coord), correlation);
+
+	T block_eq = block;
+	T block_ne;
+
+	ASSERT_EQ(block, block_eq);
+	ASSERT_FALSE(block == block_ne);
+
+	ASSERT_NE(block, block_ne);
+	ASSERT_FALSE(block != block_eq);
+
+	visit_preorder(
+	    block, block_coord, stadls::EncodeVisitor<std::vector<hardware_word_type> >{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(write_ref_data));
+
+	{ // write addresses
+		std::vector<hardware_address_type> write_addresses;
+		visit_preorder(
+		    block, block_coord,
+		    stadls::WriteAddressVisitor<std::vector<hardware_address_type> >{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(write_ref_addresses));
+	}
+
+	{ // read addresses
+		std::vector<hardware_address_type> read_addresses;
+		visit_preorder(
+		    block, block_coord,
+		    stadls::ReadAddressVisitor<std::vector<hardware_address_type> >{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(read_ref_addresses));
+	}
+}
+
+TEST(CausalCorrelationBlock, General)
+{
+	// some random test coordinates
+	SynapseOnSynapseBlock synapse_coord(2);
+	SynapseBlockOnDLS block_coord(X(3), Y(1));
+	// corresponding read address
+	std::array<hardware_address_type, CausalCorrelationBlock::read_config_size_in_words>
+	    read_ref_addresses = {{0x00018013}};
+	correlationblock_tester<CausalCorrelationBlock>(synapse_coord, block_coord, read_ref_addresses);
+}
+
+TEST(AcausalCorrelationBlock, General)
+{
+	// some random test coordinates
+	SynapseOnSynapseBlock synapse_coord(2);
+	SynapseBlockOnDLS block_coord(X(3), Y(1));
+	std::array<hardware_address_type, AcausalCorrelationBlock::read_config_size_in_words>
+	    read_ref_addresses = {{0x0001C013}};
+	// corresponding read address
+	correlationblock_tester<AcausalCorrelationBlock>(
+	    synapse_coord, block_coord, read_ref_addresses);
+}
