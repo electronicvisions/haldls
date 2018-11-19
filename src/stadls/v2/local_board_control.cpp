@@ -282,7 +282,11 @@ void LocalBoardControl::transfer(haldls::v2::PlaybackProgram const& playback_pro
 	transfer(playback_program.instruction_byte_blocks());
 }
 
-void LocalBoardControl::execute()
+void LocalBoardControl::execute(
+    std::chrono::microseconds min_wait_period,
+    std::chrono::microseconds max_wait_period,
+    std::chrono::microseconds max_wait,
+    hate::optional<std::chrono::microseconds> expected_runtime)
 {
 	auto log = log4cxx::Logger::getLogger(__func__);
 
@@ -311,29 +315,46 @@ void LocalBoardControl::execute()
 
 	// wait until execute bit is cleared again
 	{
-		std::chrono::microseconds sleep_till_poll(50);
+		if (expected_runtime) {
+			std::this_thread::sleep_for(*expected_runtime);
+		}
+		std::chrono::microseconds waited(0);
+		std::chrono::microseconds wait_period(min_wait_period);
 		while (control.get_execute()) {
 			LOG4CXX_DEBUG(
-				log, "execute flag not yet cleared, sleep for " << sleep_till_poll.count() << "us");
-			std::this_thread::sleep_for(sleep_till_poll);
+			    log, "execute flag not yet cleared, sleep for " << wait_period.count() << "us");
+			std::this_thread::sleep_for(wait_period);
 			control = ocp_read_container<haldls::v2::FlyspiControl>(m_impl->com, unique);
 
-			// wait up to one minute for the execute flag to clear (should this
-			// be an adjustable constant? one minute seems far far more than
-			// any realistic experiment execution time
-			// --obreitwi, 23-05-18 15:26:47)
-			if (sleep_till_poll.count() > 60 /* s */ * 1000 /* ms */ * 1000 /* us */) {
-				LOG4CXX_ERROR(log, "execute flag not cleared for 1 minute, aborting!");
+			if (waited.count() > max_wait.count()) {
+				LOG4CXX_ERROR(
+				    log, "execute flag not cleared for " << max_wait.count() << "us, aborting!");
 				auto exception =
 					ocp_read_container<haldls::v2::FlyspiException>(m_impl->com, unique);
 				LOG4CXX_ERROR(log, exception)
 				break;
 			}
-			// Increase exponential sleep time
-			sleep_till_poll *= 2;
+			// Exponentially increase sleep time until max. specified
+			if (wait_period.count() < max_wait_period.count()) {
+				wait_period *= 2;
+				if (wait_period.count() > max_wait_period.count()) {
+					wait_period = max_wait_period;
+				}
+			}
+			waited += wait_period;
 		}
 	}
 	LOG4CXX_DEBUG(log, "execution finished");
+}
+
+void LocalBoardControl::execute()
+{
+	execute(
+	    std::chrono::microseconds(50), // legacy value
+	    // 10ms max. period time for fine enough resolution in short sweeps
+	    std::chrono::microseconds(10000),
+	    // typical experiments don't last longer than 60s (PSP: 19.11.2018, OJB: 23.05.2018)
+	    std::chrono::microseconds(60*1000*1000));
 }
 
 std::vector<haldls::v2::instruction_word_type> LocalBoardControl::fetch()

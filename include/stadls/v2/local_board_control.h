@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -9,6 +10,7 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/playback.h"
 #include "hate/visibility.h"
+#include "hate/optional.h"
 
 namespace stadls {
 namespace v2 { // GENPYBIND(tag(stadls_v2)) {
@@ -50,6 +52,19 @@ public:
 
 	/// \brief toggle the execute flag and wait until turned off again
 	void execute() SYMBOL_VISIBLE;
+
+	/// \brief toggle the execute flag and wait until turned off again
+	///        given timing parameter
+	/// \param min_wait_time Minimal wait time between checks of execute flag
+	/// \param max_wait_time Maximal wait time between checks of execute flag
+	/// \param max_wait Maximal wait time for execute flag to clear
+	/// \param expected_runtime Time to wait until first check of execute flag
+	///        and successive checks with exponentially increasing wait time
+	void execute(
+	    std::chrono::microseconds min_wait_period,
+	    std::chrono::microseconds max_wait_period,
+	    std::chrono::microseconds max_wait,
+	    hate::optional<std::chrono::microseconds> expected_runtime = hate::nullopt) SYMBOL_VISIBLE;
 
 	std::vector<haldls::v2::instruction_word_type> fetch() SYMBOL_VISIBLE;
 	void fetch(haldls::v2::PlaybackProgram& playback_program) SYMBOL_VISIBLE;
