@@ -6,6 +6,7 @@
 runOnSlave(label: "frontend") {
 	wafDefaultPipeline(projects: ["haldls"],
 	                   app: "visionary-dls",
+	                   postPipelineCleanup: false,
 	                   notificationChannel: "#dls-software")
 
 	try {
