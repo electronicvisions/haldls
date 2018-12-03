@@ -112,24 +112,32 @@ def build(bld):
     )
 
     bld(
-        target = 'dls_test_common',
+        target = 'dls_swtest_common',
         features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/common/test-*.cpp'),
+        source = bld.path.ant_glob('tests/sw/common/test-*.cpp'),
         use = ['dls_common', 'GTEST'],
         install_path = '${PREFIX}/bin',
     )
 
     bld(
-        target = 'haldls_test_v2',
+        target = 'stadls_swtest_v2',
         features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/v2/test-*.cpp'),
+        source = bld.path.ant_glob('tests/sw/stadls/v2/test-*.cpp'),
+        use = ['haldls_v2', 'stadls_v2', 'GTEST'],
+        install_path = '${PREFIX}/bin',
+    )
+
+    bld(
+        target = 'haldls_swtest_v2',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/sw/haldls/v2/test-*.cpp'),
         use = ['haldls_v2', 'GTEST'],
         install_path = '${PREFIX}/bin',
     )
 
-    stadl_tests_kwargs = dict(
+    stadl_hwtests_kwargs = dict(
         features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/stadls/v2/hwtest-*.cpp'),
+        source = bld.path.ant_glob('tests/hw/stadls/v2/test-*.cpp'),
         test_main = 'tests/test_with_logger.cpp',
         use = ['haldls_v2', 'stadls_v2', 'logger_obj', 'GTEST', 'DL4TOOLS'],
         install_path = '${PREFIX}/bin',
@@ -137,11 +145,11 @@ def build(bld):
     )
 
     bld(target = 'stadls_hwtest_v2',
-        **stadl_tests_kwargs)
+        **stadl_hwtests_kwargs)
 
     bld(target = 'quiggeldy_hwtest_v2',
         defines = ['NO_LOCAL_BOARD'],
-        **stadl_tests_kwargs)
+        **stadl_hwtests_kwargs)
 
     if bld.env.build_python_bindings:
         bld.recurse("pyhaldls")
