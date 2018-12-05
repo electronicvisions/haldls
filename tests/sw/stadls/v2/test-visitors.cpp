@@ -15,7 +15,7 @@ struct TypeNameVisitor {
 	std::set<std::string> names;
 
 	template <typename CoordinateT, typename ContainerT>
-	void operator()(CoordinateT const&, ContainerT const& config)
+	void operator()(CoordinateT const&, ContainerT const&)
 	{
 		auto type_index = boost::typeindex::type_id<ContainerT>();
 		names.insert(type_index.pretty_name());
