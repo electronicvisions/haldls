@@ -7,6 +7,7 @@ from waflib.extras.symwaf2ic import get_toplevel_path
 def depends(ctx):
     ctx('code-format')
     ctx('bitter')
+    ctx('libnux')
     ctx('logger')
     ctx('halco')
     ctx('hate')
@@ -67,6 +68,8 @@ def configure(cfg):
 
     cfg.check_cxx(lib="dl", mandatory=True, uselib_store="DL4TOOLS")
     cfg.check_cxx(lib="pthread", uselib_store="PTHREAD")
+
+    cfg.check(lib='elf', header='libelf.h', uselib_store='ELF')
 
     if cfg.env.build_with_munge:
         cfg.check_cxx(lib="munge",
@@ -148,7 +151,7 @@ def build(bld):
         target = 'lola_vx',
         source = bld.path.ant_glob('src/lola/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['haldls_vx'],
+        use = ['haldls_vx', 'ELF'],
         uselib = 'LOLA_LIBRARIES',
     )
 
@@ -211,7 +214,9 @@ def build(bld):
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp'),
         use = ['lola_vx', 'GTEST', 'haldls_test_common_inc'],
+        depends_on = 'lola_ppu_test_elf_file.bin',
         install_path = '${PREFIX}/bin',
+        defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'build', 'haldls', 'lola_ppu_test_elf_file.bin') + '"'],
     )
 
     bld(
@@ -233,6 +238,15 @@ def build(bld):
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
         skip_run = not bld.env.DLSvx_HARDWARE_AVAILABLE
+    )
+
+    bld.program(
+        features = 'cxx',
+        objcopy_bfdname = 'binary',
+        target = 'lola_ppu_test_elf_file.bin',
+        source = ['tests/sw/lola/vx/ppu_test_lola_elf_file.cpp'],
+        use = ['nux_vx', 'nux_runtime_vx'],
+        env = bld.all_envs['nux_vx'],
     )
 
     bld(

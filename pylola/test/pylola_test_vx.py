@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import os
 import unittest
 import pylola_vx as lola
 import pyhalco_hicann_dls_vx as halco
@@ -71,6 +71,29 @@ class TestPylolaVX(unittest.TestCase):
         np_amp_calibs[16] = 3
         row.amp_calibs.from_numpy(np_amp_calibs)
         self.assertEqual(row.amp_calibs[16], 3)
+
+    def test_ppu_elf_file(self):
+        this_dir = os.path.dirname(os.path.realpath(__file__))
+        elf_file = lola.PPUElfFile(
+            os.environ.get('TEST_PPU_PROGRAM',
+                           os.path.join(this_dir,
+                                        os.pardir,
+                                        os.pardir,
+                                        os.pardir,
+                                        'build',
+                                        'haldls',
+                                        'lola_ppu_test_elf_file.bin')))
+        # all numbers below might and will change on change in build-profile,
+        # compiler or runtime
+        program_size = 113
+        self.assertEqual(elf_file.read_program().size(), program_size)
+
+        symbols = elf_file.read_symbols()
+        # get these numbers by powerpc-ppu-nm <program>
+        symbol_a_position = halco.PPUMemoryBlockOnPPU(
+            halco.PPUMemoryWordOnPPU(113), halco.PPUMemoryWordOnPPU(113))
+        self.assertEqual(symbols["a"], lola.PPUProgram.Symbol(
+            lola.PPUProgram.Symbol.Type.object, symbol_a_position))
 
 
 if __name__ == "__main__":
