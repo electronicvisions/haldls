@@ -147,6 +147,14 @@ def build(bld):
         uselib = 'HALDLS_LIBRARIES',
     )
 
+    bld.shlib(
+        target = 'lola_v2',
+        source = bld.path.ant_glob('src/lola/v2/*.cpp'),
+        install_path = '${PREFIX}/lib',
+        use = ['haldls_v2', 'ELF'],
+        uselib = 'HALDLS_LIBRARIES',
+    )
+
     bld(
         features = 'cxx cxxshlib pyembed',
         target = 'lola_vx',
@@ -211,12 +219,21 @@ def build(bld):
     )
 
     bld(
+        target = 'lola_swtest_v2',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/sw/lola/v2/test-*.cpp'),
+        use = ['lola_v2', 'GTEST'],
+        defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
+        install_path = '${PREFIX}/bin',
+    )
+
+    bld(
         target = 'lola_swtest_vx',
         features = 'gtest cxx cxxprogram pyembed',
         source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp'),
         use = ['lola_vx', 'GTEST', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
-        defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'vx', 'lola_ppu_test_elf_file.bin') + '"'],
+        defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
     )
 
     bld(

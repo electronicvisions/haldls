@@ -34,7 +34,8 @@ def build(bld):
         relative_trick=True,
         use = ['pyhaldls_v2',
                'pystadls_v2',
-               'pyhalco_hicann_dls_v2'
+               'pyhalco_hicann_dls_v2',
+               'pylola_v2'
         ],
         install_path = '${PREFIX}/lib',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),

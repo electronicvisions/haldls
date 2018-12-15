@@ -178,6 +178,11 @@ std::string PPUMemoryBlock::to_string() const
 		uint32_t const w = ntohl(static_cast<uint32_t>((x.get_value())));
 		char const* c = reinterpret_cast<char const*>(&w);
 		for (size_t i = 0; i < sizeof(uint32_t); ++i) {
+			// Return if null byte is found
+			if (c[i] == 0) {
+				return ss.str();
+			}
+
 			// discard non-printable characters
 			if (isprint(c[i]) or isspace(c[i])) {
 				ss << c[i];
