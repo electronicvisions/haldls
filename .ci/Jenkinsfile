@@ -7,7 +7,8 @@ runOnSlave(label: "frontend") {
 	wafDefaultPipeline(projects: ["haldls"],
 	                   app: "visionary-dls",
 	                   postPipelineCleanup: false,
-	                   notificationChannel: "#dls-software")
+	                   notificationChannel: "#dls-software",
+	                   warningsIgnorePattern: ".*/lib-rcf/.*")
 
 	try {
 		build job: 'hw_dls_haldls', parameters: [string(name: 'VISIONARY_DEFAULTS', value: 'spack_visionary-defaults/autobuild'),
