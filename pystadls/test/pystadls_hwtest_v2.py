@@ -32,8 +32,8 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
         builder = Ct.PlaybackProgramBuilder()
         builder.write(C.CapMemOnDLS(), capmem_config)
         builder.wait_until(100)
-        capmem_ticket = builder.read(C.CapMemOnDLS(), capmem_config)
-        capmemcell_ticket = builder.read(cell, Ct.CapMemCell())
+        capmem_ticket = builder.read(C.CapMemOnDLS())
+        capmemcell_ticket = builder.read(cell)
         builder.halt()
 
         program = builder.done()
@@ -48,7 +48,7 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             capmemcell_copy = program.get(capmemcell_ticket)
 
-        capmem_ticket_ = builder.read(C.CapMemOnDLS(), capmem_config)
+        capmem_ticket_ = builder.read(C.CapMemOnDLS())
         program_ = builder.done()
 
         # Using Ticket issued for a different program
@@ -126,7 +126,7 @@ class TestHelloWorldHardware(unittest.TestCase):
         self.chip.set_capmem(capmem_config)
 
         # Set connectivity
-        synapse = C.SynapseOnDLS(self.neuron, self.synapse_driver)
+        synapse = C.SynapseOnDLS(self.neuron.toSynapseColumnOnDLS(), self.synapse_driver.toSynapseRowOnDLS())
         synapse_config = self.chip.get_synapse(synapse)
         synapse_config.set_weight(self.weight)
         synapse_config.set_address(self.address)
