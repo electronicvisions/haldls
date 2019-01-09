@@ -51,9 +51,9 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 	neuron_config.set_fire_out_mode(NeuronDigitalConfig::FireOutMode::bypass_exc);
 	chip.set_neuron_digital_config(neuron, neuron_config);
 
-	auto rate_counter_config = chip.get_rate_counter();
-	rate_counter_config.set_neuron_enable(neuron, true);
-	chip.set_rate_counter(rate_counter_config);
+	auto rate_counter_config = chip.get_rate_counter_config();
+	rate_counter_config.set_enable_neuron(neuron, true);
+	chip.set_rate_counter_config(rate_counter_config);
 
 	{
 		// test rate counter read write
@@ -143,9 +143,9 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 		Chip chip_local = chip;
 
 		// test rate counter clear_on_read = true
-		auto rate_counter_config = chip_local.get_rate_counter();
-		rate_counter_config.set_clear_on_read(true);
-		chip_local.set_rate_counter(rate_counter_config);
+		auto rate_counter_config = chip_local.get_rate_counter_config();
+		rate_counter_config.set_enable_clear_on_read(true);
+		chip_local.set_rate_counter_config(rate_counter_config);
 
 		PlaybackProgramBuilder builder;
 		builder.fire(synapse_driver, address);

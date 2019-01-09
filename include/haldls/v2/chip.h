@@ -106,7 +106,9 @@ public:
 	PPUStatusRegister get_ppu_status_register() const SYMBOL_VISIBLE;
 
 	RateCounter get_rate_counter() const SYMBOL_VISIBLE;
-	void set_rate_counter(RateCounter const& value) SYMBOL_VISIBLE;
+
+	RateCounterConfig get_rate_counter_config() const SYMBOL_VISIBLE;
+	void set_rate_counter_config(RateCounterConfig const& value) SYMBOL_VISIBLE;
 
 	SynapseDriverBlock get_synapse_drivers() const SYMBOL_VISIBLE;
 	void set_synapse_drivers(SynapseDriverBlock const& value) SYMBOL_VISIBLE;
@@ -151,6 +153,7 @@ private:
 	PPUControlRegister m_ppu_control_register;
 	PPUStatusRegister m_ppu_status_register;
 	RateCounter m_rate_counter;
+	RateCounterConfig m_rate_counter_config;
 
 	SynapseDriverBlock m_synapse_drivers;
 	CommonSynramConfig m_synram_config;
@@ -211,6 +214,7 @@ struct VisitPreorderImpl<Chip> {
 		visit_preorder(config.m_ppu_control_register, halco::hicann_dls::v2::PPUControlRegisterOnDLS(), visitor);
 		visit_preorder(config.m_ppu_status_register, halco::hicann_dls::v2::PPUStatusRegisterOnDLS(), visitor);
 		visit_preorder(config.m_rate_counter, halco::hicann_dls::v2::RateCounterOnDLS(), visitor);
+		visit_preorder(config.m_rate_counter_config, halco::hicann_dls::v2::RateCounterConfigOnDLS(), visitor);
 		visit_preorder(config.m_synapse_drivers, halco::hicann_dls::v2::SynapseDriverBlockOnDLS(), visitor);
 		visit_preorder(config.m_capmem_config, halco::hicann_dls::v2::CapMemConfigOnDLS(), visitor);
 		visit_preorder(config.m_neuron_config, halco::hicann_dls::v2::CommonNeuronConfigOnDLS(), visitor);

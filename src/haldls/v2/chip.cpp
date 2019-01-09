@@ -19,6 +19,7 @@ Chip::Chip()
       m_ppu_control_register(),
       m_ppu_status_register(),
       m_rate_counter(),
+      m_rate_counter_config(),
       m_synapse_drivers(),
       m_synram_config(),
       m_capmem_config(),
@@ -217,9 +218,14 @@ RateCounter Chip::get_rate_counter() const
 	return m_rate_counter;
 }
 
-void Chip::set_rate_counter(RateCounter const& value)
+RateCounterConfig Chip::get_rate_counter_config() const
 {
-	m_rate_counter = value;
+	return m_rate_counter_config;
+}
+
+void Chip::set_rate_counter_config(RateCounterConfig const& value)
+{
+	m_rate_counter_config = value;
 }
 
 SynapseDriverBlock Chip::get_synapse_drivers() const
@@ -284,6 +290,7 @@ bool Chip::operator==(Chip const& other) const
 		m_ppu_control_register == other.m_ppu_control_register &&
 		m_ppu_status_register == other.m_ppu_status_register &&
 		m_rate_counter == other.m_rate_counter &&
+		m_rate_counter_config == other.m_rate_counter_config &&
 		m_synapse_drivers == other.m_synapse_drivers &&
 		m_synram_config == other.m_synram_config &&
 		m_capmem_config == other.m_capmem_config &&
@@ -310,6 +317,7 @@ void Chip::cerealize(Archive& ar)
 	ar(CEREAL_NVP(m_ppu_control_register));
 	ar(CEREAL_NVP(m_ppu_status_register));
 	ar(CEREAL_NVP(m_rate_counter));
+	ar(CEREAL_NVP(m_rate_counter_config));
 	ar(CEREAL_NVP(m_synapse_drivers));
 	ar(CEREAL_NVP(m_synram_config));
 	ar(CEREAL_NVP(m_capmem_config));

@@ -79,10 +79,10 @@ class TestPyhaldlsV2(unittest.TestCase):
         chip.set_ppu_control_register(control_register)
         self.assertEqual(chip.get_ppu_control_register(), control_register)
 
-        rate = Ct.RateCounter()
-        rate.set_neuron_enable(C.NeuronOnDLS(4), True)
-        chip.set_rate_counter(rate)
-        self.assertEqual(chip.get_rate_counter(), rate)
+        rate = Ct.RateCounterConfig()
+        rate.set_enable_neuron(C.NeuronOnDLS(4), True)
+        chip.set_rate_counter_config(rate)
+        self.assertEqual(chip.get_rate_counter_config(), rate)
 
         syndriver_config = Ct.SynapseDriverBlock()
         syndriver_config.set_pulse_length(Ct.SynapseDriverBlock.PulseLength(22))

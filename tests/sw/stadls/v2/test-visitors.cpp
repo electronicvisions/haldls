@@ -86,6 +86,8 @@ TEST(Visitors, Chip) {
 			"haldls::v2::PPUMemoryWord",
 			"haldls::v2::PPUStatusRegister",
 			"haldls::v2::RateCounter",
+			"haldls::v2::RateCounterConfig",
+			"haldls::v2::RateCounterEntry",
 			"haldls::v2::SynapseBlock",
 			"haldls::v2::SynapseDriverBlock"}));
 }
@@ -102,4 +104,18 @@ TEST(Visitors, PPUMemory) {
 		std::set<std::string>({
 			"haldls::v2::PPUMemory",
 			"haldls::v2::PPUMemoryWord"}));
+}
+
+TEST(Visitors, RateCounter) {
+	TypeNameVisitor visitor;
+	RateCounterOnDLS const coord;
+	RateCounter const config;
+
+	visit_preorder(config, coord, visitor);
+
+	EXPECT_THAT(
+		visitor.names,
+		std::set<std::string>({
+			"haldls::v2::RateCounter",
+			"haldls::v2::RateCounterEntry"}));
 }

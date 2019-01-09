@@ -84,10 +84,10 @@ TEST(Chip, General)
 	chip.set_ppu_control_register(control_register);
 	ASSERT_EQ(chip.get_ppu_control_register(), control_register);
 
-	RateCounter rate;
-	rate.set_neuron_enable(NeuronOnDLS(4), true);
-	chip.set_rate_counter(rate);
-	ASSERT_EQ(chip.get_rate_counter(), rate);
+	RateCounterConfig rate;
+	rate.set_enable_neuron(NeuronOnDLS(4), true);
+	chip.set_rate_counter_config(rate);
+	ASSERT_EQ(chip.get_rate_counter_config(), rate);
 
 	SynapseDriverBlock syndriver_config;
 	syndriver_config.set_pulse_length(SynapseDriverBlock::PulseLength(22));
@@ -199,10 +199,11 @@ TEST(Chip, CerealizeCoverage)
 		obj1.set_synapse_drivers(config);
 	}
 	{
-		auto config = obj1.get_rate_counter();
-		config.set_fire_interrupt(!config.get_fire_interrupt());
-		obj1.set_rate_counter(config);
+		auto config = obj1.get_rate_counter_config();
+		config.set_enable_fire_interrupt(!config.get_enable_fire_interrupt());
+		obj1.set_rate_counter_config(config);
 	}
+	// RateCounter values not settable
 	// PPUStatusRegister not settable
 	{
 		auto config = obj1.get_ppu_control_register();
