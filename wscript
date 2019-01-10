@@ -23,6 +23,7 @@ def options(opt):
 
     opt.recurse("pyhaldls")
     opt.recurse("pystadls")
+    opt.recurse("pylola")
 
     hopts = opt.add_option_group('Quiggeldy (hagen-daas) options')
     hopts.add_withoption('munge', default=True,
@@ -65,9 +66,15 @@ def configure(cfg):
     if cfg.env.build_python_bindings:
         cfg.recurse("pyhaldls")
         cfg.recurse("pystadls")
+        cfg.recurse("pylola")
 
 
 def build(bld):
+    bld(
+        target = 'lola_inc',
+        export_includes = 'include',
+    )
+
     bld(
         target = 'haldls_inc',
         export_includes = 'include',
@@ -103,6 +110,14 @@ def build(bld):
         uselib = 'HALDLS_LIBRARIES',
     )
 
+    bld.shlib(
+        target = 'lola_v2',
+        source = bld.path.ant_glob('src/lola/v2/*.cpp'),
+        install_path = '${PREFIX}/lib',
+        use = ['haldls_v2'],
+        uselib = 'LOLA_LIBRARIES',
+    )
+
     bld(
         target = 'quiggeldy',
         features = 'cxx cxxprogram',
@@ -136,6 +151,14 @@ def build(bld):
         install_path = '${PREFIX}/bin',
     )
 
+    bld(
+        target = 'lola_swtest_v2',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/sw/lola/v2/test-*.cpp'),
+        use = ['lola_v2', 'GTEST'],
+        install_path = '${PREFIX}/bin',
+    )
+
     stadl_hwtests_kwargs = dict(
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/hw/stadls/v2/test-*.cpp'),
@@ -155,6 +178,7 @@ def build(bld):
     if bld.env.build_python_bindings:
         bld.recurse("pyhaldls")
         bld.recurse("pystadls")
+        bld.recurse("pylola")
 
         bld(name='dlens',
             features='py',
