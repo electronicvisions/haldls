@@ -20,10 +20,22 @@ public:
 	typedef halco::common::Unique coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/**
+	 * Precharge configuration.
+	 * A higher value results in a shorter time.
+	 * See: Hock, Matthias. (2014). Modern Semiconductor Technologies for Neuromorphic Hardware,
+	 * p.26ff, p.156f, http://doi.org/10.11588/heidok.00017129.
+	 */
 	struct GENPYBIND(inline_base("*")) PCConf : public halco::common::detail::RantWrapper<PCConf, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit PCConf(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
+	/**
+	 * Wordline activation delay.
+	 * A higher value results in a shorter delay.
+	 * See: Hock, Matthias. (2014). Modern Semiconductor Technologies for Neuromorphic Hardware,
+	 * p.26ff, p.156f, http://doi.org/10.11588/heidok.00017129.
+	 */
 	struct GENPYBIND(inline_base("*")) WConf : public halco::common::detail::RantWrapper<WConf, uint_fast32_t, 255, 0>
 	{
 		constexpr explicit WConf(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
