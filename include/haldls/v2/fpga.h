@@ -1,17 +1,17 @@
 #pragma once
 
 
-#include "halco/common/genpybind.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "hate/optional.h"
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
+#include "haldls/v2/genpybind.h"
 #include "haldls/v2/synapse.h"
 #include "haldls/cerealization.h"
 
 namespace haldls {
-namespace v2 GENPYBIND(tag(haldls_v2)) {
+namespace v2 GENPYBIND_TAG_HALDLS_V2 {
 namespace detail {
 
 template <ocp_address_type::value_type Address>

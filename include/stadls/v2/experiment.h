@@ -9,9 +9,10 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/playback.h"
 #include "hate/visibility.h"
+#include "stadls/v2/genpybind.h"
 
 namespace stadls {
-namespace v2 GENPYBIND(tag(stadls_v2)) {
+namespace v2 GENPYBIND_TAG_STADLS_V2 {
 std::shared_ptr<haldls::v2::PlaybackProgram> get_configure_program(haldls::v2::Chip chip);
 
 class GENPYBIND(visible) ExperimentControl

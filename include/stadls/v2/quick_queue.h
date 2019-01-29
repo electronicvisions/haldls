@@ -10,6 +10,7 @@
 
 #include "hate/visibility.h"
 
+#include "stadls/v2/genpybind.h"
 #include "stadls/v2/local_board_control.h"
 
 namespace SF {
@@ -20,7 +21,7 @@ void serialize(SF::Archive& ar, haldls::v2::ocp_word_type& word);
 } // namespace SF
 
 namespace stadls {
-namespace v2 GENPYBIND(tag(stadls_v2)) {
+namespace v2 GENPYBIND_TAG_STADLS_V2 {
 typedef std::vector<haldls::v2::ocp_address_type> ocp_addresses_type;
 typedef std::vector<haldls::v2::ocp_word_type> ocp_words_type;
 typedef std::vector<std::vector<haldls::v2::instruction_word_type> > program_bytes_type;

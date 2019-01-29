@@ -1,6 +1,5 @@
 #pragma once
 
-#include "halco/common/genpybind.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
@@ -8,11 +7,12 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/dac.h"
 #include "haldls/v2/fpga.h"
+#include "haldls/v2/genpybind.h"
 #include "haldls/v2/synapse.h"
 #include "haldls/cerealization.h"
 
 namespace haldls {
-namespace v2 GENPYBIND(tag(haldls_v2)) {
+namespace v2 GENPYBIND_TAG_HALDLS_V2 {
 
 class GENPYBIND(visible) Board {
 public:

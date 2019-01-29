@@ -1,6 +1,6 @@
 #pragma once
 
-#include "halco/common/genpybind.h"
+#include "stadls/v2/genpybind.h"
 
 #include "haldls/v2/board.h"
 
@@ -9,7 +9,7 @@ class FlyspiCom;
 }
 
 namespace stadls {
-namespace v2 GENPYBIND(tag(stadls_v2)) {
+namespace v2 GENPYBIND_TAG_STADLS_V2 {
 
 std::vector<haldls::v2::ocp_word_type> ocp_read(
 	rw_api::FlyspiCom & com, std::vector<haldls::v2::ocp_address_type> const& addresses);

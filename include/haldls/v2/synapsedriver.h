@@ -5,11 +5,12 @@
 #include "halco/hicann-dls/v2/coordinates.h"
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
+#include "haldls/v2/genpybind.h"
 
 #include "haldls/cerealization.h"
 
 namespace haldls {
-namespace v2 GENPYBIND(tag(haldls_v2)) {
+namespace v2 GENPYBIND_TAG_HALDLS_V2 {
 
 class GENPYBIND(visible) SynapseDriverBlock
 {

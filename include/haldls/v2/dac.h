@@ -2,17 +2,17 @@
 
 #include <ostream>
 
-#include "halco/common/genpybind.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
+#include "haldls/v2/genpybind.h"
 #include "haldls/cerealization.h"
 
 
 namespace haldls {
-namespace v2 GENPYBIND(tag(haldls_v2)) {
+namespace v2 GENPYBIND_TAG_HALDLS_V2 {
 
 /// \brief DAC chip located on the baseboard.
 /// There are two instances on the baseboard: \c DAC12 (1.2V) and \c DAC25 (2.5V).  Both
