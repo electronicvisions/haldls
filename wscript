@@ -2,6 +2,7 @@
 from subprocess import check_output, CalledProcessError
 
 def depends(ctx):
+    ctx('code-format')
     ctx('bitter')
     ctx('logger')
     ctx('halco')
@@ -18,7 +19,7 @@ def depends(ctx):
 def options(opt):
     opt.load('compiler_cxx')
     opt.load('gtest')
-    opt.load('documentation')
+    opt.load('doxygen')
 
     opt.recurse("pyhaldls")
     opt.recurse("pystadls")
@@ -37,7 +38,7 @@ def configure(cfg):
 
     cfg.check_cxx(mandatory=True, header_name='cereal/cereal.hpp')
     cfg.load('local_rpath')
-    cfg.load('documentation')
+    cfg.load('doxygen')
 
     cfg.env.CXXFLAGS_HALDLS_LIBRARIES = [
         '-fvisibility=hidden',
@@ -171,6 +172,22 @@ def build(bld):
         )
 
 def doc(dox):
-    dox(features  = 'doxygen',
-        doxyfile  = 'doc/Doxyfile',
-        doxyinput = ['include'])
+    dox(
+        features = 'doxygen',
+        doxyfile = dox.root.make_node('%s/code-format/doxyfile' % dox.env.PREFIX),
+        install_path = 'doc/haldls',
+        pars = {
+            "PROJECT_NAME": "\"HALDLS\"",
+            "INPUT": "%s/haldls/include/haldls" % dox.env.PREFIX
+        },
+    )
+
+    dox(
+        features = 'doxygen',
+        doxyfile = dox.root.make_node('%s/code-format/doxyfile' % dox.env.PREFIX),
+        install_path = 'doc/stadls',
+        pars = {
+            "PROJECT_NAME": "\"STADLS\"",
+            "INPUT": "%s/haldls/include/stadls" % dox.env.PREFIX
+        },
+    )
