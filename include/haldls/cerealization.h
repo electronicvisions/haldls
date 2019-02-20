@@ -1,3 +1,4 @@
+#pragma once
 #define CEREAL_SERIALIZE_FUNCTION_NAME cerealize
 
 #include <cereal/cereal.hpp>

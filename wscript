@@ -10,6 +10,7 @@ def depends(ctx):
     ctx('uni')
     ctx('lib-rcf', branch='v2')
     ctx('flyspi-rw_api')
+    ctx('fisch')
 
     # needed because otherwise pylogging is not defined/installed
     ctx.recurse("pyhaldls")
@@ -100,6 +101,13 @@ def build(bld):
         use = ['dls_common', 'bitter', 'uni', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
         uselib = 'HALDLS_LIBRARIES',
     )
+    bld.shlib(
+        target = 'haldls_vx',
+        source = bld.path.ant_glob('src/haldls/vx/*.cpp'),
+        install_path = '${PREFIX}/lib',
+        use = ['dls_common', 'bitter', 'uni', 'halco_hicann_dls_vx_inc', 'halco_hicann_dls_vx', 'fisch_vx'],
+        uselib = 'HALDLS_LIBRARIES',
+    )
 
     bld.shlib(
         target = 'stadls_v2',
@@ -144,10 +152,23 @@ def build(bld):
     )
 
     bld(
+        target = 'haldls_swtest_common_inc',
+        export_includes = 'tests/sw/haldls/common',
+    )
+
+    bld(
         target = 'haldls_swtest_v2',
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/sw/haldls/v2/test-*.cpp'),
-        use = ['haldls_v2', 'GTEST'],
+        use = ['haldls_v2', 'haldls_swtest_common_inc', 'GTEST'],
+        install_path = '${PREFIX}/bin',
+    )
+
+    bld(
+        target = 'haldls_swtest_vx',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp'),
+        use = ['haldls_vx', 'haldls_swtest_common_inc', 'GTEST'],
         install_path = '${PREFIX}/bin',
     )
 
@@ -156,6 +177,14 @@ def build(bld):
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/sw/lola/v2/test-*.cpp'),
         use = ['lola_v2', 'GTEST'],
+        install_path = '${PREFIX}/bin',
+    )
+
+    bld(
+        target = 'stadls_vx_fisch_test',
+        features = 'cxx cxxprogram',
+        source = bld.path.ant_glob('tests/hw/stadls/vx/example.cpp'),
+        use = ['haldls_vx', 'haldls_swtest_common_inc', 'fisch' ],
         install_path = '${PREFIX}/bin',
     )
 
