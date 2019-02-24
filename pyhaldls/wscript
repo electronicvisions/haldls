@@ -54,4 +54,15 @@ def build(bld):
         pythonpath=['test'],
     )
 
+    bld(
+        target='pyhaldls_vx',
+        source='../include/haldls/vx/container.h',
+        genpybind_tags='haldls_vx',
+        features='genpybind cxx cxxshlib pyext post_task',
+        use=['haldls_vx', 'PYBIND11HALDLS'],
+        install_path='${PREFIX}/lib',
+        linkflags='-Wl,-z,defs',
+        post_task=['pyhalco_hicann_dls_vx', 'pyfisch_vx'],
+    )
+
     bld.add_post_fun(summary)

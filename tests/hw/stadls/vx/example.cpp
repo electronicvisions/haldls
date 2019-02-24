@@ -1,9 +1,11 @@
 #include <iostream>
+#include "fisch/vx/constants.h"
 #include "fisch/vx/jtag.h"
 #include "fisch/vx/playback_executor.h"
 #include "fisch/vx/reset.h"
 #include "fisch/vx/timer.h"
 #include "halco/hicann-dls/vx/coordinates.h"
+#include "haldls/vx/playback.h"
 #include "haldls/vx/ppu.h"
 #include "hxcomm/vx/simconnection.h"
 
@@ -14,7 +16,7 @@ using namespace halco::hicann_dls::vx;
  */
 int main()
 {
-	fisch::vx::PlaybackProgramBuilder builder;
+	haldls::vx::PlaybackProgramBuilder builder;
 
 	fisch::vx::ResetChip reset;
 	reset.set(true);
@@ -32,17 +34,19 @@ int main()
 	builder.write<fisch::vx::ResetJTAGTap>(
 	    halco::hicann_dls::vx::JTAGOnDLS(), fisch::vx::ResetJTAGTap());
 
-	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), fisch::vx::Timer::Value(22 * 125));
+	auto ticket_jtag_id = builder.read<fisch::vx::JTAGIdCode>(halco::hicann_dls::vx::JTAGOnDLS());
+
+	// wait until ASIC omnibus is up (22 us)
+	builder.wait_until(
+	    halco::hicann_dls::vx::TimerOnDLS(),
+	    fisch::vx::Timer::Value(22 * fisch::vx::fpga_clock_cycles_per_us));
 
 	haldls::vx::PPUMemoryWord ppu_word(haldls::vx::PPUMemoryWord::Value(10));
 	PPUMemoryWordOnDLS word_coord(PPUMemoryWordOnPPU(3), PPUOnDLS(0));
 
-	halco::hicann_dls::vx::OmnibusAddress addr(ppu_word.addresses(word_coord)[0]);
-	fisch::vx::OmnibusOnChipOverJTAG config(fisch::vx::OmnibusData(ppu_word.encode()[0]));
-
-	auto ticket1 = builder.read<fisch::vx::OmnibusOnChipOverJTAG>(addr);
-	builder.write(addr, config);
-	auto ticket2 = builder.read<fisch::vx::OmnibusOnChipOverJTAG>(addr);
+	auto ticket1 = builder.read<haldls::vx::PPUMemoryWord>(word_coord);
+	builder.write(word_coord, ppu_word);
+	auto ticket2 = builder.read<haldls::vx::PPUMemoryWord>(word_coord);
 
 	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), fisch::vx::Timer::Value(10000));
 	builder.halt();
@@ -51,13 +55,16 @@ int main()
 	std::cout << program << std::endl;
 
 	fisch::vx::PlaybackProgramExecutor<hxcomm::vx::SimConnection> executor("127.0.0.1", 50004);
-	executor.transfer(program);
+	executor.transfer(program.impl());
 	executor.execute();
-	executor.fetch(program);
+	executor.fetch(program.impl());
 
+	auto result_jtag_id = ticket_jtag_id.get();
 	auto result1 = ticket1.get();
 	auto result2 = ticket2.get();
-	std::cout << result1.get() << std::endl;
-	std::cout << result2.get() << std::endl;
+	std::cout << "JTAGIdCode_ticket.valid(): " << ticket_jtag_id.valid() << std::endl;
+	std::cout << "JTAGIdCode: " << result_jtag_id.get() << std::endl;
+	std::cout << "Read before write PPUMemroyWord: " << result1.get() << std::endl;
+	std::cout << "Read after write PPUMemoryWord: " << result2.get() << std::endl;
 	return 0;
 }

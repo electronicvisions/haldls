@@ -1,0 +1,7 @@
+#ifndef PLAYBACK_CONTAINER
+#define PLAYBACK_CONTAINER(Name, Type)
+#endif
+
+PLAYBACK_CONTAINER(PPUMemoryWord, haldls::vx::PPUMemoryWord)
+
+#undef PLAYBACK_CONTAINER

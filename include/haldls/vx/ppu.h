@@ -6,6 +6,7 @@
 #include "halco/hicann-dls/vx/coordinates.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
+#include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
 #include "haldls/cerealization.h"
@@ -50,6 +51,15 @@ private:
 
 	Value m_value;
 };
+
+namespace detail {
+
+template <>
+struct BackendTrait<PPUMemoryWord>
+    : public BackendTraitBase<PPUMemoryWord, Backend::OmnibusOnChipOverJTAG>
+{};
+
+} // namespace detail
 
 } // namespace vx
 } // namespace haldls
