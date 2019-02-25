@@ -11,5 +11,9 @@ PLAYBACK_CONTAINER(ResetJTAGTap, haldls::vx::ResetJTAGTap)
 PLAYBACK_CONTAINER(ShiftRegister, haldls::vx::ShiftRegister)
 PLAYBACK_CONTAINER(DACChannel, haldls::vx::DACChannel)
 PLAYBACK_CONTAINER(DACControl, haldls::vx::DACControl)
+PLAYBACK_CONTAINER(ADPLL, haldls::vx::ADPLL)
+PLAYBACK_CONTAINER(PLLClockOutputBlock, haldls::vx::PLLClockOutputBlock)
+PLAYBACK_CONTAINER(PLLSelfTest, haldls::vx::PLLSelfTest)
+PLAYBACK_CONTAINER(PLLSelfTestStatus, haldls::vx::PLLSelfTestStatus)
 
 #undef PLAYBACK_CONTAINER

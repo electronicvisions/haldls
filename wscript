@@ -183,14 +183,6 @@ def build(bld):
     )
 
     bld(
-        target = 'stadls_vx_fisch_test',
-        features = 'cxx cxxprogram',
-        source = bld.path.ant_glob('tests/hw/stadls/vx/example.cpp'),
-        use = ['haldls_vx', 'haldls_test_common_inc', 'fisch' ],
-        install_path = '${PREFIX}/bin',
-    )
-
-    bld(
         target = 'stadls_hwtest_vx_inc',
         export_includes = 'tests/hw/stadls/vx/executor_hw/',
     )
