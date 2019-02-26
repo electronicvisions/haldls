@@ -8,7 +8,8 @@ runOnSlave(label: "frontend") {
 	                   app: "visionary-dls",
 	                   postPipelineCleanup: false,
 	                   notificationChannel: "#dls-software",
-	                   warningsIgnorePattern: ".*/lib-rcf/.*")
+	                   warningsIgnorePattern: ".*/lib-rcf/.*",
+	                   testTimeout: 120)
 
 	try {
 		build job: 'hw_dls_haldls', parameters: [string(name: 'VISIONARY_DEFAULTS', value: 'spack_visionary-defaults/autobuild'),
