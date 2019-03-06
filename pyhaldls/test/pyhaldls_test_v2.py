@@ -13,20 +13,20 @@ class TestPyhaldlsV2(unittest.TestCase):
         # test getter/setter: neuron
         neuron = Ct.NeuronDigitalConfig()
         neuron.enable_leak = True
-        chip.set_neuron_digital_config(C.NeuronOnDLS(5), neuron)
-        self.assertEqual(chip.get_neuron_digital_config(C.NeuronOnDLS(5)), neuron)
+        chip.set_neuron_digital_config(5, neuron)
+        self.assertEqual(chip.get_neuron_digital_config(5), neuron)
 
         # test getter/setter: synapse
         synapse = Ct.SynapseBlock.Synapse()
-        synapse.weight = Ct.SynapseBlock.Synapse.Weight(4)
-        synapse.address = Ct.SynapseBlock.Synapse.Address(5)
+        synapse.weight = 4
+        synapse.address = 5
         chip.set_synapse(C.SynapseOnDLS(Co.Enum(3)), synapse)
         self.assertEqual(chip.get_synapse(C.SynapseOnDLS(Co.Enum(3))), synapse)
         self.assertNotEqual(chip.get_synapse(C.SynapseOnDLS(Co.Enum(0))), synapse)
 
         # test getter/setter: synapse_block
         synapse_block = Ct.SynapseBlock()
-        synapse_block.set_synapse(C.SynapseOnSynapseBlock(3), synapse)
+        synapse_block.set_synapse(3, synapse)
         chip.set_synapse_block(C.SynapseBlockOnDLS(Co.X(0), Co.Y(1)), synapse_block)
         synapse_block_eq_1 = chip.get_synapse_block(C.SynapseBlockOnDLS(Co.X(0), Co.Y(1)))
         self.assertEqual(synapse_block_eq_1, synapse_block)
@@ -39,37 +39,37 @@ class TestPyhaldlsV2(unittest.TestCase):
 
         corr_switch = Ct.ColumnCorrelationBlock.ColumnCorrelationSwitch()
         corr_switch.causal_config = Ct.ColumnCorrelationBlock.ColumnCorrelationSwitch.Config.internal
-        chip.set_column_correlation_switch(C.ColumnCorrelationSwitchOnDLS(3), corr_switch)
-        self.assertEqual(chip.get_column_correlation_switch(C.ColumnCorrelationSwitchOnDLS(3)), corr_switch)
+        chip.set_column_correlation_switch(3, corr_switch)
+        self.assertEqual(chip.get_column_correlation_switch(3), corr_switch)
 
         corr_block = Ct.ColumnCorrelationBlock()
-        corr_block.set_switch(C.ColumnCorrelationSwitchOnColumnBlock(3), corr_switch)
-        chip.set_column_correlation_block(C.ColumnBlockOnDLS(7), corr_block)
-        self.assertEqual(chip.get_column_correlation_block(C.ColumnBlockOnDLS(7)), corr_block)
+        corr_block.set_switch(3, corr_switch)
+        chip.set_column_correlation_block(7, corr_block)
+        self.assertEqual(chip.get_column_correlation_block(7), corr_block)
         # test if single correlation switch setter modifies correct block
-        self.assertEqual(chip.get_column_correlation_block(C.ColumnBlockOnDLS(0)), corr_block)
+        self.assertEqual(chip.get_column_correlation_block(0), corr_block)
 
         curr_switch = Ct.ColumnCurrentBlock.ColumnCurrentSwitch()
         curr_switch.exc_config = Ct.ColumnCurrentBlock.ColumnCurrentSwitch.Config.internal
-        chip.set_column_current_switch(C.ColumnCurrentSwitchOnDLS(2), curr_switch)
-        self.assertEqual(chip.get_column_current_switch(C.ColumnCurrentSwitchOnDLS(2)), curr_switch)
+        chip.set_column_current_switch(2, curr_switch)
+        self.assertEqual(chip.get_column_current_switch(2), curr_switch)
 
         curr_block = Ct.ColumnCurrentBlock()
-        curr_block.set_switch(C.ColumnCurrentSwitchOnColumnBlock(2), curr_switch)
-        chip.set_column_current_block(C.ColumnBlockOnDLS(6), curr_block)
-        self.assertEqual(chip.get_column_current_block(C.ColumnBlockOnDLS(6)), curr_block)
+        curr_block.set_switch(2, curr_switch)
+        chip.set_column_current_block(6, curr_block)
+        self.assertEqual(chip.get_column_current_block(6), curr_block)
         # test if single current switch setter modifies correct block
-        self.assertEqual(chip.get_column_current_block(C.ColumnBlockOnDLS(0)), curr_block)
+        self.assertEqual(chip.get_column_current_block(0), curr_block)
 
         capmem = Ct.CapMem()
-        capmem.set(C.CapMemCellOnDLS(Co.Enum(4)), Ct.CapMemCell.Value(123))
+        capmem.set(C.CapMemCellOnDLS(Co.Enum(4)), 123)
         chip.capmem = capmem
         self.assertEqual(chip.capmem, capmem)
 
         ppu_memory = Ct.PPUMemory()
         test_mem = []
         for word in C.iter_all(C.PPUMemoryWordOnDLS):
-            test_mem.append(Ct.PPUMemoryWord(Ct.PPUMemoryWord.Value(word.value())))
+            test_mem.append(Ct.PPUMemoryWord(word.value()))
         ppu_memory.words = test_mem
         chip.ppu_memory = ppu_memory
         self.assertEqual(chip.ppu_memory, ppu_memory)
@@ -80,38 +80,38 @@ class TestPyhaldlsV2(unittest.TestCase):
         self.assertEqual(chip.ppu_control_register, control_register)
 
         rate = Ct.RateCounterConfig()
-        rate.set_enable_neuron(C.NeuronOnDLS(4), True)
+        rate.set_enable_neuron(4, True)
         chip.rate_counter_config = rate
         self.assertEqual(chip.rate_counter_config, rate)
 
         syndriver_config = Ct.SynapseDriverBlock()
-        syndriver_config.pulse_length = Ct.SynapseDriverBlock.PulseLength(22)
+        syndriver_config.pulse_length = 22
         chip.synapse_drivers = syndriver_config
         self.assertEqual(chip.synapse_drivers, syndriver_config)
 
         synram_config = Ct.CommonSynramConfig()
-        synram_config.pc_conf = Ct.CommonSynramConfig.PCConf(14)
+        synram_config.pc_conf = 14
         chip.common_synram_config = synram_config
         self.assertEqual(chip.common_synram_config, synram_config)
 
         capmem_config = Ct.CapMemConfig()
-        capmem_config.sub_counter = Ct.CapMemConfig.SubCounter(1234)
+        capmem_config.sub_counter = 1234
         chip.capmem_config = capmem_config
         self.assertEqual(chip.capmem_config, capmem_config)
 
         neuron_config = Ct.CommonNeuronConfig()
-        neuron_config.post_correlation_signal_length = Ct.CommonNeuronConfig.PostCorrelationSignalLength(12)
+        neuron_config.post_correlation_signal_length = 12
         chip.common_neuron_config = neuron_config
         self.assertEqual(chip.common_neuron_config, neuron_config)
 
         correlation_config = Ct.CorrelationConfig()
-        correlation_config.sense_delay = Ct.CorrelationConfig.Delay(12)
+        correlation_config.sense_delay = 12
         chip.correlation_config = correlation_config
         self.assertEqual(chip.correlation_config, correlation_config)
 
         chip2 = Ct.Chip(chip)
         chip3 = Ct.Chip()
-        capmem_config.sub_counter = Ct.CapMemConfig.SubCounter(4321)
+        capmem_config.sub_counter = 4321
         chip3.capmem_config = capmem_config
 
         self.assertEqual(chip, chip2)
@@ -121,8 +121,8 @@ class TestPyhaldlsV2(unittest.TestCase):
         self.assertFalse(chip != chip2)
 
         # check neuron current input and voltage output setter
-        test_neuron_coord = C.NeuronOnDLS(14)
-        test_neuron_coord2 = C.NeuronOnDLS(10)
+        test_neuron_coord = 14
+        test_neuron_coord2 = 10
 
         self.assertFalse(bool(chip.buffered_readout_neuron))
         chip.enable_buffered_readout(test_neuron_coord)
@@ -166,14 +166,12 @@ class TestPyhaldlsV2(unittest.TestCase):
         chip = Ct.Chip()
 
         for val in Co.iter_all(chip.common_synram_config.WaitCtrClear):
-            chip.common_synram_config.wait_ctr_clear = \
-                chip.common_synram_config.WaitCtrClear(val)
+            chip.common_synram_config.wait_ctr_clear = val
 
             self.assertIsInstance(chip.common_synram_config.wait_ctr_clear,
                                   chip.common_synram_config.WaitCtrClear)
 
-            self.assertEqual(chip.common_synram_config.WaitCtrClear(val),
-                             chip.common_synram_config.wait_ctr_clear)
+            self.assertEqual(val, chip.common_synram_config.wait_ctr_clear)
 
 
 if __name__ == "__main__":

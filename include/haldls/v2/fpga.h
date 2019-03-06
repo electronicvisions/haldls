@@ -136,7 +136,7 @@ public:
 	struct GENPYBIND(inline_base("*")) TgControl
 		: public halco::common::detail::RantWrapper<TgControl, uint_fast16_t, 63, 0>
 	{
-		constexpr explicit TgControl(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit TgControl(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	FlyspiConfig() SYMBOL_VISIBLE;
@@ -316,7 +316,7 @@ public:
 	struct GENPYBIND(inline_base("*")) Delay
 		: public halco::common::detail::RantWrapper<Delay, uint_fast16_t, 0x4000 - 1, 0>
 	{
-		constexpr explicit Delay(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Delay(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	/// \brief Disable routing of spikes altogether (default).

@@ -19,14 +19,14 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
 
         capmem_config = Ct.CapMem()
         for cell in C.iter_all(C.CapMemCellOnDLS):
-            capmem_config.set(cell, Ct.CapMemCell.Value(cell.toEnum().value()))
+            capmem_config.set(cell, cell.toEnum().value())
 
         cell = C.CapMemCellOnDLS(Co.Enum(2))
-        capmemvalue = Ct.CapMemCell.Value(334)
+        capmemvalue = 334
         capmem_config.set(
-            C.CapMemCellOnDLS(Co.Enum(0)), Ct.CapMemCell.Value(123))
+            C.CapMemCellOnDLS(Co.Enum(0)), 123)
         capmem_config.set(
-            C.CapMemCellOnDLS(Co.Enum(1)), Ct.CapMemCell.Value(321))
+            C.CapMemCellOnDLS(Co.Enum(1)), 321)
         capmem_config.set(cell, capmemvalue)
 
         builder = Ct.PlaybackProgramBuilder()
@@ -56,8 +56,8 @@ class TestPyhaldlsIOV2Hardware(unittest.TestCase):
 
 class TestHelloWorldHardware(unittest.TestCase):
     def configure(self):
-        self.weight = Ct.SynapseBlock.Synapse.Weight(63)
-        self.address = Ct.SynapseBlock.Synapse.Address(42)
+        self.weight = 63
+        self.address = 42
 
         self.neuron = C.NeuronOnDLS(0)
         self.synapse_driver = C.SynapseDriverOnDLS(0)
@@ -66,21 +66,21 @@ class TestHelloWorldHardware(unittest.TestCase):
         self.board = Ct.Board()
 
         # Set the dac values
-        self.board.set_parameter(Ct.Board.Parameter.cadc_ramp_bias, Ct.DAC.Value(2730))
-        self.board.set_parameter(Ct.Board.Parameter.cadc_ramp_01, Ct.DAC.Value(1365))
-        self.board.set_parameter(Ct.Board.Parameter.cadc_ramp_slope, Ct.DAC.Value(1350))
-        self.board.set_parameter(Ct.Board.Parameter.cadc_v_bias, Ct.DAC.Value(2389))
-        self.board.set_parameter(Ct.Board.Parameter.syn_v_dd_res_meas, Ct.DAC.Value(4095))
-        self.board.set_parameter(Ct.Board.Parameter.syn_v_store, Ct.DAC.Value(1200))
-        self.board.set_parameter(Ct.Board.Parameter.syn_v_ramp, Ct.DAC.Value(1200))
-        self.board.set_parameter(Ct.Board.Parameter.syn_v_bias, Ct.DAC.Value(1500))
-        self.board.set_parameter(Ct.Board.Parameter.capmem_i_offset, Ct.DAC.Value(0))
-        self.board.set_parameter(Ct.Board.Parameter.general_purpose_0, Ct.DAC.Value(0))
-        self.board.set_parameter(Ct.Board.Parameter.general_purpose_1, Ct.DAC.Value(0))
-        self.board.set_parameter(Ct.Board.Parameter.syn_v_reset, Ct.DAC.Value(3700))
-        self.board.set_parameter(Ct.Board.Parameter.syn_corout_bias, Ct.DAC.Value(573))
-        self.board.set_parameter(Ct.Board.Parameter.capmem_i_buf_bias, Ct.DAC.Value(3000))
-        self.board.set_parameter(Ct.Board.Parameter.capmem_i_ref, Ct.DAC.Value(3906))
+        self.board.set_parameter(Ct.Board.Parameter.cadc_ramp_bias, 2730)
+        self.board.set_parameter(Ct.Board.Parameter.cadc_ramp_01, 1365)
+        self.board.set_parameter(Ct.Board.Parameter.cadc_ramp_slope, 1350)
+        self.board.set_parameter(Ct.Board.Parameter.cadc_v_bias, 2389)
+        self.board.set_parameter(Ct.Board.Parameter.syn_v_dd_res_meas, 4095)
+        self.board.set_parameter(Ct.Board.Parameter.syn_v_store, 1200)
+        self.board.set_parameter(Ct.Board.Parameter.syn_v_ramp, 1200)
+        self.board.set_parameter(Ct.Board.Parameter.syn_v_bias, 1500)
+        self.board.set_parameter(Ct.Board.Parameter.capmem_i_offset, 0)
+        self.board.set_parameter(Ct.Board.Parameter.general_purpose_0, 0)
+        self.board.set_parameter(Ct.Board.Parameter.general_purpose_1, 0)
+        self.board.set_parameter(Ct.Board.Parameter.syn_v_reset, 3700)
+        self.board.set_parameter(Ct.Board.Parameter.syn_corout_bias, 573)
+        self.board.set_parameter(Ct.Board.Parameter.capmem_i_buf_bias, 3000)
+        self.board.set_parameter(Ct.Board.Parameter.capmem_i_ref, 3906)
 
         capmem_config = self.chip.capmem_config
         capmem_config.enable_capmem = True
@@ -88,25 +88,25 @@ class TestHelloWorldHardware(unittest.TestCase):
 
         # Set the cap mem
         capmem_config = self.chip.capmem
-        capmem_config.set(self.neuron, C.NeuronParameter.v_leak, Ct.CapMemCell.Value(400))
-        capmem_config.set(self.neuron, C.NeuronParameter.v_treshold, Ct.CapMemCell.Value(600))
-        capmem_config.set(self.neuron, C.NeuronParameter.v_exc_syn_input_reference, Ct.CapMemCell.Value(670))
-        capmem_config.set(self.neuron, C.NeuronParameter.v_inh_syn_input_reference, Ct.CapMemCell.Value(690))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_spike_comparator, Ct.CapMemCell.Value(650))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_spike_comparator_delay, Ct.CapMemCell.Value(130))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_leak_main, Ct.CapMemCell.Value(200))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_leak_sd, Ct.CapMemCell.Value(500))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_readout_buffer, Ct.CapMemCell.Value(1022))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_refractory_time, Ct.CapMemCell.Value(300))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_exc_syn_input_main, Ct.CapMemCell.Value(1022))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_exc_syn_input_sd, Ct.CapMemCell.Value(1022))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_exc_syn_input_resistor, Ct.CapMemCell.Value(200))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_exc_syn_input_offset, Ct.CapMemCell.Value(650))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_resistor, Ct.CapMemCell.Value(200))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_main, Ct.CapMemCell.Value(1022))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_sd, Ct.CapMemCell.Value(1022))
-        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_offset, Ct.CapMemCell.Value(400))
-        capmem_config.set(C.CommonNeuronParameter.e_reset, Ct.CapMemCell.Value(300))
+        capmem_config.set(self.neuron, C.NeuronParameter.v_leak, 400)
+        capmem_config.set(self.neuron, C.NeuronParameter.v_treshold, 600)
+        capmem_config.set(self.neuron, C.NeuronParameter.v_exc_syn_input_reference, 670)
+        capmem_config.set(self.neuron, C.NeuronParameter.v_inh_syn_input_reference, 690)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_spike_comparator, 650)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_spike_comparator_delay, 130)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_leak_main, 200)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_leak_sd, 500)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_readout_buffer, 1022)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_refractory_time, 300)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_exc_syn_input_main, 1022)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_exc_syn_input_sd, 1022)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_exc_syn_input_resistor, 200)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_exc_syn_input_offset, 650)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_resistor, 200)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_main, 1022)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_sd, 1022)
+        capmem_config.set(self.neuron, C.NeuronParameter.i_bias_inh_syn_input_offset, 400)
+        capmem_config.set(C.CommonNeuronParameter.e_reset, 300)
         self.chip.capmem = capmem_config
 
         # Set connectivity
@@ -116,9 +116,9 @@ class TestHelloWorldHardware(unittest.TestCase):
         synapse_config.address = self.address
         self.chip.set_synapse(synapse, synapse_config)
         common_synram_config = self.chip.common_synram_config
-        common_synram_config.pc_conf = Ct.CommonSynramConfig.PCConf(1)
-        common_synram_config.w_conf = Ct.CommonSynramConfig.WConf(1)
-        common_synram_config.wait_ctr_clear = Ct.CommonSynramConfig.WaitCtrClear(1)
+        common_synram_config.pc_conf = 1
+        common_synram_config.w_conf = 1
+        common_synram_config.wait_ctr_clear = 1
         self.chip.common_synram_config = common_synram_config
 
         # Set current switches at the synaptic input
@@ -131,7 +131,7 @@ class TestHelloWorldHardware(unittest.TestCase):
         # Set synapse driver
         syndrv_config = self.chip.synapse_drivers
         syndrv_config.set_mode(self.synapse_driver, Ct.SynapseDriverBlock.Mode.excitatory)
-        syndrv_config.pulse_length = Ct.SynapseDriverBlock.PulseLength(8)
+        syndrv_config.pulse_length = 8
         self.chip.synapse_drivers = syndrv_config
 
         common_neuron_config = self.chip.common_neuron_config

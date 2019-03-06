@@ -26,13 +26,13 @@ public:
 	struct GENPYBIND(inline_base("*")) Value
 		: public halco::common::detail::RantWrapper<Value, uint_fast16_t, 4095, 0>
 	{
-		constexpr explicit Value(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	struct GENPYBIND(inline_base("*")) Channel
 		: public halco::common::detail::RantWrapper<Channel, uint_fast16_t, 7, 0>
 	{
-		constexpr explicit Channel(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Channel(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	DAC() SYMBOL_VISIBLE;

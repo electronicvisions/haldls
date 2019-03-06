@@ -23,7 +23,7 @@ public:
 	struct GENPYBIND(inline_base("*")) Value
 		: public halco::common::detail::RantWrapper<Value, uint_fast16_t, 1023, 0>
 	{
-		constexpr explicit Value(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	CapMemCell() SYMBOL_VISIBLE;
@@ -101,75 +101,75 @@ public:
 	struct GENPYBIND(inline_base("*")) OutAmpBias
 		: public halco::common::detail::RantWrapper<OutAmpBias, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit OutAmpBias(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit OutAmpBias(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) SourceFollowerBias
 		: public halco::common::detail::RantWrapper<SourceFollowerBias, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit SourceFollowerBias(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit SourceFollowerBias(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) LevelShifterBias
 		: public halco::common::detail::RantWrapper<LevelShifterBias, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit LevelShifterBias(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit LevelShifterBias(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	struct GENPYBIND(inline_base("*")) VGlobalBias
 		: public halco::common::detail::RantWrapper<VGlobalBias, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit VGlobalBias(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit VGlobalBias(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) CurrentCellRes
 		: public halco::common::detail::RantWrapper<CurrentCellRes, uint_fast16_t, 63, 0>
 	{
-		constexpr explicit CurrentCellRes(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit CurrentCellRes(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) BoostFactor
 		: public halco::common::detail::RantWrapper<BoostFactor, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit BoostFactor(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit BoostFactor(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) PrescalePause
 		: public halco::common::detail::RantWrapper<PrescalePause, uint_fast16_t, 6, 0>
 	{
-		constexpr explicit PrescalePause(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PrescalePause(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) PrescaleRamp
 		: public halco::common::detail::RantWrapper<PrescaleRamp, uint_fast16_t, 6, 0>
 	{
-		constexpr explicit PrescaleRamp(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PrescaleRamp(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) SubCounter
 		: public halco::common::detail::
 			  RantWrapper<SubCounter, uint_fast16_t, 65535 /* 2^16*-1 */, 0>
 	{
-		constexpr explicit SubCounter(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit SubCounter(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) PauseCounter
 		: public halco::common::detail::
 			  RantWrapper<PauseCounter, uint_fast32_t, 4294967295 /* 2^32-1 */, 0>
 	{
-		constexpr explicit PauseCounter(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PauseCounter(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) PulseA
 		: public halco::common::detail::RantWrapper<PulseA, uint_fast16_t, 65535, 0>
 	{
-		constexpr explicit PulseA(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PulseA(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) PulseB
 		: public halco::common::detail::RantWrapper<PulseB, uint_fast16_t, 65535, 0>
 	{
-		constexpr explicit PulseB(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PulseB(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) BoostA
 		: public halco::common::detail::RantWrapper<BoostA, uint_fast16_t, 65535, 0>
 	{
-		constexpr explicit BoostA(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit BoostA(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) BoostB
 		: public halco::common::detail::RantWrapper<BoostB, uint_fast16_t, 65535, 0>
 	{
-		constexpr explicit BoostB(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit BoostB(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	enum class VRefSelect : uint_fast8_t

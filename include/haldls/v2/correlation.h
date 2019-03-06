@@ -23,7 +23,7 @@ public:
 	struct GENPYBIND(inline_base("*")) Delay
 		: public halco::common::detail::RantWrapper<Delay, uint_fast16_t, 4095, 0>
 	{
-		constexpr explicit Delay(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Delay(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	CorrelationConfig() SYMBOL_VISIBLE;
@@ -82,7 +82,7 @@ public:
 	struct GENPYBIND(inline_base("*")) Correlation
 		: public halco::common::detail::RantWrapper<Correlation, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit Correlation(uintmax_t const val = 0) SYMBOL_VISIBLE
+		constexpr explicit Correlation(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE
 			: halco::common::detail::RantWrapper<Correlation, uint_fast16_t, 255, 0>::rant_t(val)
 		{
 		}

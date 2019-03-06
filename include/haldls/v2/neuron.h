@@ -27,7 +27,7 @@ public:
 		: public halco::common::detail::
 			  RantWrapper<PostCorrelationSignalLength, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit PostCorrelationSignalLength(uintmax_t const val = 0) SYMBOL_VISIBLE
+		constexpr explicit PostCorrelationSignalLength(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE
 			: rant_t(val)
 		{}
 	};

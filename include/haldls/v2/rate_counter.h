@@ -116,7 +116,7 @@ public:
 	struct GENPYBIND(inline_base("*")) Count
 		: public halco::common::detail::RantWrapper<Count, uint_fast16_t, 1023, 0>
 	{
-		constexpr explicit Count(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Count(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	/**

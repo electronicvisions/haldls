@@ -21,7 +21,7 @@ public:
 	struct GENPYBIND(inline_base("*")) PulseLength
 		: public halco::common::detail::RantWrapper<PulseLength, uint_fast16_t, 31, 0>
 	{
-		constexpr explicit PulseLength(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PulseLength(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	enum class Mode : uint_fast8_t

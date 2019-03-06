@@ -28,7 +28,7 @@ public:
 	 */
 	struct GENPYBIND(inline_base("*")) PCConf : public halco::common::detail::RantWrapper<PCConf, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit PCConf(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PCConf(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	/**
 	 * Wordline activation delay.
@@ -38,12 +38,12 @@ public:
 	 */
 	struct GENPYBIND(inline_base("*")) WConf : public halco::common::detail::RantWrapper<WConf, uint_fast32_t, 255, 0>
 	{
-		constexpr explicit WConf(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit WConf(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 	struct GENPYBIND(inline_base("*")) WaitCtrClear
 		: public halco::common::detail::RantWrapper<WaitCtrClear, uint_fast16_t, 7, 0>
 	{
-		constexpr explicit WaitCtrClear(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit WaitCtrClear(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
 	CommonSynramConfig() SYMBOL_VISIBLE;
@@ -126,24 +126,24 @@ public:
 	{
 		struct GENPYBIND(inline_base("*")) Weight : public halco::common::detail::RantWrapper<Weight, uint_fast16_t, 63, 0>
 		{
-			constexpr explicit Weight(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+			constexpr explicit Weight(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 		};
 
 		struct GENPYBIND(inline_base("*")) Address : public halco::common::detail::RantWrapper<Address, uint_fast16_t, 63, 0>
 		{
-			constexpr explicit Address(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+			constexpr explicit Address(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 		};
 
 		// The more bits set, the shorter the time constant
 		struct GENPYBIND(inline_base("*")) TimeCalib : public halco::common::detail::RantWrapper<TimeCalib, uint_fast16_t, 3, 0>
 		{
-			constexpr explicit TimeCalib(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+			constexpr explicit TimeCalib(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 		};
 
 		// The more bits set, the lower the amplitude
 		struct GENPYBIND(inline_base("*")) AmpCalib : public halco::common::detail::RantWrapper<AmpCalib, uint_fast16_t, 3, 0>
 		{
-			constexpr explicit AmpCalib(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+			constexpr explicit AmpCalib(uintmax_t const val = 0) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val) {}
 		};
 
 		Synapse() SYMBOL_VISIBLE;
