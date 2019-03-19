@@ -280,6 +280,20 @@ TEST(PPUMemory, General)
 	ASSERT_EQ(memory_eq, memory);
 	memory_ne.set_word(PPUMemoryWordOnDLS(14), PPUMemoryWord::Value(0x43u));
 	ASSERT_NE(memory_ne, memory);
+
+	PPUMemory memory_from_file;
+
+	EXPECT_NO_THROW(
+	    memory_from_file.load_from_file("../haldls/tests/sw/haldls/v2/ppu_test_binary.binary"));
+
+	memory_from_file.load_from_file("../haldls/tests/sw/haldls/v2/ppu_test_binary.binary");
+	ASSERT_EQ(memory_from_file.get_word(PPUMemoryWordOnDLS(0)), PPUMemoryWord::Value(0x48000034));
+	ASSERT_EQ(memory_from_file.get_word(PPUMemoryWordOnDLS(91)), PPUMemoryWord::Value(0x4e800020));
+	for (auto word: iter_all<PPUMemoryWordOnDLS>()) {
+		if (word >= 92) {
+			ASSERT_EQ(memory_from_file.get_word(word), PPUMemoryWord::Value(0x0));
+		}
+	}
 }
 
 TEST(PPUMemory, EncodeDecode)

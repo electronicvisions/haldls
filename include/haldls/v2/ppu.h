@@ -117,6 +117,14 @@ public:
 	void set_word(
 		halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos, PPUMemoryWord::Value const& word) SYMBOL_VISIBLE;
 
+	/**
+	 * Load a (stripped) PPU program from a file.
+	 * The program is located at the beginning of the memory with words above the program's size
+	 * set to zero.
+	 * @param filename Name of file to load
+	 */
+    void load_from_file(std::string const& filename) SYMBOL_VISIBLE;
+
 	bool operator==(PPUMemory const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUMemory const& other) const SYMBOL_VISIBLE;
 	friend std::ostream& operator<<(std::ostream& os, PPUMemory const& pm) SYMBOL_VISIBLE;
