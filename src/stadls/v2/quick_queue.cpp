@@ -141,8 +141,8 @@ void QuickQueueWorker::get_slurm_allocation()
 	if (pid) {
 		waitpid(pid, &status, 0); // wait for the child to exit
 	} else {
-		execl(
-			"/usr/local/bin/salloc", "salloc", "-p", m_slurm_partition.c_str(), "--no-shell",
+		execlp(
+			"salloc", "salloc", "-p", m_slurm_partition.c_str(), "--no-shell",
 			"--gres", get_slurm_gres().c_str(), "--mem", "0M", "-J", get_slurm_jobname().c_str(),
 			NULL);
 		exit(0);
@@ -201,7 +201,7 @@ void QuickQueueWorker::free_slurm_allocation()
 	if (pid) {
 		waitpid(pid, &status, 0); // wait for the child to exit
 	} else {
-		execl("/usr/local/bin/scancel", "scancel", "-n", get_slurm_jobname().c_str(), NULL);
+		execlp("scancel", "scancel", "-n", get_slurm_jobname().c_str(), NULL);
 		exit(0);
 	}
 	if (status) {
