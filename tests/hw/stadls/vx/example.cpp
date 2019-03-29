@@ -1,12 +1,12 @@
 #include <iostream>
 #include "fisch/vx/constants.h"
-#include "fisch/vx/jtag.h"
 #include "fisch/vx/playback_executor.h"
-#include "fisch/vx/reset.h"
-#include "fisch/vx/timer.h"
 #include "halco/hicann-dls/vx/coordinates.h"
+#include "haldls/vx/jtag.h"
 #include "haldls/vx/playback.h"
 #include "haldls/vx/ppu.h"
+#include "haldls/vx/reset.h"
+#include "haldls/vx/timer.h"
 #include "hxcomm/vx/simconnection.h"
 
 using namespace halco::hicann_dls::vx;
@@ -18,28 +18,28 @@ int main()
 {
 	haldls::vx::PlaybackProgramBuilder builder;
 
-	fisch::vx::ResetChip reset;
+	haldls::vx::ResetChip reset;
 	reset.set(true);
-	builder.write<fisch::vx::ResetChip>(halco::hicann_dls::vx::ResetChipOnDLS(), reset);
-	builder.write<fisch::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), fisch::vx::Timer());
-	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), fisch::vx::Timer::Value(10));
+	builder.write<haldls::vx::ResetChip>(halco::hicann_dls::vx::ResetChipOnDLS(), reset);
+	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10));
 	reset.set(false);
-	builder.write<fisch::vx::ResetChip>(halco::hicann_dls::vx::ResetChipOnDLS(), reset);
-	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), fisch::vx::Timer::Value(100));
+	builder.write<haldls::vx::ResetChip>(halco::hicann_dls::vx::ResetChipOnDLS(), reset);
+	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(100));
 
-	fisch::vx::JTAGClockScaler jtag_clock_scaler;
-	jtag_clock_scaler.set(fisch::vx::JTAGClockScaler::Value(3));
-	builder.write<fisch::vx::JTAGClockScaler>(
+	haldls::vx::JTAGClockScaler jtag_clock_scaler;
+	jtag_clock_scaler.set(haldls::vx::JTAGClockScaler::Value(3));
+	builder.write<haldls::vx::JTAGClockScaler>(
 	    halco::hicann_dls::vx::JTAGOnDLS(), jtag_clock_scaler);
-	builder.write<fisch::vx::ResetJTAGTap>(
-	    halco::hicann_dls::vx::JTAGOnDLS(), fisch::vx::ResetJTAGTap());
+	builder.write<haldls::vx::ResetJTAGTap>(
+	    halco::hicann_dls::vx::JTAGOnDLS(), haldls::vx::ResetJTAGTap());
 
-	auto ticket_jtag_id = builder.read<fisch::vx::JTAGIdCode>(halco::hicann_dls::vx::JTAGOnDLS());
+	auto ticket_jtag_id = builder.read<haldls::vx::JTAGIdCode>(halco::hicann_dls::vx::JTAGOnDLS());
 
 	// wait until ASIC omnibus is up (22 us)
 	builder.wait_until(
 	    halco::hicann_dls::vx::TimerOnDLS(),
-	    fisch::vx::Timer::Value(22 * fisch::vx::fpga_clock_cycles_per_us));
+	    haldls::vx::Timer::Value(22 * fisch::vx::fpga_clock_cycles_per_us));
 
 	haldls::vx::PPUMemoryWord ppu_word(haldls::vx::PPUMemoryWord::Value(10));
 	PPUMemoryWordOnDLS word_coord(PPUMemoryWordOnPPU(3), PPUOnDLS(0));
@@ -48,7 +48,7 @@ int main()
 	builder.write(word_coord, ppu_word);
 	auto ticket2 = builder.read<haldls::vx::PPUMemoryWord>(word_coord);
 
-	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), fisch::vx::Timer::Value(10000));
+	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));
 	builder.halt();
 	auto program = builder.done();
 

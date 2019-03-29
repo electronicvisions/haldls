@@ -3,5 +3,10 @@
 #endif
 
 PLAYBACK_CONTAINER(PPUMemoryWord, haldls::vx::PPUMemoryWord)
+PLAYBACK_CONTAINER(ResetChip, haldls::vx::ResetChip)
+PLAYBACK_CONTAINER(Timer, haldls::vx::Timer)
+PLAYBACK_CONTAINER(JTAGClockScaler, haldls::vx::JTAGClockScaler)
+PLAYBACK_CONTAINER(JTAGIdCode, haldls::vx::JTAGIdCode)
+PLAYBACK_CONTAINER(ResetJTAGTap, haldls::vx::ResetJTAGTap)
 
 #undef PLAYBACK_CONTAINER

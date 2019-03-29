@@ -7,5 +7,8 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyfisch_vx");
 })
 
+#include "haldls/vx/jtag.h"
 #include "haldls/vx/playback.h"
 #include "haldls/vx/ppu.h"
+#include "haldls/vx/reset.h"
+#include "haldls/vx/timer.h"

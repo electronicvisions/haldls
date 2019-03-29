@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <utility>
 
+#include "fisch/vx/jtag.h"
+
 #include "haldls/vx/omnibus_addresses.h"
 #include "haldls/vx/ppu.h"
 
@@ -41,8 +43,9 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
 	return os;
 }
 
-std::array<omnibus_address_type, PPUMemoryWord::config_size_in_words> PPUMemoryWord::addresses(
-    coordinate_type const& coord) const
+template <>
+std::array<omnibus_address_type, PPUMemoryWord::config_size_in_words>
+PPUMemoryWord::addresses<omnibus_address_type>(coordinate_type const& coord) const
 {
 	uint32_t tmp = coord.toPPUMemoryWordOnPPU().value();
 	if (coord.toPPUOnDLS().value() == 0) {
@@ -53,16 +56,27 @@ std::array<omnibus_address_type, PPUMemoryWord::config_size_in_words> PPUMemoryW
 	return {{static_cast<omnibus_address_type>(tmp)}};
 }
 
-std::array<omnibus_word_type, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
+template SYMBOL_VISIBLE std::array<omnibus_address_type, PPUMemoryWord::config_size_in_words>
+PPUMemoryWord::addresses<omnibus_address_type>(coordinate_type const& coord) const;
+
+template <typename WordT>
+std::array<WordT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
 {
-	return {{static_cast<omnibus_word_type>(get())}};
+	return {{static_cast<WordT>(omnibus_word_type(get()))}};
 }
 
-void PPUMemoryWord::decode(
-    std::array<omnibus_word_type, PPUMemoryWord::config_size_in_words> const& data)
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusOnChipOverJTAG, PPUMemoryWord::config_size_in_words>
+    PPUMemoryWord::encode<fisch::vx::OmnibusOnChipOverJTAG>() const;
+
+template <typename WordT>
+void PPUMemoryWord::decode(std::array<WordT, PPUMemoryWord::config_size_in_words> const& data)
 {
-	set(Value(data[0]));
+	set(Value(data[0].get()));
 }
+
+template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::OmnibusOnChipOverJTAG>(
+    std::array<fisch::vx::OmnibusOnChipOverJTAG, PPUMemoryWord::config_size_in_words> const& data);
 
 template <class Archive>
 void PPUMemoryWord::cerealize(Archive& ar)
@@ -71,6 +85,5 @@ void PPUMemoryWord::cerealize(Archive& ar)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryWord)
-
 } // namespace vx
 } // namespace haldls

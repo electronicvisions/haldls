@@ -1,15 +1,15 @@
 #pragma once
 
-#include <atomic>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
-#include "fisch/vx/jtag.h"
 #include "fisch/vx/playback_program.h"
-#include "fisch/vx/reset.h"
-#include "fisch/vx/timer.h"
+#include "haldls/vx/jtag.h"
+#include "haldls/vx/reset.h"
+#include "haldls/vx/timer.h"
 
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
@@ -38,11 +38,8 @@ public:
 		coordinate_type get_coordinate() const SYMBOL_VISIBLE;
 
 	private:
-		typedef std::conditional_t<
-		    detail::BackendTrait<T>::valid(Backend::OmnibusOnChipOverJTAG),
-		    fisch::vx::PlaybackProgram::ContainerVectorTicket<fisch::vx::OmnibusOnChipOverJTAG>,
-		    fisch::vx::PlaybackProgram::ContainerTicket<T>>
-		    ticket_impl_type;
+		typedef typename detail::to_ticket_variant<
+		    typename detail::BackendContainerTrait<T>::container_list>::type ticket_impl_type;
 
 		friend PlaybackProgramBuilder;
 
@@ -60,9 +57,6 @@ public:
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	typedef PlaybackProgram::ContainerTicket<Type> _##Name##ContainerTicket GENPYBIND(opaque);
 #include "haldls/vx/container.def"
-#define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	typedef PlaybackProgram::ContainerTicket<Type> _##Name##ContainerTicket GENPYBIND(opaque);
-#include "fisch/vx/container.def"
 #endif // __GENPYBIND__
 
 	PlaybackProgram() SYMBOL_VISIBLE;
@@ -91,56 +85,55 @@ public:
 	PlaybackProgramBuilder() SYMBOL_VISIBLE;
 
 	void wait_until(
-	    typename fisch::vx::Timer::coordinate_type const& coord,
-	    fisch::vx::Timer::Value t) SYMBOL_VISIBLE;
+	    typename haldls::vx::Timer::coordinate_type const& coord,
+	    haldls::vx::Timer::Value t) SYMBOL_VISIBLE;
 
 	template <class T>
 	void write(
 	    typename T::coordinate_type const& coord,
 	    T const& config,
-	    std::optional<Backend> backend = std::nullopt);
+	    std::optional<Backend> backend = std::nullopt) SYMBOL_VISIBLE;
+
+#define PLAYBACK_CONTAINER(Name, Type)                                                             \
+	void write(typename Type::coordinate_type const& coord, Type const& config, Backend backend)   \
+	    SYMBOL_VISIBLE;                                                                            \
+	void write(typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;
+#include "haldls/vx/container.def"
 
 	template <class T>
 	PlaybackProgram::ContainerTicket<T> read(
 	    typename T::coordinate_type const& coord,
 	    std::optional<Backend> backend = std::nullopt) SYMBOL_VISIBLE;
 
+#define PLAYBACK_CONTAINER(Name, Type)                                                             \
+	PlaybackProgram::ContainerTicket<Type> read(                                                   \
+	    typename Type::coordinate_type const& coord, Type const& config, Backend backend)          \
+	    SYMBOL_VISIBLE;                                                                            \
+	PlaybackProgram::ContainerTicket<Type> read(                                                   \
+	    typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;
+#include "haldls/vx/container.def"
+
 	void halt() SYMBOL_VISIBLE;
 
 	PlaybackProgram done() SYMBOL_VISIBLE;
 
 private:
+	template <class T, size_t... SupportedBackendIndex>
+	void write_table_generator(
+	    typename T::coordinate_type const& coord,
+	    T const& config,
+	    size_t backend_index,
+	    std::index_sequence<SupportedBackendIndex...>);
+
+	template <class T, size_t... SupportedBackendIndex>
+	PlaybackProgram::ContainerTicket<T> read_table_generator(
+	    typename T::coordinate_type const& coord,
+	    size_t backend_index,
+	    std::index_sequence<SupportedBackendIndex...>) SYMBOL_VISIBLE;
+
+
 	std::unique_ptr<fisch::vx::PlaybackProgramBuilder> m_builder_impl;
 }; // PlaybackProgramBuilder
-
-#ifdef __GENPYBIND__
-// Explicit instantiation of template member functions for all valid playback container types.
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	extern template SYMBOL_VISIBLE void PlaybackProgramBuilder::write<Type>(                       \
-	    Type::coordinate_type const& coord, Type const& config,                                    \
-	    std::optional<Backend> backend = std::nullopt);
-#include "haldls/vx/container.def"
-
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	extern template SYMBOL_VISIBLE void PlaybackProgramBuilder::write<Type>(                       \
-	    Type::coordinate_type const& coord, Type const& config,                                    \
-	    std::optional<Backend> backend = std::nullopt);
-#include "fisch/vx/container.def"
-
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	extern template PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read<Type>(     \
-	    typename Type::coordinate_type const& coord,                                               \
-	    std::optional<Backend> backend = std::nullopt);                                            \
-	extern template class PlaybackProgram::ContainerTicket<Type>;
-#include "haldls/vx/container.def"
-
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	extern template PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read<Type>(     \
-	    typename Type::coordinate_type const& coord,                                               \
-	    std::optional<Backend> backend = std::nullopt);                                            \
-	extern template class PlaybackProgram::ContainerTicket<Type>;
-#include "fisch/vx/container.def"
-#endif // __GENPYBIND__
 
 } // namespace vx
 } // namespace haldls

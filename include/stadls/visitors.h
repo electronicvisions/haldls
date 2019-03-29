@@ -38,6 +38,23 @@ struct ReadAddressVisitor
 	}
 
 	template <typename CoordinateT, typename ContainerT>
+	auto operator()(CoordinateT const& coord, ContainerT const& container)
+	    -> decltype(container.template addresses<typename T::value_type>(coord), void())
+	{
+		auto const read_addresses = container.template addresses<typename T::value_type>(coord);
+		addresses.insert(addresses.end(), read_addresses.begin(), read_addresses.end());
+	}
+
+	template <typename CoordinateT, typename ContainerT>
+	auto operator()(CoordinateT const& coord, ContainerT const& container)
+	    -> decltype(container.template read_addresses<typename T::value_type>(coord), void())
+	{
+		auto const read_addresses =
+		    container.template read_addresses<typename T::value_type>(coord);
+		addresses.insert(addresses.end(), read_addresses.begin(), read_addresses.end());
+	}
+
+	template <typename CoordinateT, typename ContainerT>
 	auto operator()(CoordinateT const&, ContainerT const&) ->
 		typename std::enable_if<!ContainerT::has_local_data::value>::type
 	{
@@ -75,6 +92,23 @@ struct WriteAddressVisitor
 	}
 
 	template <typename CoordinateT, typename ContainerT>
+	auto operator()(CoordinateT const& coord, ContainerT const& container)
+	    -> decltype(container.template addresses<typename T::value_type>(coord), void())
+	{
+		auto const write_addresses = container.template addresses<typename T::value_type>(coord);
+		addresses.insert(addresses.end(), write_addresses.begin(), write_addresses.end());
+	}
+
+	template <typename CoordinateT, typename ContainerT>
+	auto operator()(CoordinateT const& coord, ContainerT const& container)
+	    -> decltype(container.template write_addresses<typename T::value_type>(coord), void())
+	{
+		auto const write_addresses =
+		    container.template write_addresses<typename T::value_type>(coord);
+		addresses.insert(addresses.end(), write_addresses.begin(), write_addresses.end());
+	}
+
+	template <typename CoordinateT, typename ContainerT>
 	auto operator()(CoordinateT const&, ContainerT const&) ->
 		typename std::enable_if<!ContainerT::has_local_data::value>::type
 	{
@@ -108,6 +142,13 @@ public:
 		-> decltype(&ContainerT::decode, void())
 	{
 		decode(coord, container, &ContainerT::decode);
+	}
+
+	template <typename CoordinateT, typename ContainerT>
+	auto operator()(CoordinateT const& coord, ContainerT& container)
+	    -> decltype(&ContainerT::template decode<value_type>, void())
+	{
+		decode(coord, container, &ContainerT::template decode<value_type>);
 	}
 
 	template <typename CoordinateT, typename ContainerT>
@@ -183,6 +224,13 @@ public:
 	}
 
 	template <typename CoordinateT, typename ContainerT>
+	auto operator()(CoordinateT const& coord, ContainerT const& container)
+	    -> decltype(&ContainerT::template encode<value_type>, void())
+	{
+		encode(coord, container, &ContainerT::template encode<value_type>);
+	}
+
+	template <typename CoordinateT, typename ContainerT>
 	auto operator()(CoordinateT const&, ContainerT const&) ->
 		typename std::enable_if<!ContainerT::has_local_data::value>::type
 	{
@@ -205,6 +253,27 @@ private:
 		CoordinateT const&,
 		ContainerT const& container,
 		std::array<value_type, N> (ContainerT::*encode)() const)
+	{
+		auto const words = (container.*encode)();
+		m_data.insert(m_data.end(), words.begin(), words.end());
+	}
+
+	template <typename CoordinateT, typename ContainerT>
+	void encode(
+	    CoordinateT const& coord,
+	    ContainerT const& container,
+	    decltype(container.template encode<value_type>(coord)) (ContainerT::*encode)(
+	        CoordinateT const&) const)
+	{
+		auto const words = (container.*encode)(coord);
+		m_data.insert(m_data.end(), words.begin(), words.end());
+	}
+
+	template <typename CoordinateT, typename ContainerT>
+	void encode(
+	    CoordinateT const&,
+	    ContainerT const& container,
+	    decltype(container.template encode<value_type>()) (ContainerT::*encode)() const)
 	{
 		auto const words = (container.*encode)();
 		m_data.insert(m_data.end(), words.begin(), words.end());

@@ -11,6 +11,10 @@
 
 #include "haldls/cerealization.h"
 
+namespace fisch::vx {
+class OmnibusOnChipOverJTAG;
+} // namespace fisch::vx
+
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
@@ -37,11 +41,13 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<omnibus_address_type, config_size_in_words> addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<omnibus_word_type, config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<omnibus_word_type, config_size_in_words> const& data) SYMBOL_VISIBLE
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& word) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 private:
@@ -55,8 +61,8 @@ private:
 namespace detail {
 
 template <>
-struct BackendTrait<PPUMemoryWord>
-    : public BackendTraitBase<PPUMemoryWord, Backend::OmnibusOnChipOverJTAG>
+struct BackendContainerTrait<PPUMemoryWord>
+    : public BackendContainerBase<PPUMemoryWord, fisch::vx::OmnibusOnChipOverJTAG>
 {};
 
 } // namespace detail
