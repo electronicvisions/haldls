@@ -4,7 +4,7 @@
 
 #include "fisch/vx/jtag.h"
 
-#include "haldls/vx/omnibus_addresses.h"
+#include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/ppu.h"
 
 namespace haldls {

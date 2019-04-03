@@ -188,6 +188,16 @@ def build(bld):
         install_path = '${PREFIX}/bin',
     )
 
+    bld(
+        target = 'stadls_hwtest_vx',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/hw/stadls/vx/test-*.cpp'),
+        test_main = 'tests/hw/stadls/vx/main.cpp',
+        use = ['haldls_vx', 'GTEST'],
+        install_path = '${PREFIX}/bin',
+        skip_run = True,
+    )
+
     stadl_hwtests_kwargs = dict(
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/hw/stadls/v2/test-*.cpp'),

@@ -8,5 +8,6 @@ PLAYBACK_CONTAINER(Timer, haldls::vx::Timer)
 PLAYBACK_CONTAINER(JTAGClockScaler, haldls::vx::JTAGClockScaler)
 PLAYBACK_CONTAINER(JTAGIdCode, haldls::vx::JTAGIdCode)
 PLAYBACK_CONTAINER(ResetJTAGTap, haldls::vx::ResetJTAGTap)
+PLAYBACK_CONTAINER(ShiftRegister, haldls::vx::ShiftRegister)
 
 #undef PLAYBACK_CONTAINER

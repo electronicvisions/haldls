@@ -9,6 +9,7 @@
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/reset.h"
+#include "haldls/vx/spi.h"
 #include "haldls/vx/timer.h"
 
 #include "haldls/vx/common.h"

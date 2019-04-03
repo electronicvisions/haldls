@@ -3,6 +3,7 @@
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
+#include "haldls/vx/spi.h"
 #include "haldls/vx/timer.h"
 
 using namespace haldls::vx;
@@ -11,8 +12,9 @@ template <class T>
 class CommonSerializationTests : public ::testing::Test
 {};
 
-typedef ::testing::Types<PPUMemoryWord, ResetJTAGTap, Timer, ResetChip, JTAGClockScaler, JTAGIdCode>
-    SerializableTypes;
+typedef ::testing::
+    Types<PPUMemoryWord, ResetJTAGTap, Timer, ResetChip, JTAGClockScaler, JTAGIdCode, ShiftRegister>
+        SerializableTypes;
 
 TYPED_TEST_CASE(CommonSerializationTests, SerializableTypes);
 

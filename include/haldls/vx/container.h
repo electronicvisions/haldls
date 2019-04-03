@@ -11,4 +11,5 @@ GENPYBIND_MANUAL({
 #include "haldls/vx/playback.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
+#include "haldls/vx/spi.h"
 #include "haldls/vx/timer.h"
