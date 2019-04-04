@@ -1,4 +1,5 @@
 #include "fisch/vx/playback_program.h"
+#include "fisch/vx/spi.h"
 
 #include "haldls/vx/playback.h"
 

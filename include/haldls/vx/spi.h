@@ -12,6 +12,8 @@ class access;
 
 namespace fisch::vx {
 class SPIShiftRegister;
+class SPIDACDataRegister;
+class SPIDACControlRegister;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -205,5 +207,109 @@ struct BackendContainerTrait<ShiftRegister>
 
 } // namespace detail
 
+
+class GENPYBIND(visible) DACChannel
+{
+public:
+	typedef halco::hicann_dls::vx::DACChannelOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::RantWrapper<Value, uint_fast32_t, 0xfff, 0>
+	{
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	DACChannel() SYMBOL_VISIBLE;
+
+	GENPYBIND(setter_for(value))
+	void set_value(Value value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+
+	bool operator==(DACChannel const& other) const SYMBOL_VISIBLE;
+	bool operator!=(DACChannel const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, DACChannel const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, config_size_in_words> addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::SPIDACDataRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::SPIDACDataRegister, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	Value m_value;
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<DACChannel>
+    : public BackendContainerBase<DACChannel, fisch::vx::SPIDACDataRegister>
+{};
+
+} // namespace detail
+
+
+class GENPYBIND(visible) DACControl
+{
+public:
+	typedef halco::hicann_dls::vx::DACOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	DACControl() SYMBOL_VISIBLE;
+
+	void set_enable_channel(halco::hicann_dls::vx::DACChannelOnDAC const& channel, bool value)
+	    SYMBOL_VISIBLE;
+	bool get_enable_channel(halco::hicann_dls::vx::DACChannelOnDAC const& channel) const
+	    SYMBOL_VISIBLE;
+
+	bool operator==(DACControl const& other) const SYMBOL_VISIBLE;
+	bool operator!=(DACControl const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, DACControl const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
+	std::array<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard, config_size_in_words> addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::SPIDACControlRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::SPIDACControlRegister, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	halco::common::typed_array<bool, halco::hicann_dls::vx::DACChannelOnDAC> m_enable_channel;
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<DACControl>
+    : public BackendContainerBase<DACControl, fisch::vx::SPIDACControlRegister>
+{};
+
+} // namespace detail
+
 } // namespace vx
 } // namespace haldls
+
+namespace std {
+
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::DACChannel::Value)
+
+} // namespace std

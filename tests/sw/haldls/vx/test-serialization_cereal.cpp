@@ -12,9 +12,17 @@ template <class T>
 class CommonSerializationTests : public ::testing::Test
 {};
 
-typedef ::testing::
-    Types<PPUMemoryWord, ResetJTAGTap, Timer, ResetChip, JTAGClockScaler, JTAGIdCode, ShiftRegister>
-        SerializableTypes;
+typedef ::testing::Types<
+    PPUMemoryWord,
+    ResetJTAGTap,
+    Timer,
+    ResetChip,
+    JTAGClockScaler,
+    JTAGIdCode,
+    ShiftRegister,
+    DACChannel,
+    DACControl>
+    SerializableTypes;
 
 TYPED_TEST_CASE(CommonSerializationTests, SerializableTypes);
 

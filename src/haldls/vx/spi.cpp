@@ -250,5 +250,118 @@ void ShiftRegister::cerealize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ShiftRegister)
 
+
+DACChannel::DACChannel() : m_value() {}
+
+DACChannel::Value DACChannel::get_value() const
+{
+	return m_value;
+}
+
+void DACChannel::set_value(Value const value)
+{
+	m_value = value;
+}
+
+bool DACChannel::operator==(DACChannel const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool DACChannel::operator!=(DACChannel const& other) const
+{
+	return !(*this == other);
+}
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(DACChannel)
+
+std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::config_size_in_words>
+DACChannel::addresses(coordinate_type const& coord) const
+{
+	return {halco::hicann_dls::vx::SPIDACDataRegisterOnBoard(coord.toEnum())};
+}
+
+std::array<fisch::vx::SPIDACDataRegister, DACChannel::config_size_in_words> DACChannel::encode()
+    const
+{
+	return {fisch::vx::SPIDACDataRegister(fisch::vx::SPIDACDataRegister::Value(m_value))};
+}
+
+void DACChannel::decode(
+    std::array<fisch::vx::SPIDACDataRegister, DACChannel::config_size_in_words> const& /*data*/)
+{}
+
+template <typename Archive>
+void DACChannel::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(DACChannel)
+
+
+DACControl::DACControl() : m_enable_channel()
+{
+	m_enable_channel.fill(true);
+}
+
+bool DACControl::get_enable_channel(halco::hicann_dls::vx::DACChannelOnDAC const& channel) const
+{
+	return m_enable_channel[channel];
+}
+
+void DACControl::set_enable_channel(
+    halco::hicann_dls::vx::DACChannelOnDAC const& channel, bool const value)
+{
+	m_enable_channel[channel] = value;
+}
+
+bool DACControl::operator==(DACControl const& other) const
+{
+	return m_enable_channel == other.m_enable_channel;
+}
+
+bool DACControl::operator!=(DACControl const& other) const
+{
+	return !(*this == other);
+}
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(DACControl)
+
+std::array<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard, DACControl::config_size_in_words>
+DACControl::addresses(coordinate_type const& coord) const
+{
+	return {halco::hicann_dls::vx::SPIDACControlRegisterOnBoard(
+	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::GainReference, coord),
+	        halco::hicann_dls::vx::SPIDACControlRegisterOnBoard(
+	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::PowerDown, coord)};
+}
+
+std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> DACControl::encode()
+    const
+{
+	auto gain_reference = fisch::vx::SPIDACControlRegister::Value(0b001100);
+
+	uint32_t power_down_bits = 0;
+	for (auto channel : halco::common::iter_all<halco::hicann_dls::vx::DACChannelOnDAC>()) {
+		power_down_bits |= (static_cast<uint32_t>(!m_enable_channel[channel]) << channel.toEnum());
+	}
+	auto power_down = fisch::vx::SPIDACControlRegister::Value(power_down_bits);
+
+	return {gain_reference, power_down};
+}
+
+void DACControl::decode(
+    std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> const& /*data*/)
+{}
+
+template <typename Archive>
+void DACControl::cerealize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_enable_channel));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(DACControl)
+
 } // namespace vx
 } // namespace haldls
