@@ -66,12 +66,14 @@ public:
 	 * Select the source of the ADC.
 	 * @param value Source to select
 	 */
+	GENPYBIND(setter_for(adc_source))
 	void set_adc_source(halco::hicann_dls::vx::ADCSourceOnBoard const& value) SYMBOL_VISIBLE;
 
 	/**
 	 * Get the selected source of the ADC.
 	 * @return Selected source
 	 */
+	GENPYBIND(getter_for(adc_source))
 	halco::hicann_dls::vx::ADCSourceOnBoard get_adc_source() const SYMBOL_VISIBLE;
 
 	/**
