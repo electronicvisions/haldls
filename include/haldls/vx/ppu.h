@@ -64,7 +64,10 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PPUMemoryWord>
-    : public BackendContainerBase<PPUMemoryWord, fisch::vx::OmnibusOnChipOverJTAG>
+    : public BackendContainerBase<
+          PPUMemoryWord,
+          fisch::vx::OmnibusOnChipOverJTAG,
+          fisch::vx::Omnibus>
 {};
 
 } // namespace detail

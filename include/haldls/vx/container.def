@@ -15,5 +15,9 @@ PLAYBACK_CONTAINER(ADPLL, haldls::vx::ADPLL)
 PLAYBACK_CONTAINER(PLLClockOutputBlock, haldls::vx::PLLClockOutputBlock)
 PLAYBACK_CONTAINER(PLLSelfTest, haldls::vx::PLLSelfTest)
 PLAYBACK_CONTAINER(PLLSelfTestStatus, haldls::vx::PLLSelfTestStatus)
+PLAYBACK_CONTAINER(PhyConfigFPGA, haldls::vx::PhyConfigFPGA)
+PLAYBACK_CONTAINER(CommonPhyConfigFPGA, haldls::vx::CommonPhyConfigFPGA)
+PLAYBACK_CONTAINER(PhyConfigChip, haldls::vx::PhyConfigChip)
+PLAYBACK_CONTAINER(CommonPhyConfigChip, haldls::vx::CommonPhyConfigChip)
 
 #undef PLAYBACK_CONTAINER

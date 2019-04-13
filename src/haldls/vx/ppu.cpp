@@ -70,6 +70,9 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusOnChipOverJTAG, PPUMemoryWord::config_size_in_words>
     PPUMemoryWord::encode<fisch::vx::OmnibusOnChipOverJTAG>() const;
 
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PPUMemoryWord::config_size_in_words>
+PPUMemoryWord::encode<fisch::vx::Omnibus>() const;
+
 template <typename WordT>
 void PPUMemoryWord::decode(std::array<WordT, PPUMemoryWord::config_size_in_words> const& data)
 {
@@ -78,6 +81,9 @@ void PPUMemoryWord::decode(std::array<WordT, PPUMemoryWord::config_size_in_words
 
 template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::OmnibusOnChipOverJTAG>(
     std::array<fisch::vx::OmnibusOnChipOverJTAG, PPUMemoryWord::config_size_in_words> const& data);
+
+template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, PPUMemoryWord::config_size_in_words> const& data);
 
 template <class Archive>
 void PPUMemoryWord::cerealize(Archive& ar)
