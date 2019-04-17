@@ -206,7 +206,7 @@ struct VisitPreorderImpl<Chip> {
 		halco::common::Unique const unique;
 
 		// CommonSynramConfig _has_ to be configured before attempting changes to the synram.
-		visit_preorder(config.m_synram_config, unique, visitor);
+		visit_preorder(config.m_synram_config, CommonSynramConfigOnDLS(), visitor);
 
 		for (auto const neuron : iter_all<NeuronOnDLS>()) {
 			visit_preorder(config.m_neuron_digital_configs[neuron], neuron, visitor);

@@ -17,7 +17,7 @@ namespace v2 GENPYBIND_TAG_HALDLS_V2 {
 class GENPYBIND(visible) CommonSynramConfig
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::CommonSynramConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	/**

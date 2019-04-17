@@ -68,7 +68,7 @@ TEST(CommonSynramConfig, EncodeDecode)
 	std::array<hardware_word_type, CommonSynramConfig::config_size_in_words> ref_data = {
 	    {5, 50, 2, 0b0101}};
 
-	halco::common::Unique coord;
+	halco::hicann_dls::v2::CommonSynramConfigOnDLS coord;
 
 	{ // write addresses
 		std::vector<hardware_address_type> write_addresses;
