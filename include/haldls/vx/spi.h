@@ -11,7 +11,7 @@ class access;
 } // namespace cereal
 
 namespace fisch::vx {
-class Omnibus;
+class SPIShiftRegister;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -169,12 +169,12 @@ public:
 	bool operator==(ShiftRegister const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ShiftRegister const& other) const SYMBOL_VISIBLE;
 
-	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 3;
-	std::array<omnibus_address_type, config_size_in_words> addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, config_size_in_words> encode() const SYMBOL_VISIBLE
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, config_size_in_words> addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::SPIShiftRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, config_size_in_words> const& data) SYMBOL_VISIBLE
+	void decode(std::array<fisch::vx::SPIShiftRegister, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 private:
@@ -197,7 +197,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<ShiftRegister>
-    : public BackendContainerBase<ShiftRegister, fisch::vx::Omnibus>
+    : public BackendContainerBase<ShiftRegister, fisch::vx::SPIShiftRegister>
 {};
 
 } // namespace detail

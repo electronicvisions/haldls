@@ -2,9 +2,8 @@
 #include <iomanip>
 #include <utility>
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/spi.h"
 #include "haldls/cerealization.h"
-#include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/spi.h"
 
 namespace haldls {
@@ -132,16 +131,15 @@ bool ShiftRegister::operator!=(ShiftRegister const& other) const
 	return !(*this == other);
 }
 
-std::array<omnibus_address_type, ShiftRegister::config_size_in_words> ShiftRegister::addresses(
+std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, ShiftRegister::config_size_in_words> ShiftRegister::addresses(
     coordinate_type const& /*coord*/) const
 {
-	constexpr omnibus_address_type addr(spi_over_omnibus_mask + 1);
-	return {addr, addr, addr};
+	return {halco::hicann_dls::vx::SPIShiftRegisterOnBoard()};
 }
 
 namespace {
 
-struct ShiftRegisterBitfield0
+struct ShiftRegisterBitfield
 {
 	union
 	{
@@ -153,24 +151,6 @@ struct ShiftRegisterBitfield0
 			uint32_t switch_2            :  2;
 			uint32_t enable_capmem_i_ref   :  1;
 			uint32_t enable_measure_capmem_i_ref :  1;
-			uint32_t /* unused */        : 24;
-		} m;
-		// clang-format on
-		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
-	} u;
-
-	ShiftRegisterBitfield0() { u.raw = 0u; }
-
-	ShiftRegisterBitfield0(uint32_t data) { u.raw = data; }
-};
-
-struct ShiftRegisterBitfield1
-{
-	union
-	{
-		uint32_t raw;
-		// clang-format off
-		struct __attribute__((packed)) {
 			uint32_t enable_dac_to_readout_0    :  1;
 			uint32_t enable_dac_to_readout_1    :  1;
 			uint32_t disable_led_1              :  1;
@@ -179,24 +159,6 @@ struct ShiftRegisterBitfield1
 			uint32_t enable_adc_power_down :  1;
 			uint32_t enable_adc_reset      :  1;
 			uint32_t disable_led_4              :  1;
-			uint32_t /* unused */               : 24;
-		} m;
-		// clang-format on
-		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
-	} u;
-
-	ShiftRegisterBitfield1() { u.raw = 0u; }
-
-	ShiftRegisterBitfield1(uint32_t data) { u.raw = data; }
-};
-
-struct ShiftRegisterBitfield2
-{
-	union
-	{
-		uint32_t raw;
-		// clang-format off
-		struct __attribute__((packed)) {
 			uint32_t enable_vdd25digital : 1;
 			uint32_t enable_vdd12digital : 1;
 			uint32_t enable_vdd25analog : 1;
@@ -205,33 +167,33 @@ struct ShiftRegisterBitfield2
 			uint32_t enable_vdd12pll : 1;
 			uint32_t disable_led_7 : 1;
 			uint32_t disable_led_8 : 1;
-			uint32_t /* unused */ : 24;
+			uint32_t /* unused */        : 8;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
 	} u;
 
-	ShiftRegisterBitfield2() { u.raw = 0u; }
+	ShiftRegisterBitfield() { u.raw = 0u; }
 
-	ShiftRegisterBitfield2(uint32_t data) { u.raw = data; }
+	ShiftRegisterBitfield(uint32_t data) { u.raw = data; }
 };
 
 } // namespace
 
-std::array<fisch::vx::Omnibus, ShiftRegister::config_size_in_words> ShiftRegister::encode() const
+std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> ShiftRegister::encode() const
 {
-	ShiftRegisterBitfield0 bitfield_0;
+	ShiftRegisterBitfield bitfield;
 	switch (m_adc_source / 3) {
 		case 0: { // source is on switch 0
-			bitfield_0.u.m.switch_0 = m_adc_source % 3;
+			bitfield.u.m.switch_0 = m_adc_source % 3;
 			break;
 		}
 		case 1: { // source is on switch 1
-			bitfield_0.u.m.switch_0 = m_adc_source % 3;
+			bitfield.u.m.switch_0 = m_adc_source % 3;
 			break;
 		}
 		case 2: { // source is on switch 2
-			bitfield_0.u.m.switch_0 = m_adc_source % 3;
+			bitfield.u.m.switch_0 = m_adc_source % 3;
 			break;
 		}
 		case 3: { // m_adc_source == ADCSourceOnBoard::None
@@ -239,41 +201,34 @@ std::array<fisch::vx::Omnibus, ShiftRegister::config_size_in_words> ShiftRegiste
 		}
 	}
 
-	bitfield_0.u.m.enable_capmem_i_ref = m_enable_capmem_i_ref;
-	bitfield_0.u.m.enable_measure_capmem_i_ref = m_enable_measure_capmem_i_ref;
-
-	ShiftRegisterBitfield1 bitfield_1;
-	bitfield_1.u.m.enable_dac_to_readout_0 = m_enable_dac_to_readout_0;
-	bitfield_1.u.m.enable_dac_to_readout_1 = m_enable_dac_to_readout_1;
-	bitfield_1.u.m.disable_led_1 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED1];
-	bitfield_1.u.m.disable_led_2 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED2];
-	bitfield_1.u.m.disable_led_3 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED3];
-	bitfield_1.u.m.enable_adc_power_down = m_enable_adc_power_down;
-	bitfield_1.u.m.enable_adc_reset = m_enable_adc_reset;
-	bitfield_1.u.m.disable_led_4 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED4];
-
-	ShiftRegisterBitfield2 bitfield_2;
-	bitfield_2.u.m.enable_vdd25digital =
+	bitfield.u.m.enable_capmem_i_ref = m_enable_capmem_i_ref;
+	bitfield.u.m.enable_measure_capmem_i_ref = m_enable_measure_capmem_i_ref;
+	bitfield.u.m.enable_dac_to_readout_0 = m_enable_dac_to_readout_0;
+	bitfield.u.m.enable_dac_to_readout_1 = m_enable_dac_to_readout_1;
+	bitfield.u.m.disable_led_1 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED1];
+	bitfield.u.m.disable_led_2 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED2];
+	bitfield.u.m.disable_led_3 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED3];
+	bitfield.u.m.enable_adc_power_down = m_enable_adc_power_down;
+	bitfield.u.m.enable_adc_reset = m_enable_adc_reset;
+	bitfield.u.m.disable_led_4 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED4];
+	bitfield.u.m.enable_vdd25digital =
 	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD25Digital];
-	bitfield_2.u.m.enable_vdd12digital =
+	bitfield.u.m.enable_vdd12digital =
 	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12Digital];
-	bitfield_2.u.m.enable_vdd25analog =
+	bitfield.u.m.enable_vdd25analog =
 	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD25Analog];
-	bitfield_2.u.m.enable_vdd12analog =
+	bitfield.u.m.enable_vdd12analog =
 	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12Analog];
-	bitfield_2.u.m.enable_vdd12madc = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12MADC];
-	bitfield_2.u.m.enable_vdd12pll = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12Pll];
-	bitfield_2.u.m.disable_led_7 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED7];
-	bitfield_2.u.m.disable_led_8 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED8];
+	bitfield.u.m.enable_vdd12madc = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12MADC];
+	bitfield.u.m.enable_vdd12pll = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12Pll];
+	bitfield.u.m.disable_led_7 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED7];
+	bitfield.u.m.disable_led_8 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED8];
 
-	return {
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData(bitfield_2.u.raw)),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData(bitfield_1.u.raw)),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData(spi_over_omnibus_stop_bit | bitfield_0.u.raw))};
+	return {fisch::vx::SPIShiftRegister(fisch::vx::SPIShiftRegister::Value(bitfield.u.raw))};
 }
 
 void ShiftRegister::decode(
-    std::array<fisch::vx::Omnibus, ShiftRegister::config_size_in_words> const& /*data*/)
+    std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> const& /*data*/)
 {}
 
 template <typename Archive>

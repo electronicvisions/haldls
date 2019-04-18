@@ -103,21 +103,19 @@ TEST(ShiftRegister, EncodeDecode)
 
 	ShiftRegisterOnBoard coord;
 
-	omnibus_address_type ref_address((1ul << 24) + 1);
-	std::array<omnibus_address_type, ShiftRegister::config_size_in_words> ref_addresses = {
-	    ref_address, ref_address, ref_address};
-	std::array<fisch::vx::Omnibus, ShiftRegister::config_size_in_words> ref_data = {
-	    omnibus_word_type{3ul << 6}, omnibus_word_type{1ul << 0 | 1ul << 5},
-	    omnibus_word_type{(1ul << 31) | (1ul << 6)}};
+	SPIShiftRegisterOnBoard ref_address;
+	std::array<SPIShiftRegisterOnBoard, ShiftRegister::config_size_in_words> ref_addresses = {SPIShiftRegisterOnBoard()};
+	std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> ref_data = {
+	    fisch::vx::SPIShiftRegister(fisch::vx::SPIShiftRegister::Value(((3ul << 6) << 16) + ((1ul << 0 | 1ul << 5) << 8) + (1ul << 6)))};
 
 	{ // write addresses
-		addresses_type write_addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		std::vector<SPIShiftRegisterOnBoard> write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<std::vector<SPIShiftRegisterOnBoard>>{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	words_type data;
-	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+	std::vector<fisch::vx::SPIShiftRegister> data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::SPIShiftRegister>>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 }
 
