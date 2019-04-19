@@ -280,7 +280,7 @@ private:
 class GENPYBIND(visible) ColumnCurrentBlock
 {
 public:
-	typedef halco::hicann_dls::v2::ColumnBlockOnDLS coordinate_type;
+	typedef halco::hicann_dls::v2::ColumnCurrentBlockOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct ColumnCurrentSwitch
@@ -320,11 +320,11 @@ public:
 	ColumnCurrentBlock() SYMBOL_VISIBLE;
 
 	ColumnCurrentSwitch get_switch(
-		halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock const& current_switch) const
-		SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnCurrentBlock const& current_switch) const
+	    SYMBOL_VISIBLE;
 	void set_switch(
-		halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock const& current_switch,
-		ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnCurrentBlock const& current_switch,
+	    ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	std::array<hardware_address_type, config_size_in_words> addresses(
@@ -340,9 +340,10 @@ private:
 	template <class Archive>
 	void cerealize(Archive& ar) SYMBOL_VISIBLE;
 
-	halco::common::
-		typed_array<ColumnCurrentSwitch, halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock>
-			m_switches;
+	halco::common::typed_array<
+	    ColumnCurrentSwitch,
+	    halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnCurrentBlock>
+	    m_switches;
 };
 
 } // namespace v2

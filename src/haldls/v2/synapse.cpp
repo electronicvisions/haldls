@@ -668,14 +668,14 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentBlock::ColumnCurrentSwitch)
 ColumnCurrentBlock::ColumnCurrentBlock() : m_switches() {}
 
 ColumnCurrentBlock::ColumnCurrentSwitch ColumnCurrentBlock::get_switch(
-	halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock const& current_switch) const
+    halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnCurrentBlock const& current_switch) const
 {
 	return m_switches.at(current_switch);
 }
 
 void ColumnCurrentBlock::set_switch(
-	halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnBlock const& current_switch,
-	ColumnCurrentBlock::ColumnCurrentSwitch const& value)
+    halco::hicann_dls::v2::ColumnCurrentSwitchOnColumnCurrentBlock const& current_switch,
+    ColumnCurrentBlock::ColumnCurrentSwitch const& value)
 {
 	m_switches.at(current_switch) = value;
 }
@@ -758,18 +758,18 @@ ColumnCurrentBlock::encode() const
 #define CURRENT_ENCODE(index)                                                                      \
 	{                                                                                              \
 		ColumnCurrentSwitch const& config =                                                        \
-			m_switches.at(ColumnCurrentSwitchOnColumnBlock(index));                                \
+		    m_switches.at(ColumnCurrentSwitchOnColumnCurrentBlock(index));                         \
 		if ((config.get_inh_config() == ColumnCurrentSwitch::Config::internal) ||                  \
-			(config.get_inh_config() == ColumnCurrentSwitch::Config::readout))                     \
+		    (config.get_inh_config() == ColumnCurrentSwitch::Config::readout))                     \
 			bitfield.u.m.int_config_##index |= 0b10;                                               \
 		if ((config.get_inh_config() == ColumnCurrentSwitch::Config::external) ||                  \
-			(config.get_inh_config() == ColumnCurrentSwitch::Config::readout))                     \
+		    (config.get_inh_config() == ColumnCurrentSwitch::Config::readout))                     \
 			bitfield.u.m.ext_config_##index |= 0b10;                                               \
 		if ((config.get_exc_config() == ColumnCurrentSwitch::Config::internal) ||                  \
-			(config.get_exc_config() == ColumnCurrentSwitch::Config::readout))                     \
+		    (config.get_exc_config() == ColumnCurrentSwitch::Config::readout))                     \
 			bitfield.u.m.int_config_##index |= 0b01;                                               \
 		if ((config.get_exc_config() == ColumnCurrentSwitch::Config::external) ||                  \
-			(config.get_exc_config() == ColumnCurrentSwitch::Config::readout))                     \
+		    (config.get_exc_config() == ColumnCurrentSwitch::Config::readout))                     \
 			bitfield.u.m.ext_config_##index |= 0b01;                                               \
 	}
 
@@ -793,14 +793,14 @@ void ColumnCurrentBlock::decode(
 	{                                                                                              \
 		ColumnCurrentSwitch config;                                                                \
 		hardware_word_type inh =                                                                   \
-			((bitfield.u.m.int_config_##index & 0b10) |                                            \
-			 ((bitfield.u.m.ext_config_##index & 0b10) >> 1));                                     \
+		    ((bitfield.u.m.int_config_##index & 0b10) |                                            \
+		     ((bitfield.u.m.ext_config_##index & 0b10) >> 1));                                     \
 		hardware_word_type exc =                                                                   \
-			(((bitfield.u.m.int_config_##index & 0b01) << 1) |                                     \
-			 (bitfield.u.m.ext_config_##index & 0b01));                                            \
+		    (((bitfield.u.m.int_config_##index & 0b01) << 1) |                                     \
+		     (bitfield.u.m.ext_config_##index & 0b01));                                            \
 		config.set_inh_config(ColumnCurrentSwitch::Config(inh));                                   \
 		config.set_exc_config(ColumnCurrentSwitch::Config(exc));                                   \
-		m_switches.at(ColumnCurrentSwitchOnColumnBlock(index)) = config;                           \
+		m_switches.at(ColumnCurrentSwitchOnColumnCurrentBlock(index)) = config;                    \
 	}
 
 	CURRENT_DECODE(0)

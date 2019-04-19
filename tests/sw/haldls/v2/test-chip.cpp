@@ -58,11 +58,11 @@ TEST(Chip, General)
 	ASSERT_EQ(chip.get_column_current_switch(ColumnCurrentSwitchOnDLS(2)), curr_switch);
 
 	ColumnCurrentBlock curr_block;
-	curr_block.set_switch(ColumnCurrentSwitchOnColumnBlock(2), curr_switch);
-	chip.set_column_current_block(ColumnBlockOnDLS(6), curr_block);
-	ASSERT_EQ(chip.get_column_current_block(ColumnBlockOnDLS(6)), curr_block);
+	curr_block.set_switch(ColumnCurrentSwitchOnColumnCurrentBlock(2), curr_switch);
+	chip.set_column_current_block(ColumnCurrentBlockOnDLS(6), curr_block);
+	ASSERT_EQ(chip.get_column_current_block(ColumnCurrentBlockOnDLS(6)), curr_block);
 	//test if single current switch setter modifies correct block
-	ASSERT_EQ(chip.get_column_current_block(ColumnBlockOnDLS(0)), curr_block);
+	ASSERT_EQ(chip.get_column_current_block(ColumnCurrentBlockOnDLS(0)), curr_block);
 
 	CapMem capmem;
 	capmem.set(CapMemCellOnDLS(Enum(4)), CapMemCell::Value(123));

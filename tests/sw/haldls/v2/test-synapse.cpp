@@ -468,12 +468,12 @@ TEST(ColumnCurrentBlock, General)
 	ColumnCurrentBlock::ColumnCurrentSwitch curr_switch;
 	curr_switch.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::internal);
 
-	block.set_switch(ColumnCurrentSwitchOnColumnBlock(3), curr_switch);
-	ASSERT_EQ(block.get_switch(ColumnCurrentSwitchOnColumnBlock(3)), curr_switch);
+	block.set_switch(ColumnCurrentSwitchOnColumnCurrentBlock(3), curr_switch);
+	ASSERT_EQ(block.get_switch(ColumnCurrentSwitchOnColumnCurrentBlock(3)), curr_switch);
 
 	ColumnCurrentBlock block_eq = block;
 	ColumnCurrentBlock block_ne;
-	block_ne.set_switch(ColumnCurrentSwitchOnColumnBlock(2), curr_switch);
+	block_ne.set_switch(ColumnCurrentSwitchOnColumnCurrentBlock(2), curr_switch);
 
 	ASSERT_EQ(block, block_eq);
 	ASSERT_FALSE(block == block_ne);
@@ -484,9 +484,9 @@ TEST(ColumnCurrentBlock, General)
 
 TEST(ColumnCurrentBlock, EncodeDecode)
 {
-	ColumnCurrentSwitchOnColumnBlock switch_coord_1(2);
-	ColumnCurrentSwitchOnColumnBlock switch_coord_2(3);
-	ColumnBlockOnDLS block_coord(1);
+	ColumnCurrentSwitchOnColumnCurrentBlock switch_coord_1(2);
+	ColumnCurrentSwitchOnColumnCurrentBlock switch_coord_2(3);
+	ColumnCurrentBlockOnDLS block_coord(1);
 	ColumnCurrentBlock column_block;
 	ColumnCurrentBlock::ColumnCurrentSwitch cur_switch_1;
 	ColumnCurrentBlock::ColumnCurrentSwitch cur_switch_2;
@@ -534,7 +534,7 @@ TEST(ColumnCurrentBlock, EncodeDecode)
 TEST(ColumnCurrentBlock, CerealizeCoverage)
 {
 	ColumnCurrentBlock obj1,obj2;
-	for (auto sw: iter_all<ColumnCurrentSwitchOnColumnBlock>()) {
+	for (auto sw : iter_all<ColumnCurrentSwitchOnColumnCurrentBlock>()) {
 		auto config = obj1.get_switch(sw);
 		config.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::readout);
 		config.set_inh_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::readout);
