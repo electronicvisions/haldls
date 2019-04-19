@@ -46,11 +46,11 @@ TEST(Chip, General)
 	ASSERT_EQ(chip.get_column_correlation_switch(ColumnCorrelationSwitchOnDLS(3)), corr_switch);
 
 	ColumnCorrelationBlock corr_block;
-	corr_block.set_switch(ColumnCorrelationSwitchOnColumnBlock(3), corr_switch);
-	chip.set_column_correlation_block(ColumnBlockOnDLS(7), corr_block);
-	ASSERT_EQ(chip.get_column_correlation_block(ColumnBlockOnDLS(7)), corr_block);
+	corr_block.set_switch(ColumnCorrelationSwitchOnColumnCorrelationBlock(3), corr_switch);
+	chip.set_column_correlation_block(ColumnCorrelationBlockOnDLS(7), corr_block);
+	ASSERT_EQ(chip.get_column_correlation_block(ColumnCorrelationBlockOnDLS(7)), corr_block);
 	//test if single correlation switch setter modifies correct block
-	ASSERT_EQ(chip.get_column_correlation_block(ColumnBlockOnDLS(0)), corr_block);
+	ASSERT_EQ(chip.get_column_correlation_block(ColumnCorrelationBlockOnDLS(0)), corr_block);
 
 	ColumnCurrentBlock::ColumnCurrentSwitch curr_switch;
 	curr_switch.set_exc_config(ColumnCurrentBlock::ColumnCurrentSwitch::Config::internal);

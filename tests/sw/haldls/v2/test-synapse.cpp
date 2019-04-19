@@ -326,12 +326,12 @@ TEST(ColumnCorrelationBlock, General)
 	corr_switch.set_causal_config(
 		ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::internal);
 
-	block.set_switch(ColumnCorrelationSwitchOnColumnBlock(3), corr_switch);
-	ASSERT_EQ(block.get_switch(ColumnCorrelationSwitchOnColumnBlock(3)), corr_switch);
+	block.set_switch(ColumnCorrelationSwitchOnColumnCorrelationBlock(3), corr_switch);
+	ASSERT_EQ(block.get_switch(ColumnCorrelationSwitchOnColumnCorrelationBlock(3)), corr_switch);
 
 	ColumnCorrelationBlock block_eq = block;
 	ColumnCorrelationBlock block_ne;
-	block_ne.set_switch(ColumnCorrelationSwitchOnColumnBlock(2), corr_switch);
+	block_ne.set_switch(ColumnCorrelationSwitchOnColumnCorrelationBlock(2), corr_switch);
 
 	ASSERT_EQ(block, block_eq);
 	ASSERT_FALSE(block == block_ne);
@@ -342,9 +342,9 @@ TEST(ColumnCorrelationBlock, General)
 
 TEST(ColumnCorrelationBlock, EncodeDecode)
 {
-	ColumnCorrelationSwitchOnColumnBlock switch_coord_1(2);
-	ColumnCorrelationSwitchOnColumnBlock switch_coord_2(3);
-	ColumnBlockOnDLS block_coord(1);
+	ColumnCorrelationSwitchOnColumnCorrelationBlock switch_coord_1(2);
+	ColumnCorrelationSwitchOnColumnCorrelationBlock switch_coord_2(3);
+	ColumnCorrelationBlockOnDLS block_coord(1);
 	ColumnCorrelationBlock column_block;
 	ColumnCorrelationBlock::ColumnCorrelationSwitch col_switch_1;
 	ColumnCorrelationBlock::ColumnCorrelationSwitch col_switch_2;
@@ -395,7 +395,7 @@ TEST(ColumnCorrelationBlock, EncodeDecode)
 TEST(ColumnCorrelationBlock, CerealizeCoverage)
 {
 	ColumnCorrelationBlock obj1,obj2;
-	for (auto sw: iter_all<ColumnCorrelationSwitchOnColumnBlock>()) {
+	for (auto sw : iter_all<ColumnCorrelationSwitchOnColumnCorrelationBlock>()) {
 		auto config = obj1.get_switch(sw);
 		config.set_causal_config(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::readout);
 		config.set_acausal_config(ColumnCorrelationBlock::ColumnCorrelationSwitch::Config::readout);

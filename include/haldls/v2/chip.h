@@ -58,10 +58,11 @@ public:
 		halco::hicann_dls::v2::SynapseOnDLS const& synapse, SynapseBlock::Synapse const& value) SYMBOL_VISIBLE;
 
 	ColumnCorrelationBlock get_column_correlation_block(
-		halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block) const SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::ColumnCorrelationBlockOnDLS const& column_block) const
+	    SYMBOL_VISIBLE;
 	void set_column_correlation_block(
-		halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block,
-		ColumnCorrelationBlock const& value) SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::ColumnCorrelationBlockOnDLS const& column_block,
+	    ColumnCorrelationBlock const& value) SYMBOL_VISIBLE;
 
 	ColumnCorrelationBlock::ColumnCorrelationSwitch get_column_correlation_switch(
 		halco::hicann_dls::v2::ColumnCorrelationSwitchOnDLS const& correlation_switch) const SYMBOL_VISIBLE;
@@ -165,8 +166,8 @@ private:
 	halco::common::typed_array<SynapseBlock, halco::hicann_dls::v2::SynapseBlockOnDLS>
 		m_synapse_blocks;
 	halco::common::
-		typed_array<ColumnCorrelationBlock, halco::hicann_dls::v2::ColumnBlockOnDLS>
-			m_correlation_blocks;
+	    typed_array<ColumnCorrelationBlock, halco::hicann_dls::v2::ColumnCorrelationBlockOnDLS>
+	        m_correlation_blocks;
 	halco::common::typed_array<ColumnCurrentBlock, halco::hicann_dls::v2::ColumnBlockOnDLS>
 		m_current_blocks;
 	halco::common::typed_array<CausalCorrelationBlock, halco::hicann_dls::v2::SynapseBlockOnDLS>
@@ -216,7 +217,7 @@ struct VisitPreorderImpl<Chip> {
 			visit_preorder(config.m_synapse_blocks[synapse_block], synapse_block, visitor);
 		}
 
-		for (auto const column_block : iter_all<ColumnBlockOnDLS>()) {
+		for (auto const column_block : iter_all<ColumnCorrelationBlockOnDLS>()) {
 			visit_preorder(config.m_correlation_blocks[column_block], column_block, visitor);
 		}
 

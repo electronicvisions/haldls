@@ -210,7 +210,7 @@ private:
 class GENPYBIND(visible) ColumnCorrelationBlock
 {
 public:
-	typedef halco::hicann_dls::v2::ColumnBlockOnDLS coordinate_type;
+	typedef halco::hicann_dls::v2::ColumnCorrelationBlockOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct ColumnCorrelationSwitch
@@ -250,11 +250,12 @@ public:
 	ColumnCorrelationBlock() SYMBOL_VISIBLE;
 
 	ColumnCorrelationSwitch get_switch(
-		halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock const& correlation_switch) const
-		SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnCorrelationBlock const&
+	        correlation_switch) const SYMBOL_VISIBLE;
 	void set_switch(
-		halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock const& correlation_switch,
-		ColumnCorrelationSwitch const& value) SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnCorrelationBlock const&
+	        correlation_switch,
+	    ColumnCorrelationSwitch const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	std::array<hardware_address_type, config_size_in_words> addresses(
@@ -271,9 +272,9 @@ private:
 	void cerealize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<
-		ColumnCorrelationSwitch,
-		halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock>
-		m_switches;
+	    ColumnCorrelationSwitch,
+	    halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnCorrelationBlock>
+	    m_switches;
 };
 
 class GENPYBIND(visible) ColumnCurrentBlock

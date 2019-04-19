@@ -93,14 +93,14 @@ void Chip::set_synapse(
 }
 
 ColumnCorrelationBlock Chip::get_column_correlation_block(
-	halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block) const
+    halco::hicann_dls::v2::ColumnCorrelationBlockOnDLS const& column_block) const
 {
 	return m_correlation_blocks.at(column_block);
 }
 
 void Chip::set_column_correlation_block(
-	halco::hicann_dls::v2::ColumnBlockOnDLS const& column_block,
-	ColumnCorrelationBlock const& value)
+    halco::hicann_dls::v2::ColumnCorrelationBlockOnDLS const& column_block,
+    ColumnCorrelationBlock const& value)
 {
 	m_correlation_blocks.at(column_block) = value;
 }
@@ -108,8 +108,8 @@ void Chip::set_column_correlation_block(
 ColumnCorrelationBlock::ColumnCorrelationSwitch Chip::get_column_correlation_switch(
 	halco::hicann_dls::v2::ColumnCorrelationSwitchOnDLS const& correlation_switch) const
 {
-	auto block = correlation_switch.toColumnBlockOnDLS();
-	auto switch_on_block = correlation_switch.toColumnCorrelationSwitchOnColumnBlock();
+	auto block = correlation_switch.toColumnCorrelationBlockOnDLS();
+	auto switch_on_block = correlation_switch.toColumnCorrelationSwitchOnColumnCorrelationBlock();
 	return m_correlation_blocks.at(block).get_switch(switch_on_block);
 }
 
@@ -117,8 +117,8 @@ void Chip::set_column_correlation_switch(
 	halco::hicann_dls::v2::ColumnCorrelationSwitchOnDLS const& correlation_switch,
 	ColumnCorrelationBlock::ColumnCorrelationSwitch const& value)
 {
-	auto block = correlation_switch.toColumnBlockOnDLS();
-	auto switch_on_block = correlation_switch.toColumnCorrelationSwitchOnColumnBlock();
+	auto block = correlation_switch.toColumnCorrelationBlockOnDLS();
+	auto switch_on_block = correlation_switch.toColumnCorrelationSwitchOnColumnCorrelationBlock();
 	m_correlation_blocks.at(block).set_switch(switch_on_block, value);
 }
 

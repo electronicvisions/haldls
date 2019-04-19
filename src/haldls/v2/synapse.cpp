@@ -463,14 +463,16 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCorrelationBlock::ColumnCorrelationS
 ColumnCorrelationBlock::ColumnCorrelationBlock() : m_switches() {}
 
 ColumnCorrelationBlock::ColumnCorrelationSwitch ColumnCorrelationBlock::get_switch(
-	halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock const& correlation_switch) const
+    halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnCorrelationBlock const&
+        correlation_switch) const
 {
 	return m_switches.at(correlation_switch);
 }
 
 void ColumnCorrelationBlock::set_switch(
-	halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnBlock const& correlation_switch,
-	ColumnCorrelationBlock::ColumnCorrelationSwitch const& value)
+    halco::hicann_dls::v2::ColumnCorrelationSwitchOnColumnCorrelationBlock const&
+        correlation_switch,
+    ColumnCorrelationBlock::ColumnCorrelationSwitch const& value)
 {
 	m_switches.at(correlation_switch) = value;
 }
@@ -553,18 +555,18 @@ ColumnCorrelationBlock::encode() const
 #define CORRELATION_ENCODE(index)                                                                  \
 	{                                                                                              \
 		ColumnCorrelationSwitch const& config =                                                    \
-			m_switches.at(ColumnCorrelationSwitchOnColumnBlock(index));                            \
+		    m_switches.at(ColumnCorrelationSwitchOnColumnCorrelationBlock(index));                 \
 		if ((config.get_acausal_config() == ColumnCorrelationSwitch::Config::internal) ||          \
-			(config.get_acausal_config() == ColumnCorrelationSwitch::Config::readout))             \
+		    (config.get_acausal_config() == ColumnCorrelationSwitch::Config::readout))             \
 			bitfield.u.m.int_config_##index |= 0b10;                                               \
 		if ((config.get_acausal_config() == ColumnCorrelationSwitch::Config::external) ||          \
-			(config.get_acausal_config() == ColumnCorrelationSwitch::Config::readout))             \
+		    (config.get_acausal_config() == ColumnCorrelationSwitch::Config::readout))             \
 			bitfield.u.m.ext_config_##index |= 0b10;                                               \
 		if ((config.get_causal_config() == ColumnCorrelationSwitch::Config::internal) ||           \
-			(config.get_causal_config() == ColumnCorrelationSwitch::Config::readout))              \
+		    (config.get_causal_config() == ColumnCorrelationSwitch::Config::readout))              \
 			bitfield.u.m.int_config_##index |= 0b01;                                               \
 		if ((config.get_causal_config() == ColumnCorrelationSwitch::Config::external) ||           \
-			(config.get_causal_config() == ColumnCorrelationSwitch::Config::readout))              \
+		    (config.get_causal_config() == ColumnCorrelationSwitch::Config::readout))              \
 			bitfield.u.m.ext_config_##index |= 0b01;                                               \
 	}
 
@@ -588,14 +590,14 @@ void ColumnCorrelationBlock::decode(
 	{                                                                                              \
 		ColumnCorrelationSwitch config;                                                            \
 		hardware_word_type acausal =                                                               \
-			((bitfield.u.m.int_config_##index & 0b10) |                                            \
-			 ((bitfield.u.m.ext_config_##index & 0b10) >> 1));                                     \
+		    ((bitfield.u.m.int_config_##index & 0b10) |                                            \
+		     ((bitfield.u.m.ext_config_##index & 0b10) >> 1));                                     \
 		hardware_word_type causal =                                                                \
-			(((bitfield.u.m.int_config_##index & 0b01) << 1) |                                     \
-			 (bitfield.u.m.ext_config_##index & 0b01));                                            \
+		    (((bitfield.u.m.int_config_##index & 0b01) << 1) |                                     \
+		     (bitfield.u.m.ext_config_##index & 0b01));                                            \
 		config.set_acausal_config(ColumnCorrelationSwitch::Config(acausal));                       \
 		config.set_causal_config(ColumnCorrelationSwitch::Config(causal));                         \
-		m_switches.at(ColumnCorrelationSwitchOnColumnBlock(index)) = config;                       \
+		m_switches.at(ColumnCorrelationSwitchOnColumnCorrelationBlock(index)) = config;            \
 	}
 
 	CORRELATION_DECODE(0)
