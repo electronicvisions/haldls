@@ -153,29 +153,29 @@ void Chip::set_column_current_switch(
 }
 
 CausalCorrelationBlock Chip::get_causal_correlation_block(
-    halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const
+    halco::hicann_dls::v2::CausalCorrelationBlockOnDLS const& block) const
 {
-	return m_causal_correlation_blocks.at(synapse_block);
+	return m_causal_correlation_blocks.at(block);
 }
 
 CausalCorrelationBlock::Correlation Chip::get_causal_correlation(
-    halco::hicann_dls::v2::SynapseOnDLS const& synapse) const
+    halco::hicann_dls::v2::CausalCorrelationOnDLS const& correlation) const
 {
-	return m_causal_correlation_blocks.at(synapse.toSynapseBlockOnDLS())
-	    .get_correlation(synapse.toSynapseOnSynapseBlock());
+	return m_causal_correlation_blocks.at(correlation.toCausalCorrelationBlockOnDLS())
+	    .get_correlation(correlation.toCausalCorrelationOnCausalCorrelationBlock());
 }
 
 AcausalCorrelationBlock Chip::get_acausal_correlation_block(
-    halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const
+    halco::hicann_dls::v2::AcausalCorrelationBlockOnDLS const& block) const
 {
-	return m_acausal_correlation_blocks.at(synapse_block);
+	return m_acausal_correlation_blocks.at(block);
 }
 
 AcausalCorrelationBlock::Correlation Chip::get_acausal_correlation(
-    halco::hicann_dls::v2::SynapseOnDLS const& synapse) const
+    halco::hicann_dls::v2::AcausalCorrelationOnDLS const& correlation) const
 {
-	return m_acausal_correlation_blocks.at(synapse.toSynapseBlockOnDLS())
-	    .get_correlation(synapse.toSynapseOnSynapseBlock());
+	return m_acausal_correlation_blocks.at(correlation.toAcausalCorrelationBlockOnDLS())
+	    .get_correlation(correlation.toAcausalCorrelationOnAcausalCorrelationBlock());
 }
 
 CapMem const& Chip::get_capmem() const

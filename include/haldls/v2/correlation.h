@@ -73,7 +73,6 @@ template <class T>
 class SYMBOL_VISIBLE CorrelationBlockBase
 {
 public:
-	typedef halco::hicann_dls::v2::SynapseBlockOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	CorrelationBlockBase() SYMBOL_VISIBLE;
@@ -88,36 +87,8 @@ public:
 		}
 	};
 
-	/**
-	 * get correlation value of synapse (read only property)
-	 *
-	 * @param coord SynapseOnSynapsBlock address
-	 * @return Correlation
-	 */
-	Correlation get_correlation(halco::hicann_dls::v2::SynapseOnSynapseBlock const& coord) const
-		SYMBOL_VISIBLE;
-
-	bool operator==(CorrelationBlockBase const& other) const SYMBOL_VISIBLE;
-	bool operator!=(CorrelationBlockBase const& other) const SYMBOL_VISIBLE;
-
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<hardware_address_type, write_config_size_in_words> write_addresses(
-		coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_address_type, read_config_size_in_words> read_addresses(
-		coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_word_type, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-		GENPYBIND(hidden);
-	void decode(std::array<hardware_word_type, read_config_size_in_words> const& data)
-		SYMBOL_VISIBLE GENPYBIND(hidden);
-
-private:
-	halco::common::typed_array<Correlation, halco::hicann_dls::v2::SynapseOnSynapseBlock>
-		m_correlations;
-protected:
-	friend class cereal::access;
-	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
 };
 
 } // namespace detail
@@ -131,7 +102,29 @@ class SYMBOL_VISIBLE GENPYBIND(visible, hide_base("*CorrelationBlockBase*")) Cau
 	: public detail::CorrelationBlockBase<CausalCorrelationBlock>
 {
 public:
+	typedef halco::hicann_dls::v2::CausalCorrelationBlockOnDLS coordinate_type;
+	typedef halco::hicann_dls::v2::CausalCorrelationOnCausalCorrelationBlock single_coordinate_type;
+	typedef halco::common::
+	    typed_array<Correlation, halco::hicann_dls::v2::CausalCorrelationOnCausalCorrelationBlock>
+	        block_type;
+
 	CausalCorrelationBlock() SYMBOL_VISIBLE;
+
+	/**
+	 * get correlation value of synapse (read only property)
+	 *
+	 * @param coord CausalCorrelationOnCausalCorrelationBlock address
+	 * @return Correlation
+	 */
+	Correlation get_correlation(single_coordinate_type const& coord) const SYMBOL_VISIBLE;
+
+	bool operator==(CausalCorrelationBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CausalCorrelationBlock const& other) const SYMBOL_VISIBLE;
+
+	std::array<hardware_address_type, write_config_size_in_words> write_addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_address_type, read_config_size_in_words> read_addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	//FIXME: fix Visitor to not require overloaded en/decode function of child classes, see issue #2992
 	std::array<hardware_word_type, write_config_size_in_words> encode() const SYMBOL_VISIBLE
@@ -141,14 +134,12 @@ public:
 
 private:
 	friend class detail::CorrelationBlockBase<CausalCorrelationBlock>;
-	std::array<hardware_address_type, write_config_size_in_words> write_addresses_implementation()
-		const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<hardware_address_type, read_config_size_in_words> read_addresses_implementation(
-		coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	friend class cereal::access;
 	template <class Archive>
 	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	block_type m_correlations;
 };
 
 /**
@@ -160,7 +151,30 @@ class SYMBOL_VISIBLE GENPYBIND(visible, hide_base("*CorrelationBlockBase*")) Aca
 	: public detail::CorrelationBlockBase<AcausalCorrelationBlock>
 {
 public:
+	typedef halco::hicann_dls::v2::AcausalCorrelationBlockOnDLS coordinate_type;
+	typedef halco::hicann_dls::v2::AcausalCorrelationOnAcausalCorrelationBlock
+	    single_coordinate_type;
+	typedef halco::common::
+	    typed_array<Correlation, halco::hicann_dls::v2::AcausalCorrelationOnAcausalCorrelationBlock>
+	        block_type;
+
 	AcausalCorrelationBlock() SYMBOL_VISIBLE;
+
+	/**
+	 * get correlation value of synapse (read only property)
+	 *
+	 * @param coord AcausalCorrelationOnAcausalCorrelationBlock address
+	 * @return Correlation
+	 */
+	Correlation get_correlation(single_coordinate_type const& coord) const SYMBOL_VISIBLE;
+
+	bool operator==(AcausalCorrelationBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(AcausalCorrelationBlock const& other) const SYMBOL_VISIBLE;
+
+	std::array<hardware_address_type, write_config_size_in_words> write_addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<hardware_address_type, read_config_size_in_words> read_addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	//FIXME: fix Visitor to not require overloaded en/decode function of child classes, see issue #2992
 	std::array<hardware_word_type, write_config_size_in_words> encode() const SYMBOL_VISIBLE
@@ -178,6 +192,8 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	block_type m_correlations;
 };
 
 template class detail::CorrelationBlockBase<CausalCorrelationBlock>;

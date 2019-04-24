@@ -106,8 +106,8 @@ TEST(CorrelationConfig, CerealizeCoverage)
 
 template <class T>
 void correlationblock_tester(
-    SynapseOnSynapseBlock const& synapse_coord,
-    SynapseBlockOnDLS const& block_coord,
+    typename T::single_coordinate_type const& synapse_coord,
+    typename T::coordinate_type const& block_coord,
     std::array<hardware_address_type, T::read_config_size_in_words> const& read_ref_addresses)
 {
 	T block;
@@ -158,8 +158,8 @@ void correlationblock_tester(
 TEST(CausalCorrelationBlock, General)
 {
 	// some random test coordinates
-	SynapseOnSynapseBlock synapse_coord(2);
-	SynapseBlockOnDLS block_coord(X(3), Y(1));
+	CausalCorrelationOnCausalCorrelationBlock synapse_coord(2);
+	CausalCorrelationBlockOnDLS block_coord(X(3), Y(1));
 	// corresponding read address
 	std::array<hardware_address_type, CausalCorrelationBlock::read_config_size_in_words>
 	    read_ref_addresses = {{0x00018013}};
@@ -189,8 +189,8 @@ TEST(CausalCorrelationBlock, CerealizeCoverage)
 TEST(AcausalCorrelationBlock, General)
 {
 	// some random test coordinates
-	SynapseOnSynapseBlock synapse_coord(2);
-	SynapseBlockOnDLS block_coord(X(3), Y(1));
+	AcausalCorrelationOnAcausalCorrelationBlock synapse_coord(2);
+	AcausalCorrelationBlockOnDLS block_coord(X(3), Y(1));
 	std::array<hardware_address_type, AcausalCorrelationBlock::read_config_size_in_words>
 	    read_ref_addresses = {{0x0001C013}};
 	// corresponding read address

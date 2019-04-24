@@ -85,19 +85,19 @@ public:
 	// Correlation is read only parameter
 	GENPYBIND(getter_for(causal_correlation_block))
 	CausalCorrelationBlock get_causal_correlation_block(
-		halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::CausalCorrelationBlockOnDLS const& block) const SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(causal_correlation))
 	CausalCorrelationBlock::Correlation get_causal_correlation(
-		halco::hicann_dls::v2::SynapseOnDLS const& synapse) const SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::CausalCorrelationOnDLS const& correlation) const SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(acausal_correlation_block))
 	AcausalCorrelationBlock get_acausal_correlation_block(
-		halco::hicann_dls::v2::SynapseBlockOnDLS const& synapse_block) const SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::AcausalCorrelationBlockOnDLS const& block) const SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(acausal_correlation))
 	AcausalCorrelationBlock::Correlation get_acausal_correlation(
-		halco::hicann_dls::v2::SynapseOnDLS const& synapse) const SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::AcausalCorrelationOnDLS const& correlation) const SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(capmem), return_value_policy(reference))
 	CapMem const& get_capmem() const SYMBOL_VISIBLE;
@@ -170,10 +170,12 @@ private:
 	        m_correlation_blocks;
 	halco::common::typed_array<ColumnCurrentBlock, halco::hicann_dls::v2::ColumnCurrentBlockOnDLS>
 	    m_current_blocks;
-	halco::common::typed_array<CausalCorrelationBlock, halco::hicann_dls::v2::SynapseBlockOnDLS>
-		m_causal_correlation_blocks;
-	halco::common::typed_array<AcausalCorrelationBlock, halco::hicann_dls::v2::SynapseBlockOnDLS>
-		m_acausal_correlation_blocks;
+	halco::common::
+	    typed_array<CausalCorrelationBlock, halco::hicann_dls::v2::CausalCorrelationBlockOnDLS>
+	        m_causal_correlation_blocks;
+	halco::common::
+	    typed_array<AcausalCorrelationBlock, halco::hicann_dls::v2::AcausalCorrelationBlockOnDLS>
+	        m_acausal_correlation_blocks;
 	CapMem m_capmem;
 	PPUMemory m_ppu_memory;
 	PPUControlRegister m_ppu_control_register;
@@ -225,14 +227,12 @@ struct VisitPreorderImpl<Chip> {
 			visit_preorder(config.m_current_blocks[column_block], column_block, visitor);
 		}
 
-		for (auto const synapse_block : iter_all<SynapseBlockOnDLS>()) {
-			visit_preorder(
-				config.m_causal_correlation_blocks[synapse_block], synapse_block, visitor);
+		for (auto const block : iter_all<CausalCorrelationBlockOnDLS>()) {
+			visit_preorder(config.m_causal_correlation_blocks[block], block, visitor);
 		}
 
-		for (auto const synapse_block : iter_all<SynapseBlockOnDLS>()) {
-			visit_preorder(
-				config.m_acausal_correlation_blocks[synapse_block], synapse_block, visitor);
+		for (auto const block : iter_all<AcausalCorrelationBlockOnDLS>()) {
+			visit_preorder(config.m_acausal_correlation_blocks[block], block, visitor);
 		}
 
 		visit_preorder(config.m_capmem, halco::hicann_dls::v2::CapMemOnDLS(), visitor);

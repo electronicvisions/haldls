@@ -79,43 +79,9 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CorrelationConfig)
 namespace detail {
 
 template <class T>
-CorrelationBlockBase<T>::CorrelationBlockBase() : m_correlations()
+CorrelationBlockBase<T>::CorrelationBlockBase()
 {
 }
-
-template <class T>
-typename CorrelationBlockBase<T>::Correlation CorrelationBlockBase<T>::get_correlation(
-    halco::hicann_dls::v2::SynapseOnSynapseBlock const& coord) const
-{
-	return m_correlations.at(coord);
-}
-
-template <class T>
-bool CorrelationBlockBase<T>::operator==(CorrelationBlockBase<T> const& other) const
-{
-	return m_correlations == other.m_correlations;
-}
-
-template <class T>
-bool CorrelationBlockBase<T>::operator!=(CorrelationBlockBase<T> const& other) const
-{
-	return !(*this == other);
-}
-
-template <class T>
-std::array<hardware_address_type, CorrelationBlockBase<T>::write_config_size_in_words>
-CorrelationBlockBase<T>::write_addresses(CorrelationBlockBase<T>::coordinate_type const& /*block*/) const
-{
-	return static_cast<const T*>(this)->write_addresses_implementation();
-}
-
-template <class T>
-std::array<hardware_address_type, CorrelationBlockBase<T>::read_config_size_in_words>
-CorrelationBlockBase<T>::read_addresses(CorrelationBlockBase<T>::coordinate_type const& block) const
-{
-	return static_cast<const T*>(this)->read_addresses_implementation(block);
-}
-
 
 namespace {
 
@@ -142,63 +108,61 @@ struct CorrelationBlockBitfield
 	{
 		u.raw = data;
 	}
+
+	void fill_block(typename T::block_type& block)
+	{
+		block.at(typename T::single_coordinate_type(0)) =
+		    typename T::Correlation(u.m.correlation_value_0);
+		block.at(typename T::single_coordinate_type(1)) =
+		    typename T::Correlation(u.m.correlation_value_1);
+		block.at(typename T::single_coordinate_type(2)) =
+		    typename T::Correlation(u.m.correlation_value_2);
+		block.at(typename T::single_coordinate_type(3)) =
+		    typename T::Correlation(u.m.correlation_value_3);
+	}
 };
 
 } // anonymous namespace
 
-template <class T>
-std::array<hardware_word_type, CorrelationBlockBase<T>::write_config_size_in_words>
-CorrelationBlockBase<T>::encode() const
-{
-	return {{}};
-}
-
-template <class T>
-void CorrelationBlockBase<T>::decode(
-    std::array<hardware_word_type, CorrelationBlockBase<T>::read_config_size_in_words> const& data)
-{
-	using namespace halco::hicann_dls::v2;
-	CorrelationBlockBitfield<T> bitfield(data);
-
-	m_correlations.at(SynapseOnSynapseBlock(0)) =
-	    CorrelationBlockBase<T>::Correlation(bitfield.u.m.correlation_value_0);
-	m_correlations.at(SynapseOnSynapseBlock(1)) =
-	    CorrelationBlockBase<T>::Correlation(bitfield.u.m.correlation_value_1);
-	m_correlations.at(SynapseOnSynapseBlock(2)) =
-	    CorrelationBlockBase<T>::Correlation(bitfield.u.m.correlation_value_2);
-	m_correlations.at(SynapseOnSynapseBlock(3)) =
-	    CorrelationBlockBase<T>::Correlation(bitfield.u.m.correlation_value_3);
-}
-
-template <class T>
-template <class Archive>
-void CorrelationBlockBase<T>::cerealize(Archive& ar) {
-	ar(CEREAL_NVP(m_correlations));
-}
-
 } // namespace detail
 
-CausalCorrelationBlock::CausalCorrelationBlock()
-    : detail::CorrelationBlockBase<CausalCorrelationBlock>()
+CausalCorrelationBlock::CausalCorrelationBlock() :
+    detail::CorrelationBlockBase<CausalCorrelationBlock>(),
+    m_correlations()
 {
+}
+
+typename CausalCorrelationBlock::Correlation CausalCorrelationBlock::get_correlation(
+    single_coordinate_type const& coord) const
+{
+	return m_correlations.at(coord);
+}
+
+bool CausalCorrelationBlock::operator==(CausalCorrelationBlock const& other) const
+{
+	return m_correlations == other.m_correlations;
+}
+
+bool CausalCorrelationBlock::operator!=(CausalCorrelationBlock const& other) const
+{
+	return !(*this == other);
 }
 
 std::array<hardware_address_type, CausalCorrelationBlock::write_config_size_in_words>
-CausalCorrelationBlock::write_addresses_implementation() const
+CausalCorrelationBlock::write_addresses(coordinate_type const& /*coord*/) const
 {
 	return {{}};
 }
 
 std::array<hardware_address_type, CausalCorrelationBlock::read_config_size_in_words>
-CausalCorrelationBlock::read_addresses_implementation(
-    CausalCorrelationBlock::coordinate_type const& block) const
+CausalCorrelationBlock::read_addresses(coordinate_type const& block) const
 {
 	using namespace halco::hicann_dls::v2;
 	hardware_address_type const base_address = 0x00018000;
 	// correlation space is bloated by one probably because of legacy code
 	hardware_address_type const address_offset =
 	    (block.y() * NeuronOnDLS::size * (read_config_size_in_words + 1) /
-	     SynapseOnSynapseBlock::size) +
+	     single_coordinate_type::size) +
 	    block.x();
 	return {{base_address + address_offset}};
 }
@@ -206,45 +170,60 @@ CausalCorrelationBlock::read_addresses_implementation(
 std::array<hardware_word_type, CausalCorrelationBlock::write_config_size_in_words>
 CausalCorrelationBlock::encode() const
 {
-	return detail::CorrelationBlockBase<CausalCorrelationBlock>::encode();
+	return {{}};
 }
 
 void CausalCorrelationBlock::decode(
     std::array<hardware_word_type, CausalCorrelationBlock::read_config_size_in_words> const& data)
 {
-	return detail::CorrelationBlockBase<CausalCorrelationBlock>::decode(data);
+	detail::CorrelationBlockBitfield<CausalCorrelationBlock> bitfield(data);
+	bitfield.fill_block(m_correlations);
 }
 
 template <class Archive>
 void CausalCorrelationBlock::cerealize(Archive& ar)
 {
-	CorrelationBlockBase<CausalCorrelationBlock>::cerealize<Archive>(ar);
+	ar(CEREAL_NVP(m_correlations));
 }
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(detail::CorrelationBlockBase<CausalCorrelationBlock>)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CausalCorrelationBlock)
 
-AcausalCorrelationBlock::AcausalCorrelationBlock()
-    : detail::CorrelationBlockBase<AcausalCorrelationBlock>()
+AcausalCorrelationBlock::AcausalCorrelationBlock() :
+    detail::CorrelationBlockBase<AcausalCorrelationBlock>(),
+    m_correlations()
+{}
+
+typename AcausalCorrelationBlock::Correlation AcausalCorrelationBlock::get_correlation(
+    single_coordinate_type const& coord) const
 {
+	return m_correlations.at(coord);
+}
+
+bool AcausalCorrelationBlock::operator==(AcausalCorrelationBlock const& other) const
+{
+	return m_correlations == other.m_correlations;
+}
+
+bool AcausalCorrelationBlock::operator!=(AcausalCorrelationBlock const& other) const
+{
+	return !(*this == other);
 }
 
 std::array<hardware_address_type, AcausalCorrelationBlock::write_config_size_in_words>
-AcausalCorrelationBlock::write_addresses_implementation() const
+AcausalCorrelationBlock::write_addresses(coordinate_type const& /*coord*/) const
 {
 	return {{}};
 }
 
 std::array<hardware_address_type, AcausalCorrelationBlock::read_config_size_in_words>
-AcausalCorrelationBlock::read_addresses_implementation(
-    AcausalCorrelationBlock::coordinate_type const& block) const
+AcausalCorrelationBlock::read_addresses(coordinate_type const& block) const
 {
 	using namespace halco::hicann_dls::v2;
 	hardware_address_type const base_address = 0x0001C000;
 	// correlation space is bloated by one probably because of legacy code
 	hardware_address_type const address_offset =
 	    (block.y() * NeuronOnDLS::size * (read_config_size_in_words + 1) /
-	     SynapseOnSynapseBlock::size) +
+	     single_coordinate_type::size) +
 	    block.x();
 	return {{base_address + address_offset}};
 }
@@ -252,22 +231,22 @@ AcausalCorrelationBlock::read_addresses_implementation(
 std::array<hardware_word_type, AcausalCorrelationBlock::write_config_size_in_words>
 AcausalCorrelationBlock::encode() const
 {
-	return detail::CorrelationBlockBase<AcausalCorrelationBlock>::encode();
+	return {{}};
 }
 
 void AcausalCorrelationBlock::decode(
     std::array<hardware_word_type, AcausalCorrelationBlock::read_config_size_in_words> const& data)
 {
-	return detail::CorrelationBlockBase<AcausalCorrelationBlock>::decode(data);
+	detail::CorrelationBlockBitfield<AcausalCorrelationBlock> bitfield(data);
+	bitfield.fill_block(m_correlations);
 }
 
 template <class Archive>
 void AcausalCorrelationBlock::cerealize(Archive& ar)
 {
-	CorrelationBlockBase<AcausalCorrelationBlock>::cerealize<Archive>(ar);
+	ar(CEREAL_NVP(m_correlations));
 }
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(detail::CorrelationBlockBase<AcausalCorrelationBlock>)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(AcausalCorrelationBlock)
 
 } // namespace v2
