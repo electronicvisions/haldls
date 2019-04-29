@@ -10,9 +10,6 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
-typedef std::vector<omnibus_address_type> addresses_type;
-typedef std::vector<fisch::vx::Omnibus> words_type;
-
 TEST(ShiftRegister, General)
 {
 	// test getter/setter

@@ -41,15 +41,15 @@ TEST(PPUMemoryWord, WROverJTAG)
 	std::vector<PPUMemoryWord> words;
 	for (size_t i = 0; i < num_words; ++i) {
 		auto value = PPUMemoryWord(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
-		builder.write(PPUMemoryWordOnDLS(Enum(i)), value, Backend::OmnibusOnChipOverJTAG);
+		builder.write(PPUMemoryWordOnDLS(Enum(i)), value, Backend::OmnibusChipOverJTAG);
 		words.push_back(value);
 	}
 
 	// Read PPU memory words with Omnibus over JTAG backend
 	std::vector<PlaybackProgram::ContainerTicket<PPUMemoryWord>> responses;
 	for (size_t i = 0; i < num_words; ++i) {
-		responses.push_back(builder.read<PPUMemoryWord>(
-		    PPUMemoryWordOnDLS(Enum(i)), Backend::OmnibusOnChipOverJTAG));
+		responses.push_back(
+		    builder.read<PPUMemoryWord>(PPUMemoryWordOnDLS(Enum(i)), Backend::OmnibusChipOverJTAG));
 	}
 
 	builder.write<Timer>(TimerOnDLS(), Timer());

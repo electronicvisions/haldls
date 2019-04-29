@@ -318,16 +318,16 @@ namespace detail {
 
 /**
  * The JTAGPLLRegister backend only provides write functionality, but is safe with respect to
- * changing the ADPLL config. The OmnibusOnChipOverJTAG access provides read and write functionality
+ * changing the ADPLL config. The OmnibusChipOverJTAG access provides read and write functionality
  * but is unsafe if the omnibus clock is altered and thus reinitializes itself. During
- * reinitialization-time, OmnibusOnChipOverJTAG requests are dropped.
+ * reinitialization-time, OmnibusChipOverJTAG requests are dropped.
  */
 template <>
 struct BackendContainerTrait<ADPLL>
     : public BackendContainerBase<
           ADPLL,
           fisch::vx::JTAGPLLRegister,
-          fisch::vx::OmnibusOnChipOverJTAG>
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -475,7 +475,7 @@ struct BackendContainerTrait<PLLClockOutputBlock>
     : public BackendContainerBase<
           PLLClockOutputBlock,
           fisch::vx::JTAGPLLRegister,
-          fisch::vx::OmnibusOnChipOverJTAG>
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -601,7 +601,7 @@ struct BackendContainerTrait<PLLSelfTest>
     : public BackendContainerBase<
           PLLSelfTest,
           fisch::vx::JTAGPLLRegister,
-          fisch::vx::OmnibusOnChipOverJTAG>
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -684,7 +684,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PLLSelfTestStatus>
-    : public BackendContainerBase<PLLSelfTestStatus, fisch::vx::OmnibusOnChipOverJTAG>
+    : public BackendContainerBase<PLLSelfTestStatus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

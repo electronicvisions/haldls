@@ -11,7 +11,7 @@ class access;
 } // namespace cereal
 
 namespace fisch::vx {
-class Omnibus;
+class OmnibusFPGA;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -172,11 +172,11 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PhyConfigFPGA const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<omnibus_address_type, config_size_in_words> addresses(
+	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::OmnibusFPGA, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, config_size_in_words> const& data) SYMBOL_VISIBLE
+	void decode(std::array<fisch::vx::OmnibusFPGA, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 private:
@@ -189,7 +189,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PhyConfigFPGA>
-    : public BackendContainerBase<PhyConfigFPGA, fisch::vx::Omnibus>
+    : public BackendContainerBase<PhyConfigFPGA, fisch::vx::OmnibusFPGA>
 {};
 
 } // namespace detail
@@ -255,11 +255,11 @@ public:
 	    SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<omnibus_address_type, config_size_in_words> addresses(
+	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::OmnibusFPGA, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, config_size_in_words> const& data) SYMBOL_VISIBLE
+	void decode(std::array<fisch::vx::OmnibusFPGA, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 private:
@@ -274,7 +274,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<CommonPhyConfigFPGA>
-    : public BackendContainerBase<CommonPhyConfigFPGA, fisch::vx::Omnibus>
+    : public BackendContainerBase<CommonPhyConfigFPGA, fisch::vx::OmnibusFPGA>
 {};
 
 } // namespace detail
@@ -301,11 +301,11 @@ public:
 	    SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<omnibus_address_type, config_size_in_words> addresses(
+	std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::OmnibusOnChipOverJTAG, config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::OmnibusOnChipOverJTAG, config_size_in_words> const& data)
+	void decode(std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
@@ -320,7 +320,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<CommonPhyConfigChip>
-    : public BackendContainerBase<CommonPhyConfigChip, fisch::vx::OmnibusOnChipOverJTAG>
+    : public BackendContainerBase<CommonPhyConfigChip, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

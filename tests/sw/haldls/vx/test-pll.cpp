@@ -161,38 +161,38 @@ TEST(ADPLL, EncodeDecode)
 	{
 		config.set_enable(!config.get_enable());
 
-		std::array<omnibus_address_type, ADPLL::config_size_in_words> ref_addresses = {
-		    omnibus_address_type(0x80000), omnibus_address_type(0x80001)};
-		std::array<fisch::vx::OmnibusOnChipOverJTAG, ADPLL::config_size_in_words> ref_data = {
-		    fisch::vx::OmnibusOnChipOverJTAG(fisch::vx::OmnibusData(0x2a20a902)),
-		    fisch::vx::OmnibusOnChipOverJTAG(fisch::vx::OmnibusData(0x80cbf200))};
+		std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ADPLL::config_size_in_words> ref_addresses = {
+		    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x80000), halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x80001)};
+		std::array<fisch::vx::OmnibusChipOverJTAG, ADPLL::config_size_in_words> ref_data = {
+		    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x2a20a902)),
+		    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x80cbf200))};
 
 		{ // write addresses
-			std::vector<omnibus_address_type> write_addresses;
+			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> write_addresses;
 			visit_preorder(
 			    config, coord,
-			    stadls::WriteAddressVisitor<std::vector<omnibus_address_type>>{write_addresses});
+			    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>>{write_addresses});
 			EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 		}
 
 		{ // read addresses
-			std::vector<omnibus_address_type> read_addresses;
+			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> read_addresses;
 			visit_preorder(
 			    config, coord,
-			    stadls::ReadAddressVisitor<std::vector<omnibus_address_type>>{read_addresses});
+			    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>>{read_addresses});
 			EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 		}
 
-		std::vector<fisch::vx::OmnibusOnChipOverJTAG> data;
+		std::vector<fisch::vx::OmnibusChipOverJTAG> data;
 		visit_preorder(
 		    config, coord,
-		    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusOnChipOverJTAG>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>{data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 		ADPLL config_2;
 		visit_preorder(
 		    config_2, coord,
-		    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusOnChipOverJTAG>>(data));
+		    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>(data));
 		EXPECT_EQ(config, config_2);
 	}
 }
@@ -298,37 +298,37 @@ TEST(PLLClockOutputBlock, EncodeDecode)
 		value.set_enable_bypass(true);
 		config.set_clock_output(PLLClockOutputOnDLS(0), value);
 
-		std::array<omnibus_address_type, PLLClockOutputBlock::config_size_in_words> ref_addresses =
-		    {omnibus_address_type(0x80004)};
-		std::array<fisch::vx::OmnibusOnChipOverJTAG, PLLClockOutputBlock::config_size_in_words>
-		    ref_data = {fisch::vx::OmnibusOnChipOverJTAG(fisch::vx::OmnibusData(0x918d8183))};
+		std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLClockOutputBlock::config_size_in_words> ref_addresses =
+		    {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x80004)};
+		std::array<fisch::vx::OmnibusChipOverJTAG, PLLClockOutputBlock::config_size_in_words>
+		    ref_data = {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x918d8183))};
 
 		{ // write addresses
-			std::vector<omnibus_address_type> write_addresses;
+			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> write_addresses;
 			visit_preorder(
 			    config, coord,
-			    stadls::WriteAddressVisitor<std::vector<omnibus_address_type>>{write_addresses});
+			    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>>{write_addresses});
 			EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 		}
 
 		{ // read addresses
-			std::vector<omnibus_address_type> read_addresses;
+			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> read_addresses;
 			visit_preorder(
 			    config, coord,
-			    stadls::ReadAddressVisitor<std::vector<omnibus_address_type>>{read_addresses});
+			    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>>{read_addresses});
 			EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 		}
 
-		std::vector<fisch::vx::OmnibusOnChipOverJTAG> data;
+		std::vector<fisch::vx::OmnibusChipOverJTAG> data;
 		visit_preorder(
 		    config, coord,
-		    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusOnChipOverJTAG>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>{data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 		PLLClockOutputBlock config_2;
 		visit_preorder(
 		    config_2, coord,
-		    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusOnChipOverJTAG>>(data));
+		    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>(data));
 		EXPECT_EQ(config, config_2);
 	}
 }
@@ -444,37 +444,37 @@ TEST(PLLSelfTest, EncodeDecode)
 		bool const value = config.get_clock_enable();
 		config.set_clock_enable(!value);
 
-		std::array<omnibus_address_type, PLLSelfTest::config_size_in_words> ref_addresses = {
-		    omnibus_address_type(0x80005)};
-		std::array<fisch::vx::OmnibusOnChipOverJTAG, PLLSelfTest::config_size_in_words> ref_data = {
-		    fisch::vx::OmnibusOnChipOverJTAG(fisch::vx::OmnibusData(0x1))};
+		std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTest::config_size_in_words> ref_addresses = {
+		    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x80005)};
+		std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTest::config_size_in_words> ref_data = {
+		    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x1))};
 
 		{ // write addresses
-			std::vector<omnibus_address_type> write_addresses;
+			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> write_addresses;
 			visit_preorder(
 			    config, coord,
-			    stadls::WriteAddressVisitor<std::vector<omnibus_address_type>>{write_addresses});
+			    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>>{write_addresses});
 			EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 		}
 
 		{ // read addresses
-			std::vector<omnibus_address_type> read_addresses;
+			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> read_addresses;
 			visit_preorder(
 			    config, coord,
-			    stadls::ReadAddressVisitor<std::vector<omnibus_address_type>>{read_addresses});
+			    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>>{read_addresses});
 			EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 		}
 
-		std::vector<fisch::vx::OmnibusOnChipOverJTAG> data;
+		std::vector<fisch::vx::OmnibusChipOverJTAG> data;
 		visit_preorder(
 		    config, coord,
-		    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusOnChipOverJTAG>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>{data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 		PLLSelfTest config_2;
 		visit_preorder(
 		    config_2, coord,
-		    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusOnChipOverJTAG>>(data));
+		    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>(data));
 		EXPECT_EQ(config, config_2);
 	}
 }
@@ -528,24 +528,24 @@ TEST(PLLSelfTestStatus, EncodeDecode)
 
 	// Omnibus over JTAG access
 	{
-		std::array<omnibus_address_type, PLLSelfTestStatus::config_size_in_words> ref_addresses = {
-		    omnibus_address_type(0x80007)};
-		std::array<fisch::vx::OmnibusOnChipOverJTAG, PLLSelfTestStatus::config_size_in_words>
-		    ref_data = {fisch::vx::OmnibusOnChipOverJTAG(fisch::vx::OmnibusData(0x00312345))};
+		std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTestStatus::config_size_in_words> ref_addresses = {
+		    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x80007)};
+		std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::config_size_in_words>
+		    ref_data = {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x00312345))};
 
 		{ // read addresses
-			std::vector<omnibus_address_type> read_addresses;
+			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> read_addresses;
 			PLLSelfTestStatus config;
 			visit_preorder(
 			    config, coord,
-			    stadls::ReadAddressVisitor<std::vector<omnibus_address_type>>{read_addresses});
+			    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>>{read_addresses});
 			EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 		}
 
 		PLLSelfTestStatus config;
 		visit_preorder(
 		    config, coord,
-		    stadls::DecodeVisitor<std::array<fisch::vx::OmnibusOnChipOverJTAG, ref_data.size()>>(
+		    stadls::DecodeVisitor<std::array<fisch::vx::OmnibusChipOverJTAG, ref_data.size()>>(
 		        ref_data));
 		EXPECT_EQ(config.get_success(), true);
 		EXPECT_EQ(config.get_finished(), true);
@@ -558,11 +558,11 @@ TEST(PLLSelfTestStatus, CerealizeCoverage)
 	PLLSelfTestStatus obj1, obj2;
 
 	{
-		std::array<fisch::vx::OmnibusOnChipOverJTAG, PLLSelfTestStatus::config_size_in_words> data =
-		    {fisch::vx::OmnibusOnChipOverJTAG(fisch::vx::OmnibusData(0x00312345))};
+		std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::config_size_in_words> data =
+		    {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x00312345))};
 		visit_preorder(
 		    obj1, PLLOnDLS(),
-		    stadls::DecodeVisitor<std::array<fisch::vx::OmnibusOnChipOverJTAG, data.size()>>(data));
+		    stadls::DecodeVisitor<std::array<fisch::vx::OmnibusChipOverJTAG, data.size()>>(data));
 	}
 
 	std::ostringstream ostream;

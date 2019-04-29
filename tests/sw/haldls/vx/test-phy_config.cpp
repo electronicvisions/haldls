@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/jtag.h"
+#include "fisch/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/phy.h"
 #include "stadls/visitors.h"
@@ -11,8 +12,8 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
-typedef std::vector<omnibus_address_type> addresses_type;
-typedef std::vector<fisch::vx::Omnibus> words_type;
+typedef std::vector<halco::hicann_dls::vx::OmnibusFPGAAddress> addresses_type;
+typedef std::vector<fisch::vx::OmnibusFPGA> words_type;
 
 template <typename PhyConfigDerived>
 void test_phy_config_derived_general()
@@ -261,11 +262,11 @@ TEST(PhyConfigFPGA, EncodeDecode)
 
 	PhyConfigFPGAOnDLS coord = draw_ranged_non_default_value<PhyConfigFPGAOnDLS>(0);
 
-	omnibus_address_type ref_address(phy_omnibus_mask + coord.toEnum());
-	std::array<omnibus_address_type, PhyConfigFPGA::config_size_in_words> ref_addresses = {
-	    ref_address};
-	std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> ref_data = {
-	    omnibus_word_type{0x204040}};
+	halco::hicann_dls::vx::OmnibusFPGAAddress ref_address(phy_omnibus_mask + coord.toEnum());
+	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyConfigFPGA::config_size_in_words>
+	    ref_addresses = {ref_address};
+	std::array<fisch::vx::OmnibusFPGA, PhyConfigFPGA::config_size_in_words> ref_data = {
+	    fisch::vx::OmnibusData{0x204040}};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -331,21 +332,21 @@ TEST(CommonPhyConfigFPGA, EncodeDecode)
 
 	CommonPhyConfigFPGAOnDLS coord;
 
-	std::array<OmnibusAddress, CommonPhyConfigFPGA::config_size_in_words> ref_addresses = {
-	    OmnibusAddress(0x84000000)};
-	std::array<fisch::vx::Omnibus, CommonPhyConfigFPGA::config_size_in_words> ref_data = {
+	std::array<OmnibusFPGAAddress, CommonPhyConfigFPGA::config_size_in_words> ref_addresses = {
+	    OmnibusFPGAAddress(0x84000000)};
+	std::array<fisch::vx::OmnibusFPGA, CommonPhyConfigFPGA::config_size_in_words> ref_data = {
 	    fisch::vx::OmnibusData(0xff)};
 
 	{ // write addresses
-		std::vector<OmnibusAddress> write_addresses;
+		std::vector<OmnibusFPGAAddress> write_addresses;
 		visit_preorder(
 		    config, coord,
-		    stadls::WriteAddressVisitor<std::vector<OmnibusAddress>>{write_addresses});
+		    stadls::WriteAddressVisitor<std::vector<OmnibusFPGAAddress>>{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::Omnibus> data;
-	visit_preorder(config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::Omnibus>>{data});
+	std::vector<fisch::vx::OmnibusFPGA> data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusFPGA>>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 }
 
@@ -397,22 +398,22 @@ TEST(CommonPhyConfigChip, EncodeDecode)
 
 	CommonPhyConfigChipOnDLS coord;
 
-	std::array<OmnibusAddress, CommonPhyConfigChip::config_size_in_words> ref_addresses = {
-	    OmnibusAddress(0x00040000)};
-	std::array<fisch::vx::OmnibusOnChipOverJTAG, CommonPhyConfigChip::config_size_in_words>
-	    ref_data = {fisch::vx::OmnibusData(0xff)};
+	std::array<OmnibusChipOverJTAGAddress, CommonPhyConfigChip::config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress(0x00040000)};
+	std::array<fisch::vx::OmnibusChipOverJTAG, CommonPhyConfigChip::config_size_in_words> ref_data =
+	    {fisch::vx::OmnibusData(0xff)};
 
 	{ // write addresses
-		std::vector<OmnibusAddress> write_addresses;
+		std::vector<OmnibusChipOverJTAGAddress> write_addresses;
 		visit_preorder(
 		    config, coord,
-		    stadls::WriteAddressVisitor<std::vector<OmnibusAddress>>{write_addresses});
+		    stadls::WriteAddressVisitor<std::vector<OmnibusChipOverJTAGAddress>>{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::OmnibusOnChipOverJTAG> data;
+	std::vector<fisch::vx::OmnibusChipOverJTAG> data;
 	visit_preorder(
-	    config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusOnChipOverJTAG>>{data});
+	    config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 }
 

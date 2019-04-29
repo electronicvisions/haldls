@@ -12,7 +12,8 @@
 #include "haldls/cerealization.h"
 
 namespace fisch::vx {
-class OmnibusOnChipOverJTAG;
+class OmnibusChipOverJTAG;
+class OmnibusChip;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -66,8 +67,8 @@ template <>
 struct BackendContainerTrait<PPUMemoryWord>
     : public BackendContainerBase<
           PPUMemoryWord,
-          fisch::vx::OmnibusOnChipOverJTAG,
-          fisch::vx::Omnibus>
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
 {};
 
 } // namespace detail

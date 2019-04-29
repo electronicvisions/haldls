@@ -61,13 +61,13 @@ TEST(PPUMemoryWord, WRHighspeed)
 	std::vector<PPUMemoryWord> words;
 	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
 		words.push_back(PPUMemoryWord(draw_ranged_non_default_value<PPUMemoryWord::Value>(0)));
-		builder.write(word, words[word.toEnum()], Backend::Omnibus);
+		builder.write(word, words[word.toEnum()], Backend::OmnibusChip);
 	}
 
 	// Read all PPU memory words with highspeed backend
 	std::vector<PlaybackProgram::ContainerTicket<PPUMemoryWord>> responses;
 	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
-		responses.push_back(builder.read<PPUMemoryWord>(word, Backend::Omnibus));
+		responses.push_back(builder.read<PPUMemoryWord>(word, Backend::OmnibusChip));
 	}
 
 	builder.write<Timer>(TimerOnDLS(), Timer());

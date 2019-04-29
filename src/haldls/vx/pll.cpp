@@ -304,11 +304,11 @@ std::array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, ADPLL::config_size_in_wo
 }
 
 template <>
-std::array<halco::hicann_dls::vx::OmnibusAddress, ADPLL::config_size_in_words> ADPLL::addresses(
+std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ADPLL::config_size_in_words> ADPLL::addresses(
     coordinate_type const& coord) const
 {
-	return {halco::hicann_dls::vx::OmnibusAddress(pll_base_address + 0 + coord.toEnum() * 2),
-	        halco::hicann_dls::vx::OmnibusAddress(pll_base_address + 1 + coord.toEnum() * 2)};
+	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 0 + coord.toEnum() * 2),
+	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 1 + coord.toEnum() * 2)};
 }
 
 template SYMBOL_VISIBLE
@@ -316,7 +316,7 @@ template SYMBOL_VISIBLE
     ADPLL::addresses(coordinate_type const& coord) const;
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusAddress, ADPLL::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ADPLL::config_size_in_words>
     ADPLL::addresses(coordinate_type const& coord) const;
 
 template <typename WordT>
@@ -358,7 +358,7 @@ std::array<WordT, ADPLL::config_size_in_words> ADPLL::encode() const
 template SYMBOL_VISIBLE std::array<fisch::vx::JTAGPLLRegister, ADPLL::config_size_in_words>
 ADPLL::encode() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusOnChipOverJTAG, ADPLL::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, ADPLL::config_size_in_words>
 ADPLL::encode() const;
 
 template <>
@@ -399,7 +399,7 @@ template SYMBOL_VISIBLE void ADPLL::decode(
     std::array<fisch::vx::JTAGPLLRegister, config_size_in_words> const& /*data*/);
 
 template SYMBOL_VISIBLE void ADPLL::decode(
-    std::array<fisch::vx::OmnibusOnChipOverJTAG, config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& data);
 
 template <typename Archive>
 void ADPLL::cerealize(Archive& ar)
@@ -593,10 +593,10 @@ PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/) const
 }
 
 template <>
-std::array<halco::hicann_dls::vx::OmnibusAddress, PLLClockOutputBlock::config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLClockOutputBlock::config_size_in_words>
 PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/) const
 {
-	return {halco::hicann_dls::vx::OmnibusAddress(pll_base_address + 4)};
+	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 4)};
 }
 
 template SYMBOL_VISIBLE
@@ -604,7 +604,7 @@ template SYMBOL_VISIBLE
     PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/) const;
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusAddress, PLLClockOutputBlock::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLClockOutputBlock::config_size_in_words>
     PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/) const;
 
 template <typename WordT>
@@ -664,7 +664,7 @@ template SYMBOL_VISIBLE
     PLLClockOutputBlock::encode() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusOnChipOverJTAG, PLLClockOutputBlock::config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, PLLClockOutputBlock::config_size_in_words>
     PLLClockOutputBlock::encode() const;
 
 template <>
@@ -720,7 +720,7 @@ template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
     std::array<fisch::vx::JTAGPLLRegister, config_size_in_words> const& /*data*/);
 
 template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
-    std::array<fisch::vx::OmnibusOnChipOverJTAG, config_size_in_words> const& /*data*/);
+    std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
 
 template <typename Archive>
 void PLLClockOutputBlock::cerealize(Archive& ar)
@@ -839,14 +839,14 @@ PLLSelfTest::addresses(coordinate_type const& /*coord*/) const
 }
 
 template <>
-std::array<halco::hicann_dls::vx::OmnibusAddress, PLLSelfTest::config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTest::config_size_in_words>
 PLLSelfTest::addresses(coordinate_type const& /*coord*/) const
 {
-	return {halco::hicann_dls::vx::OmnibusAddress(pll_base_address + 5)};
+	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 5)};
 }
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusAddress, PLLSelfTest::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTest::config_size_in_words>
     PLLSelfTest::addresses(coordinate_type const& coord) const;
 
 template SYMBOL_VISIBLE
@@ -875,7 +875,7 @@ template SYMBOL_VISIBLE std::array<fisch::vx::JTAGPLLRegister, PLLSelfTest::conf
 PLLSelfTest::encode() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusOnChipOverJTAG, PLLSelfTest::config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTest::config_size_in_words>
     PLLSelfTest::encode() const;
 
 template <typename WordT>
@@ -897,7 +897,7 @@ template SYMBOL_VISIBLE void PLLSelfTest::decode(
     std::array<fisch::vx::JTAGPLLRegister, config_size_in_words> const& /*data*/);
 
 template SYMBOL_VISIBLE void PLLSelfTest::decode(
-    std::array<fisch::vx::OmnibusOnChipOverJTAG, config_size_in_words> const& /*data*/);
+    std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
 
 template <typename Archive>
 void PLLSelfTest::cerealize(Archive& ar)
@@ -967,14 +967,14 @@ struct PLLSelfTestStatusBitfield
 } // namespace
 
 template <>
-std::array<halco::hicann_dls::vx::OmnibusAddress, PLLSelfTestStatus::config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTestStatus::config_size_in_words>
 PLLSelfTestStatus::addresses(coordinate_type const& /*coord*/) const
 {
-	return {halco::hicann_dls::vx::OmnibusAddress(pll_base_address + 7)};
+	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 7)};
 }
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusAddress, PLLSelfTestStatus::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTestStatus::config_size_in_words>
     PLLSelfTestStatus::addresses(coordinate_type const& coord) const;
 
 template <typename WordT>
@@ -984,7 +984,7 @@ std::array<WordT, PLLSelfTestStatus::config_size_in_words> PLLSelfTestStatus::en
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusOnChipOverJTAG, PLLSelfTestStatus::config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::config_size_in_words>
     PLLSelfTestStatus::encode() const;
 
 template <typename WordT>
@@ -999,7 +999,7 @@ void PLLSelfTestStatus::decode(std::array<WordT, config_size_in_words> const& da
 }
 
 template SYMBOL_VISIBLE void PLLSelfTestStatus::decode(
-    std::array<fisch::vx::OmnibusOnChipOverJTAG, config_size_in_words> const& /*data*/);
+    std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
 
 template <typename Archive>
 void PLLSelfTestStatus::cerealize(Archive& ar)

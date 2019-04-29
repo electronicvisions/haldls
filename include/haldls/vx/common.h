@@ -3,14 +3,8 @@
 #include <type_traits>
 #include <utility>
 
-#include "fisch/vx/omnibus.h"
-#include "halco/hicann-dls/vx/coordinates.h"
-
 namespace haldls {
 namespace vx {
-
-typedef halco::hicann_dls::vx::OmnibusAddress omnibus_address_type;
-typedef fisch::vx::OmnibusData omnibus_word_type;
 
 namespace detail {
 

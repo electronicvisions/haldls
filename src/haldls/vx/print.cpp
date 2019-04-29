@@ -1,6 +1,7 @@
 #include <array>
 #include <boost/type_index.hpp>
 
+#include "fisch/vx/omnibus.h"
 #include "haldls/vx/container.h"
 #include "haldls/vx/print.h"
 #include "haldls/vx/traits.h"

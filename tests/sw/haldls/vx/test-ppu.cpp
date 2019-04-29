@@ -10,8 +10,8 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
-typedef std::vector<omnibus_address_type> addresses_type;
-typedef std::vector<fisch::vx::OmnibusOnChipOverJTAG> words_type;
+typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
+typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
 
 TEST(PPUMemoryWord, General)
 {
@@ -49,10 +49,11 @@ TEST(PPUMemoryWord, EncodeDecode)
 
 	PPUMemoryWordOnDLS coord(Enum(0x123));
 
-	std::array<omnibus_address_type, PPUMemoryWord::config_size_in_words> ref_addresses = {
-	    omnibus_address_type{0x02800123ul}};
-	std::array<fisch::vx::OmnibusOnChipOverJTAG, PPUMemoryWord::config_size_in_words> ref_data = {
-	    omnibus_word_type{555ul}};
+	std::array<
+	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PPUMemoryWord::config_size_in_words>
+	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{0x02800123ul}};
+	std::array<fisch::vx::OmnibusChipOverJTAG, PPUMemoryWord::config_size_in_words> ref_data = {
+	    fisch::vx::OmnibusData{555ul}};
 
 	{ // write addresses
 		addresses_type write_addresses;

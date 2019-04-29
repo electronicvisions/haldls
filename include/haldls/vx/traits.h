@@ -3,6 +3,7 @@
 
 #include <boost/variant.hpp>
 #include "fisch/vx/playback_program.h"
+#include "fisch/vx/omnibus.h"
 #include "fisch/vx/spi.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"
