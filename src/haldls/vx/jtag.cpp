@@ -1,5 +1,6 @@
 #include "haldls/vx/jtag.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/print.h"
 
 namespace haldls::vx {
 
@@ -24,6 +25,8 @@ bool JTAGClockScaler::operator!=(JTAGClockScaler const& other) const
 {
 	return !(*this == other);
 }
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(JTAGClockScaler)
 
 std::array<halco::hicann_dls::vx::JTAGOnDLS, JTAGClockScaler::config_size_in_words>
 JTAGClockScaler::addresses(coordinate_type const& coord) const
@@ -61,6 +64,8 @@ bool ResetJTAGTap::operator!=(ResetJTAGTap const& other) const
 {
 	return !(*this == other);
 }
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(ResetJTAGTap)
 
 std::array<halco::hicann_dls::vx::JTAGOnDLS, ResetJTAGTap::config_size_in_words>
 ResetJTAGTap::addresses(coordinate_type const& coord) const
@@ -102,6 +107,8 @@ bool JTAGIdCode::operator!=(JTAGIdCode const& other) const
 {
 	return !(*this == other);
 }
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(JTAGIdCode)
 
 std::array<halco::hicann_dls::vx::JTAGOnDLS, JTAGIdCode::config_size_in_words>
 JTAGIdCode::addresses(coordinate_type const& coord) const

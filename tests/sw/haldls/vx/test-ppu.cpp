@@ -38,7 +38,7 @@ TEST(PPUMemoryWord, General)
 	std::stringstream out;
 	word.set(PPUMemoryWord::Value(0xdeadbeef));
 	out << word;
-	ASSERT_EQ(out.str(), "0xdeadbeef");
+	ASSERT_TRUE(out.str().find("0xdeadbeef") != std::string::npos);
 }
 
 TEST(PPUMemoryWord, EncodeDecode)

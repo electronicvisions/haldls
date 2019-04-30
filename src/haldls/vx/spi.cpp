@@ -4,6 +4,7 @@
 
 #include "fisch/vx/spi.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/print.h"
 #include "haldls/vx/spi.h"
 
 namespace haldls {
@@ -130,6 +131,8 @@ bool ShiftRegister::operator!=(ShiftRegister const& other) const
 {
 	return !(*this == other);
 }
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(ShiftRegister)
 
 std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, ShiftRegister::config_size_in_words> ShiftRegister::addresses(
     coordinate_type const& /*coord*/) const

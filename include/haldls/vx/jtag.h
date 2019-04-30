@@ -37,6 +37,9 @@ public:
 	bool operator==(JTAGClockScaler const& other) const SYMBOL_VISIBLE;
 	bool operator!=(JTAGClockScaler const& other) const SYMBOL_VISIBLE;
 
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, JTAGClockScaler const& config) SYMBOL_VISIBLE;
+
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	std::array<halco::hicann_dls::vx::JTAGOnDLS, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
@@ -73,6 +76,9 @@ public:
 
 	bool operator==(ResetJTAGTap const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ResetJTAGTap const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ResetJTAGTap const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	std::array<halco::hicann_dls::vx::JTAGOnDLS, config_size_in_words> addresses(
@@ -117,6 +123,9 @@ public:
 
 	bool operator==(JTAGIdCode const& other) const SYMBOL_VISIBLE;
 	bool operator!=(JTAGIdCode const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, JTAGIdCode const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	std::array<halco::hicann_dls::vx::JTAGOnDLS, config_size_in_words> addresses(

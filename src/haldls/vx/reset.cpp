@@ -1,5 +1,6 @@
 #include "haldls/vx/reset.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/print.h"
 
 namespace haldls::vx {
 
@@ -24,6 +25,8 @@ bool ResetChip::operator!=(ResetChip const& other) const
 {
 	return !(*this == other);
 }
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(ResetChip)
 
 std::array<halco::hicann_dls::vx::ResetChipOnDLS, ResetChip::config_size_in_words>
 ResetChip::addresses(coordinate_type const& coord) const

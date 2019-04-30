@@ -32,6 +32,9 @@ public:
 	bool operator==(ResetChip const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ResetChip const& other) const SYMBOL_VISIBLE;
 
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ResetChip const& config) SYMBOL_VISIBLE;
+
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	std::array<halco::hicann_dls::vx::ResetChipOnDLS, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);

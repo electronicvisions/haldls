@@ -1,5 +1,6 @@
 #include "haldls/vx/timer.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/print.h"
 
 namespace haldls::vx {
 
@@ -24,6 +25,8 @@ bool Timer::operator!=(Timer const& other) const
 {
 	return !(*this == other);
 }
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(Timer)
 
 std::array<halco::hicann_dls::vx::TimerOnDLS, Timer::config_size_in_words> Timer::addresses(
     coordinate_type const& coord) const

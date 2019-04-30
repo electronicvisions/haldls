@@ -6,6 +6,7 @@
 
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/ppu.h"
+#include "haldls/vx/print.h"
 
 namespace haldls {
 namespace vx {
@@ -39,8 +40,8 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
 	uint32_t w = static_cast<uint32_t>(pmw.get());
 	std::stringstream out;
 	out << std::showbase << std::internal << std::setfill('0') << std::hex << std::setw(8) << w;
-	os << out.str();
-	return os;
+	os << out.str() << std::endl;
+	return print_words_for_each_backend(os, pmw);
 }
 
 template <>
