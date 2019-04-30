@@ -47,8 +47,8 @@ TEST_F(PlaybackTest, CapMem) {
 	PlaybackProgramBuilder builder;
 	builder.write(coord, capmem_config);
 	builder.wait_until(100);
-	auto capmem_ticket = builder.read<CapMem>(coord);
-	auto capmemcell_ticket = builder.read<CapMemCell>(cell);
+	auto capmem_ticket = builder.read(coord);
+	auto capmemcell_ticket = builder.read(cell);
 	builder.halt();
 
 	auto program = builder.done();

@@ -5,6 +5,10 @@
 #define PLAYBACK_CONTAINER(Name, Type)
 #endif
 
+#ifndef LAST_PLAYBACK_CONTAINER
+#define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
+#endif
+
 PLAYBACK_CONTAINER(CapMem, haldls::v2::CapMem)
 PLAYBACK_CONTAINER(CapMemCell, haldls::v2::CapMemCell)
 PLAYBACK_CONTAINER(Chip, haldls::v2::Chip)
@@ -24,6 +28,7 @@ PLAYBACK_CONTAINER(PPUMemoryWord, haldls::v2::PPUMemoryWord)
 PLAYBACK_CONTAINER(PPUStatusRegister, haldls::v2::PPUStatusRegister)
 PLAYBACK_CONTAINER(RateCounter, haldls::v2::RateCounter)
 PLAYBACK_CONTAINER(SynapseBlock, haldls::v2::SynapseBlock)
-PLAYBACK_CONTAINER(SynapseDriverBlock, haldls::v2::SynapseDriverBlock)
+LAST_PLAYBACK_CONTAINER(SynapseDriverBlock, haldls::v2::SynapseDriverBlock)
 
 #undef PLAYBACK_CONTAINER
+#undef LAST_PLAYBACK_CONTAINER

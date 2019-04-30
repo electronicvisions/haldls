@@ -38,8 +38,8 @@ TEST_F(ReadbackTest, ExternalNeuronSwitchesAreDisabled) {
 	EXPECT_EQ(output_neuron, chip.get_buffered_readout_neuron());
 
 	PlaybackProgramBuilder builder;
-	auto chip_ticket = builder.read<Chip>(unique);
-	auto output_neuron_ticket = builder.read<NeuronDigitalConfig>(output_neuron);
+	auto chip_ticket = builder.read(unique);
+	auto output_neuron_ticket = builder.read(output_neuron);
 	builder.halt();
 	auto program = builder.done();
 

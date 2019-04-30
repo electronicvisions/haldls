@@ -90,13 +90,12 @@ int main(int argc, char* argv[])
 
 	builder.wait_until(wait);
 
-	auto ppu_memory_program_ticket = builder.read<PPUMemoryBlock>(ppu_memory_program_coord);
-	auto ppu_memory_mailbox_ticket = builder.read<PPUMemoryBlock>(mailbox_coord);
-	auto ppu_memory_stack_heap_ticket =
-	    builder.read<PPUMemoryBlock>(ppu_memory_stack_heap_coord);
-	auto ppu_memory_ticket = builder.read<PPUMemory>(PPUMemoryOnDLS());
-	auto ppu_memory_return_ticket = builder.read<PPUMemoryWord>(return_code);
-	auto ppu_status_ticket = builder.read<PPUStatusRegister>(PPUStatusRegisterOnDLS());
+	auto ppu_memory_program_ticket = builder.read(ppu_memory_program_coord);
+	auto ppu_memory_mailbox_ticket = builder.read(mailbox_coord);
+	auto ppu_memory_stack_heap_ticket = builder.read(ppu_memory_stack_heap_coord);
+	auto ppu_memory_ticket = builder.read(PPUMemoryOnDLS());
+	auto ppu_memory_return_ticket = builder.read(return_code);
+	auto ppu_status_ticket = builder.read(PPUStatusRegisterOnDLS());
 	builder.halt();
 
 	// run ppu program

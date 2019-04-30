@@ -59,7 +59,7 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 		// test rate counter read write
 		PlaybackProgramBuilder builder;
 		builder.write(RateCounterOnDLS(), RateCounter());
-		auto counter_ticket = builder.read<RateCounter>(RateCounterOnDLS());
+		auto counter_ticket = builder.read(RateCounterOnDLS());
 		builder.halt();
 		auto program = builder.done();
 
@@ -82,7 +82,7 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 				builder.fire(synapse_driver, address);
 				builder.wait_for(100);
 			}
-			auto counter_ticket = builder.read<RateCounter>(RateCounterOnDLS());
+			auto counter_ticket = builder.read(RateCounterOnDLS());
 			builder.halt();
 			auto program = builder.done();
 
@@ -105,7 +105,7 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 			// check that counting actually continues at 0 after reset
 			builder.fire(synapse_driver, address);
 			builder.wait_for(100);
-			auto counter_ticket = builder.read<RateCounter>(RateCounterOnDLS());
+			auto counter_ticket = builder.read(RateCounterOnDLS());
 			builder.halt();
 			auto program = builder.done();
 
@@ -124,8 +124,8 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 		PlaybackProgramBuilder builder;
 		builder.fire(synapse_driver, address);
 		builder.wait_for(100);
-		auto counter_ticket = builder.read<RateCounter>(RateCounterOnDLS());
-		auto counter_ticket_2 = builder.read<RateCounter>(RateCounterOnDLS());
+		auto counter_ticket = builder.read(RateCounterOnDLS());
+		auto counter_ticket_2 = builder.read(RateCounterOnDLS());
 		builder.halt();
 		auto program = builder.done();
 
@@ -150,8 +150,8 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
 		PlaybackProgramBuilder builder;
 		builder.fire(synapse_driver, address);
 		builder.wait_for(100);
-		auto counter_ticket = builder.read<RateCounter>(RateCounterOnDLS());
-		auto counter_ticket_2 = builder.read<RateCounter>(RateCounterOnDLS());
+		auto counter_ticket = builder.read(RateCounterOnDLS());
+		auto counter_ticket_2 = builder.read(RateCounterOnDLS());
 		builder.halt();
 		auto program = builder.done();
 

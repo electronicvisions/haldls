@@ -238,16 +238,19 @@ void PlaybackProgramBuilder::write(
 	}
 }
 
-template <class T>
-PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
-	typename T::coordinate_type const& coord)
+template <class CoordinateT>
+PlaybackProgram::ContainerTicket<
+    typename detail::coordinate_type_to_container_type<CoordinateT>::type>
+PlaybackProgramBuilder::read(CoordinateT const& coord)
 {
+	typedef typename detail::coordinate_type_to_container_type<CoordinateT>::type ContainerT;
+
 	assert(m_program->m_impl);
 
 	typedef std::vector<v2::hardware_address_type> addresses_type;
 	addresses_type read_addresses;
 	{
-		T config;
+		ContainerT config;
 		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 	}
 
@@ -259,12 +262,13 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
 	std::size_t const offset = impl.read_offset;
 	std::size_t const length = read_addresses.size();
 	impl.read_offset += length;
-	return m_program->create_ticket<T>(coord, offset, length);
+	return m_program->create_ticket<ContainerT>(coord, offset, length);
 }
 
 template <>
-PlaybackProgram::ContainerTicket<PPUMemoryBlock> PlaybackProgramBuilder::read(
-    typename PPUMemoryBlock::coordinate_type const& coord)
+PlaybackProgram::ContainerTicket<
+    detail::coordinate_type_to_container_type<typename PPUMemoryBlock::coordinate_type>::type>
+PlaybackProgramBuilder::read(typename PPUMemoryBlock::coordinate_type const& coord)
 {
 	assert(m_program->m_impl);
 
@@ -308,7 +312,8 @@ std::shared_ptr<PlaybackProgram> PlaybackProgramBuilder::done()
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template SYMBOL_VISIBLE PlaybackProgram::ContainerTicket<Type>                                 \
-	PlaybackProgramBuilder::read<Type>(Type::coordinate_type const& coord);
+	PlaybackProgramBuilder::read<typename Type::coordinate_type>(                                  \
+	    typename Type::coordinate_type const& coord);
 #include "haldls/v2/container.def"
 
 } // namespace v2

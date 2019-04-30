@@ -7,10 +7,11 @@
 #include <vector>
 
 
+#include "haldls/v2/chip.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/genpybind.h"
 #include "haldls/v2/spike.h"
-#include "haldls/v2/synapse.h"
+#include "hate/type_list.h"
 #include "hate/visibility.h"
 
 namespace stadls {
@@ -106,6 +107,32 @@ private:
 	bool m_valid;
 }; // PlaybackProgram
 
+namespace detail {
+
+#define LAST_PLAYBACK_CONTAINER(Name, Type) Type
+#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
+typedef hate::type_list<
+#include "haldls/v2/container.def"
+    >
+    container_list;
+
+#define LAST_PLAYBACK_CONTAINER(Name, Type) typename Type::coordinate_type
+#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
+typedef hate::type_list<
+#include "haldls/v2/container.def"
+    >
+    coordinate_list;
+
+template <typename CoordinateT>
+struct coordinate_type_to_container_type
+{
+	typedef typename hate::index_type_list_by_integer<
+	    hate::index_type_list_by_type<CoordinateT, coordinate_list>::value,
+	    container_list>::type type;
+};
+
+} // namespace detail
+
 class GENPYBIND(visible) PlaybackProgramBuilder
 {
 public:
@@ -131,8 +158,10 @@ public:
 	template <class T>
 	void write(typename T::coordinate_type const& coord, T const& config);
 
-	template <class T>
-	PlaybackProgram::ContainerTicket<T> read(typename T::coordinate_type const& coord) SYMBOL_VISIBLE;
+	template <class CoordinateT>
+	PlaybackProgram::ContainerTicket<
+	    typename detail::coordinate_type_to_container_type<CoordinateT>::type>
+	read(CoordinateT const& coord) SYMBOL_VISIBLE;
 
 	std::shared_ptr<PlaybackProgram> done() SYMBOL_VISIBLE;
 
@@ -145,8 +174,8 @@ private:
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	extern template void PlaybackProgramBuilder::write<Type>(                                      \
 	    Type::coordinate_type const&, Type const&);                                                \
-	extern template PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read<Type>(     \
-	    Type::coordinate_type const&);                                                             \
+	extern template PlaybackProgram::ContainerTicket<Type>                                         \
+	PlaybackProgramBuilder::read<typename Type::coordinate_type>(Type::coordinate_type const&);    \
 	extern template Type PlaybackProgram::ContainerTicket<Type>::get() const;
 #include "haldls/v2/container.def"
 #endif // __GENPYBIND__
