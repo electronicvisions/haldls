@@ -63,6 +63,7 @@ public:
 	PlaybackProgram() SYMBOL_VISIBLE;
 	PlaybackProgram(std::shared_ptr<fisch::vx::PlaybackProgram> const& other) SYMBOL_VISIBLE;
 
+	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
 	    SYMBOL_VISIBLE;
 
