@@ -25,5 +25,7 @@ PLAYBACK_CONTAINER(PhyConfigFPGA, haldls::vx::PhyConfigFPGA)
 PLAYBACK_CONTAINER(CommonPhyConfigFPGA, haldls::vx::CommonPhyConfigFPGA)
 PLAYBACK_CONTAINER(PhyConfigChip, haldls::vx::PhyConfigChip)
 PLAYBACK_CONTAINER(CommonPhyConfigChip, haldls::vx::CommonPhyConfigChip)
+PLAYBACK_CONTAINER(PerfTest, haldls::vx::PerfTest)
+PLAYBACK_CONTAINER(PerfTestStatus, haldls::vx::PerfTestStatus)
 
 #undef PLAYBACK_CONTAINER

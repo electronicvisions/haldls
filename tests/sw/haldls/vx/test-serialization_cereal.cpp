@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "haldls/vx/jtag.h"
+#include "haldls/vx/perftest.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/spi.h"
@@ -23,7 +24,9 @@ typedef ::testing::Types<
     JTAGIdCode,
     ShiftRegister,
     DACChannel,
-    DACControl>
+    DACControl,
+    PerfTest,
+    PerfTestStatus>
     SerializableTypes;
 
 TYPED_TEST_CASE(CommonSerializationTests, SerializableTypes);
