@@ -9,4 +9,5 @@
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/spi.h"
+#include "haldls/vx/systime.h"
 #include "haldls/vx/timer.h"

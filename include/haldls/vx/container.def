@@ -28,5 +28,6 @@ PLAYBACK_CONTAINER(PhyConfigChip, haldls::vx::PhyConfigChip)
 PLAYBACK_CONTAINER(CommonPhyConfigChip, haldls::vx::CommonPhyConfigChip)
 PLAYBACK_CONTAINER(PerfTest, haldls::vx::PerfTest)
 PLAYBACK_CONTAINER(PerfTestStatus, haldls::vx::PerfTestStatus)
+PLAYBACK_CONTAINER(SystimeSyncBase, haldls::vx::SystimeSyncBase)
 
 #undef PLAYBACK_CONTAINER

@@ -12,6 +12,7 @@ constexpr uint32_t ppu_status_register_address_mask{0x0020'0001};
 
 constexpr uint32_t phy_on_chip_base_address{0x0004'0000};
 constexpr uint32_t pll_base_address{0x0008'0000};
+constexpr uint32_t systime_base_address{0x0};
 
 constexpr uint32_t capmem_nw_sram_base_address{0x140000};
 constexpr uint32_t capmem_ne_sram_base_address{0x148000};
