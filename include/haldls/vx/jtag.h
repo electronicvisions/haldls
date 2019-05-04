@@ -21,7 +21,7 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 class GENPYBIND(visible) JTAGClockScaler
 {
 public:
-	typedef halco::hicann_dls::vx::JTAGOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::JTAGClockScalerOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) Value : public fisch::vx::JTAGClockScaler::Value
@@ -41,7 +41,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, JTAGClockScaler const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<halco::hicann_dls::vx::JTAGOnDLS, config_size_in_words> addresses(
+	std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::JTAGClockScaler, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
@@ -69,7 +69,7 @@ struct BackendContainerTrait<JTAGClockScaler>
 class GENPYBIND(visible) ResetJTAGTap
 {
 public:
-	typedef halco::hicann_dls::vx::JTAGOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::ResetJTAGTapOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	ResetJTAGTap() SYMBOL_VISIBLE;
@@ -81,7 +81,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, ResetJTAGTap const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<halco::hicann_dls::vx::JTAGOnDLS, config_size_in_words> addresses(
+	std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::ResetJTAGTap, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
@@ -109,7 +109,7 @@ struct BackendContainerTrait<ResetJTAGTap>
 class GENPYBIND(visible) JTAGIdCode
 {
 public:
-	typedef halco::hicann_dls::vx::JTAGOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::JTAGIdCodeOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) Value : public fisch::vx::JTAGIdCode::Value
@@ -128,7 +128,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, JTAGIdCode const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<halco::hicann_dls::vx::JTAGOnDLS, config_size_in_words> addresses(
+	std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::JTAGIdCode, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);

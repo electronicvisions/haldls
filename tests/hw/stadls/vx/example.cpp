@@ -30,11 +30,11 @@ int main()
 	haldls::vx::JTAGClockScaler jtag_clock_scaler;
 	jtag_clock_scaler.set(haldls::vx::JTAGClockScaler::Value(3));
 	builder.write<haldls::vx::JTAGClockScaler>(
-	    halco::hicann_dls::vx::JTAGOnDLS(), jtag_clock_scaler);
+	    halco::hicann_dls::vx::JTAGClockScalerOnDLS(), jtag_clock_scaler);
 	builder.write<haldls::vx::ResetJTAGTap>(
-	    halco::hicann_dls::vx::JTAGOnDLS(), haldls::vx::ResetJTAGTap());
+	    halco::hicann_dls::vx::ResetJTAGTapOnDLS(), haldls::vx::ResetJTAGTap());
 
-	auto ticket_jtag_id = builder.read<haldls::vx::JTAGIdCode>(halco::hicann_dls::vx::JTAGOnDLS());
+	auto ticket_jtag_id = builder.read<haldls::vx::JTAGIdCode>(halco::hicann_dls::vx::JTAGIdCodeOnDLS());
 
 	// wait until ASIC omnibus is up (22 us)
 	builder.wait_until(
