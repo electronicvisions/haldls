@@ -66,7 +66,7 @@ TEST(CapMemBlock, WROverJTAG)
 	auto program = builder.done();
 
 	auto executor = generate_playback_program_test_executor();
-	executor.run(program.impl());
+	executor.run(program);
 
 	for (size_t i = 0; i < CapMemBlockOnDLS::size; i++) {
 		EXPECT_TRUE(block_tickets[i].valid());

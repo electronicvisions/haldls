@@ -56,11 +56,6 @@ std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
 	return os;
 }
 
-std::shared_ptr<fisch::vx::PlaybackProgram> PlaybackProgram::impl() const
-{
-	return m_program_impl;
-}
-
 void PlaybackProgramBuilder::wait_until(
     typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value const time)
 {

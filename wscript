@@ -134,8 +134,15 @@ def build(bld):
         uselib = 'HALDLS_LIBRARIES',
     )
 
-    bld(
-        features = 'cxx cxxshlib',
+    bld.shlib(
+        target = 'stadls_vx',
+        source = bld.path.ant_glob('src/stadls/vx/*.cpp'),
+        install_path = '${PREFIX}/lib',
+        use = ['dls_common', 'haldls_vx'],
+        uselib = 'HALDLS_LIBRARIES',
+    )
+
+    bld.shlib(
         target = 'lola_v2',
         source = bld.path.ant_glob('src/lola/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
@@ -229,7 +236,7 @@ def build(bld):
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/hw/stadls/vx/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx', 'GTEST', 'haldls_test_common_inc', 'stadls_hwtest_vx_inc'],
+        use = ['haldls_vx', 'stadls_vx', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
         skip_run = not bld.env.DLSvx_HARDWARE_AVAILABLE
     )
@@ -239,7 +246,7 @@ def build(bld):
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/hw/stadls/vx/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx', 'GTEST', 'haldls_test_common_inc', 'stadls_simtest_vx_inc'],
+        use = ['haldls_vx', 'GTEST', 'stadls_simtest_vx_inc', 'stadls_vx', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
         skip_run = True
     )
@@ -276,7 +283,7 @@ def build(bld):
         target = 'run_ppu_program_vx',
         features = 'cxx cxxprogram',
         source = 'tools/stadls/vx/run_ppu_program.cpp',
-        use = ['haldls_vx', 'logger_obj', 'fisch_vx'],
+        use = ['haldls_vx', 'logger_obj', 'stadls_vx'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
     )

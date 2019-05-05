@@ -40,7 +40,7 @@ protected:
 	void test_run_program(haldls::vx::PlaybackProgram& program)
 	{
 		auto executor = generate_playback_program_test_executor();
-		executor.run(program.impl());
+		executor.run(program);
 	}
 
 	haldls::vx::PlaybackProgramBuilder builder;

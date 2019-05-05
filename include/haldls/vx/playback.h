@@ -16,6 +16,10 @@ namespace fisch::vx {
 	class PlaybackProgramBuilder;
 } // namespace fisch::vx
 
+namespace stadls::vx {
+class PlaybackProgramExecutor;
+} // namespace stadls::vx
+
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
@@ -65,14 +69,9 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
 	    SYMBOL_VISIBLE;
 
-	/**
-	 * Access the implementation for ease of insertion in fisch executor.
-	 * FIXME: This is not supposed to be publically accessible.
-	 */
-	std::shared_ptr<fisch::vx::PlaybackProgram> impl() const SYMBOL_VISIBLE;
-
 private:
 	friend PlaybackProgramBuilder;
+	friend stadls::vx::PlaybackProgramExecutor;
 
 	std::shared_ptr<fisch::vx::PlaybackProgram> m_program_impl;
 

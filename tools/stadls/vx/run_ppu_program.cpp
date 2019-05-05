@@ -2,13 +2,13 @@
 #include <boost/program_options.hpp>
 
 #include "fisch/vx/constants.h"
-#include "fisch/vx/playback_executor.h"
 #include "halco/hicann-dls/vx/coordinates.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/playback.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/timer.h"
 #include "logging_ctrl.h"
+#include "stadls/vx/playback_executor.h"
 
 #include "helpers.hpp"
 
@@ -24,6 +24,8 @@ PPUMemoryWordOnPPU const return_code(3071);
 
 PPUMemoryBlockOnPPU const mailbox_coord_on_ppu(mailbox_begin, mailbox_end);
 
+using ip_t = stadls::vx::PlaybackProgramExecutor::ip_t;
+using port_t = stadls::vx::PlaybackProgramExecutor::port_t;
 
 int main(int argc, char* argv[])
 {
@@ -34,19 +36,16 @@ int main(int argc, char* argv[])
 	std::string loglevel;
 	int ppu_id;
 	bool use_jtag;
-	typename hxcomm::vx::ARQConnection::ip_t fpga_ip;
-	typename hxcomm::vx::SimConnection::ip_t sim_ip;
-	typename hxcomm::vx::SimConnection::port_t sim_port;
+	ip_t fpga_ip;
+	ip_t sim_ip;
+	port_t sim_port;
 	opt_desc.add_options()("help", "Print this help message and exit.")(
 	    "ppu", po::value<int>(&ppu_id)->required(), "Number of PPU to use (0 or 1).")(
-	    "fpga_ip",
-	    po::value<hxcomm::vx::ARQConnection::ip_t>(&fpga_ip)->default_value("192.168.4.4"))(
+	    "fpga_ip", po::value<ip_t>(&fpga_ip)->default_value("192.168.4.4"))(
 	    "use_jtag", po::value<bool>(&use_jtag)->default_value(false),
 	    "Use JTAG link instead of highspeed link.")(
-	    "sim_ip", po::value<hxcomm::vx::SimConnection::ip_t>(&sim_ip)->default_value("0.0.0.0"),
-	    "IP of simulation server.")(
-	    "sim_port", po::value<hxcomm::vx::SimConnection::port_t>(&sim_port)->default_value(0),
-	    "Port of simulation server.")(
+	    "sim_ip", po::value<ip_t>(&sim_ip)->default_value("0.0.0.0"), "IP of simulation server.")(
+	    "sim_port", po::value<port_t>(&sim_port)->default_value(0), "Port of simulation server.")(
 	    "program", po::value<std::string>(&program_filename)->required(),
 	    "Filename of (stripped) PPU program (suffix .binary).")(
 	    "wait", po::value<int>(&wait)->default_value(10000000),
@@ -189,15 +188,17 @@ int main(int argc, char* argv[])
 	// run ppu program
 	LOG4CXX_INFO(logger, "Creating program.");
 	auto program = builder.done();
+	auto executor = stadls::vx::PlaybackProgramExecutor();
 	if ((sim_ip == "0.0.0.0") and (sim_port == 0)) {
 		LOG4CXX_INFO(logger, "Running built program on hardware.");
-		auto executor = fisch::vx::PlaybackProgramARQExecutor(fpga_ip);
-		executor.run(program.impl());
+		executor.connect_hardware(fpga_ip);
+		executor.run(program);
+		executor.disconnect();
 	} else {
 		LOG4CXX_INFO(logger, "Running built program on simulation.");
-		auto executor =
-		    fisch::vx::PlaybackProgramSimExecutor(sim_ip, sim_port);
-		executor.run(program.impl());
+		executor.connect_simulator(sim_ip, sim_port);
+		executor.run(program);
+		executor.disconnect();
 	}
 
 	// get results

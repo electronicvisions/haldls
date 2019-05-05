@@ -68,7 +68,7 @@ TEST(PPUMemoryWord, WROverJTAG)
 	auto program = builder.done();
 
 	auto executor = generate_playback_program_test_executor();
-	executor.run(program.impl());
+	executor.run(program);
 
 	for (size_t i = 0; i < num_words; ++i) {
 		EXPECT_TRUE(responses.at(i).valid());
@@ -156,7 +156,7 @@ TEST(PPUControlRegister, WROverJTAG)
 	auto program = builder.done();
 
 	auto executor = generate_playback_program_test_executor();
-	executor.run(program.impl());
+	executor.run(program);
 
 	EXPECT_TRUE(reg1_tickets[0].valid());
 	EXPECT_TRUE(reg1_tickets[1].valid());

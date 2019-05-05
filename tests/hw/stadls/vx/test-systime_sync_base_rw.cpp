@@ -60,7 +60,7 @@ TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)
 	}
 
 	auto executor = generate_playback_program_test_executor();
-	executor.run(program.impl());
+	executor.run(program);
 
 	for (auto const ticket : tickets) {
 		EXPECT_TRUE(ticket.valid());

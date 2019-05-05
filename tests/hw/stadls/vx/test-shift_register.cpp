@@ -1,12 +1,11 @@
 #include <gtest/gtest.h>
 
-#include "fisch/vx/playback_executor.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/playback.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/spi.h"
 #include "haldls/vx/timer.h"
-#include "hxcomm/vx/arqconnection.h"
+#include "stadls/vx/playback_executor.h"
 
 #include "executor.h"
 
@@ -54,5 +53,5 @@ TEST(ShiftRegister, ToggleLEDs)
 	auto program = builder.done();
 
 	auto executor = generate_playback_program_test_executor();
-	executor.run(program.impl());
+	executor.run(program);
 }

@@ -45,7 +45,7 @@ TEST(PPUMemoryWord, WRHighspeed)
 	auto program = builder.done();
 
 	auto executor = generate_playback_program_test_executor();
-	executor.run(program.impl());
+	executor.run(program);
 
 	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
 		EXPECT_TRUE(responses[word.toEnum()].valid());
