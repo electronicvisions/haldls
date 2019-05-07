@@ -7,7 +7,6 @@ import pyhalco_hicann_dls_vx as halco
 import pyhaldls_vx as haldls
 import pyfisch_vx as fisch
 
-fpga_ip=""
 
 class HwTestPyhaldlsVx(unittest.TestCase):
     def test_board_led_chain(self):
@@ -48,6 +47,7 @@ if __name__ == "__main__":
     parser.add_argument("--fpga_ip", type=str)
     args, unknownargs = parser.parse_known_args()
 
+    fpga_ip = args.fpga_ip
     if (len(unknownargs)):
         unittest.main(argv=unknownargs)
     else:
