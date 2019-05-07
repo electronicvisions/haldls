@@ -12,10 +12,10 @@ def depends(ctx):
     ctx('flyspi-rw_api')
     ctx('fisch')
 
-    # needed because otherwise pylogging is not defined/installed
-    ctx.recurse("pyhaldls")
-    ctx.recurse("pystadls")
-
+    if getattr(ctx.options, 'with_haldls_python_bindings', True):
+        ctx('haldls', 'pyhaldls')
+        ctx('haldls', 'pystadls')
+        ctx('haldls', 'pylola')
 
 def options(opt):
     opt.load('compiler_cxx')
@@ -26,17 +26,19 @@ def options(opt):
     opt.recurse("pystadls")
     opt.recurse("pylola")
 
-    hopts = opt.add_option_group('Quiggeldy (hagen-daas) options')
+    hopts = opt.add_option_group('HALDLS options')
     hopts.add_withoption('munge', default=True,
         help='Toggle build of quiggeldy with munge-based '
              'authentification support')
-
+    hopts.add_withoption('haldls-python-bindings', default=True,
+            help='Toggle the generation and build of haldls python bindings')
 
 def configure(cfg):
     cfg.load('compiler_cxx')
     cfg.load('gtest')
 
     cfg.env.build_with_munge = cfg.options.with_munge
+    cfg.env.build_with_haldls_python_bindings = cfg.options.with_haldls_python_bindings
 
     cfg.check_cxx(mandatory=True, header_name='cereal/cereal.hpp')
     cfg.load('local_rpath')
@@ -64,7 +66,7 @@ def configure(cfg):
                       uselib_store="MUNGE")
         cfg.env.DEFINES_MUNGE = ["USE_MUNGE_AUTH"]
 
-    if cfg.env.build_python_bindings:
+    if cfg.env.build_with_haldls_python_bindings:
         cfg.recurse("pyhaldls")
         cfg.recurse("pystadls")
         cfg.recurse("pylola")
@@ -223,11 +225,12 @@ def build(bld):
         linkflags = ['-lboost_program_options-mt'],
     )
 
-    if bld.env.build_python_bindings:
+    if bld.env.build_with_haldls_python_bindings:
         bld.recurse("pyhaldls")
         bld.recurse("pystadls")
         bld.recurse("pylola")
 
+        # we could move this to dlens/wscript
         bld(name='dlens',
             features='py',
             source = bld.path.ant_glob('dlens/**/*.py'),
