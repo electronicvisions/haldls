@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#include "fisch/vx/playback_program.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/spi.h"
@@ -17,6 +16,11 @@
 #include "hate/visibility.h"
 
 #include "haldls/vx/ppu.h"
+
+namespace fisch::vx {
+	class PlaybackProgram;
+	class PlaybackProgramBuilder;
+} // namespace fisch::vx
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
