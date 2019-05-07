@@ -1,29 +1,19 @@
 @Library("jenlib") _
 
-// We have to continuously allocate a frontend slot due to the seperate
-// 'hw_dls_haldls' job: It uses $WORKSPACE to determine the build under test.
-// $WORKSPACE might change for new slot allocations.
-runOnSlave(label: "frontend") {
-	wafDefaultPipeline(projects: ["haldls"],
-	                   app: "visionary-dls",
-	                   postPipelineCleanup: false,
-	                   notificationChannel: "#dls-software",
-	                   warningsIgnorePattern: ".*/lib-rcf/.*",
-	                   testTimeout: 120)
+// HICANN-DLSv2
+wafDefaultPipeline(projects: ["haldls"],
+                   container: [app: "visionary-dls"],
+                   postPipelineCleanup: false,
+                   warningsIgnorePattern: ".*/lib-rcf/.*",
+                   testOptions: "--test-execall -j1",
+                   testSlurmResource: [partition: "dls", gres: "B291656"],
+                   notificationChannel: "#dls-software")
 
-	try {
-		build job: 'hw_dls_haldls', parameters: [string(name: 'VISIONARY_DEFAULTS', value: 'spack_visionary-defaults/autobuild'),
-		                                         string(name: 'SOFTWARE_MODULE', value: ''),
-		                                         string(name: 'BASEDIR_HALDLS', value: env.WORKSPACE),
-		                                         string(name: 'PRELOAD', value: '/wang/environment/software/jessie/spack/2017-12-01/spackview/lib64/libasan.so')]
-	} catch (Throwable t) {
-		notifyFailure(mattermostChannel: "#dls-software")
-		throw t
-	} finally {
-		cleanWs()
-	}
 
-	if (currentBuild.currentResult != "SUCCESS") {
-		notifyFailure(mattermostChannel: "#dls-software")
-	}
-}
+// HICANN-X
+wafDefaultPipeline(projects: ["haldls"],
+                   container: [app: "visionary-dls"],
+                   warningsIgnorePattern: ".*/lib-rcf/.*",
+                   testOptions: "--test-execall -j1",
+                   testSlurmResource: [partition: "cube", gres: "cube1", licenses: "W4F3"],
+                   notificationChannel: "#dls-software")

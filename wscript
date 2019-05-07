@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-from subprocess import check_output, CalledProcessError
+import os
+
 
 def depends(ctx):
     ctx('code-format')
@@ -17,6 +18,7 @@ def depends(ctx):
         ctx('haldls', 'pystadls')
         ctx('haldls', 'pylola')
 
+
 def options(opt):
     opt.load('compiler_cxx')
     opt.load('gtest')
@@ -32,6 +34,7 @@ def options(opt):
              'authentification support')
     hopts.add_withoption('haldls-python-bindings', default=True,
             help='Toggle the generation and build of haldls python bindings')
+
 
 def configure(cfg):
     cfg.load('compiler_cxx')
@@ -73,6 +76,9 @@ def configure(cfg):
 
 
 def build(bld):
+    bld.env.DLSv2_HARDWARE_AVAILABLE = "dls" == os.environ.get("SLURM_JOB_PARTITION")
+    bld.env.DLSvx_HARDWARE_AVAILABLE = "cube" == os.environ.get("SLURM_JOB_PARTITION")
+
     bld(
         target = 'lola_inc',
         export_includes = 'include',
@@ -199,7 +205,7 @@ def build(bld):
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'GTEST', 'haldls_test_common_inc', 'stadls_hwtest_vx_inc'],
         install_path = '${PREFIX}/bin',
-        skip_run = True,
+        skip_run = not bld.env.DLSvx_HARDWARE_AVAILABLE
     )
 
     bld(
@@ -209,24 +215,27 @@ def build(bld):
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'GTEST', 'haldls_test_common_inc', 'stadls_simtest_vx_inc'],
         install_path = '${PREFIX}/bin',
-        skip_run = True,
-    )
-
-    stadl_hwtests_kwargs = dict(
-        features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/hw/stadls/v2/test-*.cpp'),
-        test_main = 'tests/test_with_logger.cpp',
-        use = ['haldls_v2', 'stadls_v2', 'logger_obj', 'GTEST', 'DL4TOOLS'],
-        install_path = '${PREFIX}/bin',
-        skip_run = True,
+        skip_run = True
     )
 
     bld(target = 'stadls_hwtest_v2',
-        **stadl_hwtests_kwargs)
+        features='gtest cxx cxxprogram',
+        source=bld.path.ant_glob('tests/hw/stadls/v2/test-*.cpp'),
+        use=['haldls_v2', 'stadls_v2', 'logger_obj', 'GTEST', 'DL4TOOLS'],
+        install_path='${PREFIX}/bin',
+        test_timeout=120,
+        skip_run=not bld.env.DLSv2_HARDWARE_AVAILABLE
+        )
 
     bld(target = 'quiggeldy_hwtest_v2',
         defines = ['NO_LOCAL_BOARD'],
-        **stadl_hwtests_kwargs)
+        features='gtest cxx cxxprogram',
+        source=bld.path.ant_glob('tests/hw/stadls/v2/test-*.cpp'),
+        use=['haldls_v2', 'stadls_v2', 'logger_obj', 'GTEST', 'DL4TOOLS'],
+        install_path='${PREFIX}/bin',
+        test_timeout=120,
+        skip_run=True	# Quiggeldy cannot be tested in CI
+        )
 
     bld(
         target = 'run_ppu_program',
@@ -257,6 +266,7 @@ def build(bld):
             install_path='${PREFIX}/bin',
             pythonpath=['tests'],
         )
+
 
 def doc(dox):
     dox(

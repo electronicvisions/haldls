@@ -33,7 +33,18 @@ TEST(PPUMemoryWord, WROverJTAG)
 	builder.write(JTAGClockScalerOnDLS(), JTAGClockScaler(JTAGClockScaler::Value(3)));
 	builder.write(ResetJTAGTapOnDLS(), ResetJTAGTap());
 
-	builder.wait_until(TimerOnDLS(), Timer::Value(22 * fisch::vx::fpga_clock_cycles_per_us));
+	// PLL init, reconfiguration needed to slow down PPU to a working state
+	ADPLL adpll_config;
+	for (auto adpll : halco::common::iter_all<halco::hicann_dls::vx::ADPLLOnDLS>()) {
+		builder.write(adpll, adpll_config, Backend::JTAGPLLRegister);
+	}
+
+	PLLClockOutputBlock config;
+	builder.write(halco::hicann_dls::vx::PLLOnDLS(), config, Backend::JTAGPLLRegister);
+
+	// Wait for PLL and Omnibus to come up
+	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fisch::vx::fpga_clock_cycles_per_us));
+	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 
 	constexpr size_t num_words = 10;
 

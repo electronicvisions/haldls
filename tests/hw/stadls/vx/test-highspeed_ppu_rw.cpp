@@ -19,8 +19,10 @@ using namespace haldls::vx;
 
 /**
  * Enable highspeed omnibus connection and write and read all PPU memory words for verification.
+ *
+ * Disabled! Breaks the FPGA! Issue #3164
  */
-TEST(PPUMemoryWord, WRHighspeed)
+TEST(PPUMemoryWord, DISABLED_WRHighspeed)
 {
 	PlaybackProgramBuilder builder;
 

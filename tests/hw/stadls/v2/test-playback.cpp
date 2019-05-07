@@ -74,7 +74,7 @@ TEST_F(PlaybackTest, CapMem) {
 }
 
 TEST_F(PlaybackTest, InvalidState) {
-	std::shared_ptr<PlaybackProgram> invalid_program; // not obtained via builder
+	auto invalid_program = std::make_shared<PlaybackProgram>(); // not obtained via builder
 	ASSERT_FALSE(invalid_program->valid());
 
 	LocalBoardControl ctrl(test_board);

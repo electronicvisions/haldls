@@ -237,7 +237,8 @@ INSTANTIATE_TEST_CASE_P(
 	// Working neurons depend on hardware, as we have no actual calibration data at the moment.
 	::testing::Range(NeuronOnDLS::begin, NeuronOnDLS::end));
 
-TEST_P(IntegrationSpikingHelloWorld, Spiking)
+// Disabled: Issue #3163
+TEST_P(IntegrationSpikingHelloWorld, DISABLED_Spiking)
 {
 	configure();
 

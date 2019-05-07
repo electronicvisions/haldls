@@ -30,7 +30,9 @@ int main(int argc, char* argv[])
 	bpo::options_description desc("Options");
 	// clang-format off
 	desc.add_options()("fpga_ip",
-	    bpo::value<typename hxcomm::vx::ARQConnection::ip_t>(&fpga_ip)->required());
+	    bpo::value<typename hxcomm::vx::ARQConnection::ip_t>
+	    // Currently (2019-05-14) the only setup, still ugly -> issue #3161
+	    (&fpga_ip)->default_value("192.168.4.4"));
 	// clang-format on
 
 	bpo::variables_map vm;
