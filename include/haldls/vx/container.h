@@ -1,4 +1,6 @@
 #pragma once
+
+#include "haldls/vx/capmem.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/phy.h"
 #include "haldls/vx/pll.h"
