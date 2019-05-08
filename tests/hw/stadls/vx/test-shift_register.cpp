@@ -8,11 +8,11 @@
 #include "haldls/vx/timer.h"
 #include "hxcomm/vx/arqconnection.h"
 
+#include "executor.h"
+
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
 using namespace haldls::vx;
-
-extern std::string fpga_ip;
 
 /**
  * This is a local-board-only test relying on visual verification, that all six addressable LEDs
@@ -54,7 +54,7 @@ TEST(ShiftRegister, ToggleLEDs)
 	builder.halt();
 	auto program = builder.done();
 
-	fisch::vx::PlaybackProgramExecutor<hxcomm::vx::ARQConnection> executor(fpga_ip);
+	auto executor = generate_playback_program_test_executor();
 	executor.transfer(program.impl());
 	executor.execute();
 	executor.fetch(program.impl());

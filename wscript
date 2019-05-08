@@ -154,15 +154,15 @@ def build(bld):
     )
 
     bld(
-        target = 'haldls_swtest_common_inc',
-        export_includes = 'tests/sw/haldls/common',
+        target = 'haldls_test_common_inc',
+        export_includes = 'tests/common',
     )
 
     bld(
         target = 'haldls_swtest_v2',
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/sw/haldls/v2/test-*.cpp'),
-        use = ['haldls_v2', 'haldls_swtest_common_inc', 'GTEST'],
+        use = ['haldls_v2', 'haldls_test_common_inc', 'GTEST'],
         install_path = '${PREFIX}/bin',
     )
 
@@ -170,7 +170,7 @@ def build(bld):
         target = 'haldls_swtest_vx',
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp'),
-        use = ['haldls_vx', 'haldls_swtest_common_inc', 'GTEST'],
+        use = ['haldls_vx', 'haldls_test_common_inc', 'GTEST'],
         install_path = '${PREFIX}/bin',
     )
 
@@ -186,8 +186,18 @@ def build(bld):
         target = 'stadls_vx_fisch_test',
         features = 'cxx cxxprogram',
         source = bld.path.ant_glob('tests/hw/stadls/vx/example.cpp'),
-        use = ['haldls_vx', 'haldls_swtest_common_inc', 'fisch' ],
+        use = ['haldls_vx', 'haldls_test_common_inc', 'fisch' ],
         install_path = '${PREFIX}/bin',
+    )
+
+    bld(
+        target = 'stadls_hwtest_vx_inc',
+        export_includes = 'tests/hw/stadls/vx/executor_hw/',
+    )
+
+    bld(
+        target = 'stadls_simtest_vx_inc',
+        export_includes = 'tests/hw/stadls/vx/executor_sim/',
     )
 
     bld(
@@ -195,7 +205,17 @@ def build(bld):
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/hw/stadls/vx/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx', 'GTEST'],
+        use = ['haldls_vx', 'GTEST', 'haldls_test_common_inc', 'stadls_hwtest_vx_inc'],
+        install_path = '${PREFIX}/bin',
+        skip_run = True,
+    )
+
+    bld(
+        target = 'stadls_simtest_vx',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/hw/stadls/vx/test-*.cpp'),
+        test_main = 'tests/hw/stadls/vx/main.cpp',
+        use = ['haldls_vx', 'GTEST', 'haldls_test_common_inc', 'stadls_simtest_vx_inc'],
         install_path = '${PREFIX}/bin',
         skip_run = True,
     )
