@@ -55,9 +55,7 @@ int main()
 	std::cout << program << std::endl;
 
 	fisch::vx::PlaybackProgramExecutor<hxcomm::vx::SimConnection> executor("127.0.0.1", 50004);
-	executor.transfer(program.impl());
-	executor.execute();
-	executor.fetch(program.impl());
+	executor.run(program.impl());
 
 	auto result_jtag_id = ticket_jtag_id.get();
 	auto result1 = ticket1.get();

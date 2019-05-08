@@ -55,7 +55,5 @@ TEST(ShiftRegister, ToggleLEDs)
 	auto program = builder.done();
 
 	auto executor = generate_playback_program_test_executor();
-	executor.transfer(program.impl());
-	executor.execute();
-	executor.fetch(program.impl());
+	executor.run(program.impl());
 }
