@@ -30,6 +30,30 @@ public:
 	typedef halco::hicann_dls::vx::ShiftRegisterOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	enum class AnalogReadoutMux1Input
+	{
+		Off,
+		ReadoutChain0,
+		ReadoutChain1,
+		MuxRfu0
+	};
+
+	enum class AnalogReadoutMux2Input
+	{
+		Off,
+		VReset,
+		VDDResMeas,
+		MuxDAC25
+	};
+
+	enum class AnalogReadoutMux3Input
+	{
+		Off,
+		IRef,
+		MuxRfu1,
+		MuxRfu2
+	};
+
 	ShiftRegister() SYMBOL_VISIBLE;
 
 	/**
@@ -37,46 +61,74 @@ public:
 	 * carrier board.
 	 * @return Boolean value
 	 */
-	GENPYBIND(getter_for(enable_capmem_i_ref))
-	bool get_enable_capmem_i_ref() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(enable_i_ref_board))
+	bool get_enable_i_ref_board() const SYMBOL_VISIBLE;
 
 	/**
 	 * Set enable value for connecting the DAC generating the CapMem reference current to the chip
 	 * carrier board.
 	 * @param value Boolean value
 	 */
-	GENPYBIND(setter_for(enable_capmem_i_ref))
-	void set_enable_capmem_i_ref(bool value) SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_i_ref_board))
+	void set_enable_i_ref_board(bool value) SYMBOL_VISIBLE;
 
 	/**
 	 * Get enable value for connecting the CapMem reference current to ground via a 2.2MOhm
 	 * resistor for a current measurement with the ADC.
 	 * @return Boolean value
 	 */
-	GENPYBIND(getter_for(enable_measure_capmem_i_ref))
-	bool get_enable_measure_capmem_i_ref() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(enable_measure_i_ref))
+	bool get_enable_measure_i_ref() const SYMBOL_VISIBLE;
 
 	/**
 	 * Set enable value for connecting the CapMem reference current to ground via a 2.2MOhm
 	 * resistor for a current measurement with the ADC.
 	 * @return Boolean value
 	 */
-	GENPYBIND(setter_for(enable_measure_capmem_i_ref))
-	void set_enable_measure_capmem_i_ref(bool value) SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_measure_i_ref))
+	void set_enable_measure_i_ref(bool value) SYMBOL_VISIBLE;
 
 	/**
-	 * Select the source of the ADC.
-	 * @param value Source to select
+	 * Get the source selection for the first analog readout MUX.
+	 * @return Selected input
 	 */
-	GENPYBIND(setter_for(adc_source))
-	void set_adc_source(halco::hicann_dls::vx::ADCSourceOnBoard const& value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(select_analog_readout_mux_1_input))
+	AnalogReadoutMux1Input get_select_analog_readout_mux_1_input() const SYMBOL_VISIBLE;
 
 	/**
-	 * Get the selected source of the ADC.
-	 * @return Selected source
+	 * Set the source selection for the first analog readout MUX.
+	 * @param value Input to be selected
 	 */
-	GENPYBIND(getter_for(adc_source))
-	halco::hicann_dls::vx::ADCSourceOnBoard get_adc_source() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(select_analog_readout_mux_1_input))
+	void set_select_analog_readout_mux_1_input(AnalogReadoutMux1Input value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get the source selection for the second analog readout MUX.
+	 * @return Selected input
+	 */
+	GENPYBIND(getter_for(select_analog_readout_mux_2_input))
+	AnalogReadoutMux2Input get_select_analog_readout_mux_2_input() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set the source selection for the second analog readout MUX.
+	 * @param value Input to be selected
+	 */
+	GENPYBIND(setter_for(select_analog_readout_mux_2_input))
+	void set_select_analog_readout_mux_2_input(AnalogReadoutMux2Input value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get the source selection for the third analog readout MUX.
+	 * @return Selected input
+	 */
+	GENPYBIND(getter_for(select_analog_readout_mux_3_input))
+	AnalogReadoutMux3Input get_select_analog_readout_mux_3_input() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set the source selection for the third analog readout MUX.
+	 * @param value Input to be selected
+	 */
+	GENPYBIND(setter_for(select_analog_readout_mux_3_input))
+	void set_select_analog_readout_mux_3_input(AnalogReadoutMux3Input value) SYMBOL_VISIBLE;
 
 	/**
 	 * Get enable value for the DAC-powered Readout0 debug line.
@@ -187,9 +239,11 @@ private:
 	template <typename Archive>
 	void cerealize(Archive& ar) SYMBOL_VISIBLE;
 
-	halco::hicann_dls::vx::ADCSourceOnBoard m_adc_source;
-	bool m_enable_capmem_i_ref;
-	bool m_enable_measure_capmem_i_ref;
+	AnalogReadoutMux1Input m_mux_1;
+	AnalogReadoutMux2Input m_mux_2;
+	AnalogReadoutMux3Input m_mux_3;
+	bool m_enable_i_ref_board;
+	bool m_enable_measure_i_ref;
 	bool m_enable_dac_to_readout_0;
 	bool m_enable_dac_to_readout_1;
 	halco::common::typed_array<bool, halco::hicann_dls::vx::LEDOnBoard> m_enable_led;

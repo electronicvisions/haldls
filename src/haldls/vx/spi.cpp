@@ -11,9 +11,11 @@ namespace haldls {
 namespace vx {
 
 ShiftRegister::ShiftRegister() :
-    m_adc_source(halco::hicann_dls::vx::ADCSourceOnBoard::None),
-    m_enable_capmem_i_ref(true),
-    m_enable_measure_capmem_i_ref(false),
+    m_mux_1(AnalogReadoutMux1Input::Off),
+    m_mux_2(AnalogReadoutMux2Input::Off),
+    m_mux_3(AnalogReadoutMux3Input::Off),
+    m_enable_i_ref_board(true),
+    m_enable_measure_i_ref(false),
     m_enable_dac_to_readout_0(false),
     m_enable_dac_to_readout_1(false),
     m_enable_led(),
@@ -25,34 +27,54 @@ ShiftRegister::ShiftRegister() :
 	m_enable_vdd.fill(true);
 }
 
-bool ShiftRegister::get_enable_capmem_i_ref() const
+bool ShiftRegister::get_enable_i_ref_board() const
 {
-	return m_enable_capmem_i_ref;
+	return m_enable_i_ref_board;
 }
 
-void ShiftRegister::set_enable_capmem_i_ref(bool const value)
+void ShiftRegister::set_enable_i_ref_board(bool const value)
 {
-	m_enable_capmem_i_ref = value;
+	m_enable_i_ref_board = value;
 }
 
-bool ShiftRegister::get_enable_measure_capmem_i_ref() const
+bool ShiftRegister::get_enable_measure_i_ref() const
 {
-	return m_enable_measure_capmem_i_ref;
+	return m_enable_measure_i_ref;
 }
 
-void ShiftRegister::set_enable_measure_capmem_i_ref(bool const value)
+void ShiftRegister::set_enable_measure_i_ref(bool const value)
 {
-	m_enable_measure_capmem_i_ref = value;
+	m_enable_measure_i_ref = value;
 }
 
-halco::hicann_dls::vx::ADCSourceOnBoard ShiftRegister::get_adc_source() const
+ShiftRegister::AnalogReadoutMux1Input ShiftRegister::get_select_analog_readout_mux_1_input() const
 {
-	return m_adc_source;
+	return m_mux_1;
 }
 
-void ShiftRegister::set_adc_source(halco::hicann_dls::vx::ADCSourceOnBoard const& value)
+void ShiftRegister::set_select_analog_readout_mux_1_input(AnalogReadoutMux1Input const value)
 {
-	m_adc_source = value;
+	m_mux_1 = value;
+}
+
+ShiftRegister::AnalogReadoutMux2Input ShiftRegister::get_select_analog_readout_mux_2_input() const
+{
+	return m_mux_2;
+}
+
+void ShiftRegister::set_select_analog_readout_mux_2_input(AnalogReadoutMux2Input const value)
+{
+	m_mux_2 = value;
+}
+
+ShiftRegister::AnalogReadoutMux3Input ShiftRegister::get_select_analog_readout_mux_3_input() const
+{
+	return m_mux_3;
+}
+
+void ShiftRegister::set_select_analog_readout_mux_3_input(AnalogReadoutMux3Input const value)
+{
+	m_mux_3 = value;
 }
 
 bool ShiftRegister::get_enable_dac_to_readout_0() const
@@ -117,9 +139,9 @@ void ShiftRegister::set_enable_vdd(halco::hicann_dls::vx::VDDOnBoard const& coor
 
 bool ShiftRegister::operator==(ShiftRegister const& other) const
 {
-	return m_adc_source == other.m_adc_source &&
-	       m_enable_capmem_i_ref == other.m_enable_capmem_i_ref &&
-	       m_enable_measure_capmem_i_ref == other.m_enable_measure_capmem_i_ref &&
+	return m_mux_1 == other.m_mux_1 && m_mux_2 == other.m_mux_2 && m_mux_3 == other.m_mux_3 &&
+	       m_enable_i_ref_board == other.m_enable_i_ref_board &&
+	       m_enable_measure_i_ref == other.m_enable_measure_i_ref &&
 	       m_enable_dac_to_readout_0 == other.m_enable_dac_to_readout_0 &&
 	       m_enable_dac_to_readout_1 == other.m_enable_dac_to_readout_1 &&
 	       m_enable_led == other.m_enable_led &&
@@ -149,11 +171,11 @@ struct ShiftRegisterBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t switch_0            :  2;
-			uint32_t switch_1            :  2;
-			uint32_t switch_2            :  2;
-			uint32_t enable_capmem_i_ref   :  1;
-			uint32_t enable_measure_capmem_i_ref :  1;
+			uint32_t mux_1            :  2;
+			uint32_t mux_2            :  2;
+			uint32_t mux_3            :  2;
+			uint32_t enable_i_ref_board   :  1;
+			uint32_t enable_measure_i_ref :  1;
 			uint32_t enable_dac_to_readout_0    :  1;
 			uint32_t enable_dac_to_readout_1    :  1;
 			uint32_t disable_led_1              :  1;
@@ -186,26 +208,11 @@ struct ShiftRegisterBitfield
 std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> ShiftRegister::encode() const
 {
 	ShiftRegisterBitfield bitfield;
-	switch (m_adc_source / 3) {
-		case 0: { // source is on switch 0
-			bitfield.u.m.switch_0 = m_adc_source % 3;
-			break;
-		}
-		case 1: { // source is on switch 1
-			bitfield.u.m.switch_0 = m_adc_source % 3;
-			break;
-		}
-		case 2: { // source is on switch 2
-			bitfield.u.m.switch_0 = m_adc_source % 3;
-			break;
-		}
-		case 3: { // m_adc_source == ADCSourceOnBoard::None
-			break;
-		}
-	}
-
-	bitfield.u.m.enable_capmem_i_ref = m_enable_capmem_i_ref;
-	bitfield.u.m.enable_measure_capmem_i_ref = m_enable_measure_capmem_i_ref;
+	bitfield.u.m.mux_1 = static_cast<uint32_t>(m_mux_1);
+	bitfield.u.m.mux_2 = static_cast<uint32_t>(m_mux_2);
+	bitfield.u.m.mux_3 = static_cast<uint32_t>(m_mux_3);
+	bitfield.u.m.enable_i_ref_board = m_enable_i_ref_board;
+	bitfield.u.m.enable_measure_i_ref = m_enable_measure_i_ref;
 	bitfield.u.m.enable_dac_to_readout_0 = m_enable_dac_to_readout_0;
 	bitfield.u.m.enable_dac_to_readout_1 = m_enable_dac_to_readout_1;
 	bitfield.u.m.disable_led_1 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED1];
@@ -237,9 +244,11 @@ void ShiftRegister::decode(
 template <typename Archive>
 void ShiftRegister::cerealize(Archive& ar)
 {
-	ar(CEREAL_NVP(m_adc_source));
-	ar(CEREAL_NVP(m_enable_capmem_i_ref));
-	ar(CEREAL_NVP(m_enable_measure_capmem_i_ref));
+	ar(CEREAL_NVP(m_mux_1));
+	ar(CEREAL_NVP(m_mux_2));
+	ar(CEREAL_NVP(m_mux_3));
+	ar(CEREAL_NVP(m_enable_i_ref_board));
+	ar(CEREAL_NVP(m_enable_measure_i_ref));
 	ar(CEREAL_NVP(m_enable_dac_to_readout_0));
 	ar(CEREAL_NVP(m_enable_dac_to_readout_1));
 	ar(CEREAL_NVP(m_enable_led));

@@ -17,15 +17,15 @@ TEST(ShiftRegister, General)
 
 	// test getter/setter
 	{
-		bool value = reg.get_enable_capmem_i_ref();
-		reg.set_enable_capmem_i_ref(!value);
-		EXPECT_EQ(reg.get_enable_capmem_i_ref(), !value);
+		bool value = reg.get_enable_i_ref_board();
+		reg.set_enable_i_ref_board(!value);
+		EXPECT_EQ(reg.get_enable_i_ref_board(), !value);
 	}
 
 	{
-		bool value = reg.get_enable_measure_capmem_i_ref();
-		reg.set_enable_measure_capmem_i_ref(!value);
-		EXPECT_EQ(reg.get_enable_measure_capmem_i_ref(), !value);
+		bool value = reg.get_enable_measure_i_ref();
+		reg.set_enable_measure_i_ref(!value);
+		EXPECT_EQ(reg.get_enable_measure_i_ref(), !value);
 	}
 
 	{
@@ -53,9 +53,21 @@ TEST(ShiftRegister, General)
 	}
 
 	{
-		auto value = draw_ranged_non_default_value<ADCSourceOnBoard>(reg.get_adc_source());
-		reg.set_adc_source(value);
-		EXPECT_EQ(reg.get_adc_source(), value);
+		auto value = ShiftRegister::AnalogReadoutMux1Input::ReadoutChain0;
+		reg.set_select_analog_readout_mux_1_input(value);
+		EXPECT_EQ(reg.get_select_analog_readout_mux_1_input(), value);
+	}
+
+	{
+		auto value = ShiftRegister::AnalogReadoutMux2Input::VReset;
+		reg.set_select_analog_readout_mux_2_input(value);
+		EXPECT_EQ(reg.get_select_analog_readout_mux_2_input(), value);
+	}
+
+	{
+		auto value = ShiftRegister::AnalogReadoutMux3Input::MuxRfu2;
+		reg.set_select_analog_readout_mux_3_input(value);
+		EXPECT_EQ(reg.get_select_analog_readout_mux_3_input(), value);
 	}
 
 	for (auto led : iter_all<LEDOnBoard>()) {
@@ -85,7 +97,7 @@ TEST(ShiftRegister, EncodeDecode)
 {
 	ShiftRegister config;
 
-	config.set_enable_capmem_i_ref(true);
+	config.set_enable_i_ref_board(true);
 	config.set_enable_dac_to_readout_0(true);
 	config.set_enable_adc_power_down(true);
 	config.set_enable_led(LEDOnBoard::LED1, true);
@@ -119,15 +131,18 @@ TEST(ShiftRegister, EncodeDecode)
 TEST(ShiftRegister, CerealizeCoverage)
 {
 	ShiftRegister obj1, obj2;
-	obj1.set_enable_capmem_i_ref(!obj1.get_enable_capmem_i_ref());
-	obj1.set_enable_measure_capmem_i_ref(!obj1.get_enable_measure_capmem_i_ref());
+	obj1.set_enable_i_ref_board(!obj1.get_enable_i_ref_board());
+	obj1.set_enable_measure_i_ref(!obj1.get_enable_measure_i_ref());
 	obj1.set_enable_dac_to_readout_0(!obj1.get_enable_dac_to_readout_0());
 	obj1.set_enable_dac_to_readout_1(!obj1.get_enable_dac_to_readout_1());
 	obj1.set_enable_adc_power_down(!obj1.get_enable_adc_power_down());
 	obj1.set_enable_adc_reset(!obj1.get_enable_adc_reset());
 	obj1.set_enable_led(LEDOnBoard::LED1, !obj1.get_enable_led(LEDOnBoard::LED1));
 	obj1.set_enable_vdd(VDDOnBoard::VDD25Digital, !obj1.get_enable_vdd(VDDOnBoard::VDD25Digital));
-	obj1.set_adc_source(draw_ranged_non_default_value<ADCSourceOnBoard>(obj1.get_adc_source()));
+	obj1.set_select_analog_readout_mux_1_input(
+	    ShiftRegister::AnalogReadoutMux1Input::ReadoutChain0);
+	obj1.set_select_analog_readout_mux_2_input(ShiftRegister::AnalogReadoutMux2Input::VReset);
+	obj1.set_select_analog_readout_mux_3_input(ShiftRegister::AnalogReadoutMux3Input::MuxRfu2);
 
 	std::ostringstream ostream;
 	{
