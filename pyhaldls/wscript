@@ -56,7 +56,7 @@ def build(bld):
 
     bld(
         target='pyhaldls_vx',
-        source='../include/haldls/vx/container.h',
+        source='../include/haldls/vx/haldls.h',
         genpybind_tags='haldls_vx',
         features='genpybind cxx cxxshlib pyext post_task',
         use=['haldls_vx', 'PYBIND11HALDLS'],

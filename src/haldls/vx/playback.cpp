@@ -1,8 +1,6 @@
-#include "fisch/vx/playback_program.h"
-#include "fisch/vx/spi.h"
-
 #include "haldls/vx/playback.h"
 
+#include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
 

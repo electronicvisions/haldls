@@ -6,16 +6,10 @@
 #include <string>
 #include <vector>
 
-#include "haldls/vx/jtag.h"
-#include "haldls/vx/reset.h"
-#include "haldls/vx/spi.h"
-#include "haldls/vx/timer.h"
-
+#include "haldls/vx/container.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/visibility.h"
-
-#include "haldls/vx/ppu.h"
 
 namespace fisch::vx {
 	class PlaybackProgram;
