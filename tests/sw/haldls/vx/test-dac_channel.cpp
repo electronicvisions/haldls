@@ -15,24 +15,7 @@ typedef std::vector<fisch::vx::SPIDACDataRegister> words_type;
 
 TEST(DACChannel, General)
 {
-	DACChannel config;
-
-	// test getter/setter
-	{
-		auto value = draw_ranged_non_default_value<DACChannel::Value>(0);
-		config.set_value(value);
-		EXPECT_EQ(config.get_value(), value);
-	}
-
-	DACChannel config_eq = config;
-	DACChannel config_default;
-
-	// test comparison
-	ASSERT_EQ(config, config_eq);
-	ASSERT_FALSE(config == config_default);
-
-	ASSERT_NE(config, config_default);
-	ASSERT_FALSE(config != config_eq);
+	test_generic_functionality_single_value<DACChannel>();
 }
 
 TEST(DACChannel, EncodeDecode)

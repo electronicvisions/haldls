@@ -250,9 +250,6 @@ void ShiftRegister::cerealize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ShiftRegister)
 
-
-DACChannel::DACChannel() : m_value() {}
-
 DACChannel::Value DACChannel::get_value() const
 {
 	return m_value;

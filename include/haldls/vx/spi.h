@@ -222,7 +222,7 @@ public:
 		{}
 	};
 
-	DACChannel() SYMBOL_VISIBLE;
+	DACChannel(Value const& value = Value()) : m_value(value) {}
 
 	GENPYBIND(setter_for(value))
 	void set_value(Value value) SYMBOL_VISIBLE;
