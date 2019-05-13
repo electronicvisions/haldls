@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
 		LOG4CXX_WARN(logger, "PPU program changed.");
 	}
 
-	uint32_t exit_code = ppu_memory_return_ticket.get().get();
+	uint32_t exit_code = ppu_memory_return_ticket.get().get_value();
 	if (exit_code == PPUMemoryWord::Value(0)) {
 		LOG4CXX_INFO(logger, "PPU program exited with exit code 0.");
 	} else {

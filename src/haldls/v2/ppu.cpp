@@ -1,10 +1,12 @@
 #include <cctype>
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <utility>
 #include <netinet/in.h>
 
 #include "haldls/v2/ppu.h"
+#include "hate/math.h"
 
 namespace haldls {
 namespace v2 {
@@ -13,19 +15,19 @@ PPUMemoryWord::PPUMemoryWord() : PPUMemoryWord(PPUMemoryWord::Value(0)) {}
 
 PPUMemoryWord::PPUMemoryWord(PPUMemoryWord::Value const& value) : m_value(value) {}
 
-PPUMemoryWord::Value PPUMemoryWord::get() const
+PPUMemoryWord::Value PPUMemoryWord::get_value() const
 {
 	return m_value;
 }
 
-void PPUMemoryWord::set(PPUMemoryWord::Value const& value)
+void PPUMemoryWord::set_value(PPUMemoryWord::Value const& value)
 {
 	m_value = value;
 }
 
 bool PPUMemoryWord::operator==(PPUMemoryWord const& other) const
 {
-	return m_value == other.get();
+	return m_value == other.get_value();
 }
 
 bool PPUMemoryWord::operator!=(PPUMemoryWord const& other) const
@@ -35,9 +37,11 @@ bool PPUMemoryWord::operator!=(PPUMemoryWord const& other) const
 
 std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
 {
-	uint32_t w = static_cast<uint32_t>(pmw.get());
+	using namespace hate::math;
+	uint32_t w = static_cast<uint32_t>(pmw.get_value());
 	std::stringstream out;
-	out << std::showbase << std::internal << std::setfill('0') << std::hex << std::setw(8) << w;
+	out << std::showbase << std::internal << std::setfill('0') << std::hex
+	    << std::setw(round_up_integer_division(num_bits(PPUMemoryWord::Value::max), 4)) << w;
 	os << out.str();
 	return os;
 }
@@ -49,12 +53,12 @@ std::array<hardware_address_type, PPUMemoryWord::config_size_in_words> PPUMemory
 
 std::array<hardware_word_type, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
 {
-	return {{static_cast<hardware_word_type>(get())}};
+	return {{static_cast<hardware_word_type>(get_value())}};
 }
 
 void PPUMemoryWord::decode(std::array<hardware_word_type, PPUMemoryWord::config_size_in_words> const& data)
 {
-	set(Value(data[0]));
+	set_value(Value(data[0]));
 }
 
 template <class Archive>
@@ -165,7 +169,7 @@ std::string PPUMemoryBlock::to_string() const
 	for (auto x : m_words) {
 		// access single characters in word
 		// endianess-flip due to different endianess on PPU
-		uint32_t const w = ntohl(static_cast<uint32_t>((x.get())));
+		uint32_t const w = ntohl(static_cast<uint32_t>((x.get_value())));
 		char const* c = reinterpret_cast<char const*>(&w);
 		for (size_t i = 0; i < sizeof(uint32_t); ++i) {
 			// discard non-printable characters
@@ -202,7 +206,7 @@ void PPUMemory::set_words(words_type const& words)
 
 PPUMemoryWord::Value PPUMemory::get_word(halco::hicann_dls::v2::PPUMemoryWordOnDLS const& pos) const
 {
-	return m_words.at(pos.value()).get();
+	return m_words.at(pos.value()).get_value();
 }
 
 void PPUMemory::set_word(
@@ -279,14 +283,14 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 		std::stringstream halfwords;
 		halfwords << std::hex << std::internal << std::setfill('0');
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			uint32_t word = static_cast<uint32_t>(words[i + j].get());
+			uint32_t word = static_cast<uint32_t>(words[i + j].get_value());
 			halfwords << std::setw(4) << (word >> 16) << " " << std::setw(4) << (word & 0xffff)
 			          << " ";
 		}
 		// print as ascii
 		std::stringstream ascii;
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get()));
+			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get_value()));
 			char* chars = reinterpret_cast<char*>(&word);
 			for (int k = 0; k < 4; k++) {
 				ascii << (isprint(chars[k]) ? chars[k] : '.');
@@ -316,14 +320,14 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 		std::stringstream halfwords;
 		halfwords << std::hex << std::internal << std::setfill('0');
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			uint32_t word = static_cast<uint32_t>(words[i + j].get());
+			uint32_t word = static_cast<uint32_t>(words[i + j].get_value());
 			halfwords << std::setw(4) << (word >> 16) << " " << std::setw(4) << (word & 0xffff)
 			          << " ";
 		}
 		// print as ascii
 		std::stringstream ascii;
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get()));
+			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get_value()));
 			char* chars = reinterpret_cast<char*>(&word);
 			for (int k = 0; k < 4; k++) {
 				ascii << (isprint(chars[k]) ? chars[k] : '.');

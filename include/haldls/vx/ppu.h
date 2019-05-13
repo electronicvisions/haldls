@@ -34,8 +34,10 @@ public:
 	PPUMemoryWord() SYMBOL_VISIBLE;
 	explicit PPUMemoryWord(Value const& value) SYMBOL_VISIBLE;
 
-	Value get() const SYMBOL_VISIBLE;
-	void set(Value const& value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(value))
+	void set_value(Value const& value) SYMBOL_VISIBLE;
 
 	bool operator==(PPUMemoryWord const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUMemoryWord const& other) const SYMBOL_VISIBLE;

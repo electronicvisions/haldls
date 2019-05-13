@@ -14,37 +14,15 @@ typedef std::vector<hardware_word_type> words_type;
 
 TEST(PPUMemoryWord, General)
 {
-	//test range
-	EXPECT_NO_THROW(PPUMemoryWord::Value(0xffffffff));
-
-	//test getter/setter
-	PPUMemoryWord word;
-	word.set(PPUMemoryWord::Value(145));
-	ASSERT_EQ(word.get(),PPUMemoryWord::Value(145));
-
-	//test assign
-	PPUMemoryWord word_eq = word;
-	PPUMemoryWord word_ne(PPUMemoryWord::Value(139));
-
-	//test comparison
-	ASSERT_EQ(word, word_eq);
-	ASSERT_FALSE(word == word_ne);
-
-	ASSERT_NE(word, word_ne);
-	ASSERT_FALSE(word != word_eq);
-
-	// test ostream operator
-	std::stringstream out;
-	word.set(PPUMemoryWord::Value(0xdeadbeef));
-	out << word;
-	ASSERT_EQ(out.str(), "0xdeadbeef");
+	test_generic_functionality_single_value<PPUMemoryWord>();
+	test_hex_ostream_operator_single_value<PPUMemoryWord>();
 }
 
 TEST(PPUMemoryWord, EncodeDecode)
 {
 	PPUMemoryWord config;
 
-	config.set(PPUMemoryWord::Value(555));
+	config.set_value(PPUMemoryWord::Value(555));
 
 	PPUMemoryWordOnDLS coord(0x123);
 
@@ -78,7 +56,7 @@ TEST(PPUMemoryWord, EncodeDecode)
 TEST(PPUMemoryWord, CerealizeCoverage)
 {
 	PPUMemoryWord obj1,obj2;
-	obj1.set(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
+	obj1.set_value(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
 
 	std::ostringstream ostream;
 	{
@@ -193,7 +171,7 @@ TEST(PPUMemoryBlock, EncodeDecode)
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
 		ref_addresses[ii] = min.toEnum() + ii;
 		ref_data[ii] = 50 + ii;
-		memory[ii].set(PPUMemoryWord::Value(ref_data[ii]));
+		memory[ii].set_value(PPUMemoryWord::Value(ref_data[ii]));
 	}
 
 	config.set_words(memory);
@@ -314,7 +292,7 @@ TEST(PPUMemory, EncodeDecode)
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
 		ref_addresses[ii] = ii;
 		ref_data[ii] = 50 + ii;
-		memory[ii].set(PPUMemoryWord::Value(ref_data[ii]));
+		memory[ii].set_value(PPUMemoryWord::Value(ref_data[ii]));
 	}
 
 	config.set_words(memory);

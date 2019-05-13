@@ -15,37 +15,15 @@ typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
 
 TEST(PPUMemoryWord, General)
 {
-	// test range
-	EXPECT_NO_THROW(PPUMemoryWord::Value(0xffffffff));
-
-	// test getter/setter
-	PPUMemoryWord word;
-	word.set(PPUMemoryWord::Value(145));
-	ASSERT_EQ(word.get(), PPUMemoryWord::Value(145));
-
-	// test assign
-	PPUMemoryWord word_eq = word;
-	PPUMemoryWord word_ne(PPUMemoryWord::Value(139));
-
-	// test comparison
-	ASSERT_EQ(word, word_eq);
-	ASSERT_FALSE(word == word_ne);
-
-	ASSERT_NE(word, word_ne);
-	ASSERT_FALSE(word != word_eq);
-
-	// test ostream operator
-	std::stringstream out;
-	word.set(PPUMemoryWord::Value(0xdeadbeef));
-	out << word;
-	ASSERT_TRUE(out.str().find("0xdeadbeef") != std::string::npos);
+	test_generic_functionality_single_value<PPUMemoryWord>();
+	test_hex_ostream_operator_single_value<PPUMemoryWord>();
 }
 
 TEST(PPUMemoryWord, EncodeDecode)
 {
 	PPUMemoryWord config;
 
-	config.set(PPUMemoryWord::Value(555));
+	config.set_value(PPUMemoryWord::Value(555));
 
 	PPUMemoryWordOnDLS coord(Enum(0x123));
 
@@ -80,7 +58,7 @@ TEST(PPUMemoryWord, EncodeDecode)
 TEST(PPUMemoryWord, CerealizeCoverage)
 {
 	PPUMemoryWord obj1, obj2;
-	obj1.set(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
+	obj1.set_value(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
 
 	std::ostringstream ostream;
 	{
