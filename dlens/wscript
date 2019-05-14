@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+from waflib.extras.gtest import summary
+
+
+def depends(ctx):
+    ctx('haldls', 'pyhaldls')
+    ctx('haldls', 'pystadls')
+    ctx('halco', 'pyhalco')
+
+
+def options(opt):
+    pass
+
+
+def configure(cfg):
+    cfg.load('python')
+    cfg.check_python_version()
+    cfg.check_python_headers()
+    cfg.load('pytest')
+
+
+def build(bld):
+    bld(name='dlens',
+        features='py',
+        source = bld.path.ant_glob('dlens/**/*.py'),
+        relative_trick=True,
+        use = ['pyhaldls_v2','pystadls_v2', 'pyhalco_hicann_dls_v2', 'pyhalco_common'],
+        install_path = '${PREFIX}/lib',
+    )
+
+    bld(name='dlens_swtest_v2',
+        tests='tests/dlens_swtest_v2.py',
+        features='use pytest',
+        use=['dlens'],
+        install_path='${PREFIX}/bin',
+    )
+
+    bld.add_post_fun(summary)

@@ -17,6 +17,7 @@ def depends(ctx):
         ctx('haldls', 'pyhaldls')
         ctx('haldls', 'pystadls')
         ctx('haldls', 'pylola')
+        ctx('haldls', 'dlens')
 
 
 def options(opt):
@@ -27,6 +28,7 @@ def options(opt):
     opt.recurse("pyhaldls")
     opt.recurse("pystadls")
     opt.recurse("pylola")
+    opt.recurse("dlens")
 
     hopts = opt.add_option_group('HALDLS options')
     hopts.add_withoption('munge', default=True,
@@ -73,6 +75,7 @@ def configure(cfg):
         cfg.recurse("pyhaldls")
         cfg.recurse("pystadls")
         cfg.recurse("pylola")
+        cfg.recurse("dlens")
 
 
 def build(bld):
@@ -250,22 +253,7 @@ def build(bld):
         bld.recurse("pyhaldls")
         bld.recurse("pystadls")
         bld.recurse("pylola")
-
-        # we could move this to dlens/wscript
-        bld(name='dlens',
-            features='py',
-            source = bld.path.ant_glob('dlens/**/*.py'),
-            relative_trick=True,
-            use = ['pyhaldls_v2','pystadls_v2', 'pyhalco_hicann_dls_v2', 'pyhalco_common'],
-        )
-
-        bld(name='dlens_swtest_v2',
-            tests=bld.path.ant_glob('tests/sw/dlens/v2/test-*.py'),
-            features='use pytest',
-            use=['dlens'],
-            install_path='${PREFIX}/bin',
-            pythonpath=['tests'],
-        )
+        bld.recurse("dlens")
 
 
 def doc(dox):
