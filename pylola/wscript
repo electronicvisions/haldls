@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 
+from os.path import join
 from waflib.extras.gtest import summary
+from waflib.extras.symwaf2ic import get_toplevel_path
+
 
 def depends(ctx):
     ctx('haldls', 'pyhaldls')
     ctx('halco', 'pyhalco')
+    ctx('code-format')
 
 
 def options(opt):
-    pass
+    opt.load('pytest')
+    opt.load('pylint')
+    opt.load('pycodestyle')
 
 
 def configure(cfg):
@@ -18,6 +24,8 @@ def configure(cfg):
     cfg.check_python_headers()
     cfg.load('pytest')
     cfg.load('genpybind')
+    cfg.load('pylint')
+    cfg.load('pycodestyle')
 
     if cfg.env.with_pybind:
         cfg.check(
@@ -57,19 +65,21 @@ def build(bld):
     bld(
         name='pylola_test_v2',
         tests=bld.path.ant_glob('test/*_v2.py'),
-        features='use pytest',
+        features='use pytest pylint pycodestyle',
         use=['pylola_v2'],
         install_path='${PREFIX}/bin',
-        pythonpath=['test'],
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
     )
 
     bld(
         name='pylola_test_vx',
         tests=bld.path.ant_glob('test/*_vx.py'),
-        features='use pytest',
+        features='use pytest pylint pycodestyle',
         use=['pylola_vx'],
         install_path='${PREFIX}/bin',
-        pythonpath=['test'],
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
     )
 
     bld.add_post_fun(summary)

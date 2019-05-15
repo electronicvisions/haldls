@@ -27,7 +27,8 @@ class HwTestPyhaldlsVx(unittest.TestCase):
             builder.write(halco.TimerOnDLS(), haldls.Timer())
             shiftreg.set_enable_led(led, True)
             builder.write(halco.ShiftRegisterOnBoard(), shiftreg)
-            builder.wait_until(halco.TimerOnDLS(), int(fisch.fpga_clock_cycles_per_us * 1e6 / 8))
+            builder.wait_until(halco.TimerOnDLS(),
+                               int(fisch.fpga_clock_cycles_per_us * 1e6 / 8))
             shiftreg.set_enable_led(led, False)
         builder.write(halco.ShiftRegisterOnBoard(), shiftreg)
         builder.halt()
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     args, unknownargs = parser.parse_known_args()
 
     fpga_ip = args.fpga_ip
-    if (len(unknownargs)):
+    if len(unknownargs):
         unittest.main(argv=unknownargs)
     else:
         unittest.main(argv=[""])

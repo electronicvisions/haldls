@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import os
+from os.path import join
 from waflib.extras.gtest import summary
-
+from waflib.extras.symwaf2ic import get_toplevel_path
 
 def depends(ctx):
     ctx('pyublas')
@@ -9,9 +10,12 @@ def depends(ctx):
     ctx('haldls')
     ctx('halco', 'pyhalco')
     ctx('logger', 'pylogging')
+    ctx('code-format')
 
 def options(opt):
-    pass
+    opt.load('pytest')
+    opt.load('pylint')
+    opt.load('pycodestyle')
 
 def configure(cfg):
     cfg.load('compiler_cxx')
@@ -20,6 +24,8 @@ def configure(cfg):
     cfg.check_python_headers()
     cfg.load('pytest')
     cfg.load('genpybind')
+    cfg.load('pylint')
+    cfg.load('pycodestyle')
 
     if cfg.env.with_pybind:
         cfg.check(
@@ -50,19 +56,21 @@ def build(bld):
     bld(
         name='pystadls_test_v2',
         tests='test/pystadls_test_v2.py',
-        features='use pytest',
+        features='use pytest pylint pycodestyle',
         use=['pyhalco_hicann_dls_v2', 'pystadls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
-        pythonpath=['test'],
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
     )
 
     bld(
         name='pystadls_hwtest_v2',
         tests='test/pystadls_hwtest_v2.py',
-        features='use pytest',
+        features='use pytest pylint pycodestyle',
         use=['pyhalco_hicann_dls_v2', 'pystadls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
-        pythonpath=['test'],
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
         skip_run=not bld.env.DLSv2_HARDWARE_AVAILABLE,
     )
 

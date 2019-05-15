@@ -4,7 +4,6 @@ import unittest
 import pyhalco_common as Co
 import pyhalco_hicann_dls_v2 as C
 import pyhaldls_v2 as Ct
-import pystadls_v2 as IO
 
 import pylogging as logger
 
@@ -27,12 +26,12 @@ class TestPyhaldlsIOV2(unittest.TestCase):
 
         # No data available yet
         with self.assertRaises(RuntimeError):
-            capmem_copy = capmem_ticket.get()
+            capmem_ticket.get()
         with self.assertRaises(RuntimeError):
-            capmemcell_copy = capmemcell_ticket.get()
+            capmemcell_ticket.get()
 
-        capmem_ticket_ = builder.read(C.CapMemOnDLS())
-        program_ = builder.done()
+        builder.read(C.CapMemOnDLS())
+        builder.done()
 
 
 if __name__ == "__main__":
