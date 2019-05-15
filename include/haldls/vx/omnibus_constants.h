@@ -7,6 +7,8 @@ namespace haldls::vx {
 
 constexpr uint32_t top_ppu_base_address{0x0280'0000};
 constexpr uint32_t bottom_ppu_base_address{0x0380'0000};
+constexpr uint32_t ppu_control_register_address_mask{0x0020'0000};
+constexpr uint32_t ppu_status_register_address_mask{0x0020'0001};
 
 constexpr uint32_t phy_on_chip_base_address{0x0004'0000};
 constexpr uint32_t pll_base_address{0x0008'0000};

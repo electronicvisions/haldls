@@ -63,12 +63,117 @@ private:
 	Value m_value;
 };
 
+class GENPYBIND(visible) PPUControlRegister
+{
+public:
+	typedef halco::hicann_dls::vx::PPUControlRegisterOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	PPUControlRegister() SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(cache_controller_enable))
+	bool get_cache_controller_enable() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(cache_controller_enable))
+	void set_cache_controller_enable(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(inhibit_reset))
+	bool get_inhibit_reset() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(inhibit_reset))
+	void set_inhibit_reset(bool const value) SYMBOL_VISIBLE;
+
+	/* - force_clock_on: Forces the clock to be on, even if the ppu is sleeping
+	 * - force_clock_off: Forces the clock to be off, which is weaker than
+	 *   forcing the clock on
+	 * None of these is needed in normal operation. Setting the inhibit_reset
+	 * bit starts the execution. If the program finishes, the clock is stopped again. */
+	GENPYBIND(getter_for(force_clock_on))
+	bool get_force_clock_on() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(force_clock_on))
+	void set_force_clock_on(bool const value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(force_clock_off))
+	bool get_force_clock_off() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(force_clock_off))
+	void set_force_clock_off(bool const value) SYMBOL_VISIBLE;
+
+	bool operator==(PPUControlRegister const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUControlRegister const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	bool m_cache_controller_enable;
+	bool m_inhibit_reset;
+	bool m_force_clock_on;
+	bool m_force_clock_off;
+};
+
+class GENPYBIND(visible) PPUStatusRegister
+{
+public:
+	typedef halco::hicann_dls::vx::PPUStatusRegisterOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	PPUStatusRegister() SYMBOL_VISIBLE;
+
+	// Read only property
+	GENPYBIND(getter_for(sleep))
+	bool get_sleep() const SYMBOL_VISIBLE;
+
+	bool operator==(PPUStatusRegister const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUStatusRegister const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	bool m_sleep;
+};
+
 namespace detail {
 
 template <>
 struct BackendContainerTrait<PPUMemoryWord>
     : public BackendContainerBase<
           PPUMemoryWord,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
+
+template <>
+struct BackendContainerTrait<PPUStatusRegister>
+    : public BackendContainerBase<
+          PPUStatusRegister,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
+
+template <>
+struct BackendContainerTrait<PPUControlRegister>
+    : public BackendContainerBase<
+          PPUControlRegister,
           fisch::vx::OmnibusChipOverJTAG,
           fisch::vx::OmnibusChip>
 {};

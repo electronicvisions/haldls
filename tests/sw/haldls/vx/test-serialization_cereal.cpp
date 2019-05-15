@@ -14,6 +14,8 @@ class CommonSerializationTests : public ::testing::Test
 
 typedef ::testing::Types<
     PPUMemoryWord,
+    PPUControlRegister,
+    PPUStatusRegister,
     ResetJTAGTap,
     Timer,
     ResetChip,
