@@ -99,6 +99,13 @@ public:
 		constexpr explicit InOrder(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
+	/** First non-consecutive payload. */
+	struct GENPYBIND(inline_base("*")) ErrorWord
+	    : public halco::common::detail::RantWrapper<ErrorWord, uint_fast32_t, 0xffffffff, 0>
+	{
+		constexpr explicit ErrorWord(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+	};
+
 	PerfTestStatus() SYMBOL_VISIBLE;
 
 	GENPYBIND(setter_for(sent))
@@ -116,13 +123,18 @@ public:
 	GENPYBIND(getter_for(in_order))
 	InOrder get_in_order() const SYMBOL_VISIBLE;
 
+	GENPYBIND(setter_for(error_word))
+	void set_error_word(ErrorWord value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(error_word))
+	ErrorWord get_error_word() const SYMBOL_VISIBLE;
+
 	bool operator==(PerfTestStatus const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PerfTestStatus const& other) const SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PerfTestStatus const& config) SYMBOL_VISIBLE;
 
-	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 3;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 4;
 	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::OmnibusFPGA, config_size_in_words> encode() const SYMBOL_VISIBLE
@@ -138,6 +150,7 @@ private:
 	Sent m_sent;
 	Received m_received;
 	InOrder m_in_order;
+	ErrorWord m_error_word;
 };
 
 namespace detail {
@@ -157,5 +170,6 @@ namespace std {
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::PerfTestStatus::Sent)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::PerfTestStatus::Received)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::PerfTestStatus::InOrder)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::PerfTestStatus::ErrorWord)
 
 } // namespace std

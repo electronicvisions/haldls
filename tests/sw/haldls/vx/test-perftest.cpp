@@ -100,6 +100,12 @@ TEST(PerfTestStatus, General)
 		EXPECT_EQ(config.get_in_order(), value);
 	}
 
+	{
+		auto value = draw_ranged_non_default_value<PerfTestStatus::ErrorWord>(config.get_error_word());
+		config.set_error_word(value);
+		EXPECT_EQ(config.get_error_word(), value);
+	}
+
 	PerfTestStatus config_eq = config;
 	PerfTestStatus config_default;
 
@@ -118,17 +124,20 @@ TEST(PerfTestStatus, EncodeDecode)
 	config.set_sent(PerfTestStatus::Sent(0x123));
 	config.set_received(PerfTestStatus::Received(0x456));
 	config.set_in_order(PerfTestStatus::InOrder(0x789));
+	config.set_error_word(PerfTestStatus::ErrorWord(0x010));
 
 	PerfTestStatusOnFPGA coord;
 
 	OmnibusFPGAAddress base_address(0x0800'0000);
 	std::array<OmnibusFPGAAddress, PerfTestStatus::config_size_in_words> ref_addresses = {
 	    OmnibusFPGAAddress(base_address + 1), OmnibusFPGAAddress(base_address + 2),
-	    OmnibusFPGAAddress(base_address + 3)};
+	    OmnibusFPGAAddress(base_address + 3),
+	    OmnibusFPGAAddress(base_address + 4)};
 	std::array<fisch::vx::OmnibusFPGA, PerfTestStatus::config_size_in_words> ref_data = {
 	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x123)),
 	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x456)),
-	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x789))};
+	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x789)),
+	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x010))};
 
 	{
 		addresses_type write_addresses;
@@ -147,6 +156,7 @@ TEST(PerfTestStatus, CerealizeCoverage)
 	obj1.set_sent(draw_ranged_non_default_value<PerfTestStatus::Sent>(obj1.get_sent()));
 	obj1.set_received(draw_ranged_non_default_value<PerfTestStatus::Received>(obj1.get_received()));
 	obj1.set_in_order(draw_ranged_non_default_value<PerfTestStatus::InOrder>(obj1.get_in_order()));
+	obj1.set_error_word(draw_ranged_non_default_value<PerfTestStatus::ErrorWord>(obj1.get_error_word()));
 
 	std::ostringstream ostream;
 	{

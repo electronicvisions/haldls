@@ -55,7 +55,7 @@ void PerfTest::cerealize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PerfTest)
 
 
-PerfTestStatus::PerfTestStatus() : m_sent(), m_received(), m_in_order() {}
+PerfTestStatus::PerfTestStatus() : m_sent(), m_received(), m_in_order(), m_error_word() {}
 
 void PerfTestStatus::set_sent(Sent const value)
 {
@@ -87,10 +87,22 @@ PerfTestStatus::InOrder PerfTestStatus::get_in_order() const
 	return m_in_order;
 }
 
+void PerfTestStatus::set_error_word(ErrorWord const value)
+{
+	m_error_word = value;
+}
+
+PerfTestStatus::ErrorWord PerfTestStatus::get_error_word() const
+{
+	return m_error_word;
+}
+
 bool PerfTestStatus::operator==(PerfTestStatus const& other) const
 {
-	return (m_sent == other.m_sent) && (m_received == other.m_received) &&
-	       (m_in_order == other.m_in_order);
+	return (m_sent == other.m_sent)
+	    && (m_received == other.m_received)
+	    && (m_in_order == other.m_in_order)
+	    && (m_error_word == other.m_error_word);
 }
 
 bool PerfTestStatus::operator!=(PerfTestStatus const& other) const
@@ -106,7 +118,8 @@ PerfTestStatus::addresses(coordinate_type const& /*coord*/) const
 	auto base = perftest_omnibus_mask;
 	return {halco::hicann_dls::vx::OmnibusFPGAAddress(base + 1),
 	        halco::hicann_dls::vx::OmnibusFPGAAddress(base + 2),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(base + 3)};
+	        halco::hicann_dls::vx::OmnibusFPGAAddress(base + 3),
+	        halco::hicann_dls::vx::OmnibusFPGAAddress(base + 4)};
 }
 
 std::array<fisch::vx::OmnibusFPGA, PerfTestStatus::config_size_in_words> PerfTestStatus::encode()
@@ -114,7 +127,8 @@ std::array<fisch::vx::OmnibusFPGA, PerfTestStatus::config_size_in_words> PerfTes
 {
 	return {fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(m_sent)),
 	        fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(m_received)),
-	        fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(m_in_order))};
+	        fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(m_in_order)),
+	        fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(m_error_word))};
 }
 
 void PerfTestStatus::decode(
@@ -123,6 +137,7 @@ void PerfTestStatus::decode(
 	m_sent = Sent(data[0].get());
 	m_received = Received(data[1].get());
 	m_in_order = InOrder(data[2].get());
+	m_error_word = ErrorWord(data[3].get());
 }
 
 template <class Archive>
@@ -131,6 +146,7 @@ void PerfTestStatus::cerealize(Archive& ar)
 	ar(CEREAL_NVP(m_sent));
 	ar(CEREAL_NVP(m_received));
 	ar(CEREAL_NVP(m_in_order));
+	ar(CEREAL_NVP(m_error_word));
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PerfTestStatus)
