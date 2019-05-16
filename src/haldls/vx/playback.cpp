@@ -163,7 +163,7 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 			    visit_preorder(
 			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 		    }
-		    auto ticket_impl = builder.m_builder_impl->read<backend_container_type>(read_addresses);
+		    auto ticket_impl = builder.m_builder_impl->read(read_addresses);
 		    return PlaybackProgram::ContainerTicket<T>(coord, ticket_impl);
 	    }...};
 
