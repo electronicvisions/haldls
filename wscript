@@ -241,9 +241,9 @@ def build(bld):
         )
 
     bld(
-        target = 'run_ppu_program',
+        target = 'run_ppu_program_v2',
         features = 'cxx cxxprogram',
-        source = 'tools/stadls/run_ppu_program.cpp',
+        source = 'tools/stadls/v2/run_ppu_program.cpp',
         use = ['haldls_v2', 'stadls_v2', 'logger_obj'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
