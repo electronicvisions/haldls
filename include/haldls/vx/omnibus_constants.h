@@ -22,8 +22,7 @@ constexpr std::array<uint32_t, 4> capmem_sram_base_addresses = {
     capmem_se_sram_base_address};
 
 
-constexpr uint32_t executor_omnibus_mask{0x80000000};
-constexpr uint32_t ut_omnibus_mask{0x04000000 | executor_omnibus_mask};
-constexpr uint32_t phy_omnibus_mask{0x02000000 | ut_omnibus_mask};
+constexpr uint32_t ut_omnibus_mask{0x0400'0000};
+constexpr uint32_t phy_omnibus_mask{0x0200'0000 | ut_omnibus_mask};
 
 } // namespace haldls::vx

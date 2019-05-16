@@ -333,7 +333,7 @@ TEST(CommonPhyConfigFPGA, EncodeDecode)
 	CommonPhyConfigFPGAOnDLS coord;
 
 	std::array<OmnibusFPGAAddress, CommonPhyConfigFPGA::config_size_in_words> ref_addresses = {
-	    OmnibusFPGAAddress(0x84000000)};
+	    OmnibusFPGAAddress(0x0400'0000)};
 	std::array<fisch::vx::OmnibusFPGA, CommonPhyConfigFPGA::config_size_in_words> ref_data = {
 	    fisch::vx::OmnibusData(0xff)};
 
