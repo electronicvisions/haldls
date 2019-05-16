@@ -63,6 +63,103 @@ private:
 	Value m_value;
 };
 
+class GENPYBIND(visible) PPUMemoryBlock
+{
+public:
+	typedef halco::hicann_dls::vx::PPUMemoryBlockOnDLS coordinate_type;
+	typedef std::false_type has_local_data;
+
+	typedef std::vector<PPUMemoryWord> words_type;
+
+	typedef halco::hicann_dls::vx::PPUMemoryBlockSize size_type;
+
+	PPUMemoryBlock() SYMBOL_VISIBLE;
+	explicit PPUMemoryBlock(size_type const& size) SYMBOL_VISIBLE;
+
+	PPUMemoryWord& at(size_t index) SYMBOL_VISIBLE;
+	PPUMemoryWord const& at(size_t index) const SYMBOL_VISIBLE;
+	PPUMemoryWord& operator[](size_t index) SYMBOL_VISIBLE;
+	PPUMemoryWord const& operator[](size_t index) const SYMBOL_VISIBLE;
+
+	PPUMemoryBlock get_subblock(size_t begin, size_type length) const SYMBOL_VISIBLE;
+	void set_subblock(size_t begin, PPUMemoryBlock const& subblock) SYMBOL_VISIBLE;
+
+	size_type size() const SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(words))
+	words_type const& get_words() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(words))
+	void set_words(words_type const& words) SYMBOL_VISIBLE;
+
+	bool operator==(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb) SYMBOL_VISIBLE;
+	/**
+	 * Print words as string discarding non-printable characters.
+	 * @return Printable characters as string in order according to PPU endianess
+	 */
+	std::string to_string() const SYMBOL_VISIBLE;
+
+	friend detail::VisitPreorderImpl<PPUMemoryBlock>;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	words_type m_words;
+};
+
+class GENPYBIND(visible) PPUMemory
+{
+public:
+	typedef halco::hicann_dls::vx::PPUMemoryOnDLS coordinate_type;
+	typedef std::false_type has_local_data;
+
+	typedef std::array<PPUMemoryWord, halco::hicann_dls::vx::PPUMemoryWordOnPPU::size> words_type;
+
+	PPUMemory() SYMBOL_VISIBLE;
+	explicit PPUMemory(words_type const& words) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(words))
+	words_type get_words() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(words))
+	void set_words(words_type const& words) SYMBOL_VISIBLE;
+
+	PPUMemoryWord::Value get_word(halco::hicann_dls::vx::PPUMemoryWordOnPPU const& pos) const
+	    SYMBOL_VISIBLE;
+	void set_word(
+	    halco::hicann_dls::vx::PPUMemoryWordOnPPU const& pos,
+	    PPUMemoryWord::Value const& word) SYMBOL_VISIBLE;
+
+	PPUMemoryBlock get_block(halco::hicann_dls::vx::PPUMemoryBlockOnPPU const& block_coord) const
+	    SYMBOL_VISIBLE;
+	void set_block(
+	    halco::hicann_dls::vx::PPUMemoryBlockOnPPU const& block_coord,
+	    PPUMemoryBlock const& block) SYMBOL_VISIBLE;
+
+	/**
+	 * Load a (stripped) PPU program from a file.
+	 * The program is located at the beginning of the memory with words above the program's size
+	 * set to zero.
+	 * @param filename Name of file to load
+	 */
+	void load_from_file(std::string const& filename) SYMBOL_VISIBLE;
+
+	bool operator==(PPUMemory const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PPUMemory const& other) const SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, PPUMemory const& pm) SYMBOL_VISIBLE;
+
+	friend detail::VisitPreorderImpl<PPUMemory>;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+
+	words_type m_words;
+};
+
 class GENPYBIND(visible) PPUControlRegister
 {
 public:
@@ -161,6 +258,67 @@ struct BackendContainerTrait<PPUMemoryWord>
           fisch::vx::OmnibusChipOverJTAG,
           fisch::vx::OmnibusChip>
 {};
+
+template <>
+struct BackendContainerTrait<PPUMemoryBlock>
+    : public BackendContainerBase<
+          PPUMemoryBlock,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
+
+template <>
+struct BackendContainerTrait<PPUMemory>
+    : public BackendContainerBase<PPUMemory, fisch::vx::OmnibusChipOverJTAG, fisch::vx::OmnibusChip>
+{};
+
+template <>
+struct VisitPreorderImpl<PPUMemoryBlock>
+{
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config, PPUMemoryBlock::coordinate_type const& coord, VisitorT&& visitor)
+	{
+		using namespace halco::hicann_dls::vx;
+		auto const ppu_coord = coord.toPPUOnDLS();
+
+		if (coord.toPPUMemoryBlockOnPPU().toPPUMemoryBlockSize() != config.size()) {
+			std::stringstream ss;
+			ss << "container size(" << config.size() << ") and coord(" << coord.min() << ", "
+			   << coord.max() << " do not match.";
+			throw std::runtime_error(ss.str());
+		}
+
+		visitor(coord, config);
+
+		for (size_t counter = 0; counter < config.size(); counter++) {
+			auto word_coord = PPUMemoryWordOnDLS(
+			    PPUMemoryWordOnPPU(coord.toPPUMemoryBlockOnPPU().min() + counter), ppu_coord);
+			visit_preorder(config.m_words.at(counter), word_coord, visitor);
+		}
+	}
+};
+
+template <>
+struct VisitPreorderImpl<PPUMemory>
+{
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config, PPUMemory::coordinate_type const& coord, VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const word : iter_all<PPUMemoryWordOnPPU>()) {
+			// No std::forward for visitor argument, as we want to pass a reference to the
+			// nested visitor in any case, even if it was passed as an rvalue to this function.
+			visit_preorder(
+			    config.m_words[word], PPUMemoryWordOnDLS(word, coord.toPPUOnDLS()), visitor);
+		}
+	}
+};
 
 template <>
 struct BackendContainerTrait<PPUStatusRegister>
