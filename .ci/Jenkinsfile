@@ -4,7 +4,6 @@
 wafDefaultPipeline(projects: ["haldls"],
                    container: [app: "visionary-dls"],
                    postPipelineCleanup: false,
-                   warningsIgnorePattern: ".*/lib-rcf/.*",
                    testOptions: "--test-execall -j1",
                    testSlurmResource: [partition: "dls", gres: "B291656"],
                    testTimeout: 240,
@@ -14,7 +13,6 @@ wafDefaultPipeline(projects: ["haldls"],
 // HICANN-X
 wafDefaultPipeline(projects: ["haldls"],
                    container: [app: "visionary-dls"],
-                   warningsIgnorePattern: ".*/lib-rcf/.*",
                    testOptions: "--test-execall -j1",
                    testSlurmResource: [partition: "cube", gres: "cube1", licenses: "W4F3"],
                    notificationChannel: "#dls-software")

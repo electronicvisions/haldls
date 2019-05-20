@@ -9,7 +9,7 @@ def depends(ctx):
     ctx('halco')
     ctx('hate')
     ctx('uni')
-    ctx('lib-rcf', branch='v2')
+    ctx('lib-rcf')
     ctx('flyspi-rw_api')
     ctx('fisch')
 
