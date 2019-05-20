@@ -249,6 +249,15 @@ def build(bld):
         linkflags = ['-lboost_program_options-mt'],
     )
 
+    bld(
+        target = 'run_ppu_program_over_jtag_vx',
+        features = 'cxx cxxprogram',
+        source = 'tools/stadls/vx/run_ppu_program_over_jtag.cpp',
+        use = ['haldls_vx', 'stadls_vx', 'logger_obj', 'fisch_vx', 'stadls_hwtest_vx_inc'],
+        install_path = '${PREFIX}/bin',
+        linkflags = ['-lboost_program_options-mt'],
+    )
+
     if bld.env.build_with_haldls_python_bindings:
         bld.recurse("pyhaldls")
         bld.recurse("pystadls")
