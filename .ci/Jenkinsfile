@@ -7,6 +7,7 @@ wafDefaultPipeline(projects: ["haldls"],
                    warningsIgnorePattern: ".*/lib-rcf/.*",
                    testOptions: "--test-execall -j1",
                    testSlurmResource: [partition: "dls", gres: "B291656"],
+                   testTimeout: 240,
                    notificationChannel: "#dls-software")
 
 
