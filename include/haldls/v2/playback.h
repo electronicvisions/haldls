@@ -144,13 +144,33 @@ public:
 	void wait_until(time_type t) SYMBOL_VISIBLE;
 	void wait_for(time_type t) SYMBOL_VISIBLE;
 	void fire(
-		std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> const& synapse_driver_mask,
-		v2::SynapseBlock::Synapse::Address const& address) SYMBOL_VISIBLE;
+	    std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> const& synapse_driver_mask,
+	    v2::SynapseBlock::Synapse::Address const& address) GENPYBIND(hidden) SYMBOL_VISIBLE;
+
+	// Manual wrapping needed for std::bitset argument
+	GENPYBIND_MANUAL({
+		parent.def(
+		    "fire", [](GENPYBIND_PARENT_TYPE& self, uint32_t synapse_driver_mask,
+		               haldls::v2::SynapseBlock::Synapse::Address const& address) {
+			    self.fire(synapse_driver_mask, address);
+		    });
+	})
+
 	void fire(
 		halco::hicann_dls::v2::SynapseDriverOnDLS const& synapse_driver,
 		v2::SynapseBlock::Synapse::Address const& address) SYMBOL_VISIBLE;
 	void fire_post_correlation_signal(
-		std::bitset<halco::hicann_dls::v2::NeuronOnDLS::size> const& neuron_mask) SYMBOL_VISIBLE;
+	    std::bitset<halco::hicann_dls::v2::NeuronOnDLS::size> const& neuron_mask)
+	    GENPYBIND(hidden) SYMBOL_VISIBLE;
+
+	// Manual wrapping needed for std::bitset argument
+	GENPYBIND_MANUAL({
+		parent.def(
+		    "fire_post_correlation_signal", [](GENPYBIND_PARENT_TYPE& self, uint32_t neuron_mask) {
+			    self.fire_post_correlation_signal(neuron_mask);
+		    });
+	})
+
 	void fire_post_correlation_signal(
 		halco::hicann_dls::v2::NeuronOnDLS const& neuron) SYMBOL_VISIBLE;
 	void halt() SYMBOL_VISIBLE;

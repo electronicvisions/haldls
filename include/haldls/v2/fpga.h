@@ -338,9 +338,19 @@ public:
 	typedef std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> target_rows_type;
 
 	void set_neuron_route(
-		halco::hicann_dls::v2::NeuronOnDLS const& neuron,
-		SynapseBlock::Synapse::Address const& address,
-		target_rows_type const& target_rows) SYMBOL_VISIBLE;
+	    halco::hicann_dls::v2::NeuronOnDLS const& neuron,
+	    SynapseBlock::Synapse::Address const& address,
+	    target_rows_type const& target_rows) GENPYBIND(hidden) SYMBOL_VISIBLE;
+
+	// Manual wrapping needed for std::bitset argument
+	GENPYBIND_MANUAL({
+		parent.def(
+		    "set_neuron_route",
+		    [](GENPYBIND_PARENT_TYPE& self, halco::hicann_dls::v2::NeuronOnDLS const& neuron,
+		       haldls::v2::SynapseBlock::Synapse::Address const& address,
+		       uint32_t target_rows) { self.set_neuron_route(neuron, address, target_rows); });
+	})
+
 
 	bool operator==(SpikeRouter const& other) const SYMBOL_VISIBLE;
 	bool operator!=(SpikeRouter const& other) const SYMBOL_VISIBLE;
