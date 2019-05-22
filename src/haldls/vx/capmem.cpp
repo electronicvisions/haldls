@@ -36,7 +36,7 @@ std::array<AddressT, CapMemCell::config_size_in_words> CapMemCell::addresses(
 	assert(cell.toCapMemBlockOnDLS() < capmem_sram_base_addresses.size());
 	auto const base_address = capmem_sram_base_addresses.at(cell.toCapMemBlockOnDLS());
 	auto constexpr row_stride =
-	    (halco::hicann_dls::vx::NeuronOnBlock::end + 1); // one shared column
+	    (halco::hicann_dls::vx::NeuronOnNeuronBlock::end + 1); // one shared column
 	return {{static_cast<AddressT>(
 	    base_address + cell.toCapMemCellOnCapMemBlock().toCapMemColumnOnCapMemBlock() +
 	    row_stride * cell.toCapMemCellOnCapMemBlock().toCapMemRowOnCapMemBlock())}};
