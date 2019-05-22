@@ -13,6 +13,7 @@ wafDefaultPipeline(projects: ["haldls"],
 // HICANN-X
 wafDefaultPipeline(projects: ["haldls"],
                    container: [app: "visionary-dls"],
+                   prePipelineCleanup: false,
                    testOptions: "--test-execall -j1",
                    testSlurmResource: [partition: "cube", gres: "cube1", licenses: "W4F3"],
                    notificationChannel: "#dls-software")
