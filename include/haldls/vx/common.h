@@ -2,11 +2,15 @@
 
 #include <type_traits>
 #include <utility>
+#include "fisch/vx/omnibus_data.h"
 
 namespace haldls {
 namespace vx {
 
 namespace detail {
+
+/** Base type of Omnibus word used for bitformatting. */
+typedef fisch::vx::OmnibusData::value_type raw_omnibus_type;
 
 /// \brief Implementation detail of the visit_preorder() free function (q.v.).
 /// \tparam ContainerT Non-const-specified type of the container.

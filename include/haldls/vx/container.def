@@ -41,7 +41,8 @@ PLAYBACK_CONTAINER(SystimeSyncBase, haldls::vx::SystimeSyncBase)
 PLAYBACK_CONTAINER(CommonSynramConfig, haldls::vx::CommonSynramConfig)
 PLAYBACK_CONTAINER(SynapseQuad, haldls::vx::SynapseQuad)
 PLAYBACK_CONTAINER(ColumnCorrelationQuad, haldls::vx::ColumnCorrelationQuad)
-LAST_PLAYBACK_CONTAINER(ColumnCurrentQuad, haldls::vx::ColumnCurrentQuad)
+PLAYBACK_CONTAINER(ColumnCurrentQuad, haldls::vx::ColumnCurrentQuad)
+LAST_PLAYBACK_CONTAINER(CADCConfig, haldls::vx::CADCConfig)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER

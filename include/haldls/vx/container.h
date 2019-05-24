@@ -1,8 +1,10 @@
 #pragma once
 
+#include "haldls/vx/cadc.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/neuron.h"
+#include "haldls/vx/padi.h"
 #include "haldls/vx/perftest.h"
 #include "haldls/vx/phy.h"
 #include "haldls/vx/pll.h"
@@ -11,6 +13,5 @@
 #include "haldls/vx/spi.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/synapse_driver.h"
-#include "haldls/vx/padi.h"
 #include "haldls/vx/systime.h"
 #include "haldls/vx/timer.h"

@@ -57,6 +57,15 @@ constexpr uint32_t padi_bottom_base_address{0x11'8000};
 constexpr std::array<uint32_t, 2> padi_base_addresses = {
     padi_top_base_address, padi_bottom_base_address};
 
+constexpr uint32_t cadc_top_base_address(ppu_top_subtree_address | 0x0040'0000);
+constexpr uint32_t cadc_top_busreg_address(cadc_top_base_address | 0x0000'1000);
+
+constexpr uint32_t cadc_bottom_base_address(ppu_bottom_subtree_address | 0x0040'0000);
+constexpr uint32_t cadc_bottom_busreg_address(cadc_bottom_base_address | 0x0000'1000);
+
+constexpr std::array<uint32_t, 2> cadc_busreg_addresses = {cadc_top_busreg_address,
+                                                           cadc_bottom_busreg_address};
+
 constexpr uint32_t ut_omnibus_mask{0x0400'0000};
 constexpr uint32_t phy_omnibus_mask{0x0200'0000 | ut_omnibus_mask};
 constexpr uint32_t perftest_omnibus_mask{0x0800'0000};
