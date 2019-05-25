@@ -16,13 +16,12 @@
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
 using namespace haldls::vx;
+using fisch::vx::fpga_clock_cycles_per_us;
 
 /**
  * Enable highspeed omnibus connection and write and read all PPU memory words for verification.
- *
- * Disabled! Breaks the FPGA! Issue #3164
  */
-TEST(PPUMemoryWord, DISABLED_WRHighspeed)
+TEST(PPUMemoryWord, WRHighspeed)
 {
 	PlaybackProgramBuilder builder;
 
@@ -37,6 +36,19 @@ TEST(PPUMemoryWord, DISABLED_WRHighspeed)
 	builder.write(JTAGClockScalerOnDLS(), JTAGClockScaler(JTAGClockScaler::Value(3)));
 	builder.write(ResetJTAGTapOnDLS(), ResetJTAGTap());
 
+	// PLL init, reconfiguration needed to slow down PPU to a working state
+	ADPLL adpll_config;
+	for (auto adpll : halco::common::iter_all<ADPLLOnDLS>()) {
+		builder.write(adpll, adpll_config, Backend::JTAGPLLRegister);
+	}
+
+	PLLClockOutputBlock config;
+	builder.write(PLLOnDLS(), config, Backend::JTAGPLLRegister);
+
+	// Wait for PLL and Omnibus to come up
+	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fpga_clock_cycles_per_us));
+	builder.write<Timer>(TimerOnDLS(), Timer());
+
 	// Configure all FPGA-side Phys
 	for (auto phy : iter_all<PhyConfigFPGAOnDLS>()) {
 		builder.write(phy, PhyConfigFPGA());
@@ -44,9 +56,6 @@ TEST(PPUMemoryWord, DISABLED_WRHighspeed)
 
 	// Enable all FPGA-side Phys
 	builder.write(CommonPhyConfigFPGAOnDLS(), CommonPhyConfigFPGA());
-
-	// wait 22us for the omnibus clock to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(22 * fisch::vx::fpga_clock_cycles_per_us));
 
 	// Configure all Chip-side Phys
 	for (auto phy : iter_all<PhyConfigChipOnDLS>()) {
@@ -57,7 +66,8 @@ TEST(PPUMemoryWord, DISABLED_WRHighspeed)
 	builder.write(CommonPhyConfigChipOnDLS(), CommonPhyConfigChip());
 
 	// wait until highspeed is up (omnibus clock lock + phy config write over JTAG)
-	builder.wait_until(TimerOnDLS(), Timer::Value(80 * fisch::vx::fpga_clock_cycles_per_us));
+	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.wait_until(TimerOnDLS(), Timer::Value(80 * fpga_clock_cycles_per_us));
 
 	// Write all PPU memory words with highspeed backend
 	std::vector<PPUMemoryWord> words;
