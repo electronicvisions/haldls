@@ -33,13 +33,15 @@ template <typename AddressT>
 std::array<AddressT, CapMemCell::config_size_in_words> CapMemCell::addresses(
     coordinate_type const& cell) const
 {
-	assert(cell.toCapMemBlockOnDLS() < capmem_sram_base_addresses.size());
+	static_assert(
+	    halco::hicann_dls::vx::CapMemBlockOnDLS::size == capmem_sram_base_addresses.size(),
+	    "Address base array size does not match coordinate size.");
 	auto const base_address = capmem_sram_base_addresses.at(cell.toCapMemBlockOnDLS());
-	auto constexpr row_stride =
-	    (halco::hicann_dls::vx::NeuronOnNeuronBlock::end + 1); // one shared column
+	auto constexpr column_stride = 32;
 	return {{static_cast<AddressT>(
-	    base_address + cell.toCapMemCellOnCapMemBlock().toCapMemColumnOnCapMemBlock() +
-	    row_stride * cell.toCapMemCellOnCapMemBlock().toCapMemRowOnCapMemBlock())}};
+	    base_address +
+	    cell.toCapMemCellOnCapMemBlock().toCapMemColumnOnCapMemBlock() * column_stride +
+	    cell.toCapMemCellOnCapMemBlock().toCapMemRowOnCapMemBlock())}};
 }
 
 template SYMBOL_VISIBLE

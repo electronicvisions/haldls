@@ -114,16 +114,17 @@ TEST(CapMemBlock, EncodeDecode)
 		for (auto row : halco::common::iter_all<CapMemRowOnCapMemBlock>()) {
 			auto const val = draw_ranged_non_default_value<typename CapMemCell::Value>();
 			block.set_cell(CapMemCellOnDLS(CapMemCellOnCapMemBlock(column, row), block_coord), val);
-			size_t const expect_idx = static_cast<size_t>(column + row * 129);
-			ref_data[expect_idx] = static_cast<fisch::vx::OmnibusData>(val);
+			ref_data[CapMemCellOnCapMemBlock(column, row).toEnum()] =
+			    static_cast<fisch::vx::OmnibusData>(val);
 		}
 	}
 
 	// Generate expected addresses
-	for (size_t i = 0; i < CapMemColumnOnCapMemBlock::size; i++) {
-		for (size_t j = 0; j < CapMemRowOnCapMemBlock::size; j++) {
-			ref_addresses[j * 129 + i] = halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{
-			    capmem_nw_sram_base_address + j * 129 + i};
+	for (auto column : iter_all<CapMemColumnOnCapMemBlock>()) {
+		for (auto row : iter_all<CapMemRowOnCapMemBlock>()) {
+			ref_addresses[CapMemCellOnCapMemBlock(column, row).toEnum()] =
+			    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{capmem_nw_sram_base_address +
+			                                                      row + column * 32};
 		}
 	}
 
