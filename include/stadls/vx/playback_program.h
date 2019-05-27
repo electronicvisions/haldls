@@ -28,6 +28,8 @@ class PlaybackProgramBuilder;
 class GENPYBIND(visible) PlaybackProgram
 {
 public:
+	typedef fisch::vx::FPGATime fpga_time_type;
+
 	/**
 	 * Ticket for to-be-available container data corresponding to a read instruction.
 	 * @tparam T Container type
@@ -57,6 +59,15 @@ public:
 		 */
 		coordinate_type get_coordinate() const SYMBOL_VISIBLE;
 
+		/**
+		 * Get FPGA executor timestamp of last container response if time annotation is enabled.
+		 * If time annotation is not enabled, get message count since last time annotation or
+		 * from the beginning of the response stream.
+		 * @return FPGATime value
+		 */
+		GENPYBIND(getter_for(fpga_time))
+		fpga_time_type get_fpga_time() const SYMBOL_VISIBLE;
+
 	private:
 		typedef typename haldls::vx::detail::to_ticket_variant<
 		    typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
@@ -82,6 +93,42 @@ public:
 
 	/** Default constructor. */
 	PlaybackProgram() SYMBOL_VISIBLE;
+
+	typedef std::vector<haldls::vx::SpikeFromChipEvent> spikes_type;
+	typedef std::vector<haldls::vx::MADCSampleFromChipEvent> madc_samples_type;
+
+	typedef fisch::vx::PlaybackProgram::spike_pack_counts_type spike_pack_counts_type
+	    GENPYBIND(visible);
+	typedef fisch::vx::PlaybackProgram::madc_sample_pack_counts_type madc_sample_pack_counts_type
+	    GENPYBIND(visible);
+
+	/**
+	 * Get vector of time-annotated spike events.
+	 * @return Vector of spike events
+	 */
+	GENPYBIND(getter_for(spikes))
+	spikes_type const& get_spikes() const SYMBOL_VISIBLE;
+
+	/**
+	 * Get vector of time-annotated MADC sample events.
+	 * @return Vector of sample events
+	 */
+	GENPYBIND(getter_for(madc_samples))
+	madc_samples_type const& get_madc_samples() const SYMBOL_VISIBLE;
+
+	/**
+	 * Get number of occurences of spike packing from chip.
+	 * @return Array of packing occurences
+	 */
+	GENPYBIND(getter_for(spikes_pack_counts))
+	spike_pack_counts_type const& get_spikes_pack_counts() const SYMBOL_VISIBLE;
+
+	/**
+	 * Get number of occurences of MADC sample packing from chip.
+	 * @return Array of packing occurences
+	 */
+	GENPYBIND(getter_for(madc_samples_pack_counts))
+	madc_sample_pack_counts_type const& get_madc_samples_pack_counts() const SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)

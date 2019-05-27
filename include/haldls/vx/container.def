@@ -46,7 +46,11 @@ PLAYBACK_CONTAINER(ColumnCorrelationQuad, haldls::vx::ColumnCorrelationQuad)
 PLAYBACK_CONTAINER(ColumnCurrentQuad, haldls::vx::ColumnCurrentQuad)
 PLAYBACK_CONTAINER(CADCConfig, haldls::vx::CADCConfig)
 PLAYBACK_CONTAINER(CADCChannelConfig, haldls::vx::CADCChannelConfig)
-LAST_PLAYBACK_CONTAINER(CADCSampleQuad, haldls::vx::CADCSampleQuad)
+PLAYBACK_CONTAINER(CADCSampleQuad, haldls::vx::CADCSampleQuad)
+PLAYBACK_CONTAINER(SpikePack1ToChip, haldls::vx::SpikePack1ToChip)
+PLAYBACK_CONTAINER(SpikePack2ToChip, haldls::vx::SpikePack2ToChip)
+PLAYBACK_CONTAINER(SpikePack3ToChip, haldls::vx::SpikePack3ToChip)
+LAST_PLAYBACK_CONTAINER(SystimeSync, haldls::vx::SystimeSync)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER

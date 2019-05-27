@@ -48,12 +48,44 @@ typename T::coordinate_type PlaybackProgram::ContainerTicket<T>::get_coordinate(
 	return m_coord;
 }
 
+template <typename T>
+typename PlaybackProgram::fpga_time_type PlaybackProgram::ContainerTicket<T>::get_fpga_time() const
+{
+	return boost::apply_visitor(
+	    [this](auto&& ticket_impl) -> fpga_time_type { return ticket_impl.fpga_time(); },
+	    m_ticket_impl);
+}
+
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template SYMBOL_VISIBLE Type PlaybackProgram::ContainerTicket<Type>::get() const;              \
 	template SYMBOL_VISIBLE bool PlaybackProgram::ContainerTicket<Type>::valid() const;            \
 	template SYMBOL_VISIBLE typename Type::coordinate_type                                         \
-	PlaybackProgram::ContainerTicket<Type>::get_coordinate() const;
+	PlaybackProgram::ContainerTicket<Type>::get_coordinate() const;                                \
+	template SYMBOL_VISIBLE typename PlaybackProgram::fpga_time_type                               \
+	PlaybackProgram::ContainerTicket<Type>::get_fpga_time() const;
 #include "haldls/vx/container.def"
+
+typename PlaybackProgram::spikes_type const& PlaybackProgram::get_spikes() const
+{
+	return m_program_impl->get_spikes();
+}
+
+typename PlaybackProgram::madc_samples_type const& PlaybackProgram::get_madc_samples() const
+{
+	return m_program_impl->get_madc_samples();
+}
+
+typename PlaybackProgram::spike_pack_counts_type const& PlaybackProgram::get_spikes_pack_counts()
+    const
+{
+	return m_program_impl->get_spikes_pack_counts();
+}
+
+typename PlaybackProgram::madc_sample_pack_counts_type const&
+PlaybackProgram::get_madc_samples_pack_counts() const
+{
+	return m_program_impl->get_madc_samples_pack_counts();
+}
 
 std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
 {

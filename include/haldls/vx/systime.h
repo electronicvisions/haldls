@@ -80,6 +80,71 @@ struct BackendContainerTrait<SystimeSyncBase>
 
 } // namespace detail
 
+
+/**
+ * Container for syncronization of chip and FPGA systime.
+ * After syncronization the FPGA will annotate responses with systime information by sending
+ * additional timing messages.
+ */
+class GENPYBIND(visible) SystimeSync
+{
+public:
+	typedef halco::hicann_dls::vx::SystimeSyncOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	SystimeSync(bool do_sync = true) SYMBOL_VISIBLE;
+
+	/**
+	 * Get systime sync enable value.
+	 * On true, systime sync is triggered, on false only a systime update response is emitted.
+	 * @return Boolean value
+	 */
+	GENPYBIND(getter_for(do_sync))
+	bool get_do_sync() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set systime sync enable value.
+	 * On true, systime sync is triggered, on false only a systime update response is emitted.
+	 * @param value Boolean value
+	 */
+	GENPYBIND(setter_for(do_sync))
+	void set_do_sync(bool value) SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SystimeSync const& systime_sync)
+	    SYMBOL_VISIBLE;
+
+	bool operator==(SystimeSync const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SystimeSync const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<coordinate_type, read_config_size_in_words> read_addresses(
+	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden) SYMBOL_VISIBLE;
+	std::array<coordinate_type, write_config_size_in_words> write_addresses(
+	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden) SYMBOL_VISIBLE;
+	std::array<fisch::vx::SystimeSync, write_config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden) SYMBOL_VISIBLE;
+	void decode(std::array<fisch::vx::SystimeSync, read_config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	bool m_do_sync;
+
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar);
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<SystimeSync>
+    : public BackendContainerBase<SystimeSync, fisch::vx::SystimeSync>
+{};
+
+} // namespace detail
+
 } // namespace vx
 } // namespace haldls
 

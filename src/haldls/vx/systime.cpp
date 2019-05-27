@@ -124,5 +124,63 @@ void SystimeSyncBase::serialize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeSyncBase)
 
+
+SystimeSync::SystimeSync(bool const value) : m_do_sync(value) {}
+
+bool SystimeSync::get_do_sync() const
+{
+	return m_do_sync;
+}
+
+void SystimeSync::set_do_sync(bool const value)
+{
+	m_do_sync = value;
+}
+
+bool SystimeSync::operator==(SystimeSync const& other) const
+{
+	return m_do_sync == other.m_do_sync;
+}
+
+bool SystimeSync::operator!=(SystimeSync const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, SystimeSync const& config)
+{
+	return print_words_for_each_backend(os, config);
+}
+
+std::array<SystimeSync::coordinate_type, SystimeSync::read_config_size_in_words>
+SystimeSync::read_addresses(coordinate_type const& /*coord*/) const
+{
+	return {};
+}
+
+std::array<SystimeSync::coordinate_type, SystimeSync::write_config_size_in_words>
+SystimeSync::write_addresses(coordinate_type const& coord) const
+{
+	return {coord};
+}
+
+std::array<fisch::vx::SystimeSync, SystimeSync::write_config_size_in_words> SystimeSync::encode()
+    const
+{
+	return {fisch::vx::SystimeSync(m_do_sync)};
+}
+
+void SystimeSync::decode(
+    std::array<fisch::vx::SystimeSync, SystimeSync::read_config_size_in_words> const& /*data*/)
+{}
+
+template <class Archive>
+void SystimeSync::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_do_sync));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeSync)
+
 } // namespace vx
 } // namespace haldls
