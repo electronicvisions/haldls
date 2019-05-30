@@ -5,8 +5,10 @@
 
 namespace haldls::vx {
 
-constexpr uint32_t top_ppu_base_address{0x0280'0000};
-constexpr uint32_t bottom_ppu_base_address{0x0380'0000};
+constexpr uint32_t ppu_top_subtree_address{0x0200'0000};
+constexpr uint32_t ppu_bottom_subtree_address{0x0300'0000};
+constexpr uint32_t top_ppu_base_address{0x0080'0000 | ppu_top_subtree_address};
+constexpr uint32_t bottom_ppu_base_address{0x0080'0000 | ppu_bottom_subtree_address};
 constexpr uint32_t ppu_control_register_address_mask{0x0020'0000};
 constexpr uint32_t ppu_status_register_address_mask{0x0020'0001};
 
