@@ -18,6 +18,7 @@ PLAYBACK_CONTAINER(CorrelationResetRow, lola::vx::CorrelationResetRow)
 PLAYBACK_CONTAINER(SynapseWeightRow, lola::vx::SynapseWeightRow)
 PLAYBACK_CONTAINER(SynapseLabelRow, lola::vx::SynapseLabelRow)
 PLAYBACK_CONTAINER(SynapseCorrelationCalibRow, lola::vx::SynapseCorrelationCalibRow)
+PLAYBACK_CONTAINER(AtomicNeuron, lola::vx::AtomicNeuron)
 LAST_PLAYBACK_CONTAINER(SynapseRow, lola::vx::SynapseRow)
 
 #undef PLAYBACK_CONTAINER
