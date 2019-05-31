@@ -44,12 +44,32 @@ def build(bld):
         post_task=['pylola_test_v2'],
     )
 
+    bld(
+        target='pylola_vx',
+        source='../include/lola/vx/lola.h',
+        genpybind_tags='lola_vx',
+        features='genpybind cxx cxxshlib pyext post_task',
+        use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'PYBIND11LOLA'],
+        install_path='${PREFIX}/lib',
+        linkflags='-Wl,-z,defs',
+        post_task=['pylola_test_vx'],
+    )
+
 
     bld(
         name='pylola_test_v2',
         tests=bld.path.ant_glob('test/*.py'),
         features='use pytest',
         use=['pylola_v2'],
+        install_path='${PREFIX}/bin',
+        pythonpath=['test'],
+    )
+
+    bld(
+        name='pylola_test_vx',
+        tests=bld.path.ant_glob('test/*.py'),
+        features='use pytest',
+        use=['pylola_vx'],
         install_path='${PREFIX}/bin',
         pythonpath=['test'],
     )
