@@ -33,6 +33,7 @@ int main(int argc, char* argv[])
 	std::string program_filename;
 	std::string loglevel;
 	int ppu_id;
+	bool use_jtag;
 	typename hxcomm::vx::ARQConnection::ip_t fpga_ip;
 	typename hxcomm::vx::SimConnection::ip_t sim_ip;
 	typename hxcomm::vx::SimConnection::port_t sim_port;
@@ -40,6 +41,8 @@ int main(int argc, char* argv[])
 	    "ppu", po::value<int>(&ppu_id)->required(), "Number of PPU to use (0 or 1).")(
 	    "fpga_ip",
 	    po::value<hxcomm::vx::ARQConnection::ip_t>(&fpga_ip)->default_value("192.168.4.4"))(
+	    "use_jtag", po::value<bool>(&use_jtag)->default_value(false),
+	    "Use JTAG link instead of highspeed link.")(
 	    "sim_ip", po::value<hxcomm::vx::SimConnection::ip_t>(&sim_ip)->default_value("0.0.0.0"),
 	    "IP of simulation server.")(
 	    "sim_port", po::value<hxcomm::vx::SimConnection::port_t>(&sim_port)->default_value(0),
@@ -70,6 +73,10 @@ int main(int argc, char* argv[])
 		    po::validation_error::invalid_option_value, "Choose between PPU 0 and PPU 1.");
 	}
 	PPUOnDLS ppu_coord(ppu_id);
+	auto backend = Backend::OmnibusChip;
+	if (use_jtag) {
+		backend = Backend::OmnibusChipOverJTAG;
+	}
 
 	if (loglevel == "debug")
 		logger_default_config(log4cxx::Level::getDebug());
@@ -115,7 +122,27 @@ int main(int argc, char* argv[])
 	// Wait for PLL and Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fisch::vx::fpga_clock_cycles_per_us));
 	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	if (not use_jtag) {
+		// Configure all FPGA-side Phys
+		for (auto phy : iter_all<PhyConfigFPGAOnDLS>()) {
+			builder.write(phy, PhyConfigFPGA());
+		}
 
+		// Enable all FPGA-side Phys
+		builder.write(CommonPhyConfigFPGAOnDLS(), CommonPhyConfigFPGA());
+
+		// Configure all Chip-side Phys
+		for (auto phy : iter_all<PhyConfigChipOnDLS>()) {
+			builder.write(phy, PhyConfigChip());
+		}
+
+		// Enable all Chip-side Phys
+		builder.write(CommonPhyConfigChipOnDLS(), CommonPhyConfigChip());
+
+		// wait until highspeed is up (omnibus clock lock + phy config write over JTAG)
+		builder.write<Timer>(TimerOnDLS(), Timer());
+		builder.wait_until(TimerOnDLS(), Timer::Value(80 * fisch::vx::fpga_clock_cycles_per_us));
+	}
 
 	auto ppu_memory_program = helpers::load_PPUMemoryBlock_from_file(program_filename);
 	LOG4CXX_INFO(logger, "PPU program size " << ppu_memory_program.size());
@@ -134,7 +161,7 @@ int main(int argc, char* argv[])
 	PPUStatusRegisterOnDLS ppu_status_register_coord(PPUStatusRegisterOnPPU(), ppu_coord);
 	ppu_control_register.set_inhibit_reset(false);
 	LOG4CXX_INFO(logger, "Emitting write for control register.")
-	builder.write(ppu_control_register_coord, ppu_control_register, Backend::OmnibusChipOverJTAG);
+	builder.write(ppu_control_register_coord, ppu_control_register, backend);
 
 	LOG4CXX_INFO(logger, "Emitting write for program.")
 	// First reset memory by writing all zeros
@@ -142,25 +169,22 @@ int main(int argc, char* argv[])
 	zero_words.fill(PPUMemoryWord(PPUMemoryWord::Value(0)));
 	PPUMemory zero_memory;
 	zero_memory.set_words(zero_words);
-	builder.write(ppu_memory_coord, zero_memory, Backend::OmnibusChipOverJTAG);
+	builder.write(ppu_memory_coord, zero_memory, backend);
 	// Write PPU memory words with Omnibus over JTAG backend
-	builder.write(ppu_memory_program_coord, ppu_memory_program, Backend::OmnibusChipOverJTAG);
+	builder.write(ppu_memory_program_coord, ppu_memory_program, backend);
 
 	ppu_control_register.set_inhibit_reset(true);
 	LOG4CXX_INFO(logger, "Emitting write for control register.")
-	builder.write(ppu_control_register_coord, ppu_control_register, Backend::OmnibusChipOverJTAG);
+	builder.write(ppu_control_register_coord, ppu_control_register, backend);
 
 	builder.write<Timer>(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(wait));
 
 	LOG4CXX_INFO(logger, "Emitting read commands.");
-	auto ppu_memory_ticket =
-	    builder.read<PPUMemory>(ppu_memory_coord, Backend::OmnibusChipOverJTAG);
+	auto ppu_memory_ticket = builder.read<PPUMemory>(ppu_memory_coord, backend);
 	// Read PPU memory words with Omnibus over JTAG backend
-	auto ppu_memory_return_ticket =
-	    builder.read<PPUMemoryWord>(ppu_return_code_coord, Backend::OmnibusChipOverJTAG);
-	auto ppu_status_ticket =
-	    builder.read<PPUStatusRegister>(ppu_status_register_coord, Backend::OmnibusChipOverJTAG);
+	auto ppu_memory_return_ticket = builder.read<PPUMemoryWord>(ppu_return_code_coord, backend);
+	auto ppu_status_ticket = builder.read<PPUStatusRegister>(ppu_status_register_coord, backend);
 	builder.halt();
 
 	// run ppu program

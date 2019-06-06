@@ -266,9 +266,9 @@ def build(bld):
     )
 
     bld(
-        target = 'run_ppu_program_over_jtag_vx',
+        target = 'run_ppu_program_vx',
         features = 'cxx cxxprogram',
-        source = 'tools/stadls/vx/run_ppu_program_over_jtag.cpp',
+        source = 'tools/stadls/vx/run_ppu_program.cpp',
         use = ['haldls_vx', 'logger_obj', 'fisch_vx'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
