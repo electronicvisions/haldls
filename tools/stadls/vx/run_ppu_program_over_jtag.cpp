@@ -1,7 +1,6 @@
 #include <fstream>
 #include <boost/program_options.hpp>
 
-#include "executor.h"
 #include "fisch/vx/constants.h"
 #include "fisch/vx/playback_executor.h"
 #include "halco/hicann-dls/vx/coordinates.h"
@@ -35,10 +34,16 @@ int main(int argc, char* argv[])
 	std::string loglevel;
 	int ppu_id;
 	typename hxcomm::vx::ARQConnection::ip_t fpga_ip;
+	typename hxcomm::vx::SimConnection::ip_t sim_ip;
+	typename hxcomm::vx::SimConnection::port_t sim_port;
 	opt_desc.add_options()("help", "Print this help message and exit.")(
 	    "ppu", po::value<int>(&ppu_id)->required(), "Number of PPU to use (0 or 1).")(
-	    "fpga_ip", po::value<typename hxcomm::vx::ARQConnection::ip_t>(&fpga_ip)->default_value(
-	                   "192.168.4.4"))(
+	    "fpga_ip",
+	    po::value<hxcomm::vx::ARQConnection::ip_t>(&fpga_ip)->default_value("192.168.4.4"))(
+	    "sim_ip", po::value<hxcomm::vx::SimConnection::ip_t>(&sim_ip)->default_value("0.0.0.0"),
+	    "IP of simulation server.")(
+	    "sim_port", po::value<hxcomm::vx::SimConnection::port_t>(&sim_port)->default_value(0),
+	    "Port of simulation server.")(
 	    "program", po::value<std::string>(&program_filename)->required(),
 	    "Filename of (stripped) PPU program (suffix .binary).")(
 	    "wait", po::value<int>(&wait)->default_value(10000000),
@@ -51,7 +56,11 @@ int main(int argc, char* argv[])
 	po::variables_map vm;
 	po::store(po::command_line_parser(argc, argv).options(opt_desc).run(), vm);
 	if (vm.count("help")) {
-		std::cout << "Run PPU program." << std::endl << std::endl << opt_desc << std::endl;
+		std::cout << "Run PPU program. Uses hardware by default and uses simulation if options "
+		             "sim_ip, sim_port are provided."
+		          << std::endl
+		          << std::endl
+		          << opt_desc << std::endl;
 		exit(EXIT_SUCCESS);
 	}
 	po::notify(vm);
@@ -157,9 +166,14 @@ int main(int argc, char* argv[])
 	// run ppu program
 	LOG4CXX_INFO(logger, "Creating program.");
 	auto program = builder.done();
-	LOG4CXX_INFO(logger, "Running built program.");
-	{
+	if ((sim_ip == "0.0.0.0") and (sim_port == 0)) {
+		LOG4CXX_INFO(logger, "Running built program on hardware.");
 		auto executor = fisch::vx::PlaybackProgramExecutor<hxcomm::vx::ARQConnection>(fpga_ip);
+		executor.run(program.impl());
+	} else {
+		LOG4CXX_INFO(logger, "Running built program on simulation.");
+		auto executor =
+		    fisch::vx::PlaybackProgramExecutor<hxcomm::vx::SimConnection>(sim_ip, sim_port);
 		executor.run(program.impl());
 	}
 
