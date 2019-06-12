@@ -96,7 +96,7 @@ void SynapseDriverBlock::decode(
 		else
 			m_modes.at(value) = Mode::disabled;
 	}
-	m_pulse_length = PulseLength(data.at(2));
+	m_pulse_length = PulseLength(data.at(2) & 0x1f);
 }
 
 
