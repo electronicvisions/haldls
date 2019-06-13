@@ -10,5 +10,6 @@
 #include "haldls/vx/reset.h"
 #include "haldls/vx/spi.h"
 #include "haldls/vx/synapse.h"
+#include "haldls/vx/synapse_driver.h"
 #include "haldls/vx/systime.h"
 #include "haldls/vx/timer.h"
