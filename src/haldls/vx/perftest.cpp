@@ -1,4 +1,6 @@
 #include "haldls/vx/perftest.h"
+
+#include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
@@ -47,7 +49,7 @@ void PerfTest::decode(
 }
 
 template <class Archive>
-void PerfTest::cerealize(Archive& ar)
+void PerfTest::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_enable));
 }
@@ -141,7 +143,7 @@ void PerfTestStatus::decode(
 }
 
 template <class Archive>
-void PerfTestStatus::cerealize(Archive& ar)
+void PerfTestStatus::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_sent));
 	ar(CEREAL_NVP(m_received));

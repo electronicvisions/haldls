@@ -54,7 +54,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar);
+	void serialize(Archive& ar);
 
 	bool m_enable;
 };
@@ -145,7 +145,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar);
+	void serialize(Archive& ar);
 
 	Sent m_sent;
 	Received m_received;

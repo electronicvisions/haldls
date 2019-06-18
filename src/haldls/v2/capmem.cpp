@@ -6,6 +6,10 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 {
 
@@ -112,7 +116,7 @@ bool CapMemCell::operator!=(CapMemCell const& other) const
 }
 
 template <class Archive>
-void CapMemCell::cerealize(Archive& ar)
+void CapMemCell::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -179,7 +183,7 @@ bool CapMem::operator!=(CapMem const& other) const
 }
 
 template <class Archive>
-void CapMem::cerealize(Archive& ar)
+void CapMem::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_capmem_cells));
 }
@@ -591,7 +595,7 @@ void CapMemConfig::decode(
 }
 
 template <class Archive>
-void CapMemConfig::cerealize(Archive& ar)
+void CapMemConfig::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_enable_capmem));
 	ar(CEREAL_NVP(m_debug_readout_enable));

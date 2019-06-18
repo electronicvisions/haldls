@@ -53,7 +53,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar);
+	void serialize(Archive& ar);
 
 	fisch::vx::Timer m_value;
 };

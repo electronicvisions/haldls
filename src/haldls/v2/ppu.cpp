@@ -8,6 +8,12 @@
 #include "haldls/v2/ppu.h"
 #include "hate/math.h"
 
+#include <cereal/types/array.hpp>
+#include <cereal/types/vector.hpp>
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 {
 
@@ -62,7 +68,7 @@ void PPUMemoryWord::decode(std::array<hardware_word_type, PPUMemoryWord::config_
 }
 
 template <class Archive>
-void PPUMemoryWord::cerealize(Archive& ar)
+void PPUMemoryWord::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -182,7 +188,7 @@ std::string PPUMemoryBlock::to_string() const
 }
 
 template <class Archive>
-void PPUMemoryBlock::cerealize(Archive& ar)
+void PPUMemoryBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_words));
 }
@@ -303,7 +309,7 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 }
 
 template <class Archive>
-void PPUMemory::cerealize(Archive& ar)
+void PPUMemory::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_words));
 }
@@ -434,7 +440,7 @@ void PPUControlRegister::decode(std::array<hardware_word_type, PPUControlRegiste
 }
 
 template <class Archive>
-void PPUControlRegister::cerealize(Archive& ar)
+void PPUControlRegister::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_inhibit_reset));
 	ar(CEREAL_NVP(m_force_clock_on));
@@ -476,7 +482,7 @@ void PPUStatusRegister::decode(std::array<hardware_word_type, PPUStatusRegister:
 }
 
 template <class Archive>
-void PPUStatusRegister::cerealize(Archive& ar)
+void PPUStatusRegister::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_sleep));
 }

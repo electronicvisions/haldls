@@ -1,6 +1,9 @@
 #include "haldls/v2/synapse.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
+#include "haldls/cerealization.h"
 
 namespace haldls {
 namespace v2 {
@@ -176,7 +179,7 @@ void CommonSynramConfig::decode(
 }
 
 template <class Archive>
-void CommonSynramConfig::cerealize(Archive& ar)
+void CommonSynramConfig::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_pc_conf));
 	ar(CEREAL_NVP(m_w_conf));
@@ -243,7 +246,7 @@ bool SynapseBlock::Synapse::operator!=(SynapseBlock::Synapse const& other) const
 }
 
 template <class Archive>
-void SynapseBlock::Synapse::cerealize(Archive& ar)
+void SynapseBlock::Synapse::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_weight));
 	ar(CEREAL_NVP(m_address));
@@ -403,7 +406,7 @@ void SynapseBlock::decode(
 }
 
 template <class Archive>
-void SynapseBlock::cerealize(Archive& ar)
+void SynapseBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_synapses));
 }
@@ -452,7 +455,7 @@ bool ColumnCorrelationBlock::ColumnCorrelationSwitch::operator!=(
 }
 
 template <class Archive>
-void ColumnCorrelationBlock::ColumnCorrelationSwitch::cerealize(Archive& ar)
+void ColumnCorrelationBlock::ColumnCorrelationSwitch::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_causal));
 	ar(CEREAL_NVP(m_acausal));
@@ -608,7 +611,7 @@ void ColumnCorrelationBlock::decode(
 }
 
 template <class Archive>
-void ColumnCorrelationBlock::cerealize(Archive& ar)
+void ColumnCorrelationBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_switches));
 }
@@ -657,7 +660,7 @@ bool ColumnCurrentBlock::ColumnCurrentSwitch::operator!=(
 }
 
 template <class Archive>
-void ColumnCurrentBlock::ColumnCurrentSwitch::cerealize(Archive& ar)
+void ColumnCurrentBlock::ColumnCurrentSwitch::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_exc));
 	ar(CEREAL_NVP(m_inh));
@@ -811,7 +814,7 @@ void ColumnCurrentBlock::decode(
 }
 
 template <class Archive>
-void ColumnCurrentBlock::cerealize(Archive& ar)
+void ColumnCurrentBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_switches));
 }

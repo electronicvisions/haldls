@@ -1,5 +1,9 @@
 #include "haldls/v2/correlation.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 {
 
@@ -68,7 +72,8 @@ void CorrelationConfig::decode(std::array<hardware_word_type, config_size_in_wor
 }
 
 template <class Archive>
-void CorrelationConfig::cerealize(Archive& ar) {
+void CorrelationConfig::serialize(Archive& ar)
+{
 	ar(CEREAL_NVP(m_sense_delay));
 	ar(CEREAL_NVP(m_reset_delay_1));
 	ar(CEREAL_NVP(m_reset_delay_2));
@@ -181,7 +186,7 @@ void CausalCorrelationBlock::decode(
 }
 
 template <class Archive>
-void CausalCorrelationBlock::cerealize(Archive& ar)
+void CausalCorrelationBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_correlations));
 }
@@ -242,7 +247,7 @@ void AcausalCorrelationBlock::decode(
 }
 
 template <class Archive>
-void AcausalCorrelationBlock::cerealize(Archive& ar)
+void AcausalCorrelationBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_correlations));
 }

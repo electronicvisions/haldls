@@ -1,11 +1,14 @@
+#include "haldls/vx/spi.h"
+
 #include <cctype>
 #include <iomanip>
 #include <utility>
 
 #include "fisch/vx/spi.h"
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/print.h"
-#include "haldls/vx/spi.h"
 
 namespace haldls {
 namespace vx {
@@ -240,7 +243,7 @@ void ShiftRegister::decode(
 {}
 
 template <typename Archive>
-void ShiftRegister::cerealize(Archive& ar)
+void ShiftRegister::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_mux_1));
 	ar(CEREAL_NVP(m_mux_2));
@@ -296,7 +299,7 @@ void DACChannel::decode(
 {}
 
 template <typename Archive>
-void DACChannel::cerealize(Archive& ar)
+void DACChannel::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -360,7 +363,7 @@ void DACControl::decode(
 {}
 
 template <typename Archive>
-void DACControl::cerealize(Archive& ar)
+void DACControl::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_enable_channel));
 }

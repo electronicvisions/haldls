@@ -9,7 +9,9 @@
 #include "haldls/v2/synapse.h"
 #include "haldls/v2/genpybind.h"
 
-#include "haldls/cerealization.h"
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace haldls {
 namespace v2 GENPYBIND_TAG_HALDLS_V2 {
@@ -44,7 +46,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	hardware_time_type m_time;
 	SynapseBlock::Synapse::Address m_source_address;
@@ -78,7 +80,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	hardware_time_type m_time;
 	halco::hicann_dls::v2::NeuronOnDLS m_neuron;

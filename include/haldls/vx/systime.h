@@ -9,7 +9,9 @@
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
-#include "haldls/cerealization.h"
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChip;
@@ -61,7 +63,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	Value m_value;
 };

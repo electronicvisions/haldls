@@ -12,7 +12,9 @@
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
-#include "haldls/cerealization.h"
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -65,7 +67,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
@@ -94,7 +96,7 @@ private:
 	friend detail::VisitPreorderImpl<CapMemBlock>;
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<CapMemCell, halco::hicann_dls::vx::CapMemCellOnCapMemBlock>
 	    m_capmem_cells;

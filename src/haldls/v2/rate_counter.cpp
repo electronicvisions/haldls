@@ -5,6 +5,10 @@
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/v2/coordinates.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;
 
@@ -95,7 +99,7 @@ void RateCounterConfig::decode(std::array<hardware_word_type, config_size_in_wor
 }
 
 template <class Archive>
-void RateCounterConfig::cerealize(Archive& ar)
+void RateCounterConfig::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_enable_neuron));
 	ar(CEREAL_NVP(m_clear_on_read));
@@ -143,7 +147,7 @@ void RateCounterEntry::decode(std::array<hardware_word_type, config_size_in_word
 }
 
 template <class Archive>
-void RateCounterEntry::cerealize(Archive& ar)
+void RateCounterEntry::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_count));
 }
@@ -171,7 +175,7 @@ bool RateCounter::operator!=(RateCounter const& other) const
 }
 
 template <class Archive>
-void RateCounter::cerealize(Archive& ar)
+void RateCounter::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_counts));
 }

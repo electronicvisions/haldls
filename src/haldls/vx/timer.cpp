@@ -42,7 +42,7 @@ std::array<fisch::vx::Timer, Timer::config_size_in_words> Timer::encode() const
 void Timer::decode(std::array<fisch::vx::Timer, Timer::config_size_in_words> const& /*data*/) {}
 
 template <class Archive>
-void Timer::cerealize(Archive& ar)
+void Timer::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_value));
 }

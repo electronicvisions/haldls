@@ -51,7 +51,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar);
+	void serialize(Archive& ar);
 
 	fisch::vx::JTAGClockScaler m_value;
 };
@@ -91,7 +91,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar);
+	void serialize(Archive& ar);
 
 	fisch::vx::ResetJTAGTap m_value;
 };
@@ -138,7 +138,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar);
+	void serialize(Archive& ar);
 
 	fisch::vx::JTAGIdCode m_value;
 };

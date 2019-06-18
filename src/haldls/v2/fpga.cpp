@@ -1,7 +1,11 @@
 #include "haldls/v2/fpga.h"
 
-#include "log4cxx/logger.h"
+#include <cereal/types/bitset.hpp>
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
+#include "haldls/cerealization.h"
+#include "log4cxx/logger.h"
 
 using namespace halco::hicann_dls::v2;
 using namespace halco::common;
@@ -438,7 +442,7 @@ void FlyspiConfig::decode(std::array<ocp_word_type, FlyspiConfig::config_size_in
 }
 
 template <class Archive>
-void FlyspiConfig::cerealize(Archive& ar)
+void FlyspiConfig::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_dls_reset));
 	ar(CEREAL_NVP(m_soft_reset));
@@ -684,7 +688,7 @@ void FlyspiException::decode(
 }
 
 template <class Archive>
-void FlyspiException::cerealize(Archive& ar)
+void FlyspiException::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_result_read_error));
 	ar(CEREAL_NVP(m_result_read_overflow));
@@ -818,7 +822,7 @@ void SpikeRouter::decode(std::array<ocp_word_type, 0> const& /*words*/)
 }
 
 template <class Archive>
-void SpikeRouter::cerealize(Archive& ar)
+void SpikeRouter::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_squeeze_mode_enabled));
 	ar(CEREAL_NVP(m_squeeze_mode_address));

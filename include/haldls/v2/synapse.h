@@ -9,7 +9,9 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/genpybind.h"
 
-#include "haldls/cerealization.h"
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace haldls {
 namespace v2 GENPYBIND_TAG_HALDLS_V2 {
@@ -95,7 +97,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	PCConf m_pc_conf;
 	WConf m_w_conf;
@@ -174,7 +176,7 @@ public:
 	private:
 		friend class cereal::access;
 		template <class Archive>
-		void cerealize(Archive& ar) SYMBOL_VISIBLE;
+		void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 		Weight m_weight;
 		Address m_address;
@@ -202,7 +204,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<Synapse, halco::hicann_dls::v2::SynapseOnSynapseBlock> m_synapses;
 };
@@ -241,7 +243,7 @@ public:
 	private:
 		friend class cereal::access;
 		template <class Archive>
-		void cerealize(Archive& ar) SYMBOL_VISIBLE;
+		void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 		Config m_causal;
 		Config m_acausal;
@@ -269,7 +271,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<
 	    ColumnCorrelationSwitch,
@@ -311,7 +313,7 @@ public:
 	private:
 		friend class cereal::access;
 		template <class Archive>
-		void cerealize(Archive& ar) SYMBOL_VISIBLE;
+		void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 		Config m_exc;
 		Config m_inh;
@@ -338,7 +340,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<
 	    ColumnCurrentSwitch,

@@ -1,3 +1,5 @@
+#include "haldls/vx/ppu.h"
+
 #include <cctype>
 #include <fstream>
 #include <iomanip>
@@ -8,8 +10,14 @@
 #include "fisch/vx/omnibus.h"
 
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/ppu.h"
 #include "haldls/vx/print.h"
+
+#include <cereal/types/array.hpp>
+#include <cereal/types/vector.hpp>
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+
 
 namespace haldls {
 namespace vx {
@@ -98,7 +106,7 @@ template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, PPUMemoryWord::config_size_in_words> const& data);
 
 template <class Archive>
-void PPUMemoryWord::cerealize(Archive& ar)
+void PPUMemoryWord::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -217,7 +225,7 @@ std::string PPUMemoryBlock::to_string() const
 }
 
 template <class Archive>
-void PPUMemoryBlock::cerealize(Archive& ar)
+void PPUMemoryBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_words));
 }
@@ -396,7 +404,7 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 }
 
 template <class Archive>
-void PPUMemory::cerealize(Archive& ar)
+void PPUMemory::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_words));
 }
@@ -551,7 +559,7 @@ template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, PPUControlRegister::config_size_in_words> const& data);
 
 template <class Archive>
-void PPUControlRegister::cerealize(Archive& ar)
+void PPUControlRegister::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_cache_controller_enable));
 	ar(CEREAL_NVP(m_inhibit_reset));
@@ -631,7 +639,7 @@ template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, PPUStatusRegister::config_size_in_words> const& data);
 
 template <class Archive>
-void PPUStatusRegister::cerealize(Archive& ar)
+void PPUStatusRegister::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_sleep));
 }

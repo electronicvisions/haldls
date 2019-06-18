@@ -7,6 +7,9 @@
 #include "haldls/vx/spi.h"
 #include "haldls/vx/timer.h"
 
+#include <cereal/archives/json.hpp>
+#include <cereal/cereal.hpp>
+
 using namespace haldls::vx;
 
 template <class T>

@@ -1,6 +1,8 @@
 #include "haldls/v2/board.h"
 
+#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
+#include "haldls/cerealization.h"
 
 using namespace halco::hicann_dls::v2;
 using namespace halco::common;
@@ -114,7 +116,7 @@ bool Board::operator!=(Board const& other) const
 }
 
 template <class Archive>
-void Board::cerealize(Archive& ar)
+void Board::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_flyspi_config));
 	ar(CEREAL_NVP(m_flyspi_exception));

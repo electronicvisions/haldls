@@ -2,6 +2,9 @@
 
 #include <tuple>
 
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 {
 
@@ -73,7 +76,7 @@ std::ostream& operator<<(std::ostream& os, PlaybackSpike const& spike)
 }
 
 template <class Archive>
-void PlaybackSpike::cerealize(Archive& ar)
+void PlaybackSpike::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_time));
 	ar(CEREAL_NVP(m_source_address));
@@ -140,7 +143,7 @@ std::ostream& operator<<(std::ostream& os, RecordedSpike const& spike)
 }
 
 template <class Archive>
-void RecordedSpike::cerealize(Archive& ar)
+void RecordedSpike::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_time));
 	ar(CEREAL_NVP(m_neuron));

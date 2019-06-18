@@ -8,6 +8,9 @@
 #include "haldls/vx/print.h"
 #include "haldls/vx/systime.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace vx {
 
@@ -114,7 +117,7 @@ template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, SystimeSyncBase::config_size_in_words> const& data);
 
 template <class Archive>
-void SystimeSyncBase::cerealize(Archive& ar)
+void SystimeSyncBase::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_value));
 }

@@ -1,6 +1,9 @@
 #include "haldls/v2/synapsedriver.h"
 
+#include <cereal/types/array.hpp>
+#include "halco/common/cerealization_geometry.h"
 #include "halco/common/iter_all.h"
+#include "haldls/cerealization.h"
 
 namespace haldls {
 namespace v2 {
@@ -101,7 +104,7 @@ void SynapseDriverBlock::decode(
 
 
 template <class Archive>
-void SynapseDriverBlock::cerealize(Archive& ar)
+void SynapseDriverBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_pulse_length));
 	ar(CEREAL_NVP(m_modes));

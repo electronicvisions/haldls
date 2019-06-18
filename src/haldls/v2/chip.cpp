@@ -2,7 +2,9 @@
 
 #include <utility>
 
+#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
+#include "haldls/cerealization.h"
 
 namespace haldls {
 namespace v2 {
@@ -304,7 +306,7 @@ bool Chip::operator!=(Chip const& other) const
 }
 
 template <class Archive>
-void Chip::cerealize(Archive& ar)
+void Chip::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_neuron_digital_configs));
 	ar(CEREAL_NVP(m_synapse_blocks));

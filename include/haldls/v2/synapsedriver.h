@@ -7,7 +7,9 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/genpybind.h"
 
-#include "haldls/cerealization.h"
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace haldls {
 namespace v2 GENPYBIND_TAG_HALDLS_V2 {
@@ -63,7 +65,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	PulseLength m_pulse_length;
 	modes_type m_modes;

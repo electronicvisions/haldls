@@ -6,6 +6,9 @@
 #include "haldls/v2/chip.h"
 #include "haldls/v2/playback.h"
 
+#include <cereal/archives/json.hpp>
+#include <cereal/cereal.hpp>
+
 using namespace halco::common;
 using namespace halco::hicann_dls::v2;
 using namespace haldls::v2;

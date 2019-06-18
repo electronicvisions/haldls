@@ -9,7 +9,10 @@
 #include "haldls/v2/fpga.h"
 #include "haldls/v2/genpybind.h"
 #include "haldls/v2/synapse.h"
-#include "haldls/cerealization.h"
+
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace haldls {
 namespace v2 GENPYBIND_TAG_HALDLS_V2 {
@@ -66,7 +69,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	FlyspiConfig m_flyspi_config;
 	FlyspiException m_flyspi_exception;

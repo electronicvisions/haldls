@@ -8,7 +8,10 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/genpybind.h"
 #include "haldls/v2/synapse.h"
-#include "haldls/cerealization.h"
+
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace haldls {
 namespace v2 GENPYBIND_TAG_HALDLS_V2 {
@@ -214,7 +217,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	bool m_dls_reset;
 	bool m_soft_reset;
@@ -288,7 +291,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	hate::optional<bool> m_result_read_error;
 	hate::optional<bool> m_result_read_overflow;
@@ -367,7 +370,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	bool m_squeeze_mode_enabled;
 	SynapseBlock::Synapse::Address m_squeeze_mode_address;

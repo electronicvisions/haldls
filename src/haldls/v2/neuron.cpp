@@ -1,5 +1,8 @@
 #include "haldls/v2/neuron.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 {
 
@@ -120,7 +123,7 @@ void CommonNeuronConfig::decode(std::array<hardware_word_type, CommonNeuronConfi
 }
 
 template <class Archive>
-void CommonNeuronConfig::cerealize(Archive& ar)
+void CommonNeuronConfig::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_digital_out));
 	ar(CEREAL_NVP(m_post_correlation_signal_length));
@@ -347,7 +350,7 @@ void NeuronDigitalConfig::decode(std::array<hardware_word_type, NeuronDigitalCon
 
 
 template <class Archive>
-void NeuronDigitalConfig::cerealize(Archive& ar)
+void NeuronDigitalConfig::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_synapse_input_exc));
 	ar(CEREAL_NVP(m_synapse_input_inh));

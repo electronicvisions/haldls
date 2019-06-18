@@ -7,7 +7,9 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/genpybind.h"
 
-#include "haldls/cerealization.h"
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace haldls {
 namespace v2 GENPYBIND_TAG_HALDLS_V2 {
@@ -93,7 +95,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::v2::NeuronOnDLS> m_enable_neuron;
 	bool m_clear_on_read;
@@ -154,7 +156,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	Count m_count;
 };
@@ -202,7 +204,7 @@ private:
 
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<RateCounterEntry, halco::hicann_dls::v2::NeuronOnDLS> m_counts;
 };

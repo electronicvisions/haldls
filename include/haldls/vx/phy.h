@@ -182,7 +182,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 };
 
 namespace detail {
@@ -221,7 +221,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 };
 
 namespace detail {
@@ -265,7 +265,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::PhyConfigFPGAOnDLS> m_enable_phy;
 };
@@ -311,7 +311,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::PhyConfigChipOnDLS> m_enable_phy;
 };

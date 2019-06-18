@@ -13,6 +13,10 @@
 
 #include "fisch/vx/jtag.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace vx {
 
@@ -100,7 +104,7 @@ bool CapMemCell::operator!=(CapMemCell const& other) const
 }
 
 template <class Archive>
-void CapMemCell::cerealize(Archive& ar)
+void CapMemCell::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -150,7 +154,7 @@ bool CapMemBlock::operator!=(CapMemBlock const& other) const
 }
 
 template <class Archive>
-void CapMemBlock::cerealize(Archive& ar)
+void CapMemBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_capmem_cells));
 }

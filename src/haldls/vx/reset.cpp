@@ -44,7 +44,7 @@ void ResetChip::decode(
 {}
 
 template <class Archive>
-void ResetChip::cerealize(Archive& ar)
+void ResetChip::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_value));
 }

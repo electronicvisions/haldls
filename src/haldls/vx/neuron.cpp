@@ -6,6 +6,9 @@
 
 #include "fisch/vx/jtag.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace vx {
 
@@ -646,7 +649,7 @@ bool NeuronConfig::operator!=(NeuronConfig const& other) const
 }
 
 template <class Archive>
-void NeuronConfig::cerealize(Archive& ar)
+void NeuronConfig::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_en_comp_cond_div));
 	ar(CEREAL_NVP(m_en_comp_cond_mul));

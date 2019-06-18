@@ -9,7 +9,9 @@
 #include "haldls/v2/common.h"
 #include "haldls/v2/genpybind.h"
 
-#include "haldls/cerealization.h"
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace haldls {
 namespace v2 GENPYBIND_TAG_HALDLS_V2 {
@@ -66,7 +68,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	bool m_digital_out;
 	PostCorrelationSignalLength m_post_correlation_signal_length;
@@ -170,7 +172,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	bool m_synapse_input_exc;
 	bool m_synapse_input_inh;

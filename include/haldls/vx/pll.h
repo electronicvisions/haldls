@@ -292,7 +292,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	LoopFilterInt m_loop_filter_int;
 	LoopFilterProp m_loop_filter_prop;
@@ -414,7 +414,7 @@ public:
 	private:
 		friend class cereal::access;
 		template <typename Archive>
-		void cerealize(Archive& ar) SYMBOL_VISIBLE;
+		void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 		bool m_enable_output;
 		bool m_enable_bypass;
@@ -463,7 +463,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<ClockOutput, halco::hicann_dls::vx::PLLClockOutputOnDLS> m_output;
 };
@@ -585,7 +585,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	bool m_clock_enable;
 	PreScalerP m_pre_scaler_p;
@@ -673,7 +673,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	bool m_success;
 	bool m_finished;

@@ -4,6 +4,8 @@
 
 #include "fisch/vx/jtag.h"
 #include "fisch/vx/omnibus.h"
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/phy.h"
@@ -364,7 +366,7 @@ void PhyConfigFPGA::decode(
 }
 
 template <typename Archive>
-void PhyConfigFPGA::cerealize(Archive& ar)
+void PhyConfigFPGA::serialize(Archive& ar)
 {
 	cerealize_impl(ar);
 }
@@ -407,7 +409,7 @@ void PhyConfigChip::decode(
 {}
 
 template <typename Archive>
-void PhyConfigChip::cerealize(Archive& ar)
+void PhyConfigChip::serialize(Archive& ar)
 {
 	cerealize_impl(ar);
 }
@@ -467,7 +469,7 @@ void CommonPhyConfigFPGA::decode(
 {}
 
 template <typename Archive>
-void CommonPhyConfigFPGA::cerealize(Archive& ar)
+void CommonPhyConfigFPGA::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_enable_phy));
 }
@@ -530,7 +532,7 @@ void CommonPhyConfigChip::decode(std::array<
 {}
 
 template <typename Archive>
-void CommonPhyConfigChip::cerealize(Archive& ar)
+void CommonPhyConfigChip::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_enable_phy));
 }

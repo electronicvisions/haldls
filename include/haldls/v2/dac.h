@@ -8,7 +8,10 @@
 #include "hate/visibility.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/genpybind.h"
-#include "haldls/cerealization.h"
+
+namespace cereal {
+class access;
+} // namespace cereal
 
 
 namespace haldls {
@@ -56,7 +59,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<Value, Channel> m_channels;
 };

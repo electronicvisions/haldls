@@ -5,7 +5,6 @@
 
 #include "hate/optional.h"
 #include "hate/visibility.h"
-#include "haldls/cerealization.h"
 #include "haldls/v2/capmem.h"
 #include "haldls/v2/common.h"
 #include "haldls/v2/correlation.h"
@@ -16,6 +15,9 @@
 #include "haldls/v2/synapse.h"
 #include "haldls/v2/synapsedriver.h"
 
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace haldls {
 namespace v2 GENPYBIND_TAG_HALDLS_V2 {
@@ -159,7 +161,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void cerealize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<NeuronDigitalConfig, halco::hicann_dls::v2::NeuronOnDLS>
 		m_neuron_digital_configs;

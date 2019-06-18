@@ -2,6 +2,10 @@
 
 #include "bitter/bitter.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+
 namespace haldls {
 namespace v2 {
 
@@ -149,7 +153,7 @@ void DAC::decode(coordinate_type const& /*dac*/, std::array<ocp_word_type, 0> co
 }
 
 template <class Archive>
-void DAC::cerealize(Archive& ar)
+void DAC::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_channels));
 }

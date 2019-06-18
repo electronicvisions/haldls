@@ -3,8 +3,11 @@
 #include <array>
 #include <ostream>
 
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/coordinates.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
@@ -402,7 +405,7 @@ template SYMBOL_VISIBLE void ADPLL::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& data);
 
 template <typename Archive>
-void ADPLL::cerealize(Archive& ar)
+void ADPLL::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_loop_filter_int));
 	ar(CEREAL_NVP(m_loop_filter_prop));
@@ -491,7 +494,7 @@ bool PLLClockOutputBlock::ClockOutput::operator!=(ClockOutput const& other) cons
 HALDLS_VX_DEFAULT_OSTREAM_OP(PLLClockOutputBlock)
 
 template <typename Archive>
-void PLLClockOutputBlock::ClockOutput::cerealize(Archive& ar)
+void PLLClockOutputBlock::ClockOutput::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_enable_output));
 	ar(CEREAL_NVP(m_enable_bypass));
@@ -723,7 +726,7 @@ template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
 
 template <typename Archive>
-void PLLClockOutputBlock::cerealize(Archive& ar)
+void PLLClockOutputBlock::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_output));
 }
@@ -900,7 +903,7 @@ template SYMBOL_VISIBLE void PLLSelfTest::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
 
 template <typename Archive>
-void PLLSelfTest::cerealize(Archive& ar)
+void PLLSelfTest::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_clock_enable));
 	ar(CEREAL_NVP(m_pre_scaler_p));
@@ -1002,7 +1005,7 @@ template SYMBOL_VISIBLE void PLLSelfTestStatus::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
 
 template <typename Archive>
-void PLLSelfTestStatus::cerealize(Archive& ar)
+void PLLSelfTestStatus::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_success));
 	ar(CEREAL_NVP(m_finished));
