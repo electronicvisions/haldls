@@ -1,6 +1,7 @@
 #pragma once
 
 #include "haldls/vx/arq.h"
+#include "haldls/vx/background.h"
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/event.h"
