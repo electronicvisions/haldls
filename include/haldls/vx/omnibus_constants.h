@@ -111,6 +111,7 @@ constexpr uint32_t l2_omnibus_mask{perftest_omnibus_mask | ut_omnibus_mask};
 constexpr uint32_t hicann_arq_status_base_address{l2_omnibus_mask + 0x0000'0010};
 
 constexpr uint32_t spl1_fabric_base_address{0x0013'0000};
+constexpr uint32_t crossbar_out_mux_base_address{spl1_fabric_base_address};
 constexpr uint32_t background_spike_source_base_address{spl1_fabric_base_address + 1};
 
 } // namespace haldls::vx
