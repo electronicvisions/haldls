@@ -170,5 +170,156 @@ void CrossbarOutputConfig::serialize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarOutputConfig)
 
+
+CrossbarNode::CrossbarNode() : m_mask(), m_target(), m_enable_drop_counter() {}
+
+typename CrossbarNode::neuron_label_type CrossbarNode::get_mask() const
+{
+	return m_mask;
+}
+
+void CrossbarNode::set_mask(neuron_label_type const value)
+{
+	m_mask = value;
+}
+
+typename CrossbarNode::neuron_label_type CrossbarNode::get_target() const
+{
+	return m_target;
+}
+
+void CrossbarNode::set_target(neuron_label_type const value)
+{
+	m_target = value;
+}
+
+bool CrossbarNode::get_enable_drop_counter() const
+{
+	return m_enable_drop_counter;
+}
+
+void CrossbarNode::set_enable_drop_counter(bool const value)
+{
+	m_enable_drop_counter = value;
+}
+
+bool CrossbarNode::operator==(CrossbarNode const& other) const
+{
+	return (m_mask == other.m_mask) && (m_target == other.m_target) &&
+	       (m_enable_drop_counter == other.m_enable_drop_counter);
+}
+
+bool CrossbarNode::operator!=(CrossbarNode const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, CrossbarNode const& config)
+{
+	return print_words_for_each_backend(os, config);
+}
+
+template <typename AddressT>
+std::array<AddressT, CrossbarNode::read_config_size_in_words> CrossbarNode::read_addresses(
+    coordinate_type const& /* coord */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CrossbarNode::read_config_size_in_words>
+CrossbarNode::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarNode::read_config_size_in_words>
+    CrossbarNode::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& coord) const;
+
+template <typename AddressT>
+std::array<AddressT, CrossbarNode::write_config_size_in_words> CrossbarNode::write_addresses(
+    coordinate_type const& coord) const
+{
+	return {AddressT(crossbar_node_base_address + coord.toEnum())};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CrossbarNode::write_config_size_in_words>
+CrossbarNode::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarNode::write_config_size_in_words>
+    CrossbarNode::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& coord) const;
+
+namespace {
+
+struct CrossbarNodeBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t mask                : 14;
+			uint32_t /* unused */        :  2;
+			uint32_t target              : 14;
+			uint32_t /* unused */        :  1;
+			uint32_t enable_drop_counter :  1;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	CrossbarNodeBitfield() { u.raw = 0u; }
+
+	CrossbarNodeBitfield(uint32_t data) { u.raw = data; }
+};
+
+} // namespace
+
+template <typename WordT>
+std::array<WordT, CrossbarNode::write_config_size_in_words> CrossbarNode::encode() const
+{
+	CrossbarNodeBitfield bitfield;
+	bitfield.u.m.mask = m_mask;
+	bitfield.u.m.target = m_target;
+	bitfield.u.m.enable_drop_counter = m_enable_drop_counter;
+
+	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::write_config_size_in_words>
+    CrossbarNode::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CrossbarNode::write_config_size_in_words>
+CrossbarNode::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void CrossbarNode::decode(
+    std::array<WordT, CrossbarNode::read_config_size_in_words> const& /* data */)
+{}
+
+template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::read_config_size_in_words> const&
+        data);
+
+template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, CrossbarNode::read_config_size_in_words> const& data);
+
+template <class Archive>
+void CrossbarNode::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_mask));
+	ar(CEREAL_NVP(m_target));
+	ar(CEREAL_NVP(m_enable_drop_counter));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarNode)
+
 } // namespace vx
 } // namespace haldls

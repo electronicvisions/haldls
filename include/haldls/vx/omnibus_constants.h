@@ -113,5 +113,8 @@ constexpr uint32_t hicann_arq_status_base_address{l2_omnibus_mask + 0x0000'0010}
 constexpr uint32_t spl1_fabric_base_address{0x0013'0000};
 constexpr uint32_t crossbar_out_mux_base_address{spl1_fabric_base_address};
 constexpr uint32_t background_spike_source_base_address{spl1_fabric_base_address + 1};
+constexpr uint32_t crossbar_node_base_address{background_spike_source_base_address +
+                                              3 /* config size */ *
+                                                  8 /* # background spike sources */};
 
 } // namespace haldls::vx
