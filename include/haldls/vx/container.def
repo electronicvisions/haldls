@@ -58,7 +58,8 @@ PLAYBACK_CONTAINER(BackgroundSpikeSource, haldls::vx::BackgroundSpikeSource)
 PLAYBACK_CONTAINER(SystimeSync, haldls::vx::SystimeSync)
 PLAYBACK_CONTAINER(CrossbarOutputConfig, haldls::vx::CrossbarOutputConfig)
 PLAYBACK_CONTAINER(CrossbarNode, haldls::vx::CrossbarNode)
-LAST_PLAYBACK_CONTAINER(CrossbarInputDropCounter, haldls::vx::CrossbarInputDropCounter)
+PLAYBACK_CONTAINER(CrossbarInputDropCounter, haldls::vx::CrossbarInputDropCounter)
+LAST_PLAYBACK_CONTAINER(CrossbarOutputEventCounter, haldls::vx::CrossbarOutputEventCounter)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER

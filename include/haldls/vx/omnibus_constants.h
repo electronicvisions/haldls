@@ -118,5 +118,7 @@ constexpr uint32_t crossbar_node_base_address{background_spike_source_base_addre
                                                   8 /* # background spike sources */};
 constexpr uint32_t crossbar_input_drop_counter_base_address{crossbar_node_base_address + (8 * 3) + (4 * 9) +
                                                             (8 * 2)};
+constexpr uint32_t crossbar_output_event_counter_base_address{
+    crossbar_input_drop_counter_base_address + 20};
 
 } // namespace haldls::vx

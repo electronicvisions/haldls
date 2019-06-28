@@ -183,6 +183,85 @@ struct BackendContainerTrait<CrossbarInputDropCounter>
 
 
 /**
+ * Crossbar output event counter counting events routed to an output.
+ */
+class GENPYBIND(visible) CrossbarOutputEventCounter
+{
+public:
+	typedef halco::hicann_dls::vx::CrossbarOutputOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::
+	          RantWrapper<Value, uint_fast32_t, hate::math::pow(2, 24) - 1, 0>
+	{
+		constexpr explicit Value(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	/** Default constructor. */
+	CrossbarOutputEventCounter() SYMBOL_VISIBLE;
+
+	/**
+	 * Construct from value.
+	 * @param value Value
+	 */
+	CrossbarOutputEventCounter(Value value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get event counter value.
+	 * @return Value
+	 */
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set event counter value.
+	 * @param value Value
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(Value value) SYMBOL_VISIBLE;
+
+	bool operator==(CrossbarOutputEventCounter const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CrossbarOutputEventCounter const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, CrossbarOutputEventCounter const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+	Value m_value;
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<CrossbarOutputEventCounter>
+    : public BackendContainerBase<
+          CrossbarOutputEventCounter,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
+
+} // namespace detail
+
+
+/**
  * Node of the crossbar routing events from a CrossbarInputOnDLS to a CrossbarOutputOnDLS.
  * A event is routed exactly if the following statement is true:
  *     (event_label & mask) == target
