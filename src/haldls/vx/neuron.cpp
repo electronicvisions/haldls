@@ -291,13 +291,13 @@ std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& conf
 	// clang-format off
 	os << "NAME\t\t\t\tVALUE\tDESCRIPTION" << std::endl
 	<< std::boolalpha
-	<< "en_event_regs\t\t\t" << config.m_en_event_regs << "\t?" << std::endl
+	<< "enable_event_registers\t\t" << config.m_en_event_regs << "\t?" << std::endl
 	<< "force_reset\t\t\t" << config.m_force_reset << "\t?" << std::endl
-	<< "en_clocks\t\t\t" << config.m_en_clocks << "\t?" << std::endl
+	<< "enable_clocks\t\t\t" << config.m_en_clocks << "\t?" << std::endl
 	<< "clock_scale_slow\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_slow)) << "\t?" << std::endl
 	<< "clock_scale_fast\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_fast)) << "\t?" << std::endl
-	<< "sample_pos_edge\t\t\t" << hate::join_string(config.m_sample_pos_edge, ", ") << "\t?" << std::endl
-	<< "clock_scale_adapt_pulse\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_adapt_pulse)) << "\t?" << std::endl
+	<< "sample_positive_edge\t\t\t" << hate::join_string(config.m_sample_pos_edge, ", ") << "\t?" << std::endl
+	<< "clock_scale_adaptation_pulse\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_adapt_pulse)) << "\t?" << std::endl
 	<< "clock_scale_post_pulse\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_post_pulse)) << "\t?" << std::endl
 	<< "wait_counter_init\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_counter_init)) << "\t?";
 	// clang-format on
@@ -684,23 +684,23 @@ std::ostream& operator<<(std::ostream& os, NeuronBackendConfig const& config)
 	// TODO add descriptions
 	print_words_for_each_backend<NeuronBackendConfig>(os, config);
 	// clang-format off
-	os << "NAME\t\t\tVALUE\tDESCRIPTION" << std::endl
+	os << "NAME\t\t\t\tVALUE\tDESCRIPTION" << std::endl
 	<< std::boolalpha
-	<< "address_out\t\t" << std::to_string(config.m_address_out) << "\t?" << std::endl
-	<< "reset_holdoff\t" << std::to_string(config.m_reset_holdoff) << "\t?" << std::endl
-	<< "refractory_time\t\t\t" << std::to_string(config.m_refractory_time) << "\t?" << std::endl
-	<< "post_overwrite\t\t" << config.m_post_overwrite << "\t?" << std::endl
-	<< "select_input_clock\t" << std::to_string(config.m_select_input_clock) << "\t?" << std::endl
-	<< "en_adapt_pulse\t\t" << config.m_en_adapt_pulse << "\t?" << std::endl
-	<< "en_baesian_extension\t" << config.m_en_baesian_extension << "\t?" << std::endl
-	<< "en_neuron_slave\t\t" << config.m_en_neuron_slave << "\t?" << std::endl
-	<< "connect_fire_bottom\t" << config.m_connect_fire_bottom << "\t?" << std::endl
-	<< "connect_fire_from_right\t" << config.m_connect_fire_from_right << "\t?" << std::endl
-	<< "connect_fire_to_right\t" << config.m_connect_fire_to_right << "\t?" << std::endl
-	<< "en_spike_out\t\t" << config.m_en_spike_out << "\t?" << std::endl
-	<< "en_neuron_master\t" << config.m_en_neuron_master << "\t?" << std::endl
-	<< "en_0_baesian\t\t" << config.m_en_0_baesian << "\t?" << std::endl
-	<< "en_1_baesian\t\t" << config.m_en_1_baesian << "\t?";
+	<< "address_out\t\t\t" << std::to_string(config.m_address_out) << "\t?" << std::endl
+	<< "reset_holdoff_config\t\t" << std::to_string(config.m_reset_holdoff) << "\t?" << std::endl
+	<< "refractory_time\t\t\t\t" << std::to_string(config.m_refractory_time) << "\t?" << std::endl
+	<< "post_overwrite\t\t\t" << config.m_post_overwrite << "\t?" << std::endl
+	<< "select_input_clock\t\t" << std::to_string(static_cast<uint8_t>(config.m_select_input_clock)) << "\t?" << std::endl
+	<< "enable_adaptation_pulse\t\t" << config.m_en_adapt_pulse << "\t?" << std::endl
+	<< "enable_bayesian_extension\t" << config.m_en_baesian_extension << "\t?" << std::endl
+	<< "enable_neuron_slave\t\t" << config.m_en_neuron_slave << "\t?" << std::endl
+	<< "connect_fire_bottom\t\t" << config.m_connect_fire_bottom << "\t?" << std::endl
+	<< "connect_fire_from_right\t\t" << config.m_connect_fire_from_right << "\t?" << std::endl
+	<< "connect_fire_to_right\t\t" << config.m_connect_fire_to_right << "\t?" << std::endl
+	<< "enable_spike_out\t\t" << config.m_en_spike_out << "\t?" << std::endl
+	<< "enable_neuron_master\t\t" << config.m_en_neuron_master << "\t?" << std::endl
+	<< "enable_0_bayesian\t\t" << config.m_en_0_baesian << "\t?" << std::endl
+	<< "enable_1_bayesian\t\t" << config.m_en_1_baesian << "\t?";
 	// clang-format on
 	return os;
 }
@@ -1274,41 +1274,41 @@ std::ostream& operator<<(std::ostream& os, NeuronConfig const& config)
 {
 	print_words_for_each_backend<NeuronConfig>(os, config);
 	// clang-format off
-    os << "NAME\t\t\tVALUE\tDESCRIPTION" << std::endl
+    os << "NAME\t\t\t\t\t\tVALUE\tDESCRIPTION" << std::endl
     << std::boolalpha
-    << "en_comp_cond_div\t" << config.m_en_comp_cond_div << "\tdivide inter-compartment conductance bias by 4" << std::endl
-    << "en_comp_cond_mul\t" << config.m_en_comp_cond_mul << "\tmultiply inter-compartment conductance bias by 4" << std::endl
-    << "connect_soma\t\t" << config.m_connect_soma << "\tconnect local membrane to soma" << std::endl
-    << "connect_membrane_right\t\t" << config.m_connect_membrane_right << "\tconnect local membrane to membrane on right" << std::endl
-    << "en_comp_cond\t\t" << config.m_en_comp_cond << "\tenable inter-compartment conductance" << std::endl
-    << "connect_bottom\t\t" << config.m_connect_bottom << "\tconnect local membrane to bottom membrane" << std::endl
-    << "connect_somata\t\t" << config.m_connect_somata << "\tconnect soma to soma on the right" << std::endl
-    << "en_fire\t\t\t" << config.m_en_fire << "\tenable fire output of neuron (also gates bypass circuits)" << std::endl
-    << "en_thresh_comp\t\t" << config.m_en_thresh_comp << "\tenable threshold comparator" << std::endl
-    << "en_synin_inh\t\t" << config.m_en_synin_inh << "\tenable inh. synaptic input" << std::endl
-    << "en_synin_exc\t\t" << config.m_en_synin_exc << "\tenable exc. synaptic input" << std::endl
-    << "en_byp_inh\t\t" << config.m_en_byp_inh << "\tenable inh. bypass circuit" << std::endl
-    << "en_byp_exc\t\t" << config.m_en_byp_exc << "\tenable exc. bypass circuit" << std::endl
-    << "en_mem_off\t\t" << config.m_en_mem_off << "\tenable membrane offset current (can also be used for stimulus/step current)" << std::endl
-    << "en_cap_merge\t\t" << config.m_en_cap_merge << "\tenable merging of membrane and adaptation capacitances" << std::endl
-    << "mem_cap_size\t\t" << std::to_string(config.m_mem_cap_size) << "\tconfigure membrane size" << std::endl
-    << "invert_adapt_a\t\t" << config.m_invert_adapt_a << "\tflip the sign of a" << std::endl
-    << "invert_adapt_b\t\t" << config.m_invert_adapt_b << "\tflip the sign of b" << std::endl
-    << "en_adapt\t\t" << config.m_en_adapt << "\tenable adaptation" << std::endl
-    << "en_adapt_cap\t\t" << config.m_en_adapt_cap << "\tenable adaptation capacitance" << std::endl
-    << "exp_weight\t\t" << std::to_string(config.m_exp_weight) << "\tstrength of exponential term" << std::endl
-    << "en_exp\t\t\t" << config.m_en_exp << "\tenable exponential term" << std::endl
-    << "en_read_vw\t\t" << config.m_en_read_vw << "\tenable readout of adaptation voltage (user must also configure readout_select!)" << std::endl
-    << "en_unbuf_access\t\t" << config.m_en_unbuf_access << "\tenable direct, unbuffered access to membrane" << std::endl
-    << "en_readout_amp\t\t" << config.m_en_readout_amp << "\tenable readout amplifier" << std::endl
-    << "readout_select\t\t" << std::to_string(static_cast<uint_fast8_t>(config.m_readout_select)) << "\tselect readout source (0: membrane, 1: exc. synin, 2: inh. synin, 3: adaptation)" << std::endl
-    << "en_readout\t\t" << config.m_en_readout << "\tenable readout" << std::endl
-    << "en_reset_deg\t\t" << config.m_en_reset_deg << "\tenable source degeneration of leak/reset OTA in reset mode" << std::endl
-    << "en_reset_div\t\t" << config.m_en_reset_div << "\tenable division (8x) of conductance in reset mode" << std::endl
-    << "en_reset_mul\t\t" << config.m_en_reset_mul << "\tenable multiplication (8x) of conductance in reset mode" << std::endl
-    << "en_leak_deg\t\t" << config.m_en_leak_deg << "\tenable source degeneration of leak/reset OTA in leak mode" << std::endl
-    << "en_leak_div\t\t" << config.m_en_leak_div << "\tenable division (8x) of conductance in leak mode" << std::endl
-    << "en_leak_mul\t\t" << config.m_en_leak_mul << "\tenable multiplication (8x) of conductance in leak mode";
+    << "enable_divide_multicomp_conductance_bias\t" << config.m_en_comp_cond_div << "\tdivide inter-compartment conductance bias by 4" << std::endl
+    << "enable_multiply_multicomp_conductance_bias\t" << config.m_en_comp_cond_mul << "\tmultiply inter-compartment conductance bias by 4" << std::endl
+    << "connect_soma\t\t\t\t\t" << config.m_connect_soma << "\tconnect local membrane to soma" << std::endl
+    << "connect_membrane_right\t\t\t\t" << config.m_connect_membrane_right << "\tconnect local membrane to membrane on right" << std::endl
+    << "enable_multicomp_conductance\t\t\t" << config.m_en_comp_cond << "\tenable inter-compartment conductance" << std::endl
+    << "connect_bottom\t\t\t\t\t" << config.m_connect_bottom << "\tconnect local membrane to bottom membrane" << std::endl
+    << "connect_somata\t\t\t\t\t" << config.m_connect_somata << "\tconnect soma to soma on the right" << std::endl
+    << "enable_fire\t\t\t\t\t" << config.m_en_fire << "\tenable fire output of neuron (also gates bypass circuits)" << std::endl
+    << "enable_threshold_comparator\t\t\t" << config.m_en_thresh_comp << "\tenable threshold comparator" << std::endl
+    << "enable_synaptic_input_inhibitory\t\t" << config.m_en_synin_inh << "\tenable inh. synaptic input" << std::endl
+    << "enable_synaptic_input_excitatory\t\t" << config.m_en_synin_exc << "\tenable exc. synaptic input" << std::endl
+    << "enable_bypass_inhibitory\t\t\t" << config.m_en_byp_inh << "\tenable inh. bypass circuit" << std::endl
+    << "enable_bypass_excitatory\t\t\t" << config.m_en_byp_exc << "\tenable exc. bypass circuit" << std::endl
+    << "enable_membrane_offset\t\t\t\t" << config.m_en_mem_off << "\tenable membrane offset current (can also be used for stimulus/step current)" << std::endl
+    << "enable_capacitor_merge\t\t\t\t" << config.m_en_cap_merge << "\tenable merging of membrane and adaptation capacitances" << std::endl
+    << "membrane_capacitor_size\t\t\t\t" << std::to_string(config.m_mem_cap_size) << "\tconfigure membrane size" << std::endl
+    << "invert_adaptation_a\t\t\t\t" << config.m_invert_adapt_a << "\tflip the sign of a" << std::endl
+    << "invert_adaptation_b\t\t\t\t" << config.m_invert_adapt_b << "\tflip the sign of b" << std::endl
+    << "enable_adaptation\t\t\t\t" << config.m_en_adapt << "\tenable adaptation" << std::endl
+    << "enable_adaptation_capacitor\t\t\t" << config.m_en_adapt_cap << "\tenable adaptation capacitance" << std::endl
+    << "exponential_term_strength\t\t\t" << std::to_string(config.m_exp_weight) << "\tstrength of exponential term" << std::endl
+    << "enable_exponential\t\t\t\t" << config.m_en_exp << "\tenable exponential term" << std::endl
+    << "enable_adaptation_readout\t\t\t" << config.m_en_read_vw << "\tenable readout of adaptation voltage (user must also configure readout_select!)" << std::endl
+    << "enable_unbuffered_access\t\t\t" << config.m_en_unbuf_access << "\tenable direct, unbuffered access to membrane" << std::endl
+    << "enable_readout_amplifier\t\t\t" << config.m_en_readout_amp << "\tenable readout amplifier" << std::endl
+    << "readout_source\t\t\t\t\t" << std::to_string(static_cast<uint_fast8_t>(config.m_readout_select)) << "\tselect readout source (0: membrane, 1: exc. synin, 2: inh. synin, 3: adaptation)" << std::endl
+    << "enable_readout\t\t\t\t\t" << config.m_en_readout << "\tenable readout" << std::endl
+    << "enable_reset_degeneration\t\t\t" << config.m_en_reset_deg << "\tenable source degeneration of leak/reset OTA in reset mode" << std::endl
+    << "enable_reset_division\t\t\t\t" << config.m_en_reset_div << "\tenable division (8x) of conductance in reset mode" << std::endl
+    << "enable_reset_multiplication\t\t\t" << config.m_en_reset_mul << "\tenable multiplication (8x) of conductance in reset mode" << std::endl
+    << "enable_leak_degeneration\t\t\t" << config.m_en_leak_deg << "\tenable source degeneration of leak/reset OTA in leak mode" << std::endl
+    << "enable_leak_division\t\t\t\t" << config.m_en_leak_div << "\tenable division (8x) of conductance in leak mode" << std::endl
+    << "enable_leak_multiplication\t\t\t" << config.m_en_leak_mul << "\tenable multiplication (8x) of conductance in leak mode";
 	// clang-format on
 	return os;
 }
