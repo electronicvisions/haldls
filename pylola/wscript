@@ -56,7 +56,7 @@ def build(bld):
 
     bld(
         name='pylola_test_v2',
-        tests=bld.path.ant_glob('test/*.py'),
+        tests=bld.path.ant_glob('test/*_v2.py'),
         features='use pytest',
         use=['pylola_v2'],
         install_path='${PREFIX}/bin',
@@ -65,7 +65,7 @@ def build(bld):
 
     bld(
         name='pylola_test_vx',
-        tests=bld.path.ant_glob('test/*.py'),
+        tests=bld.path.ant_glob('test/*_vx.py'),
         features='use pytest',
         use=['pylola_vx'],
         install_path='${PREFIX}/bin',
