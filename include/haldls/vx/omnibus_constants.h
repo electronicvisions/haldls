@@ -116,5 +116,7 @@ constexpr uint32_t background_spike_source_base_address{spl1_fabric_base_address
 constexpr uint32_t crossbar_node_base_address{background_spike_source_base_address +
                                               3 /* config size */ *
                                                   8 /* # background spike sources */};
+constexpr uint32_t crossbar_input_drop_counter_base_address{crossbar_node_base_address + (8 * 3) + (4 * 9) +
+                                                            (8 * 2)};
 
 } // namespace haldls::vx

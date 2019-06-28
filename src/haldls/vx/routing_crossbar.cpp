@@ -171,6 +171,92 @@ void CrossbarOutputConfig::serialize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarOutputConfig)
 
 
+CrossbarInputDropCounter::CrossbarInputDropCounter() : m_value() {}
+
+CrossbarInputDropCounter::CrossbarInputDropCounter(Value const value) : m_value(value) {}
+
+CrossbarInputDropCounter::Value CrossbarInputDropCounter::get_value() const
+{
+	return m_value;
+}
+
+void CrossbarInputDropCounter::set_value(Value const value)
+{
+	m_value = value;
+}
+
+bool CrossbarInputDropCounter::operator==(CrossbarInputDropCounter const& other) const
+{
+	return (m_value == other.m_value);
+}
+
+bool CrossbarInputDropCounter::operator!=(CrossbarInputDropCounter const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, CrossbarInputDropCounter const& config)
+{
+	return print_words_for_each_backend(os, config);
+}
+
+template <typename AddressT>
+std::array<AddressT, CrossbarInputDropCounter::config_size_in_words>
+CrossbarInputDropCounter::addresses(coordinate_type const& coord) const
+{
+	return {AddressT(crossbar_input_drop_counter_base_address + coord.toEnum())};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CrossbarInputDropCounter::config_size_in_words>
+CrossbarInputDropCounter::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarInputDropCounter::config_size_in_words>
+    CrossbarInputDropCounter::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& coord) const;
+
+template <typename WordT>
+std::array<WordT, CrossbarInputDropCounter::config_size_in_words> CrossbarInputDropCounter::encode()
+    const
+{
+	return {WordT(fisch::vx::OmnibusData(m_value))};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarInputDropCounter::config_size_in_words>
+    CrossbarInputDropCounter::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, CrossbarInputDropCounter::config_size_in_words>
+    CrossbarInputDropCounter::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void CrossbarInputDropCounter::decode(
+    std::array<WordT, CrossbarInputDropCounter::config_size_in_words> const& data)
+{
+	m_value = Value(data.at(0).get());
+}
+
+template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::OmnibusChipOverJTAG,
+        CrossbarInputDropCounter::config_size_in_words> const& data);
+
+template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, CrossbarInputDropCounter::config_size_in_words> const& data);
+
+template <class Archive>
+void CrossbarInputDropCounter::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarInputDropCounter)
+
+
 CrossbarNode::CrossbarNode() : m_mask(), m_target(), m_enable_drop_counter() {}
 
 typename CrossbarNode::neuron_label_type CrossbarNode::get_mask() const
