@@ -1,5 +1,5 @@
 import unittest
-from dlens.v2 import halco, hal, sta
+from dlens_v2 import halco, hal, sta
 
 
 class TestDlensV2(unittest.TestCase):

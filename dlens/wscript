@@ -28,11 +28,27 @@ def configure(cfg):
 
 
 def build(bld):
-    bld(name='dlens',
+    bld(name='dlens_v2',
         features='py pylint pycodestyle',
-        source = bld.path.ant_glob('dlens/**/*.py'),
+        source = bld.path.ant_glob('dlens_v2/**/*.py'),
         relative_trick=True,
-        use = ['pyhaldls_v2','pystadls_v2', 'pyhalco_hicann_dls_v2', 'pyhalco_common'],
+        use = ['pyhaldls_v2',
+               'pystadls_v2',
+               'pyhalco_hicann_dls_v2'
+        ],
+        install_path = '${PREFIX}/lib',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+    )
+
+    bld(name='dlens_vx',
+        features='py pylint pycodestyle',
+        source = bld.path.ant_glob('dlens_vx/**/*.py'),
+        relative_trick=True,
+        use = ['pyhaldls_vx',
+               'pystadls_vx',
+               'pyhalco_hicann_dls_vx'
+        ],
         install_path = '${PREFIX}/lib',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
@@ -41,10 +57,29 @@ def build(bld):
     bld(name='dlens_swtest_v2',
         tests='tests/dlens_swtest_v2.py',
         features='use pytest pylint pycodestyle',
-        use=['dlens'],
+        use=['dlens_v2'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+    )
+
+    bld(name='dlens_swtest_vx',
+        tests='tests/dlens_swtest_vx.py',
+        features='use pytest pylint pycodestyle',
+        use=['dlens_vx'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+    )
+
+    bld(name='dlens_hwtest_vx',
+        tests='tests/dlens_hwtest_vx.py',
+        features='use pytest pylint pycodestyle',
+        use=['dlens_vx'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE
     )
 
     bld.add_post_fun(summary)
