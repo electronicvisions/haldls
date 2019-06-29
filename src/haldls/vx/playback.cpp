@@ -208,11 +208,6 @@ PlaybackProgramBuilder::PlaybackProgramBuilder() :
     m_builder_impl(std::make_unique<fisch::vx::PlaybackProgramBuilder>())
 {}
 
-void PlaybackProgramBuilder::halt()
-{
-	m_builder_impl->halt();
-}
-
 PlaybackProgram PlaybackProgramBuilder::done()
 {
 	return PlaybackProgram(m_builder_impl->done());

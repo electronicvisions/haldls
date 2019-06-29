@@ -42,7 +42,6 @@ TEST(PPUMemoryWord, WRHighspeed)
 
 	builder.write<Timer>(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
-	builder.halt();
 	auto program = builder.done();
 
 	auto executor = generate_playback_program_test_executor();

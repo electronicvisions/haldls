@@ -113,8 +113,6 @@ public:
 	    typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;
 #include "haldls/vx/container.def"
 
-	void halt() SYMBOL_VISIBLE;
-
 	PlaybackProgram done() SYMBOL_VISIBLE;
 
 private:

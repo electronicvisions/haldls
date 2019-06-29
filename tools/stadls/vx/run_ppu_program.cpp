@@ -185,7 +185,6 @@ int main(int argc, char* argv[])
 	// Read PPU memory words with Omnibus over JTAG backend
 	auto ppu_memory_return_ticket = builder.read<PPUMemoryWord>(ppu_return_code_coord, backend);
 	auto ppu_status_ticket = builder.read<PPUStatusRegister>(ppu_status_register_coord, backend);
-	builder.halt();
 
 	// run ppu program
 	LOG4CXX_INFO(logger, "Creating program.");

@@ -31,7 +31,6 @@ class HwTestPyhaldlsVx(unittest.TestCase):
                                int(fisch.fpga_clock_cycles_per_us * 1e6 / 8))
             shiftreg.set_enable_led(led, False)
         builder.write(halco.ShiftRegisterOnBoard(), shiftreg)
-        builder.halt()
 
         # pop playback program
         program = builder.done()

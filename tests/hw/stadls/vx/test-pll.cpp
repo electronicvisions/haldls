@@ -68,7 +68,6 @@ protected:
 		ticket = builder.read<haldls::vx::ADPLL>(coord, haldls::vx::Backend::OmnibusChipOverJTAG);
 
 		builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));
-		builder.halt();
 
 		program = builder.done();
 	}
@@ -110,7 +109,6 @@ TEST_F(PLLTest, WriteReadPLLClockOutputBlockOmnibusEquality)
 	    coord, haldls::vx::Backend::OmnibusChipOverJTAG);
 
 	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));
-	builder.halt();
 
 	auto program = builder.done();
 	test_run_program(program);
@@ -133,7 +131,6 @@ TEST_F(PLLTest, WriteReadPLLSelfTestOmnibusEquality)
 	    builder.read<haldls::vx::PLLSelfTest>(coord, haldls::vx::Backend::OmnibusChipOverJTAG);
 
 	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));
-	builder.halt();
 
 	auto program = builder.done();
 	test_run_program(program);
@@ -176,7 +173,6 @@ TEST_F(PLLTest, PLLSelfTest)
 
 	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));
-	builder.halt();
 
 	auto program = builder.done();
 	test_run_program(program);
