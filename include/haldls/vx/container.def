@@ -30,5 +30,6 @@ PLAYBACK_CONTAINER(PerfTest, haldls::vx::PerfTest)
 PLAYBACK_CONTAINER(PerfTestStatus, haldls::vx::PerfTestStatus)
 PLAYBACK_CONTAINER(SystimeSyncBase, haldls::vx::SystimeSyncBase)
 PLAYBACK_CONTAINER(CommonSynramConfig, haldls::vx::CommonSynramConfig)
+PLAYBACK_CONTAINER(SynapseQuad, haldls::vx::SynapseQuad)
 
 #undef PLAYBACK_CONTAINER

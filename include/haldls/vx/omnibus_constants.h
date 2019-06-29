@@ -14,6 +14,10 @@ constexpr uint32_t ppu_status_register_address_mask{0x0020'0001};
 
 constexpr uint32_t synram_ctrl_bottom_base_address{ppu_bottom_subtree_address};
 constexpr uint32_t synram_ctrl_top_base_address{ppu_top_subtree_address};
+constexpr uint32_t synram_synapse_bottom_base_address{(bottom_ppu_base_address | (1 << 22)) +
+                                                      0x000f'0000};
+constexpr uint32_t synram_synapse_top_base_address{(top_ppu_base_address | (1 << 22)) +
+                                                   0x000f'0000};
 
 constexpr uint32_t phy_on_chip_base_address{0x0004'0000};
 constexpr uint32_t pll_base_address{0x0008'0000};
