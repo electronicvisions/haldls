@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import os
+from os.path import join
+from waflib.extras.symwaf2ic import get_toplevel_path
 
 
 def depends(ctx):
@@ -283,23 +285,30 @@ def build(bld):
         bld.recurse("dlens")
 
 
-def doc(dox):
-    dox(
+    bld(
         features = 'doxygen',
-        doxyfile = dox.root.make_node('%s/code-format/doxyfile' % dox.env.PREFIX),
+        doxyfile = bld.root.make_node('%s/code-format/doxyfile' % bld.env.PREFIX),
         install_path = 'doc/haldls',
         pars = {
             "PROJECT_NAME": "\"HALDLS\"",
-            "INPUT": "%s/haldls/include/haldls" % dox.env.PREFIX
+            "INPUT": "%s/haldls/include/haldls" % bld.env.PREFIX,
+            "OUTPUT_DIRECTORY": "%s/build/haldls/haldls/doc" % bld.env.PREFIX,
+            "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= GENPYBIND_TAG_HALDLS_V2= GENPYBIND_TAG_HALDLS_VX=",
+            "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/haldls_doxygen_warnings.log"),
+            "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
         },
     )
 
-    dox(
+    bld(
         features = 'doxygen',
-        doxyfile = dox.root.make_node('%s/code-format/doxyfile' % dox.env.PREFIX),
+        doxyfile = bld.root.make_node('%s/code-format/doxyfile' % bld.env.PREFIX),
         install_path = 'doc/stadls',
         pars = {
             "PROJECT_NAME": "\"STADLS\"",
-            "INPUT": "%s/haldls/include/stadls" % dox.env.PREFIX
+            "INPUT": "%s/haldls/include/stadls" % bld.env.PREFIX,
+            "OUTPUT_DIRECTORY": "%s/build/haldls/stadls/doc" % bld.env.PREFIX,
+            "PREDEFINED": "GENPYBIND()= GENPYBIND_TAG_STADLS_V2=",
+            "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/stadls_doxygen_warnings.log"),
+            "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
         },
     )
