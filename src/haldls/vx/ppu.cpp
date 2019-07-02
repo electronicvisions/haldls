@@ -54,7 +54,7 @@ std::array<AddressT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::address
     coordinate_type const& coord) const
 {
 	uint32_t tmp = coord.toPPUMemoryWordOnPPU().value();
-	if (coord.toPPUOnDLS().value() == 0) {
+	if (coord.toPPUOnDLS() == halco::hicann_dls::vx::PPUOnDLS::top) {
 		tmp += top_ppu_base_address;
 	} else {
 		tmp += bottom_ppu_base_address;
