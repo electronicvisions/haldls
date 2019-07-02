@@ -37,13 +37,11 @@ def build(bld):
         target='pyhaldls_v2',
         source='../include/haldls/v2/container.h',
         genpybind_tags='haldls_v2',
-        features='genpybind cxx cxxshlib pyext post_task',
+        features='genpybind cxx cxxshlib pyext',
         use=['haldls_v2', 'PYBIND11HALDLS'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
-        post_task=['pyhalco_hicann_dls_v2', 'pyhaldls_test_v2'],
     )
-
 
     bld(
         name='pyhaldls_test_v2',
@@ -58,11 +56,10 @@ def build(bld):
         target='pyhaldls_vx',
         source='../include/haldls/vx/haldls.h',
         genpybind_tags='haldls_vx',
-        features='genpybind cxx cxxshlib pyext post_task',
+        features='genpybind cxx cxxshlib pyext',
         use=['haldls_vx', 'PYBIND11HALDLS'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
-        post_task=['pyhalco_hicann_dls_vx', 'pyfisch_vx'],
     )
 
     bld.add_post_fun(summary)

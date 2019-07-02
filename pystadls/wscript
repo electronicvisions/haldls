@@ -41,15 +41,10 @@ def build(bld):
         target='pystadls_v2',
         source='../include/stadls/v2/io.h',
         genpybind_tags='stadls_v2',
-        features='genpybind cxx cxxshlib pyext post_task',
+        features='genpybind cxx cxxshlib pyext',
         use=['stadls_v2', 'PYBIND11HALDLS', 'pylogging'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
-        post_task=[
-            'pyhalco_hicann_dls_v2',
-            'pystadls_test_v2',
-            'pystadls_hwtest_v2',
-        ],
     )
 
     bld(

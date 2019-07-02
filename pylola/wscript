@@ -37,22 +37,20 @@ def build(bld):
         target='pylola_v2',
         source='../include/lola/v2/lola.h',
         genpybind_tags='lola_v2',
-        features='genpybind cxx cxxshlib pyext post_task',
+        features='genpybind cxx cxxshlib pyext',
         use=['lola_v2', 'pyhalco_common_files', 'pyhalco_hicann_dls_v2', 'pyhaldls_v2', 'PYBIND11LOLA'],
         install_path='${PREFIX}/lib',
-        linkflags='-Wl,-z,defs',
-        post_task=['pylola_test_v2'],
+        linkflags='-Wl,-z,defs'
     )
 
     bld(
         target='pylola_vx',
         source='../include/lola/vx/lola.h',
         genpybind_tags='lola_vx',
-        features='genpybind cxx cxxshlib pyext post_task',
+        features='genpybind cxx cxxshlib pyext',
         use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'PYBIND11LOLA'],
         install_path='${PREFIX}/lib',
-        linkflags='-Wl,-z,defs',
-        post_task=['pylola_test_vx'],
+        linkflags='-Wl,-z,defs'
     )
 
 
