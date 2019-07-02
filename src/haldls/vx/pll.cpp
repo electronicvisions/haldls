@@ -503,23 +503,23 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLClockOutputBlock::ClockOutput)
 
 PLLClockOutputBlock::PLLClockOutputBlock() : m_output()
 {
-	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::SerdesSerSendClk].set_select_adpll(
+	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::serdes_ser_send_clk].set_select_adpll(
 	    halco::hicann_dls::vx::ADPLLOnDLS(0));
-	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::PhyRefClk].set_select_adpll(
+	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::phy_ref_clk].set_select_adpll(
 	    halco::hicann_dls::vx::ADPLLOnDLS(0));
-	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::PPUClk].set_select_adpll(
+	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::ppu_clk].set_select_adpll(
 	    halco::hicann_dls::vx::ADPLLOnDLS(1));
-	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::MADCClk].set_select_adpll(
+	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::madc_clk].set_select_adpll(
 	    halco::hicann_dls::vx::ADPLLOnDLS(0));
 
-	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::SerdesSerSendClk].set_select_adpll_output(
-	    ClockOutput::ADPLLOutput::Core0);
-	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::PhyRefClk].set_select_adpll_output(
-	    ClockOutput::ADPLLOutput::Core0);
-	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::PPUClk].set_select_adpll_output(
-	    ClockOutput::ADPLLOutput::Core1);
-	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::MADCClk].set_select_adpll_output(
-	    ClockOutput::ADPLLOutput::DCO);
+	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::serdes_ser_send_clk]
+	    .set_select_adpll_output(ClockOutput::ADPLLOutput::core_0);
+	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::phy_ref_clk].set_select_adpll_output(
+	    ClockOutput::ADPLLOutput::core_0);
+	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::ppu_clk].set_select_adpll_output(
+	    ClockOutput::ADPLLOutput::core_1);
+	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::madc_clk].set_select_adpll_output(
+	    ClockOutput::ADPLLOutput::dco);
 }
 
 PLLClockOutputBlock::ClockOutput const& PLLClockOutputBlock::get_clock_output(

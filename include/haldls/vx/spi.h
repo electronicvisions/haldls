@@ -32,26 +32,26 @@ public:
 
 	enum class AnalogReadoutMux1Input
 	{
-		Off,
-		ReadoutChain0,
-		ReadoutChain1,
-		MuxRfu0
+		off,
+		readout_chain_0,
+		readout_chain_1,
+		mux_rfu_0
 	};
 
 	enum class AnalogReadoutMux2Input
 	{
-		Off,
-		VReset,
-		VDDResMeas,
-		MuxDAC25
+		off,
+		v_reset,
+		vdd_res_meas,
+		mux_dac_25
 	};
 
 	enum class AnalogReadoutMux3Input
 	{
-		Off,
-		IRef,
-		MuxRfu1,
-		MuxRfu2
+		off,
+		i_ref,
+		mux_rfu_1,
+		mux_rfu_2
 	};
 
 	ShiftRegister() SYMBOL_VISIBLE;

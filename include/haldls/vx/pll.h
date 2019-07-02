@@ -342,9 +342,9 @@ public:
 		/** Possible ADPLL outputs to route to output. */
 		enum class ADPLLOutput
 		{
-			Core0,
-			Core1,
-			DCO
+			core_0,
+			core_1,
+			dco
 		};
 
 		/** Default construct PLL clock output. */

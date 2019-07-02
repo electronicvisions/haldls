@@ -11,9 +11,9 @@ namespace haldls {
 namespace vx {
 
 ShiftRegister::ShiftRegister() :
-    m_mux_1(AnalogReadoutMux1Input::Off),
-    m_mux_2(AnalogReadoutMux2Input::Off),
-    m_mux_3(AnalogReadoutMux3Input::Off),
+    m_mux_1(AnalogReadoutMux1Input::off),
+    m_mux_2(AnalogReadoutMux2Input::off),
+    m_mux_3(AnalogReadoutMux3Input::off),
     m_enable_i_ref_board(true),
     m_enable_measure_i_ref(false),
     m_enable_dac_to_readout_0(false),
@@ -215,24 +215,22 @@ std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> Shi
 	bitfield.u.m.enable_measure_i_ref = m_enable_measure_i_ref;
 	bitfield.u.m.enable_dac_to_readout_0 = m_enable_dac_to_readout_0;
 	bitfield.u.m.enable_dac_to_readout_1 = m_enable_dac_to_readout_1;
-	bitfield.u.m.disable_led_1 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED1];
-	bitfield.u.m.disable_led_2 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED2];
-	bitfield.u.m.disable_led_3 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED3];
+	bitfield.u.m.disable_led_1 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::led_1];
+	bitfield.u.m.disable_led_2 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::led_2];
+	bitfield.u.m.disable_led_3 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::led_3];
 	bitfield.u.m.enable_adc_power_down = m_enable_adc_power_down;
 	bitfield.u.m.enable_adc_reset = m_enable_adc_reset;
-	bitfield.u.m.disable_led_4 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED4];
+	bitfield.u.m.disable_led_4 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::led_4];
 	bitfield.u.m.enable_vdd25digital =
-	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD25Digital];
+	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::vdd25_digital];
 	bitfield.u.m.enable_vdd12digital =
-	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12Digital];
-	bitfield.u.m.enable_vdd25analog =
-	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD25Analog];
-	bitfield.u.m.enable_vdd12analog =
-	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12Analog];
-	bitfield.u.m.enable_vdd12madc = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12MADC];
-	bitfield.u.m.enable_vdd12pll = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::VDD12Pll];
-	bitfield.u.m.disable_led_7 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED7];
-	bitfield.u.m.disable_led_8 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::LED8];
+	    m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::vdd12_digital];
+	bitfield.u.m.enable_vdd25analog = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::vdd25_analog];
+	bitfield.u.m.enable_vdd12analog = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::vdd12_analog];
+	bitfield.u.m.enable_vdd12madc = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::vdd12_madc];
+	bitfield.u.m.enable_vdd12pll = m_enable_vdd[halco::hicann_dls::vx::VDDOnBoard::vdd12_pll];
+	bitfield.u.m.disable_led_7 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::led_7];
+	bitfield.u.m.disable_led_8 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::led_8];
 
 	return {fisch::vx::SPIShiftRegister(fisch::vx::SPIShiftRegister::Value(bitfield.u.raw))};
 }
@@ -338,9 +336,9 @@ std::array<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard, DACControl::conf
 DACControl::addresses(coordinate_type const& coord) const
 {
 	return {halco::hicann_dls::vx::SPIDACControlRegisterOnBoard(
-	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::GainReference, coord),
+	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::gain_reference, coord),
 	        halco::hicann_dls::vx::SPIDACControlRegisterOnBoard(
-	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::PowerDown, coord)};
+	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::power_down, coord)};
 }
 
 std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> DACControl::encode()

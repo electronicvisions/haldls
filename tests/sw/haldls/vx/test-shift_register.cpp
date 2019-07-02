@@ -53,19 +53,19 @@ TEST(ShiftRegister, General)
 	}
 
 	{
-		auto value = ShiftRegister::AnalogReadoutMux1Input::ReadoutChain0;
+		auto value = ShiftRegister::AnalogReadoutMux1Input::readout_chain_0;
 		reg.set_select_analog_readout_mux_1_input(value);
 		EXPECT_EQ(reg.get_select_analog_readout_mux_1_input(), value);
 	}
 
 	{
-		auto value = ShiftRegister::AnalogReadoutMux2Input::VReset;
+		auto value = ShiftRegister::AnalogReadoutMux2Input::v_reset;
 		reg.set_select_analog_readout_mux_2_input(value);
 		EXPECT_EQ(reg.get_select_analog_readout_mux_2_input(), value);
 	}
 
 	{
-		auto value = ShiftRegister::AnalogReadoutMux3Input::MuxRfu2;
+		auto value = ShiftRegister::AnalogReadoutMux3Input::mux_rfu_2;
 		reg.set_select_analog_readout_mux_3_input(value);
 		EXPECT_EQ(reg.get_select_analog_readout_mux_3_input(), value);
 	}
@@ -100,12 +100,12 @@ TEST(ShiftRegister, EncodeDecode)
 	config.set_enable_i_ref_board(true);
 	config.set_enable_dac_to_readout_0(true);
 	config.set_enable_adc_power_down(true);
-	config.set_enable_led(LEDOnBoard::LED1, true);
-	config.set_enable_led(LEDOnBoard::LED2, true);
-	config.set_enable_led(LEDOnBoard::LED3, true);
-	config.set_enable_led(LEDOnBoard::LED4, true);
-	config.set_enable_led(LEDOnBoard::LED7, false);
-	config.set_enable_led(LEDOnBoard::LED8, false);
+	config.set_enable_led(LEDOnBoard::led_1, true);
+	config.set_enable_led(LEDOnBoard::led_2, true);
+	config.set_enable_led(LEDOnBoard::led_3, true);
+	config.set_enable_led(LEDOnBoard::led_4, true);
+	config.set_enable_led(LEDOnBoard::led_7, false);
+	config.set_enable_led(LEDOnBoard::led_8, false);
 	for (auto vdd : iter_all<VDDOnBoard>()) {
 		config.set_enable_vdd(vdd, false);
 	}
@@ -137,12 +137,12 @@ TEST(ShiftRegister, CerealizeCoverage)
 	obj1.set_enable_dac_to_readout_1(!obj1.get_enable_dac_to_readout_1());
 	obj1.set_enable_adc_power_down(!obj1.get_enable_adc_power_down());
 	obj1.set_enable_adc_reset(!obj1.get_enable_adc_reset());
-	obj1.set_enable_led(LEDOnBoard::LED1, !obj1.get_enable_led(LEDOnBoard::LED1));
-	obj1.set_enable_vdd(VDDOnBoard::VDD25Digital, !obj1.get_enable_vdd(VDDOnBoard::VDD25Digital));
+	obj1.set_enable_led(LEDOnBoard::led_1, !obj1.get_enable_led(LEDOnBoard::led_1));
+	obj1.set_enable_vdd(VDDOnBoard::vdd25_digital, !obj1.get_enable_vdd(VDDOnBoard::vdd25_digital));
 	obj1.set_select_analog_readout_mux_1_input(
-	    ShiftRegister::AnalogReadoutMux1Input::ReadoutChain0);
-	obj1.set_select_analog_readout_mux_2_input(ShiftRegister::AnalogReadoutMux2Input::VReset);
-	obj1.set_select_analog_readout_mux_3_input(ShiftRegister::AnalogReadoutMux3Input::MuxRfu2);
+	    ShiftRegister::AnalogReadoutMux1Input::readout_chain_0);
+	obj1.set_select_analog_readout_mux_2_input(ShiftRegister::AnalogReadoutMux2Input::v_reset);
+	obj1.set_select_analog_readout_mux_3_input(ShiftRegister::AnalogReadoutMux3Input::mux_rfu_2);
 
 	std::ostringstream ostream;
 	{
