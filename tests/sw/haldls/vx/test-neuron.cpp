@@ -175,12 +175,12 @@ TEST(NeuronConfig, EncodeDecode)
 	auto neuron_coord = NeuronOnDLS(NeuronOnNeuronBlock(23), NeuronBlockOnDLS(1));
 
 	std::array<OmnibusChipOverJTAGAddress, NeuronConfig::config_size_in_words> ref_addresses = {
-	    OmnibusChipOverJTAGAddress{0x148000 + 23 * 8 + 2},
-	    OmnibusChipOverJTAGAddress{0x148000 + 23 * 8 + 3},
-	    OmnibusChipOverJTAGAddress{0x148000 + 23 * 8 + 4},
-	    OmnibusChipOverJTAGAddress{0x148000 + 23 * 8 + 5},
-	    OmnibusChipOverJTAGAddress{0x148000 + 23 * 8 + 6},
-	    OmnibusChipOverJTAGAddress{0x148000 + 23 * 8 + 7}};
+	    OmnibusChipOverJTAGAddress{0x168000 + 23 * 8 + 2},
+	    OmnibusChipOverJTAGAddress{0x168000 + 23 * 8 + 3},
+	    OmnibusChipOverJTAGAddress{0x168000 + 23 * 8 + 4},
+	    OmnibusChipOverJTAGAddress{0x168000 + 23 * 8 + 5},
+	    OmnibusChipOverJTAGAddress{0x168000 + 23 * 8 + 6},
+	    OmnibusChipOverJTAGAddress{0x168000 + 23 * 8 + 7}};
 
 	{ // check if write addresses are correct
 		addresses_type write_addresses;
