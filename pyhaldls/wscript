@@ -57,7 +57,7 @@ def build(bld):
         source='../include/haldls/vx/haldls.h',
         genpybind_tags='haldls_vx',
         features='genpybind cxx cxxshlib pyext',
-        use=['haldls_vx', 'PYBIND11HALDLS'],
+        use=['haldls_vx', 'PYBIND11HALDLS', 'pyfisch_vx'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
     )
