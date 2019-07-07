@@ -31,6 +31,14 @@ constexpr std::array<uint32_t, 4> capmem_sram_base_addresses = {
     capmem_nw_sram_base_address, capmem_ne_sram_base_address, capmem_sw_sram_base_address,
     capmem_se_sram_base_address};
 
+constexpr uint32_t capmem_nw_config_base_address{0x144000};
+constexpr uint32_t capmem_ne_config_base_address{0x14c000};
+constexpr uint32_t capmem_sw_config_base_address{0x154000};
+constexpr uint32_t capmem_se_config_base_address{0x15c000};
+constexpr std::array<uint32_t, 4> capmem_config_base_addresses = {
+    capmem_nw_config_base_address, capmem_ne_config_base_address, capmem_sw_config_base_address,
+    capmem_se_config_base_address};
+
 constexpr uint32_t neuron_nw_sram_base_address{0x16'0000};
 constexpr uint32_t neuron_ne_sram_base_address{0x16'8000};
 constexpr uint32_t neuron_sw_sram_base_address{0x17'0000};

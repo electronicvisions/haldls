@@ -103,7 +103,286 @@ private:
 };
 
 
+class GENPYBIND(visible) CapMemBlockConfig
+{
+public:
+	typedef halco::hicann_dls::vx::CapMemBlockConfigOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	struct GENPYBIND(inline_base("*")) OutAmpBias
+	    : public halco::common::detail::RantWrapper<OutAmpBias, uint_fast16_t, 15, 0>
+	{
+		constexpr explicit OutAmpBias(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) SourceFollowerBias
+	    : public halco::common::detail::RantWrapper<SourceFollowerBias, uint_fast16_t, 15, 0>
+	{
+		constexpr explicit SourceFollowerBias(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) LevelShifterBias
+	    : public halco::common::detail::RantWrapper<LevelShifterBias, uint_fast16_t, 15, 0>
+	{
+		constexpr explicit LevelShifterBias(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	struct GENPYBIND(inline_base("*")) VGlobalBias
+	    : public halco::common::detail::RantWrapper<VGlobalBias, uint_fast16_t, 15, 0>
+	{
+		constexpr explicit VGlobalBias(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) CurrentCellRes
+	    : public halco::common::detail::RantWrapper<CurrentCellRes, uint_fast16_t, 63, 0>
+	{
+		constexpr explicit CurrentCellRes(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) BoostFactor
+	    : public halco::common::detail::RantWrapper<BoostFactor, uint_fast16_t, 15, 0>
+	{
+		constexpr explicit BoostFactor(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) PrescalePause
+	    : public halco::common::detail::RantWrapper<PrescalePause, uint_fast16_t, 6, 0>
+	{
+		constexpr explicit PrescalePause(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) PrescaleRamp
+	    : public halco::common::detail::RantWrapper<PrescaleRamp, uint_fast16_t, 6, 0>
+	{
+		constexpr explicit PrescaleRamp(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) SubCounter
+	    : public halco::common::detail::
+	          RantWrapper<SubCounter, uint_fast16_t, 65535 /* 2^16*-1 */, 0>
+	{
+		constexpr explicit SubCounter(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) PauseCounter
+	    : public halco::common::detail::
+	          RantWrapper<PauseCounter, uint_fast32_t, 4294967295 /* 2^32-1 */, 0>
+	{
+		constexpr explicit PauseCounter(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) PulseA
+	    : public halco::common::detail::RantWrapper<PulseA, uint_fast16_t, 65535, 0>
+	{
+		constexpr explicit PulseA(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) PulseB
+	    : public halco::common::detail::RantWrapper<PulseB, uint_fast16_t, 65535, 0>
+	{
+		constexpr explicit PulseB(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) BoostA
+	    : public halco::common::detail::RantWrapper<BoostA, uint_fast16_t, 65535, 0>
+	{
+		constexpr explicit BoostA(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+	struct GENPYBIND(inline_base("*")) BoostB
+	    : public halco::common::detail::RantWrapper<BoostB, uint_fast16_t, 65535, 0>
+	{
+		constexpr explicit BoostB(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	enum class VRefSelect : uint_fast8_t
+	{
+		disabled = 0,
+		v_ref_v = 1,
+		v_ref_i = 2
+	};
+
+	enum class IOutSelect : uint_fast8_t
+	{
+		disabled = 0,
+		i_out_mux = 1,
+		i_out_ramp = 2
+	};
+
+	CapMemBlockConfig() SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_capmem))
+	bool get_enable_capmem() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_capmem))
+	void set_enable_capmem(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(debug_readout_enable))
+	bool get_debug_readout_enable() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_readout_enable))
+	void set_debug_readout_enable(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(debug_capmem_coord))
+	halco::hicann_dls::vx::CapMemCellOnCapMemBlock get_debug_capmem_coord() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_capmem_coord))
+	void set_debug_capmem_coord(halco::hicann_dls::vx::CapMemCellOnCapMemBlock const& value)
+	    SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(debug_v_ref_select))
+	VRefSelect get_debug_v_ref_select() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_v_ref_select))
+	void set_debug_v_ref_select(VRefSelect const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(debug_i_out_select))
+	IOutSelect get_debug_i_out_select() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_i_out_select))
+	void set_debug_i_out_select(IOutSelect const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(debug_out_amp_bias))
+	OutAmpBias get_debug_out_amp_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_out_amp_bias))
+	void set_debug_out_amp_bias(OutAmpBias const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(debug_source_follower_bias))
+	SourceFollowerBias get_debug_source_follower_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_source_follower_bias))
+	void set_debug_source_follower_bias(SourceFollowerBias const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(debug_level_shifter_bias))
+	LevelShifterBias get_debug_level_shifter_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_level_shifter_bias))
+	void set_debug_level_shifter_bias(LevelShifterBias const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(v_global_bias))
+	VGlobalBias get_v_global_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(v_global_bias))
+	void set_v_global_bias(VGlobalBias const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(current_cell_res))
+	CurrentCellRes get_current_cell_res() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(current_cell_res))
+	void set_current_cell_res(CurrentCellRes const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(boost_factor))
+	BoostFactor get_boost_factor() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(boost_factor))
+	void set_boost_factor(BoostFactor const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_boost))
+	bool get_enable_boost() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_boost))
+	void set_enable_boost(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_autoboost))
+	bool get_enable_autoboost() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_autoboost))
+	void set_enable_autoboost(bool const value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(prescale_pause))
+	PrescalePause get_prescale_pause() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(prescale_pause))
+	void set_prescale_pause(PrescalePause const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(prescale_ramp))
+	PrescaleRamp get_prescale_ramp() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(prescale_ramp))
+	void set_prescale_ramp(PrescaleRamp const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(sub_counter))
+	SubCounter get_sub_counter() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(sub_counter))
+	void set_sub_counter(SubCounter const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(pause_counter))
+	PauseCounter get_pause_counter() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(pause_counter))
+	void set_pause_counter(PauseCounter const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(pulse_a))
+	PulseA get_pulse_a() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(pulse_a))
+	void set_pulse_a(PulseA const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(pulse_b))
+	PulseB get_pulse_b() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(pulse_b))
+	void set_pulse_b(PulseB const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(boost_a))
+	BoostA get_boost_a() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(boost_a))
+	void set_boost_a(BoostA const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(boost_b))
+	BoostB get_boost_b() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(boost_b))
+	void set_boost_b(BoostB const& value) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 10;
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord) const
+	    GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
+
+	bool operator==(CapMemBlockConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CapMemBlockConfig const& other) const SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar);
+
+	bool m_enable_capmem;
+	bool m_debug_readout_enable;
+	halco::hicann_dls::vx::CapMemCellOnCapMemBlock m_debug_capmem_coord;
+	VRefSelect m_debug_v_ref_select;
+	IOutSelect m_debug_i_out_select;
+	OutAmpBias m_debug_out_amp_bias;
+	SourceFollowerBias m_debug_source_follower_bias;
+	LevelShifterBias m_debug_level_shifter_bias;
+	VGlobalBias m_v_global_bias;
+	CurrentCellRes m_current_cell_res;
+	bool m_enable_boost;
+	BoostFactor m_boost_factor;
+	bool m_enable_autoboost;
+	PrescalePause m_prescale_pause;
+	PrescaleRamp m_prescale_ramp;
+	SubCounter m_sub_counter;
+	PauseCounter m_pause_counter;
+	PulseA m_pulse_a;
+	PulseB m_pulse_b;
+	BoostA m_boost_a;
+	BoostB m_boost_b;
+};
+
+
 namespace detail {
+
+template <>
+struct BackendContainerTrait<CapMemBlockConfig>
+    : public BackendContainerBase<
+          CapMemBlockConfig,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
 
 template <>
 struct BackendContainerTrait<CapMemBlock>
@@ -149,5 +428,19 @@ struct VisitPreorderImpl<CapMemBlock>
 namespace std {
 
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemCell::Value)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::OutAmpBias)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::SourceFollowerBias)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::LevelShifterBias)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::VGlobalBias)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::CurrentCellRes)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::BoostFactor)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::PrescalePause)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::PrescaleRamp)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::SubCounter)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::PauseCounter)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::PulseA)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::PulseB)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::BoostA)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::BoostB)
 
 } // namespace std

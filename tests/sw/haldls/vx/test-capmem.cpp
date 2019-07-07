@@ -171,3 +171,228 @@ TEST(CapMemBlock, CerealizeCoverage)
 	}
 	ASSERT_EQ(b1, b2);
 }
+
+TEST(CapMemBlockConfig, General)
+{
+	CapMemBlockConfig config;
+
+	EXPECT_ANY_THROW(CapMemBlockConfig::OutAmpBias(16));
+	EXPECT_NO_THROW(CapMemBlockConfig::OutAmpBias(15));
+	EXPECT_ANY_THROW(CapMemBlockConfig::SourceFollowerBias(16));
+	EXPECT_NO_THROW(CapMemBlockConfig::SourceFollowerBias(15));
+	EXPECT_ANY_THROW(CapMemBlockConfig::LevelShifterBias(16));
+	EXPECT_NO_THROW(CapMemBlockConfig::LevelShifterBias(15));
+	EXPECT_ANY_THROW(CapMemBlockConfig::VGlobalBias(16));
+	EXPECT_NO_THROW(CapMemBlockConfig::VGlobalBias(15));
+	EXPECT_ANY_THROW(CapMemBlockConfig::CurrentCellRes(64));
+	EXPECT_NO_THROW(CapMemBlockConfig::CurrentCellRes(63));
+	EXPECT_ANY_THROW(CapMemBlockConfig::BoostFactor(16));
+	EXPECT_NO_THROW(CapMemBlockConfig::BoostFactor(15));
+	EXPECT_ANY_THROW(CapMemBlockConfig::PrescalePause(7));
+	EXPECT_NO_THROW(CapMemBlockConfig::PrescalePause(6));
+	EXPECT_ANY_THROW(CapMemBlockConfig::PrescaleRamp(7));
+	EXPECT_NO_THROW(CapMemBlockConfig::PrescaleRamp(6));
+	EXPECT_ANY_THROW(CapMemBlockConfig::SubCounter(65536));
+	EXPECT_NO_THROW(CapMemBlockConfig::SubCounter(65535));
+	EXPECT_ANY_THROW(CapMemBlockConfig::PulseA(65536));
+	EXPECT_NO_THROW(CapMemBlockConfig::PulseA(65535));
+	EXPECT_ANY_THROW(CapMemBlockConfig::PulseB(65536));
+	EXPECT_NO_THROW(CapMemBlockConfig::PulseB(65535));
+	EXPECT_ANY_THROW(CapMemBlockConfig::BoostA(65536));
+	EXPECT_NO_THROW(CapMemBlockConfig::BoostA(65535));
+	EXPECT_ANY_THROW(CapMemBlockConfig::BoostB(65536));
+	EXPECT_NO_THROW(CapMemBlockConfig::BoostB(65535));
+
+	// test default constructor
+	ASSERT_EQ(config.get_pause_counter(), CapMemBlockConfig::PauseCounter(8096));
+	ASSERT_EQ(config.get_debug_out_amp_bias(), CapMemBlockConfig::OutAmpBias(7));
+
+	// test getter/setter
+	config.set_enable_capmem(true);
+	ASSERT_EQ(config.get_enable_capmem(), true);
+
+	config.set_debug_readout_enable(true);
+	ASSERT_EQ(config.get_debug_readout_enable(), true);
+
+	config.set_debug_capmem_coord(CapMemCellOnDLS(Enum(10)));
+	ASSERT_EQ(config.get_debug_capmem_coord(), CapMemCellOnDLS(Enum(10)));
+
+	config.set_debug_v_ref_select(CapMemBlockConfig::VRefSelect::v_ref_i);
+	ASSERT_EQ(config.get_debug_v_ref_select(), CapMemBlockConfig::VRefSelect::v_ref_i);
+
+	config.set_debug_i_out_select(CapMemBlockConfig::IOutSelect::i_out_ramp);
+	ASSERT_EQ(config.get_debug_i_out_select(), CapMemBlockConfig::IOutSelect::i_out_ramp);
+
+	config.set_debug_out_amp_bias(CapMemBlockConfig::OutAmpBias(8));
+	ASSERT_EQ(config.get_debug_out_amp_bias(), CapMemBlockConfig::OutAmpBias(8));
+
+	config.set_debug_source_follower_bias(CapMemBlockConfig::SourceFollowerBias(9));
+	ASSERT_EQ(config.get_debug_source_follower_bias(), CapMemBlockConfig::SourceFollowerBias(9));
+
+	config.set_debug_level_shifter_bias(CapMemBlockConfig::LevelShifterBias(10));
+	ASSERT_EQ(config.get_debug_level_shifter_bias(), CapMemBlockConfig::LevelShifterBias(10));
+
+	config.set_v_global_bias(CapMemBlockConfig::VGlobalBias(9));
+	ASSERT_EQ(config.get_v_global_bias(), CapMemBlockConfig::VGlobalBias(9));
+
+	config.set_current_cell_res(CapMemBlockConfig::CurrentCellRes(23));
+	ASSERT_EQ(config.get_current_cell_res(), CapMemBlockConfig::CurrentCellRes(23));
+
+	config.set_boost_factor(CapMemBlockConfig::BoostFactor(6));
+	ASSERT_EQ(config.get_boost_factor(), CapMemBlockConfig::BoostFactor(6));
+
+	config.set_enable_boost(true);
+	ASSERT_EQ(config.get_enable_boost(), true);
+
+	config.set_enable_autoboost(true);
+	ASSERT_EQ(config.get_enable_autoboost(), true);
+
+	config.set_prescale_pause(CapMemBlockConfig::PrescalePause(6));
+	ASSERT_EQ(config.get_prescale_pause(), CapMemBlockConfig::PrescalePause(6));
+
+	config.set_prescale_ramp(CapMemBlockConfig::PrescaleRamp(2));
+	ASSERT_EQ(config.get_prescale_ramp(), CapMemBlockConfig::PrescaleRamp(2));
+
+	config.set_sub_counter(CapMemBlockConfig::SubCounter(16));
+	ASSERT_EQ(config.get_sub_counter(), CapMemBlockConfig::SubCounter(16));
+
+	config.set_pause_counter(CapMemBlockConfig::PauseCounter(18));
+	ASSERT_EQ(config.get_pause_counter(), CapMemBlockConfig::PauseCounter(18));
+
+	config.set_pulse_a(CapMemBlockConfig::PulseA(15));
+	ASSERT_EQ(config.get_pulse_a(), CapMemBlockConfig::PulseA(15));
+
+	config.set_pulse_b(CapMemBlockConfig::PulseB(123));
+	ASSERT_EQ(config.get_pulse_b(), CapMemBlockConfig::PulseB(123));
+
+	config.set_boost_a(CapMemBlockConfig::BoostA(13));
+	ASSERT_EQ(config.get_boost_a(), CapMemBlockConfig::BoostA(13));
+
+	config.set_boost_b(CapMemBlockConfig::BoostB(134));
+	ASSERT_EQ(config.get_boost_b(), CapMemBlockConfig::BoostB(134));
+
+
+	CapMemBlockConfig config_eq = config;
+	CapMemBlockConfig config_ne(config);
+	config_ne.set_boost_b(CapMemBlockConfig::BoostB(118));
+	config_ne.set_enable_autoboost(false);
+
+	ASSERT_EQ(config, config_eq);
+	ASSERT_FALSE(config == config_ne);
+
+	ASSERT_NE(config, config_ne);
+	ASSERT_FALSE(config != config_eq);
+}
+
+
+TEST(CapMemBlockConfig, EncodeDecode)
+{
+	CapMemBlockConfig config;
+	config.set_enable_capmem(true);
+	config.set_debug_readout_enable(true);
+	config.set_debug_capmem_coord(CapMemCellOnCapMemBlock(Enum(10)));
+	config.set_debug_v_ref_select(CapMemBlockConfig::VRefSelect::v_ref_i);
+	config.set_debug_i_out_select(CapMemBlockConfig::IOutSelect::i_out_ramp);
+	config.set_debug_out_amp_bias(CapMemBlockConfig::OutAmpBias(8));
+	config.set_debug_source_follower_bias(CapMemBlockConfig::SourceFollowerBias(9));
+	config.set_debug_level_shifter_bias(CapMemBlockConfig::LevelShifterBias(10));
+	config.set_v_global_bias(CapMemBlockConfig::VGlobalBias(9));
+	config.set_current_cell_res(CapMemBlockConfig::CurrentCellRes(23));
+	config.set_boost_factor(CapMemBlockConfig::BoostFactor(6));
+	config.set_enable_boost(true);
+	config.set_enable_autoboost(true);
+	config.set_prescale_pause(CapMemBlockConfig::PrescalePause(6));
+	config.set_prescale_ramp(CapMemBlockConfig::PrescaleRamp(2));
+	config.set_sub_counter(CapMemBlockConfig::SubCounter(16));
+	config.set_pause_counter(CapMemBlockConfig::PauseCounter(18));
+	config.set_pulse_a(CapMemBlockConfig::PulseA(15));
+	config.set_pulse_b(CapMemBlockConfig::PulseB(123));
+	config.set_boost_a(CapMemBlockConfig::BoostA(13));
+	config.set_boost_b(CapMemBlockConfig::BoostB(134));
+
+	CapMemBlockConfigOnDLS coord;
+	std::array<OmnibusChipOverJTAGAddress, 10> ref_addresses = {
+	    {OmnibusChipOverJTAGAddress(0x0014'4000), OmnibusChipOverJTAGAddress(0x0014'4001),
+	     OmnibusChipOverJTAGAddress(0x0014'4002), OmnibusChipOverJTAGAddress(0x0014'4003),
+	     OmnibusChipOverJTAGAddress(0x0014'4004), OmnibusChipOverJTAGAddress(0x0014'4005),
+	     OmnibusChipOverJTAGAddress(0x0014'4006), OmnibusChipOverJTAGAddress(0x0014'4007),
+	     OmnibusChipOverJTAGAddress(0x0014'4008), OmnibusChipOverJTAGAddress(0x0014'4009)}};
+	EXPECT_EQ(ref_addresses, config.addresses<OmnibusChipOverJTAGAddress>(coord));
+
+	std::array<fisch::vx::OmnibusChipOverJTAG, 10> ref_data = {
+	    {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x800000)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0xa)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x2)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x000089A9)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x17)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x2)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x66270010)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x000F007B)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x000D0086)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x12))}};
+	EXPECT_EQ(ref_data, config.encode<fisch::vx::OmnibusChipOverJTAG>());
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	CapMemBlockConfig config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(CapMemBlockConfig, CerealizeCoverage)
+{
+	CapMemBlockConfig obj1, obj2;
+	obj1.set_enable_capmem(!obj1.get_enable_capmem());
+	obj1.set_debug_readout_enable(!obj1.get_debug_readout_enable());
+	obj1.set_enable_boost(!obj1.get_enable_boost());
+	obj1.set_enable_autoboost(!obj1.get_enable_autoboost());
+	obj1.set_debug_capmem_coord(halco::hicann_dls::vx::CapMemCellOnCapMemBlock(
+	    draw_ranged_non_default_value<halco::hicann_dls::vx::CapMemRowOnCapMemBlock>(0),
+	    draw_ranged_non_default_value<halco::hicann_dls::vx::CapMemColumnOnCapMemBlock>(0)));
+	obj1.set_debug_v_ref_select(CapMemBlockConfig::VRefSelect::v_ref_v);
+	obj1.set_debug_i_out_select(CapMemBlockConfig::IOutSelect::i_out_ramp);
+#define RANDOMIZE(name, type)                                                                      \
+	obj1.set_##name(draw_ranged_non_default_value<type>(obj1.get_##name()));
+	RANDOMIZE(debug_out_amp_bias, CapMemBlockConfig::OutAmpBias)
+	RANDOMIZE(debug_source_follower_bias, CapMemBlockConfig::SourceFollowerBias)
+	RANDOMIZE(debug_level_shifter_bias, CapMemBlockConfig::LevelShifterBias)
+	RANDOMIZE(v_global_bias, CapMemBlockConfig::VGlobalBias)
+	RANDOMIZE(current_cell_res, CapMemBlockConfig::CurrentCellRes)
+	RANDOMIZE(boost_factor, CapMemBlockConfig::BoostFactor)
+	RANDOMIZE(prescale_pause, CapMemBlockConfig::PrescalePause)
+	RANDOMIZE(prescale_ramp, CapMemBlockConfig::PrescaleRamp)
+	RANDOMIZE(sub_counter, CapMemBlockConfig::SubCounter)
+	RANDOMIZE(pause_counter, CapMemBlockConfig::PauseCounter)
+	RANDOMIZE(pulse_a, CapMemBlockConfig::PulseA)
+	RANDOMIZE(pulse_b, CapMemBlockConfig::PulseB)
+	RANDOMIZE(boost_a, CapMemBlockConfig::BoostA)
+	RANDOMIZE(boost_b, CapMemBlockConfig::BoostB)
+#undef RANDOMIZE
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
