@@ -539,5 +539,132 @@ void CommonPhyConfigChip::serialize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigChip)
 
+
+PhyStatus::PhyStatus() :
+    m_crc_error_count(),
+    m_online_time(),
+    m_rx_dropped_count(),
+    m_rx_count(),
+    m_tx_count()
+{}
+
+PhyStatus::CRCErrorCount PhyStatus::get_crc_error_count() const
+{
+	return m_crc_error_count;
+}
+
+void PhyStatus::set_crc_error_count(CRCErrorCount const value)
+{
+	m_crc_error_count = value;
+}
+
+PhyStatus::OnlineTime PhyStatus::get_online_time() const
+{
+	return m_online_time;
+}
+
+void PhyStatus::set_online_time(OnlineTime const value)
+{
+	m_online_time = value;
+}
+
+PhyStatus::RxDroppedCount PhyStatus::get_rx_dropped_count() const
+{
+	return m_rx_dropped_count;
+}
+
+void PhyStatus::set_rx_dropped_count(RxDroppedCount const value)
+{
+	m_rx_dropped_count = value;
+}
+
+PhyStatus::RxCount PhyStatus::get_rx_count() const
+{
+	return m_rx_count;
+}
+
+void PhyStatus::set_rx_count(RxCount const value)
+{
+	m_rx_count = value;
+}
+
+PhyStatus::TxCount PhyStatus::get_tx_count() const
+{
+	return m_tx_count;
+}
+
+void PhyStatus::set_tx_count(TxCount const value)
+{
+	m_tx_count = value;
+}
+
+bool PhyStatus::operator==(PhyStatus const& other) const
+{
+	return (m_crc_error_count == other.m_crc_error_count) &&
+	       (m_online_time == other.m_online_time) &&
+	       (m_rx_dropped_count == other.m_rx_dropped_count) && (m_rx_count == other.m_rx_count) &&
+	       (m_tx_count == other.m_tx_count);
+}
+
+bool PhyStatus::operator!=(PhyStatus const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, PhyStatus const& config)
+{
+	os << config.m_crc_error_count << std::endl;
+	os << config.m_online_time << std::endl;
+	os << config.m_rx_dropped_count << std::endl;
+	os << config.m_rx_count << std::endl;
+	os << config.m_tx_count;
+	return os;
+}
+
+std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyStatus::read_config_size_in_words>
+PhyStatus::read_addresses(coordinate_type const& coord) const
+{
+	return {halco::hicann_dls::vx::OmnibusFPGAAddress(ut_omnibus_mask + 4 + coord.value()),
+	        halco::hicann_dls::vx::OmnibusFPGAAddress(
+	            ut_omnibus_mask + 4 + coordinate_type::size + coord.value()),
+	        halco::hicann_dls::vx::OmnibusFPGAAddress(
+	            ut_omnibus_mask + 4 + 2 * coordinate_type::size + coord.value()),
+	        halco::hicann_dls::vx::OmnibusFPGAAddress(l2_omnibus_mask + 2 * coord.value()),
+	        halco::hicann_dls::vx::OmnibusFPGAAddress(l2_omnibus_mask + 2 * coord.value() + 1)};
+}
+
+std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyStatus::write_config_size_in_words>
+PhyStatus::write_addresses(coordinate_type const& /*coord*/) const
+{
+	return {};
+}
+
+std::array<fisch::vx::OmnibusFPGA, PhyStatus::write_config_size_in_words> PhyStatus::encode() const
+{
+	return {};
+}
+
+void PhyStatus::decode(
+    std::array<fisch::vx::OmnibusFPGA, PhyStatus::read_config_size_in_words> const& data)
+{
+	m_crc_error_count = CRCErrorCount(data.at(0).get());
+	m_online_time = OnlineTime(data.at(1).get());
+	m_rx_dropped_count = RxDroppedCount(data.at(2).get());
+	m_tx_count = TxCount(data.at(3).get());
+	m_rx_count = RxCount(data.at(4).get());
+}
+
+template <typename Archive>
+void PhyStatus::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_crc_error_count));
+	ar(CEREAL_NVP(m_online_time));
+	ar(CEREAL_NVP(m_rx_dropped_count));
+	ar(CEREAL_NVP(m_rx_count));
+	ar(CEREAL_NVP(m_tx_count));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PhyStatus)
+
 } // namespace vx
 } // namespace haldls

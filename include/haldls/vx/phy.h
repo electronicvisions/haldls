@@ -344,5 +344,132 @@ struct BackendContainerTrait<CommonPhyConfigChip>
 
 } // namespace detail
 
+
+class GENPYBIND(visible) PhyStatus
+{
+public:
+	typedef halco::hicann_dls::vx::PhyStatusOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	PhyStatus() SYMBOL_VISIBLE;
+
+	/**
+	 * Number of CRC errors since last reset.
+	 */
+	struct GENPYBIND(inline_base("*")) CRCErrorCount
+	    : public halco::common::detail::BaseType<CRCErrorCount, uint64_t>
+	{
+		constexpr explicit CRCErrorCount(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	/**
+	 * Online time in cycles since last reset.
+	 */
+	struct GENPYBIND(inline_base("*")) OnlineTime
+	    : public halco::common::detail::BaseType<OnlineTime, uint64_t>
+	{
+		constexpr explicit OnlineTime(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	/**
+	 * Number of dropped rx words.
+	 */
+	struct GENPYBIND(inline_base("*")) RxDroppedCount
+	    : public halco::common::detail::BaseType<RxDroppedCount, uint64_t>
+	{
+		constexpr explicit RxDroppedCount(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	/**
+	 * Number of rx words from Chip since last reset.
+	 */
+	struct GENPYBIND(inline_base("*")) RxCount
+	    : public halco::common::detail::BaseType<RxCount, uint64_t>
+	{
+		constexpr explicit RxCount(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	/**
+	 * Number of tx words to Chip since last reset.
+	 */
+	struct GENPYBIND(inline_base("*")) TxCount
+	    : public halco::common::detail::BaseType<TxCount, uint64_t>
+	{
+		constexpr explicit TxCount(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	GENPYBIND(getter_for(crc_error_count))
+	CRCErrorCount get_crc_error_count() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(crc_error_count))
+	void set_crc_error_count(CRCErrorCount value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(online_time))
+	OnlineTime get_online_time() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(online_time))
+	void set_online_time(OnlineTime value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(rx_dropped_count))
+	RxDroppedCount get_rx_dropped_count() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(rx_dropped_count))
+	void set_rx_dropped_count(RxDroppedCount value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(rx_count))
+	RxCount get_rx_count() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(rx_count))
+	void set_rx_count(RxCount value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(tx_count))
+	TxCount get_tx_count() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(tx_count))
+	void set_tx_count(TxCount value) SYMBOL_VISIBLE;
+
+	bool operator==(PhyStatus const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PhyStatus const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, PhyStatus const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 5;
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
+	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, read_config_size_in_words> read_addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::OmnibusFPGA, write_config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::OmnibusFPGA, read_config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+	CRCErrorCount m_crc_error_count;
+	OnlineTime m_online_time;
+	RxDroppedCount m_rx_dropped_count;
+	RxCount m_rx_count;
+	TxCount m_tx_count;
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<PhyStatus>
+    : public BackendContainerBase<PhyStatus, fisch::vx::OmnibusFPGA>
+{};
+
+} // namespace detail
+
 } // namespace vx
 } // namespace haldls
