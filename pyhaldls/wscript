@@ -50,6 +50,8 @@ def build(bld):
         features='genpybind cxx cxxshlib pyext',
         use=['haldls_v2', 'PYBIND11HALDLS'],
         install_path='${PREFIX}/lib',
+        # Avoid warning; 1 OoM less and I see warnings (ECM)
+        cxxflags='--param=max-vartrack-size=100000000',
         linkflags='-Wl,-z,defs',
     )
 
@@ -70,6 +72,8 @@ def build(bld):
         features='genpybind cxx cxxshlib pyext',
         use=['haldls_vx', 'PYBIND11HALDLS', 'pyfisch_vx'],
         install_path='${PREFIX}/lib',
+        # Avoid warning; 1 OoM less and I see warnings (ECM)
+        cxxflags='--param=max-vartrack-size=100000000',
         linkflags='-Wl,-z,defs',
     )
 

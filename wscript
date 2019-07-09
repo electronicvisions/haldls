@@ -129,7 +129,8 @@ def build(bld):
         uselib = 'HALDLS_LIBRARIES',
     )
 
-    bld.shlib(
+    bld(
+        features = 'cxx cxxshlib',
         target = 'lola_v2',
         source = bld.path.ant_glob('src/lola/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
@@ -137,7 +138,8 @@ def build(bld):
         uselib = 'LOLA_LIBRARIES',
     )
 
-    bld.shlib(
+    bld(
+        features = 'cxx cxxshlib',
         target = 'lola_vx',
         source = bld.path.ant_glob('src/lola/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
