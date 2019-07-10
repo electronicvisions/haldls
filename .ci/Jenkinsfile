@@ -15,5 +15,5 @@ wafDefaultPipeline(projects: ["haldls"],
                    container: [app: "visionary-dls"],
                    prePipelineCleanup: false,
                    testOptions: "--test-execall -j1",
-                   testSlurmResource: [partition: "cube", gres: "cube1", licenses: "W4F3"],
+                   testSlurmResource: [partition: "cube", gres: "cube1", wafer: 4, "fpga-without-aout": 3],
                    notificationChannel: "#dls-software")
