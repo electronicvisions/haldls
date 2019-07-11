@@ -9,6 +9,8 @@ import pyfisch_vx as fisch
 
 
 class HwTestPyhaldlsVx(unittest.TestCase):
+    fpga_ip = "192.168.4.4"
+
     def test_board_led_chain(self):
         all_leds = [led for led in iter_all(halco.LEDOnBoard)]
 
@@ -36,19 +38,18 @@ class HwTestPyhaldlsVx(unittest.TestCase):
         program = builder.done()
 
         # execute playback program
-        executor = fisch.PlaybackProgramARQExecutor(fpga_ip)
-        executor.transfer(program.impl())
-        executor.execute()
-        executor.fetch(program.impl())
+        executor = fisch.PlaybackProgramARQExecutor(self.fpga_ip)
+        executor.run(program.impl())
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--fpga_ip", type=str)
+    parser.add_argument("--fpga_ip", type=str,
+                        default=HwTestPyhaldlsVx.fpga_ip)
     args, unknownargs = parser.parse_known_args()
 
-    fpga_ip = args.fpga_ip
-    if len(unknownargs):
+    HwTestPyhaldlsVx.fpga_ip = args.fpga_ip
+    if unknownargs:
         unittest.main(argv=unknownargs)
     else:
         unittest.main(argv=[""])

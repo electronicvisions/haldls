@@ -78,8 +78,8 @@ def build(bld):
     )
 
     bld(
-        name='pyhaldls_hw_test_vx',
-        tests='test/pyhaldls_test_v2.py',
+        name='pyhaldls_hwtest_vx',
+        tests='test/pyhaldls_hwtest_vx.py',
         features='use pytest pylint pycodestyle',
         use=['pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
