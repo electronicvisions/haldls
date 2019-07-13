@@ -39,7 +39,9 @@ PLAYBACK_CONTAINER(PerfTest, haldls::vx::PerfTest)
 PLAYBACK_CONTAINER(PerfTestStatus, haldls::vx::PerfTestStatus)
 PLAYBACK_CONTAINER(SystimeSyncBase, haldls::vx::SystimeSyncBase)
 PLAYBACK_CONTAINER(CommonSynramConfig, haldls::vx::CommonSynramConfig)
-LAST_PLAYBACK_CONTAINER(SynapseQuad, haldls::vx::SynapseQuad)
+PLAYBACK_CONTAINER(SynapseQuad, haldls::vx::SynapseQuad)
+PLAYBACK_CONTAINER(ColumnCorrelationQuad, haldls::vx::ColumnCorrelationQuad)
+LAST_PLAYBACK_CONTAINER(ColumnCurrentQuad, haldls::vx::ColumnCurrentQuad)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER

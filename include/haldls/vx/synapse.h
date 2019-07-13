@@ -238,6 +238,311 @@ private:
 	halco::common::typed_array<Synapse, halco::hicann_dls::vx::SynapseOnSynapseQuad> m_synapses;
 };
 
+
+class GENPYBIND(visible) ColumnCorrelationQuad
+{
+public:
+	typedef halco::hicann_dls::vx::ColumnCorrelationQuadOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	struct ColumnCorrelationSwitch
+	{
+		/** Default constructor. */
+		ColumnCorrelationSwitch() SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for internal causal line to CADC channel.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_internal_causal))
+		bool get_enable_internal_causal() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for internal causal line to CADC channel.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_internal_causal))
+		void set_enable_internal_causal(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for connecting acausal correlation to shared debug line.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_internal_acausal))
+		bool get_enable_internal_acausal() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for connecting acausal correlation to shared debug line.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_internal_acausal))
+		void set_enable_internal_acausal(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for connecting causal correlation to shared debug line.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_debug_causal))
+		bool get_enable_debug_causal() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for connecting causal correlation to shared debug line.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_debug_causal))
+		void set_enable_debug_causal(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for connecting acausal correlation to shared debug line.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_debug_acausal))
+		bool get_enable_debug_acausal() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for connecting acausal correlation to shared debug line.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_debug_acausal))
+		void set_enable_debug_acausal(bool value) SYMBOL_VISIBLE;
+
+		bool operator==(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
+		bool operator!=(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
+
+	private:
+		friend class cereal::access;
+		template <class Archive>
+		void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+		bool m_enable_internal_causal;
+		bool m_enable_internal_acausal;
+		bool m_enable_debug_causal;
+		bool m_enable_debug_acausal;
+	};
+
+	/** Default constructor. */
+	ColumnCorrelationQuad() SYMBOL_VISIBLE;
+
+	ColumnCorrelationSwitch get_switch(
+	    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad const&
+	        correlation_switch) const SYMBOL_VISIBLE;
+	void set_switch(
+	    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad const&
+	        correlation_switch,
+	    ColumnCorrelationSwitch const& value) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& block) const
+	    GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
+
+	bool operator==(ColumnCorrelationQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ColumnCorrelationQuad const& other) const SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar);
+
+	halco::common::typed_array<
+	    ColumnCorrelationSwitch,
+	    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad>
+	    m_switches;
+};
+
+class GENPYBIND(visible) ColumnCurrentQuad
+{
+public:
+	typedef halco::hicann_dls::vx::ColumnCurrentQuadOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	struct ColumnCurrentSwitch
+	{
+		/** Default constructor. */
+		ColumnCurrentSwitch() SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for forwarding the excitatory synaptic currents of a whole column to the
+		 * respective neuron's synaptic input.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_synaptic_current_excitatory))
+		bool get_enable_synaptic_current_excitatory() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for forwarding the excitatory synaptic currents of a whole column to the
+		 * respective neuron's synaptic input.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_synaptic_current_excitatory))
+		void set_enable_synaptic_current_excitatory(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for forwarding the inhibitory synaptic currents of a whole column to the
+		 * respective neuron's synaptic input.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_synaptic_current_inhibitory))
+		bool get_enable_synaptic_current_inhibitory() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for forwarding the inhibitory synaptic currents of a whole column to the
+		 * respective neuron's synaptic input.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_synaptic_current_inhibitory))
+		void set_enable_synaptic_current_inhibitory(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for column-global excitatory synaptic current debug-line readout.
+		 * In case the neuron's synaptic input circuit is disconnected,
+		 * the current pulses originating from the synapse circuits can be read out.
+		 * Note that current measuring equipment (i. e. source meter) is needed
+		 * for this measurement.
+		 * Also note that the readout line is shared amongst multiple synapses.
+		 * Enabling the readout switch will short the synaptic columns, which is however
+		 * non-destructive.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_debug_excitatory))
+		bool get_enable_debug_excitatory() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for column-global excitatory synaptic current debug-line readout.
+		 * In case the neuron's synaptic input circuit is disconnected,
+		 * the current pulses originating from the synapse circuits can be read out.
+		 * Note that current measuring equipment (i. e. source meter) is needed
+		 * for this measurement.
+		 * Also note that the readout line is shared amongst multiple synapses.
+		 * Enabling the readout switch will short the synaptic columns, which is however
+		 * non-destructive.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_debug_excitatory))
+		void set_enable_debug_excitatory(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for column-global inhibitory synaptic current debug-line readout.
+		 * In case the neuron's synaptic input circuit is disconnected,
+		 * the current pulses originating from the synapse circuits can be read out.
+		 * Note that current measuring equipment (i. e. source meter) is needed
+		 * for this measurement.
+		 * Also note that the readout line is shared amongst multiple synapses.
+		 * Enabling the readout switch will short the synaptic columns, which is however
+		 * non-destructive.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_debug_inhibitory))
+		bool get_enable_debug_inhibitory() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for column-global inhibitory synaptic current debug-line readout.
+		 * In case the neuron's synaptic input circuit is disconnected,
+		 * the current pulses originating from the synapse circuits can be read out.
+		 * Note that current measuring equipment (i. e. source meter) is needed
+		 * for this measurement.
+		 * Also note that the readout line is shared amongst multiple synapses.
+		 * Enabling the readout switch will short the synaptic columns, which is however
+		 * non-destructive.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_debug_inhibitory))
+		void set_enable_debug_inhibitory(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for connecting  the neuron's readout circuit to the respective causal
+		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
+		 * biased, but the neuron must not be connected to the readout chain via the collective
+		 * lines. Otherwise the neurons will be shorted.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_cadc_neuron_readout_causal))
+		bool get_enable_cadc_neuron_readout_causal() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for connecting  the neuron's readout circuit to the respective causal
+		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
+		 * biased, but the neuron must not be connected to the readout chain via the collective
+		 * lines. Otherwise the neurons will be shorted.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_cadc_neuron_readout_causal))
+		void set_enable_cadc_neuron_readout_causal(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for connecting  the neuron's readout circuit to the respective acausal
+		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
+		 * biased, but the neuron must not be connected to the readout chain via the collective
+		 * lines. Otherwise the neurons will be shorted.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_cadc_neuron_readout_acausal))
+		bool get_enable_cadc_neuron_readout_acausal() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for connecting  the neuron's readout circuit to the respective acausal
+		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
+		 * biased, but the neuron must not be connected to the readout chain via the collective
+		 * lines. Otherwise the neurons will be shorted.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_cadc_neuron_readout_acausal))
+		void set_enable_cadc_neuron_readout_acausal(bool value) SYMBOL_VISIBLE;
+
+		bool operator==(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
+		bool operator!=(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
+
+	private:
+		friend class cereal::access;
+		template <class Archive>
+		void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+		bool m_enable_synaptic_current_excitatory;
+		bool m_enable_synaptic_current_inhibitory;
+		bool m_enable_debug_excitatory;
+		bool m_enable_debug_inhibitory;
+		bool m_enable_cadc_neuron_readout_causal;
+		bool m_enable_cadc_neuron_readout_acausal;
+	};
+
+	/** Default constructor. */
+	ColumnCurrentQuad() SYMBOL_VISIBLE;
+
+	ColumnCurrentSwitch get_switch(
+	    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad const& current_switch) const
+	    SYMBOL_VISIBLE;
+	void set_switch(
+	    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad const& current_switch,
+	    ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& block) const
+	    GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
+
+	bool operator==(ColumnCurrentQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ColumnCurrentQuad const& other) const SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar);
+
+	halco::common::typed_array<
+	    ColumnCurrentSwitch,
+	    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad>
+	    m_switches;
+};
+
+
 namespace detail {
 
 template <>
@@ -252,6 +557,22 @@ template <>
 struct BackendContainerTrait<SynapseQuad>
     : public BackendContainerBase<
           SynapseQuad,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
+
+template <>
+struct BackendContainerTrait<ColumnCorrelationQuad>
+    : public BackendContainerBase<
+          ColumnCorrelationQuad,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
+
+template <>
+struct BackendContainerTrait<ColumnCurrentQuad>
+    : public BackendContainerBase<
+          ColumnCurrentQuad,
           fisch::vx::OmnibusChipOverJTAG,
           fisch::vx::OmnibusChip>
 {};

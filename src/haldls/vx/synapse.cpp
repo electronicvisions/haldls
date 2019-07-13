@@ -446,4 +446,554 @@ void SynapseQuad::serialize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseQuad)
 
+
+ColumnCorrelationQuad::ColumnCorrelationSwitch::ColumnCorrelationSwitch() :
+    m_enable_internal_causal(false),
+    m_enable_internal_acausal(false),
+    m_enable_debug_causal(false),
+    m_enable_debug_acausal(false)
+{}
+
+bool ColumnCorrelationQuad::ColumnCorrelationSwitch::get_enable_internal_causal() const
+{
+	return m_enable_internal_causal;
+}
+
+void ColumnCorrelationQuad::ColumnCorrelationSwitch::set_enable_internal_causal(bool const value)
+{
+	m_enable_internal_causal = value;
+}
+
+bool ColumnCorrelationQuad::ColumnCorrelationSwitch::get_enable_internal_acausal() const
+{
+	return m_enable_internal_acausal;
+}
+
+void ColumnCorrelationQuad::ColumnCorrelationSwitch::set_enable_internal_acausal(bool const value)
+{
+	m_enable_internal_acausal = value;
+}
+
+bool ColumnCorrelationQuad::ColumnCorrelationSwitch::get_enable_debug_causal() const
+{
+	return m_enable_debug_causal;
+}
+
+void ColumnCorrelationQuad::ColumnCorrelationSwitch::set_enable_debug_causal(bool const value)
+{
+	m_enable_debug_causal = value;
+}
+
+bool ColumnCorrelationQuad::ColumnCorrelationSwitch::get_enable_debug_acausal() const
+{
+	return m_enable_debug_acausal;
+}
+
+void ColumnCorrelationQuad::ColumnCorrelationSwitch::set_enable_debug_acausal(bool const value)
+{
+	m_enable_debug_acausal = value;
+}
+
+bool ColumnCorrelationQuad::ColumnCorrelationSwitch::operator==(
+    ColumnCorrelationQuad::ColumnCorrelationSwitch const& other) const
+{
+	return m_enable_internal_causal == other.m_enable_internal_causal &&
+	       m_enable_internal_acausal == other.m_enable_internal_acausal &&
+	       m_enable_debug_causal == other.m_enable_debug_causal &&
+	       m_enable_debug_acausal == other.m_enable_debug_acausal;
+}
+
+bool ColumnCorrelationQuad::ColumnCorrelationSwitch::operator!=(
+    ColumnCorrelationQuad::ColumnCorrelationSwitch const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void ColumnCorrelationQuad::ColumnCorrelationSwitch::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_enable_internal_causal));
+	ar(CEREAL_NVP(m_enable_internal_acausal));
+	ar(CEREAL_NVP(m_enable_debug_causal));
+	ar(CEREAL_NVP(m_enable_debug_acausal));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCorrelationQuad::ColumnCorrelationSwitch)
+
+ColumnCorrelationQuad::ColumnCorrelationQuad() : m_switches() {}
+
+ColumnCorrelationQuad::ColumnCorrelationSwitch ColumnCorrelationQuad::get_switch(
+    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad const& correlation_switch)
+    const
+{
+	return m_switches.at(correlation_switch);
+}
+
+void ColumnCorrelationQuad::set_switch(
+    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad const& correlation_switch,
+    ColumnCorrelationQuad::ColumnCorrelationSwitch const& value)
+{
+	m_switches.at(correlation_switch) = value;
+}
+
+bool ColumnCorrelationQuad::operator==(ColumnCorrelationQuad const& other) const
+{
+	return m_switches == other.m_switches;
+}
+
+bool ColumnCorrelationQuad::operator!=(ColumnCorrelationQuad const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename AddressT>
+std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelationQuad::addresses(
+    coordinate_type const& block) const
+{
+	using namespace halco::hicann_dls::vx;
+	uint32_t base;
+	if (block.toSynramOnDLS() == SynramOnDLS::bottom) {
+		base = synram_synapse_bottom_base_address;
+	} else {
+		base = synram_synapse_top_base_address;
+	}
+	auto const address = base + block.value() +
+	                     SynapseQuadOnSynram::size * SynapseQuad::config_size_in_words +
+	                     ColumnCurrentQuadOnSynram::size * ColumnCurrentQuad::config_size_in_words;
+	return {{AddressT(address), AddressT(address + ColumnCorrelationQuadOnSynram::size)}};
+}
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCorrelationQuad::config_size_in_words>
+    ColumnCorrelationQuad::addresses(coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    ColumnCorrelationQuad::config_size_in_words>
+ColumnCorrelationQuad::addresses(coordinate_type const& coord) const;
+
+namespace {
+
+struct ColumnCorrelationQuadBitfield
+{
+	union
+	{
+		std::array<uint32_t, ColumnCorrelationQuad::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t                             : 6;
+			uint32_t enable_internal_causal_3    : 1;
+			uint32_t enable_internal_acausal_3   : 1;
+
+			uint32_t                             : 6;
+			uint32_t enable_internal_causal_2    : 1;
+			uint32_t enable_internal_acausal_2   : 1;
+
+			uint32_t                             : 6;
+			uint32_t enable_internal_causal_1    : 1;
+			uint32_t enable_internal_acausal_1   : 1;
+
+			uint32_t                             : 6;
+			uint32_t enable_internal_causal_0    : 1;
+			uint32_t enable_internal_acausal_0   : 1;
+
+			uint32_t                             : 6;
+			uint32_t enable_debug_causal_3       : 1;
+			uint32_t enable_debug_acausal_3      : 1;
+
+			uint32_t                             : 6;
+			uint32_t enable_debug_causal_2       : 1;
+			uint32_t enable_debug_acausal_2      : 1;
+
+			uint32_t                             : 6;
+			uint32_t enable_debug_causal_1       : 1;
+			uint32_t enable_debug_acausal_1      : 1;
+
+			uint32_t                             : 6;
+			uint32_t enable_debug_causal_0       : 1;
+			uint32_t enable_debug_acausal_0      : 1;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ColumnCorrelationQuadBitfield() { u.raw = {{0}}; }
+	ColumnCorrelationQuadBitfield(
+	    std::array<uint32_t, ColumnCorrelationQuad::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+template <typename WordT>
+std::array<WordT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelationQuad::encode() const
+{
+	using namespace halco::hicann_dls::vx;
+	ColumnCorrelationQuadBitfield bitfield;
+
+#define CORRELATION_ENCODE(index)                                                                  \
+	{                                                                                              \
+		ColumnCorrelationSwitch const& config =                                                    \
+		    m_switches.at(ColumnCorrelationSwitchOnColumnCorrelationQuad(index));                  \
+		bitfield.u.m.enable_internal_causal_##index = config.get_enable_internal_causal();         \
+		bitfield.u.m.enable_internal_acausal_##index = config.get_enable_internal_acausal();       \
+		bitfield.u.m.enable_debug_causal_##index = config.get_enable_debug_causal();               \
+		bitfield.u.m.enable_debug_acausal_##index = config.get_enable_debug_acausal();             \
+	}
+
+	CORRELATION_ENCODE(0);
+	CORRELATION_ENCODE(1);
+	CORRELATION_ENCODE(2);
+	CORRELATION_ENCODE(3);
+#undef CORRELATION_ENCODE
+
+	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw[0])),
+	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[1]))};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, ColumnCorrelationQuad::config_size_in_words>
+    ColumnCorrelationQuad::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCorrelationQuad::config_size_in_words>
+    ColumnCorrelationQuad::encode() const;
+
+template <typename WordT>
+void ColumnCorrelationQuad::decode(
+    std::array<WordT, ColumnCorrelationQuad::config_size_in_words> const& data)
+{
+	using namespace halco::hicann_dls::vx;
+	ColumnCorrelationQuadBitfield bitfield({data[0].get(), data[1].get()});
+
+#define CORRELATION_DECODE(index)                                                                  \
+	{                                                                                              \
+		ColumnCorrelationSwitch config;                                                            \
+		config.set_enable_internal_causal(bitfield.u.m.enable_internal_causal_##index);            \
+		config.set_enable_internal_acausal(bitfield.u.m.enable_internal_acausal_##index);          \
+		config.set_enable_debug_causal(bitfield.u.m.enable_debug_causal_##index);                  \
+		config.set_enable_debug_acausal(bitfield.u.m.enable_debug_acausal_##index);                \
+		m_switches.at(ColumnCorrelationSwitchOnColumnCorrelationQuad(index)) = config;             \
+	}
+
+	CORRELATION_DECODE(0)
+	CORRELATION_DECODE(1)
+	CORRELATION_DECODE(2)
+	CORRELATION_DECODE(3)
+#undef CORRELATION_DECODE
+}
+
+template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
+    std::array<fisch::vx::OmnibusChip, ColumnCorrelationQuad::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
+    std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCorrelationQuad::config_size_in_words> const&
+        data);
+
+template <class Archive>
+void ColumnCorrelationQuad::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_switches));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCorrelationQuad)
+
+
+ColumnCurrentQuad::ColumnCurrentSwitch::ColumnCurrentSwitch() :
+    m_enable_synaptic_current_excitatory(false),
+    m_enable_synaptic_current_inhibitory(false),
+    m_enable_debug_excitatory(false),
+    m_enable_debug_inhibitory(false),
+    m_enable_cadc_neuron_readout_causal(false),
+    m_enable_cadc_neuron_readout_acausal(false)
+{}
+
+bool ColumnCurrentQuad::ColumnCurrentSwitch::get_enable_synaptic_current_excitatory() const
+{
+	return m_enable_synaptic_current_excitatory;
+}
+
+void ColumnCurrentQuad::ColumnCurrentSwitch::set_enable_synaptic_current_excitatory(
+    bool const value)
+{
+	m_enable_synaptic_current_excitatory = value;
+}
+
+bool ColumnCurrentQuad::ColumnCurrentSwitch::get_enable_synaptic_current_inhibitory() const
+{
+	return m_enable_synaptic_current_inhibitory;
+}
+
+void ColumnCurrentQuad::ColumnCurrentSwitch::set_enable_synaptic_current_inhibitory(
+    bool const value)
+{
+	m_enable_synaptic_current_inhibitory = value;
+}
+
+bool ColumnCurrentQuad::ColumnCurrentSwitch::get_enable_debug_excitatory() const
+{
+	return m_enable_debug_excitatory;
+}
+
+void ColumnCurrentQuad::ColumnCurrentSwitch::set_enable_debug_excitatory(bool const value)
+{
+	m_enable_debug_excitatory = value;
+}
+
+bool ColumnCurrentQuad::ColumnCurrentSwitch::get_enable_debug_inhibitory() const
+{
+	return m_enable_debug_inhibitory;
+}
+
+void ColumnCurrentQuad::ColumnCurrentSwitch::set_enable_debug_inhibitory(bool const value)
+{
+	m_enable_debug_inhibitory = value;
+}
+
+bool ColumnCurrentQuad::ColumnCurrentSwitch::get_enable_cadc_neuron_readout_causal() const
+{
+	return m_enable_cadc_neuron_readout_causal;
+}
+
+void ColumnCurrentQuad::ColumnCurrentSwitch::set_enable_cadc_neuron_readout_causal(bool const value)
+{
+	m_enable_cadc_neuron_readout_causal = value;
+}
+
+bool ColumnCurrentQuad::ColumnCurrentSwitch::get_enable_cadc_neuron_readout_acausal() const
+{
+	return m_enable_cadc_neuron_readout_acausal;
+}
+
+void ColumnCurrentQuad::ColumnCurrentSwitch::set_enable_cadc_neuron_readout_acausal(
+    bool const value)
+{
+	m_enable_cadc_neuron_readout_acausal = value;
+}
+
+bool ColumnCurrentQuad::ColumnCurrentSwitch::operator==(
+    ColumnCurrentQuad::ColumnCurrentSwitch const& other) const
+{
+	return m_enable_synaptic_current_excitatory == other.m_enable_synaptic_current_excitatory &&
+	       m_enable_synaptic_current_inhibitory == other.m_enable_synaptic_current_inhibitory &&
+	       m_enable_debug_excitatory == other.m_enable_debug_excitatory &&
+	       m_enable_debug_inhibitory == other.m_enable_debug_inhibitory &&
+	       m_enable_cadc_neuron_readout_causal == other.m_enable_cadc_neuron_readout_causal &&
+	       m_enable_cadc_neuron_readout_acausal == other.m_enable_cadc_neuron_readout_acausal;
+}
+
+bool ColumnCurrentQuad::ColumnCurrentSwitch::operator!=(
+    ColumnCurrentQuad::ColumnCurrentSwitch const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void ColumnCurrentQuad::ColumnCurrentSwitch::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_enable_synaptic_current_excitatory));
+	ar(CEREAL_NVP(m_enable_synaptic_current_inhibitory));
+	ar(CEREAL_NVP(m_enable_debug_excitatory));
+	ar(CEREAL_NVP(m_enable_debug_inhibitory));
+	ar(CEREAL_NVP(m_enable_cadc_neuron_readout_causal));
+	ar(CEREAL_NVP(m_enable_cadc_neuron_readout_acausal));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentQuad::ColumnCurrentSwitch)
+
+ColumnCurrentQuad::ColumnCurrentQuad() : m_switches() {}
+
+ColumnCurrentQuad::ColumnCurrentSwitch ColumnCurrentQuad::get_switch(
+    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad const& current_switch) const
+{
+	return m_switches.at(current_switch);
+}
+
+void ColumnCurrentQuad::set_switch(
+    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad const& current_switch,
+    ColumnCurrentQuad::ColumnCurrentSwitch const& value)
+{
+	m_switches.at(current_switch) = value;
+}
+
+bool ColumnCurrentQuad::operator==(ColumnCurrentQuad const& other) const
+{
+	return m_switches == other.m_switches;
+}
+
+bool ColumnCurrentQuad::operator!=(ColumnCurrentQuad const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename AddressT>
+std::array<AddressT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad::addresses(
+    coordinate_type const& block) const
+{
+	using namespace halco::hicann_dls::vx;
+	uint32_t base;
+	if (block.toSynramOnDLS() == SynramOnDLS::bottom) {
+		base = synram_synapse_bottom_base_address;
+	} else {
+		base = synram_synapse_top_base_address;
+	}
+	auto const address =
+	    base + block.value() + SynapseQuadOnSynram::size * SynapseQuad::config_size_in_words;
+	return {{AddressT(address), AddressT(address + ColumnCurrentQuadOnSynram::size)}};
+}
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCurrentQuad::config_size_in_words>
+    ColumnCurrentQuad::addresses(coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    ColumnCurrentQuad::config_size_in_words>
+ColumnCurrentQuad::addresses(coordinate_type const& coord) const;
+
+namespace {
+
+struct ColumnCurrentQuadBitfield
+{
+	union
+	{
+		std::array<uint32_t, ColumnCurrentQuad::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t                                      : 5;
+			uint32_t enable_cadc_neuron_readout_causal_3  : 1;
+			uint32_t enable_synaptic_current_excitatory_3 : 1;
+			uint32_t enable_synaptic_current_inhibitory_3 : 1;
+
+			uint32_t                                      : 5;
+			uint32_t enable_cadc_neuron_readout_causal_2  : 1;
+			uint32_t enable_synaptic_current_excitatory_2 : 1;
+			uint32_t enable_synaptic_current_inhibitory_2 : 1;
+
+			uint32_t                                      : 5;
+			uint32_t enable_cadc_neuron_readout_causal_1  : 1;
+			uint32_t enable_synaptic_current_excitatory_1 : 1;
+			uint32_t enable_synaptic_current_inhibitory_1 : 1;
+
+			uint32_t                                      : 5;
+			uint32_t enable_cadc_neuron_readout_causal_0  : 1;
+			uint32_t enable_synaptic_current_excitatory_0 : 1;
+			uint32_t enable_synaptic_current_inhibitory_0 : 1;
+
+			uint32_t                                      : 5;
+			uint32_t enable_cadc_neuron_readout_acausal_3 : 1;
+			uint32_t enable_debug_excitatory_3            : 1;
+			uint32_t enable_debug_inhibitory_3            : 1;
+
+			uint32_t                                      : 5;
+			uint32_t enable_cadc_neuron_readout_acausal_2 : 1;
+			uint32_t enable_debug_excitatory_2            : 1;
+			uint32_t enable_debug_inhibitory_2            : 1;
+
+			uint32_t                                      : 5;
+			uint32_t enable_cadc_neuron_readout_acausal_1 : 1;
+			uint32_t enable_debug_excitatory_1            : 1;
+			uint32_t enable_debug_inhibitory_1            : 1;
+
+			uint32_t                                      : 5;
+			uint32_t enable_cadc_neuron_readout_acausal_0 : 1;
+			uint32_t enable_debug_excitatory_0            : 1;
+			uint32_t enable_debug_inhibitory_0            : 1;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ColumnCurrentQuadBitfield() { u.raw = {{0}}; }
+	ColumnCurrentQuadBitfield(
+	    std::array<uint32_t, ColumnCurrentQuad::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+template <typename WordT>
+std::array<WordT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad::encode() const
+{
+	using namespace halco::hicann_dls::vx;
+	ColumnCurrentQuadBitfield bitfield;
+
+#define CURRENT_ENCODE(index)                                                                      \
+	{                                                                                              \
+		ColumnCurrentSwitch const& config =                                                        \
+		    m_switches.at(ColumnCurrentSwitchOnColumnCurrentQuad(index));                          \
+		bitfield.u.m.enable_synaptic_current_excitatory_##index =                                  \
+		    config.get_enable_synaptic_current_excitatory();                                       \
+		bitfield.u.m.enable_synaptic_current_inhibitory_##index =                                  \
+		    config.get_enable_synaptic_current_inhibitory();                                       \
+		bitfield.u.m.enable_debug_excitatory_##index = config.get_enable_debug_excitatory();       \
+		bitfield.u.m.enable_debug_inhibitory_##index = config.get_enable_debug_inhibitory();       \
+		bitfield.u.m.enable_cadc_neuron_readout_causal_##index =                                   \
+		    config.get_enable_cadc_neuron_readout_causal();                                        \
+		bitfield.u.m.enable_cadc_neuron_readout_acausal_##index =                                  \
+		    config.get_enable_cadc_neuron_readout_acausal();                                       \
+	}
+
+	CURRENT_ENCODE(0);
+	CURRENT_ENCODE(1);
+	CURRENT_ENCODE(2);
+	CURRENT_ENCODE(3);
+#undef CURRENT_ENCODE
+
+	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw[0])),
+	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[1]))};
+}
+
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, ColumnCurrentQuad::config_size_in_words>
+ColumnCurrentQuad::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCurrentQuad::config_size_in_words>
+    ColumnCurrentQuad::encode() const;
+
+template <typename WordT>
+void ColumnCurrentQuad::decode(
+    std::array<WordT, ColumnCurrentQuad::config_size_in_words> const& data)
+{
+	using namespace halco::hicann_dls::vx;
+	ColumnCurrentQuadBitfield bitfield({data[0].get(), data[1].get()});
+
+#define CURRENT_DECODE(index)                                                                      \
+	{                                                                                              \
+		ColumnCurrentSwitch config;                                                                \
+		config.set_enable_synaptic_current_excitatory(                                             \
+		    bitfield.u.m.enable_synaptic_current_excitatory_##index);                              \
+		config.set_enable_synaptic_current_inhibitory(                                             \
+		    bitfield.u.m.enable_synaptic_current_inhibitory_##index);                              \
+		config.set_enable_debug_excitatory(bitfield.u.m.enable_debug_excitatory_##index);          \
+		config.set_enable_debug_inhibitory(bitfield.u.m.enable_debug_inhibitory_##index);          \
+		config.set_enable_cadc_neuron_readout_causal(                                              \
+		    bitfield.u.m.enable_cadc_neuron_readout_causal_##index);                               \
+		config.set_enable_cadc_neuron_readout_acausal(                                             \
+		    bitfield.u.m.enable_cadc_neuron_readout_acausal_##index);                              \
+		m_switches.at(ColumnCurrentSwitchOnColumnCurrentQuad(index)) = config;                     \
+	}
+
+	CURRENT_DECODE(0)
+	CURRENT_DECODE(1)
+	CURRENT_DECODE(2)
+	CURRENT_DECODE(3)
+#undef CURRENT_DECODE
+}
+
+template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
+    std::array<fisch::vx::OmnibusChip, ColumnCurrentQuad::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
+    std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCurrentQuad::config_size_in_words> const&
+        data);
+
+template <class Archive>
+void ColumnCurrentQuad::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_switches));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentQuad)
+
 } // namespace haldls::vx
