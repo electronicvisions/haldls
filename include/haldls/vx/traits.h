@@ -3,15 +3,8 @@
 
 #include <boost/variant.hpp>
 #include "fisch/vx/playback_program.h"
-#include "fisch/vx/omnibus.h"
-#include "fisch/vx/spi.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"
-
-namespace fisch::vx {
-#define PLAYBACK_CONTAINER(Name, Type) class Name;
-#include "fisch/vx/container.def"
-} // namespace fisch::vx
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
