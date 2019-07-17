@@ -20,9 +20,11 @@ namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
- * 24-bit wide shift register controlling six VDD switches, the selection of the ADC source,
- * ADC power down and reset pins, six LEDs, routing two DAC channels to a differential debug line
- * and the CapMem reference current connection.
+ * Container for configuration of the 24-bit wide shift register controlling six VDD switches,
+ * the selection of the ADC source, ADC power down and reset pins, six LEDs, routing two
+ * DAC channels to a differential debug line and the CapMem reference current connection.
+ * Information about the routing can be found in the xBoard wiki under
+ * https://brainscales-r.kip.uni-heidelberg.de/projects/symap2ic/wiki/xboard.
  */
 class GENPYBIND(visible) ShiftRegister
 {
@@ -54,6 +56,7 @@ public:
 		mux_rfu_2
 	};
 
+	/** Default constructor. */
 	ShiftRegister() SYMBOL_VISIBLE;
 
 	/**
@@ -83,7 +86,7 @@ public:
 	/**
 	 * Set enable value for connecting the CapMem reference current to ground via a 2.2MOhm
 	 * resistor for a current measurement with the ADC.
-	 * @return Boolean value
+	 * @param value Boolean value
 	 */
 	GENPYBIND(setter_for(enable_measure_i_ref))
 	void set_enable_measure_i_ref(bool value) SYMBOL_VISIBLE;
@@ -262,6 +265,9 @@ struct BackendContainerTrait<ShiftRegister>
 } // namespace detail
 
 
+/**
+ * Container for individual configuration of the value of a DAC channel of the xBoard DACs.
+ */
 class GENPYBIND(visible) DACChannel
 {
 public:
@@ -276,10 +282,23 @@ public:
 		{}
 	};
 
+	/**
+	 * Construct DAC channel with value.
+	 * @param value Value to construct with
+	 */
 	DACChannel(Value const& value = Value()) : m_value(value) {}
 
+	/**
+	 * Set DAC channel value.
+	 * @param value Value to set
+	 */
 	GENPYBIND(setter_for(value))
 	void set_value(Value value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get DAC channel value.
+	 * @return Value to get
+	 */
 	GENPYBIND(getter_for(value))
 	Value get_value() const SYMBOL_VISIBLE;
 
@@ -315,16 +334,31 @@ struct BackendContainerTrait<DACChannel>
 } // namespace detail
 
 
+/**
+ * Container for enabling DAC channels of a xBoard DAC.
+ */
 class GENPYBIND(visible) DACControl
 {
 public:
 	typedef halco::hicann_dls::vx::DACOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/** Default constructor. */
 	DACControl() SYMBOL_VISIBLE;
 
+	/**
+	 * Set DAC channel enable value.
+	 * @param channel Channel to set value for
+	 * @param value Boolean value to set
+	 */
 	void set_enable_channel(halco::hicann_dls::vx::DACChannelOnDAC const& channel, bool value)
 	    SYMBOL_VISIBLE;
+
+	/**
+	 * Get DAC channel enable value.
+	 * @param channel Channel to get value for
+	 * @return Boolean value
+	 */
 	bool get_enable_channel(halco::hicann_dls::vx::DACChannelOnDAC const& channel) const
 	    SYMBOL_VISIBLE;
 

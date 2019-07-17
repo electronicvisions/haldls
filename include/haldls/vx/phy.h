@@ -19,6 +19,9 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 namespace detail GENPYBIND_MODULE {
 
+/**
+ * Common base class for PhyConfig of the FPGA- and chip-side PHYs.
+ */
 class GENPYBIND(visible) PhyConfigBase
 {
 public:
@@ -156,6 +159,9 @@ protected:
 } // namespace detail
 
 
+/**
+ * Container for individual configuration of FPGA-side PHYs.
+ */
 // FIXME: Instead of normal public inheritance we want CRTP here, which is not possible due to
 // python wrapping issues, the properties don't show up in the derived class.
 class SYMBOL_VISIBLE GENPYBIND(visible) PhyConfigFPGA : public detail::PhyConfigBase
@@ -163,6 +169,7 @@ class SYMBOL_VISIBLE GENPYBIND(visible) PhyConfigFPGA : public detail::PhyConfig
 public:
 	typedef halco::hicann_dls::vx::PhyConfigFPGAOnDLS coordinate_type;
 
+	/** Default constructor. */
 	PhyConfigFPGA() SYMBOL_VISIBLE;
 
 	bool operator==(PhyConfigFPGA const& other) const SYMBOL_VISIBLE;
@@ -195,6 +202,9 @@ struct BackendContainerTrait<PhyConfigFPGA>
 } // namespace detail
 
 
+/**
+ * Container for individual configuration of chip-side PHYs.
+ */
 // FIXME: Instead of normal public inheritance we want CRTP here, which is not possible due to
 // python wrapping issues, the properties don't show up in the derived class.
 class GENPYBIND(visible) PhyConfigChip : public detail::PhyConfigBase
@@ -202,6 +212,7 @@ class GENPYBIND(visible) PhyConfigChip : public detail::PhyConfigBase
 public:
 	typedef halco::hicann_dls::vx::PhyConfigChipOnDLS coordinate_type;
 
+	/** Default constructor. */
 	PhyConfigChip() SYMBOL_VISIBLE;
 
 	bool operator==(PhyConfigChip const& other) const SYMBOL_VISIBLE;
@@ -234,12 +245,16 @@ struct BackendContainerTrait<PhyConfigChip>
 } // namespace detail
 
 
+/**
+ * Container for configuration of enable values for the FPGA-side PHYs.
+ */
 class GENPYBIND(visible) CommonPhyConfigFPGA
 {
 public:
 	typedef halco::hicann_dls::vx::CommonPhyConfigFPGAOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/** Default constructor. */
 	CommonPhyConfigFPGA() SYMBOL_VISIBLE;
 
 	bool get_enable_phy(halco::hicann_dls::vx::PhyConfigFPGAOnDLS const& coord) const
@@ -280,12 +295,16 @@ struct BackendContainerTrait<CommonPhyConfigFPGA>
 } // namespace detail
 
 
+/**
+ * Container for configuration of enable values for the chip-side PHYs.
+ */
 class GENPYBIND(visible) CommonPhyConfigChip
 {
 public:
 	typedef halco::hicann_dls::vx::CommonPhyConfigChipOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/** Default constructor. */
 	CommonPhyConfigChip() SYMBOL_VISIBLE;
 
 	bool get_enable_phy(halco::hicann_dls::vx::PhyConfigChipOnDLS const& coord) const

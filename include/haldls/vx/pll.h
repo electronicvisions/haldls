@@ -15,6 +15,11 @@
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
+/**
+ * Container for configuration of an ADPLL (All-Digital Phased-Locked-Loop) clock generator.
+ * The PLL features two ADPLLs with three clock outputs each. The clock outputs are routed to the
+ * PLLClockOutputBlock with four clock output ports.
+ */
 class GENPYBIND(visible) ADPLL
 {
 public:
@@ -333,6 +338,9 @@ struct BackendContainerTrait<ADPLL>
 } // namespace detail
 
 
+/**
+ * Container for configuration of the clock outputs of the PLL.
+ */
 class GENPYBIND(visible) PLLClockOutputBlock
 {
 public:
@@ -382,7 +390,7 @@ public:
 
 		/**
 		 * Get coordinate of selected ADPLL to route to output.
-		 * @param coord Coordinate of ADPLL to select
+		 * @return coord Coordinate of ADPLL to select
 		 */
 		GENPYBIND(getter_for(select_adpll))
 		halco::hicann_dls::vx::ADPLLOnDLS get_select_adpll() const SYMBOL_VISIBLE;
@@ -430,6 +438,7 @@ public:
 	/**
 	 * Get clock output configuration.
 	 * @param coord Coordinate of clock output to get
+	 * @return Configuration of clock output
 	 */
 	ClockOutput const& get_clock_output(halco::hicann_dls::vx::PLLClockOutputOnDLS const& coord) const
 	    SYMBOL_VISIBLE;
@@ -481,6 +490,9 @@ struct BackendContainerTrait<PLLClockOutputBlock>
 } // namespace detail
 
 
+/**
+ * Container for configuration and triggering of the PLL internal self test.
+ */
 class GENPYBIND(visible) PLLSelfTest
 {
 public:
@@ -642,6 +654,7 @@ public:
 	 * Get if self-test exectution finished before this containers' read.
 	 * This flag only produces reliable information on the first validly
 	 * finished self test after power cycle.
+	 * @return Boolean value
 	 */
 	GENPYBIND(getter_for(finished))
 	bool get_finished() const SYMBOL_VISIBLE;

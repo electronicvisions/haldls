@@ -18,19 +18,31 @@ class access;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
+/**
+ * Container writing JTAG clock-scaler value.
+ */
 class GENPYBIND(visible) JTAGClockScaler
 {
 public:
 	typedef halco::hicann_dls::vx::JTAGClockScalerOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/** Clock-scaler value type. The JTAG clock scales with 1 / (value + 2). */
 	struct GENPYBIND(inline_base("*")) Value : public fisch::vx::JTAGClockScaler::Value
 	{
 		explicit Value(uintmax_t const value = 0) : fisch::vx::JTAGClockScaler::Value(value) {}
 	};
 
+	/**
+	 * Construct scaler with value.
+	 * @param value Value to construct scaler with
+	 */
 	explicit JTAGClockScaler(Value value = Value()) SYMBOL_VISIBLE;
 
+	/**
+	 * Set clock-scaler value.
+	 * @param value Clock-scaler value to set
+	 */
 	void set(Value value) SYMBOL_VISIBLE;
 
 	bool operator==(JTAGClockScaler const& other) const SYMBOL_VISIBLE;
@@ -39,11 +51,27 @@ public:
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, JTAGClockScaler const& config) SYMBOL_VISIBLE;
 
+	/** Number of words for read-write access. */
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+
+	/**
+	 * Get word addresses for encoding a write or reading.
+	 * @return Array of addresses
+	 */
 	std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, config_size_in_words> addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	/**
+	 * Get container config encoded in writable words.
+	 * @return Array of word values
+	 */
 	std::array<fisch::vx::JTAGClockScaler, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
+
+	/**
+	 * Decode read words into container config.
+	 * @param data Array of word values
+	 */
 	void decode(std::array<fisch::vx::JTAGClockScaler, config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
@@ -65,12 +93,16 @@ struct BackendContainerTrait<JTAGClockScaler>
 } // namespace detail
 
 
+/**
+ * Container for resetting JTAG state-machine.
+ */
 class GENPYBIND(visible) ResetJTAGTap
 {
 public:
 	typedef halco::hicann_dls::vx::ResetJTAGTapOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/** Default constructor. */
 	ResetJTAGTap() SYMBOL_VISIBLE;
 
 	bool operator==(ResetJTAGTap const& other) const SYMBOL_VISIBLE;
@@ -105,19 +137,28 @@ struct BackendContainerTrait<ResetJTAGTap>
 } // namespace detail
 
 
+/**
+ * Container for reading the JTAG IDCODE.
+ */
 class GENPYBIND(visible) JTAGIdCode
 {
 public:
 	typedef halco::hicann_dls::vx::JTAGIdCodeOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/** JTAG IDCODE value type. */
 	struct GENPYBIND(inline_base("*")) Value : public fisch::vx::JTAGIdCode::Value
 	{
 		explicit Value(value_type const value = 0) : fisch::vx::JTAGIdCode::Value(value) {}
 	};
 
+	/** Default constructor. */
 	JTAGIdCode() SYMBOL_VISIBLE;
 
+	/**
+	 * Get JTAG IDCODE.
+	 * @return Value
+	 */
 	Value get() const SYMBOL_VISIBLE;
 
 	bool operator==(JTAGIdCode const& other) const SYMBOL_VISIBLE;

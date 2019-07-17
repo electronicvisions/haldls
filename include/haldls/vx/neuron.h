@@ -22,12 +22,16 @@ class OmnibusChip;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
+/**
+ * Container for configuration of (digital) neuron parameters.
+ */
 class GENPYBIND(visible) NeuronConfig
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/** Source of readout output. */
 	enum class ReadoutSource : uint_fast8_t
 	{
 		membrane = 0b00,
@@ -36,6 +40,7 @@ public:
 		adaptation = 0b11
 	};
 
+	/** Strength of exponential term. */
 	struct GENPYBIND(inline_base("*")) ExponentialTermStrength
 	    : public halco::common::detail::RantWrapper<ExponentialTermStrength, uint_fast8_t, 7, 0>
 	{
@@ -44,6 +49,7 @@ public:
 		{}
 	};
 
+	/** Size of membrane capacitor. Maximal size is ~2.3pF. */
 	struct GENPYBIND(inline_base("*")) MembraneCapacitorSize
 	    : public halco::common::detail::RantWrapper<MembraneCapacitorSize, uint_fast8_t, 63, 0>
 	{
@@ -52,6 +58,7 @@ public:
 		{}
 	};
 
+	/** Default constructor */
 	NeuronConfig() SYMBOL_VISIBLE;
 
 	// accessors

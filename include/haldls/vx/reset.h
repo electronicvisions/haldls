@@ -18,14 +18,27 @@ class access;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
+/**
+ * Container for setting the reset pin of the chip.
+ */
 class GENPYBIND(visible) ResetChip
 {
 public:
 	typedef halco::hicann_dls::vx::ResetChipOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/**
+	 * Construct chip reset with boolean value.
+	 * On true, the chip reset is enabled.
+	 * @param value Boolean value
+	 */
 	explicit ResetChip(bool value = false) SYMBOL_VISIBLE;
 
+	/**
+	 * Set chip reset.
+	 * On true, the chip reset is enabled.
+	 * @param value Boolean value
+	 */
 	void set(bool value) SYMBOL_VISIBLE;
 
 	bool operator==(ResetChip const& other) const SYMBOL_VISIBLE;

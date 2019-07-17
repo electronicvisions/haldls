@@ -18,6 +18,9 @@ class access;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
+/**
+ * Container for resetting the FPGA playback timer.
+ */
 class GENPYBIND(visible) Timer
 {
 public:
@@ -31,8 +34,16 @@ public:
 		{}
 	};
 
+	/**
+	 * Construct on-FPGA-timer with value.
+	 * @param value Value to construct with
+	 */
 	explicit Timer(Value value = Value()) SYMBOL_VISIBLE;
 
+	/**
+	 * Set timer value.
+	 * @param value Value to set
+	 */
 	void set(Value value) SYMBOL_VISIBLE;
 
 	bool operator==(Timer const& other) const SYMBOL_VISIBLE;

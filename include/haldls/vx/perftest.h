@@ -23,6 +23,7 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * Words transfering an increasing counter value are sent.
  * The received word count is expected to be equal to the sent count and all received words are
  * expected to be in order.
+ * The test execution does not block playback execution.
  */
 class GENPYBIND(visible) PerfTest
 {
@@ -30,10 +31,23 @@ public:
 	typedef halco::hicann_dls::vx::PerfTestOnFPGA coordinate_type;
 	typedef std::true_type is_leaf_node;
 
+	/**
+	 * Construct perf test with enable value.
+	 * @param value Enable value of test execution
+	 */
 	explicit PerfTest(bool value = false) SYMBOL_VISIBLE;
 
+	/**
+	 * Set enable value of test execution.
+	 * @param value Boolean value
+	 */
 	GENPYBIND(setter_for(enable))
 	void set_enable(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get enable value of test execution.
+	 * @return value Boolean value
+	 */
 	GENPYBIND(getter_for(enable))
 	bool get_enable() const SYMBOL_VISIBLE;
 
@@ -106,25 +120,62 @@ public:
 		constexpr explicit ErrorWord(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
+	/** Default constructor. */
 	PerfTestStatus() SYMBOL_VISIBLE;
 
+	/**
+	 * Set number of successfully sent words.
+	 * @param value Sent counter value
+	 */
 	GENPYBIND(setter_for(sent))
 	void set_sent(Sent value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get number of successfully sent words.
+	 * @return Sent counter value
+	 */
 	GENPYBIND(getter_for(sent))
 	Sent get_sent() const SYMBOL_VISIBLE;
 
+	/**
+	 * Set number of successfully received words.
+	 * @param value Received counter value
+	 */
 	GENPYBIND(setter_for(received))
 	void set_received(Received value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get number of successfully received words.
+	 * @return Received counter value
+	 */
 	GENPYBIND(getter_for(received))
 	Received get_received() const SYMBOL_VISIBLE;
 
+	/**
+	 * Set number of words received in order.
+	 * @param value InOrder counter value
+	 */
 	GENPYBIND(setter_for(in_order))
 	void set_in_order(InOrder value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get number of words received in order.
+	 * @return InOrder counter value
+	 */
 	GENPYBIND(getter_for(in_order))
 	InOrder get_in_order() const SYMBOL_VISIBLE;
 
+	/**
+	 * Set index of first non-consecutive word.
+	 * @param value ErrorWord index value
+	 */
 	GENPYBIND(setter_for(error_word))
 	void set_error_word(ErrorWord value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get index of first non-consecutive word.
+	 * @return ErrorWord index value
+	 */
 	GENPYBIND(getter_for(error_word))
 	ErrorWord get_error_word() const SYMBOL_VISIBLE;
 
