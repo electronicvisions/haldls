@@ -31,6 +31,7 @@ def options(opt):
     opt.recurse("pystadls")
     opt.recurse("pylola")
     opt.recurse("dlens")
+    opt.recurse("tools/cube")
 
     hopts = opt.add_option_group('HALDLS options')
     hopts.add_withoption('munge', default=True,
@@ -78,6 +79,7 @@ def configure(cfg):
         cfg.recurse("pystadls")
         cfg.recurse("pylola")
         cfg.recurse("dlens")
+    cfg.recurse("tools/cube")
 
 
 def build(bld):
@@ -283,6 +285,7 @@ def build(bld):
         bld.recurse("pystadls")
         bld.recurse("pylola")
         bld.recurse("dlens")
+    bld.recurse("tools/cube")
 
 
     bld(

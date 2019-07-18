@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: skip-file
+# flake8: noqa
 ##-----------------------------------------------------------------
 ##
 ## Copyright (c) 2015 TU-Dresden  All rights reserved.

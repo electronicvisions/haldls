@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# pylint: skip-file
+# flake8: noqa
 ##-----------------------------------------------------------------
 ##
 ## Copyright (c) 2016 TU-Dresden  All rights reserved.
