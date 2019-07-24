@@ -1,19 +1,10 @@
 @Library("jenlib") _
 
-// HICANN-DLSv2
 wafDefaultPipeline(projects: ["haldls"],
                    container: [app: "visionary-dls"],
                    postPipelineCleanup: false,
                    testOptions: "--test-execall -j1",
-                   testSlurmResource: [partition: "dls", gres: "07"],
+                   testSlurmResource: [[partition: "dls", gres: "07"],
+                                       [partition: "cube", wafer: 4, "fpga-without-aout": 3]],
                    testTimeout: 240,
-                   notificationChannel: "#dls-software")
-
-
-// HICANN-X
-wafDefaultPipeline(projects: ["haldls"],
-                   container: [app: "visionary-dls"],
-                   prePipelineCleanup: false,
-                   testOptions: "--test-execall -j1",
-                   testSlurmResource: [partition: "cube", wafer: 4, "fpga-without-aout": 3],
                    notificationChannel: "#dls-software")
