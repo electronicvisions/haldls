@@ -191,12 +191,12 @@ int main(int argc, char* argv[])
 	auto program = builder.done();
 	if ((sim_ip == "0.0.0.0") and (sim_port == 0)) {
 		LOG4CXX_INFO(logger, "Running built program on hardware.");
-		auto executor = fisch::vx::PlaybackProgramExecutor<hxcomm::vx::ARQConnection>(fpga_ip);
+		auto executor = fisch::vx::PlaybackProgramARQExecutor(fpga_ip);
 		executor.run(program.impl());
 	} else {
 		LOG4CXX_INFO(logger, "Running built program on simulation.");
 		auto executor =
-		    fisch::vx::PlaybackProgramExecutor<hxcomm::vx::SimConnection>(sim_ip, sim_port);
+		    fisch::vx::PlaybackProgramSimExecutor(sim_ip, sim_port);
 		executor.run(program.impl());
 	}
 
