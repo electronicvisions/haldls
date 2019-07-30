@@ -4,12 +4,7 @@
 
 namespace haldls::vx {
 
-ResetChip::ResetChip() : m_value() {}
-
-ResetChip::ResetChip(bool const value) : m_value()
-{
-	m_value.set(value);
-}
+ResetChip::ResetChip(bool const value) : m_value(value) {}
 
 void ResetChip::set(bool const value)
 {

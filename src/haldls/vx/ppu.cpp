@@ -22,9 +22,7 @@
 namespace haldls {
 namespace vx {
 
-PPUMemoryWord::PPUMemoryWord() : PPUMemoryWord(PPUMemoryWord::Value(0)) {}
-
-PPUMemoryWord::PPUMemoryWord(PPUMemoryWord::Value const& value) : m_value(value) {}
+PPUMemoryWord::PPUMemoryWord(PPUMemoryWord::Value const value) : m_value(value) {}
 
 PPUMemoryWord::Value PPUMemoryWord::get_value() const
 {
@@ -113,9 +111,7 @@ void PPUMemoryWord::serialize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryWord)
 
-PPUMemoryBlock::PPUMemoryBlock() : m_words(halco::hicann_dls::vx::PPUMemoryWordOnDLS::size) {}
-
-PPUMemoryBlock::PPUMemoryBlock(size_type const& size) : m_words(size.value()) {}
+PPUMemoryBlock::PPUMemoryBlock(size_type const size) : m_words(size.value()) {}
 
 PPUMemoryBlock::words_type const& PPUMemoryBlock::get_words() const
 {
@@ -260,8 +256,6 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryBlock)
-
-PPUMemory::PPUMemory() : m_words() {}
 
 PPUMemory::PPUMemory(words_type const& words) : m_words(words) {}
 

@@ -24,8 +24,7 @@ public:
 	typedef halco::hicann_dls::vx::ResetChipOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	ResetChip() SYMBOL_VISIBLE;
-	explicit ResetChip(bool value) SYMBOL_VISIBLE;
+	explicit ResetChip(bool value = false) SYMBOL_VISIBLE;
 
 	void set(bool value) SYMBOL_VISIBLE;
 

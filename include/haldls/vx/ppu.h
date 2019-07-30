@@ -33,8 +33,7 @@ public:
 		constexpr explicit Value(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
 	};
 
-	PPUMemoryWord() SYMBOL_VISIBLE;
-	explicit PPUMemoryWord(Value const& value) SYMBOL_VISIBLE;
+	explicit PPUMemoryWord(Value value = Value()) SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(value))
 	Value get_value() const SYMBOL_VISIBLE;
@@ -75,8 +74,8 @@ public:
 
 	typedef halco::hicann_dls::vx::PPUMemoryBlockSize size_type;
 
-	PPUMemoryBlock() SYMBOL_VISIBLE;
-	explicit PPUMemoryBlock(size_type const& size) SYMBOL_VISIBLE;
+	explicit PPUMemoryBlock(
+	    size_type size = size_type(halco::hicann_dls::vx::PPUMemoryWordOnDLS::size)) SYMBOL_VISIBLE;
 
 	PPUMemoryWord& at(size_t index) SYMBOL_VISIBLE;
 	PPUMemoryWord const& at(size_t index) const SYMBOL_VISIBLE;
@@ -120,8 +119,7 @@ public:
 
 	typedef std::array<PPUMemoryWord, halco::hicann_dls::vx::PPUMemoryWordOnPPU::size> words_type;
 
-	PPUMemory() SYMBOL_VISIBLE;
-	explicit PPUMemory(words_type const& words) SYMBOL_VISIBLE;
+	explicit PPUMemory(words_type const& words = words_type()) SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(words))
 	words_type get_words() const SYMBOL_VISIBLE;

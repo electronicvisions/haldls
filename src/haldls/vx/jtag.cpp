@@ -4,12 +4,7 @@
 
 namespace haldls::vx {
 
-JTAGClockScaler::JTAGClockScaler() : m_value() {}
-
-JTAGClockScaler::JTAGClockScaler(Value const value) : m_value()
-{
-	m_value.set(value);
-}
+JTAGClockScaler::JTAGClockScaler(Value const value) : m_value(value) {}
 
 void JTAGClockScaler::set(Value const value)
 {

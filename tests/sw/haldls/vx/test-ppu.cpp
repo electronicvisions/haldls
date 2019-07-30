@@ -247,7 +247,7 @@ TEST(PPUMemory, General)
 	PPUMemory memory;
 
 	// test getter/setter
-	PPUMemory::words_type test_mem{{PPUMemoryWord(PPUMemoryWord::Value(0))}};
+	PPUMemory::words_type test_mem;
 	std::for_each(test_mem.begin(), test_mem.end(), [](PPUMemoryWord& x) {
 		x = PPUMemoryWord(PPUMemoryWord::Value(std::rand()));
 	});
@@ -315,7 +315,7 @@ TEST(PPUMemory, EncodeDecode)
 	PPUMemoryOnPPU coord;
 	PPUMemoryOnDLS coord_on_dls(coord);
 
-	PPUMemory::words_type memory{{}};
+	PPUMemory::words_type memory;
 
 	std::array<OmnibusChipOverJTAGAddress, halco::hicann_dls::vx::PPUMemoryWordOnPPU::size>
 	    ref_addresses;

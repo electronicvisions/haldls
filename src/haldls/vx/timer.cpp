@@ -4,12 +4,7 @@
 
 namespace haldls::vx {
 
-Timer::Timer() : m_value() {}
-
-Timer::Timer(Value const value) : m_value()
-{
-	m_value.set(value);
-}
+Timer::Timer(Value const value) : m_value(value) {}
 
 void Timer::set(Value const value)
 {

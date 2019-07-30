@@ -31,8 +31,7 @@ public:
 		{}
 	};
 
-	Timer() SYMBOL_VISIBLE;
-	explicit Timer(Value value) SYMBOL_VISIBLE;
+	explicit Timer(Value value = Value()) SYMBOL_VISIBLE;
 
 	void set(Value value) SYMBOL_VISIBLE;
 

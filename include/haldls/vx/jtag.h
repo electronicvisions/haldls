@@ -29,8 +29,7 @@ public:
 		explicit Value(uintmax_t const value = 0) : fisch::vx::JTAGClockScaler::Value(value) {}
 	};
 
-	JTAGClockScaler() SYMBOL_VISIBLE;
-	explicit JTAGClockScaler(Value value) SYMBOL_VISIBLE;
+	explicit JTAGClockScaler(Value value = Value()) SYMBOL_VISIBLE;
 
 	void set(Value value) SYMBOL_VISIBLE;
 
