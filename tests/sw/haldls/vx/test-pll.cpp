@@ -101,9 +101,9 @@ TEST(ADPLL, General)
 	}
 
 	{
-		bool value = config.get_disable_lock();
-		config.set_disable_lock(!value);
-		EXPECT_EQ(config.get_disable_lock(), !value);
+		bool value = config.get_enable_output_clock();
+		config.set_enable_output_clock(!value);
+		EXPECT_EQ(config.get_enable_output_clock(), !value);
 	}
 
 	{
@@ -217,7 +217,7 @@ TEST(ADPLL, CerealizeCoverage)
 	obj1.set_lock_window(!obj1.get_lock_window());
 	obj1.set_filter_shift(
 	    draw_ranged_non_default_value<ADPLL::FilterShift>(obj1.get_filter_shift()));
-	obj1.set_disable_lock(!obj1.get_disable_lock());
+	obj1.set_enable_output_clock(!obj1.get_enable_output_clock());
 	obj1.set_enable(!obj1.get_enable());
 	obj1.set_use_external_config(!obj1.get_use_external_config());
 

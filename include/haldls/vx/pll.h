@@ -232,18 +232,18 @@ public:
 	void set_filter_shift(FilterShift value) SYMBOL_VISIBLE;
 
 	/**
-	 * Get whether output clock 0 is disabled.
+	 * Get whether output clock is enabled.
 	 * @return Boolean value
 	 */
-	GENPYBIND(getter_for(disable_lock))
-	bool get_disable_lock() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(enable_output_clock))
+	bool get_enable_output_clock() const SYMBOL_VISIBLE;
 
 	/**
-	 * Set to disable output clock 0.
+	 * Set whether to enable output clock.
 	 * @param value Boolean value to set
 	 */
-	GENPYBIND(setter_for(disable_lock))
-	void set_disable_lock(bool value) SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_output_clock))
+	void set_enable_output_clock(bool value) SYMBOL_VISIBLE;
 
 	/**
 	 * Get whether the ADPLL is enabled.
@@ -309,7 +309,7 @@ private:
 	bool m_pfd_select;
 	bool m_lock_window;
 	FilterShift m_filter_shift;
-	bool m_disable_lock;
+	bool m_enable_output_clock;
 	bool m_enable;
 	bool m_use_external_config;
 };

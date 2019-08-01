@@ -33,7 +33,7 @@ ADPLL::ADPLL() :
     m_pfd_select(false),
     m_lock_window(false),
     m_filter_shift(),
-    m_disable_lock(false),
+    m_enable_output_clock(true),
     m_enable(true),
     m_use_external_config(true)
 {}
@@ -188,14 +188,14 @@ void ADPLL::set_filter_shift(FilterShift const value)
 	m_filter_shift = value;
 }
 
-bool ADPLL::get_disable_lock() const
+bool ADPLL::get_enable_output_clock() const
 {
-	return m_disable_lock;
+	return m_enable_output_clock;
 }
 
-void ADPLL::set_disable_lock(bool const value)
+void ADPLL::set_enable_output_clock(bool const value)
 {
-	m_disable_lock = value;
+	m_enable_output_clock = value;
 }
 
 bool ADPLL::get_enable() const
@@ -230,7 +230,7 @@ bool ADPLL::operator==(ADPLL const& other) const
 	    m_dco_power_switch == other.m_dco_power_switch && m_open_lock == other.m_open_lock &&
 	    m_enforce_lock == other.m_enforce_lock && m_pfd_select == other.m_pfd_select &&
 	    m_lock_window == other.m_lock_window && m_filter_shift == other.m_filter_shift &&
-	    m_disable_lock == other.m_disable_lock);
+	    m_enable_output_clock == other.m_enable_output_clock);
 }
 
 bool ADPLL::operator!=(ADPLL const& other) const
@@ -275,17 +275,17 @@ struct ADPLLUpperBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t tune                : 12;
-			uint32_t dco_power_switch    :  6;
-			uint32_t open_lock           :  1;
-			uint32_t enforce_lock        :  1;
-			uint32_t pfd_select          :  1;
-			uint32_t lock_window         :  1;
-			uint32_t filter_shift        :  2;
-			uint32_t disable_lock        :  1;
-			uint32_t /*unused*/          :  5;
-			uint32_t enable              :  1;
-			uint32_t use_external_config :  1;
+			uint32_t tune                 : 12;
+			uint32_t dco_power_switch     :  6;
+			uint32_t open_lock            :  1;
+			uint32_t enforce_lock         :  1;
+			uint32_t pfd_select           :  1;
+			uint32_t lock_window          :  1;
+			uint32_t filter_shift         :  2;
+			uint32_t disable_output_clock :  1;
+			uint32_t /*unused*/           :  5;
+			uint32_t enable               :  1;
+			uint32_t use_external_config  :  1;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -343,7 +343,7 @@ std::array<WordT, ADPLL::config_size_in_words> ADPLL::encode() const
 	upper_bitfield.u.m.pfd_select = m_pfd_select;
 	upper_bitfield.u.m.lock_window = m_lock_window;
 	upper_bitfield.u.m.filter_shift = m_filter_shift;
-	upper_bitfield.u.m.disable_lock = m_disable_lock;
+	upper_bitfield.u.m.disable_output_clock = !m_enable_output_clock;
 	upper_bitfield.u.m.enable = m_enable;
 	upper_bitfield.u.m.use_external_config = m_use_external_config;
 
@@ -393,7 +393,7 @@ void ADPLL::decode(std::array<WordT, config_size_in_words> const& data)
 	m_pfd_select = upper_bitfield.u.m.pfd_select;
 	m_lock_window = upper_bitfield.u.m.lock_window;
 	m_filter_shift = FilterShift(upper_bitfield.u.m.filter_shift);
-	m_disable_lock = upper_bitfield.u.m.disable_lock;
+	m_enable_output_clock = !upper_bitfield.u.m.disable_output_clock;
 	m_enable = upper_bitfield.u.m.enable;
 	m_use_external_config = upper_bitfield.u.m.use_external_config;
 }
@@ -422,7 +422,7 @@ void ADPLL::serialize(Archive& ar)
 	ar(CEREAL_NVP(m_pfd_select));
 	ar(CEREAL_NVP(m_lock_window));
 	ar(CEREAL_NVP(m_filter_shift));
-	ar(CEREAL_NVP(m_disable_lock));
+	ar(CEREAL_NVP(m_enable_output_clock));
 	ar(CEREAL_NVP(m_enable));
 	ar(CEREAL_NVP(m_use_external_config));
 }
