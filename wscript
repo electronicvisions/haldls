@@ -20,6 +20,7 @@ def depends(ctx):
         ctx('haldls', 'pystadls')
         ctx('haldls', 'pylola')
         ctx('haldls', 'dlens')
+    ctx.recurse("tools/cube")
 
 
 def options(opt):
