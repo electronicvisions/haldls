@@ -299,10 +299,24 @@ void LocalBoardControl::execute(
 	halco::common::Unique unique;
 
 	// check that the DLS is not in reset
-	auto config = ocp_read_container<haldls::v2::FlyspiConfig>(m_impl->com, unique);
-	if (config.get_dls_reset()) {
-		LOG4CXX_ERROR(log, "Asking to execute a program although the DLS is in reset.");
-		LOG4CXX_ERROR(log, "This is prohibited for v2 as it will freeze the system.");
+	bool still_in_reset = true;
+	for (size_t tries = 3; still_in_reset && (tries > 0); tries--) {
+		auto config = ocp_read_container<haldls::v2::FlyspiConfig>(m_impl->com, unique);
+		still_in_reset = config.get_dls_reset();
+
+		if (!still_in_reset)
+			break;
+
+		LOG4CXX_WARN(log, "Asking to execute a program although the DLS is in reset.");
+		LOG4CXX_WARN(log, "Retrying...");
+
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(1s);
+	}
+
+	if (still_in_reset) {
+		LOG4CXX_ERROR(log, "Executing a program with DLS in reset is prohibited for v2 as it will "
+		                   "freeze the system.");
 		throw haldls::exception::InvalidConfiguration(
 			"Refuse to execute playback program with DLSv2 in reset");
 	}
