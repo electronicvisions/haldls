@@ -3,6 +3,7 @@
 from os.path import join
 from waflib.extras.symwaf2ic import get_toplevel_path
 from waflib.extras.gtest import summary
+from waflib import Utils
 
 
 def depends(ctx):
@@ -35,10 +36,11 @@ def build(bld):
     bld(name='cubetools',
         features='py pylint pycodestyle',
         source=bld.path.ant_glob('hxcube_*.py'),
-        relative_trick=True,
-        install_path = '${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        relative_trick=True,
+        chmod=Utils.O755,
+        install_path = '${PREFIX}/bin'
     )
 
     bld.add_post_fun(summary)
