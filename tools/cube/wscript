@@ -19,7 +19,6 @@ def options(opt):
 def configure(cfg):
     cfg.load('python')
     cfg.check_python_version()
-    cfg.check_python_headers()
     cfg.load('pytest')
     cfg.load('pylint')
     cfg.load('pycodestyle')
