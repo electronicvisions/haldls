@@ -150,9 +150,18 @@ public:
 	// Manual wrapping needed for std::bitset argument
 	GENPYBIND_MANUAL({
 		parent.def(
-		    "fire", [](GENPYBIND_PARENT_TYPE& self, uint32_t synapse_driver_mask,
+		    "fire", [](GENPYBIND_PARENT_TYPE& self, pybind11::iterable const& synapse_driver_mask,
 		               haldls::v2::SynapseBlock::Synapse::Address const& address) {
-			    self.fire(synapse_driver_mask, address);
+			    if (pybind11::len(synapse_driver_mask) !=
+			        halco::hicann_dls::v2::SynapseDriverOnDLS::size) {
+				    throw std::runtime_error("SynapseDriver mask too small or too large.");
+			    }
+			    std::bitset<halco::hicann_dls::v2::SynapseDriverOnDLS::size> bitset;
+			    size_t i = 0;
+			    for (auto driver : synapse_driver_mask) {
+				    bitset.set(i++, driver.cast<bool>());
+			    }
+			    self.fire(bitset.to_ulong(), address);
 		    });
 	})
 
@@ -166,8 +175,17 @@ public:
 	// Manual wrapping needed for std::bitset argument
 	GENPYBIND_MANUAL({
 		parent.def(
-		    "fire_post_correlation_signal", [](GENPYBIND_PARENT_TYPE& self, uint32_t neuron_mask) {
-			    self.fire_post_correlation_signal(neuron_mask);
+		    "fire_post_correlation_signal",
+		    [](GENPYBIND_PARENT_TYPE& self, pybind11::iterable const& neuron_mask) {
+			    if (pybind11::len(neuron_mask) != halco::hicann_dls::v2::NeuronOnDLS::size) {
+				    throw std::runtime_error("Neuron mask too small or too large.");
+			    }
+			    std::bitset<halco::hicann_dls::v2::NeuronOnDLS::size> bitset;
+			    size_t i = 0;
+			    for (auto nrn : neuron_mask) {
+				    bitset.set(i++, nrn.cast<bool>());
+			    }
+			    self.fire_post_correlation_signal(bitset.to_ulong());
 		    });
 	})
 

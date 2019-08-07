@@ -196,6 +196,26 @@ class TestPyhaldlsV2Chip(unittest.TestCase):
             self.assertEqual(val,
                              self.chip.common_synram_config.wait_ctr_clear)
 
+    def test_iterable_argument_builder(self):
+        builder = Ct.PlaybackProgramBuilder()
+        # single-SynapseDriver argument
+        builder.fire(10, 10)
+        builder.halt()
+        self.assertIn("fire_one", builder.done().dump_program())
+        # iterable SynapsedriverArgument
+        builder.fire([True] * C.SynapseDriverOnDLS.size, 15)
+        builder.halt()
+        self.assertIn("fire", builder.done().dump_program())
+        self.assertNotIn("Fire_one", builder.done().dump_program())
+
+        # wrong length
+        with self.assertRaises(RuntimeError):
+            builder.fire([True], 10)
+
+        # wrong type
+        with self.assertRaises(RuntimeError):
+            builder.fire(["something"] * C.SynapseDriverOnDLS.size, 10)
+
 
 if __name__ == "__main__":
     unittest.main()
