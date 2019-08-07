@@ -4,6 +4,7 @@
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/event.h"
+#include "haldls/vx/fpga.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/padi.h"

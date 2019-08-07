@@ -53,6 +53,7 @@ PLAYBACK_CONTAINER(CADCSampleQuad, haldls::vx::CADCSampleQuad)
 PLAYBACK_CONTAINER(SpikePack1ToChip, haldls::vx::SpikePack1ToChip)
 PLAYBACK_CONTAINER(SpikePack2ToChip, haldls::vx::SpikePack2ToChip)
 PLAYBACK_CONTAINER(SpikePack3ToChip, haldls::vx::SpikePack3ToChip)
+PLAYBACK_CONTAINER(FPGADeviceDNA, haldls::vx::FPGADeviceDNA)
 LAST_PLAYBACK_CONTAINER(SystimeSync, haldls::vx::SystimeSync)
 
 #undef PLAYBACK_CONTAINER
