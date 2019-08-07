@@ -35,7 +35,7 @@ def main():
                             "please run with --desktop"))
         gres = os.environ["MY_SLURM_GRES"]
 
-    hid = pyhid.pyhidaccess()
+    hid = pyhid.pyhidaccess()  # pylint: disable=no-member
     if args.ignore_license:
         # will connect to the first available match
         hid.openHID(vid=0x0451, pid=0x4253, serial=None)
