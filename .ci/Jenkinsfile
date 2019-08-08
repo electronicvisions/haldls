@@ -5,6 +5,6 @@ wafDefaultPipeline(projects: ["haldls"],
                    postPipelineCleanup: false,
                    testOptions: "--test-execall -j1",
                    testSlurmResource: [[partition: "dls", gres: "07"],
-                                       [partition: "cube", wafer: 4, "fpga-without-aout": 3]],
+                                       [partition: "cube", wafer: 62, "fpga-without-aout": 3]],
                    testTimeout: 240,
                    notificationChannel: "#dls-software")
