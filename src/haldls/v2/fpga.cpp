@@ -652,18 +652,18 @@ struct FlyspiExceptionBitfield
 } // namespace
 
 std::array<ocp_address_type, FlyspiException::write_config_size_in_words>
-FlyspiException::write_addresses(FlyspiControl::coordinate_type const& /*unique*/) const
+FlyspiException::write_addresses(coordinate_type const& /*unique*/) const
 {
 	return {{}}; // RO register
 }
 
 std::array<ocp_address_type, FlyspiException::read_config_size_in_words>
-FlyspiException::read_addresses(FlyspiControl::coordinate_type const& /*unique*/) const
+FlyspiException::read_addresses(coordinate_type const& /*unique*/) const
 {
 	return {{0x8001}};
 }
 std::array<ocp_word_type, FlyspiException::write_config_size_in_words> FlyspiException::encode(
-	FlyspiControl::coordinate_type const& /*unique*/) const
+    coordinate_type const& /*unique*/) const
 {
 	return {{}}; // RO register
 }

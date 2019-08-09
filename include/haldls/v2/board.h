@@ -19,7 +19,7 @@ namespace v2 GENPYBIND_TAG_HALDLS_V2 {
 
 class GENPYBIND(visible) Board {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::BoardOnFPGA coordinate_type;
 	typedef std::false_type has_local_data;
 
 	enum class Parameter : uint_fast16_t {
@@ -83,7 +83,9 @@ template <>
 struct VisitPreorderImpl<Board> {
 	template <typename ContainerT, typename VisitorT>
 	static void call(
-		ContainerT& config, halco::common::Unique const& coord, VisitorT&& visitor)
+	    ContainerT& config,
+	    halco::hicann_dls::v2::BoardOnFPGA const& coord,
+	    VisitorT&& visitor)
 	{
 		using halco::common::iter_all;
 		using namespace halco::hicann_dls::v2;
@@ -97,10 +99,15 @@ struct VisitPreorderImpl<Board> {
 			visit_preorder(config.m_dacs[dac], dac, visitor);
 		}
 
-		halco::common::Unique const unique;
-		visit_preorder(config.m_flyspi_config, unique, visitor);
-		visit_preorder(config.m_flyspi_exception, unique, visitor);
-		visit_preorder(config.m_spike_router, unique, visitor);
+		visit_preorder(
+		    config.m_flyspi_config, typename decltype(config.m_flyspi_config)::coordinate_type(),
+		    visitor);
+		visit_preorder(
+		    config.m_flyspi_exception,
+		    typename decltype(config.m_flyspi_exception)::coordinate_type(), visitor);
+		visit_preorder(
+		    config.m_spike_router, typename decltype(config.m_spike_router)::coordinate_type(),
+		    visitor);
 	}
 };
 

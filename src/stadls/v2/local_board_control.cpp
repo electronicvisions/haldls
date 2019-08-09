@@ -106,6 +106,8 @@ struct UniDecoder
 namespace stadls {
 namespace v2 {
 
+using namespace halco::hicann_dls::v2;
+
 class LocalBoardControl::Impl
 {
 public:
@@ -144,17 +146,37 @@ void LocalBoardControl::soft_reset()
 	if (!m_impl)
 		throw std::logic_error("unexpected access to moved-from object");
 
-	halco::common::Unique unique;
-
 	// Set dls and soft reset
 	haldls::v2::FlyspiConfig reset_config;
 	reset_config.set_dls_reset(true);
 	reset_config.set_soft_reset(true);
-	ocp_write_container(m_impl->com, unique, reset_config);
+	ocp_write_container(m_impl->com, FlyspiConfigOnFPGA(), reset_config);
 
 	// Set default config
-	ocp_write_container(m_impl->com, unique, haldls::v2::FlyspiConfig());
+	ocp_write_container(m_impl->com, FlyspiConfigOnFPGA(), haldls::v2::FlyspiConfig());
 }
+
+template <class T>
+void LocalBoardControl::write(typename T::coordinate_type const& coord, T const& config)
+{
+	if (!m_impl)
+		throw std::logic_error("unexpected access to moved-from object");
+	ocp_write_container<T>(m_impl->com, coord, config);
+}
+
+template <class CoordinateT>
+typename detail::coordinate_type_to_container_type<CoordinateT>::type LocalBoardControl::read(
+    CoordinateT const& coord)
+{
+	if (!m_impl)
+		throw std::logic_error("unexpected access to moved-from object");
+
+	auto config =
+	    ocp_read_container<typename detail::coordinate_type_to_container_type<CoordinateT>::type>(
+	        m_impl->com, coord);
+	return config;
+}
+
 
 void LocalBoardControl::configure_static(
 	std::vector<haldls::v2::ocp_address_type> const& board_addresses,
@@ -181,10 +203,8 @@ void LocalBoardControl::configure_static(
 	// * Set the board config, including DACs, spike router and FPGA config
 	// * Set the chip config and wait for the cap-mem to settle
 
-	halco::common::Unique const coord;
-
 	// Set the board
-	ocp_write_container(m_impl->com, coord, board);
+	ocp_write_container(m_impl->com, BoardOnFPGA(), board);
 
 	// If the dls is in reset during playback of a playback program, the FPGA
 	// will never stop execution for v2 and freeze the FPGA. Therefore, the
@@ -296,12 +316,11 @@ void LocalBoardControl::execute(
 	if (m_impl->program_size == 0)
 		throw std::runtime_error("execute: no valid playback program has been transferred yet");
 
-	halco::common::Unique unique;
-
 	// check that the DLS is not in reset
 	bool still_in_reset = true;
 	for (size_t tries = 3; still_in_reset && (tries > 0); tries--) {
-		auto config = ocp_read_container<haldls::v2::FlyspiConfig>(m_impl->com, unique);
+		auto config =
+		    ocp_read_container<haldls::v2::FlyspiConfig>(m_impl->com, FlyspiConfigOnFPGA());
 		still_in_reset = config.get_dls_reset();
 
 		if (!still_in_reset)
@@ -325,7 +344,7 @@ void LocalBoardControl::execute(
 	haldls::v2::FlyspiControl control;
 	control.set_execute(true);
 	LOG4CXX_DEBUG(log, "start execution");
-	ocp_write_container(m_impl->com, unique, control);
+	ocp_write_container(m_impl->com, FlyspiControlOnFPGA(), control);
 
 	// wait until execute bit is cleared again
 	{
@@ -338,13 +357,14 @@ void LocalBoardControl::execute(
 			LOG4CXX_DEBUG(
 			    log, "execute flag not yet cleared, sleep for " << wait_period.count() << "us");
 			std::this_thread::sleep_for(wait_period);
-			control = ocp_read_container<haldls::v2::FlyspiControl>(m_impl->com, unique);
+			control =
+			    ocp_read_container<haldls::v2::FlyspiControl>(m_impl->com, FlyspiControlOnFPGA());
 
 			if (waited.count() > max_wait.count()) {
 				LOG4CXX_ERROR(
 				    log, "execute flag not cleared for " << max_wait.count() << "us, aborting!");
-				auto exception =
-					ocp_read_container<haldls::v2::FlyspiException>(m_impl->com, unique);
+				auto exception = ocp_read_container<haldls::v2::FlyspiException>(
+				    m_impl->com, FlyspiExceptionOnFPGA());
 				LOG4CXX_ERROR(log, exception)
 				break;
 			}
@@ -391,7 +411,8 @@ std::vector<haldls::v2::instruction_word_type> LocalBoardControl::fetch()
 			"to be read back data(" + std::to_string(result_size.get_value().value()) +
 			") exceeds FPGA memory(" + std::to_string(rw_api::FlyspiCom::SdramChannel::max_size) + ")");
 	}
-	auto exception = ocp_read_container<haldls::v2::FlyspiException>(m_impl->com, unique);
+	auto exception =
+	    ocp_read_container<haldls::v2::FlyspiException>(m_impl->com, FlyspiExceptionOnFPGA());
 	if (!exception.check().value()) {
 		LOG4CXX_ERROR(log, "FPGA exception raised: " << exception);
 		throw std::logic_error("FPGA exception raised, aborting fetching");
@@ -477,6 +498,16 @@ std::vector<std::string> available_board_usb_serial_numbers()
 		result.push_back(token);
 	return result;
 }
+
+#define OCP_CONTAINER(Type)                                                                        \
+	template SYMBOL_VISIBLE void LocalBoardControl::write<Type>(                                   \
+	    Type::coordinate_type const& coord, Type const& config);
+#include "haldls/v2/ocp_container.def"
+
+#define OCP_CONTAINER(Type)                                                                        \
+	template SYMBOL_VISIBLE Type LocalBoardControl::read<typename Type::coordinate_type>(          \
+	    typename Type::coordinate_type const& coord);
+#include "haldls/v2/ocp_container.def"
 
 } // namespace v2
 } // namespace stadls

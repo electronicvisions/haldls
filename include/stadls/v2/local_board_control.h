@@ -16,6 +16,32 @@
 namespace stadls {
 namespace v2 GENPYBIND_TAG_STADLS_V2 {
 
+namespace detail {
+
+#define LAST_OCP_CONTAINER(Type) Type
+#define OCP_CONTAINER(Type) LAST_OCP_CONTAINER(Type),
+typedef hate::type_list<
+#include "haldls/v2/ocp_container.def"
+    >
+    container_list;
+
+#define LAST_OCP_CONTAINER(Type) typename Type::coordinate_type
+#define OCP_CONTAINER(Type) LAST_OCP_CONTAINER(Type),
+typedef hate::type_list<
+#include "haldls/v2/ocp_container.def"
+    >
+    coordinate_list;
+
+template <typename CoordinateT>
+struct coordinate_type_to_container_type
+{
+	typedef typename hate::index_type_list_by_integer<
+	    hate::index_type_list_by_type<CoordinateT, coordinate_list>::value,
+	    container_list>::type type;
+};
+
+} // namespace detail
+
 std::shared_ptr<haldls::v2::PlaybackProgram> get_configure_program(haldls::v2::Chip chip);
 
 class GENPYBIND(visible) LocalBoardControl
@@ -36,6 +62,18 @@ public:
 
 	/// \brief toggle soft reset and chip reset and restore fpga to default config
 	void soft_reset() SYMBOL_VISIBLE;
+
+	/// \brief write ocp based asynchronous container to FPGA
+	/// \param coord Coordinate of to be written container
+	/// \param config To be written container
+	template <class T>
+	void write(typename T::coordinate_type const& coord, T const& config) SYMBOL_VISIBLE;
+
+	/// \brief read ocp based asynchronous container from FPGA
+	/// \param coord Coordinate of to be read container
+	template <class CoordinateT>
+	typename detail::coordinate_type_to_container_type<CoordinateT>::type read(
+	    CoordinateT const& coord) SYMBOL_VISIBLE;
 
 	void configure_static(
 		std::vector<haldls::v2::ocp_address_type> const& board_addresses,
@@ -95,6 +133,16 @@ private:
 }; // LocalBoardControl
 
 std::vector<std::string> available_board_usb_serial_numbers() SYMBOL_VISIBLE GENPYBIND(visible);
+
+#ifdef __GENPYBIND__
+// Explicit instantiation of template member functions for all valid playback container types.
+#define OCP_CONTAINER(Type)                                                                        \
+	extern template void LocalBoardControl::write<Type>(                                           \
+	    Type::coordinate_type const&, Type const&);                                                \
+	extern template Type LocalBoardControl::read<typename Type::coordinate_type>(                  \
+	    Type::coordinate_type const&);
+#include "haldls/v2/ocp_container.def"
+#endif // __GENPYBIND__
 
 } // namespace v2
 } // namespace stadls

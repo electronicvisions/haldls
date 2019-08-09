@@ -81,6 +81,7 @@ private:
 } // namespace detail
 
 // TODO: Python wrapping of the following typedefs
+// TODO: provide unique coordinates for these container
 typedef detail::FlyspiRWRegister<0x8002> FlyspiProgramAddress;
 typedef detail::FlyspiRWRegister<0x8003> FlyspiProgramSize;
 typedef detail::FlyspiRWRegister<0x8004> FlyspiResultAddress;
@@ -90,7 +91,7 @@ typedef detail::FlyspiRORegister<0x8006> FlyspiState;
 class GENPYBIND(visible) FlyspiControl
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::FlyspiControlOnFPGA coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	FlyspiControl() SYMBOL_VISIBLE;
@@ -133,7 +134,7 @@ private:
 class GENPYBIND(visible) FlyspiConfig
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::FlyspiConfigOnFPGA coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) TgControl
@@ -235,7 +236,7 @@ private:
 class GENPYBIND(visible) FlyspiException
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::FlyspiExceptionOnFPGA coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	FlyspiException() SYMBOL_VISIBLE;
@@ -311,7 +312,7 @@ private:
 class GENPYBIND(visible) SpikeRouter
 {
 public:
-	typedef halco::common::Unique coordinate_type;
+	typedef halco::hicann_dls::v2::SpikeRouterOnFPGA coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	SpikeRouter() SYMBOL_VISIBLE;

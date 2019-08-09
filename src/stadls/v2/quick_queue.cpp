@@ -92,7 +92,7 @@ QuickQueueRequest create_request(
 {
 	QuickQueueRequest req;
 
-	halco::common::Unique const coord;
+	halco::hicann_dls::v2::BoardOnFPGA const coord;
 	visit_preorder(board, coord, WriteAddressVisitor<ocp_addresses_type>{req.board_addresses});
 	visit_preorder(board, coord, EncodeVisitor<ocp_words_type>{req.board_words});
 

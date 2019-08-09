@@ -240,7 +240,7 @@ TEST(FlyspiConfig, general)
 TEST(FlyspiConfig, encode)
 {
 	FlyspiConfig reg;
-	Unique const coord;
+	FlyspiConfigOnFPGA const coord;
 
 	reg.set_enable_spike_router(true);
 
@@ -279,7 +279,7 @@ TEST(FlyspiConfig, encode)
 TEST(FlyspiConfig, decode)
 {
 	FlyspiConfig reg;
-	Unique const coord;
+	FlyspiConfigOnFPGA const coord;
 
 	std::array<ocp_address_type::value_type, 1> const ref_addresses = {{0x8020}};
 
@@ -333,14 +333,14 @@ TEST(FlyspiConfig, decode)
 
 TEST(FlyspiException, encode)
 {
-	expect_read_only<FlyspiException, Unique>();
+	expect_read_only<FlyspiException, FlyspiExceptionOnFPGA>();
 }
 
 
 TEST(FlyspiException, decode)
 {
 	FlyspiException reg;
-	Unique const coord;
+	FlyspiExceptionOnFPGA const coord;
 
 	std::array<ocp_address_type::value_type, 1> const ref_addresses = {{0x8001}};
 
@@ -450,7 +450,9 @@ TEST(FlyspiException, CerealizeCoverage)
 	FlyspiException obj1,obj2;
 	{
 		std::vector<ocp_word_type> ocp_data = {{ocp_word_type::value_type(0xffffffff)}};
-		visit_preorder(obj1, Unique{}, stadls::DecodeVisitor<std::vector<ocp_word_type>>{ocp_data});
+		visit_preorder(
+		    obj1, FlyspiExceptionOnFPGA(),
+		    stadls::DecodeVisitor<std::vector<ocp_word_type>>{ocp_data});
 	}
 	std::ostringstream ostream;
 	{

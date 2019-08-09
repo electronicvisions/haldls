@@ -78,17 +78,12 @@ void ocp_write_container(
 	template SYMBOL_VISIBLE Type ocp_read_container<Type>(                                         \
 		rw_api::FlyspiCom&, Type::coordinate_type const&);
 
-OCP_CONTAINER(haldls::v2::Board)
 OCP_CONTAINER(haldls::v2::FlyspiProgramAddress)
 OCP_CONTAINER(haldls::v2::FlyspiProgramSize)
 OCP_CONTAINER(haldls::v2::FlyspiResultAddress)
 OCP_CONTAINER(haldls::v2::FlyspiResultSize)
 OCP_CONTAINER(haldls::v2::FlyspiState)
-OCP_CONTAINER(haldls::v2::FlyspiControl)
-OCP_CONTAINER(haldls::v2::FlyspiConfig)
-OCP_CONTAINER(haldls::v2::FlyspiException)
-
-#undef OCP_CONTAINER
+#include "haldls/v2/ocp_container.def"
 
 } // namespace v2
 } // namespace stadls

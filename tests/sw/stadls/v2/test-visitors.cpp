@@ -30,7 +30,7 @@ using namespace halco::common;
 
 TEST(Visitors, Board) {
 	TypeNameVisitor visitor;
-	Unique const coord;
+	BoardOnFPGA const coord;
 	Board const config;
 
 	visit_preorder(config, coord, visitor);

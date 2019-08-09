@@ -34,7 +34,7 @@ TEST_F(OcpTest, FlyspiProgramAddress)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write_container(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, halco::hicann_dls::v2::FlyspiConfigOnFPGA(), con::FlyspiConfig());
 
 	std::vector<con::ocp_word_type::value_type> values{0, 0xffffffff, 0x01020304};
 	for (auto const value : values) {
@@ -58,7 +58,7 @@ TEST_F(OcpTest, FlyspiProgramSize)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write_container(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, halco::hicann_dls::v2::FlyspiConfigOnFPGA(), con::FlyspiConfig());
 
 	std::vector<con::ocp_word_type::value_type> values{0, 0xffffffff, 0x01020304};
 	for (auto const value : values) {
@@ -82,7 +82,7 @@ TEST_F(OcpTest, FlyspiResultAddress)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write_container(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, halco::hicann_dls::v2::FlyspiConfigOnFPGA(), con::FlyspiConfig());
 
 	std::vector<con::ocp_word_type::value_type> values{0, 0xffffffff, 0x01020304};
 	for (auto const value : values) {
@@ -106,7 +106,7 @@ TEST_F(OcpTest, FlyspiResultSize)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write_container(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, halco::hicann_dls::v2::FlyspiConfigOnFPGA(), con::FlyspiConfig());
 
 	// Read the result size
 	auto result_reg = io::ocp_read_container<con::FlyspiResultSize>(com, coord);
@@ -126,7 +126,7 @@ TEST_F(OcpTest, FlyspiState)
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write_container(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, halco::hicann_dls::v2::FlyspiConfigOnFPGA(), con::FlyspiConfig());
 
 	// Read the result size
 	auto result_reg = io::ocp_read_container<con::FlyspiState>(com, coord);
@@ -140,7 +140,7 @@ TEST_F(OcpTest, FlyspiConfig)
 	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
-	halco::common::Unique coord;
+	halco::hicann_dls::v2::FlyspiConfigOnFPGA coord;
 
 	// Connect to board
 	rw_api::FlyspiCom com(test_board);
@@ -163,13 +163,13 @@ TEST_F(OcpTest, FlyspiException)
 	namespace con = haldls::v2;
 	namespace io = stadls::v2;
 
-	halco::common::Unique coord;
+	halco::hicann_dls::v2::FlyspiExceptionOnFPGA coord;
 
 	// Connect to board
 	rw_api::FlyspiCom com(test_board);
 
 	// Write default config
-	io::ocp_write_container(com, coord, con::FlyspiConfig());
+	io::ocp_write_container(com, halco::hicann_dls::v2::FlyspiConfigOnFPGA(), con::FlyspiConfig());
 
 	// Read exception register
 	auto result_reg = io::ocp_read_container<con::FlyspiException>(com, coord);
