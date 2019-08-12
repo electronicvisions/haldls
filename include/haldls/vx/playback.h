@@ -78,6 +78,32 @@ private:
 	bool m_valid;
 }; // PlaybackProgram
 
+namespace detail {
+
+#define LAST_PLAYBACK_CONTAINER(Name, Type) Type
+#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
+typedef hate::type_list<
+#include "haldls/vx/container.def"
+    >
+    container_list;
+
+#define LAST_PLAYBACK_CONTAINER(Name, Type) typename Type::coordinate_type
+#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
+typedef hate::type_list<
+#include "haldls/vx/container.def"
+    >
+    coordinate_list;
+
+template <typename CoordinateT>
+struct coordinate_type_to_container_type
+{
+	typedef typename hate::index_type_list_by_integer<
+	    hate::index_type_list_by_type<CoordinateT, coordinate_list>::value,
+	    container_list>::type type;
+};
+
+} // namespace detail
+
 class GENPYBIND(visible) PlaybackProgramBuilder
 {
 public:
@@ -99,17 +125,16 @@ public:
 	void write(typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;
 #include "haldls/vx/container.def"
 
-	template <class T>
-	PlaybackProgram::ContainerTicket<T> read(
-	    typename T::coordinate_type const& coord,
-	    std::optional<Backend> backend = std::nullopt) SYMBOL_VISIBLE;
+	template <class CoordinateT>
+	PlaybackProgram::ContainerTicket<
+	    typename detail::coordinate_type_to_container_type<CoordinateT>::type>
+	read(CoordinateT const& coord, std::optional<Backend> backend = std::nullopt) SYMBOL_VISIBLE;
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	PlaybackProgram::ContainerTicket<Type> read(                                                   \
-	    typename Type::coordinate_type const& coord, Type const& config, Backend backend)          \
-	    SYMBOL_VISIBLE;                                                                            \
-	PlaybackProgram::ContainerTicket<Type> read(                                                   \
-	    typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;
+	    typename Type::coordinate_type const& coord, Backend backend) SYMBOL_VISIBLE;              \
+	PlaybackProgram::ContainerTicket<Type> read(typename Type::coordinate_type const& coord)       \
+	    SYMBOL_VISIBLE;
 #include "haldls/vx/container.def"
 
 	PlaybackProgram done() SYMBOL_VISIBLE;

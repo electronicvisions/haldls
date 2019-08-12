@@ -60,7 +60,7 @@ TEST(PPUMemoryWord, WROverJTAG)
 	std::vector<PlaybackProgram::ContainerTicket<PPUMemoryWord>> responses;
 	for (size_t i = 0; i < num_words; ++i) {
 		responses.push_back(
-		    builder.read<PPUMemoryWord>(PPUMemoryWordOnDLS(Enum(i)), Backend::OmnibusChipOverJTAG));
+		    builder.read(PPUMemoryWordOnDLS(Enum(i)), Backend::OmnibusChipOverJTAG));
 	}
 
 	builder.write<Timer>(TimerOnDLS(), Timer());
@@ -129,10 +129,10 @@ TEST(PPUControlRegister, WROverJTAG)
 	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2), reg1,
 	    Backend::OmnibusChipOverJTAG);
 	std::vector<PlaybackProgram::ContainerTicket<PPUControlRegister>> reg1_tickets;
-	reg1_tickets.push_back(builder.read<PPUControlRegister>(
+	reg1_tickets.push_back(builder.read(
 	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord1),
 	    Backend::OmnibusChipOverJTAG));
-	reg1_tickets.push_back(builder.read<PPUControlRegister>(
+	reg1_tickets.push_back(builder.read(
 	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2),
 	    Backend::OmnibusChipOverJTAG));
 
@@ -145,10 +145,10 @@ TEST(PPUControlRegister, WROverJTAG)
 	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2), reg2,
 	    Backend::OmnibusChipOverJTAG);
 	std::vector<PlaybackProgram::ContainerTicket<PPUControlRegister>> reg2_tickets;
-	reg2_tickets.push_back(builder.read<PPUControlRegister>(
+	reg2_tickets.push_back(builder.read(
 	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord1),
 	    Backend::OmnibusChipOverJTAG));
-	reg2_tickets.push_back(builder.read<PPUControlRegister>(
+	reg2_tickets.push_back(builder.read(
 	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2),
 	    Backend::OmnibusChipOverJTAG));
 

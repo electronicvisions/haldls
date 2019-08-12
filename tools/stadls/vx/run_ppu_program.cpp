@@ -181,10 +181,10 @@ int main(int argc, char* argv[])
 	builder.wait_until(TimerOnDLS(), Timer::Value(wait));
 
 	LOG4CXX_INFO(logger, "Emitting read commands.");
-	auto ppu_memory_ticket = builder.read<PPUMemory>(ppu_memory_coord, backend);
+	auto ppu_memory_ticket = builder.read(ppu_memory_coord, backend);
 	// Read PPU memory words with Omnibus over JTAG backend
-	auto ppu_memory_return_ticket = builder.read<PPUMemoryWord>(ppu_return_code_coord, backend);
-	auto ppu_status_ticket = builder.read<PPUStatusRegister>(ppu_status_register_coord, backend);
+	auto ppu_memory_return_ticket = builder.read(ppu_return_code_coord, backend);
+	auto ppu_status_ticket = builder.read(ppu_status_register_coord, backend);
 
 	// run ppu program
 	LOG4CXX_INFO(logger, "Creating program.");

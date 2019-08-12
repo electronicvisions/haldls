@@ -49,7 +49,7 @@ TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)
 		builder.write(coord, config, Backend::OmnibusChipOverJTAG);
 		configs.push_back(config);
 
-		tickets.push_back(builder.read<SystimeSyncBase>(coord, Backend::OmnibusChipOverJTAG));
+		tickets.push_back(builder.read(coord, Backend::OmnibusChipOverJTAG));
 	}
 
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));

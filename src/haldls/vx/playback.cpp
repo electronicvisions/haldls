@@ -165,10 +165,12 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 	return read_table.at(backend_index)(*this, coord);
 }
 
-template <class T>
-PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
-    typename T::coordinate_type const& coord, std::optional<Backend> backend)
+template <class CoordinateT>
+PlaybackProgram::ContainerTicket<
+    typename detail::coordinate_type_to_container_type<CoordinateT>::type>
+PlaybackProgramBuilder::read(CoordinateT const& coord, std::optional<Backend> backend)
 {
+	typedef typename detail::coordinate_type_to_container_type<CoordinateT>::type T;
 	if (!backend) {
 		backend = detail::BackendContainerTrait<T>::default_backend;
 	} else if (!detail::BackendContainerTrait<T>::valid(*backend)) {
@@ -186,16 +188,14 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read(
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read(                           \
-	    typename Type::coordinate_type const& coord, Type const& config, Backend backend)          \
+	    typename Type::coordinate_type const& coord, Backend backend)                              \
 	{                                                                                              \
-		static_cast<void>(config);                                                                 \
-		return read<Type>(coord, backend);                                                         \
+		return read(coord, std::optional<Backend>(backend));                                       \
 	}                                                                                              \
 	PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read(                           \
-	    typename Type::coordinate_type const& coord, Type const& config)                           \
+	    typename Type::coordinate_type const& coord)                                               \
 	{                                                                                              \
-		static_cast<void>(config);                                                                 \
-		return read<Type>(coord, std::nullopt);                                                    \
+		return read(coord, std::nullopt);                                                          \
 	}
 #include "haldls/vx/container.def"
 
@@ -222,7 +222,7 @@ std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template SYMBOL_VISIBLE PlaybackProgram::ContainerTicket<Type>                                 \
-	PlaybackProgramBuilder::read<Type>(                                                            \
+	PlaybackProgramBuilder::read<Type::coordinate_type>(                                           \
 	    Type::coordinate_type const& coord, std::optional<Backend> backend = std::nullopt);
 #include "haldls/vx/container.def"
 

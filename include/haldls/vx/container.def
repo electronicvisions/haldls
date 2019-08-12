@@ -2,6 +2,10 @@
 #define PLAYBACK_CONTAINER(Name, Type)
 #endif
 
+#ifndef LAST_PLAYBACK_CONTAINER
+#define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
+#endif
+
 PLAYBACK_CONTAINER(PPUMemoryWord, haldls::vx::PPUMemoryWord)
 PLAYBACK_CONTAINER(PPUMemoryBlock, haldls::vx::PPUMemoryBlock)
 PLAYBACK_CONTAINER(PPUMemory, haldls::vx::PPUMemory)
@@ -31,6 +35,7 @@ PLAYBACK_CONTAINER(PerfTest, haldls::vx::PerfTest)
 PLAYBACK_CONTAINER(PerfTestStatus, haldls::vx::PerfTestStatus)
 PLAYBACK_CONTAINER(SystimeSyncBase, haldls::vx::SystimeSyncBase)
 PLAYBACK_CONTAINER(CommonSynramConfig, haldls::vx::CommonSynramConfig)
-PLAYBACK_CONTAINER(SynapseQuad, haldls::vx::SynapseQuad)
+LAST_PLAYBACK_CONTAINER(SynapseQuad, haldls::vx::SynapseQuad)
 
 #undef PLAYBACK_CONTAINER
+#undef LAST_PLAYBACK_CONTAINER

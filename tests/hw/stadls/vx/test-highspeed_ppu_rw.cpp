@@ -37,7 +37,7 @@ TEST(PPUMemoryWord, WRHighspeed)
 	// Read all PPU memory words with highspeed backend
 	std::vector<PlaybackProgram::ContainerTicket<PPUMemoryWord>> responses;
 	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
-		responses.push_back(builder.read<PPUMemoryWord>(word, Backend::OmnibusChip));
+		responses.push_back(builder.read(word, Backend::OmnibusChip));
 	}
 
 	builder.write<Timer>(TimerOnDLS(), Timer());

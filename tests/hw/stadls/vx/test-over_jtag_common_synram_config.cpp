@@ -65,7 +65,7 @@ TEST(CommonSynramConfig, WROverJTAG)
 	std::vector<PlaybackProgram::ContainerTicket<CommonSynramConfig>> tickets;
 	// Read back
 	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {
-		tickets.push_back(builder.read<CommonSynramConfig>(coord, Backend::OmnibusChipOverJTAG));
+		tickets.push_back(builder.read(coord, Backend::OmnibusChipOverJTAG));
 	}
 	builder.write<Timer>(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
