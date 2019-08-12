@@ -2,12 +2,12 @@
 #include "fisch/vx/constants.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/phy.h"
-#include "haldls/vx/playback.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/playback.h"
 
-inline void insert_highspeed_init(haldls::vx::PlaybackProgramBuilder& builder)
+inline void insert_highspeed_init(stadls::vx::PlaybackProgramBuilder& builder)
 {
 	using namespace halco::common;
 	using namespace halco::hicann_dls::vx;

@@ -13,7 +13,7 @@ class HwTestPystadlsVx(unittest.TestCase):
     def test_board_led_chain(cls):
         all_leds = [led for led in iter_all(halco.LEDOnBoard)]
 
-        builder = haldls.PlaybackProgramBuilder()
+        builder = stadls.PlaybackProgramBuilder()
 
         # reset chip
         builder.write(halco.ResetChipOnDLS(), haldls.ResetChip(True))

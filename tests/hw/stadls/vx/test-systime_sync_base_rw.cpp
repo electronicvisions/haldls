@@ -4,15 +4,16 @@
 
 #include "fisch/vx/constants.h"
 #include "haldls/vx/jtag.h"
-#include "haldls/vx/playback.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/playback.h"
 
 #include "executor.h"
 
 #include "test-helper.h"
 
 using namespace haldls::vx;
+using namespace stadls::vx;
 using namespace halco::hicann_dls::vx;
 
 TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)

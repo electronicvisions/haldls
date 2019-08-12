@@ -6,23 +6,20 @@
 #include <string>
 #include <vector>
 
-#include "haldls/vx/container.h"
 #include "haldls/vx/common.h"
-#include "haldls/vx/genpybind.h"
+#include "haldls/vx/container.h"
 #include "hate/visibility.h"
+#include "stadls/vx/genpybind.h"
 
 namespace fisch::vx {
-	class PlaybackProgram;
-	class PlaybackProgramBuilder;
+class PlaybackProgram;
+class PlaybackProgramBuilder;
 } // namespace fisch::vx
 
-namespace stadls::vx {
+namespace stadls {
+namespace vx GENPYBIND_TAG_STADLS_VX {
+
 class PlaybackProgramExecutor;
-} // namespace stadls::vx
-
-namespace haldls {
-namespace vx GENPYBIND_TAG_HALDLS_VX {
-
 class PlaybackProgramBuilder;
 
 class GENPYBIND(visible) PlaybackProgram
@@ -41,8 +38,9 @@ public:
 		coordinate_type get_coordinate() const SYMBOL_VISIBLE;
 
 	private:
-		typedef typename detail::to_ticket_variant<
-		    typename detail::BackendContainerTrait<T>::container_list>::type ticket_impl_type;
+		typedef typename haldls::vx::detail::to_ticket_variant<
+		    typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
+		    ticket_impl_type;
 
 		friend PlaybackProgramBuilder;
 
@@ -71,7 +69,7 @@ public:
 
 private:
 	friend PlaybackProgramBuilder;
-	friend stadls::vx::PlaybackProgramExecutor;
+	friend PlaybackProgramExecutor;
 
 	std::shared_ptr<fisch::vx::PlaybackProgram> m_program_impl;
 
@@ -120,8 +118,9 @@ public:
 	 * @param config Container configuration data                                                  \
 	 * @param backend Backend selection                                                            \
 	 */                                                                                            \
-	void write(typename Type::coordinate_type const& coord, Type const& config, Backend backend)   \
-	    SYMBOL_VISIBLE;                                                                            \
+	void write(                                                                                    \
+	    typename Type::coordinate_type const& coord, Type const& config,                           \
+	    haldls::vx::Backend backend) SYMBOL_VISIBLE;                                               \
                                                                                                    \
 	/**                                                                                            \
 	 * Add instructions to write given container to given location.                                \
@@ -141,7 +140,7 @@ public:
 	 * @param backend Backend selection                                                            \
 	 */                                                                                            \
 	PlaybackProgram::ContainerTicket<Type> read(                                                   \
-	    typename Type::coordinate_type const& coord, Backend backend) SYMBOL_VISIBLE;              \
+	    typename Type::coordinate_type const& coord, haldls::vx::Backend backend) SYMBOL_VISIBLE;  \
                                                                                                    \
 	/**                                                                                            \
 	 * Add instructions to read container data from given location.                                \

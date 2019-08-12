@@ -3,8 +3,8 @@
 #include <memory>
 #include <variant>
 #include "fisch/vx/playback_executor.h"
-#include "haldls/vx/playback.h"
 #include "sctrltp/fpga_ip_list.h"
+#include "stadls/vx/playback.h"
 
 namespace stadls::vx {
 
@@ -86,7 +86,7 @@ void PlaybackProgramExecutor::disconnect()
 
 PlaybackProgramExecutor::~PlaybackProgramExecutor() = default;
 
-void PlaybackProgramExecutor::run(haldls::vx::PlaybackProgram& program)
+void PlaybackProgramExecutor::run(PlaybackProgram& program)
 {
 	run(program.m_program_impl);
 }

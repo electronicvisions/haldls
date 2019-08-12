@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
 #include "haldls/vx/jtag.h"
-#include "haldls/vx/playback.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/spi.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/playback.h"
 #include "stadls/vx/playback_executor.h"
 
 #include "executor.h"
@@ -12,6 +12,7 @@
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
 using namespace haldls::vx;
+using namespace stadls::vx;
 
 /**
  * This is a local-board-only test relying on visual verification, that all six addressable LEDs

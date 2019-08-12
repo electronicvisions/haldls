@@ -4,10 +4,10 @@
 #include "fisch/vx/playback_executor.h"
 #include "halco/hicann-dls/vx/coordinates.h"
 #include "haldls/vx/jtag.h"
-#include "haldls/vx/playback.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/playback.h"
 
 #include "executor.h"
 
@@ -34,13 +34,13 @@ protected:
 		builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 	}
 
-	void test_run_program(haldls::vx::PlaybackProgram& program)
+	void test_run_program(stadls::vx::PlaybackProgram& program)
 	{
 		auto executor = generate_playback_program_test_executor();
 		executor.run(program);
 	}
 
-	haldls::vx::PlaybackProgramBuilder builder;
+	stadls::vx::PlaybackProgramBuilder builder;
 }; // PLLTest
 
 class PLLTestWriteReadADPLL
@@ -77,8 +77,8 @@ protected:
 		EXPECT_EQ(read_config, haldls::vx::ADPLL());
 	}
 
-	haldls::vx::PlaybackProgram program;
-	std::optional<haldls::vx::PlaybackProgram::ContainerTicket<haldls::vx::ADPLL>> ticket;
+	stadls::vx::PlaybackProgram program;
+	std::optional<stadls::vx::PlaybackProgram::ContainerTicket<haldls::vx::ADPLL>> ticket;
 }; // PLLTestWriteReadADPLL
 
 INSTANTIATE_TEST_CASE_P(

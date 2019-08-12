@@ -1,10 +1,10 @@
-#include "haldls/vx/playback.h"
+#include "stadls/vx/playback.h"
 
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
 
-namespace haldls {
+namespace stadls {
 namespace vx {
 
 PlaybackProgram::PlaybackProgram() : m_program_impl() {}
@@ -76,7 +76,7 @@ void PlaybackProgramBuilder::write_table_generator(
 	                   T const& config) {
 		    typedef typename hate::index_type_list_by_integer<
 		        SupportedBackendIndex,
-		        typename detail::BackendContainerTrait<T>::container_list>::type
+		        typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 		        backend_container_type;
 
 		    typedef std::vector<typename backend_container_type::coordinate_type> addresses_type;
@@ -105,23 +105,25 @@ void PlaybackProgramBuilder::write_table_generator(
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	void PlaybackProgramBuilder::write(                                                            \
-	    typename Type::coordinate_type const& coord, Type const& config, Backend backend)          \
+	    typename Type::coordinate_type const& coord, Type const& config,                           \
+	    haldls::vx::Backend backend)                                                               \
 	{                                                                                              \
-		if (!detail::BackendContainerTrait<Type>::valid(backend)) {                                \
+		if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                    \
 			throw std::runtime_error("Backend not supported for container type.");                 \
 		}                                                                                          \
 		size_t const backend_index = static_cast<size_t>(                                          \
-		    detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(                    \
+		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
 		        static_cast<size_t>(backend)));                                                    \
 		write_table_generator<Type>(                                                               \
 		    coord, config, backend_index,                                                          \
-		    std::make_index_sequence<hate::type_list_size<                                         \
-		        typename detail::BackendContainerTrait<Type>::container_list>::value>());          \
+		    std::make_index_sequence<                                                              \
+		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
+		            Type>::container_list>::value>());                                             \
 	}                                                                                              \
 	void PlaybackProgramBuilder::write(                                                            \
 	    typename Type::coordinate_type const& coord, Type const& config)                           \
 	{                                                                                              \
-		write(coord, config, detail::BackendContainerTrait<Type>::default_backend);                \
+		write(coord, config, haldls::vx::detail::BackendContainerTrait<Type>::default_backend);    \
 	}
 #include "haldls/vx/container.def"
 
@@ -139,7 +141,7 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 	                   -> PlaybackProgram::ContainerTicket<T> {
 		    typedef typename hate::index_type_list_by_integer<
 		        SupportedBackendIndex,
-		        typename detail::BackendContainerTrait<T>::container_list>::type
+		        typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 		        backend_container_type;
 
 		    typedef std::vector<typename backend_container_type::coordinate_type> addresses_type;
@@ -158,24 +160,25 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read(                           \
-	    typename Type::coordinate_type const& coord, Backend backend)                              \
+	    typename Type::coordinate_type const& coord, haldls::vx::Backend backend)                  \
 	{                                                                                              \
-		if (!detail::BackendContainerTrait<Type>::valid(backend)) {                                \
+		if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                    \
 			throw std::runtime_error("Backend not supported for container type.");                 \
 		}                                                                                          \
                                                                                                    \
 		size_t const backend_index = static_cast<size_t>(                                          \
-		    detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(                    \
+		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
 		        static_cast<size_t>(backend)));                                                    \
 		return read_table_generator<Type>(                                                         \
 		    coord, backend_index,                                                                  \
-		    std::make_index_sequence<hate::type_list_size<                                         \
-		        typename detail::BackendContainerTrait<Type>::container_list>::value>());          \
+		    std::make_index_sequence<                                                              \
+		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
+		            Type>::container_list>::value>());                                             \
 	}                                                                                              \
 	PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read(                           \
 	    typename Type::coordinate_type const& coord)                                               \
 	{                                                                                              \
-		return read(coord, detail::BackendContainerTrait<Type>::default_backend);                  \
+		return read(coord, haldls::vx::detail::BackendContainerTrait<Type>::default_backend);      \
 	}
 #include "haldls/vx/container.def"
 

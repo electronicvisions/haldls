@@ -7,4 +7,5 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyhaldls_vx");
 })
 
+#include "stadls/vx/playback.h"
 #include "stadls/vx/playback_executor.h"

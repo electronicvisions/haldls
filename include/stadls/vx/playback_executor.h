@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
 
-#include "haldls/vx/playback.h"
 #include "hate/visibility.h"
 #include "stadls/vx/genpybind.h"
+#include "stadls/vx/playback.h"
 
 namespace fisch::vx {
 class PlaybackProgram;
@@ -67,7 +67,7 @@ public:
 	 * Transfer and execute the given playback program and fetch results.
 	 * @param program PlaybackProgram to run
 	 */
-	void run(haldls::vx::PlaybackProgram& program) SYMBOL_VISIBLE;
+	void run(PlaybackProgram& program) SYMBOL_VISIBLE;
 
 	/**
 	 * Transfer and execute the given playback program and fetch results.

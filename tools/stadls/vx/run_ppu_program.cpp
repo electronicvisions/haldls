@@ -4,10 +4,10 @@
 #include "fisch/vx/constants.h"
 #include "halco/hicann-dls/vx/coordinates.h"
 #include "haldls/vx/jtag.h"
-#include "haldls/vx/playback.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/timer.h"
 #include "logging_ctrl.h"
+#include "stadls/vx/playback.h"
 #include "stadls/vx/playback_executor.h"
 
 #include "helpers.hpp"
@@ -15,6 +15,7 @@
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
 using namespace haldls::vx;
+using namespace stadls::vx;
 namespace po = boost::program_options;
 
 PPUMemoryWordOnPPU const stack_begin(3071);
@@ -24,8 +25,8 @@ PPUMemoryWordOnPPU const return_code(3071);
 
 PPUMemoryBlockOnPPU const mailbox_coord_on_ppu(mailbox_begin, mailbox_end);
 
-using ip_t = stadls::vx::PlaybackProgramExecutor::ip_t;
-using port_t = stadls::vx::PlaybackProgramExecutor::port_t;
+using ip_t = PlaybackProgramExecutor::ip_t;
+using port_t = PlaybackProgramExecutor::port_t;
 
 int main(int argc, char* argv[])
 {
