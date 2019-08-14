@@ -3,6 +3,7 @@
 
 #include "haldls/vx/perftest.h"
 
+#include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"

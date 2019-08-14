@@ -2,6 +2,7 @@
 #include <array>
 #include <ostream>
 
+#include "fisch/vx/constants.h"
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/dac.h"
@@ -14,11 +15,11 @@ namespace cereal {
 class access;
 } // namespace cereal
 
-namespace fisch::vx {
-class SPIShiftRegister;
-class SPIDACDataRegister;
-class SPIDACControlRegister;
-} // namespace fisch::vx
+namespace halco::hicann_dls::vx {
+class SPIShiftRegisterOnBoard;
+class SPIDACDataRegisterOnBoard;
+class SPIDACControlRegisterOnBoard;
+} // namespace halco::hicann_dls::vx
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
@@ -279,7 +280,8 @@ public:
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::RantWrapper<Value, uint_fast32_t, 0xfff, 0>
+	    : public halco::common::detail::
+	          RantWrapper<Value, uint_fast32_t, fisch::vx::dac_value_max, fisch::vx::dac_value_min>
 	{
 		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)

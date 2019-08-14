@@ -1,6 +1,7 @@
 #pragma once
 #include <random>
 
+#include "fisch/vx/container.h"
 #include "fisch/vx/fill.h"
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/ppu.h"

@@ -1,5 +1,6 @@
 #include "haldls/vx/reset.h"
 
+#include "fisch/vx/reset.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/print.h"
 
@@ -9,7 +10,7 @@ ResetChip::ResetChip(bool const value) : m_value(value) {}
 
 void ResetChip::set(bool const value)
 {
-	m_value.set(value);
+	m_value = value;
 }
 
 bool ResetChip::operator==(ResetChip const& other) const
@@ -32,7 +33,7 @@ ResetChip::addresses(coordinate_type const& coord)
 
 std::array<fisch::vx::ResetChip, ResetChip::config_size_in_words> ResetChip::encode() const
 {
-	return {m_value};
+	return {fisch::vx::ResetChip(m_value)};
 }
 
 void ResetChip::decode(

@@ -3,7 +3,7 @@
 
 #include "haldls/vx/spi.h"
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/spi.h"
 #include "halco/hicann-dls/vx/spi.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"

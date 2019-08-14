@@ -2,13 +2,21 @@
 #include <array>
 #include <ostream>
 
-#include "fisch/vx/jtag.h"
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/pll.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+
+namespace cereal {
+class access;
+} // namespace cereal
+
+namespace halco::hicann_dls::vx {
+class JTAGPLLRegisterOnDLS;
+class OmnibusChipOverJTAGAddress;
+} // namespace halco::hicann_dls::vx
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {

@@ -12,6 +12,10 @@ namespace cereal {
 class access;
 } // namespace cereal
 
+namespace halco::hicann_dls::vx {
+class OmnibusFPGAAddress;
+} // namespace halco::hicann_dls::vx
+
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 

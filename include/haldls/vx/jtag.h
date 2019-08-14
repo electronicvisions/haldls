@@ -2,6 +2,7 @@
 #include <array>
 #include <ostream>
 
+#include "fisch/vx/constants.h"
 #include "fisch/vx/jtag.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/jtag.h"
@@ -12,6 +13,12 @@
 namespace cereal {
 class access;
 } // namespace cereal
+
+namespace fisch::vx {
+class JTAGClockScaler;
+class JTAGIdCode;
+class ResetJTAGTap;
+} // namespace fisch::vx
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
@@ -26,10 +33,15 @@ public:
 	typedef std::true_type is_leaf_node;
 
 	/** Clock-scaler value type. The JTAG clock scales with 1 / (value + 2). */
-	struct GENPYBIND(inline_base("*")) Value : public fisch::vx::JTAGClockScaler::Value
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::RantWrapper<
+	          Value,
+	          uint_fast16_t,
+	          fisch::vx::jtag_clock_scaler_max,
+	          fisch::vx::jtag_clock_scaler_min>
 	{
-		explicit Value(uintmax_t const value = 3) GENPYBIND(implicit_conversion) :
-		    fisch::vx::JTAGClockScaler::Value(value)
+		constexpr explicit Value(uintmax_t const value = 3) GENPYBIND(implicit_conversion) :
+		    rant_t(value)
 		{}
 	};
 
@@ -80,7 +92,7 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar);
 
-	fisch::vx::JTAGClockScaler m_value;
+	Value m_value;
 };
 
 namespace detail {
@@ -123,8 +135,6 @@ private:
 	friend class cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar);
-
-	fisch::vx::ResetJTAGTap m_value;
 };
 
 namespace detail {
@@ -147,9 +157,12 @@ public:
 	typedef std::true_type is_leaf_node;
 
 	/** JTAG IDCODE value type. */
-	struct GENPYBIND(inline_base("*")) Value : public fisch::vx::JTAGIdCode::Value
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::BaseType<Value, uint32_t>
 	{
-		explicit Value(value_type const value = 0) : fisch::vx::JTAGIdCode::Value(value) {}
+		constexpr explicit Value(value_type const value = 0) GENPYBIND(implicit_conversion) :
+		    base_t(value)
+		{}
 	};
 
 	/** Default constructor. */
@@ -183,7 +196,7 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar);
 
-	fisch::vx::JTAGIdCode m_value;
+	Value m_value;
 };
 
 namespace detail {

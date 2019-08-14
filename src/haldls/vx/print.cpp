@@ -3,6 +3,7 @@
 #include <array>
 #include <boost/type_index.hpp>
 
+#include "fisch/vx/container.h"
 #include "haldls/vx/container.h"
 #include "haldls/vx/traits.h"
 #include "stadls/visitors.h"

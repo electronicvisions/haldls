@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/jtag.h"
+#include "fisch/vx/omnibus.h"
+#include "fisch/vx/systime.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/systime.h"
 #include "stadls/visitors.h"

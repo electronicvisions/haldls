@@ -1,5 +1,7 @@
 #include "haldls/vx/jtag.h"
 
+#include "fisch/vx/jtag.h"
+#include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/print.h"
 
@@ -9,7 +11,7 @@ JTAGClockScaler::JTAGClockScaler(Value const value) : m_value(value) {}
 
 void JTAGClockScaler::set(Value const value)
 {
-	m_value.set(value);
+	m_value = value;
 }
 
 bool JTAGClockScaler::operator==(JTAGClockScaler const& other) const
@@ -33,7 +35,7 @@ JTAGClockScaler::addresses(coordinate_type const& coord)
 std::array<fisch::vx::JTAGClockScaler, JTAGClockScaler::config_size_in_words>
 JTAGClockScaler::encode() const
 {
-	return {m_value};
+	return {fisch::vx::JTAGClockScaler(fisch::vx::JTAGClockScaler::Value(m_value))};
 }
 
 void JTAGClockScaler::decode(
@@ -49,11 +51,11 @@ void JTAGClockScaler::serialize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(JTAGClockScaler)
 
 
-ResetJTAGTap::ResetJTAGTap() : m_value() {}
+ResetJTAGTap::ResetJTAGTap() {}
 
-bool ResetJTAGTap::operator==(ResetJTAGTap const& other) const
+bool ResetJTAGTap::operator==(ResetJTAGTap const&) const
 {
-	return m_value == other.m_value;
+	return true;
 }
 
 bool ResetJTAGTap::operator!=(ResetJTAGTap const& other) const
@@ -71,7 +73,7 @@ ResetJTAGTap::addresses(coordinate_type const& coord)
 
 std::array<fisch::vx::ResetJTAGTap, ResetJTAGTap::config_size_in_words> ResetJTAGTap::encode() const
 {
-	return {m_value};
+	return {fisch::vx::ResetJTAGTap()};
 }
 
 void ResetJTAGTap::decode(
@@ -79,10 +81,8 @@ void ResetJTAGTap::decode(
 {}
 
 template <class Archive>
-void ResetJTAGTap::serialize(Archive& ar)
-{
-	ar(CEREAL_NVP(m_value));
-}
+void ResetJTAGTap::serialize(Archive&)
+{}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ResetJTAGTap)
 
@@ -91,7 +91,7 @@ JTAGIdCode::JTAGIdCode() : m_value() {}
 
 JTAGIdCode::Value JTAGIdCode::get() const
 {
-	return Value(m_value.get());
+	return m_value;
 }
 
 bool JTAGIdCode::operator==(JTAGIdCode const& other) const
@@ -126,7 +126,7 @@ std::array<fisch::vx::JTAGIdCode, JTAGIdCode::write_config_size_in_words> JTAGId
 void JTAGIdCode::decode(
     std::array<fisch::vx::JTAGIdCode, JTAGIdCode::read_config_size_in_words> const& data)
 {
-	m_value = data[0];
+	m_value = Value(data[0].get());
 }
 
 template <class Archive>

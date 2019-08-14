@@ -14,6 +14,10 @@ class OmnibusChip;
 class OmnibusChipOverJTAG;
 } // namespace fisch::vx
 
+namespace halco::hicann_dls::vx {
+class OmnibusChipAddress;
+} // namespace halco::hicann_dls::vx
+
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 

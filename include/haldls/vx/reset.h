@@ -2,7 +2,6 @@
 #include <array>
 #include <ostream>
 
-#include "fisch/vx/reset.h"
 #include "halco/hicann-dls/vx/reset.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
@@ -11,6 +10,10 @@
 namespace cereal {
 class access;
 } // namespace cereal
+
+namespace fisch::vx {
+class ResetChip;
+} // namespace fisch::vx
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
@@ -57,7 +60,7 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar);
 
-	fisch::vx::ResetChip m_value;
+	bool m_value;
 };
 
 namespace detail {

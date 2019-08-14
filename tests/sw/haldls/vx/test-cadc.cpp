@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/jtag.h"
+#include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/common.h"

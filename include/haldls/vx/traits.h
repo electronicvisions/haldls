@@ -2,7 +2,7 @@
 #include <type_traits>
 
 #include <boost/variant.hpp>
-#include "fisch/vx/container.h"
+#include "fisch/vx/container_fwd.h"
 #include "fisch/vx/container_ticket.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"

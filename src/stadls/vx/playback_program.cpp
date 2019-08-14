@@ -1,5 +1,6 @@
 #include "stadls/vx/playback_program.h"
 
+#include "fisch/vx/container.h"
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/container.h"

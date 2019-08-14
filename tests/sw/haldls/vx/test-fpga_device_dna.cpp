@@ -3,7 +3,7 @@
 
 #include "haldls/vx/fpga.h"
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"

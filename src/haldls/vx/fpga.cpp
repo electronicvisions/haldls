@@ -1,5 +1,6 @@
 #include "haldls/vx/fpga.h"
 
+#include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
