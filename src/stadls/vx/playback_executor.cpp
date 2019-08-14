@@ -89,6 +89,11 @@ PlaybackProgramExecutor::~PlaybackProgramExecutor() = default;
 
 void PlaybackProgramExecutor::run(haldls::vx::PlaybackProgram& program)
 {
+	run(program.m_program_impl);
+}
+
+void PlaybackProgramExecutor::run(std::shared_ptr<fisch::vx::PlaybackProgram> const& program)
+{
 	if (!m_impl) {
 		throw std::logic_error("Unexpected access to moved-from object.");
 	}
@@ -99,7 +104,7 @@ void PlaybackProgramExecutor::run(haldls::vx::PlaybackProgram& program)
 	}
 
 	std::visit(
-	    [&program](auto& fisch_executor) { fisch_executor.run(program.m_program_impl); },
+	    [&program](auto& fisch_executor) { fisch_executor.run(program); },
 	    *(m_impl->m_fisch_executor));
 }
 

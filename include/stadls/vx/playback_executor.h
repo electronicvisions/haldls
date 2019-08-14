@@ -5,6 +5,10 @@
 #include "hate/visibility.h"
 #include "stadls/vx/genpybind.h"
 
+namespace fisch::vx {
+class PlaybackProgram;
+} // namespace fisch::vx
+
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
 /**
@@ -64,6 +68,12 @@ public:
 	 * @param program PlaybackProgram to run
 	 */
 	void run(haldls::vx::PlaybackProgram& program) SYMBOL_VISIBLE;
+
+	/**
+	 * Transfer and execute the given playback program and fetch results.
+	 * @param program PlaybackProgram to run
+	 */
+	void run(std::shared_ptr<fisch::vx::PlaybackProgram> const& program) SYMBOL_VISIBLE;
 
 private:
 	struct Impl;
