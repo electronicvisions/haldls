@@ -9,7 +9,7 @@ stadls::vx::PlaybackProgramExecutor generate_playback_program_test_executor()
 {
 	stadls::vx::PlaybackProgramExecutor executor;
 	executor.connect();
-	return std::move(executor);
+	return executor;
 }
 
 int main(int argc, char* argv[])
