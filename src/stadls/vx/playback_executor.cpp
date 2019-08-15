@@ -78,7 +78,7 @@ void PlaybackProgramExecutor::disconnect()
 		throw std::logic_error("Unexpected access to moved-from object.");
 	}
 
-	if (m_impl->m_fisch_executor) {
+	if (!m_impl->m_fisch_executor) {
 		throw std::logic_error("Trying to disconnect an executor without connection to a backend.");
 	}
 	m_impl->m_fisch_executor.reset(nullptr);
