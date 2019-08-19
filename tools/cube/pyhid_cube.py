@@ -56,7 +56,7 @@ class pyhid_cube(object):
         self.__pyhidobj.closeHID()
 
     def __check_value(self, name, value, minimum=None, maximum=None):
-        if type(value) != long and type(value) != int:
+        if type(value) != int:
             raise TypeError('%s() Invalid type for %s' % name)
         if minimum is not None:
             if value < minimum:
