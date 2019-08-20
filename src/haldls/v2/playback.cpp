@@ -2,8 +2,8 @@
 
 #include <sstream>
 
-#include "uni/decoder.h"
-#include "uni/program_builder.h"
+#include "uni/v2/decoder.h"
+#include "uni/v2/program_builder.h"
 
 #include "haldls/v2/capmem.h"
 #include "haldls/v2/chip.h"

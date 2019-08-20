@@ -7,9 +7,9 @@
 #include "flyspi-rw_api/flyspi_com.h"
 #include "halco/common/iter_all.h"
 #include "log4cxx/logger.h"
-#include "uni/bytewise_output_iterator.h"
-#include "uni/decoder.h"
-#include "uni/program_builder.h"
+#include "uni/v2/bytewise_output_iterator.h"
+#include "uni/v2/decoder.h"
+#include "uni/v2/program_builder.h"
 
 #include "haldls/exception/exceptions.h"
 #include "haldls/v2/board.h"
