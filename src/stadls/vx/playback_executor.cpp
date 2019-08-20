@@ -12,10 +12,9 @@ struct PlaybackProgramExecutor::Impl
 {
 	Impl() : m_fisch_executor() {}
 
-	typedef std::variant<
-	    fisch::vx::PlaybackProgramExecutor<hxcomm::vx::ARQConnection>,
-	    fisch::vx::PlaybackProgramExecutor<hxcomm::vx::SimConnection>>
-	    executor_variant_type;
+	typedef std::
+	    variant<fisch::vx::PlaybackProgramARQExecutor, fisch::vx::PlaybackProgramSimExecutor>
+	        executor_variant_type;
 
 	std::unique_ptr<executor_variant_type> m_fisch_executor;
 };
@@ -36,7 +35,7 @@ void PlaybackProgramExecutor::connect_hardware(ip_t const ip)
 		throw std::logic_error("Trying to connect an already connected executor to hardware.");
 	}
 	m_impl->m_fisch_executor = std::make_unique<Impl::executor_variant_type>(
-	    std::in_place_type_t<fisch::vx::PlaybackProgramExecutor<hxcomm::vx::ARQConnection>>(), ip);
+	    std::in_place_type_t<fisch::vx::PlaybackProgramARQExecutor>(), ip);
 }
 
 void PlaybackProgramExecutor::connect_simulator(ip_t const ip, port_t const port)
@@ -49,7 +48,7 @@ void PlaybackProgramExecutor::connect_simulator(ip_t const ip, port_t const port
 		throw std::logic_error("Trying to connect an already connected executor to simulator.");
 	}
 	m_impl->m_fisch_executor = std::make_unique<Impl::executor_variant_type>(
-	    std::in_place_type_t<fisch::vx::PlaybackProgramExecutor<hxcomm::vx::SimConnection>>(), ip,
+	    std::in_place_type_t<fisch::vx::PlaybackProgramSimExecutor>(), ip,
 	    port);
 }
 
