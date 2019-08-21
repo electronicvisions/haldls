@@ -114,6 +114,10 @@ public:
 
 	PlaybackProgram done() SYMBOL_VISIBLE;
 
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder)
+	    SYMBOL_VISIBLE;
+
 private:
 	template <class T, size_t... SupportedBackendIndex>
 	void write_table_generator(

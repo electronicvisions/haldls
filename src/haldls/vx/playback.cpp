@@ -208,6 +208,12 @@ PlaybackProgram PlaybackProgramBuilder::done()
 	return PlaybackProgram(m_builder_impl->done());
 }
 
+std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder)
+{
+	os << *(builder.m_builder_impl);
+	return os;
+}
+
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template SYMBOL_VISIBLE void PlaybackProgramBuilder::write<Type>(                              \
 	    Type::coordinate_type const& coord, Type const& config,                                    \
