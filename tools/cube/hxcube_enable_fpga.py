@@ -24,6 +24,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("fpga", type=int)
     parser.add_argument("--poweroff", dest='enable', action='store_false')
+    parser.add_argument("--skip-bootloader", dest='skip', action='store_true')
     parser.add_argument("--desktop", dest='ignore_license',
                         action='store_true',
                         help=("Ignore SLURM license to select correct setup."
@@ -47,6 +48,10 @@ def main():
         hid.openHID(vid=0x0451, pid=0x4253, serial=serial)
     cube = pyhid_cube.pyhid_cube(hid)
     cube.powerControlPMIC(args.fpga, args.enable)
+
+    if args.enable and args.skip:
+        cube.rebootFPGA(args.fpga, 1)
+
     cube.closeDevice()
 
 
