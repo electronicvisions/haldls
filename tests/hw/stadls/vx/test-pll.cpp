@@ -102,7 +102,7 @@ TEST_F(PLLTest, WriteReadPLLClockOutputBlockOmnibusEquality)
 	configure();
 
 	haldls::vx::PLLClockOutputBlock config;
-	halco::hicann_dls::vx::PLLOnDLS coord;
+	halco::hicann_dls::vx::PLLClockOutputBlockOnDLS coord;
 
 	builder.write(coord, config, haldls::vx::Backend::OmnibusChipOverJTAG);
 	auto ticket = builder.read<haldls::vx::PLLClockOutputBlock>(
@@ -124,7 +124,7 @@ TEST_F(PLLTest, WriteReadPLLSelfTestOmnibusEquality)
 	config.set_check_value(haldls::vx::PLLSelfTest::CheckValue(0x1234));
 	config.set_clock_enable(true);
 
-	halco::hicann_dls::vx::PLLOnDLS coord;
+	halco::hicann_dls::vx::PLLSelfTestOnDLS coord;
 
 	builder.write(coord, config, haldls::vx::Backend::OmnibusChipOverJTAG);
 	auto ticket =
@@ -151,7 +151,7 @@ TEST_F(PLLTest, PLLSelfTest)
 
 	{
 		haldls::vx::PLLClockOutputBlock config;
-		halco::hicann_dls::vx::PLLOnDLS coord;
+		halco::hicann_dls::vx::PLLClockOutputBlockOnDLS coord;
 		builder.write(coord, config, haldls::vx::Backend::OmnibusChipOverJTAG);
 	}
 
@@ -161,7 +161,7 @@ TEST_F(PLLTest, PLLSelfTest)
 	config.set_check_range(haldls::vx::PLLSelfTest::CheckRange(2));
 	config.set_clock_enable(true);
 
-	halco::hicann_dls::vx::PLLOnDLS coord;
+	halco::hicann_dls::vx::PLLSelfTestOnDLS coord;
 
 	builder.write(coord, config, haldls::vx::Backend::OmnibusChipOverJTAG);
 
@@ -169,7 +169,7 @@ TEST_F(PLLTest, PLLSelfTest)
 	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));
 
 	auto ticket = builder.read<haldls::vx::PLLSelfTestStatus>(
-	    coord, haldls::vx::Backend::OmnibusChipOverJTAG);
+	    halco::hicann_dls::vx::PLLSelfTestStatusOnDLS(), haldls::vx::Backend::OmnibusChipOverJTAG);
 
 	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));

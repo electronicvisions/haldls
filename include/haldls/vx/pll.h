@@ -430,7 +430,7 @@ public:
 		ADPLLOutput m_adpll_output;
 	};
 
-	typedef halco::hicann_dls::vx::PLLOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::PLLClockOutputBlockOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	PLLClockOutputBlock() SYMBOL_VISIBLE;
@@ -496,7 +496,7 @@ struct BackendContainerTrait<PLLClockOutputBlock>
 class GENPYBIND(visible) PLLSelfTest
 {
 public:
-	typedef halco::hicann_dls::vx::PLLOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::PLLSelfTestOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	/**
@@ -625,7 +625,7 @@ struct BackendContainerTrait<PLLSelfTest>
 class GENPYBIND(visible) PLLSelfTestStatus
 {
 public:
-	typedef halco::hicann_dls::vx::PLLOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::PLLSelfTestStatusOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	/**

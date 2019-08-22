@@ -269,7 +269,7 @@ TEST(PLLClockOutputBlock, EncodeDecode)
 {
 	PLLClockOutputBlock config;
 
-	PLLOnDLS coord;
+	PLLClockOutputBlockOnDLS coord;
 
 	// JTAG write access
 	{
@@ -416,7 +416,7 @@ TEST(PLLSelfTest, EncodeDecode)
 {
 	PLLSelfTest config;
 
-	PLLOnDLS coord;
+	PLLSelfTestOnDLS coord;
 
 	// JTAG write access
 	{
@@ -524,7 +524,7 @@ TEST(PLLSelfTestStatus, General)
 
 TEST(PLLSelfTestStatus, EncodeDecode)
 {
-	PLLOnDLS coord;
+	PLLSelfTestStatusOnDLS coord;
 
 	// Omnibus over JTAG access
 	{
@@ -561,7 +561,7 @@ TEST(PLLSelfTestStatus, CerealizeCoverage)
 		std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::config_size_in_words> data =
 		    {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x00312345))};
 		visit_preorder(
-		    obj1, PLLOnDLS(),
+		    obj1, PLLSelfTestStatusOnDLS(),
 		    stadls::DecodeVisitor<std::array<fisch::vx::OmnibusChipOverJTAG, data.size()>>(data));
 	}
 

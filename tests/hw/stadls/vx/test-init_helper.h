@@ -32,7 +32,7 @@ inline void insert_highspeed_init(haldls::vx::PlaybackProgramBuilder& builder)
 	}
 
 	PLLClockOutputBlock config;
-	builder.write(PLLOnDLS(), config, Backend::JTAGPLLRegister);
+	builder.write(PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
 
 	// Wait for PLL and Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fpga_clock_cycles_per_us));
