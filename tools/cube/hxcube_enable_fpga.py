@@ -17,6 +17,18 @@ LICENSE_SERIAL_LUT = {
     "cubex0": "AFE25B4712002000",
     "cubex2": "AFE25B4713002000",
     "cubex3": "AFE25B471D002000",
+    "cubex4": "AFE25B4717002000",
+    "cubex5": "AFE25B4714002000",
+    "cubex6": "AFE25B4724002000",
+    "cubex7": "AFE25B4727002000",
+    "cubex8": "AFE25B4710002000",
+    "cubex9": "AFE25B472A002000",
+    "cubex10": "AFE25B472D002000",
+    "cubex11": "AFE25B4716002000",
+    "cubex12": "AFE25B4720002000",
+    "cubex13": "AFE25B471E002000",
+    "cubex14": "AFE25B471A002000",
+    "cubex15": "AFE25B4722002000",
 }
 
 
@@ -39,7 +51,7 @@ def main():
     hid = pyhid.pyhidaccess()  # pylint: disable=no-member
     if args.ignore_license:
         # will connect to the first available match
-        hid.openHID(vid=0x0451, pid=0x4253, serial=None)
+        hid.openHID(vid=0x0451, pid=0x4253)
     else:
         if gres not in LICENSE_SERIAL_LUT:
             raise KeyError("No serial number found for specified gres {}."
