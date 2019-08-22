@@ -37,17 +37,16 @@ TEST(CADCConfig, WROverJTAG)
 
 	// PLL init, reconfiguration needed to slow down PPU Omnibus tree to a working state
 	ADPLL adpll_config;
-	for (auto adpll : halco::common::iter_all<halco::hicann_dls::vx::ADPLLOnDLS>()) {
+	for (auto adpll : iter_all<ADPLLOnDLS>()) {
 		builder.write(adpll, adpll_config, Backend::JTAGPLLRegister);
 	}
 
 	PLLClockOutputBlock config;
-	builder.write(
-	    halco::hicann_dls::vx::PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
+	builder.write(PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
 
 	// Wait for PLL and Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(1000 * fisch::vx::fpga_clock_cycles_per_us));
-	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	builder.write(TimerOnDLS(), Timer());
 
 	// Write unique configs
 	std::vector<CADCConfig> configs;

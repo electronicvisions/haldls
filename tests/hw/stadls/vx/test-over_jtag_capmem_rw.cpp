@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "halco/common/typed_array.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/reset.h"
@@ -33,32 +34,28 @@ TEST(CapMemBlock, WROverJTAG)
 	builder.write(JTAGClockScalerOnDLS(), JTAGClockScaler(JTAGClockScaler::Value(3)));
 	builder.write(ResetJTAGTapOnDLS(), ResetJTAGTap());
 
-	std::array<CapMemBlock, CapMemBlockOnDLS::size> blocks;
-	std::array<CapMemBlockOnDLS, 4> block_coords = {CapMemBlockOnDLS(0), CapMemBlockOnDLS(1),
-	                                                CapMemBlockOnDLS(2), CapMemBlockOnDLS(3)};
 	// Wait Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(25 * Timer::Value::fpga_clock_cycles_per_us));
 	builder.write(TimerOnDLS(), Timer());
+
+	typed_array<CapMemBlock, CapMemBlockOnDLS> blocks;
 	// Fill blocks with random data
-	for (auto coord : iter_all<CapMemCellOnCapMemBlock>()) {
-		for (size_t i = 0; i < CapMemBlockOnDLS::size; i++) {
-			auto const val = draw_ranged_non_default_value<typename CapMemCell::Value>();
-			blocks[i].set_cell(CapMemCellOnDLS(coord, block_coords[i]), val);
+	for (auto cell : iter_all<CapMemCellOnCapMemBlock>()) {
+		for (auto block : iter_all<CapMemBlockOnDLS>()) {
+			auto const val = draw_ranged_non_default_value<CapMemCell::Value>();
+			blocks[block].set_cell(cell, val);
 		}
 	}
 
-
 	// Write blocks down using JTAG
-	for (size_t i = 0; i < CapMemBlockOnDLS::size; i++) {
-		builder.write(block_coords[i], blocks[i], Backend::OmnibusChipOverJTAG);
+	for (auto block : iter_all<CapMemBlockOnDLS>()) {
+		builder.write(block, blocks[block], Backend::OmnibusChipOverJTAG);
 	}
 
-
-	std::array<CapMemBlock, CapMemBlockOnDLS::size> recv_blocks;
 	std::vector<PlaybackProgram::ContainerTicket<CapMemBlock>> block_tickets;
 	// Read blocks back
-	for (size_t i = 0; i < CapMemBlockOnDLS::size; i++) {
-		block_tickets.push_back(builder.read(block_coords[i], Backend::OmnibusChipOverJTAG));
+	for (auto block : iter_all<CapMemBlockOnDLS>()) {
+		block_tickets.push_back(builder.read(block, Backend::OmnibusChipOverJTAG));
 	}
 	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
@@ -67,8 +64,8 @@ TEST(CapMemBlock, WROverJTAG)
 	auto executor = generate_playback_program_test_executor();
 	executor.run(program);
 
-	for (size_t i = 0; i < CapMemBlockOnDLS::size; i++) {
-		EXPECT_TRUE(block_tickets[i].valid());
-		EXPECT_TRUE(block_tickets[i].get() == blocks[i]);
+	for (auto block : iter_all<CapMemBlockOnDLS>()) {
+		EXPECT_TRUE(block_tickets[block].valid());
+		EXPECT_TRUE(block_tickets[block].get() == blocks[block]);
 	}
 }

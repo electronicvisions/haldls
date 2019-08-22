@@ -35,7 +35,7 @@ TEST(PPUMemoryWord, WROverJTAG)
 
 	// PLL init, reconfiguration needed to slow down PPU to a working state
 	ADPLL adpll_config;
-	for (auto adpll : halco::common::iter_all<halco::hicann_dls::vx::ADPLLOnDLS>()) {
+	for (auto adpll : iter_all<ADPLLOnDLS>()) {
 		builder.write(adpll, adpll_config, Backend::JTAGPLLRegister);
 	}
 
@@ -44,23 +44,19 @@ TEST(PPUMemoryWord, WROverJTAG)
 
 	// Wait for PLL and Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(100 * Timer::Value::fpga_clock_cycles_per_us));
-	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	builder.write(TimerOnDLS(), Timer());
 
-	constexpr size_t num_words = 10;
-
-	// Write PPU memory words with Omnibus over JTAG backend
-	std::vector<PPUMemoryWord> words;
-	for (size_t i = 0; i < num_words; ++i) {
-		auto value = PPUMemoryWord(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
-		builder.write(PPUMemoryWordOnDLS(Enum(i)), value, Backend::OmnibusChipOverJTAG);
-		words.push_back(value);
+	// Write all PPU memory words with JTAG backend
+	typed_array<PPUMemoryWord, PPUMemoryWordOnDLS> words;
+	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
+		words[word] = PPUMemoryWord(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
+		builder.write(word, words[word], Backend::OmnibusChipOverJTAG);
 	}
 
-	// Read PPU memory words with Omnibus over JTAG backend
+	// Read all PPU memory words with JTAG backend
 	std::vector<PlaybackProgram::ContainerTicket<PPUMemoryWord>> responses;
-	for (size_t i = 0; i < num_words; ++i) {
-		responses.push_back(
-		    builder.read(PPUMemoryWordOnDLS(Enum(i)), Backend::OmnibusChipOverJTAG));
+	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
+		responses.push_back(builder.read(word, Backend::OmnibusChipOverJTAG));
 	}
 
 	builder.write(TimerOnDLS(), Timer());
@@ -70,9 +66,9 @@ TEST(PPUMemoryWord, WROverJTAG)
 	auto executor = generate_playback_program_test_executor();
 	executor.run(program);
 
-	for (size_t i = 0; i < num_words; ++i) {
-		EXPECT_TRUE(responses.at(i).valid());
-		EXPECT_EQ(responses.at(i).get(), words.at(i));
+	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
+		EXPECT_TRUE(responses[word.toEnum()].valid());
+		EXPECT_EQ(responses[word.toEnum()].get(), words[word]);
 	}
 }
 
@@ -96,17 +92,16 @@ TEST(PPUControlRegister, WROverJTAG)
 
 	// PLL init, reconfiguration needed to slow down PPU to a working state
 	ADPLL adpll_config;
-	for (auto adpll : halco::common::iter_all<halco::hicann_dls::vx::ADPLLOnDLS>()) {
+	for (auto adpll : iter_all<ADPLLOnDLS>()) {
 		builder.write(adpll, adpll_config, Backend::JTAGPLLRegister);
 	}
 
 	PLLClockOutputBlock config;
-	builder.write(
-	    halco::hicann_dls::vx::PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
+	builder.write(PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
 
 	// Wait for PLL and Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(100 * Timer::Value::fpga_clock_cycles_per_us));
-	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	builder.write(TimerOnDLS(), Timer());
 
 	PPUControlRegister reg1, reg2;
 	PPUOnDLS ppu_coord1(0);

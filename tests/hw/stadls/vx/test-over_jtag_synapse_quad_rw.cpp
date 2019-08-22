@@ -26,7 +26,7 @@ TEST(SynapseQuad, DISABLED_WROverJTAG)
 
 	insert_highspeed_init(builder);
 
-	halco::common::typed_array<SynapseQuad, SynapseQuadOnDLS> configs;
+	typed_array<SynapseQuad, SynapseQuadOnDLS> configs;
 
 	// Fill configs with random data
 	for (auto coord : iter_all<SynapseQuadOnDLS>()) {

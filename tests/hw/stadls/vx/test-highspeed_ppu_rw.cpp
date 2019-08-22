@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
+#include "halco/common/typed_array.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/phy.h"
 #include "haldls/vx/ppu.h"
-#include "haldls/vx/reset.h"
 #include "haldls/vx/timer.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
@@ -27,10 +27,10 @@ TEST(PPUMemoryWord, WRHighspeed)
 	insert_highspeed_init(builder);
 
 	// Write all PPU memory words with highspeed backend
-	std::vector<PPUMemoryWord> words;
+	typed_array<PPUMemoryWord, PPUMemoryWordOnDLS> words;
 	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
-		words.push_back(PPUMemoryWord(draw_ranged_non_default_value<PPUMemoryWord::Value>(0)));
-		builder.write(word, words[word.toEnum()], Backend::OmnibusChip);
+		words[word] = PPUMemoryWord(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
+		builder.write(word, words[word], Backend::OmnibusChip);
 	}
 
 	// Read all PPU memory words with highspeed backend
@@ -48,6 +48,6 @@ TEST(PPUMemoryWord, WRHighspeed)
 
 	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
 		EXPECT_TRUE(responses[word.toEnum()].valid());
-		EXPECT_EQ(responses[word.toEnum()].get(), words[word.toEnum()]);
+		EXPECT_EQ(responses[word.toEnum()].get(), words[word]);
 	}
 }
