@@ -64,7 +64,7 @@ TEST(CommonSynramConfig, EncodeDecode)
 {
 	CommonSynramConfig config;
 
-	CommonSynramConfigOnDLS coord(1);
+	auto coord = CommonSynramConfigOnDLS::top;
 
 	// Omnibus over JTAG access
 	{
