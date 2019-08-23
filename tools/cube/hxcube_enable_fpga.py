@@ -8,6 +8,7 @@ Communicates via USB HID, using pyhid_cube (TUD) -> pyhid (TUD) -> libusb.
 
 import os
 import argparse
+import time
 import pyhid  # pylint: disable=import-error
 import pyhid_cube
 
@@ -62,6 +63,8 @@ def main():
     cube.powerControlPMIC(args.fpga, args.enable)
 
     if args.enable and args.skip:
+        # wait until init is done
+        time.sleep(2)
         cube.rebootFPGA(args.fpga, 1)
 
     cube.closeDevice()
