@@ -44,6 +44,11 @@ constexpr uint32_t synapse_driver_bottom_sram_base_address{0x11'8400};
 constexpr std::array<uint32_t, 2> synapse_driver_sram_base_addresses = {
     synapse_driver_top_sram_base_address, synapse_driver_bottom_sram_base_address};
 
+constexpr uint32_t padi_top_base_address{0x11'0000};
+constexpr uint32_t padi_bottom_base_address{0x11'8000};
+constexpr std::array<uint32_t, 2> padi_base_addresses = {
+    padi_top_base_address, padi_bottom_base_address};
+
 constexpr uint32_t ut_omnibus_mask{0x0400'0000};
 constexpr uint32_t phy_omnibus_mask{0x0200'0000 | ut_omnibus_mask};
 constexpr uint32_t perftest_omnibus_mask{0x0800'0000};
