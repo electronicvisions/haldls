@@ -47,7 +47,7 @@ TEST(CapMemBlock, WROverHighspeed)
 	for (size_t i = 0; i < CapMemBlockOnDLS::size; i++) {
 		block_tickets.push_back(builder.read(block_coords[i], Backend::OmnibusChip));
 	}
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
 	auto program = builder.done();
 

@@ -61,7 +61,7 @@ TEST(SynapseQuad, DISABLED_WROverJTAG)
 	for (auto coord : iter_all<SynapseQuadOnDLS>()) {
 		tickets.push_back(builder.read(coord, Backend::OmnibusChipOverJTAG));
 	}
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
 	auto program = builder.done();
 

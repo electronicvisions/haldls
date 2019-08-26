@@ -22,10 +22,10 @@ TEST(CommonSynramConfig, WROverJTAG)
 	PlaybackProgramBuilder builder;
 
 	// Chip reset
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(true));
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(ResetChipOnDLS(), ResetChip(true));
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10));
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(false));
+	builder.write(ResetChipOnDLS(), ResetChip(false));
 	builder.wait_until(TimerOnDLS(), Timer::Value(100));
 
 	// JTAG init
@@ -36,7 +36,7 @@ TEST(CommonSynramConfig, WROverJTAG)
 
 	// Wait Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(25 * fisch::vx::fpga_clock_cycles_per_us));
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 
 	// Fill configs with random data
 	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {
@@ -67,7 +67,7 @@ TEST(CommonSynramConfig, WROverJTAG)
 	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {
 		tickets.push_back(builder.read(coord, Backend::OmnibusChipOverJTAG));
 	}
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
 	auto program = builder.done();
 

@@ -21,17 +21,17 @@ TEST(ShiftRegister, ToggleLEDs)
 {
 	PlaybackProgramBuilder builder;
 
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(true));
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(ResetChipOnDLS(), ResetChip(true));
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10));
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(false));
+	builder.write(ResetChipOnDLS(), ResetChip(false));
 	builder.wait_until(TimerOnDLS(), Timer::Value(100));
 
 	// disable LEDs
 	builder.write(ShiftRegisterOnBoard(), ShiftRegister());
 
 	// wait 1s
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(125 * 1000 * 1000));
 
 	// enable LEDs
@@ -42,13 +42,13 @@ TEST(ShiftRegister, ToggleLEDs)
 	builder.write(ShiftRegisterOnBoard(), shift_register);
 
 	// wait 1s
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(125 * 1000 * 1000));
 
 	// disable LEDs
 	builder.write(ShiftRegisterOnBoard(), ShiftRegister());
 
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
 	auto program = builder.done();
 

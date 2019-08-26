@@ -113,26 +113,43 @@ public:
 	    typename haldls::vx::Timer::coordinate_type const& coord,
 	    haldls::vx::Timer::Value t) SYMBOL_VISIBLE;
 
-	template <class T>
-	void write(
-	    typename T::coordinate_type const& coord,
-	    T const& config,
-	    std::optional<Backend> backend = std::nullopt) SYMBOL_VISIBLE;
-
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
+	/**                                                                                            \
+	 * Add instructions to write given container to given location.                                \
+	 * @param coord Coordinate value selecting location                                            \
+	 * @param config Container configuration data                                                  \
+	 * @param backend Backend selection                                                            \
+	 */                                                                                            \
 	void write(typename Type::coordinate_type const& coord, Type const& config, Backend backend)   \
 	    SYMBOL_VISIBLE;                                                                            \
+                                                                                                   \
+	/**                                                                                            \
+	 * Add instructions to write given container to given location.                                \
+	 * The container's default backend is used.                                                    \
+	 * @param coord Coordinate value selecting location                                            \
+	 * @param config Container configuration data                                                  \
+	 * @note This function without backend parameter is needed due to python wrapping not being    \
+	 * able to handle templated default arguments.                                                 \
+	 */                                                                                            \
 	void write(typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;
 #include "haldls/vx/container.def"
 
-	template <class CoordinateT>
-	PlaybackProgram::ContainerTicket<
-	    typename detail::coordinate_type_to_container_type<CoordinateT>::type>
-	read(CoordinateT const& coord, std::optional<Backend> backend = std::nullopt) SYMBOL_VISIBLE;
-
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
+	/**                                                                                            \
+	 * Add instructions to read container data from given location.                                \
+	 * @param coord Coordinate value selecting location                                            \
+	 * @param backend Backend selection                                                            \
+	 */                                                                                            \
 	PlaybackProgram::ContainerTicket<Type> read(                                                   \
 	    typename Type::coordinate_type const& coord, Backend backend) SYMBOL_VISIBLE;              \
+                                                                                                   \
+	/**                                                                                            \
+	 * Add instructions to read container data from given location.                                \
+	 * The container's default backend is used.                                                    \
+	 * @param coord Coordinate value selecting location                                            \
+	 * @note This function without backend parameter is needed due to python wrapping not being    \
+	 * able to handle templated default arguments.                                                 \
+	 */                                                                                            \
 	PlaybackProgram::ContainerTicket<Type> read(typename Type::coordinate_type const& coord)       \
 	    SYMBOL_VISIBLE;
 #include "haldls/vx/container.def"

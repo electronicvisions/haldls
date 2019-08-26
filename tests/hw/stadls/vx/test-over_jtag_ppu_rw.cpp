@@ -23,10 +23,10 @@ TEST(PPUMemoryWord, WROverJTAG)
 	PlaybackProgramBuilder builder;
 
 	// Chip reset
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(true));
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(ResetChipOnDLS(), ResetChip(true));
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10));
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(false));
+	builder.write(ResetChipOnDLS(), ResetChip(false));
 	builder.wait_until(TimerOnDLS(), Timer::Value(100));
 
 	// JTAG init
@@ -44,7 +44,7 @@ TEST(PPUMemoryWord, WROverJTAG)
 
 	// Wait for PLL and Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fisch::vx::fpga_clock_cycles_per_us));
-	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 
 	constexpr size_t num_words = 10;
 
@@ -63,7 +63,7 @@ TEST(PPUMemoryWord, WROverJTAG)
 		    builder.read(PPUMemoryWordOnDLS(Enum(i)), Backend::OmnibusChipOverJTAG));
 	}
 
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
 	auto program = builder.done();
 
@@ -84,10 +84,10 @@ TEST(PPUControlRegister, WROverJTAG)
 	PlaybackProgramBuilder builder;
 
 	// Chip reset
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(true));
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(ResetChipOnDLS(), ResetChip(true));
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10));
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(false));
+	builder.write(ResetChipOnDLS(), ResetChip(false));
 	builder.wait_until(TimerOnDLS(), Timer::Value(100));
 
 	// JTAG init
@@ -106,7 +106,7 @@ TEST(PPUControlRegister, WROverJTAG)
 
 	// Wait for PLL and Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fisch::vx::fpga_clock_cycles_per_us));
-	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 
 	PPUControlRegister reg1, reg2;
 	PPUOnDLS ppu_coord1(0);
@@ -152,7 +152,7 @@ TEST(PPUControlRegister, WROverJTAG)
 	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2),
 	    Backend::OmnibusChipOverJTAG));
 
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
 	auto program = builder.done();
 

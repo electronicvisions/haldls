@@ -103,34 +103,25 @@ void PlaybackProgramBuilder::write_table_generator(
 	write_table.at(backend_index)(*this, coord, config);
 }
 
-template <class T>
-void PlaybackProgramBuilder::write(
-    typename T::coordinate_type const& coord, T const& config, std::optional<Backend> backend)
-{
-	if (!backend) {
-		backend = detail::BackendContainerTrait<T>::default_backend;
-	} else if (!detail::BackendContainerTrait<T>::valid(*backend)) {
-		throw std::runtime_error("Backend not supported for container type.");
-	}
-	size_t const backend_index =
-	    static_cast<size_t>(detail::BackendContainerTrait<T>::backend_index_lookup_table.at(
-	        static_cast<size_t>(*backend)));
-	write_table_generator<T>(
-	    coord, config, backend_index,
-	    std::make_index_sequence<hate::type_list_size<
-	        typename detail::BackendContainerTrait<T>::container_list>::value>());
-}
-
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	void PlaybackProgramBuilder::write(                                                            \
 	    typename Type::coordinate_type const& coord, Type const& config, Backend backend)          \
 	{                                                                                              \
-		write<Type>(coord, config, backend);                                                       \
+		if (!detail::BackendContainerTrait<Type>::valid(backend)) {                                \
+			throw std::runtime_error("Backend not supported for container type.");                 \
+		}                                                                                          \
+		size_t const backend_index = static_cast<size_t>(                                          \
+		    detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(                    \
+		        static_cast<size_t>(backend)));                                                    \
+		write_table_generator<Type>(                                                               \
+		    coord, config, backend_index,                                                          \
+		    std::make_index_sequence<hate::type_list_size<                                         \
+		        typename detail::BackendContainerTrait<Type>::container_list>::value>());          \
 	}                                                                                              \
 	void PlaybackProgramBuilder::write(                                                            \
 	    typename Type::coordinate_type const& coord, Type const& config)                           \
 	{                                                                                              \
-		write<Type>(coord, config, std::nullopt);                                                  \
+		write(coord, config, detail::BackendContainerTrait<Type>::default_backend);                \
 	}
 #include "haldls/vx/container.def"
 
@@ -165,37 +156,26 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 	return read_table.at(backend_index)(*this, coord);
 }
 
-template <class CoordinateT>
-PlaybackProgram::ContainerTicket<
-    typename detail::coordinate_type_to_container_type<CoordinateT>::type>
-PlaybackProgramBuilder::read(CoordinateT const& coord, std::optional<Backend> backend)
-{
-	typedef typename detail::coordinate_type_to_container_type<CoordinateT>::type T;
-	if (!backend) {
-		backend = detail::BackendContainerTrait<T>::default_backend;
-	} else if (!detail::BackendContainerTrait<T>::valid(*backend)) {
-		throw std::runtime_error("Backend not supported for container type.");
-	}
-
-	size_t const backend_index =
-	    static_cast<size_t>(detail::BackendContainerTrait<T>::backend_index_lookup_table.at(
-	        static_cast<size_t>(*backend)));
-	return read_table_generator<T>(
-	    coord, backend_index,
-	    std::make_index_sequence<hate::type_list_size<
-	        typename detail::BackendContainerTrait<T>::container_list>::value>());
-}
-
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read(                           \
 	    typename Type::coordinate_type const& coord, Backend backend)                              \
 	{                                                                                              \
-		return read(coord, std::optional<Backend>(backend));                                       \
+		if (!detail::BackendContainerTrait<Type>::valid(backend)) {                                \
+			throw std::runtime_error("Backend not supported for container type.");                 \
+		}                                                                                          \
+                                                                                                   \
+		size_t const backend_index = static_cast<size_t>(                                          \
+		    detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(                    \
+		        static_cast<size_t>(backend)));                                                    \
+		return read_table_generator<Type>(                                                         \
+		    coord, backend_index,                                                                  \
+		    std::make_index_sequence<hate::type_list_size<                                         \
+		        typename detail::BackendContainerTrait<Type>::container_list>::value>());          \
 	}                                                                                              \
 	PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilder::read(                           \
 	    typename Type::coordinate_type const& coord)                                               \
 	{                                                                                              \
-		return read(coord, std::nullopt);                                                          \
+		return read(coord, detail::BackendContainerTrait<Type>::default_backend);                  \
 	}
 #include "haldls/vx/container.def"
 
@@ -213,18 +193,6 @@ std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder
 	os << *(builder.m_builder_impl);
 	return os;
 }
-
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template SYMBOL_VISIBLE void PlaybackProgramBuilder::write<Type>(                              \
-	    Type::coordinate_type const& coord, Type const& config,                                    \
-	    std::optional<Backend> backend = std::nullopt);
-#include "haldls/vx/container.def"
-
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template SYMBOL_VISIBLE PlaybackProgram::ContainerTicket<Type>                                 \
-	PlaybackProgramBuilder::read<Type::coordinate_type>(                                           \
-	    Type::coordinate_type const& coord, std::optional<Backend> backend = std::nullopt);
-#include "haldls/vx/container.def"
 
 } // namespace vx
 } // namespace haldls

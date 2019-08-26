@@ -15,10 +15,10 @@ inline void insert_highspeed_init(haldls::vx::PlaybackProgramBuilder& builder)
 	using fisch::vx::fpga_clock_cycles_per_us;
 
 	// Chip reset
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(true));
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(ResetChipOnDLS(), ResetChip(true));
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10));
-	builder.write<ResetChip>(ResetChipOnDLS(), ResetChip(false));
+	builder.write(ResetChipOnDLS(), ResetChip(false));
 	builder.wait_until(TimerOnDLS(), Timer::Value(100));
 
 	// JTAG init
@@ -36,7 +36,7 @@ inline void insert_highspeed_init(haldls::vx::PlaybackProgramBuilder& builder)
 
 	// Wait for PLL and Omnibus to come up
 	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fpga_clock_cycles_per_us));
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 
 	// Configure all FPGA-side Phys
 	for (auto phy : iter_all<PhyConfigFPGAOnDLS>()) {
@@ -55,8 +55,8 @@ inline void insert_highspeed_init(haldls::vx::PlaybackProgramBuilder& builder)
 	builder.write(CommonPhyConfigChipOnDLS(), CommonPhyConfigChip());
 
 	// wait until highspeed is up (omnibus clock lock + phy config write over JTAG)
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(80 * fpga_clock_cycles_per_us));
 
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 }

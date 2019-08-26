@@ -40,7 +40,7 @@ TEST(PPUMemoryWord, WRHighspeed)
 		responses.push_back(builder.read(word, Backend::OmnibusChip));
 	}
 
-	builder.write<Timer>(TimerOnDLS(), Timer());
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
 	auto program = builder.done();
 

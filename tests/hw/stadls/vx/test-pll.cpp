@@ -18,23 +18,20 @@ protected:
 
 	void configure()
 	{
-		builder.write<haldls::vx::ResetChip>(
-		    halco::hicann_dls::vx::ResetChipOnDLS(), haldls::vx::ResetChip(true));
-		builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+		builder.write(halco::hicann_dls::vx::ResetChipOnDLS(), haldls::vx::ResetChip(true));
+		builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 		builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10));
-		builder.write<haldls::vx::ResetChip>(
-		    halco::hicann_dls::vx::ResetChipOnDLS(), haldls::vx::ResetChip(false));
+		builder.write(halco::hicann_dls::vx::ResetChipOnDLS(), haldls::vx::ResetChip(false));
 		builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(100));
 
-		builder.write<haldls::vx::JTAGClockScaler>(
+		builder.write(
 		    halco::hicann_dls::vx::JTAGClockScalerOnDLS(),
 		    haldls::vx::JTAGClockScaler(haldls::vx::JTAGClockScaler::Value(3)));
-		builder.write<haldls::vx::ResetJTAGTap>(
-		    halco::hicann_dls::vx::ResetJTAGTapOnDLS(), haldls::vx::ResetJTAGTap());
+		builder.write(halco::hicann_dls::vx::ResetJTAGTapOnDLS(), haldls::vx::ResetJTAGTap());
 
 		// wait until ASIC omnibus is up (22 us)
 		builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(22 * 125));
-		builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+		builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 	}
 
 	void test_run_program(haldls::vx::PlaybackProgram& program)
@@ -62,7 +59,7 @@ protected:
 		haldls::vx::ADPLL adpll_config;
 
 		builder.write(coord, adpll_config, haldls::vx::Backend::OmnibusChipOverJTAG);
-		builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+		builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 		// wait for omnibus clock to come up again
 		builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(30 * 125));
 		ticket = builder.read(coord, haldls::vx::Backend::OmnibusChipOverJTAG);
@@ -163,13 +160,13 @@ TEST_F(PLLTest, PLLSelfTest)
 
 	builder.write(coord, config, haldls::vx::Backend::OmnibusChipOverJTAG);
 
-	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));
 
 	auto ticket = builder.read(
 	    halco::hicann_dls::vx::PLLSelfTestStatusOnDLS(), haldls::vx::Backend::OmnibusChipOverJTAG);
 
-	builder.write<haldls::vx::Timer>(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
+	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 	builder.wait_until(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer::Value(10000));
 
 	auto program = builder.done();
