@@ -22,19 +22,40 @@ namespace vx GENPYBIND_TAG_STADLS_VX {
 class PlaybackProgramExecutor;
 class PlaybackProgramBuilder;
 
+/**
+ * Sequential stream of executable instructions for the executor and result-container for event
+ * response data during execution.
+ */
 class GENPYBIND(visible) PlaybackProgram
 {
 public:
+	/**
+	 * Ticket for to-be-available container data corresponding to a read instruction.
+	 * @tparam T Container type
+	 */
 	template <typename T>
 	class ContainerTicket
 	{
 	public:
 		typedef typename T::coordinate_type coordinate_type;
 
+		/**
+		 * Get container data if available.
+		 * @throws std::runtime_error On container data not available yet
+		 * @return Container data
+		 */
 		T get() const SYMBOL_VISIBLE;
 
+		/**
+		 * Get whether container data is available.
+		 * @return Boolean value
+		 */
 		bool valid() const SYMBOL_VISIBLE;
 
+		/**
+		 * Get coordinate corresponding to location of (to-be) read container data.
+		 * @return Coordinate value
+		 */
 		coordinate_type get_coordinate() const SYMBOL_VISIBLE;
 
 	private:
@@ -60,8 +81,8 @@ public:
 #include "haldls/vx/container.def"
 #endif // __GENPYBIND__
 
+	/** Default constructor. */
 	PlaybackProgram() SYMBOL_VISIBLE;
-	PlaybackProgram(std::shared_ptr<fisch::vx::PlaybackProgram> const& other) SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
@@ -71,45 +92,36 @@ private:
 	friend PlaybackProgramBuilder;
 	friend PlaybackProgramExecutor;
 
+	/**
+	 * Construct PlaybackProgram from implementation.
+	 * Used in PlaybackProgramBuilder
+	 * @param program_impl Implementation playback program
+	 */
+	PlaybackProgram(std::shared_ptr<fisch::vx::PlaybackProgram> const& program_impl) SYMBOL_VISIBLE;
+
 	std::shared_ptr<fisch::vx::PlaybackProgram> m_program_impl;
 
 	bool m_valid;
 }; // PlaybackProgram
 
-namespace detail {
 
-#define LAST_PLAYBACK_CONTAINER(Name, Type) Type
-#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
-typedef hate::type_list<
-#include "haldls/vx/container.def"
-    >
-    container_list;
-
-#define LAST_PLAYBACK_CONTAINER(Name, Type) typename Type::coordinate_type
-#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
-typedef hate::type_list<
-#include "haldls/vx/container.def"
-    >
-    coordinate_list;
-
-template <typename CoordinateT>
-struct coordinate_type_to_container_type
-{
-	typedef typename hate::index_type_list_by_integer<
-	    hate::index_type_list_by_type<CoordinateT, coordinate_list>::value,
-	    container_list>::type type;
-};
-
-} // namespace detail
-
+/**
+ * Sequential PlaybackProgram builder.
+ */
 class GENPYBIND(visible) PlaybackProgramBuilder
 {
 public:
+	/** Default constructor. */
 	PlaybackProgramBuilder() SYMBOL_VISIBLE;
 
+	/**
+	 * Add instruction to block execution until specified timer has reached specified value.
+	 * @param coord Timer coordinate for which to wait
+	 * @param time Timer value until which to block execution
+	 */
 	void wait_until(
 	    typename haldls::vx::Timer::coordinate_type const& coord,
-	    haldls::vx::Timer::Value t) SYMBOL_VISIBLE;
+	    haldls::vx::Timer::Value time) SYMBOL_VISIBLE;
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	/**                                                                                            \
@@ -130,10 +142,8 @@ public:
 	 * @note This function without backend parameter is needed due to python wrapping not being    \
 	 * able to handle templated default arguments.                                                 \
 	 */                                                                                            \
-	void write(typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;
-#include "haldls/vx/container.def"
-
-#define PLAYBACK_CONTAINER(Name, Type)                                                             \
+	void write(typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;    \
+                                                                                                   \
 	/**                                                                                            \
 	 * Add instructions to read container data from given location.                                \
 	 * @param coord Coordinate value selecting location                                            \
@@ -153,6 +163,10 @@ public:
 	    SYMBOL_VISIBLE;
 #include "haldls/vx/container.def"
 
+	/**
+	 * Close PlaybackProgram build process and return executable program.
+	 * @return Executable PlaybackProgram
+	 */
 	PlaybackProgram done() SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
@@ -172,7 +186,6 @@ private:
 	    typename T::coordinate_type const& coord,
 	    size_t backend_index,
 	    std::index_sequence<SupportedBackendIndex...>) SYMBOL_VISIBLE;
-
 
 	std::unique_ptr<fisch::vx::PlaybackProgramBuilder> m_builder_impl;
 }; // PlaybackProgramBuilder
