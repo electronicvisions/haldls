@@ -1,5 +1,5 @@
 #pragma once
-#include "stadls/vx/playback_executor.h"
+#include "stadls/vx/playback_program_executor.h"
 
 #define STADLS_TEST_ARQ_EXECUTOR
 

@@ -5,7 +5,8 @@
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/timer.h"
-#include "stadls/vx/playback.h"
+#include "stadls/vx/playback_program.h"
+#include "stadls/vx/playback_program_builder.h"
 
 inline void insert_highspeed_init(stadls::vx::PlaybackProgramBuilder& builder)
 {

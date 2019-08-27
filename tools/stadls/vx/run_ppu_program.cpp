@@ -7,8 +7,9 @@
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/timer.h"
 #include "logging_ctrl.h"
-#include "stadls/vx/playback.h"
-#include "stadls/vx/playback_executor.h"
+#include "stadls/vx/playback_program.h"
+#include "stadls/vx/playback_program_builder.h"
+#include "stadls/vx/playback_program_executor.h"
 
 #include "helpers.hpp"
 

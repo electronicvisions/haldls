@@ -1,10 +1,10 @@
-#include "stadls/vx/playback_executor.h"
+#include "stadls/vx/playback_program_executor.h"
 
 #include <memory>
 #include <variant>
 #include "fisch/vx/playback_executor.h"
 #include "sctrltp/fpga_ip_list.h"
-#include "stadls/vx/playback.h"
+#include "stadls/vx/playback_program.h"
 
 namespace stadls::vx {
 
@@ -48,8 +48,7 @@ void PlaybackProgramExecutor::connect_simulator(ip_t const ip, port_t const port
 		throw std::logic_error("Trying to connect an already connected executor to simulator.");
 	}
 	m_impl->m_fisch_executor = std::make_unique<Impl::executor_variant_type>(
-	    std::in_place_type_t<fisch::vx::PlaybackProgramSimExecutor>(), ip,
-	    port);
+	    std::in_place_type_t<fisch::vx::PlaybackProgramSimExecutor>(), ip, port);
 }
 
 void PlaybackProgramExecutor::connect()

@@ -5,7 +5,8 @@
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/timer.h"
-#include "stadls/vx/playback.h"
+#include "stadls/vx/playback_program.h"
+#include "stadls/vx/playback_program_builder.h"
 
 #include "executor.h"
 #include "test-helper.h"

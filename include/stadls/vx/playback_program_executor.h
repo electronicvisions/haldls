@@ -3,13 +3,14 @@
 
 #include "hate/visibility.h"
 #include "stadls/vx/genpybind.h"
-#include "stadls/vx/playback.h"
 
 namespace fisch::vx {
 class PlaybackProgram;
 } // namespace fisch::vx
 
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+
+class PlaybackProgram;
 
 /**
  * Executor for playback program.
