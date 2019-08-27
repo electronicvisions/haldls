@@ -1,5 +1,4 @@
 #pragma once
-#include "fisch/vx/constants.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/phy.h"
 #include "haldls/vx/ppu.h"
@@ -13,7 +12,6 @@ inline void insert_highspeed_init(stadls::vx::PlaybackProgramBuilder& builder)
 	using namespace halco::common;
 	using namespace halco::hicann_dls::vx;
 	using namespace haldls::vx;
-	using fisch::vx::fpga_clock_cycles_per_us;
 
 	// Chip reset
 	builder.write(ResetChipOnDLS(), ResetChip(true));
@@ -36,7 +34,7 @@ inline void insert_highspeed_init(stadls::vx::PlaybackProgramBuilder& builder)
 	builder.write(PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
 
 	// Wait for PLL and Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fpga_clock_cycles_per_us));
+	builder.wait_until(TimerOnDLS(), Timer::Value(100 * Timer::Value::fpga_clock_cycles_per_us));
 	builder.write(TimerOnDLS(), Timer());
 
 	// Configure all FPGA-side Phys
@@ -57,7 +55,7 @@ inline void insert_highspeed_init(stadls::vx::PlaybackProgramBuilder& builder)
 
 	// wait until highspeed is up (omnibus clock lock + phy config write over JTAG)
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(80 * fpga_clock_cycles_per_us));
+	builder.wait_until(TimerOnDLS(), Timer::Value(80 * Timer::Value::fpga_clock_cycles_per_us));
 
 	builder.write(TimerOnDLS(), Timer());
 }

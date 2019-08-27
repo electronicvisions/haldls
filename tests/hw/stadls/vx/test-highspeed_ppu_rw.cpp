@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "fisch/vx/constants.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/phy.h"
 #include "haldls/vx/ppu.h"

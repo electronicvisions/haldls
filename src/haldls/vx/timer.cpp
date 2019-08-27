@@ -1,8 +1,12 @@
 #include "haldls/vx/timer.h"
+
+#include "fisch/vx/constants.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/print.h"
 
 namespace haldls::vx {
+
+Timer::Value const Timer::Value::fpga_clock_cycles_per_us{fisch::vx::fpga_clock_cycles_per_us};
 
 Timer::Timer(Value const value) : m_value(value) {}
 

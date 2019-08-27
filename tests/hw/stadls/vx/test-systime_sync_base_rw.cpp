@@ -2,7 +2,6 @@
 
 #include "haldls/vx/systime.h"
 
-#include "fisch/vx/constants.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/timer.h"
@@ -32,7 +31,7 @@ TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)
 
 
 	// wait until Omnibus is up (22 us)
-	builder.wait_until(TimerOnDLS(), Timer::Value(22 * fisch::vx::fpga_clock_cycles_per_us));
+	builder.wait_until(TimerOnDLS(), Timer::Value(22 * Timer::Value::fpga_clock_cycles_per_us));
 
 	// number of written and read values
 	constexpr size_t num = 100;

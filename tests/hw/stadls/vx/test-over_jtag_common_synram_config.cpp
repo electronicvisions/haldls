@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "fisch/vx/constants.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/synapse.h"
@@ -37,7 +36,7 @@ TEST(CommonSynramConfig, WROverJTAG)
 	halco::common::typed_array<CommonSynramConfig, CommonSynramConfigOnDLS> configs;
 
 	// Wait Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(25 * fisch::vx::fpga_clock_cycles_per_us));
+	builder.wait_until(TimerOnDLS(), Timer::Value(25 * Timer::Value::fpga_clock_cycles_per_us));
 	builder.write(TimerOnDLS(), Timer());
 
 	// Fill configs with random data

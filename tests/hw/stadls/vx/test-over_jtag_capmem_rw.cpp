@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "fisch/vx/constants.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/reset.h"
@@ -38,7 +37,7 @@ TEST(CapMemBlock, WROverJTAG)
 	std::array<CapMemBlockOnDLS, 4> block_coords = {CapMemBlockOnDLS(0), CapMemBlockOnDLS(1),
 	                                                CapMemBlockOnDLS(2), CapMemBlockOnDLS(3)};
 	// Wait Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(25 * fisch::vx::fpga_clock_cycles_per_us));
+	builder.wait_until(TimerOnDLS(), Timer::Value(25 * Timer::Value::fpga_clock_cycles_per_us));
 	builder.write(TimerOnDLS(), Timer());
 	// Fill blocks with random data
 	for (auto coord : iter_all<CapMemCellOnCapMemBlock>()) {

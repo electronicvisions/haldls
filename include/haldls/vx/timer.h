@@ -32,6 +32,8 @@ public:
 		explicit Value(value_type const value = 0) GENPYBIND(implicit_conversion) :
 		    fisch::vx::Timer::Value(value)
 		{}
+
+		static const Value fpga_clock_cycles_per_us SYMBOL_VISIBLE;
 	};
 
 	/**

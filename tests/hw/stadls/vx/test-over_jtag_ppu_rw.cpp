@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "fisch/vx/constants.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
@@ -44,7 +43,7 @@ TEST(PPUMemoryWord, WROverJTAG)
 	builder.write(PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
 
 	// Wait for PLL and Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fisch::vx::fpga_clock_cycles_per_us));
+	builder.wait_until(TimerOnDLS(), Timer::Value(100 * Timer::Value::fpga_clock_cycles_per_us));
 	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 
 	constexpr size_t num_words = 10;
@@ -106,7 +105,7 @@ TEST(PPUControlRegister, WROverJTAG)
 	    halco::hicann_dls::vx::PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
 
 	// Wait for PLL and Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fisch::vx::fpga_clock_cycles_per_us));
+	builder.wait_until(TimerOnDLS(), Timer::Value(100 * Timer::Value::fpga_clock_cycles_per_us));
 	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 
 	PPUControlRegister reg1, reg2;
