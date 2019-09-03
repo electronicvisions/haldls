@@ -7,7 +7,8 @@
 #endif
 
 PLAYBACK_CONTAINER(DACControlBlock, lola::vx::DACControlBlock)
-LAST_PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::DACChannelBlock)
+PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::DACChannelBlock)
+LAST_PLAYBACK_CONTAINER(SynapseRow, lola::vx::SynapseRow)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER
