@@ -2,6 +2,8 @@
 
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
+#include "lola/vx/container.h"
 #include "stadls/visitors.h"
 
 namespace stadls::vx {
@@ -65,7 +67,10 @@ typename PlaybackProgram::fpga_time_type PlaybackProgram::ContainerTicket<T>::ge
 	PlaybackProgram::ContainerTicket<Type>::get_coordinate() const;                                \
 	template SYMBOL_VISIBLE typename PlaybackProgram::fpga_time_type                               \
 	PlaybackProgram::ContainerTicket<Type>::get_fpga_time() const;
+#pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/container.def"
+#pragma pop_macro("PLAYBACK_CONTAINER")
+#include "lola/vx/container.def"
 
 typename PlaybackProgram::spikes_type const& PlaybackProgram::get_spikes() const
 {

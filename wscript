@@ -138,7 +138,7 @@ def build(bld):
         target = 'stadls_vx',
         source = bld.path.ant_glob('src/stadls/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['dls_common', 'haldls_vx'],
+        use = ['dls_common', 'haldls_vx', 'lola_vx'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
@@ -217,7 +217,7 @@ def build(bld):
         target = 'lola_swtest_vx',
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp'),
-        use = ['lola_vx', 'GTEST'],
+        use = ['lola_vx', 'GTEST', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
     )
 

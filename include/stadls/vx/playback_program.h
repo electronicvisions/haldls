@@ -6,14 +6,15 @@
 #include <string>
 #include <vector>
 
+#include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
-#include "haldls/vx/container.h"
+#include "haldls/vx/event.h"
 #include "hate/visibility.h"
 #include "stadls/vx/genpybind.h"
-
-namespace fisch::vx {
-class PlaybackProgram;
-} // namespace fisch::vx
+#ifdef __GENPYBIND__
+#include "haldls/vx/container.h"
+#include "lola/vx/container.h"
+#endif
 
 namespace stadls {
 namespace vx GENPYBIND_TAG_STADLS_VX {
@@ -89,6 +90,13 @@ public:
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	typedef PlaybackProgram::ContainerTicket<Type> _##Name##ContainerTicket GENPYBIND(opaque);
 #include "haldls/vx/container.def"
+#endif // __GENPYBIND__
+
+#ifdef __GENPYBIND__
+// Explicit instantiation of template class for all valid playback container types.
+#define PLAYBACK_CONTAINER(Name, Type)                                                             \
+	typedef PlaybackProgram::ContainerTicket<Type> _##Name##ContainerTicket GENPYBIND(opaque);
+#include "lola/vx/container.def"
 #endif // __GENPYBIND__
 
 	/** Default constructor. */

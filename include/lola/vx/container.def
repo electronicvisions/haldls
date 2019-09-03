@@ -1,0 +1,13 @@
+#ifndef PLAYBACK_CONTAINER
+#define PLAYBACK_CONTAINER(Name, Type)
+#endif
+
+#ifndef LAST_PLAYBACK_CONTAINER
+#define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
+#endif
+
+PLAYBACK_CONTAINER(DACControlBlock, lola::vx::DACControlBlock)
+LAST_PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::DACChannelBlock)
+
+#undef PLAYBACK_CONTAINER
+#undef LAST_PLAYBACK_CONTAINER

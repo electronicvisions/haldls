@@ -7,3 +7,5 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyhalco_hicann_dls_vx");
 	parent->py::module::import("pyhaldls_vx");
 })
+
+#include "lola/vx/container.h"

@@ -9,6 +9,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/container.h"
 #include "hate/visibility.h"
+#include "lola/vx/container.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
 
@@ -77,7 +78,10 @@ public:
 	 */                                                                                            \
 	PlaybackProgram::ContainerTicket<Type> read(typename Type::coordinate_type const& coord)       \
 	    SYMBOL_VISIBLE;
+#pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/container.def"
+#pragma pop_macro("PLAYBACK_CONTAINER")
+#include "lola/vx/container.def"
 
 	/**
 	 * Merge other PlaybackProgramBuilder to the end of this builder instance.

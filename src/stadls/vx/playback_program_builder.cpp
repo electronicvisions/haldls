@@ -80,7 +80,10 @@ void PlaybackProgramBuilder::write_table_generator(
 	{                                                                                              \
 		write(coord, config, haldls::vx::detail::BackendContainerTrait<Type>::default_backend);    \
 	}
+#pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/container.def"
+#pragma pop_macro("PLAYBACK_CONTAINER")
+#include "lola/vx/container.def"
 
 template <class T, size_t... SupportedBackendIndex>
 PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator(
@@ -141,7 +144,10 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 	{                                                                                              \
 		return read(coord, haldls::vx::detail::BackendContainerTrait<Type>::default_backend);      \
 	}
+#pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/container.def"
+#pragma pop_macro("PLAYBACK_CONTAINER")
+#include "lola/vx/container.def"
 
 void PlaybackProgramBuilder::merge_back(PlaybackProgramBuilder& other)
 {
