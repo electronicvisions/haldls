@@ -140,5 +140,112 @@ template SYMBOL_VISIBLE void CADCConfig::decode(
 template SYMBOL_VISIBLE void CADCConfig::decode(
     std::array<fisch::vx::OmnibusChip, CADCConfig::config_size_in_words> const& data);
 
+
+CADCChannelConfig::CADCChannelConfig() : m_offset() {}
+
+typename CADCChannelConfig::Offset CADCChannelConfig::get_offset() const
+{
+	return m_offset;
+}
+
+void CADCChannelConfig::set_offset(Offset const value)
+{
+	m_offset = value;
+}
+
+bool CADCChannelConfig::operator==(CADCChannelConfig const& other) const
+{
+	return m_offset == other.m_offset;
+}
+
+bool CADCChannelConfig::operator!=(CADCChannelConfig const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename Archive>
+void CADCChannelConfig::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_offset));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCChannelConfig)
+
+namespace {
+
+struct CADCChannelConfigBitfield
+{
+	union
+	{
+		detail::raw_omnibus_type raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			detail::raw_omnibus_type offset       :  8;
+			detail::raw_omnibus_type /* unused */ : 24;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	CADCChannelConfigBitfield() { u.raw = 0u; }
+
+	CADCChannelConfigBitfield(detail::raw_omnibus_type data) { u.raw = data; }
+};
+
+} // namespace
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(CADCChannelConfig)
+
+template <typename AddressT>
+std::array<AddressT, CADCChannelConfig::config_size_in_words> CADCChannelConfig::addresses(
+    coordinate_type const& coord) const
+{
+	bool const is_east = coord.toCADCChannelColumnOnSynram() >=
+	                     (halco::hicann_dls::vx::CADCChannelColumnOnSynram::size / 2);
+	uint32_t const column_offset =
+	    coord.toCADCChannelColumnOnSynram() -
+	    (is_east ? (halco::hicann_dls::vx::CADCChannelColumnOnSynram::size / 2) : 0);
+	uint32_t const base = cadc_sram_base_addresses.at(coord.toSynramOnDLS().toEnum() * 2 + is_east);
+	return {AddressT(
+	    base + (2 * column_offset) + coord.toCADCChannelConfigOnSynram().toCADCChannelType())};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CADCChannelConfig::config_size_in_words>
+CADCChannelConfig::addresses(coordinate_type const& coord) const;
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCChannelConfig::config_size_in_words>
+    CADCChannelConfig::addresses(coordinate_type const& coord) const;
+
+template <typename WordT>
+std::array<WordT, CADCChannelConfig::config_size_in_words> CADCChannelConfig::encode() const
+{
+	CADCChannelConfigBitfield bitfield;
+	bitfield.u.m.offset = static_cast<int32_t>(m_offset) + 128;
+
+	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, CADCChannelConfig::config_size_in_words>
+    CADCChannelConfig::encode() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CADCChannelConfig::config_size_in_words>
+CADCChannelConfig::encode() const;
+
+template <typename WordT>
+void CADCChannelConfig::decode(
+    std::array<WordT, CADCChannelConfig::config_size_in_words> const& data)
+{
+	CADCChannelConfigBitfield bitfield(data[0].get());
+	m_offset = Offset(static_cast<int32_t>(bitfield.u.m.offset) - 128);
+}
+
+template SYMBOL_VISIBLE void CADCChannelConfig::decode(
+    std::array<fisch::vx::OmnibusChipOverJTAG, CADCChannelConfig::config_size_in_words> const&
+        data);
+template SYMBOL_VISIBLE void CADCChannelConfig::decode(
+    std::array<fisch::vx::OmnibusChip, CADCChannelConfig::config_size_in_words> const& data);
+
 } // namespace vx
 } // namespace haldls
