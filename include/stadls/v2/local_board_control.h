@@ -125,7 +125,7 @@ public:
 	    haldls::v2::Chip const& chip,
 	    std::shared_ptr<haldls::v2::PlaybackProgram> const& playback_program) SYMBOL_VISIBLE;
 
-	constexpr static char const* const env_name_board_id = "FLYSPI_ID";
+	constexpr static char const* const env_name_board_id = "SLURM_FLYSPI_ID";
 
 private:
 	class Impl;

@@ -489,7 +489,7 @@ void LocalBoardControl::run_experiment(
 std::vector<std::string> available_board_usb_serial_numbers()
 {
 	std::vector<std::string> result;
-	char const* const ptr = std::getenv("SLURM_FLYSPI_ID");
+	char const* const ptr = std::getenv(LocalBoardControl::env_name_board_id);
 	if (ptr == nullptr)
 		return result;
 	std::istringstream board_ids(ptr);
