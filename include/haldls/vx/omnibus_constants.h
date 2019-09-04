@@ -14,10 +14,27 @@ constexpr uint32_t ppu_status_register_address_mask{0x0020'0001};
 
 constexpr uint32_t synram_ctrl_bottom_base_address{ppu_bottom_subtree_address};
 constexpr uint32_t synram_ctrl_top_base_address{ppu_top_subtree_address};
-constexpr uint32_t synram_synapse_bottom_base_address{(bottom_ppu_base_address | (1 << 22)) +
+constexpr uint32_t synram_synacc_bottom_base_address{(bottom_ppu_base_address | (1 << 22))};
+constexpr uint32_t synram_synacc_top_base_address{(top_ppu_base_address | (1 << 22))};
+
+constexpr uint32_t synram_synapse_bottom_base_address{synram_synacc_bottom_base_address +
                                                       0x000f'0000};
-constexpr uint32_t synram_synapse_top_base_address{(top_ppu_base_address | (1 << 22)) +
-                                                   0x000f'0000};
+constexpr uint32_t synram_synapse_top_base_address{synram_synacc_top_base_address + 0x000f'0000};
+
+constexpr uint32_t synram_causal_cadc_bottom_base_address{synram_synacc_bottom_base_address +
+                                                          0x0008'0000};
+constexpr uint32_t synram_causal_cadc_top_base_address{synram_synacc_top_base_address +
+                                                       0x0008'0000};
+constexpr uint32_t synram_acausal_cadc_bottom_base_address{synram_synacc_bottom_base_address +
+                                                           0x000c'0000};
+constexpr uint32_t synram_acausal_cadc_top_base_address{synram_synacc_top_base_address +
+                                                        0x000c'0000};
+
+constexpr std::array<std::array<uint32_t, 2>, 2> synram_cadc_base_addresses{
+    {{synram_causal_cadc_top_base_address, synram_acausal_cadc_top_base_address},
+     {synram_causal_cadc_bottom_base_address, synram_acausal_cadc_bottom_base_address}}};
+
+constexpr uint32_t cadc_buffer_enable_mask = 0x0020'0000;
 
 constexpr uint32_t phy_on_chip_base_address{0x0004'0000};
 constexpr uint32_t pll_base_address{0x0008'0000};

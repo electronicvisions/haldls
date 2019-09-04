@@ -43,7 +43,8 @@ PLAYBACK_CONTAINER(SynapseQuad, haldls::vx::SynapseQuad)
 PLAYBACK_CONTAINER(ColumnCorrelationQuad, haldls::vx::ColumnCorrelationQuad)
 PLAYBACK_CONTAINER(ColumnCurrentQuad, haldls::vx::ColumnCurrentQuad)
 PLAYBACK_CONTAINER(CADCConfig, haldls::vx::CADCConfig)
-LAST_PLAYBACK_CONTAINER(CADCChannelConfig, haldls::vx::CADCChannelConfig)
+PLAYBACK_CONTAINER(CADCChannelConfig, haldls::vx::CADCChannelConfig)
+LAST_PLAYBACK_CONTAINER(CADCSampleQuad, haldls::vx::CADCSampleQuad)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER
