@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include "logger.h"
+
 #include "flyspi-rw_api/flyspi_com.h"
 
 #include "haldls/v2/fpga.h"
@@ -13,6 +15,8 @@ class OcpTest : public ::testing::Test
 protected:
 	void SetUp() override
 	{
+		logger_default_config(log4cxx::Level::getDebug());
+
 		// get the board id
 		std::vector<std::string> board_ids = stadls::v2::available_board_usb_serial_numbers();
 		ASSERT_EQ(1, board_ids.size()) << "number of allocated boards is not one";

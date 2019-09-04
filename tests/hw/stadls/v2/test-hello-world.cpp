@@ -29,6 +29,11 @@ protected:
 		: neuron(neuron_), synapse_driver(synapse_driver_)
 	{}
 
+	void setUp()
+	{
+		logger_default_config(log4cxx::Level::getDebug());
+	}
+
 	void configure()
 	{
 		// Set the dac values

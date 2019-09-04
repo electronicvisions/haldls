@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <gtest/gtest.h>
 
+#include "logger.h"
+
 #include "halco/hicann-dls/v2/coordinates.h"
 #include "haldls/v2/board.h"
 #include "haldls/v2/chip.h"
@@ -171,6 +173,8 @@ void rate_counter_test_rw(NeuronOnDLS const neuron)
  * For all neurons test rate counter read write and spike count behavior.
  */
 TEST(RateCounter, RW) {
+	logger_default_config(log4cxx::Level::getDebug());
+
 	for (auto neuron: iter_all<NeuronOnDLS>()) {
 		rate_counter_test_rw(neuron);
 	}

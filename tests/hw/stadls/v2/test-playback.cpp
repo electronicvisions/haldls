@@ -1,5 +1,7 @@
 #include <tuple>
 
+#include "logger.h"
+
 #include <gtest/gtest.h>
 
 #include "halco/hicann-dls/v2/coordinates.h"
@@ -19,6 +21,8 @@ class PlaybackTest : public ::testing::Test {
 protected:
 	void SetUp() override
 	{
+		logger_default_config(log4cxx::Level::getDebug());
+
 		// get the board id
 		std::vector<std::string> board_ids = available_board_usb_serial_numbers();
 		ASSERT_EQ(1, board_ids.size()) << "number of allocated boards is not one";
