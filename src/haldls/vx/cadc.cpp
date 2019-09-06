@@ -7,6 +7,7 @@
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/address_transformation.h"
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/omnibus_constants.h"
@@ -325,7 +326,8 @@ CADCSampleQuad::read_addresses(coordinate_type const& coord) const
 
 	auto const quad = coord.toSynapseQuadOnSynram();
 	uint32_t const address_offset = quad.y() * halco::hicann_dls::vx::SynapseQuadColumnOnDLS::size +
-	                                halco::hicann_dls::vx::SynapseQuadColumnOnDLS::max - quad.x();
+	                                halco::hicann_dls::vx::SynapseQuadColumnOnDLS::max -
+	                                detail::to_synram_quad_address_offset(quad.x());
 	return {halco::hicann_dls::vx::OmnibusChipAddress(base + address_offset)};
 }
 

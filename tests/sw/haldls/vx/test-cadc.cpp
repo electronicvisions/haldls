@@ -220,7 +220,7 @@ TEST(CADCSampleQuad, EncodeDecode)
 	    SynramOnDLS(0));
 
 	std::array<OmnibusChipAddress, CADCSampleQuad::read_config_size_in_words> ref_addresses = {
-	    OmnibusChipAddress{0x02ec'017cul}};
+	    OmnibusChipAddress{0x02ec'017ful}};
 	std::array<OmnibusChip, CADCSampleQuad::read_config_size_in_words> ref_data = {
 	    OmnibusData{0x48 << 16}};
 

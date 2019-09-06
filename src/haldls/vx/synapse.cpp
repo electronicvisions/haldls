@@ -5,6 +5,7 @@
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/address_transformation.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
 
@@ -295,7 +296,8 @@ std::array<AddressT, SynapseQuad::config_size_in_words> SynapseQuad::addresses(
 		base = synram_synapse_top_base_address;
 	}
 	uint32_t const address_offset =
-	    (block.y() * SynapseQuadColumnOnDLS::size * config_size_in_words) + block.x();
+	    (block.y() * SynapseQuadColumnOnDLS::size * config_size_in_words) +
+	    detail::to_synram_quad_address_offset(block.x());
 	return {{AddressT(base + address_offset),
 	         AddressT(base + address_offset + SynapseQuadColumnOnDLS::size)}};
 }
@@ -557,7 +559,8 @@ std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelat
 	} else {
 		base = synram_synapse_top_base_address;
 	}
-	auto const address = base + block.value() +
+	auto const address = base +
+	                     detail::to_synram_quad_address_offset(block.toSynapseQuadColumnOnDLS()) +
 	                     SynapseQuadOnSynram::size * SynapseQuad::config_size_in_words +
 	                     ColumnCurrentQuadOnSynram::size * ColumnCurrentQuad::config_size_in_words;
 	return {{AddressT(address), AddressT(address + ColumnCorrelationQuadOnSynram::size)}};
@@ -837,8 +840,9 @@ std::array<AddressT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad:
 	} else {
 		base = synram_synapse_top_base_address;
 	}
-	auto const address =
-	    base + block.value() + SynapseQuadOnSynram::size * SynapseQuad::config_size_in_words;
+	auto const address = base +
+	                     detail::to_synram_quad_address_offset(block.toSynapseQuadColumnOnDLS()) +
+	                     SynapseQuadOnSynram::size * SynapseQuad::config_size_in_words;
 	return {{AddressT(address), AddressT(address + ColumnCurrentQuadOnSynram::size)}};
 }
 

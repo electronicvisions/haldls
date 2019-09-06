@@ -101,8 +101,8 @@ TEST(SynapseQuad, EncodeDecode)
 	synapse_block.set_synapse(synapse_coord, synapse);
 
 	std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseQuad::config_size_in_words>
-	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'0083),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'00c3)}};
+	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'0080),
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'00c0)}};
 	std::array<fisch::vx::OmnibusChip, SynapseQuad::config_size_in_words> ref_data = {
 	    {fisch::vx::OmnibusData(0x0000'B700), fisch::vx::OmnibusData(0x0000'7F00)}};
 

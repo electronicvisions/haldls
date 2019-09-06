@@ -119,8 +119,8 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 
 	std::array<
 	    halco::hicann_dls::vx::OmnibusChipAddress, ColumnCorrelationQuad::config_size_in_words>
-	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'8083),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'80c3)}};
+	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'8080),
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'80c0)}};
 	std::array<fisch::vx::OmnibusChip, ColumnCorrelationQuad::config_size_in_words> ref_data = {
 	    {fisch::vx::OmnibusData(0x0000'4000), fisch::vx::OmnibusData(0x0000'8000)}};
 
