@@ -23,6 +23,12 @@ T PlaybackProgram::ContainerTicket<T>::get() const
 
 		    auto data = ticket_impl.get();
 		    T config;
+
+		    if constexpr (std::is_same<T, haldls::vx::PPUMemoryBlock>::value) {
+			    // FIXME (Issue #3327): PPUMemoryBlock needs special size on construction
+			    config = haldls::vx::PPUMemoryBlock(m_coord.toPPUMemoryBlockSize());
+		    }
+
 		    visit_preorder(config, m_coord, stadls::DecodeVisitor<decltype(data)>{std::move(data)});
 		    return config;
 	    },

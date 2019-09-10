@@ -103,6 +103,12 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 		    addresses_type read_addresses;
 		    {
 			    T config;
+
+			    if constexpr (std::is_same<T, haldls::vx::PPUMemoryBlock>::value) {
+				    // FIXME (Issue #3327): PPUMemoryBlock needs special size on construction
+				    config = haldls::vx::PPUMemoryBlock(coord.toPPUMemoryBlockSize());
+			    }
+
 			    visit_preorder(
 			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 		    }
