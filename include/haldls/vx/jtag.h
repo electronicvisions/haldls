@@ -30,7 +30,9 @@ public:
 	/** Clock-scaler value type. The JTAG clock scales with 1 / (value + 2). */
 	struct GENPYBIND(inline_base("*")) Value : public fisch::vx::JTAGClockScaler::Value
 	{
-		explicit Value(uintmax_t const value = 0) : fisch::vx::JTAGClockScaler::Value(value) {}
+		explicit Value(uintmax_t const value = 0) GENPYBIND(implicit_conversion) :
+		    fisch::vx::JTAGClockScaler::Value(value)
+		{}
 	};
 
 	/**
