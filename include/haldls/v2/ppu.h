@@ -38,6 +38,7 @@ public:
 
 	bool operator==(PPUMemoryWord const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUMemoryWord const& other) const SYMBOL_VISIBLE;
+	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
@@ -83,6 +84,7 @@ public:
 
 	bool operator==(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb) SYMBOL_VISIBLE;
 	/**
 	 * Print words as string discarding non-printable characters.
@@ -131,6 +133,7 @@ public:
 
 	bool operator==(PPUMemory const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUMemory const& other) const SYMBOL_VISIBLE;
+	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PPUMemory const& pm) SYMBOL_VISIBLE;
 
 	friend detail::VisitPreorderImpl<PPUMemory>;
