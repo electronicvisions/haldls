@@ -33,10 +33,22 @@ public:
 	PlaybackProgramExecutor(PlaybackProgramExecutor const& other) = delete;
 
 	/**
+	 * Connect to hardware by environment FPGA IP detection.
+	 * @throws std::runtime_error On no hardware found
+	 */
+	void connect_hardware() SYMBOL_VISIBLE;
+
+	/**
 	 * Connect to hardware.
 	 * @param ip IP address of ARQ backend
 	 */
 	void connect_hardware(ip_t ip) SYMBOL_VISIBLE;
+
+	/**
+	 * Connect to simulator by environment simulator detection.
+	 * @throws std::runtime_error On no simulator found
+	 */
+	void connect_simulator() SYMBOL_VISIBLE;
 
 	/**
 	 * Connect to simulator.

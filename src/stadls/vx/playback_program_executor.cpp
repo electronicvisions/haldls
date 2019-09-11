@@ -38,6 +38,18 @@ void PlaybackProgramExecutor::connect_hardware(ip_t const ip)
 	    std::in_place_type_t<fisch::vx::PlaybackProgramARQExecutor>(), ip);
 }
 
+void PlaybackProgramExecutor::connect_hardware()
+{
+	auto fpga_ip_list = sctrltp::get_fpga_ip_list();
+	if (fpga_ip_list.size() == 1) {
+		connect_hardware(fpga_ip_list.front());
+	} else if (fpga_ip_list.size() > 1) {
+		throw std::runtime_error("Found more than one FPGA IP in environment to connect to.");
+	} else {
+		throw std::runtime_error("No executor backend found to connect to.");
+	}
+}
+
 void PlaybackProgramExecutor::connect_simulator(ip_t const ip, port_t const port)
 {
 	if (!m_impl) {
@@ -49,6 +61,17 @@ void PlaybackProgramExecutor::connect_simulator(ip_t const ip, port_t const port
 	}
 	m_impl->m_fisch_executor = std::make_unique<Impl::executor_variant_type>(
 	    std::in_place_type_t<fisch::vx::PlaybackProgramSimExecutor>(), ip, port);
+}
+
+void PlaybackProgramExecutor::connect_simulator()
+{
+	char const* env_simulator = std::getenv("FLANGE_SIMULATION_RCF_PORT");
+
+	if (env_simulator != nullptr) {
+		connect_simulator("127.0.0.1", static_cast<uint16_t>(atoi(env_simulator)));
+	} else {
+		throw std::runtime_error("No executor backend found to connect to.");
+	}
 }
 
 void PlaybackProgramExecutor::connect()
