@@ -284,8 +284,7 @@ struct VisitPreorderImpl<PPUMemoryBlock>
 
 		if (coord.toPPUMemoryBlockOnPPU().toPPUMemoryBlockSize() != config.size()) {
 			std::stringstream ss;
-			ss << "container size(" << config.size() << ") and coord(" << coord.min() << ", "
-			   << coord.max() << " do not match.";
+			ss << "container size(" << config.size() << ") and " << coord << " size do not match.";
 			throw std::runtime_error(ss.str());
 		}
 
@@ -293,7 +292,7 @@ struct VisitPreorderImpl<PPUMemoryBlock>
 
 		for (size_t counter = 0; counter < config.size(); counter++) {
 			auto word_coord = PPUMemoryWordOnDLS(
-			    PPUMemoryWordOnPPU(coord.toPPUMemoryBlockOnPPU().min() + counter), ppu_coord);
+			    PPUMemoryWordOnPPU(coord.toPPUMemoryBlockOnPPU().toMin() + counter), ppu_coord);
 			visit_preorder(config.m_words.at(counter), word_coord, visitor);
 		}
 	}
