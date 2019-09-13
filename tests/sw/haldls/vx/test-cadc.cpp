@@ -54,6 +54,7 @@ TEST(CADCConfig, EncodeDecode)
 
 	config.set_enable(true);
 	config.set_reset_wait(CADCConfig::ResetWait(12));
+	config.set_dead_time(CADCConfig::DeadTime(0));
 
 	CADCConfigOnDLS coord(0);
 
