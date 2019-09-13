@@ -75,7 +75,7 @@ public:
 	typedef halco::hicann_dls::vx::PPUMemoryBlockSize size_type;
 
 	explicit PPUMemoryBlock(
-	    size_type size = size_type(halco::hicann_dls::vx::PPUMemoryWordOnDLS::size)) SYMBOL_VISIBLE;
+	    size_type size = size_type(halco::hicann_dls::vx::PPUMemoryWordOnPPU::size)) SYMBOL_VISIBLE;
 
 	PPUMemoryWord& at(size_t index) SYMBOL_VISIBLE;
 	PPUMemoryWord const& at(size_t index) const SYMBOL_VISIBLE;
