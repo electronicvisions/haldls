@@ -72,12 +72,10 @@ TEST(CapMemBlock, General)
 {
 	CapMemBlock block;
 	size_t i = 0;
-	for (auto column : halco::common::iter_all<CapMemColumnOnDLS>()) {
-		for (auto row : halco::common::iter_all<CapMemRowOnDLS>()) {
-			block.set_cell(CapMemCellOnCapMemBlock(column, row), CapMemCell::Value(i));
-			ASSERT_EQ(block.get_cell(CapMemCellOnCapMemBlock(column, row)), i);
-			i = (i + 1) % CapMemCell::Value::max;
-		}
+	for (auto cell : halco::common::iter_all<CapMemCellOnCapMemBlock>()) {
+		block.set_cell(cell, CapMemCell::Value(i));
+		ASSERT_EQ(block.get_cell(cell), CapMemCell::Value(i));
+		i = (i + 1) % CapMemCell::Value::max;
 	}
 
 	// test copy
@@ -85,8 +83,7 @@ TEST(CapMemBlock, General)
 	ASSERT_TRUE(copy == block);
 	ASSERT_EQ(copy, block);
 	ASSERT_FALSE(copy != block);
-	copy.set_cell(
-	    CapMemCellOnCapMemBlock(CapMemColumnOnDLS(), CapMemRowOnDLS()), CapMemCell::Value(0x23));
+	copy.set_cell(CapMemCellOnCapMemBlock(), CapMemCell::Value(0x23));
 	ASSERT_NE(copy, block);
 	ASSERT_FALSE(copy == block);
 	ASSERT_TRUE(copy != block);
