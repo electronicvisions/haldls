@@ -32,7 +32,7 @@ public:
 	 * On true, the chip reset is enabled.
 	 * @param value Boolean value
 	 */
-	explicit ResetChip(bool value = false) SYMBOL_VISIBLE;
+	explicit ResetChip(bool value = false) GENPYBIND(implicit_conversion) SYMBOL_VISIBLE;
 
 	/**
 	 * Set chip reset.

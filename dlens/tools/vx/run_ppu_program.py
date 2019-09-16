@@ -32,16 +32,16 @@ def run_program(program_path: str,
 
     # enable reset chip pin
     builder.write(halco.ResetChipOnDLS(), True)
-    builder.write(halco.TimerOnDLS(), 0)
+    builder.write(halco.TimerOnDLS(), hal.Timer(0))
     builder.wait_until(halco.TimerOnDLS(), 10)
 
     # disable reset chip pin
     builder.write(halco.ResetChipOnDLS(), False)
-    builder.write(halco.TimerOnDLS(), 0)
+    builder.write(halco.TimerOnDLS(), hal.Timer(0))
     builder.wait_until(halco.TimerOnDLS(), 100)
 
     # write JTAG clock scaler, reset JTAG TAP
-    builder.write(halco.JTAGClockScalerOnDLS(), 3)
+    builder.write(halco.JTAGClockScalerOnDLS(), hal.JTAGClockScaler(3))
     builder.write(halco.ResetJTAGTapOnDLS(), hal.ResetJTAGTap())
 
     # write ADPLL config via JTAG
@@ -51,15 +51,17 @@ def run_program(program_path: str,
     # write PLLClockOutputBlock config via JTAG
     builder.write(
         halco.PLLClockOutputBlockOnDLS(), hal.PLLClockOutputBlock())
-    builder.write(halco.TimerOnDLS(), 0)
+    builder.write(halco.TimerOnDLS(), hal.Timer(0))
     builder.wait_until(halco.TimerOnDLS(),
-                       hal.Timer.Value.fpga_clock_cycles_per_us * 100)
+                       hal.Timer.Value(
+                           int(hal.Timer.Value.fpga_clock_cycles_per_us)
+                           * 100))
 
     # write, execute PPU program and read back results
     builder.write(halco.PPUMemoryOnDLS(), program)
     builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_end)
     builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_start)
-    builder.write(halco.TimerOnDLS(), 0)
+    builder.write(halco.TimerOnDLS(), hal.Timer(0))
     builder.wait_until(halco.TimerOnDLS(), wait)
     status_handle = builder.read(halco.PPUStatusRegisterOnDLS())
     builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_end)
@@ -83,7 +85,7 @@ def run_program(program_path: str,
 
     # Extract exit code
     raw_code = int(program_handle.get().words[
-        halco.PPUMemoryWordOnPPU.return_code].value)
+        int(halco.PPUMemoryWordOnPPU.return_code)].value)
     return ctypes.c_int32(raw_code).value
 
 
