@@ -221,7 +221,7 @@ TEST(CADCSampleQuad, EncodeDecode)
 	std::array<OmnibusChipAddress, CADCSampleQuad::read_config_size_in_words> ref_addresses = {
 	    OmnibusChipAddress{0x02ec'017cul}};
 	std::array<OmnibusChip, CADCSampleQuad::read_config_size_in_words> ref_data = {
-	    OmnibusData{0x48 << 8}};
+	    OmnibusData{0x48 << 16}};
 
 	{ // write addresses
 		std::vector<OmnibusChipAddress> write_addresses;

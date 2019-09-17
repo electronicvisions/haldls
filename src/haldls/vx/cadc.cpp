@@ -290,10 +290,10 @@ struct CADCSampleQuadBitfield
 		detail::raw_omnibus_type raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			detail::raw_omnibus_type sample_0 : 8;
-			detail::raw_omnibus_type sample_1 : 8;
-			detail::raw_omnibus_type sample_2 : 8;
 			detail::raw_omnibus_type sample_3 : 8;
+			detail::raw_omnibus_type sample_2 : 8;
+			detail::raw_omnibus_type sample_1 : 8;
+			detail::raw_omnibus_type sample_0 : 8;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
