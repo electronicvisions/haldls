@@ -80,6 +80,20 @@ public:
 #include "haldls/vx/container.def"
 
 	/**
+	 * Merge other PlaybackProgramBuilder to the end of this builder instance.
+	 * The moved-from builder is emptied during the process.
+	 * @param other Builder to move to this instance at the back
+	 */
+	void merge_back(PlaybackProgramBuilder& other) SYMBOL_VISIBLE;
+
+	/**
+	 * Merge fisch PlaybackProgramBuilder to the end of this builder instance.
+	 * The moved-from builder is emptied during the process.
+	 * @param other Builder to move to this instance at the back
+	 */
+	void merge_back(fisch::vx::PlaybackProgramBuilder& other) SYMBOL_VISIBLE;
+
+	/**
 	 * Close PlaybackProgram build process and return executable program.
 	 * @return Executable PlaybackProgram
 	 */

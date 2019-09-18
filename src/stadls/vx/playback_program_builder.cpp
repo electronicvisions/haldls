@@ -143,6 +143,16 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 	}
 #include "haldls/vx/container.def"
 
+void PlaybackProgramBuilder::merge_back(PlaybackProgramBuilder& other)
+{
+	m_builder_impl->merge_back(*(other.m_builder_impl));
+}
+
+void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder& other)
+{
+	m_builder_impl->merge_back(other);
+}
+
 PlaybackProgram PlaybackProgramBuilder::done()
 {
 	return PlaybackProgram(m_builder_impl->done());
