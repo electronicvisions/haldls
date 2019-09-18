@@ -3,6 +3,7 @@
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "haldls/cerealization.h"
+#include "lola/vx/gray_scale.h"
 
 namespace lola::vx {
 
@@ -65,9 +66,6 @@ std::ostream& operator<<(std::ostream& os, SynapseRow const& row)
 	using namespace halco::common;
 
 	auto print = [](auto const& values) -> std::string {
-		// value depicted by height of bar, dot == 0
-		static const std::array<std::string, 8> grayscale_map = {"·", "▁", "▂", "▃",
-		                                                         "▄", "▅", "▆", "▇"};
 		typedef typename std::remove_cv<
 		    typename std::remove_reference<decltype(values)>::type>::type::value_type value_type;
 		std::stringstream ss;
@@ -77,7 +75,7 @@ std::ostream& operator<<(std::ostream& os, SynapseRow const& row)
 			for (auto entry : iter_all<EntryOnQuad>()) {
 				acc += values[SynapseOnSynapseRow(entry, quad)];
 			}
-			ss << grayscale_map[int(double(acc / EntryOnQuad::size) / value_type::size * grayscale_map.size())];
+			ss << detail::gray_scale(double(acc) / double(EntryOnQuad::size * value_type::size));
 		}
 		return ss.str();
 	};
@@ -163,9 +161,6 @@ std::ostream& operator<<(std::ostream& os, SynapseMatrix const& matrix)
 	using namespace halco::common;
 
 	auto print = [](auto const& values) -> std::string {
-		// value depicted by height of bar, dot == 0
-		static const std::array<std::string, 8> grayscale_map = {"·", "▁", "▂", "▃",
-		                                                         "▄", "▅", "▆", "▇"};
 		typedef typename std::remove_cv<typename std::remove_reference<decltype(values)>::type>::
 		    type::value_type::value_type value_type;
 		std::stringstream ss;
@@ -183,9 +178,9 @@ std::ostream& operator<<(std::ostream& os, SynapseMatrix const& matrix)
 						             [SynapseOnSynapseRow(entry, quad)];
 					}
 				}
-				ss << grayscale_map.at(
-				    int(double(acc) / (vertical_average_count * EntryOnQuad::size) /
-				        value_type::size * grayscale_map.size()));
+				ss << detail::gray_scale(
+				    double(acc) /
+				    double(vertical_average_count * EntryOnQuad::size * value_type::size));
 			}
 			ss << std::endl << "\t\t";
 		}
