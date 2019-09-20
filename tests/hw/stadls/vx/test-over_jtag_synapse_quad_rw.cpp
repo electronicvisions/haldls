@@ -30,7 +30,7 @@ TEST(SynapseQuad, DISABLED_WROverJTAG)
 
 	// Fill configs with random data
 	for (auto coord : iter_all<SynapseQuadOnDLS>()) {
-		for (auto syn : iter_all<SynapseOnSynapseQuad>()) {
+		for (auto syn : iter_all<EntryOnQuad>()) {
 			auto synapse = configs[coord].get_synapse(syn);
 			synapse.set_weight(draw_ranged_non_default_value<decltype(synapse.get_weight())>(
 			    synapse.get_weight()));

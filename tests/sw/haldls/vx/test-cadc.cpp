@@ -191,7 +191,7 @@ TEST(CADCSampleQuad, General)
 
 	// test getter/setter
 	{
-		auto coord = CADCSampleOnCADCSampleQuad(1);
+		auto coord = EntryOnQuad(1);
 		auto value = draw_ranged_non_default_value<CADCSampleQuad::Value>(config.get_sample(coord));
 		config.set_sample(coord, value);
 		EXPECT_EQ(config.get_sample(coord), value);
@@ -212,7 +212,7 @@ TEST(CADCSampleQuad, EncodeDecode)
 {
 	CADCSampleQuad config;
 
-	config.set_sample(CADCSampleOnCADCSampleQuad(1), CADCSampleQuad::Value(0x12));
+	config.set_sample(EntryOnQuad(1), CADCSampleQuad::Value(0x12));
 
 	CADCSampleQuadOnDLS coord(
 	    CADCSampleQuadOnSynram(
@@ -255,8 +255,8 @@ TEST(CADCSampleQuad, CerealizeCoverage)
 {
 	CADCSampleQuad obj1, obj2;
 	obj1.set_sample(
-	    CADCSampleOnCADCSampleQuad(), draw_ranged_non_default_value<CADCSampleQuad::Value>(
-	                                      obj1.get_sample(CADCSampleOnCADCSampleQuad())));
+	    EntryOnQuad(),
+	    draw_ranged_non_default_value<CADCSampleQuad::Value>(obj1.get_sample(EntryOnQuad())));
 
 	std::ostringstream ostream;
 	{

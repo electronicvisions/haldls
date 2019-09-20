@@ -254,13 +254,12 @@ template SYMBOL_VISIBLE void CADCChannelConfig::decode(
 CADCSampleQuad::CADCSampleQuad() : m_samples() {}
 
 typename CADCSampleQuad::Value CADCSampleQuad::get_sample(
-    halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad const& coord) const
+    halco::hicann_dls::vx::EntryOnQuad const& coord) const
 {
 	return m_samples.at(coord);
 }
 
-void CADCSampleQuad::set_sample(
-    halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad const& coord, Value const sample)
+void CADCSampleQuad::set_sample(halco::hicann_dls::vx::EntryOnQuad const& coord, Value const sample)
 {
 	m_samples.at(coord) = sample;
 }
@@ -356,13 +355,13 @@ void CADCSampleQuad::decode(
     std::array<fisch::vx::OmnibusChip, CADCSampleQuad::read_config_size_in_words> const& data)
 {
 	CADCSampleQuadBitfield bitfield(data[0].get());
-	m_samples.at(halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad(0)) =
+	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(0)) =
 	    Value(reverse_byte(bitfield.u.m.sample_0));
-	m_samples.at(halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad(1)) =
+	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(1)) =
 	    Value(reverse_byte(bitfield.u.m.sample_1));
-	m_samples.at(halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad(2)) =
+	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(2)) =
 	    Value(reverse_byte(bitfield.u.m.sample_2));
-	m_samples.at(halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad(3)) =
+	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(3)) =
 	    Value(reverse_byte(bitfield.u.m.sample_3));
 }
 

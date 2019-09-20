@@ -92,13 +92,12 @@ TEST(ColumnCorrelationQuad, General)
 	ColumnCorrelationQuad::ColumnCorrelationSwitch correlation_switch;
 	correlation_switch.set_enable_internal_causal(!correlation_switch.get_enable_internal_causal());
 
-	block.set_switch(ColumnCorrelationSwitchOnColumnCorrelationQuad(3), correlation_switch);
-	ASSERT_EQ(
-	    block.get_switch(ColumnCorrelationSwitchOnColumnCorrelationQuad(3)), correlation_switch);
+	block.set_switch(EntryOnQuad(3), correlation_switch);
+	ASSERT_EQ(block.get_switch(EntryOnQuad(3)), correlation_switch);
 
 	ColumnCorrelationQuad block_eq = block;
 	ColumnCorrelationQuad block_ne(block);
-	block_ne.set_switch(ColumnCorrelationSwitchOnColumnCorrelationQuad(2), correlation_switch);
+	block_ne.set_switch(EntryOnQuad(2), correlation_switch);
 
 	ASSERT_EQ(block, block_eq);
 	ASSERT_FALSE(block == block_ne);
@@ -109,7 +108,7 @@ TEST(ColumnCorrelationQuad, General)
 
 TEST(ColumnCorrelationQuad, EncodeDecode)
 {
-	ColumnCorrelationSwitchOnColumnCorrelationQuad correlation_switch_coord(2);
+	EntryOnQuad correlation_switch_coord(2);
 	ColumnCorrelationQuadOnDLS block_coord(ColumnCorrelationQuadOnSynram(X(3)), SynramOnDLS::top);
 	ColumnCorrelationQuad correlation_switch_block;
 	ColumnCorrelationQuad::ColumnCorrelationSwitch correlation_switch;
@@ -159,8 +158,7 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 TEST(ColumnCorrelationQuad, CerealizeCoverage)
 {
 	ColumnCorrelationQuad obj1, obj2;
-	for (auto correlation_switch_coord :
-	     iter_all<halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad>()) {
+	for (auto correlation_switch_coord : iter_all<halco::hicann_dls::vx::EntryOnQuad>()) {
 		ColumnCorrelationQuad::ColumnCorrelationSwitch correlation_switch;
 		correlation_switch.set_enable_internal_causal(true);
 		obj1.set_switch(correlation_switch_coord, correlation_switch);

@@ -236,16 +236,14 @@ public:
 	 * @param coord Sample on quad coordinate
 	 * @return Value value
 	 */
-	Value get_sample(halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad const& coord) const
-	    SYMBOL_VISIBLE;
+	Value get_sample(halco::hicann_dls::vx::EntryOnQuad const& coord) const SYMBOL_VISIBLE;
 
 	/**
 	 * Set sample value.
 	 * @param coord Sample on quad coordinate
 	 * @param value Value value
 	 */
-	void set_sample(halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad const& coord, Value value)
-	    SYMBOL_VISIBLE;
+	void set_sample(halco::hicann_dls::vx::EntryOnQuad const& coord, Value value) SYMBOL_VISIBLE;
 
 	bool operator==(CADCSampleQuad const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
 	bool operator!=(CADCSampleQuad const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
@@ -269,7 +267,7 @@ protected:
 	template <typename Archive>
 	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
-	halco::common::typed_array<Value, halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad> m_samples;
+	halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> m_samples;
 };
 
 namespace detail {

@@ -263,13 +263,13 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseQuad::Synapse)
 SynapseQuad::SynapseQuad() : m_synapses() {}
 
 SynapseQuad::Synapse SynapseQuad::get_synapse(
-    halco::hicann_dls::vx::SynapseOnSynapseQuad const& synapse) const
+    halco::hicann_dls::vx::EntryOnQuad const& synapse) const
 {
 	return m_synapses.at(synapse);
 }
 
 void SynapseQuad::set_synapse(
-    halco::hicann_dls::vx::SynapseOnSynapseQuad const& synapse, SynapseQuad::Synapse const& value)
+    halco::hicann_dls::vx::EntryOnQuad const& synapse, SynapseQuad::Synapse const& value)
 {
 	m_synapses.at(synapse) = value;
 }
@@ -379,7 +379,7 @@ std::array<WordT, SynapseQuad::config_size_in_words> SynapseQuad::encode() const
 
 #define SYNAPSE_ENCODE(index)                                                                      \
 	{                                                                                              \
-		SynapseQuad::Synapse const& config = m_synapses.at(SynapseOnSynapseQuad(index));           \
+		SynapseQuad::Synapse const& config = m_synapses.at(EntryOnQuad(index));                    \
 		bitfield.u.m.time_calib_##index = config.get_time_calib();                                 \
 		bitfield.u.m.weight_##index = weight_permutation(config.get_weight());                     \
 		bitfield.u.m.amp_calib_##index = config.get_amp_calib();                                   \
@@ -423,7 +423,7 @@ void SynapseQuad::decode(std::array<WordT, SynapseQuad::config_size_in_words> co
 		    SynapseQuad::Synapse::Weight(weight_permutation(bitfield.u.m.weight_##index)));        \
 		config.set_amp_calib(SynapseQuad::Synapse::AmpCalib(bitfield.u.m.amp_calib_##index));      \
 		config.set_address(SynapseQuad::Synapse::Address(bitfield.u.m.address_##index));           \
-		m_synapses.at(SynapseOnSynapseQuad(index)) = config;                                       \
+		m_synapses.at(EntryOnQuad(index)) = config;                                                \
 	}
 
 	SYNAPSE_DECODE(0)
@@ -525,14 +525,13 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCorrelationQuad::ColumnCorrelationSw
 ColumnCorrelationQuad::ColumnCorrelationQuad() : m_switches() {}
 
 ColumnCorrelationQuad::ColumnCorrelationSwitch ColumnCorrelationQuad::get_switch(
-    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad const& correlation_switch)
-    const
+    halco::hicann_dls::vx::EntryOnQuad const& correlation_switch) const
 {
 	return m_switches.at(correlation_switch);
 }
 
 void ColumnCorrelationQuad::set_switch(
-    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad const& correlation_switch,
+    halco::hicann_dls::vx::EntryOnQuad const& correlation_switch,
     ColumnCorrelationQuad::ColumnCorrelationSwitch const& value)
 {
 	m_switches.at(correlation_switch) = value;
@@ -638,8 +637,7 @@ std::array<WordT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelation
 
 #define CORRELATION_ENCODE(index)                                                                  \
 	{                                                                                              \
-		ColumnCorrelationSwitch const& config =                                                    \
-		    m_switches.at(ColumnCorrelationSwitchOnColumnCorrelationQuad(index));                  \
+		ColumnCorrelationSwitch const& config = m_switches.at(EntryOnQuad(index));                 \
 		bitfield.u.m.enable_internal_causal_##index = config.get_enable_internal_causal();         \
 		bitfield.u.m.enable_internal_acausal_##index = config.get_enable_internal_acausal();       \
 		bitfield.u.m.enable_debug_causal_##index = config.get_enable_debug_causal();               \
@@ -677,7 +675,7 @@ void ColumnCorrelationQuad::decode(
 		config.set_enable_internal_acausal(bitfield.u.m.enable_internal_acausal_##index);          \
 		config.set_enable_debug_causal(bitfield.u.m.enable_debug_causal_##index);                  \
 		config.set_enable_debug_acausal(bitfield.u.m.enable_debug_acausal_##index);                \
-		m_switches.at(ColumnCorrelationSwitchOnColumnCorrelationQuad(index)) = config;             \
+		m_switches.at(EntryOnQuad(index)) = config;                                                \
 	}
 
 	CORRELATION_DECODE(0)
@@ -807,13 +805,13 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentQuad::ColumnCurrentSwitch)
 ColumnCurrentQuad::ColumnCurrentQuad() : m_switches() {}
 
 ColumnCurrentQuad::ColumnCurrentSwitch ColumnCurrentQuad::get_switch(
-    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad const& current_switch) const
+    halco::hicann_dls::vx::EntryOnQuad const& current_switch) const
 {
 	return m_switches.at(current_switch);
 }
 
 void ColumnCurrentQuad::set_switch(
-    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad const& current_switch,
+    halco::hicann_dls::vx::EntryOnQuad const& current_switch,
     ColumnCurrentQuad::ColumnCurrentSwitch const& value)
 {
 	m_switches.at(current_switch) = value;
@@ -926,8 +924,7 @@ std::array<WordT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad::en
 
 #define CURRENT_ENCODE(index)                                                                      \
 	{                                                                                              \
-		ColumnCurrentSwitch const& config =                                                        \
-		    m_switches.at(ColumnCurrentSwitchOnColumnCurrentQuad(index));                          \
+		ColumnCurrentSwitch const& config = m_switches.at(EntryOnQuad(index));                     \
 		bitfield.u.m.enable_synaptic_current_excitatory_##index =                                  \
 		    config.get_enable_synaptic_current_excitatory();                                       \
 		bitfield.u.m.enable_synaptic_current_inhibitory_##index =                                  \
@@ -976,7 +973,7 @@ void ColumnCurrentQuad::decode(
 		    bitfield.u.m.enable_cadc_neuron_readout_causal_##index);                               \
 		config.set_enable_cadc_neuron_readout_acausal(                                             \
 		    bitfield.u.m.enable_cadc_neuron_readout_acausal_##index);                              \
-		m_switches.at(ColumnCurrentSwitchOnColumnCurrentQuad(index)) = config;                     \
+		m_switches.at(EntryOnQuad(index)) = config;                                                \
 	}
 
 	CURRENT_DECODE(0)

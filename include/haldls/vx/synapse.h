@@ -211,11 +211,9 @@ public:
 
 	SynapseQuad() SYMBOL_VISIBLE;
 
-	Synapse get_synapse(halco::hicann_dls::vx::SynapseOnSynapseQuad const& synapse) const
+	Synapse get_synapse(halco::hicann_dls::vx::EntryOnQuad const& synapse) const SYMBOL_VISIBLE;
+	void set_synapse(halco::hicann_dls::vx::EntryOnQuad const& synapse, Synapse const& value)
 	    SYMBOL_VISIBLE;
-	void set_synapse(
-	    halco::hicann_dls::vx::SynapseOnSynapseQuad const& synapse,
-	    Synapse const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	template <typename AddressT>
@@ -237,7 +235,7 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
-	halco::common::typed_array<Synapse, halco::hicann_dls::vx::SynapseOnSynapseQuad> m_synapses;
+	halco::common::typed_array<Synapse, halco::hicann_dls::vx::EntryOnQuad> m_synapses;
 };
 
 
@@ -326,11 +324,9 @@ public:
 	ColumnCorrelationQuad() SYMBOL_VISIBLE;
 
 	ColumnCorrelationSwitch get_switch(
-	    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad const&
-	        correlation_switch) const SYMBOL_VISIBLE;
+	    halco::hicann_dls::vx::EntryOnQuad const& correlation_switch) const SYMBOL_VISIBLE;
 	void set_switch(
-	    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad const&
-	        correlation_switch,
+	    halco::hicann_dls::vx::EntryOnQuad const& correlation_switch,
 	    ColumnCorrelationSwitch const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
@@ -350,9 +346,7 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar);
 
-	halco::common::typed_array<
-	    ColumnCorrelationSwitch,
-	    halco::hicann_dls::vx::ColumnCorrelationSwitchOnColumnCorrelationQuad>
+	halco::common::typed_array<ColumnCorrelationSwitch, halco::hicann_dls::vx::EntryOnQuad>
 	    m_switches;
 };
 
@@ -514,11 +508,10 @@ public:
 	/** Default constructor. */
 	ColumnCurrentQuad() SYMBOL_VISIBLE;
 
-	ColumnCurrentSwitch get_switch(
-	    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad const& current_switch) const
+	ColumnCurrentSwitch get_switch(halco::hicann_dls::vx::EntryOnQuad const& current_switch) const
 	    SYMBOL_VISIBLE;
 	void set_switch(
-	    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad const& current_switch,
+	    halco::hicann_dls::vx::EntryOnQuad const& current_switch,
 	    ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
@@ -538,10 +531,7 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar);
 
-	halco::common::typed_array<
-	    ColumnCurrentSwitch,
-	    halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad>
-	    m_switches;
+	halco::common::typed_array<ColumnCurrentSwitch, halco::hicann_dls::vx::EntryOnQuad> m_switches;
 };
 
 

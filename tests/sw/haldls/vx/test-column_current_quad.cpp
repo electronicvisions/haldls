@@ -114,12 +114,12 @@ TEST(ColumnCurrentQuad, General)
 	ColumnCurrentQuad::ColumnCurrentSwitch current_switch;
 	current_switch.set_enable_debug_excitatory(!current_switch.get_enable_debug_excitatory());
 
-	block.set_switch(ColumnCurrentSwitchOnColumnCurrentQuad(3), current_switch);
-	ASSERT_EQ(block.get_switch(ColumnCurrentSwitchOnColumnCurrentQuad(3)), current_switch);
+	block.set_switch(EntryOnQuad(3), current_switch);
+	ASSERT_EQ(block.get_switch(EntryOnQuad(3)), current_switch);
 
 	ColumnCurrentQuad block_eq = block;
 	ColumnCurrentQuad block_ne(block);
-	block_ne.set_switch(ColumnCurrentSwitchOnColumnCurrentQuad(2), current_switch);
+	block_ne.set_switch(EntryOnQuad(2), current_switch);
 
 	ASSERT_EQ(block, block_eq);
 	ASSERT_FALSE(block == block_ne);
@@ -130,7 +130,7 @@ TEST(ColumnCurrentQuad, General)
 
 TEST(ColumnCurrentQuad, EncodeDecode)
 {
-	ColumnCurrentSwitchOnColumnCurrentQuad current_switch_coord(2);
+	EntryOnQuad current_switch_coord(2);
 	ColumnCurrentQuadOnDLS block_coord(ColumnCurrentQuadOnSynram(X(3)), SynramOnDLS::top);
 	ColumnCurrentQuad current_switch_block;
 	ColumnCurrentQuad::ColumnCurrentSwitch current_switch;
@@ -179,8 +179,7 @@ TEST(ColumnCurrentQuad, EncodeDecode)
 TEST(ColumnCurrentQuad, CerealizeCoverage)
 {
 	ColumnCurrentQuad obj1, obj2;
-	for (auto current_switch_coord :
-	     iter_all<halco::hicann_dls::vx::ColumnCurrentSwitchOnColumnCurrentQuad>()) {
+	for (auto current_switch_coord : iter_all<halco::hicann_dls::vx::EntryOnQuad>()) {
 		ColumnCurrentQuad::ColumnCurrentSwitch current_switch;
 		current_switch.set_enable_debug_excitatory(true);
 		obj1.set_switch(current_switch_coord, current_switch);

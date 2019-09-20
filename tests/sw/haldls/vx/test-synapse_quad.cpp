@@ -74,12 +74,12 @@ TEST(SynapseQuad, General)
 	synapse.set_weight(SynapseQuad::Synapse::Weight(1));
 	synapse.set_address(SynapseQuad::Synapse::Address(1));
 
-	block.set_synapse(SynapseOnSynapseQuad(3), synapse);
-	ASSERT_EQ(block.get_synapse(SynapseOnSynapseQuad(3)), synapse);
+	block.set_synapse(EntryOnQuad(3), synapse);
+	ASSERT_EQ(block.get_synapse(EntryOnQuad(3)), synapse);
 
 	SynapseQuad block_eq = block;
 	SynapseQuad block_ne(block);
-	block_ne.set_synapse(SynapseOnSynapseQuad(2), synapse);
+	block_ne.set_synapse(EntryOnQuad(2), synapse);
 
 	ASSERT_EQ(block, block_eq);
 	ASSERT_FALSE(block == block_ne);
@@ -90,7 +90,7 @@ TEST(SynapseQuad, General)
 
 TEST(SynapseQuad, EncodeDecode)
 {
-	SynapseOnSynapseQuad synapse_coord(2);
+	EntryOnQuad synapse_coord(2);
 	SynapseQuadOnDLS block_coord(SynapseQuadOnSynram(X(3), Y(1)), SynramOnDLS::top);
 	SynapseQuad synapse_block;
 	SynapseQuad::Synapse synapse;
@@ -141,7 +141,7 @@ TEST(SynapseQuad, EncodeDecode)
 TEST(SynapseQuad, CerealizeCoverage)
 {
 	SynapseQuad obj1, obj2;
-	for (auto syn : iter_all<halco::hicann_dls::vx::SynapseOnSynapseQuad>()) {
+	for (auto syn : iter_all<halco::hicann_dls::vx::EntryOnQuad>()) {
 		SynapseQuad::Synapse synapse;
 		synapse.set_weight(
 		    draw_ranged_non_default_value<SynapseQuad::Synapse::Weight>(synapse.get_weight()));
