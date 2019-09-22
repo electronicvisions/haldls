@@ -5,6 +5,7 @@
 #include "haldls/vx/reset.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
 
@@ -21,24 +22,11 @@ using namespace stadls::vx;
  */
 TEST(CommonSynramConfig, WROverJTAG)
 {
-	PlaybackProgramBuilder builder;
-
-	// Chip reset
-	builder.write(ResetChipOnDLS(), ResetChip(true));
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10));
-	builder.write(ResetChipOnDLS(), ResetChip(false));
-	builder.wait_until(TimerOnDLS(), Timer::Value(100));
-
-	// JTAG init
-	builder.write(JTAGClockScalerOnDLS(), JTAGClockScaler(JTAGClockScaler::Value(3)));
-	builder.write(ResetJTAGTapOnDLS(), ResetJTAGTap());
+	auto sequence = InitGenerator();
+	sequence.enable_highspeed_link = false;
+	auto [builder, _] = generate(sequence);
 
 	typed_array<CommonSynramConfig, CommonSynramConfigOnDLS> configs;
-
-	// Wait Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(25 * Timer::Value::fpga_clock_cycles_per_us));
-	builder.write(TimerOnDLS(), Timer());
 
 	// Fill configs with random data
 	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {

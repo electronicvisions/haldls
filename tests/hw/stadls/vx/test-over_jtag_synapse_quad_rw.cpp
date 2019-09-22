@@ -5,11 +5,11 @@
 #include "haldls/vx/reset.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 
 #include "executor.h"
 #include "test-helper.h"
-#include "test-init_helper.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
@@ -22,9 +22,9 @@ using namespace stadls::vx;
  */
 TEST(SynapseQuad, DISABLED_WROverJTAG)
 {
-	PlaybackProgramBuilder builder;
-
-	insert_highspeed_init(builder);
+	auto sequence = InitGenerator();
+	sequence.enable_highspeed_link = false;
+	auto [builder, _] = generate(sequence);
 
 	typed_array<SynapseQuad, SynapseQuadOnDLS> configs;
 
@@ -43,11 +43,6 @@ TEST(SynapseQuad, DISABLED_WROverJTAG)
 			    synapse.get_amp_calib()));
 			configs[coord].set_synapse(syn, synapse);
 		}
-	}
-
-	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {
-		CommonSynramConfig config;
-		builder.write(coord, config, Backend::OmnibusChipOverJTAG);
 	}
 
 	// Write using JTAG

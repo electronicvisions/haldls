@@ -4,6 +4,7 @@
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
 
@@ -20,31 +21,9 @@ using namespace stadls::vx;
  */
 TEST(PPUMemoryWord, WROverJTAG)
 {
-	PlaybackProgramBuilder builder;
-
-	// Chip reset
-	builder.write(ResetChipOnDLS(), ResetChip(true));
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10));
-	builder.write(ResetChipOnDLS(), ResetChip(false));
-	builder.wait_until(TimerOnDLS(), Timer::Value(100));
-
-	// JTAG init
-	builder.write(JTAGClockScalerOnDLS(), JTAGClockScaler(JTAGClockScaler::Value(3)));
-	builder.write(ResetJTAGTapOnDLS(), ResetJTAGTap());
-
-	// PLL init, reconfiguration needed to slow down PPU to a working state
-	ADPLL adpll_config;
-	for (auto adpll : iter_all<ADPLLOnDLS>()) {
-		builder.write(adpll, adpll_config, Backend::JTAGPLLRegister);
-	}
-
-	PLLClockOutputBlock config;
-	builder.write(PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
-
-	// Wait for PLL and Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(100 * Timer::Value::fpga_clock_cycles_per_us));
-	builder.write(TimerOnDLS(), Timer());
+	auto sequence = InitGenerator();
+	sequence.enable_highspeed_link = false;
+	auto [builder, _] = generate(sequence);
 
 	// Write all PPU memory words with JTAG backend
 	typed_array<PPUMemoryWord, PPUMemoryWordOnDLS> words;
@@ -77,31 +56,9 @@ TEST(PPUMemoryWord, WROverJTAG)
  */
 TEST(PPUControlRegister, WROverJTAG)
 {
-	PlaybackProgramBuilder builder;
-
-	// Chip reset
-	builder.write(ResetChipOnDLS(), ResetChip(true));
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10));
-	builder.write(ResetChipOnDLS(), ResetChip(false));
-	builder.wait_until(TimerOnDLS(), Timer::Value(100));
-
-	// JTAG init
-	builder.write(JTAGClockScalerOnDLS(), JTAGClockScaler(JTAGClockScaler::Value(3)));
-	builder.write(ResetJTAGTapOnDLS(), ResetJTAGTap());
-
-	// PLL init, reconfiguration needed to slow down PPU to a working state
-	ADPLL adpll_config;
-	for (auto adpll : iter_all<ADPLLOnDLS>()) {
-		builder.write(adpll, adpll_config, Backend::JTAGPLLRegister);
-	}
-
-	PLLClockOutputBlock config;
-	builder.write(PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
-
-	// Wait for PLL and Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(100 * Timer::Value::fpga_clock_cycles_per_us));
-	builder.write(TimerOnDLS(), Timer());
+	auto sequence = InitGenerator();
+	sequence.enable_highspeed_link = false;
+	auto [builder, _] = generate(sequence);
 
 	PPUControlRegister reg1, reg2;
 	PPUControlRegisterOnDLS ppu_coord1(0);

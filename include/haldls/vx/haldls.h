@@ -7,4 +7,5 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyfisch_vx");
 })
 
+#include "haldls/vx/constants.h"
 #include "haldls/vx/container.h"

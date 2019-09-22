@@ -58,7 +58,7 @@ def build(bld):
         source='../include/stadls/vx/stadls.h',
         genpybind_tags='stadls_vx',
         features='genpybind cxx cxxshlib pyext',
-        use=['stadls_vx', 'PYBIND11HALDLS', 'pylogging'],
+        use=['stadls_vx', 'PYBIND11HALDLS', 'pylogging', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
     )
@@ -68,6 +68,16 @@ def build(bld):
         tests='test/pystadls_test_v2.py',
         features='use pytest pylint pycodestyle',
         use=['pyhalco_hicann_dls_v2', 'pystadls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+    )
+
+    bld(
+        name='pystadls_pbgenerator_vx',
+        tests='test/pystadls_pbgenerator_vx.py',
+        features='use pytest pylint pycodestyle',
+        use=['pystadls_vx'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")

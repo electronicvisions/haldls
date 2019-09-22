@@ -5,12 +5,12 @@
 #include "haldls/vx/phy.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
 
 #include "executor.h"
 #include "test-helper.h"
-#include "test-init_helper.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
@@ -22,9 +22,9 @@ using namespace stadls::vx;
  */
 TEST(PPUMemoryWord, WRHighspeed)
 {
-	PlaybackProgramBuilder builder;
-
-	insert_highspeed_init(builder);
+	auto sequence = InitGenerator();
+	sequence.highspeed_link.enable_systime = false;
+	auto [builder, _] = generate(sequence);
 
 	// Write all PPU memory words with highspeed backend
 	typed_array<PPUMemoryWord, PPUMemoryWordOnDLS> words;

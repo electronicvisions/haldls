@@ -3,11 +3,11 @@
 #include "haldls/vx/event.h"
 #include "haldls/vx/systime.h"
 #include "haldls/vx/timer.h"
+#include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program_builder.h"
 
 #include "executor.h"
 #include "test-helper.h"
-#include "test-init_helper.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
@@ -17,15 +17,8 @@ using namespace stadls::vx;
 #define TEST_SPIKE(Num)                                                                            \
 	TEST(SpikePack##Num##ToChip, Loopback)                                                         \
 	{                                                                                              \
-		PlaybackProgramBuilder builder;                                                            \
-                                                                                                   \
-		insert_highspeed_init(builder);                                                            \
-                                                                                                   \
-		builder.write(SystimeSyncOnFPGA(), SystimeSync());                                         \
-                                                                                                   \
-		/* wait until systime init is finished */                                                  \
-		builder.write(TimerOnDLS(), Timer());                                                      \
-		builder.wait_until(TimerOnDLS(), Timer::Value(1000));                                      \
+		auto sequence = InitGenerator();                                                           \
+		auto [builder, _] = generate(sequence);                                                    \
                                                                                                    \
 		constexpr size_t num_spikes = 1000;                                                        \
                                                                                                    \
