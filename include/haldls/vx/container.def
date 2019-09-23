@@ -6,6 +6,7 @@
 #define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
 #endif
 
+PLAYBACK_CONTAINER(HicannARQStatus, haldls::vx::HicannARQStatus)
 PLAYBACK_CONTAINER(PPUMemoryWord, haldls::vx::PPUMemoryWord)
 PLAYBACK_CONTAINER(PPUMemoryBlock, haldls::vx::PPUMemoryBlock)
 PLAYBACK_CONTAINER(PPUMemory, haldls::vx::PPUMemory)

@@ -94,5 +94,7 @@ constexpr std::array<uint32_t, 4> cadc_sram_base_addresses = {
 constexpr uint32_t ut_omnibus_mask{0x0400'0000};
 constexpr uint32_t phy_omnibus_mask{0x0200'0000 | ut_omnibus_mask};
 constexpr uint32_t perftest_omnibus_mask{0x0800'0000};
+constexpr uint32_t l2_omnibus_mask{perftest_omnibus_mask | ut_omnibus_mask};
+constexpr uint32_t hicann_arq_status_base_address{l2_omnibus_mask + 0x0000'0010};
 
 } // namespace haldls::vx

@@ -236,7 +236,6 @@ void test_phy_config_derived_cerealize_coverage()
 		oa(obj1);
 	}
 
-	std::cout << "bla" << std::endl;
 	std::istringstream istream(ostream.str());
 	{
 		cereal::JSONInputArchive ia(istream);

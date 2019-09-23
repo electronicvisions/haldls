@@ -13,6 +13,25 @@
 #include "stadls/visitors.h"
 
 /**
+ * Draw a type T variable out of all values but the specified default.
+ * @tparam T type
+ * @param default_value Default value to exclude from random draw
+ * @return random value
+ */
+template <class T>
+T draw_non_default_value(T default_value)
+{
+	static thread_local std::mt19937 g{std::random_device{}()};
+	static thread_local std::uniform_int_distribution<uintmax_t> d;
+
+	T rnd;
+	do {
+		rnd = T(d(g));
+	} while (rnd == default_value);
+	return rnd;
+}
+
+/**
  * Draw a ranged type T variable out of all values but the specified default.
  * @tparam T Ranged type
  * @param default_value Default value to exclude from random draw
