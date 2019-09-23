@@ -12,6 +12,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
+#include "hate/join.h"
 
 
 namespace haldls {
@@ -309,11 +310,7 @@ struct CADCSampleQuadBitfield
 
 std::ostream& operator<<(std::ostream& os, CADCSampleQuad const& config)
 {
-	os << "CADCSampleQuad(";
-	os << config.m_samples[halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad(0)] << ", ";
-	os << config.m_samples[halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad(1)] << ", ";
-	os << config.m_samples[halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad(2)] << ", ";
-	os << config.m_samples[halco::hicann_dls::vx::CADCSampleOnCADCSampleQuad(3)] << ")";
+	os << "CADCSampleQuad(" << hate::join_string(config.m_samples, ", ") << ")";
 	return os;
 }
 

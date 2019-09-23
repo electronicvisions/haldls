@@ -9,6 +9,7 @@
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
+#include "hate/join.h"
 #include "hate/math.h"
 
 #include "fisch/vx/jtag.h"
@@ -134,12 +135,7 @@ void CapMemBlock::set_cell(CapMemCellOnCapMemBlock const& coord, CapMemCell::Val
 
 std::ostream& operator<<(std::ostream& os, CapMemBlock const& block)
 {
-	for (auto it = block.m_capmem_cells.begin(); it != block.m_capmem_cells.end(); it++) {
-		os << *it;
-		if (not(std::next(it) == block.m_capmem_cells.end())) {
-			os << std::endl;
-		}
-	}
+	os << hate::join_string(block.m_capmem_cells, "\n") << std::flush;
 	return os;
 }
 
