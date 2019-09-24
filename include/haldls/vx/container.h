@@ -7,6 +7,7 @@
 #include "haldls/vx/event.h"
 #include "haldls/vx/fpga.h"
 #include "haldls/vx/jtag.h"
+#include "haldls/vx/madc.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/padi.h"
 #include "haldls/vx/perftest.h"

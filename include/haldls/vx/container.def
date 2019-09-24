@@ -65,6 +65,7 @@ PLAYBACK_CONTAINER(SynapseBiasSelection, haldls::vx::SynapseBiasSelection)
 PLAYBACK_CONTAINER(ReferenceGeneratorConfig, haldls::vx::ReferenceGeneratorConfig)
 PLAYBACK_CONTAINER(ReadoutMuxConfig, haldls::vx::ReadoutMuxConfig)
 PLAYBACK_CONTAINER(ReadoutBufferConfigBlock, haldls::vx::ReadoutBufferConfigBlock)
+PLAYBACK_CONTAINER(MADCControl, haldls::vx::MADCControl)
 LAST_PLAYBACK_CONTAINER(SystimeSync, haldls::vx::SystimeSync)
 
 #undef PLAYBACK_CONTAINER
