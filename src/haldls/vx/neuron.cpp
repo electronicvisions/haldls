@@ -1401,5 +1401,91 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronBackendConfig)
 
+
+NeuronReset::NeuronReset() {}
+
+template <typename AddressT>
+std::array<AddressT, NeuronReset::read_config_size_in_words> NeuronReset::read_addresses(
+    NeuronReset::coordinate_type const& /* neuron */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, NeuronReset::read_config_size_in_words>
+    NeuronReset::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+        coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronReset::read_config_size_in_words>
+    NeuronReset::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename AddressT>
+std::array<AddressT, NeuronReset::write_config_size_in_words> NeuronReset::write_addresses(
+    NeuronReset::coordinate_type const& neuron) const
+{
+	auto const base_address = neuron_reset_sram_base_addresses.at(neuron.toNeuronResetBlockOnDLS());
+	auto const neuron_coord = neuron.toNeuronResetOnNeuronResetBlock();
+	return {AddressT(base_address + neuron_coord * 4)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    NeuronReset::write_config_size_in_words>
+NeuronReset::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronReset::write_config_size_in_words>
+    NeuronReset::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename WordT>
+std::array<WordT, NeuronReset::write_config_size_in_words> NeuronReset::encode() const
+{
+	// Value does not matter
+	return {WordT()};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronReset::write_config_size_in_words>
+    NeuronReset::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, NeuronReset::write_config_size_in_words>
+NeuronReset::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void NeuronReset::decode(std::array<WordT, NeuronReset::read_config_size_in_words> const&)
+{}
+
+template SYMBOL_VISIBLE void NeuronReset::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronReset::read_config_size_in_words> const& data);
+
+template SYMBOL_VISIBLE void NeuronReset::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, NeuronReset::read_config_size_in_words> const& data);
+
+std::ostream& operator<<(std::ostream& os, NeuronReset const&)
+{
+	os << "NeuronReset()";
+	return os;
+}
+
+bool NeuronReset::operator==(NeuronReset const&) const
+{
+	return true;
+}
+
+bool NeuronReset::operator!=(NeuronReset const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void NeuronReset::serialize(Archive&)
+{}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
+
 } // namespace vx
 } // namespace haldls

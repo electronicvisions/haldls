@@ -503,3 +503,52 @@ TEST(NeuronConfig, CerealizeCoverage)
 	}
 	ASSERT_EQ(c1, c2);
 }
+
+TEST(NeuronReset, General)
+{
+	NeuronReset config;
+
+	NeuronReset default_config;
+	ASSERT_EQ(config, default_config);
+	ASSERT_TRUE(config == default_config);
+	ASSERT_FALSE(config != default_config);
+}
+
+TEST(NeuronReset, EncodeDecode)
+{
+	NeuronReset config;
+
+	auto neuron_coord =
+	    NeuronResetOnDLS(NeuronResetOnNeuronResetBlock(23), NeuronResetBlockOnDLS(0));
+
+	std::array<OmnibusChipOverJTAGAddress, NeuronReset::write_config_size_in_words> ref_addresses =
+	    {OmnibusChipOverJTAGAddress{0x12205c}};
+
+	{ // check if write addresses are correct
+		addresses_type write_addresses;
+		visit_preorder(
+		    config, neuron_coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	// Encode
+	words_type data;
+	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
+	ASSERT_EQ(data[0].get(), 0x0);
+}
+
+TEST(NeuronReset, CerealizeCoverage)
+{
+	NeuronReset c1, c2;
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(c1);
+	}
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(c2);
+	}
+	ASSERT_EQ(c1, c2);
+}
