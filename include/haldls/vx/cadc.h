@@ -124,8 +124,8 @@ template <>
 struct BackendContainerTrait<CADCConfig>
     : public BackendContainerBase<
           CADCConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -196,8 +196,8 @@ template <>
 struct BackendContainerTrait<CADCChannelConfig>
     : public BackendContainerBase<
           CADCChannelConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

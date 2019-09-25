@@ -74,8 +74,8 @@ template <>
 struct BackendContainerTrait<SystimeSyncBase>
     : public BackendContainerBase<
           SystimeSyncBase,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

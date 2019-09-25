@@ -380,24 +380,24 @@ template <>
 struct BackendContainerTrait<CapMemBlockConfig>
     : public BackendContainerBase<
           CapMemBlockConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<CapMemBlock>
     : public BackendContainerBase<
           CapMemBlock,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<CapMemCell>
     : public BackendContainerBase<
           CapMemCell,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>

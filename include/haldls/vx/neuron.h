@@ -328,8 +328,8 @@ template <>
 struct BackendContainerTrait<NeuronConfig>
     : public BackendContainerBase<
           NeuronConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

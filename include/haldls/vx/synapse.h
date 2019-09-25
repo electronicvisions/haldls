@@ -549,32 +549,32 @@ template <>
 struct BackendContainerTrait<CommonSynramConfig>
     : public BackendContainerBase<
           CommonSynramConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<SynapseQuad>
     : public BackendContainerBase<
           SynapseQuad,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<ColumnCorrelationQuad>
     : public BackendContainerBase<
           ColumnCorrelationQuad,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<ColumnCurrentQuad>
     : public BackendContainerBase<
           ColumnCurrentQuad,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

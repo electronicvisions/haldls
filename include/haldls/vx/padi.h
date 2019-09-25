@@ -276,23 +276,23 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PADIEvent>
-    : public BackendContainerBase<PADIEvent, fisch::vx::OmnibusChipOverJTAG, fisch::vx::OmnibusChip>
+    : public BackendContainerBase<PADIEvent, fisch::vx::OmnibusChip, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<CommonPADIBusConfig>
     : public BackendContainerBase<
           CommonPADIBusConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<CommonSTPConfig>
     : public BackendContainerBase<
           CommonSTPConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

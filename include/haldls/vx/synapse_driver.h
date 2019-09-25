@@ -257,8 +257,8 @@ template <>
 struct BackendContainerTrait<SynapseDriverConfig>
     : public BackendContainerBase<
           SynapseDriverConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

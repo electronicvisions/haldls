@@ -257,21 +257,21 @@ template <>
 struct BackendContainerTrait<PPUMemoryWord>
     : public BackendContainerBase<
           PPUMemoryWord,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<PPUMemoryBlock>
     : public BackendContainerBase<
           PPUMemoryBlock,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<PPUMemory>
-    : public BackendContainerBase<PPUMemory, fisch::vx::OmnibusChipOverJTAG, fisch::vx::OmnibusChip>
+    : public BackendContainerBase<PPUMemory, fisch::vx::OmnibusChip, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
