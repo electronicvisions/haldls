@@ -7,12 +7,318 @@
 #include "fisch/vx/jtag.h"
 
 #include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
 #include "haldls/cerealization.h"
+#include "hate/join.h"
 
 namespace haldls {
 namespace vx {
 
-// TODO: Initialize with reasonable default values
+// TODO: Initialize with reasonable default values, see Issue #3367
+CommonNeuronBackendConfig::CommonNeuronBackendConfig() :
+    m_en_event_regs(false),
+    m_force_reset(false),
+    m_en_clocks(false),
+    m_clock_scale_slow(CommonNeuronBackendConfig::ClockScale()),
+    m_clock_scale_fast(CommonNeuronBackendConfig::ClockScale()),
+    m_sample_pos_edge(),
+    m_clock_scale_adapt_pulse(CommonNeuronBackendConfig::ClockScale()),
+    m_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale()),
+    m_wait_counter_init(CommonNeuronBackendConfig::WaitCounterInit())
+{
+	m_sample_pos_edge.fill(false);
+}
+
+void CommonNeuronBackendConfig::set_enable_event_registers(bool const val)
+{
+	m_en_event_regs = val;
+}
+
+void CommonNeuronBackendConfig::set_force_reset(bool const val)
+{
+	m_force_reset = val;
+}
+
+void CommonNeuronBackendConfig::set_enable_clocks(bool const val)
+{
+	m_en_clocks = val;
+}
+
+void CommonNeuronBackendConfig::set_clock_scale_slow(ClockScale const val)
+{
+	m_clock_scale_slow = val;
+}
+
+void CommonNeuronBackendConfig::set_clock_scale_fast(ClockScale const val)
+{
+	m_clock_scale_fast = val;
+}
+
+void CommonNeuronBackendConfig::set_sample_positive_edge(
+    halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock const coord, bool const val)
+{
+	m_sample_pos_edge[coord] = val;
+}
+
+void CommonNeuronBackendConfig::set_clock_scale_adaptation_pulse(ClockScale const val)
+{
+	m_clock_scale_adapt_pulse = val;
+}
+
+void CommonNeuronBackendConfig::set_clock_scale_post_pulse(ClockScale const val)
+{
+	m_clock_scale_post_pulse = val;
+}
+
+void CommonNeuronBackendConfig::set_wait_counter_init(WaitCounterInit const val)
+{
+	m_wait_counter_init = val;
+}
+
+bool CommonNeuronBackendConfig::get_enable_event_registers() const
+{
+	return m_en_event_regs;
+}
+
+bool CommonNeuronBackendConfig::get_force_reset() const
+{
+	return m_force_reset;
+}
+
+bool CommonNeuronBackendConfig::get_enable_clocks() const
+{
+	return m_en_clocks;
+}
+
+CommonNeuronBackendConfig::ClockScale CommonNeuronBackendConfig::get_clock_scale_slow() const
+{
+	return m_clock_scale_slow;
+}
+
+CommonNeuronBackendConfig::ClockScale CommonNeuronBackendConfig::get_clock_scale_fast() const
+{
+	return m_clock_scale_fast;
+}
+
+bool CommonNeuronBackendConfig::get_sample_positive_edge(
+    halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock const coord) const
+{
+	return m_sample_pos_edge[coord];
+}
+
+CommonNeuronBackendConfig::ClockScale CommonNeuronBackendConfig::get_clock_scale_adaptation_pulse()
+    const
+{
+	return m_clock_scale_adapt_pulse;
+}
+
+CommonNeuronBackendConfig::ClockScale CommonNeuronBackendConfig::get_clock_scale_post_pulse() const
+{
+	return m_clock_scale_post_pulse;
+}
+
+CommonNeuronBackendConfig::WaitCounterInit CommonNeuronBackendConfig::get_wait_counter_init() const
+{
+	return m_wait_counter_init;
+}
+
+struct CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield
+{
+	union
+	{
+		std::array<uint32_t, CommonNeuronBackendConfig::config_size_in_words> words;
+		// clang-format off
+        struct __attribute__((packed)) {
+                                                                             // bits ; word
+        uint32_t en_event_regs                                        :  1;  // 0    ; 0
+        uint32_t force_reset                                          :  1;  // 1    ; 0
+        uint32_t en_clocks                                            :  1;  // 2    ; 0
+        uint32_t                                                      :  1;  // 3    ; 0
+        uint32_t clock_scale_slow                                     :  4;  // 4-7  ; 0
+        uint32_t clock_scale_fast                                     :  4;  // 8-11 ; 0
+        uint32_t sample_pos_edge                                      :  4;  // 12-15; 0
+        uint32_t clock_scale_adapt_pulse                              :  4;  // 16-19; 0
+        uint32_t clock_scale_post_pulse                               :  4;  // 20-23; 0
+        uint32_t                                                      :  8;  // 24-31; 0
+
+        uint32_t wait_counter_init                                    :  32; // 0-31 ; 1
+        } m;
+		// clang-format on
+		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
+	} u;
+
+	CommonNeuronBackendConfigBitfield() { u.words = {{0, 0}}; }
+
+	CommonNeuronBackendConfigBitfield(
+	    std::array<uint32_t, CommonNeuronBackendConfig::config_size_in_words> data)
+	{
+		u.words[0] = data[0];
+		u.words[1] = data[1];
+	}
+};
+
+template <typename AddressT>
+std::array<AddressT, CommonNeuronBackendConfig::config_size_in_words>
+CommonNeuronBackendConfig::addresses(
+    CommonNeuronBackendConfig::coordinate_type const& backend) const
+{
+	auto base_address = neuron_backend_west_register_base_address;
+	if (backend == 1) {
+		base_address = neuron_backend_east_register_base_address;
+	}
+	std::array<AddressT, CommonNeuronBackendConfig::config_size_in_words> data;
+	size_t i = 0;
+	std::generate(
+	    data.begin(), data.end(), [&]() { return static_cast<AddressT>(base_address + i++); });
+	return data;
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CommonNeuronBackendConfig::config_size_in_words>
+CommonNeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    CommonNeuronBackendConfig::config_size_in_words>
+CommonNeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    coordinate_type const& cell) const;
+
+CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield
+CommonNeuronBackendConfig::to_bitfield() const
+{
+	using namespace halco::hicann_dls::vx;
+	CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield bitfield;
+	bitfield.u.m.en_event_regs = m_en_event_regs;
+	bitfield.u.m.force_reset = m_force_reset;
+	bitfield.u.m.en_clocks = m_en_clocks;
+	bitfield.u.m.clock_scale_slow = static_cast<uint32_t>(m_clock_scale_slow);
+	bitfield.u.m.clock_scale_fast = static_cast<uint32_t>(m_clock_scale_fast);
+	bitfield.u.m.sample_pos_edge = static_cast<uint32_t>(
+	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(0)] |
+	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(1)] << 1 |
+	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(2)] << 2 |
+	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(3)] << 3);
+	bitfield.u.m.clock_scale_adapt_pulse = static_cast<uint32_t>(m_clock_scale_adapt_pulse);
+	bitfield.u.m.clock_scale_post_pulse = static_cast<uint32_t>(m_clock_scale_post_pulse);
+	bitfield.u.m.wait_counter_init = static_cast<uint32_t>(m_wait_counter_init);
+	return bitfield;
+}
+
+void CommonNeuronBackendConfig::from_bitfield(
+    CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield const& bitfield)
+{
+	using namespace halco::hicann_dls::vx;
+	m_en_event_regs = bitfield.u.m.en_event_regs;
+	m_force_reset = bitfield.u.m.force_reset;
+	m_en_clocks = bitfield.u.m.en_clocks;
+	m_clock_scale_slow = CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_slow);
+	m_clock_scale_fast = CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_fast);
+	m_sample_pos_edge[EventOutputOnNeuronBackendBlock(0)] = bitfield.u.m.sample_pos_edge & 0b1;
+	m_sample_pos_edge[EventOutputOnNeuronBackendBlock(1)] = bitfield.u.m.sample_pos_edge & 0b10;
+	m_sample_pos_edge[EventOutputOnNeuronBackendBlock(2)] = bitfield.u.m.sample_pos_edge & 0b100;
+	m_sample_pos_edge[EventOutputOnNeuronBackendBlock(3)] = bitfield.u.m.sample_pos_edge & 0b1000;
+	m_clock_scale_adapt_pulse =
+	    CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_adapt_pulse);
+	m_clock_scale_post_pulse =
+	    CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_post_pulse);
+	m_wait_counter_init =
+	    CommonNeuronBackendConfig::WaitCounterInit(bitfield.u.m.wait_counter_init);
+}
+
+template <typename WordT>
+std::array<WordT, CommonNeuronBackendConfig::config_size_in_words>
+CommonNeuronBackendConfig::encode() const
+{
+	auto bitfield = to_bitfield();
+	std::array<WordT, CommonNeuronBackendConfig::config_size_in_words> data;
+	std::transform(
+	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
+	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	return data;
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, CommonNeuronBackendConfig::config_size_in_words>
+    CommonNeuronBackendConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, CommonNeuronBackendConfig::config_size_in_words>
+    CommonNeuronBackendConfig::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void CommonNeuronBackendConfig::decode(
+    std::array<WordT, CommonNeuronBackendConfig::config_size_in_words> const& data)
+{
+	std::array<uint32_t, CommonNeuronBackendConfig::config_size_in_words> raw_data;
+	std::transform(
+	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	CommonNeuronBackendConfigBitfield bitfield(raw_data);
+	from_bitfield(bitfield);
+}
+
+template SYMBOL_VISIBLE void CommonNeuronBackendConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::OmnibusChipOverJTAG,
+        CommonNeuronBackendConfig::config_size_in_words> const& data);
+
+template SYMBOL_VISIBLE void CommonNeuronBackendConfig::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, CommonNeuronBackendConfig::config_size_in_words> const&
+        data);
+
+bool CommonNeuronBackendConfig::operator==(CommonNeuronBackendConfig const& other) const
+{
+	return (
+	    m_en_event_regs == other.get_enable_event_registers() &&
+	    m_force_reset == other.get_force_reset() && m_en_clocks == other.get_enable_clocks() &&
+	    m_clock_scale_slow == other.get_clock_scale_slow() &&
+	    m_clock_scale_fast == other.get_clock_scale_fast() &&
+	    m_sample_pos_edge == other.m_sample_pos_edge &&
+	    m_clock_scale_adapt_pulse == other.get_clock_scale_adaptation_pulse() &&
+	    m_clock_scale_post_pulse == other.get_clock_scale_post_pulse() &&
+	    m_wait_counter_init == other.get_wait_counter_init());
+}
+
+bool CommonNeuronBackendConfig::operator!=(CommonNeuronBackendConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& config)
+{
+	print_words_for_each_backend<CommonNeuronBackendConfig>(os, config);
+	// clang-format off
+	os << "NAME\t\t\t\tVALUE\tDESCRIPTION" << std::endl
+	<< std::boolalpha
+	<< "en_event_regs\t\t\t" << config.m_en_event_regs << "\t?" << std::endl
+	<< "force_reset\t\t\t" << config.m_force_reset << "\t?" << std::endl
+	<< "en_clocks\t\t\t" << config.m_en_clocks << "\t?" << std::endl
+	<< "clock_scale_slow\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_slow)) << "\t?" << std::endl
+	<< "clock_scale_fast\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_fast)) << "\t?" << std::endl
+	<< "sample_pos_edge\t\t\t" << hate::join_string(config.m_sample_pos_edge, ", ") << "\t?" << std::endl
+	<< "clock_scale_adapt_pulse\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_adapt_pulse)) << "\t?" << std::endl
+	<< "clock_scale_post_pulse\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_post_pulse)) << "\t?" << std::endl
+	<< "wait_counter_init\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_counter_init)) << "\t?";
+	// clang-format on
+	return os;
+}
+
+template <class Archive>
+void CommonNeuronBackendConfig::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_en_event_regs));
+	ar(CEREAL_NVP(m_force_reset));
+	ar(CEREAL_NVP(m_en_clocks));
+	ar(CEREAL_NVP(m_clock_scale_slow));
+	ar(CEREAL_NVP(m_clock_scale_fast));
+	ar(CEREAL_NVP(m_sample_pos_edge));
+	ar(CEREAL_NVP(m_clock_scale_adapt_pulse));
+	ar(CEREAL_NVP(m_clock_scale_post_pulse));
+	ar(CEREAL_NVP(m_wait_counter_init));
+}
+
+// TODO: Initialize with reasonable default values, see Issue #3368
 NeuronBackendConfig::NeuronBackendConfig() :
     m_address_out(),
     m_reset_holdoff(),
@@ -235,9 +541,9 @@ template <typename AddressT>
 std::array<AddressT, NeuronBackendConfig::config_size_in_words> NeuronBackendConfig::addresses(
     NeuronBackendConfig::coordinate_type const& neuron) const
 {
-	auto base_address = neuron_backend_left_sram_base_address;
+	auto base_address = neuron_backend_west_sram_base_address;
 	if (neuron.toNeuronBackendConfigBlockOnDLS() == 1) {
-		base_address = neuron_backend_right_sram_base_address;
+		base_address = neuron_backend_east_sram_base_address;
 	}
 	auto const neuron_coord = neuron.toNeuronBackendConfigOnNeuronBackendConfigBlock();
 	std::array<AddressT, NeuronBackendConfig::config_size_in_words> data;
@@ -1093,6 +1399,7 @@ void NeuronConfig::serialize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendConfig)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronBackendConfig)
 
 } // namespace vx
 } // namespace haldls

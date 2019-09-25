@@ -22,6 +22,129 @@ class OmnibusChip;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
+
+/**
+ * Read/write access to common neuron parameters
+ */
+class GENPYBIND(visible) CommonNeuronBackendConfig
+{
+public:
+	typedef halco::hicann_dls::vx::NeuronBackendConfigBlockOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/**
+	 * The ClockScale determines the range of the clock and at its precision
+	 * It's an exponential power-of-two clock scaling factor: For a given reference clock of
+	 * f_clk = 250MHz, the resulting frequency is f_clk / (2 ^ (clock_scale + 1)). This enables
+	 * clock frequencies from 125MHz (clock_scale = 0) to ~4kHz (clock_scale = 15)
+	 * See documentation and implementation of RefractoryTime for more background information.
+	 */
+	struct GENPYBIND(inline_base("*")) ClockScale
+	    : public halco::common::detail::RantWrapper<ClockScale, uint_fast8_t, 15, 0>
+	{
+		constexpr explicit ClockScale(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	/**
+	 * TODO: Issue 3361 What does this describe?
+	 */
+	struct GENPYBIND(inline_base("*")) WaitCounterInit
+	    : public halco::common::detail::RantWrapper<WaitCounterInit, uint64_t, 4294967296 - 1, 0>
+	{
+		constexpr explicit WaitCounterInit(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	CommonNeuronBackendConfig() SYMBOL_VISIBLE;
+
+	// accessors
+	GENPYBIND(getter_for(enable_event_registers))
+	bool get_enable_event_registers() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_event_registers))
+	void set_enable_event_registers(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(force_reset))
+	bool get_force_reset() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(force_reset))
+	void set_force_reset(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_clocks))
+	bool get_enable_clocks() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_clocks))
+	void set_enable_clocks(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(clock_scale_slow))
+	ClockScale get_clock_scale_slow() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(clock_scale_slow))
+	void set_clock_scale_slow(ClockScale const val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(clock_scale_fast))
+	ClockScale get_clock_scale_fast() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(clock_scale_fast))
+	void set_clock_scale_fast(ClockScale const val) SYMBOL_VISIBLE;
+
+	bool get_sample_positive_edge(
+	    halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock coord) const SYMBOL_VISIBLE;
+	void set_sample_positive_edge(
+	    halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock coord, bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(clock_scale_adaptation_pulse))
+	ClockScale get_clock_scale_adaptation_pulse() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(clock_scale_adaptation_pulse))
+	void set_clock_scale_adaptation_pulse(ClockScale const val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(clock_scale_post_pulse))
+	ClockScale get_clock_scale_post_pulse() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(clock_scale_post_pulse))
+	void set_clock_scale_post_pulse(ClockScale const val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(wait_counter_init))
+	WaitCounterInit get_wait_counter_init() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(wait_counter_init))
+	void set_wait_counter_init(WaitCounterInit const val) SYMBOL_VISIBLE;
+
+	bool operator==(CommonNeuronBackendConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CommonNeuronBackendConfig const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+	struct CommonNeuronBackendConfigBitfield;
+
+	CommonNeuronBackendConfigBitfield to_bitfield() const;
+	void from_bitfield(CommonNeuronBackendConfigBitfield const& bitfield);
+
+	bool m_en_event_regs;
+	bool m_force_reset;
+	bool m_en_clocks;
+	ClockScale m_clock_scale_slow;
+	ClockScale m_clock_scale_fast;
+	halco::common::typed_array<bool, halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock>
+	    m_sample_pos_edge;
+	ClockScale m_clock_scale_adapt_pulse;
+	ClockScale m_clock_scale_post_pulse;
+	WaitCounterInit m_wait_counter_init;
+};
+
 /**
  * Read/write access to the NeuronBackend container.
  * All relevant settings of the NeuronBackend can be accessed and set via the NeuronBackendConfig.
@@ -529,6 +652,14 @@ private:
 };
 
 namespace detail {
+
+template <>
+struct BackendContainerTrait<CommonNeuronBackendConfig>
+    : public BackendContainerBase<
+          CommonNeuronBackendConfig,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
 
 template <>
 struct BackendContainerTrait<NeuronBackendConfig>

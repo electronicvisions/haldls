@@ -17,6 +17,135 @@ using namespace halco::common;
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
 
+TEST(CommonNeuronBackendConfig, General)
+{
+	CommonNeuronBackendConfig config;
+
+	auto value = !config.get_enable_event_registers();
+	config.set_enable_event_registers(value);
+	ASSERT_EQ(config.get_enable_event_registers(), value);
+
+	value = !config.get_force_reset();
+	config.set_force_reset(value);
+	ASSERT_EQ(config.get_force_reset(), value);
+
+	value = !config.get_enable_clocks();
+	config.set_enable_clocks(value);
+	ASSERT_EQ(config.get_enable_clocks(), value);
+
+	auto clock = draw_ranged_non_default_value<CommonNeuronBackendConfig::ClockScale>();
+	config.set_clock_scale_slow(clock);
+	ASSERT_EQ(config.get_clock_scale_slow(), clock);
+
+	clock = draw_ranged_non_default_value<CommonNeuronBackendConfig::ClockScale>();
+	config.set_clock_scale_fast(clock);
+	ASSERT_EQ(config.get_clock_scale_fast(), clock);
+
+	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(0), true);
+	ASSERT_EQ(config.get_sample_positive_edge(EventOutputOnNeuronBackendBlock(0)), true);
+
+	clock = draw_ranged_non_default_value<CommonNeuronBackendConfig::ClockScale>();
+	config.set_clock_scale_adaptation_pulse(clock);
+	ASSERT_EQ(config.get_clock_scale_adaptation_pulse(), clock);
+
+	clock = draw_ranged_non_default_value<CommonNeuronBackendConfig::ClockScale>();
+	config.set_clock_scale_post_pulse(clock);
+	ASSERT_EQ(config.get_clock_scale_post_pulse(), clock);
+
+	auto init = draw_ranged_non_default_value<CommonNeuronBackendConfig::WaitCounterInit>();
+	config.set_wait_counter_init(init);
+	ASSERT_EQ(config.get_wait_counter_init(), init);
+
+	CommonNeuronBackendConfig default_config;
+	ASSERT_NE(config, default_config);
+	ASSERT_TRUE(config != default_config);
+	ASSERT_FALSE(config == default_config);
+	CommonNeuronBackendConfig copy_config = config;
+	ASSERT_EQ(config, copy_config);
+	ASSERT_TRUE(config == copy_config);
+	ASSERT_FALSE(config != copy_config);
+}
+
+TEST(CommonNeuronBackendConfig, EncodeDecode)
+{
+	CommonNeuronBackendConfig config;
+	config.set_enable_event_registers(false);
+	config.set_force_reset(true);
+	config.set_enable_clocks(true);
+	config.set_clock_scale_slow(CommonNeuronBackendConfig::ClockScale(3));
+	config.set_clock_scale_fast(CommonNeuronBackendConfig::ClockScale(7));
+	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(1), true);
+	config.set_clock_scale_adaptation_pulse(CommonNeuronBackendConfig::ClockScale(4));
+	config.set_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale(8));
+	config.set_wait_counter_init(CommonNeuronBackendConfig::WaitCounterInit(2342));
+
+	auto backend_coord = NeuronBackendConfigBlockOnDLS(1);
+
+	std::array<OmnibusChipOverJTAGAddress, CommonNeuronBackendConfig::config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0x1a9800 + 0},
+	                     OmnibusChipOverJTAGAddress{0x1a9800 + 1}};
+
+	{ // check if write addresses are correct
+		addresses_type write_addresses;
+		visit_preorder(
+		    config, backend_coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // check if read addresses are correct
+		addresses_type read_addresses;
+		visit_preorder(
+		    config, backend_coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	// Encode
+	words_type data;
+	visit_preorder(config, backend_coord, stadls::EncodeVisitor<words_type>{data});
+	ASSERT_FALSE(data[0].get() & 0b1);                                 // en_event_regs
+	ASSERT_TRUE(data[0].get() & 0b10);                                 // force_reset
+	ASSERT_TRUE(data[0].get() & 0b100);                                // en_clocks
+	ASSERT_TRUE((data[0].get() & 0b1111'0000) == (3 << 4));            // clock_scale_slow
+	ASSERT_TRUE((data[0].get() & 0b1111'0000'0000) == (7 << 8));       // clock_scale_fast
+	ASSERT_TRUE((data[0].get() & 0b1111'0000'0000'0000) == (2 << 12)); // sample_pos_edge
+	ASSERT_TRUE(
+	    (data[0].get() & 0b1111'0000'0000'0000'0000) == (4 << 16)); // clock_scale_adapt_pulse
+	ASSERT_TRUE(
+	    (data[0].get() & 0b1111'0000'0000'0000'0000'0000) == (8 << 20)); // clock_scale_post_pulse
+	ASSERT_TRUE(data[1].get() == 2342);                                  // wait_counter_init
+
+	// Decode back
+	CommonNeuronBackendConfig config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, backend_coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(CommonNeuronBackendConfig, CerealizeCoverage)
+{
+	CommonNeuronBackendConfig c1, c2;
+	c1.set_enable_event_registers(true);
+	c1.set_force_reset(true);
+	c1.set_enable_clocks(true);
+	c1.set_clock_scale_fast(CommonNeuronBackendConfig::ClockScale(7));
+	c1.set_clock_scale_slow(CommonNeuronBackendConfig::ClockScale(7));
+	c1.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(0), true);
+	c1.set_clock_scale_adaptation_pulse(CommonNeuronBackendConfig::ClockScale(10));
+	c1.set_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale(10));
+	c1.set_wait_counter_init(CommonNeuronBackendConfig::WaitCounterInit(2342));
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(c1);
+	}
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(c2);
+	}
+	ASSERT_EQ(c1, c2);
+}
+
 TEST(NeuronBackendConfig, General)
 {
 	NeuronBackendConfig config;
