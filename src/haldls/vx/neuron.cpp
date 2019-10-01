@@ -13,6 +13,413 @@ namespace haldls {
 namespace vx {
 
 // TODO: Initialize with reasonable default values
+NeuronBackendConfig::NeuronBackendConfig() :
+    m_address_out(),
+    m_reset_holdoff(),
+    m_refractory_time(),
+    m_post_overwrite(false),
+    m_select_input_clock(),
+    m_en_adapt_pulse(false),
+    m_en_baesian_extension(false),
+    m_en_neuron_slave(false),
+    m_connect_fire_bottom(false),
+    m_connect_fire_from_right(false),
+    m_connect_fire_to_right(false),
+    m_en_spike_out(false),
+    m_en_neuron_master(false),
+    m_en_0_baesian(false),
+    m_en_1_baesian(false)
+{}
+
+void NeuronBackendConfig::set_address_out(AddressOut const val)
+{
+	m_address_out = val;
+}
+
+void NeuronBackendConfig::set_reset_holdoff(ResetHoldoff const val)
+{
+	m_reset_holdoff = val;
+}
+
+void NeuronBackendConfig::set_refractory_time(RefractoryTime const val)
+{
+	m_refractory_time = val;
+}
+
+void NeuronBackendConfig::set_post_overwrite(bool const val)
+{
+	m_post_overwrite = val;
+}
+
+void NeuronBackendConfig::set_select_input_clock(InputClock const val)
+{
+	m_select_input_clock = val;
+}
+
+void NeuronBackendConfig::set_enable_adaptation_pulse(bool const val)
+{
+	m_en_adapt_pulse = val;
+}
+
+void NeuronBackendConfig::set_enable_bayesian_extension(bool const val)
+{
+	m_en_baesian_extension = val;
+}
+
+void NeuronBackendConfig::set_enable_neuron_slave(bool const val)
+{
+	m_en_neuron_slave = val;
+}
+
+void NeuronBackendConfig::set_connect_fire_bottom(bool const val)
+{
+	m_connect_fire_bottom = val;
+}
+
+void NeuronBackendConfig::set_connect_fire_from_right(bool const val)
+{
+	m_connect_fire_from_right = val;
+}
+
+void NeuronBackendConfig::set_connect_fire_to_right(bool const val)
+{
+	m_connect_fire_to_right = val;
+}
+
+void NeuronBackendConfig::set_enable_spike_out(bool const val)
+{
+	m_en_spike_out = val;
+}
+
+void NeuronBackendConfig::set_enable_neuron_master(bool const val)
+{
+	m_en_neuron_master = val;
+}
+
+void NeuronBackendConfig::set_enable_bayesian_0(bool const val)
+{
+	m_en_0_baesian = val;
+}
+
+void NeuronBackendConfig::set_enable_bayesian_1(bool const val)
+{
+	m_en_1_baesian = val;
+}
+
+NeuronBackendConfig::AddressOut NeuronBackendConfig::get_address_out() const
+{
+	return m_address_out;
+}
+
+NeuronBackendConfig::ResetHoldoff NeuronBackendConfig::get_reset_holdoff() const
+{
+	return m_reset_holdoff;
+}
+
+NeuronBackendConfig::RefractoryTime NeuronBackendConfig::get_refractory_time() const
+{
+	return m_refractory_time;
+}
+
+bool NeuronBackendConfig::get_post_overwrite() const
+{
+	return m_post_overwrite;
+}
+
+NeuronBackendConfig::InputClock NeuronBackendConfig::get_select_input_clock() const
+{
+	return m_select_input_clock;
+}
+
+bool NeuronBackendConfig::get_enable_adaptation_pulse() const
+{
+	return m_en_adapt_pulse;
+}
+
+bool NeuronBackendConfig::get_enable_bayesian_extension() const
+{
+	return m_en_baesian_extension;
+}
+
+bool NeuronBackendConfig::get_enable_neuron_slave() const
+{
+	return m_en_neuron_slave;
+}
+
+bool NeuronBackendConfig::get_connect_fire_bottom() const
+{
+	return m_connect_fire_bottom;
+}
+
+bool NeuronBackendConfig::get_connect_fire_from_right() const
+{
+	return m_connect_fire_from_right;
+}
+
+bool NeuronBackendConfig::get_connect_fire_to_right() const
+{
+	return m_connect_fire_to_right;
+}
+
+bool NeuronBackendConfig::get_enable_spike_out() const
+{
+	return m_en_spike_out;
+}
+
+bool NeuronBackendConfig::get_enable_neuron_master() const
+{
+	return m_en_neuron_master;
+}
+
+bool NeuronBackendConfig::get_enable_bayesian_0() const
+{
+	return m_en_0_baesian;
+}
+
+bool NeuronBackendConfig::get_enable_bayesian_1() const
+{
+	return m_en_1_baesian;
+}
+
+struct NeuronBackendConfig::NeuronBackendConfigBitfield
+{
+	union
+	{
+		std::array<uint32_t, NeuronBackendConfig::config_size_in_words> words;
+		// clang-format off
+		struct __attribute__((packed)) {
+		                                                                     // bits ; word
+		uint32_t address_out_lsbs                                     :  6;  // 0-5  ; 0
+		uint32_t reset_holdoff_1                                      :  2;  // 6-7  ; 0
+		uint32_t                                                      : 24;  // 8-31 ; 0
+
+		uint32_t refractory_time_1                                    :  4;  // 0-3  ; 1
+		uint32_t address_out_msbs                                     :  2;  // 4-5  ; 1
+		uint32_t reset_holdoff_2                                      :  2;  // 6-7  ; 1
+		uint32_t                                                      : 24;  // 8-31 ; 1
+
+		uint32_t post_overwrite                                       :  1;  // 0    ; 2
+		uint32_t select_input_clock                                   :  1;  // 1    ; 2
+		uint32_t refractory_time_2                                    :  4;  // 2-5  ; 2
+		uint32_t en_adapt_pulse                                       :  1;  // 6    ; 2
+		uint32_t en_baesian_extension                                 :  1;  // 7    ; 2
+		uint32_t                                                      : 24;  // 8-31 ; 2
+
+		uint32_t en_neuron_slave                                      :  1;  // 0    ; 3
+		uint32_t connect_fire_bottom                                  :  1;  // 1    ; 3
+		uint32_t connect_fire_from_right                              :  1;  // 2    ; 3
+		uint32_t connect_fire_to_right                                :  1;  // 3    ; 3
+		uint32_t en_spike_out                                         :  1;  // 4    ; 3
+		uint32_t en_neuron_master                                     :  1;  // 5    ; 3
+		uint32_t en_0_baesian                                         :  1;  // 6    ; 3
+		uint32_t en_1_baesian                                         :  1;  // 7    ; 3
+		uint32_t                                                      : 24;  // 8-31 ; 3
+		} m;
+		// clang-format on
+		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
+	} u;
+
+	NeuronBackendConfigBitfield() { u.words = {{0, 0, 0, 0}}; }
+
+	NeuronBackendConfigBitfield(
+	    std::array<uint32_t, NeuronBackendConfig::config_size_in_words> data)
+	{
+		u.words[0] = data[0];
+		u.words[1] = data[1];
+		u.words[2] = data[2];
+		u.words[3] = data[3];
+	}
+};
+
+template <typename AddressT>
+std::array<AddressT, NeuronBackendConfig::config_size_in_words> NeuronBackendConfig::addresses(
+    NeuronBackendConfig::coordinate_type const& neuron) const
+{
+	auto base_address = neuron_backend_left_sram_base_address;
+	if (neuron.toNeuronBackendConfigBlockOnDLS() == 1) {
+		base_address = neuron_backend_right_sram_base_address;
+	}
+	auto const neuron_coord = neuron.toNeuronBackendConfigOnNeuronBackendConfigBlock();
+	std::array<AddressT, NeuronBackendConfig::config_size_in_words> data;
+	size_t i = 0;
+	std::generate(data.begin(), data.end(), [&]() {
+		return static_cast<AddressT>(
+		    base_address + neuron_coord * NeuronBackendConfig::config_size_in_words + i++);
+	});
+	return data;
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    NeuronBackendConfig::config_size_in_words>
+NeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronBackendConfig::config_size_in_words>
+    NeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+NeuronBackendConfig::NeuronBackendConfigBitfield NeuronBackendConfig::to_bitfield() const
+{
+	NeuronBackendConfig::NeuronBackendConfigBitfield bitfield;
+	bitfield.u.m.address_out_lsbs = (~m_address_out & 0b00111111); // bits are inverted
+	bitfield.u.m.reset_holdoff_1 = m_reset_holdoff & 0b0011;
+	bitfield.u.m.refractory_time_1 = (~m_refractory_time & 0b11110000) >> 4;
+	bitfield.u.m.address_out_msbs = (~m_address_out & 0b11000000) >> 6; // bits are inverted
+	bitfield.u.m.reset_holdoff_2 = (m_reset_holdoff & 0b1100) >> 2;
+	bitfield.u.m.post_overwrite = m_post_overwrite;
+	bitfield.u.m.select_input_clock = static_cast<uint32_t>(m_select_input_clock);
+	bitfield.u.m.refractory_time_2 = (~m_refractory_time & 0b00001111);
+	bitfield.u.m.en_adapt_pulse = m_en_adapt_pulse;
+	bitfield.u.m.en_baesian_extension = m_en_baesian_extension;
+	bitfield.u.m.en_neuron_slave = m_en_neuron_slave;
+	bitfield.u.m.connect_fire_bottom = m_connect_fire_bottom;
+	bitfield.u.m.connect_fire_from_right = m_connect_fire_from_right;
+	bitfield.u.m.connect_fire_to_right = m_connect_fire_to_right;
+	bitfield.u.m.en_spike_out = m_en_spike_out;
+	bitfield.u.m.en_neuron_master = m_en_neuron_master;
+	bitfield.u.m.en_0_baesian = m_en_0_baesian;
+	bitfield.u.m.en_1_baesian = m_en_1_baesian;
+	return bitfield;
+}
+
+void NeuronBackendConfig::from_bitfield(
+    NeuronBackendConfig::NeuronBackendConfigBitfield const& bitfield)
+{
+	// bits of address out are inverted
+	m_address_out = NeuronBackendConfig::AddressOut(
+	    ((~(bitfield.u.m.address_out_lsbs) & 0b111111) |
+	     (~(bitfield.u.m.address_out_msbs << 6) & 0b11000000)) &
+	    0xff);
+	m_reset_holdoff = NeuronBackendConfig::ResetHoldoff(
+	    bitfield.u.m.reset_holdoff_1 | (bitfield.u.m.reset_holdoff_2 << 2));
+	m_refractory_time = NeuronBackendConfig::RefractoryTime(
+	    ((~(bitfield.u.m.refractory_time_2) & 0xf) |
+	     (~(bitfield.u.m.refractory_time_1 << 4) & 0xf0)) &
+	    0xff);
+	m_post_overwrite = bitfield.u.m.post_overwrite;
+	m_select_input_clock = NeuronBackendConfig::InputClock(bitfield.u.m.select_input_clock);
+	m_en_adapt_pulse = bitfield.u.m.en_adapt_pulse;
+	m_en_baesian_extension = bitfield.u.m.en_baesian_extension;
+	m_en_neuron_slave = bitfield.u.m.en_neuron_slave;
+	m_connect_fire_bottom = bitfield.u.m.connect_fire_bottom;
+	m_connect_fire_from_right = bitfield.u.m.connect_fire_from_right;
+	m_connect_fire_to_right = bitfield.u.m.connect_fire_to_right;
+	m_en_spike_out = bitfield.u.m.en_spike_out;
+	m_en_neuron_master = bitfield.u.m.en_neuron_master;
+	m_en_0_baesian = bitfield.u.m.en_0_baesian;
+	m_en_1_baesian = bitfield.u.m.en_1_baesian;
+}
+
+template <typename WordT>
+std::array<WordT, NeuronBackendConfig::config_size_in_words> NeuronBackendConfig::encode() const
+{
+	auto bitfield = to_bitfield();
+	std::array<WordT, NeuronBackendConfig::config_size_in_words> data;
+	std::transform(
+	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
+	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	return data;
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronBackendConfig::config_size_in_words>
+    NeuronBackendConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, NeuronBackendConfig::config_size_in_words>
+    NeuronBackendConfig::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void NeuronBackendConfig::decode(
+    std::array<WordT, NeuronBackendConfig::config_size_in_words> const& data)
+{
+	std::array<uint32_t, NeuronBackendConfig::config_size_in_words> raw_data;
+	std::transform(
+	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	NeuronBackendConfigBitfield bitfield(raw_data);
+	from_bitfield(bitfield);
+}
+
+template SYMBOL_VISIBLE void NeuronBackendConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronBackendConfig::config_size_in_words> const&
+        data);
+
+template SYMBOL_VISIBLE void NeuronBackendConfig::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, NeuronBackendConfig::config_size_in_words> const& data);
+
+bool NeuronBackendConfig::operator==(NeuronBackendConfig const& other) const
+{
+	return (
+	    m_address_out == other.get_address_out() && m_reset_holdoff == other.get_reset_holdoff() &&
+	    m_refractory_time == other.get_refractory_time() &&
+	    m_post_overwrite == other.get_post_overwrite() &&
+	    m_select_input_clock == other.get_select_input_clock() &&
+	    m_en_adapt_pulse == other.get_enable_adaptation_pulse() &&
+	    m_en_baesian_extension == other.get_enable_bayesian_extension() &&
+	    m_en_neuron_slave == other.get_enable_neuron_slave() &&
+	    m_connect_fire_bottom == other.get_connect_fire_bottom() &&
+	    m_connect_fire_from_right == other.get_connect_fire_from_right() &&
+	    m_connect_fire_to_right == other.get_connect_fire_to_right() &&
+	    m_en_spike_out == other.get_enable_spike_out() &&
+	    m_en_neuron_master == other.get_enable_neuron_master() &&
+	    m_en_0_baesian == other.get_enable_bayesian_0() &&
+	    m_en_1_baesian == other.get_enable_bayesian_1());
+}
+
+bool NeuronBackendConfig::operator!=(NeuronBackendConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, NeuronBackendConfig const& config)
+{
+	// TODO add descriptions
+	print_words_for_each_backend<NeuronBackendConfig>(os, config);
+	// clang-format off
+	os << "NAME\t\t\tVALUE\tDESCRIPTION" << std::endl
+	<< std::boolalpha
+	<< "address_out\t\t" << std::to_string(config.m_address_out) << "\t?" << std::endl
+	<< "reset_holdoff\t" << std::to_string(config.m_reset_holdoff) << "\t?" << std::endl
+	<< "refractory_time\t\t\t" << std::to_string(config.m_refractory_time) << "\t?" << std::endl
+	<< "post_overwrite\t\t" << config.m_post_overwrite << "\t?" << std::endl
+	<< "select_input_clock\t" << std::to_string(config.m_select_input_clock) << "\t?" << std::endl
+	<< "en_adapt_pulse\t\t" << config.m_en_adapt_pulse << "\t?" << std::endl
+	<< "en_baesian_extension\t" << config.m_en_baesian_extension << "\t?" << std::endl
+	<< "en_neuron_slave\t\t" << config.m_en_neuron_slave << "\t?" << std::endl
+	<< "connect_fire_bottom\t" << config.m_connect_fire_bottom << "\t?" << std::endl
+	<< "connect_fire_from_right\t" << config.m_connect_fire_from_right << "\t?" << std::endl
+	<< "connect_fire_to_right\t" << config.m_connect_fire_to_right << "\t?" << std::endl
+	<< "en_spike_out\t\t" << config.m_en_spike_out << "\t?" << std::endl
+	<< "en_neuron_master\t" << config.m_en_neuron_master << "\t?" << std::endl
+	<< "en_0_baesian\t\t" << config.m_en_0_baesian << "\t?" << std::endl
+	<< "en_1_baesian\t\t" << config.m_en_1_baesian << "\t?";
+	// clang-format on
+	return os;
+}
+
+template <class Archive>
+void NeuronBackendConfig::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_address_out));
+	ar(CEREAL_NVP(m_reset_holdoff));
+	ar(CEREAL_NVP(m_refractory_time));
+	ar(CEREAL_NVP(m_post_overwrite));
+	ar(CEREAL_NVP(m_select_input_clock));
+	ar(CEREAL_NVP(m_en_adapt_pulse));
+	ar(CEREAL_NVP(m_en_baesian_extension));
+	ar(CEREAL_NVP(m_en_neuron_slave));
+	ar(CEREAL_NVP(m_connect_fire_bottom));
+	ar(CEREAL_NVP(m_connect_fire_from_right));
+	ar(CEREAL_NVP(m_connect_fire_to_right));
+	ar(CEREAL_NVP(m_en_spike_out));
+	ar(CEREAL_NVP(m_en_neuron_master));
+	ar(CEREAL_NVP(m_en_0_baesian));
+	ar(CEREAL_NVP(m_en_1_baesian));
+}
+
+// TODO: Initialize with reasonable default values
 NeuronConfig::NeuronConfig() :
     m_en_comp_cond_div(false),
     m_en_comp_cond_mul(false),
@@ -63,7 +470,7 @@ struct NeuronConfig::NeuronConfigBitfield
         uint32_t en_leak_deg                                          :  1;  // 3    ; 2
         uint32_t en_leak_div                                          :  1;  // 4    ; 2
         uint32_t en_leak_mul                                          :  1;  // 5    ; 2
-        uint32_t                                                      :  26; // 6-31 ; 2
+        uint32_t                                                      : 26;  // 6-31 ; 2
 
         uint32_t en_read_vw                                           :  1;  // 0    ; 3
         uint32_t                                                      :  2;  // 1-2  ; 3
@@ -71,7 +478,7 @@ struct NeuronConfig::NeuronConfigBitfield
         uint32_t en_readout_amp                                       :  1;  // 4    ; 3
         uint32_t readout_select                                       :  2;  // 5-6  ; 3
         uint32_t en_readout                                           :  1;  // 7    ; 3
-        uint32_t                                                      :  24; // 8-31 ; 3
+        uint32_t                                                      : 24;  // 8-31 ; 3
 
         uint32_t invert_adapt_a                                       :  1;  // 0    ; 4
         uint32_t invert_adapt_b                                       :  1;  // 1    ; 4
@@ -419,15 +826,13 @@ void NeuronConfig::set_enable_leak_multiplication(bool const value)
 	m_en_leak_mul = value;
 }
 
-namespace {} // namespace
-
 template <typename AddressT>
 std::array<AddressT, NeuronConfig::config_size_in_words> NeuronConfig::addresses(
     NeuronConfig::coordinate_type const& neuron) const
 {
-	assert(neuron.toNeuronBlockOnDLS() < neuron_sram_base_addresses.size());
-	auto const base_address = neuron_sram_base_addresses.at(neuron.toNeuronBlockOnDLS());
-	auto const neuron_coord = neuron.toNeuronOnNeuronBlock();
+	assert(neuron.toNeuronConfigBlockOnDLS() < neuron_sram_base_addresses.size());
+	auto const base_address = neuron_sram_base_addresses.at(neuron.toNeuronConfigBlockOnDLS());
+	auto const neuron_coord = neuron.toNeuronConfigOnNeuronConfigBlock();
 	std::array<AddressT, NeuronConfig::config_size_in_words> data;
 	size_t i = 0;
         // offset of 2 words in address due to them being unused
@@ -687,6 +1092,7 @@ void NeuronConfig::serialize(Archive& ar)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronConfig)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendConfig)
 
 } // namespace vx
 } // namespace haldls

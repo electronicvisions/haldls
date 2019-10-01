@@ -23,12 +23,218 @@ namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
+ * Read/write access to the NeuronBackend container.
+ * All relevant settings of the NeuronBackend can be accessed and set via the NeuronBackendConfig.
+ * The choice of the parameters (e.g. RefractoryTime) depends on the use case of the user and the
+ * targeted biological model/experiment. Implementation examples are yet to be written and will
+ * then be found in the CI test environment.
+ */
+class GENPYBIND(visible) NeuronBackendConfig
+{
+public:
+	typedef halco::hicann_dls::vx::NeuronBackendConfigOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/**
+	 * Address of the spikes sent out by a neuron.
+	 */
+	struct GENPYBIND(inline_base("*")) AddressOut
+	    : public halco::common::detail::RantWrapper<AddressOut, uint_fast16_t, 255, 0>
+	{
+		constexpr explicit AddressOut(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	/**
+	 * ResetHoldoff period: The time delta between the reset and the refractory period.
+	 * The reset-holdoff time is configured by comparison with the four LSB of the refractory-
+	 * counter: The mechanism stops the reset as soon as the bits programmed in the reset-holdoff
+	 * mask match the LSB of the refractory-counter and all MSB of the refractory-counter are set.
+	 * Until the end of the programmed refractory time, the circuit does still reject new threshold
+	 * crossings. This combination of still rejecting spikes, but stopping the reset defines the
+	 * reset-holdoff time. For the user it is important to note, that the reset-holdoff time is
+	 * subtracted from the refractory period, to turn it off, one can use the maximum code (0xF)
+	 * for the holdoff time, resulting in the reset-holdoff time dropping to zero.
+	 *
+	 * Example: The reset is turned off before the end of the refractory period. As the neuron is
+	 * still refractory, no new spike is registered, although the fire signal is still high. Only
+	 * after the end of the refractory period the circuits accepts new fire signals. The difference
+	 * between refractory period and reset duration defines the reset-holdoff period.
+	 */
+	struct GENPYBIND(inline_base("*")) ResetHoldoff
+	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 3, 0>
+	{
+		constexpr explicit ResetHoldoff(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	/**
+	 * The refractory time can be configured to be used for different applications (short and long)
+	 * Refactory Periods usually range from 0 to 5 ms. Accounting for the speedup they correspond to
+	 * 5 µs in hardware time. Some special applications like NMDA require significantly longer
+	 * times.
+	 *
+	 * tau_ref = RefractoryTime * 1/f_clock
+	 *
+	 * Use case 1 (standard): tau_min = 0.1µs => f_clock = 10MHz
+	 * tau_max = 12.7µs (12.7ms bio time)
+	 * Use case 2 (NMDA): f_clock = 4kHz -> tau_max = 127ms (127s bio time)
+	 * Use case 3 (short): f_clock = 250MHz -> tau_min = 4ns (4µs in bio time)
+	 * @note The reset conductance is limited and thus will not pull down the membrane in 4 ns!
+	 *       The fastest analog "reset time constant" is approx. 0.5 μs.
+	 */
+	struct GENPYBIND(inline_base("*")) RefractoryTime
+	    : public halco::common::detail::RantWrapper<RefractoryTime, uint_fast16_t, 255, 0>
+	{
+		constexpr explicit RefractoryTime(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	/**
+	 * There are two independent but equivalent clocks available.
+	 * Both clocks can be configured as desired for the use case. See e.g. RefractoryTime
+	 */
+	struct GENPYBIND(inline_base("*")) InputClock
+	    : public halco::common::detail::RantWrapper<InputClock, uint_fast8_t, 1, 0>
+	{
+		constexpr explicit InputClock(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	NeuronBackendConfig() SYMBOL_VISIBLE;
+
+	// accessors
+	GENPYBIND(getter_for(address_out))
+	AddressOut get_address_out() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(address_out))
+	void set_address_out(AddressOut addr) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(reset_holdoff))
+	ResetHoldoff get_reset_holdoff() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(reset_holdoff))
+	void set_reset_holdoff(ResetHoldoff val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(refractory_time))
+	RefractoryTime get_refractory_time() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(refractory_time))
+	void set_refractory_time(RefractoryTime val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(post_overwrite))
+	bool get_post_overwrite() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(post_overwrite))
+	void set_post_overwrite(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(select_input_clock))
+	InputClock get_select_input_clock() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(select_input_clock))
+	void set_select_input_clock(InputClock src) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_adaptation_pulse))
+	bool get_enable_adaptation_pulse() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_adaptation_pulse))
+	void set_enable_adaptation_pulse(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_bayesian_extension))
+	bool get_enable_bayesian_extension() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_bayesian_extension))
+	void set_enable_bayesian_extension(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_neuron_slave))
+	bool get_enable_neuron_slave() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_neuron_slave))
+	void set_enable_neuron_slave(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(connect_fire_bottom))
+	bool get_connect_fire_bottom() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(connect_fire_bottom))
+	void set_connect_fire_bottom(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(connect_fire_from_right))
+	bool get_connect_fire_from_right() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(connect_fire_from_right))
+	void set_connect_fire_from_right(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(connect_fire_to_right))
+	bool get_connect_fire_to_right() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(connect_fire_to_right))
+	void set_connect_fire_to_right(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_spike_out))
+	bool get_enable_spike_out() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_spike_out))
+	void set_enable_spike_out(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_neuron_master))
+	bool get_enable_neuron_master() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_neuron_master))
+	void set_enable_neuron_master(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_bayesian_0))
+	bool get_enable_bayesian_0() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_bayesian_0))
+	void set_enable_bayesian_0(bool val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enable_bayesian_1))
+	bool get_enable_bayesian_1() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_bayesian_1))
+	void set_enable_bayesian_1(bool val) SYMBOL_VISIBLE;
+
+	bool operator==(NeuronBackendConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(NeuronBackendConfig const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 4;
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, NeuronBackendConfig const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar);
+
+	struct NeuronBackendConfigBitfield;
+
+	NeuronBackendConfigBitfield to_bitfield() const;
+	void from_bitfield(NeuronBackendConfigBitfield const& bitfield);
+
+	AddressOut m_address_out;
+	ResetHoldoff m_reset_holdoff;
+	RefractoryTime m_refractory_time;
+	bool m_post_overwrite;
+	InputClock m_select_input_clock;
+	bool m_en_adapt_pulse;
+	bool m_en_baesian_extension;
+	bool m_en_neuron_slave;
+	bool m_connect_fire_bottom;
+	bool m_connect_fire_from_right;
+	bool m_connect_fire_to_right;
+	bool m_en_spike_out;
+	bool m_en_neuron_master;
+	bool m_en_0_baesian;
+	bool m_en_1_baesian;
+};
+
+
+/*
  * Container for configuration of (digital) neuron parameters.
  */
 class GENPYBIND(visible) NeuronConfig
 {
 public:
-	typedef halco::hicann_dls::vx::NeuronOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::NeuronConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	/** Source of readout output. */
@@ -67,199 +273,199 @@ public:
 	GENPYBIND(getter_for(enable_divide_multicomp_conductance_bias))
 	bool get_enable_divide_multicomp_conductance_bias() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_divide_multicomp_conductance_bias))
-	void set_enable_divide_multicomp_conductance_bias(bool const value) SYMBOL_VISIBLE;
+	void set_enable_divide_multicomp_conductance_bias(bool value) SYMBOL_VISIBLE;
 
 	// multiply inter-compartment conductance bias by 4
 	GENPYBIND(getter_for(enable_multiply_multicomp_conductance_bias))
 	bool get_enable_multiply_multicomp_conductance_bias() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_multiply_multicomp_conductance_bias))
-	void set_enable_multiply_multicomp_conductance_bias(bool const value) SYMBOL_VISIBLE;
+	void set_enable_multiply_multicomp_conductance_bias(bool value) SYMBOL_VISIBLE;
 
 	// connect local membrane to soma
 	GENPYBIND(getter_for(connect_soma))
 	bool get_connect_soma() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(connect_soma))
-	void set_connect_soma(bool const value) SYMBOL_VISIBLE;
+	void set_connect_soma(bool value) SYMBOL_VISIBLE;
 
 	// connect local membrane to membrane on right
 	GENPYBIND(getter_for(connect_membrane_right))
 	bool get_connect_membrane_right() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(connect_membrane_right))
-	void set_connect_membrane_right(bool const value) SYMBOL_VISIBLE;
+	void set_connect_membrane_right(bool value) SYMBOL_VISIBLE;
 
 	// enable inter-compartment conductance
 	GENPYBIND(getter_for(enable_multicomp_conductance))
 	bool get_enable_multicomp_conductance() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_multicomp_conductance))
-	void set_enable_multicomp_conductance(bool const value) SYMBOL_VISIBLE;
+	void set_enable_multicomp_conductance(bool value) SYMBOL_VISIBLE;
 
 	// connect local membrane to bottom membrane
 	GENPYBIND(getter_for(connect_bottom))
 	bool get_connect_bottom() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(connect_bottom))
-	void set_connect_bottom(bool const value) SYMBOL_VISIBLE;
+	void set_connect_bottom(bool value) SYMBOL_VISIBLE;
 
 	// connect soma to soma on the right
 	GENPYBIND(getter_for(connect_soma_right))
 	bool get_connect_soma_right() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(connect_soma_right))
-	void set_connect_soma_right(bool const value) SYMBOL_VISIBLE;
+	void set_connect_soma_right(bool value) SYMBOL_VISIBLE;
 
 	// enable fire output of neuron (also gates bypass circuits)
 	GENPYBIND(getter_for(enable_fire))
 	bool get_enable_fire() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_fire))
-	void set_enable_fire(bool const value) SYMBOL_VISIBLE;
+	void set_enable_fire(bool value) SYMBOL_VISIBLE;
 
 	// enable threshold comparator
 	GENPYBIND(getter_for(enable_threshold_comparator))
 	bool get_enable_threshold_comparator() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_threshold_comparator))
-	void set_enable_threshold_comparator(bool const value) SYMBOL_VISIBLE;
+	void set_enable_threshold_comparator(bool value) SYMBOL_VISIBLE;
 
 	// enable exc. synaptic input
 	GENPYBIND(getter_for(enable_synaptic_input_excitatory))
 	bool get_enable_synaptic_input_excitatory() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_synaptic_input_excitatory))
-	void set_enable_synaptic_input_excitatory(bool const value) SYMBOL_VISIBLE;
+	void set_enable_synaptic_input_excitatory(bool value) SYMBOL_VISIBLE;
 
 	// enable inh. synaptic input
 	GENPYBIND(getter_for(enable_synaptic_input_inhibitory))
 	bool get_enable_synaptic_input_inhibitory() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_synaptic_input_inhibitory))
-	void set_enable_synaptic_input_inhibitory(bool const value) SYMBOL_VISIBLE;
+	void set_enable_synaptic_input_inhibitory(bool value) SYMBOL_VISIBLE;
 
 	// enable exc. bypass circuit
 	GENPYBIND(getter_for(enable_bypass_excitatory))
 	bool get_enable_bypass_excitatory() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_bypass_excitatory))
-	void set_enable_bypass_excitatory(bool const value) SYMBOL_VISIBLE;
+	void set_enable_bypass_excitatory(bool value) SYMBOL_VISIBLE;
 
 	// enable inh. bypass circuit
 	GENPYBIND(getter_for(enable_bypass_inhibitory))
 	bool get_enable_bypass_inhibitory() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_bypass_inhibitory))
-	void set_enable_bypass_inhibitory(bool const value) SYMBOL_VISIBLE;
+	void set_enable_bypass_inhibitory(bool value) SYMBOL_VISIBLE;
 
 	// enable membrane offset current (can also be used for stimulus/step current)
 	GENPYBIND(getter_for(enable_membrane_offset))
 	bool get_enable_membrane_offset() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_membrane_offset))
-	void set_enable_membrane_offset(bool const value) SYMBOL_VISIBLE;
+	void set_enable_membrane_offset(bool value) SYMBOL_VISIBLE;
 
 	// enable merging of membrane and adaptation capacitances
 	GENPYBIND(getter_for(enable_capacitor_merge))
 	bool get_enable_capacitor_merge() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_capacitor_merge))
-	void set_enable_capacitor_merge(bool const value) SYMBOL_VISIBLE;
+	void set_enable_capacitor_merge(bool value) SYMBOL_VISIBLE;
 
 	// configure membrane size
 	GENPYBIND(getter_for(membrane_capacitor_size))
 	MembraneCapacitorSize get_membrane_capacitor_size() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(membrane_capacitor_size))
-	void set_membrane_capacitor_size(MembraneCapacitorSize const value) SYMBOL_VISIBLE;
+	void set_membrane_capacitor_size(MembraneCapacitorSize value) SYMBOL_VISIBLE;
 
 	// flip the sign of a (sub-threshold adaptation)
 	GENPYBIND(getter_for(invert_adaptation_a))
 	bool get_invert_adaptation_a() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(invert_adaptation_a))
-	void set_invert_adaptation_a(bool const value) SYMBOL_VISIBLE;
+	void set_invert_adaptation_a(bool value) SYMBOL_VISIBLE;
 
 	// flip the sign of b (spike-triggered adaptation)
 	GENPYBIND(getter_for(invert_adaptation_b))
 	bool get_invert_adaptation_b() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(invert_adaptation_b))
-	void set_invert_adaptation_b(bool const value) SYMBOL_VISIBLE;
+	void set_invert_adaptation_b(bool value) SYMBOL_VISIBLE;
 
 	// enable adaptation
 	GENPYBIND(getter_for(enable_adaptation))
 	bool get_enable_adaptation() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_adaptation))
-	void set_enable_adaptation(bool const value) SYMBOL_VISIBLE;
+	void set_enable_adaptation(bool value) SYMBOL_VISIBLE;
 
 	// enable adaptation capacitance
 	GENPYBIND(getter_for(enable_adaptation_capacitor))
 	bool get_enable_adaptation_capacitor() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_adaptation_capacitor))
-	void set_enable_adaptation_capacitor(bool const value) SYMBOL_VISIBLE;
+	void set_enable_adaptation_capacitor(bool value) SYMBOL_VISIBLE;
 
 	// strength of exponential term
 	GENPYBIND(getter_for(exponential_term_strength))
 	ExponentialTermStrength get_exponential_term_strength() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(exponential_term_strength))
-	void set_exponential_term_strength(ExponentialTermStrength const value) SYMBOL_VISIBLE;
+	void set_exponential_term_strength(ExponentialTermStrength value) SYMBOL_VISIBLE;
 
 	// enable exponential term
 	GENPYBIND(getter_for(enable_exponential))
 	bool get_enable_exponential() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_exponential))
-	void set_enable_exponential(bool const value) SYMBOL_VISIBLE;
+	void set_enable_exponential(bool value) SYMBOL_VISIBLE;
 
 	// enable readout of adaptation voltage (user must also configure readout_select!)
 	GENPYBIND(getter_for(enable_adaptation_readout))
 	bool get_enable_adaptation_readout() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_adaptation_readout))
-	void set_enable_adaptation_readout(bool const value) SYMBOL_VISIBLE;
+	void set_enable_adaptation_readout(bool value) SYMBOL_VISIBLE;
 
 	// enable direct, unbuffered access to membrane
 	GENPYBIND(getter_for(enable_unbuffered_access))
 	bool get_enable_unbuffered_access() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_unbuffered_access))
-	void set_enable_unbuffered_access(bool const value) SYMBOL_VISIBLE;
+	void set_enable_unbuffered_access(bool value) SYMBOL_VISIBLE;
 
 	// enable readout amplifier
 	GENPYBIND(getter_for(enable_readout_amplifier))
 	bool get_enable_readout_amplifier() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_readout_amplifier))
-	void set_enable_readout_amplifier(bool const value) SYMBOL_VISIBLE;
+	void set_enable_readout_amplifier(bool value) SYMBOL_VISIBLE;
 
 	// select readout source
 	GENPYBIND(getter_for(readout_source))
 	ReadoutSource get_readout_source() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(readout_source))
-	void set_readout_source(ReadoutSource const value) SYMBOL_VISIBLE;
+	void set_readout_source(ReadoutSource value) SYMBOL_VISIBLE;
 
 	// enable readout
 	GENPYBIND(getter_for(enable_readout))
 	bool get_enable_readout() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_readout))
-	void set_enable_readout(bool const value) SYMBOL_VISIBLE;
+	void set_enable_readout(bool value) SYMBOL_VISIBLE;
 
 	// enable source degeneration of leak/reset OTA in reset mode
 	GENPYBIND(getter_for(enable_reset_degeneration))
 	bool get_enable_reset_degeneration() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_reset_degeneration))
-	void set_enable_reset_degeneration(bool const value) SYMBOL_VISIBLE;
+	void set_enable_reset_degeneration(bool value) SYMBOL_VISIBLE;
 
 	// enable division (8x) of conductance in reset mode
 	GENPYBIND(getter_for(enable_reset_division))
 	bool get_enable_reset_division() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_reset_division))
-	void set_enable_reset_division(bool const value) SYMBOL_VISIBLE;
+	void set_enable_reset_division(bool value) SYMBOL_VISIBLE;
 
 	// enable multiplication (8x) of conductance in reset mode
 	GENPYBIND(getter_for(enable_reset_multiplication))
 	bool get_enable_reset_multiplication() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_reset_multiplication))
-	void set_enable_reset_multiplication(bool const value) SYMBOL_VISIBLE;
+	void set_enable_reset_multiplication(bool value) SYMBOL_VISIBLE;
 
 	// enable source degeneration of leak/reset OTA in leak mode
 	GENPYBIND(getter_for(enable_leak_degeneration))
 	bool get_enable_leak_degeneration() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_leak_degeneration))
-	void set_enable_leak_degeneration(bool const value) SYMBOL_VISIBLE;
+	void set_enable_leak_degeneration(bool value) SYMBOL_VISIBLE;
 
 	// enable division (8x) of conductance in leak mode
 	GENPYBIND(getter_for(enable_leak_division))
 	bool get_enable_leak_division() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_leak_division))
-	void set_enable_leak_division(bool const value) SYMBOL_VISIBLE;
+	void set_enable_leak_division(bool value) SYMBOL_VISIBLE;
 
 	// enable multiplication (8x) of conductance in leak mode
 	GENPYBIND(getter_for(enable_leak_multiplication))
 	bool get_enable_leak_multiplication() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_leak_multiplication))
-	void set_enable_leak_multiplication(bool const value) SYMBOL_VISIBLE;
+	void set_enable_leak_multiplication(bool value) SYMBOL_VISIBLE;
 
 	bool operator==(NeuronConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(NeuronConfig const& other) const SYMBOL_VISIBLE;
@@ -323,6 +529,14 @@ private:
 };
 
 namespace detail {
+
+template <>
+struct BackendContainerTrait<NeuronBackendConfig>
+    : public BackendContainerBase<
+          NeuronBackendConfig,
+          fisch::vx::OmnibusChipOverJTAG,
+          fisch::vx::OmnibusChip>
+{};
 
 template <>
 struct BackendContainerTrait<NeuronConfig>

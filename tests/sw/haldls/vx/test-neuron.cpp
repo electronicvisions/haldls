@@ -17,6 +17,149 @@ using namespace halco::common;
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
 
+TEST(NeuronBackendConfig, General)
+{
+	NeuronBackendConfig config;
+
+	auto addr = draw_ranged_non_default_value<NeuronBackendConfig::AddressOut>();
+	config.set_address_out(addr);
+	ASSERT_EQ(config.get_address_out(), addr);
+
+	auto reset = draw_ranged_non_default_value<NeuronBackendConfig::ResetHoldoff>();
+	config.set_reset_holdoff(reset);
+	ASSERT_EQ(config.get_reset_holdoff(), reset);
+
+	auto refr = draw_ranged_non_default_value<NeuronBackendConfig::RefractoryTime>();
+	config.set_refractory_time(refr);
+	ASSERT_EQ(config.get_refractory_time(), refr);
+
+	auto clock = NeuronBackendConfig::InputClock(1);
+	config.set_select_input_clock(clock);
+	ASSERT_EQ(config.get_select_input_clock(), clock);
+
+	auto value = !config.get_post_overwrite();
+	config.set_post_overwrite(value);
+	ASSERT_EQ(config.get_post_overwrite(), value);
+
+
+	value = !config.get_enable_adaptation_pulse();
+	config.set_enable_adaptation_pulse(value);
+	ASSERT_EQ(config.get_enable_adaptation_pulse(), value);
+
+	value = !config.get_enable_bayesian_extension();
+	config.set_enable_bayesian_extension(value);
+	ASSERT_EQ(config.get_enable_bayesian_extension(), value);
+
+	value = !config.get_enable_neuron_slave();
+	config.set_enable_neuron_slave(value);
+	ASSERT_EQ(config.get_enable_neuron_slave(), value);
+
+	value = !config.get_connect_fire_bottom();
+	config.set_connect_fire_bottom(value);
+	ASSERT_EQ(config.get_connect_fire_bottom(), value);
+
+	value = !config.get_connect_fire_from_right();
+	config.set_connect_fire_from_right(value);
+	ASSERT_EQ(config.get_connect_fire_from_right(), value);
+
+	value = !config.get_connect_fire_to_right();
+	config.set_connect_fire_to_right(value);
+	ASSERT_EQ(config.get_connect_fire_to_right(), value);
+
+	value = !config.get_enable_spike_out();
+	config.set_enable_spike_out(value);
+	ASSERT_EQ(config.get_enable_spike_out(), value);
+
+	value = !config.get_enable_neuron_master();
+	config.set_enable_neuron_master(value);
+	ASSERT_EQ(config.get_enable_neuron_master(), value);
+
+	value = !config.get_enable_bayesian_0();
+	config.set_enable_bayesian_0(value);
+	ASSERT_EQ(config.get_enable_bayesian_0(), value);
+
+	value = !config.get_enable_bayesian_1();
+	config.set_enable_bayesian_1(value);
+	ASSERT_EQ(config.get_enable_bayesian_1(), value);
+
+	NeuronBackendConfig default_config;
+	ASSERT_NE(config, default_config);
+	ASSERT_TRUE(config != default_config);
+	ASSERT_FALSE(config == default_config);
+	NeuronBackendConfig copy_config = config;
+	ASSERT_EQ(config, copy_config);
+	ASSERT_TRUE(config == copy_config);
+	ASSERT_FALSE(config != copy_config);
+}
+
+TEST(NeuronBackendConfig, EncodeDecode)
+{
+	NeuronBackendConfig config;
+	config.set_connect_fire_to_right(true);
+	config.set_enable_spike_out(true);
+	config.set_address_out(NeuronBackendConfig::AddressOut(7));
+	config.set_enable_adaptation_pulse(true);
+
+	// neuron 23, south east block
+	auto neuron_coord = NeuronBackendConfigOnDLS(
+	    NeuronBackendConfigOnNeuronBackendConfigBlock(23 + 128), NeuronBackendConfigBlockOnDLS(1));
+
+	std::array<OmnibusChipOverJTAGAddress, NeuronBackendConfig::config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0x1a1000 + 128 * 4 + 23 * 4 + 0},
+	                     OmnibusChipOverJTAGAddress{0x1a1000 + 128 * 4 + 23 * 4 + 1},
+	                     OmnibusChipOverJTAGAddress{0x1a1000 + 128 * 4 + 23 * 4 + 2},
+	                     OmnibusChipOverJTAGAddress{0x1a1000 + 128 * 4 + 23 * 4 + 3}};
+
+	{ // check if write addresses are correct
+		addresses_type write_addresses;
+		visit_preorder(
+		    config, neuron_coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // check if read addresses are correct
+		addresses_type read_addresses;
+		visit_preorder(
+		    config, neuron_coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	// Encode
+	words_type data;
+	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
+	ASSERT_TRUE(data[3].get() & 0b1000);          // connect_fire_to_right
+	ASSERT_TRUE(data[3].get() & 0b10000);         // en_spike_out
+	ASSERT_EQ((data[0].get() & 0b111111), 0b111000); // address_out
+	ASSERT_TRUE(data[2].get() & 0b1000000);       // en_adapt_pulse
+
+	// Decode back
+	NeuronBackendConfig config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, neuron_coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(NeuronBackendConfig, CerealizeCoverage)
+{
+	NeuronBackendConfig c1, c2;
+	c1.set_enable_bayesian_0(true);
+	c1.set_enable_neuron_master(true);
+	c1.set_connect_fire_from_right(true);
+	c1.set_select_input_clock(NeuronBackendConfig::InputClock(1));
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(c1);
+	}
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(c2);
+	}
+	ASSERT_EQ(c1, c2);
+}
+
+
 TEST(NeuronConfig, General)
 {
 	NeuronConfig config;
@@ -172,7 +315,8 @@ TEST(NeuronConfig, EncodeDecode)
 	config.set_connect_soma_right(true);
 	config.set_readout_source(NeuronConfig::ReadoutSource::adaptation);
 
-	auto neuron_coord = NeuronOnDLS(NeuronOnNeuronBlock(23), NeuronBlockOnDLS(1));
+	auto neuron_coord =
+	    NeuronConfigOnDLS(NeuronConfigOnNeuronConfigBlock(23), NeuronConfigBlockOnDLS(1));
 
 	std::array<OmnibusChipOverJTAGAddress, NeuronConfig::config_size_in_words> ref_addresses = {
 	    OmnibusChipOverJTAGAddress{0x168000 + 23 * 8 + 2},

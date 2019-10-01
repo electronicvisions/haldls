@@ -91,6 +91,9 @@ constexpr std::array<uint32_t, 4> cadc_sram_base_addresses = {
     cadc_top_sram_west_base_address, cadc_top_sram_east_base_address,
     cadc_bottom_sram_west_base_address, cadc_bottom_sram_east_base_address};
 
+constexpr uint32_t neuron_backend_left_sram_base_address{0x1a'9000};
+constexpr uint32_t neuron_backend_right_sram_base_address{0x1a'1000};
+
 constexpr uint32_t ut_omnibus_mask{0x0400'0000};
 constexpr uint32_t phy_omnibus_mask{0x0200'0000 | ut_omnibus_mask};
 constexpr uint32_t perftest_omnibus_mask{0x0800'0000};
