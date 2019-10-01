@@ -6,7 +6,8 @@
 
 namespace stadls::vx {
 
-PlaybackProgram::PlaybackProgram() : m_program_impl() {}
+PlaybackProgram::PlaybackProgram() : m_program_impl(std::make_shared<fisch::vx::PlaybackProgram>())
+{}
 
 PlaybackProgram::PlaybackProgram(std::shared_ptr<fisch::vx::PlaybackProgram> const& program_impl) :
     m_program_impl(program_impl)
