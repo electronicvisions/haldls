@@ -2,6 +2,7 @@
 #include "fisch/vx/event.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
+#include "hate/visibility.h"
 
 namespace cereal {
 class access;
