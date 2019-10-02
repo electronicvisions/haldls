@@ -22,7 +22,32 @@ typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
 
 TEST(CapMemCell, General)
 {
-	test_generic_functionality_single_value<CapMemCell>();
+	typedef typename CapMemCell::Value value_type;
+	// test range
+	EXPECT_NO_THROW(value_type(CapMemCell::Value::max));
+	EXPECT_NO_THROW(value_type(CapMemCell::Value::min));
+
+	// test getter/setter
+	CapMemCell o;
+	auto val = draw_ranged_non_default_value<value_type>();
+	o.set_value(val);
+	ASSERT_EQ(boost::get<CapMemCell::Value>(o.get_value()), val);
+
+	o.set_value(CapMemCell::DisableRefresh());
+	ASSERT_EQ(boost::get<CapMemCell::DisableRefresh>(o.get_value()), CapMemCell::DisableRefresh());
+
+	// test assign
+	CapMemCell o_copy = o;
+	auto other_val = draw_ranged_non_default_value<value_type>(val);
+	CapMemCell o_other(other_val);
+
+	// test comparison
+	ASSERT_EQ(o_copy, o);
+	ASSERT_FALSE(o_copy != o);
+	ASSERT_FALSE(o_copy == o_other);
+	ASSERT_TRUE(o_copy != o_other);
+	ASSERT_NE(o, o_other);
+
 	test_hex_ostream_operator_single_value<CapMemCell>();
 }
 
@@ -74,7 +99,7 @@ TEST(CapMemBlock, General)
 	size_t i = 0;
 	for (auto cell : halco::common::iter_all<CapMemCellOnCapMemBlock>()) {
 		block.set_cell(cell, CapMemCell::Value(i));
-		ASSERT_EQ(block.get_cell(cell), CapMemCell::Value(i));
+		ASSERT_EQ(boost::get<CapMemCell::Value>(block.get_cell(cell)), CapMemCell::Value(i));
 		i = (i + 1) % CapMemCell::Value::max;
 	}
 

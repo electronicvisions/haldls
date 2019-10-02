@@ -77,4 +77,14 @@ def build(bld):
         linkflags='-Wl,-z,defs',
     )
 
+    bld(
+        name='pyhaldls_test_vx',
+        tests='test/pyhaldls_test_vx.py',
+        features='use pytest pylint pycodestyle',
+        use=['pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'pyhalco_common_files'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+    )
+
     bld.add_post_fun(summary)

@@ -3,6 +3,8 @@
 #include <array>
 #include <cstdint>
 #include <ostream>
+// std::variant not serializable by cereal with builtin support
+#include <boost/variant.hpp>
 
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/coordinates.h"
@@ -12,6 +14,8 @@
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
+#include "pybind11/stl.h"
+
 namespace cereal {
 class access;
 } // namespace cereal
@@ -20,6 +24,25 @@ namespace fisch::vx {
 class OmnibusChipOverJTAG;
 class OmnibusChip;
 } // namespace fisch::vx
+
+// TODO: Issue #3375 move to genpybind as is general
+namespace pybind11::detail {
+
+template <typename... Ts>
+struct type_caster<boost::variant<Ts...>> : variant_caster<boost::variant<Ts...>>
+{};
+
+template <>
+struct visit_helper<boost::variant>
+{
+	template <typename... Args>
+	static auto call(Args&&... args) -> decltype(boost::apply_visitor(args...))
+	{
+		return boost::apply_visitor(args...);
+	}
+};
+
+} // namespace pybind11::detail
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
@@ -31,22 +54,38 @@ public:
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 1023, 0>
+	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 1022, 0>
 	{
 		constexpr explicit Value(uintmax_t const val = 0)
 		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
 		{}
 	};
 
-	CapMemCell() : CapMemCell(CapMemCell::Value(0)) {}
-	SYMBOL_VISIBLE
-	explicit CapMemCell(Value const& value) : m_value(value) {}
-	SYMBOL_VISIBLE
+	struct GENPYBIND(inline_base("*")) DisableRefresh
+	    : public halco::common::detail::RantWrapper<DisableRefresh, uint_fast16_t, 1023, 1023>
+	{
+		constexpr explicit DisableRefresh(uintmax_t const val = 1023) : rant_t(val) {}
+	};
+
+	typedef boost::
+	    variant<::haldls::vx::CapMemCell::Value, ::haldls::vx::CapMemCell::DisableRefresh>
+	        value_type;
+
+	GENPYBIND_MANUAL({
+		auto cls = pybind11::class_<::haldls::vx::CapMemCell::value_type>(parent, "value_type");
+		cls.def(
+		       pybind11::init<::haldls::vx::CapMemCell::Value>(),
+		       pybind11::arg("value") = ::haldls::vx::CapMemCell::Value(0))
+		    .def(
+		        pybind11::init<::haldls::vx::CapMemCell::DisableRefresh>(), pybind11::arg("value"));
+	})
+
+	explicit CapMemCell(value_type const& value = Value()) : m_value(value) {}
 
 	GENPYBIND(getter_for(value))
-	Value get_value() const SYMBOL_VISIBLE;
+	value_type get_value() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(value))
-	void set_value(Value const& value) SYMBOL_VISIBLE;
+	void set_value(value_type const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
@@ -69,7 +108,7 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
-	Value m_value;
+	value_type m_value;
 };
 
 class GENPYBIND(visible) CapMemBlock
@@ -80,11 +119,11 @@ public:
 
 	CapMemBlock() SYMBOL_VISIBLE;
 
-	CapMemCell::Value get_cell(halco::hicann_dls::vx::CapMemCellOnCapMemBlock const& cell) const
-	    SYMBOL_VISIBLE;
+	CapMemCell::value_type get_cell(
+	    halco::hicann_dls::vx::CapMemCellOnCapMemBlock const& cell) const SYMBOL_VISIBLE;
 	void set_cell(
 	    halco::hicann_dls::vx::CapMemCellOnCapMemBlock const& cell,
-	    CapMemCell::Value const& value) SYMBOL_VISIBLE;
+	    CapMemCell::value_type const& value) SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, CapMemBlock const& block) SYMBOL_VISIBLE;
@@ -428,6 +467,7 @@ struct VisitPreorderImpl<CapMemBlock>
 namespace std {
 
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemCell::Value)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemCell::DisableRefresh)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::OutAmpBias)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::SourceFollowerBias)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CapMemBlockConfig::LevelShifterBias)

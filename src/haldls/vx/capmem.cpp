@@ -4,6 +4,7 @@
 #include <numeric>
 #include <utility>
 
+#include <cereal/types/boost_variant.hpp>
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "haldls/vx/capmem.h"
@@ -24,12 +25,12 @@ namespace vx {
 using halco::common::typed_array;
 using namespace halco::hicann_dls::vx;
 
-CapMemCell::Value CapMemCell::get_value() const
+CapMemCell::value_type CapMemCell::get_value() const
 {
 	return m_value;
 }
 
-void CapMemCell::set_value(CapMemCell::Value const& value)
+void CapMemCell::set_value(value_type const& value)
 {
 	m_value = value;
 }
@@ -62,7 +63,11 @@ template SYMBOL_VISIBLE
 template <typename WordT>
 std::array<WordT, CapMemCell::config_size_in_words> CapMemCell::encode() const
 {
-	return {{static_cast<WordT>(fisch::vx::OmnibusData(get_value()))}};
+	if (auto const ptr = boost::get<DisableRefresh>(&m_value)) {
+		return {WordT(fisch::vx::OmnibusData(*ptr))};
+	} else {
+		return {WordT(fisch::vx::OmnibusData(boost::get<Value>(m_value)))};
+	}
 }
 
 template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCell::config_size_in_words>
@@ -74,7 +79,12 @@ CapMemCell::encode<fisch::vx::OmnibusChip>() const;
 template <typename WordT>
 void CapMemCell::decode(std::array<WordT, CapMemCell::config_size_in_words> const& data)
 {
-	set_value(Value(data[0].get()));
+	auto value = data[0].get();
+	if (value == DisableRefresh()) {
+		m_value = DisableRefresh();
+	} else {
+		m_value = Value(value);
+	}
 }
 
 template SYMBOL_VISIBLE void CapMemCell::decode<fisch::vx::OmnibusChipOverJTAG>(
@@ -85,12 +95,17 @@ template SYMBOL_VISIBLE void CapMemCell::decode<fisch::vx::OmnibusChip>(
 
 std::ostream& operator<<(std::ostream& os, CapMemCell const& cell)
 {
-    using namespace hate::math;
-	auto const w = static_cast<CapMemCell::Value::value_type>(cell.get_value());
-	std::stringstream out;
-	out << std::showbase << std::internal << std::setfill('0') << std::hex
-	    << std::setw(round_up_integer_division(num_bits(CapMemCell::Value::max), 4)) << w;
-	os << out.str() << std::endl;
+	using namespace hate::math;
+	if (auto ptr = boost::get<CapMemCell::DisableRefresh>(&(cell.m_value))) {
+		os << *ptr << std::endl;
+	} else {
+		auto const w =
+		    static_cast<CapMemCell::Value::value_type>(boost::get<CapMemCell::Value>(cell.m_value));
+		std::stringstream out;
+		out << std::showbase << std::internal << std::setfill('0') << std::hex
+		    << std::setw(round_up_integer_division(num_bits(CapMemCell::Value::max), 4)) << w;
+		os << out.str() << std::endl;
+	}
 	return print_words_for_each_backend(os, cell);
 }
 
@@ -123,12 +138,13 @@ CapMemBlock::CapMemBlock()
 	}
 }
 
-CapMemCell::Value CapMemBlock::get_cell(CapMemCellOnCapMemBlock const& coord) const
+CapMemCell::value_type CapMemBlock::get_cell(CapMemCellOnCapMemBlock const& coord) const
 {
 	return m_capmem_cells.at(coord).get_value();
 }
 
-void CapMemBlock::set_cell(CapMemCellOnCapMemBlock const& coord, CapMemCell::Value const& value)
+void CapMemBlock::set_cell(
+    CapMemCellOnCapMemBlock const& coord, CapMemCell::value_type const& value)
 {
 	m_capmem_cells.at(coord).set_value(value);
 }
