@@ -34,7 +34,9 @@ public:
 	struct GENPYBIND(inline_base("*")) ResetWait
 	    : public halco::common::detail::RantWrapper<ResetWait, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit ResetWait(uintmax_t const val = 100) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit ResetWait(uintmax_t const val = 100) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
 	};
 
 	/**
@@ -44,7 +46,9 @@ public:
 	struct GENPYBIND(inline_base("*")) DeadTime
 	    : public halco::common::detail::RantWrapper<DeadTime, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit DeadTime(uintmax_t const val = 20) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit DeadTime(uintmax_t const val = 20) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
 	};
 
 	/** Default constructor. */
@@ -145,7 +149,9 @@ public:
 	struct GENPYBIND(inline_base("*")) Offset
 	    : public halco::common::detail::RantWrapper<Offset, int_fast16_t, 127, -128>
 	{
-		constexpr explicit Offset(intmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Offset(intmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
 	};
 
 	/** Default constructor. */
@@ -217,7 +223,9 @@ public:
 	struct GENPYBIND(inline_base("*")) Value
 	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit Value(intmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Value(intmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
 	};
 
 	/** Default constructor. */
