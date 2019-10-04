@@ -158,7 +158,8 @@ public:
 		    : public halco::common::detail::RantWrapper<TimeCalib, uint_fast16_t, 3, 0>
 		{
 			constexpr explicit TimeCalib(uintmax_t const val = 0)
-			    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+			    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE GENPYBIND(implicit_conversion) :
+			    rant_t(val)
 			{}
 		};
 
@@ -167,7 +168,8 @@ public:
 		    : public halco::common::detail::RantWrapper<AmpCalib, uint_fast16_t, 3, 0>
 		{
 			constexpr explicit AmpCalib(uintmax_t const val = 0)
-			    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+			    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE GENPYBIND(implicit_conversion) :
+			    rant_t(val)
 			{}
 		};
 
