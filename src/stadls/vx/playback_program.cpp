@@ -29,7 +29,8 @@ T PlaybackProgram::ContainerTicket<T>::get() const
 			    config = haldls::vx::PPUMemoryBlock(m_coord.toPPUMemoryBlockSize());
 		    }
 
-		    visit_preorder(config, m_coord, stadls::DecodeVisitor<decltype(data)>{std::move(data)});
+		    haldls::vx::visit_preorder(
+		        config, m_coord, stadls::DecodeVisitor<decltype(data)>{std::move(data)});
 		    return config;
 	    },
 	    m_ticket_impl);

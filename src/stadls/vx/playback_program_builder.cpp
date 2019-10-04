@@ -36,12 +36,12 @@ void PlaybackProgramBuilder::write_table_generator(
 
 		    typedef std::vector<typename backend_container_type::coordinate_type> addresses_type;
 		    addresses_type write_addresses;
-		    visit_preorder(
+		    haldls::vx::visit_preorder(
 		        config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
 
 		    typedef std::vector<backend_container_type> words_type;
 		    words_type words;
-		    visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{words});
+		    haldls::vx::visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{words});
 
 		    if (words.size() != write_addresses.size()) {
 			    throw std::logic_error("number of addresses and words do not match");
@@ -109,7 +109,7 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 				    config = haldls::vx::PPUMemoryBlock(coord.toPPUMemoryBlockSize());
 			    }
 
-			    visit_preorder(
+			    haldls::vx::visit_preorder(
 			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 		    }
 		    auto ticket_impl = builder.m_builder_impl->read(read_addresses);
