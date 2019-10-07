@@ -234,10 +234,10 @@ TEST(NeuronBackendConfig, EncodeDecode)
 	    NeuronBackendConfigOnNeuronBackendConfigBlock(23 + 128), NeuronBackendConfigBlockOnDLS(1));
 
 	std::array<OmnibusChipOverJTAGAddress, NeuronBackendConfig::config_size_in_words>
-	    ref_addresses = {OmnibusChipOverJTAGAddress{0x1a1000 + 128 * 4 + 23 * 4 + 0},
-	                     OmnibusChipOverJTAGAddress{0x1a1000 + 128 * 4 + 23 * 4 + 1},
-	                     OmnibusChipOverJTAGAddress{0x1a1000 + 128 * 4 + 23 * 4 + 2},
-	                     OmnibusChipOverJTAGAddress{0x1a1000 + 128 * 4 + 23 * 4 + 3}};
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0x1a9000 + 128 * 4 + 23 * 4 + 0},
+	                     OmnibusChipOverJTAGAddress{0x1a9000 + 128 * 4 + 23 * 4 + 1},
+	                     OmnibusChipOverJTAGAddress{0x1a9000 + 128 * 4 + 23 * 4 + 2},
+	                     OmnibusChipOverJTAGAddress{0x1a9000 + 128 * 4 + 23 * 4 + 3}};
 
 	{ // check if write addresses are correct
 		addresses_type write_addresses;

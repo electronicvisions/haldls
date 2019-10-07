@@ -76,13 +76,13 @@ constexpr std::array<uint32_t, 2> padi_base_addresses = {
 
 constexpr uint32_t cadc_top_base_address(ppu_top_subtree_address | 0x0040'0000);
 constexpr uint32_t cadc_top_busreg_address(cadc_top_base_address | 0x0000'1000);
-constexpr uint32_t cadc_top_sram_west_base_address(cadc_top_base_address);
-constexpr uint32_t cadc_top_sram_east_base_address(cadc_top_base_address | 0x0000'0800);
+constexpr uint32_t cadc_top_sram_west_base_address(cadc_top_base_address | 0x0000'0800);
+constexpr uint32_t cadc_top_sram_east_base_address(cadc_top_base_address);
 
 constexpr uint32_t cadc_bottom_base_address(ppu_bottom_subtree_address | 0x0040'0000);
 constexpr uint32_t cadc_bottom_busreg_address(cadc_bottom_base_address | 0x0000'1000);
-constexpr uint32_t cadc_bottom_sram_west_base_address(cadc_bottom_base_address);
-constexpr uint32_t cadc_bottom_sram_east_base_address(cadc_bottom_base_address | 0x0000'0800);
+constexpr uint32_t cadc_bottom_sram_west_base_address(cadc_bottom_base_address | 0x0000'0800);
+constexpr uint32_t cadc_bottom_sram_east_base_address(cadc_bottom_base_address);
 
 constexpr std::array<uint32_t, 2> cadc_busreg_addresses = {cadc_top_busreg_address,
                                                            cadc_bottom_busreg_address};
@@ -91,8 +91,8 @@ constexpr std::array<uint32_t, 4> cadc_sram_base_addresses = {
     cadc_top_sram_west_base_address, cadc_top_sram_east_base_address,
     cadc_bottom_sram_west_base_address, cadc_bottom_sram_east_base_address};
 
-constexpr uint32_t neuron_backend_west_sram_base_address{0x1a'9000};
-constexpr uint32_t neuron_backend_east_sram_base_address{0x1a'1000};
+constexpr uint32_t neuron_backend_west_sram_base_address{0x1a'1000};
+constexpr uint32_t neuron_backend_east_sram_base_address{0x1a'9000};
 
 constexpr uint32_t neuron_backend_west_register_base_address{0x1a'1800};
 constexpr uint32_t neuron_backend_east_register_base_address{0x1a'9800};

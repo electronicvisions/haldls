@@ -140,7 +140,7 @@ TEST(CADCChannelConfig, EncodeDecode)
 	    SynramOnDLS(0));
 
 	std::array<OmnibusChipOverJTAGAddress, CADCChannelConfig::config_size_in_words> ref_addresses =
-	    {OmnibusChipOverJTAGAddress{0x0240'0007ul}};
+	    {OmnibusChipOverJTAGAddress{0x0240'0807ul}};
 	std::array<OmnibusChipOverJTAG, CADCChannelConfig::config_size_in_words> ref_data = {
 	    OmnibusData{12 + 128}};
 
