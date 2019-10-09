@@ -63,7 +63,7 @@ def run_program(
 
     # Last word before mailbox is the exit code
     raw_code = int(program_handle.get().words[
-        halco.PPUMemoryWordOnDLS.return_code].value)
+        int(halco.PPUMemoryWordOnDLS.return_code)].value)
     return ctypes.c_int32(raw_code).value
 
 
