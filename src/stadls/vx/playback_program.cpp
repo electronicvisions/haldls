@@ -100,4 +100,14 @@ std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
 	return os;
 }
 
+bool PlaybackProgram::operator==(PlaybackProgram const& other) const
+{
+	return *m_program_impl == *(other.m_program_impl);
+}
+
+bool PlaybackProgram::operator!=(PlaybackProgram const& other) const
+{
+	return !(*this == other);
+}
+
 } // namespace stadls::vx

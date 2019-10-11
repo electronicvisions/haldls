@@ -1,5 +1,6 @@
 #include "stadls/vx/playback_program_builder.h"
 
+#include <optional>
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -19,7 +20,10 @@ void PlaybackProgramBuilder::wait_until(
 
 template <typename T, size_t SupportedBackendIndex>
 void PlaybackProgramBuilder::write_table_entry(
-    PlaybackProgramBuilder& builder, typename T::coordinate_type const& coord, T const& config)
+    PlaybackProgramBuilder& builder,
+    typename T::coordinate_type const& coord,
+    T const& config,
+    std::optional<T> const& config_reference)
 {
 	typedef typename hate::index_type_list_by_integer<
 	    SupportedBackendIndex,
@@ -39,11 +43,28 @@ void PlaybackProgramBuilder::write_table_entry(
 		throw std::logic_error("number of addresses and words do not match");
 	}
 
-	auto& builder_impl_ref = *(builder.m_builder_impl);
-	auto addr_it = write_addresses.cbegin();
-	for (auto const& word : words) {
-		builder_impl_ref.write(*addr_it, backend_container_type(word));
-		++addr_it;
+	if (config_reference) {
+		if constexpr (std::is_base_of<haldls::vx::DifferentialWriteTrait, T>::value) {
+			words_type reference_words;
+			haldls::vx::visit_preorder(
+			    *config_reference, coord, stadls::EncodeVisitor<words_type>{reference_words});
+			if (reference_words.size() != words.size()) {
+				throw std::logic_error("number of words of container and reference do not match");
+			}
+			words_type reduced_words;
+			addresses_type reduced_addresses;
+			for (size_t i = 0; i < reference_words.size(); ++i) {
+				if (reference_words[i] != words[i]) {
+					reduced_words.push_back(words[i]);
+					reduced_addresses.push_back(write_addresses[i]);
+				}
+			}
+			builder.m_builder_impl->write(reduced_addresses, reduced_words);
+		} else {
+			throw std::logic_error("Container type does not support differential write.");
+		}
+	} else {
+		builder.m_builder_impl->write(write_addresses, words);
 	}
 }
 
@@ -52,17 +73,44 @@ void PlaybackProgramBuilder::write_table_generator(
     typename T::coordinate_type const& coord,
     T const& config,
     size_t const backend_index,
+    std::optional<T> const& config_reference,
     std::index_sequence<SupportedBackendIndex...>)
 {
 	std::array<
-	    void (*)(PlaybackProgramBuilder&, typename T::coordinate_type const&, T const&),
+	    void (*)(
+	        PlaybackProgramBuilder&, typename T::coordinate_type const&, T const&,
+	        std::optional<T> const&),
 	    sizeof...(SupportedBackendIndex)>
 	    write_table{write_table_entry<T, SupportedBackendIndex>...};
 
-	write_table.at(backend_index)(*this, coord, config);
+	write_table.at(backend_index)(*this, coord, config, config_reference);
 }
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
+	void PlaybackProgramBuilder::write(                                                            \
+	    typename Type::coordinate_type const& coord, Type const& config,                           \
+	    Type const& config_reference, haldls::vx::Backend backend)                                 \
+	{                                                                                              \
+		if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                    \
+			throw std::runtime_error("Backend not supported for container type.");                 \
+		}                                                                                          \
+		size_t const backend_index = static_cast<size_t>(                                          \
+		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
+		        static_cast<size_t>(backend)));                                                    \
+		write_table_generator<Type>(                                                               \
+		    coord, config, backend_index, config_reference,                                        \
+		    std::make_index_sequence<                                                              \
+		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
+		            Type>::container_list>::value>());                                             \
+	}                                                                                              \
+	void PlaybackProgramBuilder::write(                                                            \
+	    typename Type::coordinate_type const& coord, Type const& config,                           \
+	    Type const& config_reference)                                                              \
+	{                                                                                              \
+		write(                                                                                     \
+		    coord, config, config_reference,                                                       \
+		    haldls::vx::detail::BackendContainerTrait<Type>::default_backend);                     \
+	}                                                                                              \
 	void PlaybackProgramBuilder::write(                                                            \
 	    typename Type::coordinate_type const& coord, Type const& config,                           \
 	    haldls::vx::Backend backend)                                                               \
@@ -74,7 +122,7 @@ void PlaybackProgramBuilder::write_table_generator(
 		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
 		        static_cast<size_t>(backend)));                                                    \
 		write_table_generator<Type>(                                                               \
-		    coord, config, backend_index,                                                          \
+		    coord, config, backend_index, std::nullopt,                                            \
 		    std::make_index_sequence<                                                              \
 		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
 		            Type>::container_list>::value>());                                             \

@@ -142,6 +142,9 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
 	    SYMBOL_VISIBLE;
 
+	bool operator==(PlaybackProgram const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PlaybackProgram const& other) const SYMBOL_VISIBLE;
+
 private:
 	friend PlaybackProgramBuilder;
 	friend PlaybackProgramExecutor;

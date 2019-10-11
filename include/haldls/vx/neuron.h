@@ -26,7 +26,7 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * Read/write access to common neuron parameters
  */
-class GENPYBIND(visible) CommonNeuronBackendConfig
+class GENPYBIND(visible) CommonNeuronBackendConfig : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronBackendConfigBlockOnDLS coordinate_type;
@@ -152,7 +152,7 @@ private:
  * targeted biological model/experiment. Implementation examples are yet to be written and will
  * then be found in the CI test environment.
  */
-class GENPYBIND(visible) NeuronBackendConfig
+class GENPYBIND(visible) NeuronBackendConfig : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronBackendConfigOnDLS coordinate_type;
@@ -354,7 +354,7 @@ private:
 /*
  * Container for configuration of (digital) neuron parameters.
  */
-class GENPYBIND(visible) NeuronConfig
+class GENPYBIND(visible) NeuronConfig : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronConfigOnDLS coordinate_type;

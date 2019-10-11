@@ -162,7 +162,7 @@ private:
 	words_type m_words;
 };
 
-class GENPYBIND(visible) PPUControlRegister
+class GENPYBIND(visible) PPUControlRegister : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::PPUControlRegisterOnDLS coordinate_type;

@@ -14,7 +14,7 @@ class access;
 
 namespace lola::vx GENPYBIND_TAG_LOLA_VX {
 
-class GENPYBIND(visible) SynapseRow
+class GENPYBIND(visible) SynapseRow : public haldls::vx::DifferentialWriteTrait
 {
 public:
 	typedef std::false_type has_local_data;
@@ -215,7 +215,7 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseMatrix
+class GENPYBIND(visible) SynapseMatrix : public haldls::vx::DifferentialWriteTrait
 {
 public:
 	typedef std::false_type has_local_data;

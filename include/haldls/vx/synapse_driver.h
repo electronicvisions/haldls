@@ -22,7 +22,7 @@ class OmnibusChip;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) SynapseDriverConfig
+class GENPYBIND(visible) SynapseDriverConfig : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseDriverOnDLS coordinate_type;

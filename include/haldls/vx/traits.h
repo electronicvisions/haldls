@@ -9,6 +9,12 @@
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
+ * Trait signalling derived-from container type support differential write operation.
+ */
+class GENPYBIND(visible) DifferentialWriteTrait
+{};
+
+/**
  * Possible backends to target with PlaybackProgramBuilder::read/write.
  */
 enum class GENPYBIND(visible) Backend

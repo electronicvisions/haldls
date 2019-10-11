@@ -62,6 +62,30 @@ public:
 	void write(typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;    \
                                                                                                    \
 	/**                                                                                            \
+	 * Add instructions to write given container to given location.                                \
+	 * @param coord Coordinate value selecting location                                            \
+	 * @param config Container configuration data                                                  \
+	 * @param config_reference Reference configuration for differential write                      \
+	 * @param backend Backend selection                                                            \
+	 */                                                                                            \
+	void write(                                                                                    \
+	    typename Type::coordinate_type const& coord, Type const& config,                           \
+	    Type const& config_reference, haldls::vx::Backend backend) SYMBOL_VISIBLE;                 \
+                                                                                                   \
+	/**                                                                                            \
+	 * Add instructions to write given container to given location.                                \
+	 * The container's default backend is used.                                                    \
+	 * @param coord Coordinate value selecting location                                            \
+	 * @param config Container configuration data                                                  \
+	 * @param config_reference Reference configuration for differential write                      \
+	 * @note This function without backend parameter is needed due to python wrapping not being    \
+	 * able to handle templated default arguments.                                                 \
+	 */                                                                                            \
+	void write(                                                                                    \
+	    typename Type::coordinate_type const& coord, Type const& config,                           \
+	    Type const& config_reference) SYMBOL_VISIBLE;                                              \
+                                                                                                   \
+	/**                                                                                            \
 	 * Add instructions to read container data from given location.                                \
 	 * @param coord Coordinate value selecting location                                            \
 	 * @param backend Backend selection                                                            \
@@ -116,13 +140,17 @@ public:
 private:
 	template <typename T, size_t SupportedBackendIndex>
 	static void write_table_entry(
-	    PlaybackProgramBuilder& builder, typename T::coordinate_type const& coord, T const& config);
+	    PlaybackProgramBuilder& builder,
+	    typename T::coordinate_type const& coord,
+	    T const& config,
+	    std::optional<T> const& config_reference);
 
 	template <class T, size_t... SupportedBackendIndex>
 	void write_table_generator(
 	    typename T::coordinate_type const& coord,
 	    T const& config,
 	    size_t backend_index,
+	    std::optional<T> const& config_reference,
 	    std::index_sequence<SupportedBackendIndex...>);
 
 	template <class T, size_t... SupportedBackendIndex>

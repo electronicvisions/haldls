@@ -177,6 +177,14 @@ def build(bld):
     )
 
     bld(
+        target = 'stadls_swtest_vx',
+        features = 'gtest cxx cxxprogram',
+        source = bld.path.ant_glob('tests/sw/stadls/vx/test-*.cpp'),
+        use = ['haldls_vx', 'stadls_vx', 'GTEST'],
+        install_path = '${PREFIX}/bin',
+    )
+
+    bld(
         target = 'haldls_test_common_inc',
         export_includes = 'tests/common',
     )

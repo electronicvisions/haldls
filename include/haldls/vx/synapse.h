@@ -19,7 +19,7 @@ class OmnibusChipOverJTAG;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) CommonSynramConfig
+class GENPYBIND(visible) CommonSynramConfig : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::CommonSynramConfigOnDLS coordinate_type;
@@ -117,7 +117,7 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseQuad
+class GENPYBIND(visible) SynapseQuad : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseQuadOnDLS coordinate_type;
@@ -239,7 +239,7 @@ private:
 };
 
 
-class GENPYBIND(visible) ColumnCorrelationQuad
+class GENPYBIND(visible) ColumnCorrelationQuad : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::ColumnCorrelationQuadOnDLS coordinate_type;
@@ -350,7 +350,7 @@ private:
 	    m_switches;
 };
 
-class GENPYBIND(visible) ColumnCurrentQuad
+class GENPYBIND(visible) ColumnCurrentQuad : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::ColumnCurrentQuadOnDLS coordinate_type;

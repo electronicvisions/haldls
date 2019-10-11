@@ -26,7 +26,7 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * Information about the routing can be found in the xBoard wiki under
  * https://brainscales-r.kip.uni-heidelberg.de/projects/symap2ic/wiki/xboard.
  */
-class GENPYBIND(visible) ShiftRegister
+class GENPYBIND(visible) ShiftRegister : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::ShiftRegisterOnBoard coordinate_type;
@@ -268,7 +268,7 @@ struct BackendContainerTrait<ShiftRegister>
 /**
  * Container for individual configuration of the value of a DAC channel of the xBoard DACs.
  */
-class GENPYBIND(visible) DACChannel
+class GENPYBIND(visible) DACChannel : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::DACChannelOnBoard coordinate_type;
@@ -337,7 +337,7 @@ struct BackendContainerTrait<DACChannel>
 /**
  * Container for enabling DAC channels of a xBoard DAC.
  */
-class GENPYBIND(visible) DACControl
+class GENPYBIND(visible) DACControl : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::DACOnBoard coordinate_type;

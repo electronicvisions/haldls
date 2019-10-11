@@ -47,7 +47,7 @@ struct visit_helper<boost::variant>
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) CapMemCell
+class GENPYBIND(visible) CapMemCell : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::CapMemCellOnDLS coordinate_type;
@@ -111,7 +111,7 @@ private:
 	value_type m_value;
 };
 
-class GENPYBIND(visible) CapMemBlock
+class GENPYBIND(visible) CapMemBlock : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::CapMemBlockOnDLS coordinate_type;
@@ -142,7 +142,7 @@ private:
 };
 
 
-class GENPYBIND(visible) CapMemBlockConfig
+class GENPYBIND(visible) CapMemBlockConfig : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::CapMemBlockConfigOnDLS coordinate_type;

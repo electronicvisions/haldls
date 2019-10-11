@@ -114,7 +114,7 @@ private:
  * event trigger register or from the SPL1 merger matrix.
  * Additionally the timing of PADI pulses can be modified.
  */
-class GENPYBIND(visible) CommonPADIBusConfig
+class GENPYBIND(visible) CommonPADIBusConfig : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::CommonPADIBusConfigOnDLS coordinate_type;
@@ -211,7 +211,7 @@ private:
  * Common STP configuration shared by synapse drivers per vertical half.
  * It allows to enable/disable and set the speed for the recovery clock.
  */
-class GENPYBIND(visible) CommonSTPConfig
+class GENPYBIND(visible) CommonSTPConfig : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::CommonSTPConfigOnDLS coordinate_type;
