@@ -47,6 +47,7 @@ def build(bld):
         relative_trick=True,
         use = ['pyhaldls_vx',
                'pystadls_vx',
+               'pylola_vx',
                'pyhalco_hicann_dls_vx'
         ],
         install_path = '${PREFIX}/lib',

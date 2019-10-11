@@ -1,4 +1,5 @@
 import pyhaldls_vx as hal
+import pylola_vx as lola
 import pylogging as logger
 import dlens_vx.sta
 import dlens_vx.halco
