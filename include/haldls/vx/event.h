@@ -140,6 +140,10 @@ SpikePackToChip(3)
 typedef fisch::vx::FPGATime FPGATime GENPYBIND(visible);
 typedef fisch::vx::ChipTime ChipTime GENPYBIND(visible);
 
+namespace detail {
+	struct SpikeFromChipChecker;
+}
+
 /**
  * Spike from chip.
  * It is comprised of its label, FPGA and chip time annotation.
@@ -221,7 +225,31 @@ private:
 	SpikeLabel m_label;
 	FPGATime m_fpga_time;
 	ChipTime m_chip_time;
+
+public:
+	friend struct detail::SpikeFromChipChecker;
+	// packing of structs and pods seems different
+	struct __attribute__((packed)) GENPYBIND(hidden) SpikeFromChipDType
+	{
+		uint16_t label;
+		uint64_t fpga_time;
+		uint64_t chip_time;
+	};
 };
+
+namespace detail {
+
+struct SpikeFromChipChecker {
+	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType::label) == sizeof(SpikeFromChip::m_label));
+	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType::fpga_time) == sizeof(SpikeFromChip::m_fpga_time));
+	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType::chip_time) == sizeof(SpikeFromChip::m_chip_time));
+	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType) == sizeof(SpikeFromChip));
+	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, label)     == offsetof(SpikeFromChip, m_label));
+	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, fpga_time) == offsetof(SpikeFromChip, m_fpga_time));
+	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, chip_time) == offsetof(SpikeFromChip, m_chip_time));
+};
+
+} // namespace detail
 
 } // namespace haldls::vx
 

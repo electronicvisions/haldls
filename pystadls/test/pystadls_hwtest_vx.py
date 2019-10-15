@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import unittest
+import numpy
+
 from pyhalco_common import iter_all
 import pyhalco_hicann_dls_vx as halco
 import pyhaldls_vx as haldls
@@ -40,6 +42,64 @@ class HwTestPystadlsVx(unittest.TestCase):
         executor = stadls.PlaybackProgramExecutor()
         executor.connect()
         executor.run(program)
+
+    # pylint: disable=R0914
+    def test_event(self):
+        # ported from C++ test-event
+        sequence = stadls.DigitalInit()
+        builder, _ = sequence.generate()
+
+        num_spikes = 1000
+
+        spike_pack_types = [
+            [1, halco.SpikePack1ToChipOnDLS, haldls.SpikePack1ToChip],
+            [2, halco.SpikePack2ToChipOnDLS, haldls.SpikePack2ToChip],
+            [3, halco.SpikePack3ToChipOnDLS, haldls.SpikePack3ToChip]]
+        to_fpga_spike_labels = []
+        # TODO: introspection would be nicer than hard-coding the types
+        for spike_type_count, spike_type_coord, spike_type in spike_pack_types:
+            for i in range(num_spikes):
+                # TODO: random numbers would be nicer here
+                labels = [haldls.SpikeLabel(i)] * spike_type_count
+                spike = spike_type(labels)
+                builder.write(spike_type_coord(), spike)
+                builder.write(halco.TimerOnDLS(), haldls.Timer())
+                builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(10))
+                to_fpga_spike_labels.extend(labels)
+
+        builder.write(halco.TimerOnDLS(), haldls.Timer())
+        builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(1000))
+        program = builder.done()
+
+        executor = stadls.PlaybackProgramExecutor()
+        executor.connect()
+        executor.run(program)
+
+        spikes = program.spikes
+        total_spikes_sent = sum(numpy.array(spike_pack_types)[:, 0]) \
+            * num_spikes
+        self.assertEqual(len(spikes), total_spikes_sent)
+
+        spikes = program.spikes.to_numpy()
+        self.assertEqual(spikes.shape, (total_spikes_sent,))
+        for spike in spikes:
+            # otherwise it will raise
+            to_fpga_spike_labels.index(haldls.SpikeLabel((spike["label"])))
+
+        self.assertEqual(spikes.ndim, 1,
+                         "Expected numpy-wrapped spikes to be 1D")
+        dtype_tmp = numpy.dtype([
+            ('label', numpy.uint16),
+            ('fpga_time', numpy.uint64),
+            ('chip_time', numpy.uint64)
+        ])
+        self.assertEqual(spikes.dtype, dtype_tmp,
+                         "Expect spikes.dtype to be {}".format(str(dtype_tmp)))
+        self.assertEqual(spikes.size, total_spikes_sent,
+                         "Expected {} received spikes".format(
+                             total_spikes_sent))
+        self.assertTrue((numpy.array([x.value() for x in to_fpga_spike_labels]
+                                     ) == spikes[:]["label"]).all())
 
 
 if __name__ == "__main__":

@@ -17,6 +17,9 @@
 #include "lola/vx/container.h"
 #endif
 
+#include <pybind11/numpy.h>
+#include <pybind11/stl_bind.h>
+
 namespace stadls {
 namespace vx GENPYBIND_TAG_STADLS_VX {
 
@@ -155,6 +158,37 @@ public:
 	bool operator==(PlaybackProgram const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PlaybackProgram const& other) const SYMBOL_VISIBLE;
 
+	/**
+	 * Get spikes as 2D matrix, i.e. numpy array(s).
+	 *
+	 * @note We expose the data as a flat numpy DTYPE with the same data layout
+	 *       as the underlying SpikeFromChipDType type.
+	 */
+
+	GENPYBIND_MANUAL({
+		PYBIND11_NUMPY_DTYPE(haldls::vx::SpikeFromChip::SpikeFromChipDType, label, fpga_time, chip_time);
+
+		// expose spikes_type with pybinds11 STL vector thingy
+		pybind11::bind_vector<stadls::vx::PlaybackProgram::spikes_type>(parent, "spikes_type");
+		{
+			auto attr = parent.attr("spikes_type");
+			auto ism = parent->py::is_method(attr);
+
+			/**
+			 * This version exposes with 3 columns:
+			 * chip time, neuron label, and spl1 address
+			 */
+			typedef ::stadls::vx::PlaybackProgram::spikes_type _values_type;
+			attr.attr("to_numpy") = parent->py::cpp_function(
+				[](_values_type const& self) {
+					pybind11::array_t<haldls::vx::SpikeFromChip::SpikeFromChipDType> ret(
+						{self.size()}, reinterpret_cast<haldls::vx::SpikeFromChip::SpikeFromChipDType const*>(self.data()));
+					return ret;
+				},
+				ism);
+		}
+	})
+
 private:
 	friend PlaybackProgramBuilder;
 	friend PlaybackProgramExecutor;
@@ -176,3 +210,6 @@ private:
 
 } // namespace vx
 } // namespace stadls
+
+// disable pybind11's automatic conversion to python types via its `list_caster`
+PYBIND11_MAKE_OPAQUE(stadls::vx::PlaybackProgram::spikes_type)
