@@ -36,10 +36,10 @@ def options(opt):
 
     hopts = opt.add_option_group('HALDLS options')
     hopts.add_withoption('munge', default=True,
-        help='Toggle build of quiggeldy with munge-based '
-             'authentification support')
+                         help='Toggle build of quiggeldy with munge-based '
+                              'authentification support')
     hopts.add_withoption('haldls-python-bindings', default=True,
-            help='Toggle the generation and build of haldls python bindings')
+                         help='Toggle the generation and build of haldls python bindings')
     hopts.add_option("--disable-coverage-reduction", default=False,
                      action="store_true",
                      help="Disable test coverage (and runtime!) reduction. "
@@ -179,7 +179,7 @@ def build(bld):
     )
 
     bld(
-        target = 'quiggeldy',
+        target = 'quiggeldy_dls_v2',
         features = 'cxx cxxprogram',
         source = bld.path.ant_glob('src/tools/quiggeldy.cpp'),
         use = ['stadls_v2', 'BOOST4TOOLS', 'DL4TOOLS', 'PTHREAD', 'logger_obj']
