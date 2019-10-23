@@ -144,7 +144,7 @@ TEST(SynapseMatrix, EncodeDecode)
 		ref_data[c.toEnum() * 2 + 1] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0));
 	}
 	ref_data[10 + 12 * SynapseQuadColumnOnDLS::size * SynapseQuad::config_size_in_words] =
-	    fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0x3ful));
+	    fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0x3f00'0000ul));
 
 	{
 		addresses_type write_addresses;

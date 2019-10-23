@@ -135,7 +135,7 @@ TEST(SynapseRow, EncodeDecode)
 		ref_data[c.toEnum() * 2] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0));
 		ref_data[c.toEnum() * 2 + 1] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0));
 	}
-	ref_data[10] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0x3ful));
+	ref_data[10] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0x3f00'0000ul));
 
 	{
 		addresses_type write_addresses;
