@@ -190,7 +190,7 @@ CapMemBlockConfig::CapMemBlockConfig() :
     m_enable_autoboost(false),
     m_prescale_pause(3),
     m_prescale_ramp(3),
-    m_sub_counter(8),
+    m_sub_counter(16),
     m_pause_counter(8096),
     m_pulse_a(4),
     m_pulse_b(7),
