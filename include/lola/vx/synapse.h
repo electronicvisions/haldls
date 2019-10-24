@@ -431,8 +431,8 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseRow>
     : public BackendContainerBase<
           lola::vx::SynapseRow,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -483,8 +483,8 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseMatrix>
     : public BackendContainerBase<
           lola::vx::SynapseMatrix,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
