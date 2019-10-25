@@ -39,6 +39,7 @@ typedef hate::type_list<
     PadMultiplexerConfig,
     ReadoutSourceSelection,
     lola::vx::CADCSampleRow,
+    lola::vx::CADCSamples,
     lola::vx::SynapseMatrix,
     lola::vx::SynapseRow,
     MADCConfig>

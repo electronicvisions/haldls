@@ -48,4 +48,55 @@ std::ostream& operator<<(std::ostream& os, CADCSampleRow const& row)
 	return os;
 }
 
+
+CADCSamples::CADCSamples() : causal(), acausal() {}
+
+bool CADCSamples::operator==(CADCSamples const& other) const
+{
+	return causal == other.causal && acausal == other.acausal;
+}
+
+bool CADCSamples::operator!=(CADCSamples const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, CADCSamples const& samples)
+{
+	using namespace halco::hicann_dls::vx;
+	using namespace halco::common;
+
+	auto print = [](auto const& values) -> std::string {
+		typedef typename std::remove_cv<typename std::remove_reference<decltype(values)>::type>::
+		    type::value_type::value_type value_type;
+		std::stringstream ss;
+		ss << "top:\t";
+		for (auto quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			size_t acc = 0;
+			for (auto entry : iter_all<EntryOnQuad>()) {
+				acc += values[SynramOnDLS(0)][SynapseOnSynapseRow(entry, quad)];
+			}
+			ss << detail::gray_scale(double(acc) / double(EntryOnQuad::size * value_type::size));
+		}
+		ss << std::endl;
+		ss << "\t\tbottom:\t";
+		for (auto quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			size_t acc = 0;
+			for (auto entry : iter_all<EntryOnQuad>()) {
+				acc += values[SynramOnDLS(1)][SynapseOnSynapseRow(entry, quad)];
+			}
+			ss << detail::gray_scale(double(acc) / double(EntryOnQuad::size * value_type::size));
+		}
+		ss << std::endl;
+		return ss.str();
+	};
+
+	os << "CADCSamples(" << std::endl;
+	os << "  causal:\t" << print(samples.causal) << std::endl;
+	os << "  acausal:\t" << print(samples.acausal) << std::endl;
+	os << ")";
+
+	return os;
+}
+
 } // namespace lola::vx

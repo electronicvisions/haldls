@@ -9,6 +9,7 @@
 PLAYBACK_CONTAINER(DACControlBlock, lola::vx::DACControlBlock)
 PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::DACChannelBlock)
 PLAYBACK_CONTAINER(CADCSampleRow, lola::vx::CADCSampleRow)
+PLAYBACK_CONTAINER(CADCSamples, lola::vx::CADCSamples)
 PLAYBACK_CONTAINER(SynapseMatrix, lola::vx::SynapseMatrix)
 PLAYBACK_CONTAINER(SynapseWeightMatrix, lola::vx::SynapseWeightMatrix)
 PLAYBACK_CONTAINER(SynapseLabelMatrix, lola::vx::SynapseLabelMatrix)
