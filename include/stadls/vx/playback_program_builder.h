@@ -108,6 +108,10 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
+	template <typename T, size_t SupportedBackendIndex>
+	static void write_table_entry(
+	    PlaybackProgramBuilder& builder, typename T::coordinate_type const& coord, T const& config);
+
 	template <class T, size_t... SupportedBackendIndex>
 	void write_table_generator(
 	    typename T::coordinate_type const& coord,
