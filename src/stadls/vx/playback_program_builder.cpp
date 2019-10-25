@@ -174,4 +174,9 @@ std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder
 	return os;
 }
 
+bool PlaybackProgramBuilder::empty() const
+{
+	return m_builder_impl->empty();
+}
+
 } // namespace stadls::vx

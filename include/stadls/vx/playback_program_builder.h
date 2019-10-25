@@ -107,6 +107,12 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder)
 	    SYMBOL_VISIBLE;
 
+	/**
+	 * Get whether builder is empty, i.e. no instructions are embodied.
+	 * @return Boolean value
+	 */
+	bool empty() const SYMBOL_VISIBLE;
+
 private:
 	template <typename T, size_t SupportedBackendIndex>
 	static void write_table_entry(
