@@ -105,7 +105,8 @@ public:
 			    ism);
 			attr.attr("from_numpy") = parent->py::cpp_function(
 			    [from_numpy_template](
-			        _values_type& self, pybind11::array_t<_values_type::value_type> array) {
+			        _values_type& self,
+			        pybind11::array_t<_values_type::value_type::value_type> array) {
 				    from_numpy_template(self, array);
 			    },
 			    ism);
