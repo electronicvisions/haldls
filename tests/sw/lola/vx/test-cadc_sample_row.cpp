@@ -2,8 +2,10 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/omnibus.h"
-#include "haldls/cerealization.h"
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
 #include "lola/vx/cadc.h"
+#include "lola/vx/cerealization.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
@@ -19,19 +21,19 @@ TEST(CADCSampleRow, General)
 
 	// test getter/setter
 	{
-		auto value = config.get_causal();
+		auto value = config.causal;
 		value[SynapseOnSynapseRow(23)] =
 		    draw_ranged_non_default_value<CADCSampleRow::Value>(value[SynapseOnSynapseRow(23)]);
-		config.set_causal(value);
-		EXPECT_EQ(config.get_causal(), value);
+		config.causal = value;
+		EXPECT_EQ(config.causal, value);
 	}
 
 	{
-		auto value = config.get_acausal();
+		auto value = config.acausal;
 		value[SynapseOnSynapseRow(24)] =
 		    draw_ranged_non_default_value<CADCSampleRow::Value>(value[SynapseOnSynapseRow(24)]);
-		config.set_acausal(value);
-		EXPECT_EQ(config.get_acausal(), value);
+		config.acausal = value;
+		EXPECT_EQ(config.acausal, value);
 	}
 
 	CADCSampleRow config_eq = config;
@@ -48,18 +50,10 @@ TEST(CADCSampleRow, General)
 TEST(CADCSampleRow, CerealizeCoverage)
 {
 	CADCSampleRow obj1, obj2;
-	{
-		auto value = obj1.get_causal();
-		value[SynapseOnSynapseRow(23)] =
-		    draw_ranged_non_default_value<CADCSampleRow::Value>(value[SynapseOnSynapseRow(23)]);
-		obj1.set_causal(value);
-	}
-	{
-		auto value = obj1.get_acausal();
-		value[SynapseOnSynapseRow(24)] =
-		    draw_ranged_non_default_value<CADCSampleRow::Value>(value[SynapseOnSynapseRow(24)]);
-		obj1.set_acausal(value);
-	}
+	obj1.causal[SynapseOnSynapseRow(23)] =
+	    draw_ranged_non_default_value<CADCSampleRow::Value>(obj1.causal[SynapseOnSynapseRow(23)]);
+	obj1.acausal[SynapseOnSynapseRow(24)] =
+	    draw_ranged_non_default_value<CADCSampleRow::Value>(obj1.acausal[SynapseOnSynapseRow(24)]);
 
 	std::ostringstream ostream;
 	{
@@ -136,6 +130,6 @@ TEST(CADCSampleRow, EncodeDecode)
 	}
 
 	visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(ref_data)});
-	ASSERT_EQ(config.get_causal()[SynapseOnSynapseRow(43)], CADCSampleRow::Value(0xf0));
-	ASSERT_EQ(config.get_acausal()[SynapseOnSynapseRow(51)], CADCSampleRow::Value(0x8));
+	ASSERT_EQ(config.causal[SynapseOnSynapseRow(43)], CADCSampleRow::Value(0xf0));
+	ASSERT_EQ(config.acausal[SynapseOnSynapseRow(51)], CADCSampleRow::Value(0x8));
 }

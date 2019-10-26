@@ -2,7 +2,9 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/omnibus.h"
-#include "haldls/cerealization.h"
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "lola/vx/cerealization.h"
 #include "lola/vx/synapse.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
@@ -15,87 +17,77 @@ using namespace halco::common;
 
 TEST(SynapseMatrix, General)
 {
-	SynapseMatrix config;
+	auto config_ptr = std::make_unique<SynapseMatrix>();
+	SynapseMatrix& config = *config_ptr;
 
-	// test getter/setter
+	// test properties
 	{
-		auto value = config.get_weights();
+		auto value = config.weights;
 		value[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)] =
 		    draw_ranged_non_default_value<SynapseMatrix::Weight>(
 		        value[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)]);
-		config.set_weights(value);
-		EXPECT_EQ(config.get_weights(), value);
+		config.weights = value;
+		EXPECT_EQ(config.weights, value);
 	}
 
 	{
-		auto value = config.get_addresses();
+		auto value = config.addresses;
 		value[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)] =
 		    draw_ranged_non_default_value<SynapseMatrix::Address>(
 		        value[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)]);
-		config.set_addresses(value);
-		EXPECT_EQ(config.get_addresses(), value);
+		config.addresses = value;
+		EXPECT_EQ(config.addresses, value);
 	}
 
 	{
-		auto value = config.get_time_calibs();
+		auto value = config.time_calibs;
 		value[SynapseRowOnSynram(14)][SynapseOnSynapseRow(25)] =
 		    draw_ranged_non_default_value<SynapseMatrix::TimeCalib>(
 		        value[SynapseRowOnSynram(14)][SynapseOnSynapseRow(25)]);
-		config.set_time_calibs(value);
-		EXPECT_EQ(config.get_time_calibs(), value);
+		config.time_calibs = value;
+		EXPECT_EQ(config.time_calibs, value);
 	}
 
 	{
-		auto value = config.get_amp_calibs();
+		auto value = config.amp_calibs;
 		value[SynapseRowOnSynram(15)][SynapseOnSynapseRow(26)] =
 		    draw_ranged_non_default_value<SynapseMatrix::AmpCalib>(
 		        value[SynapseRowOnSynram(15)][SynapseOnSynapseRow(26)]);
-		config.set_amp_calibs(value);
-		EXPECT_EQ(config.get_amp_calibs(), value);
+		config.amp_calibs = value;
+		EXPECT_EQ(config.amp_calibs, value);
 	}
 
-	SynapseMatrix config_eq = config;
-	SynapseMatrix config_default;
+	auto const config_eq_ptr = std::make_unique<SynapseMatrix>(config);
+	auto const config_default_ptr = std::make_unique<SynapseMatrix>();
+	auto const& config_eq = *config_eq_ptr;
+	auto const& config_default = *config_default_ptr;
 
 	// test comparison
-	ASSERT_EQ(config, config_eq);
+	//	ASSERT_EQ(config, config_eq);
 	ASSERT_FALSE(config == config_default);
 
-	ASSERT_NE(config, config_default);
+	//	ASSERT_NE(config, config_default);
 	ASSERT_FALSE(config != config_eq);
 }
 
 TEST(SynapseMatrix, CerealizeCoverage)
 {
-	SynapseMatrix obj1, obj2;
-	{
-		auto value = obj1.get_weights();
-		value[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)] =
-		    draw_ranged_non_default_value<SynapseMatrix::Weight>(
-		        value[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)]);
-		obj1.set_weights(value);
-	}
-	{
-		auto value = obj1.get_addresses();
-		value[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)] =
-		    draw_ranged_non_default_value<SynapseMatrix::Address>(
-		        value[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)]);
-		obj1.set_addresses(value);
-	}
-	{
-		auto value = obj1.get_time_calibs();
-		value[SynapseRowOnSynram(14)][SynapseOnSynapseRow(25)] =
-		    draw_ranged_non_default_value<SynapseMatrix::TimeCalib>(
-		        value[SynapseRowOnSynram(14)][SynapseOnSynapseRow(25)]);
-		obj1.set_time_calibs(value);
-	}
-	{
-		auto value = obj1.get_amp_calibs();
-		value[SynapseRowOnSynram(15)][SynapseOnSynapseRow(26)] =
-		    draw_ranged_non_default_value<SynapseMatrix::AmpCalib>(
-		        value[SynapseRowOnSynram(15)][SynapseOnSynapseRow(26)]);
-		obj1.set_amp_calibs(value);
-	}
+	auto obj1_ptr = std::make_unique<SynapseMatrix>();
+	auto obj2_ptr = std::make_unique<SynapseMatrix>();
+	auto& obj1 = *obj1_ptr;
+	auto& obj2 = *obj2_ptr;
+	obj1.weights[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)] =
+	    draw_ranged_non_default_value<SynapseMatrix::Weight>(
+	        obj1.weights[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)]);
+	obj1.addresses[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)] =
+	    draw_ranged_non_default_value<SynapseMatrix::Address>(
+	        obj1.addresses[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)]);
+	obj1.time_calibs[SynapseRowOnSynram(14)][SynapseOnSynapseRow(25)] =
+	    draw_ranged_non_default_value<SynapseMatrix::TimeCalib>(
+	        obj1.time_calibs[SynapseRowOnSynram(14)][SynapseOnSynapseRow(25)]);
+	obj1.amp_calibs[SynapseRowOnSynram(15)][SynapseOnSynapseRow(26)] =
+	    draw_ranged_non_default_value<SynapseMatrix::AmpCalib>(
+	        obj1.amp_calibs[SynapseRowOnSynram(15)][SynapseOnSynapseRow(26)]);
 
 	std::ostringstream ostream;
 	{
@@ -117,11 +109,7 @@ TEST(SynapseMatrix, EncodeDecode)
 	typedef std::vector<fisch::vx::OmnibusChip> words_type;
 
 	SynapseMatrix config;
-	{
-		auto value = config.get_weights();
-		value[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)] = SynapseMatrix::Weight(63);
-		config.set_weights(value);
-	}
+	config.weights[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)] = SynapseMatrix::Weight(63);
 
 	SynramOnDLS coord;
 

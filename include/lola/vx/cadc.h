@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/hana/adapt_struct.hpp>
 #include "halco/common/typed_array.h"
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/common.h"
@@ -28,33 +29,11 @@ public:
 	/** Default constructor. */
 	CADCSampleRow() SYMBOL_VISIBLE;
 
-	/**
-	 * Get causal sample value array.
-	 * @return Array of haldls::vx::CADCSampleQuad::Value values
-	 */
-	GENPYBIND(getter_for(causal), return_value_policy(reference_internal))
-	_samples_type const& get_causal() const SYMBOL_VISIBLE;
+	/** Causal sample value array. */
+	_samples_type causal;
 
-	/**
-	 * Set causal sample value array.
-	 * @param value Array of haldls::vx::CADCSampleQuad::CADCSample::Weight values
-	 */
-	GENPYBIND(setter_for(causal))
-	void set_causal(_samples_type const& value) SYMBOL_VISIBLE;
-
-	/**
-	 * Get acausal sample value array.
-	 * @return Array of haldls::vx::CADCSampleQuad::Value values
-	 */
-	GENPYBIND(getter_for(acausal), return_value_policy(reference_internal))
-	_samples_type const& get_acausal() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set acausal sample value array.
-	 * @param value Array of haldls::vx::CADCSampleQuad::CADCSample::Weight values
-	 */
-	GENPYBIND(setter_for(acausal))
-	void set_acausal(_samples_type const& value) SYMBOL_VISIBLE;
+	/** Acausal sample value array. */
+	_samples_type acausal;
 
 	bool operator==(CADCSampleRow const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CADCSampleRow const& other) const SYMBOL_VISIBLE;
@@ -118,13 +97,6 @@ public:
 
 private:
 	friend class haldls::vx::detail::VisitPreorderImpl<CADCSampleRow>;
-	friend class cereal::access;
-
-	template <typename Archive>
-	void serialize(Archive& ar);
-
-	_samples_type m_causal;
-	_samples_type m_acausal;
 };
 
 } // namespace lola::vx
@@ -164,7 +136,7 @@ struct VisitPreorderImpl<lola::vx::CADCSampleRow>
 			visit_preorder(quad_config_trigger, quad_coord_trigger, visitor);
 
 			for (auto const entry : iter_all<EntryOnQuad>()) {
-				config.m_causal[SynapseOnSynapseRow(entry)] = quad_config_trigger.get_sample(entry);
+				config.causal[SynapseOnSynapseRow(entry)] = quad_config_trigger.get_sample(entry);
 			}
 
 			// buffered read of remaining causal channel quads
@@ -180,7 +152,7 @@ struct VisitPreorderImpl<lola::vx::CADCSampleRow>
 				visit_preorder(quad_config, quad_coord, visitor);
 				for (auto const syn : iter_all<EntryOnQuad>()) {
 					SynapseOnSynapseRow syn_on_row(syn, quad_column);
-					config.m_causal[syn_on_row] = quad_config.get_sample(syn);
+					config.causal[syn_on_row] = quad_config.get_sample(syn);
 				}
 			}
 
@@ -195,7 +167,7 @@ struct VisitPreorderImpl<lola::vx::CADCSampleRow>
 				visit_preorder(quad_config, quad_coord, visitor);
 				for (auto const syn : iter_all<EntryOnQuad>()) {
 					SynapseOnSynapseRow syn_on_row(syn, quad_column);
-					config.m_acausal[syn_on_row] = quad_config.get_sample(syn);
+					config.acausal[syn_on_row] = quad_config.get_sample(syn);
 				}
 			}
 		}
@@ -203,3 +175,5 @@ struct VisitPreorderImpl<lola::vx::CADCSampleRow>
 };
 
 } // namespace haldls::vx::detail
+
+BOOST_HANA_ADAPT_STRUCT(lola::vx::CADCSampleRow, causal, acausal);

@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/hana/adapt_struct.hpp>
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/dac.h"
 #include "haldls/vx/common.h"
@@ -30,19 +31,8 @@ public:
 	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::DACChannelOnBoard> _value_type
 	    GENPYBIND(opaque);
 
-	/**
-	 * Get array of channel values.
-	 * @return Array of channel values
-	 */
-	GENPYBIND(getter_for(value), return_value_policy(reference))
-	_value_type const& get_value() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set array of channel values.
-	 * @param value Array of channel values
-	 */
-	GENPYBIND(setter_for(value))
-	void set_value(_value_type const& value) SYMBOL_VISIBLE;
+	/** Array of channel values. */
+	_value_type value;
 
 	/**
 	 * Default value for LDO version 1.
@@ -62,11 +52,6 @@ public:
 
 private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::DACChannelBlock>;
-	friend class cereal::access;
-	template <typename Archive>
-	void serialize(Archive& ar);
-
-	_value_type m_value;
 };
 
 
@@ -85,19 +70,8 @@ public:
 	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::DACChannelOnBoard> _enable_type
 	    GENPYBIND(opaque);
 
-	/**
-	 * Get array of channel enable values.
-	 * @return Array of boolean values
-	 */
-	GENPYBIND(getter_for(enable), return_value_policy(reference))
-	_enable_type const& get_enable() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set array of channel enable values.
-	 * @param value Array of boolean values
-	 */
-	GENPYBIND(setter_for(enable))
-	void set_enable(_enable_type const& value) SYMBOL_VISIBLE;
+	/** Array of channel enable values. */
+	_enable_type enable;
 
 	bool operator==(DACControlBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(DACControlBlock const& other) const SYMBOL_VISIBLE;
@@ -107,11 +81,6 @@ public:
 
 private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::DACControlBlock>;
-	friend class cereal::access;
-	template <typename Archive>
-	void serialize(Archive& ar);
-
-	_enable_type m_enable;
 };
 
 } // namespace lola::vx
@@ -143,7 +112,7 @@ struct VisitPreorderImpl<lola::vx::DACChannelBlock>
 		visitor(coord, config);
 
 		for (auto ch : iter_all<DACChannelOnBoard>()) {
-			DACChannel channel(config.m_value[ch]);
+			DACChannel channel(config.value[ch]);
 			visit_preorder(channel, ch, visitor);
 		}
 	}
@@ -166,7 +135,7 @@ struct VisitPreorderImpl<lola::vx::DACControlBlock>
 		for (auto dac : iter_all<DACOnBoard>()) {
 			DACControl control;
 			for (auto ch : iter_all<DACChannelOnDAC>()) {
-				control.set_enable_channel(ch, config.m_enable[DACChannelOnBoard(ch, dac)]);
+				control.set_enable_channel(ch, config.enable[DACChannelOnBoard(ch, dac)]);
 			}
 			visit_preorder(control, dac, visitor);
 		}
@@ -174,3 +143,6 @@ struct VisitPreorderImpl<lola::vx::DACControlBlock>
 };
 
 } // namespace haldls::vx::detail
+
+BOOST_HANA_ADAPT_STRUCT(lola::vx::DACChannelBlock, value);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::DACControlBlock, enable);

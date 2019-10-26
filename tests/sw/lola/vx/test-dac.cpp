@@ -2,7 +2,9 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/spi.h"
-#include "haldls/cerealization.h"
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "lola/vx/cerealization.h"
 #include "lola/vx/dac.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
@@ -17,10 +19,10 @@ TEST(DACControlBlock, General)
 	DACControlBlock config;
 
 	// test getter/setter
-	auto value = config.get_enable();
+	auto value = config.enable;
 	value[DACChannelOnBoard(Enum(0))] = !value[DACChannelOnBoard(Enum(0))];
-	config.set_enable(value);
-	EXPECT_EQ(config.get_enable(), value);
+	config.enable = value;
+	EXPECT_EQ(config.enable, value);
 
 	DACControlBlock config_eq = config;
 	DACControlBlock config_default;
@@ -36,11 +38,9 @@ TEST(DACControlBlock, General)
 TEST(DACControlBlock, CerealizeCoverage)
 {
 	DACControlBlock obj1, obj2;
-	auto value = obj1.get_enable();
 	for (auto channel : iter_all<DACChannelOnBoard>()) {
-		value[channel] = !value[channel];
+		obj1.enable[channel] = !obj1.enable[channel];
 	}
-	obj1.set_enable(value);
 
 	std::ostringstream ostream;
 	{
@@ -62,12 +62,10 @@ TEST(DACControlBlock, EncodeDecode)
 	typedef std::vector<fisch::vx::SPIDACControlRegister> words_type;
 
 	DACControlBlock config;
-	auto value = config.get_enable();
 	for (auto ch : iter_all<DACChannelOnBoard>()) {
-		value[ch] = false;
+		config.enable[ch] = false;
 	}
-	value[DACChannelOnBoard(Enum(2))] = true;
-	config.set_enable(value);
+	config.enable[DACChannelOnBoard(Enum(2))] = true;
 
 	DACControlBlockOnBoard coord;
 
@@ -104,10 +102,10 @@ TEST(DACChannelBlock, General)
 	DACChannelBlock config;
 
 	// test getter/setter
-	auto value = config.get_value();
+	auto value = config.value;
 	value[DACChannelOnBoard(Enum(0))] = DACChannelBlock::Value(0x123);
-	config.set_value(value);
-	EXPECT_EQ(config.get_value(), value);
+	config.value = value;
+	EXPECT_EQ(config.value, value);
 
 	DACChannelBlock config_eq = config;
 	DACChannelBlock config_default;
@@ -123,11 +121,10 @@ TEST(DACChannelBlock, General)
 TEST(DACChannelBlock, CerealizeCoverage)
 {
 	DACChannelBlock obj1, obj2;
-	auto value = obj1.get_value();
 	for (auto channel : iter_all<DACChannelOnBoard>()) {
-		value[channel] = draw_ranged_non_default_value<DACChannelBlock::Value>(value[channel]);
+		obj1.value[channel] =
+		    draw_ranged_non_default_value<DACChannelBlock::Value>(obj1.value[channel]);
 	}
-	obj1.set_value(value);
 
 	std::ostringstream ostream;
 	{
@@ -149,11 +146,9 @@ TEST(DACChannelBlock, EncodeDecode)
 	typedef std::vector<fisch::vx::SPIDACDataRegister> words_type;
 
 	DACChannelBlock config;
-	auto value = config.get_value();
 	for (auto ch : iter_all<DACChannelOnBoard>()) {
-		value[ch] = draw_ranged_non_default_value<DACChannelBlock::Value>(value[ch]);
+		config.value[ch] = draw_ranged_non_default_value<DACChannelBlock::Value>(config.value[ch]);
 	}
-	config.set_value(value);
 
 	DACChannelBlockOnBoard coord;
 
@@ -165,7 +160,7 @@ TEST(DACChannelBlock, EncodeDecode)
 	    fisch::vx::SPIDACDataRegister, DACChannelOnBoard::size * DACChannel::config_size_in_words>
 	    ref_data;
 	for (auto coord : iter_all<DACChannelOnBoard>()) {
-		ref_data[coord.toEnum()] = fisch::vx::SPIDACDataRegister::Value(value[coord]);
+		ref_data[coord.toEnum()] = fisch::vx::SPIDACDataRegister::Value(config.value[coord]);
 	}
 
 	{

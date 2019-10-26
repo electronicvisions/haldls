@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/hana/adapt_struct.hpp>
 #include "halco/common/typed_array.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/synapse.h"
@@ -37,61 +38,17 @@ public:
 	/** Default constructor. */
 	SynapseRow() SYMBOL_VISIBLE;
 
-	/**
-	 * Get synapse weight array.
-	 * @return Array of haldls::vx::SynapseQuad::Synapse::Weight values
-	 */
-	GENPYBIND(getter_for(weights), return_value_policy(reference_internal))
-	_weights_type const& get_weights() const SYMBOL_VISIBLE;
+	/** Synapse weight array. */
+	_weights_type weights;
 
-	/**
-	 * Set synapse weight array.
-	 * @param value Array of haldls::vx::SynapseQuad::Synapse::Weight values
-	 */
-	GENPYBIND(setter_for(weights))
-	void set_weights(_weights_type const& value) SYMBOL_VISIBLE;
+	/** Synapse address array. */
+	_addresses_type addresses;
 
-	/**
-	 * Get synapse address array.
-	 * @return Array of haldls::vx::SynapseQuad::Synapse::Address values
-	 */
-	GENPYBIND(getter_for(addresses), return_value_policy(reference_internal))
-	_addresses_type const& get_addresses() const SYMBOL_VISIBLE;
+	/** Synapse correlation time calibration array. */
+	_time_calibs_type time_calibs;
 
-	/**
-	 * Set synapse address array.
-	 * @param value Array of haldls::vx::SynapseQuad::Synapse::Address values
-	 */
-	GENPYBIND(setter_for(addresses))
-	void set_addresses(_addresses_type const& value) SYMBOL_VISIBLE;
-
-	/**
-	 * Get synapse correlation time calibration array.
-	 * @return Array of haldls::vx::SynapseQuad::Synapse::TimeCalib values
-	 */
-	GENPYBIND(getter_for(time_calibs), return_value_policy(reference_internal))
-	_time_calibs_type const& get_time_calibs() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set synapse correlation time calibration array.
-	 * @param value Array of haldls::vx::SynapseQuad::Synapse::TimeCalib values
-	 */
-	GENPYBIND(setter_for(time_calibs))
-	void set_time_calibs(_time_calibs_type const& value) SYMBOL_VISIBLE;
-
-	/**
-	 * Get synapse correlation amplitude calibration array.
-	 * @return Array of haldls::vx::SynapseQuad::Synapse::AmpCalib values
-	 */
-	GENPYBIND(getter_for(amp_calibs), return_value_policy(reference_internal))
-	_amp_calibs_type const& get_amp_calibs() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set synapse correlation amplitude calibration array.
-	 * @param value Array of haldls::vx::SynapseQuad::Synapse::AmpCalib values
-	 */
-	GENPYBIND(setter_for(amp_calibs))
-	void set_amp_calibs(_amp_calibs_type const& value) SYMBOL_VISIBLE;
+	/** Synapse correlation amplitude calibration array. */
+	_amp_calibs_type amp_calibs;
 
 	bool operator==(SynapseRow const& other) const SYMBOL_VISIBLE;
 	bool operator!=(SynapseRow const& other) const SYMBOL_VISIBLE;
@@ -203,15 +160,6 @@ public:
 
 private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<SynapseRow>;
-	friend class cereal::access;
-
-	template <typename Archive>
-	void serialize(Archive& ar);
-
-	_weights_type m_weights;
-	_addresses_type m_addresses;
-	_time_calibs_type m_time_calibs;
-	_amp_calibs_type m_amp_calibs;
 };
 
 
@@ -239,61 +187,17 @@ public:
 	/** Default constructor. */
 	SynapseMatrix() SYMBOL_VISIBLE;
 
-	/**
-	 * Get synapse weight array.
-	 * @return Array of haldls::vx::SynapseQuad::Synapse::Weight values
-	 */
-	GENPYBIND(getter_for(weights), return_value_policy(reference_internal))
-	_weights_type const& get_weights() const SYMBOL_VISIBLE;
+	/** Synapse weight array. */
+	_weights_type weights;
 
-	/**
-	 * Set synapse weight array.
-	 * @param value Array of haldls::vx::SynapseQuad::Synapse::Weight values
-	 */
-	GENPYBIND(setter_for(weights))
-	void set_weights(_weights_type const& value) SYMBOL_VISIBLE;
+	/** Synapse address array. */
+	_addresses_type addresses;
 
-	/**
-	 * Get synapse address array.
-	 * @return Array of haldls::vx::SynapseQuad::Synapse::Address values
-	 */
-	GENPYBIND(getter_for(addresses), return_value_policy(reference_internal))
-	_addresses_type const& get_addresses() const SYMBOL_VISIBLE;
+	/** Synapse correlation time calibration array. */
+	_time_calibs_type time_calibs;
 
-	/**
-	 * Set synapse address array.
-	 * @param value Array of haldls::vx::SynapseQuad::Synapse::Address values
-	 */
-	GENPYBIND(setter_for(addresses))
-	void set_addresses(_addresses_type const& value) SYMBOL_VISIBLE;
-
-	/**
-	 * Get synapse correlation time calibration array.
-	 * @return Array of haldls::vx::SynapseQuad::Synapse::TimeCalib values
-	 */
-	GENPYBIND(getter_for(time_calibs), return_value_policy(reference_internal))
-	_time_calibs_type const& get_time_calibs() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set synapse correlation time calibration array.
-	 * @param value Array of haldls::vx::SynapseQuad::Synapse::TimeCalib values
-	 */
-	GENPYBIND(setter_for(time_calibs))
-	void set_time_calibs(_time_calibs_type const& value) SYMBOL_VISIBLE;
-
-	/**
-	 * Get synapse correlation amplitude calibration array.
-	 * @return Array of haldls::vx::SynapseQuad::Synapse::AmpCalib values
-	 */
-	GENPYBIND(getter_for(amp_calibs), return_value_policy(reference_internal))
-	_amp_calibs_type const& get_amp_calibs() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set synapse correlation amplitude calibration array.
-	 * @param value Array of haldls::vx::SynapseQuad::Synapse::AmpCalib values
-	 */
-	GENPYBIND(setter_for(amp_calibs))
-	void set_amp_calibs(_amp_calibs_type const& value) SYMBOL_VISIBLE;
+	/** Synapse correlation amplitude calibration array. */
+	_amp_calibs_type amp_calibs;
 
 	bool operator==(SynapseMatrix const& other) const SYMBOL_VISIBLE;
 	bool operator!=(SynapseMatrix const& other) const SYMBOL_VISIBLE;
@@ -412,15 +316,6 @@ public:
 
 private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<SynapseMatrix>;
-	friend class cereal::access;
-
-	template <typename Archive>
-	void serialize(Archive& ar);
-
-	_weights_type m_weights;
-	_addresses_type m_addresses;
-	_time_calibs_type m_time_calibs;
-	_amp_calibs_type m_amp_calibs;
 };
 
 } // namespace lola::vx
@@ -452,10 +347,10 @@ struct VisitPreorderImpl<lola::vx::SynapseRow>
 			for (auto const syn : iter_all<EntryOnQuad>()) {
 				SynapseOnSynapseRow syn_on_row(syn, quad);
 				haldls::vx::SynapseQuad::Synapse syn_config;
-				syn_config.set_weight(config.m_weights[syn_on_row]);
-				syn_config.set_address(config.m_addresses[syn_on_row]);
-				syn_config.set_time_calib(config.m_time_calibs[syn_on_row]);
-				syn_config.set_amp_calib(config.m_amp_calibs[syn_on_row]);
+				syn_config.set_weight(config.weights[syn_on_row]);
+				syn_config.set_address(config.addresses[syn_on_row]);
+				syn_config.set_time_calib(config.time_calibs[syn_on_row]);
+				syn_config.set_amp_calib(config.amp_calibs[syn_on_row]);
 				quad_config.set_synapse(syn, syn_config);
 			}
 			visit_preorder(
@@ -468,10 +363,10 @@ struct VisitPreorderImpl<lola::vx::SynapseRow>
 				for (auto const syn : iter_all<EntryOnQuad>()) {
 					SynapseOnSynapseRow syn_on_row(syn, quad);
 					auto syn_config = quad_config.get_synapse(syn);
-					config.m_weights[syn_on_row] = syn_config.get_weight();
-					config.m_addresses[syn_on_row] = syn_config.get_address();
-					config.m_time_calibs[syn_on_row] = syn_config.get_time_calib();
-					config.m_amp_calibs[syn_on_row] = syn_config.get_amp_calib();
+					config.weights[syn_on_row] = syn_config.get_weight();
+					config.addresses[syn_on_row] = syn_config.get_address();
+					config.time_calibs[syn_on_row] = syn_config.get_time_calib();
+					config.amp_calibs[syn_on_row] = syn_config.get_amp_calib();
 				}
 			}
 		}
@@ -503,20 +398,23 @@ struct VisitPreorderImpl<lola::vx::SynapseMatrix>
 
 		for (auto const row : iter_all<SynapseRowOnSynram>()) {
 			lola::vx::SynapseRow row_config;
-			row_config.set_weights(config.m_weights[row]);
-			row_config.set_addresses(config.m_addresses[row]);
-			row_config.set_time_calibs(config.m_time_calibs[row]);
-			row_config.set_amp_calibs(config.m_amp_calibs[row]);
+			row_config.weights = config.weights[row];
+			row_config.addresses = config.addresses[row];
+			row_config.time_calibs = config.time_calibs[row];
+			row_config.amp_calibs = config.amp_calibs[row];
 			visit_preorder(row_config, SynapseRowOnDLS(row, coord), visitor);
 			// only on alteration
 			if constexpr (!std::is_same<ContainerT, lola::vx::SynapseMatrix const>::value) {
-				config.m_weights[row] = row_config.get_weights();
-				config.m_addresses[row] = row_config.get_addresses();
-				config.m_time_calibs[row] = row_config.get_time_calibs();
-				config.m_amp_calibs[row] = row_config.get_amp_calibs();
+				config.weights[row] = row_config.weights;
+				config.addresses[row] = row_config.addresses;
+				config.time_calibs[row] = row_config.time_calibs;
+				config.amp_calibs[row] = row_config.amp_calibs;
 			}
 		}
 	}
 };
 
 } // namespace haldls::vx::detail
+
+BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseRow, weights, addresses, time_calibs, amp_calibs);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseMatrix, weights, addresses, time_calibs, amp_calibs);
