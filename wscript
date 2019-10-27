@@ -142,14 +142,6 @@ def build(bld):
         uselib = 'HALDLS_LIBRARIES',
     )
 
-    bld.shlib(
-        target = 'lola_v2',
-        source = bld.path.ant_glob('src/lola/v2/*.cpp'),
-        install_path = '${PREFIX}/lib',
-        use = ['haldls_v2'],
-        uselib = 'LOLA_LIBRARIES',
-    )
-
     bld(
         features = 'cxx cxxshlib',
         target = 'lola_vx',
@@ -202,14 +194,6 @@ def build(bld):
         features = 'gtest cxx cxxprogram',
         source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp'),
         use = ['haldls_vx', 'haldls_test_common_inc', 'GTEST'],
-        install_path = '${PREFIX}/bin',
-    )
-
-    bld(
-        target = 'lola_swtest_v2',
-        features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/sw/lola/v2/test-*.cpp'),
-        use = ['lola_v2', 'GTEST'],
         install_path = '${PREFIX}/bin',
     )
 

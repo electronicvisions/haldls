@@ -42,16 +42,6 @@ def build(bld):
         bld.fatal('building pylola requires pybind')
 
     bld(
-        target='pylola_v2',
-        source='../include/lola/v2/lola.h',
-        genpybind_tags='lola_v2',
-        features='genpybind cxx cxxshlib pyext',
-        use=['lola_v2', 'pyhalco_common_files', 'pyhalco_hicann_dls_v2', 'pyhaldls_v2', 'PYBIND11LOLA'],
-        install_path='${PREFIX}/lib',
-        linkflags='-Wl,-z,defs'
-    )
-
-    bld(
         target='pylola_vx',
         source='../include/lola/vx/lola.h',
         genpybind_tags='lola_vx',
@@ -59,17 +49,6 @@ def build(bld):
         use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'PYBIND11LOLA'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs'
-    )
-
-
-    bld(
-        name='pylola_test_v2',
-        tests=bld.path.ant_glob('test/*_v2.py'),
-        features='use pytest pylint pycodestyle',
-        use=['pylola_v2'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
     )
 
     bld(
