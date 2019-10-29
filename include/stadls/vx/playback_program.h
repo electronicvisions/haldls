@@ -157,8 +157,6 @@ private:
 	PlaybackProgram(std::shared_ptr<fisch::vx::PlaybackProgram> const& program_impl) SYMBOL_VISIBLE;
 
 	std::shared_ptr<fisch::vx::PlaybackProgram> m_program_impl;
-
-	bool m_valid;
 };
 
 } // namespace vx
