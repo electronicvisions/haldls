@@ -1,6 +1,9 @@
 #pragma once
 #include "fisch/vx/event.h"
+#include "halco/hicann-dls/vx/event.h"
 #include "haldls/vx/genpybind.h"
+#include "haldls/vx/neuron.h"
+#include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
@@ -10,10 +13,52 @@ class access;
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
-typedef fisch::vx::SpikeLabel SpikeLabel GENPYBIND(opaque(false));
-typedef fisch::vx::SpikeFromChip SpikeFromChip GENPYBIND(opaque(false));
+struct GENPYBIND(inline_base("*")) SpikeLabel
+    : public halco::common::detail::BaseType<SpikeLabel, uint16_t>
+{
+	constexpr explicit SpikeLabel(value_type const value = value_type()) : base_t(value) {}
+
+	/** SPL1-label, bits 14-15. */
+	GENPYBIND(getter_for(spl1_address))
+	halco::hicann_dls::vx::SPL1Address get_spl1_address() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(spl1_address))
+	void set_spl1_address(halco::hicann_dls::vx::SPL1Address value) SYMBOL_VISIBLE;
+
+	/** Label type processed by Crossbar, bits 0-13. */
+	GENPYBIND(getter_for(neuron_label))
+	halco::hicann_dls::vx::NeuronLabel get_neuron_label() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(neuron_label))
+	void set_neuron_label(halco::hicann_dls::vx::NeuronLabel value) SYMBOL_VISIBLE;
+
+	/** Label type processed by PADI-bus, bits 0-10. */
+	struct GENPYBIND(inline_base("*")) PADILabel
+	    : public halco::common::detail::RantWrapper<PADILabel, uint_fast16_t, 0x3ff, 0>
+	{
+		constexpr explicit PADILabel(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	/** PADI-bus label, bits 0-10. */
+	GENPYBIND(getter_for(padi_label))
+	PADILabel get_padi_label() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(padi_label))
+	void set_padi_label(PADILabel value) SYMBOL_VISIBLE;
+
+	/** Configurable neuron backend output label, bits 0-7. */
+	GENPYBIND(getter_for(neuron_backend_address_out))
+	NeuronBackendConfig::AddressOut get_neuron_backend_address_out() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(neuron_backend_address_out))
+	void set_neuron_backend_address_out(NeuronBackendConfig::AddressOut value) SYMBOL_VISIBLE;
+
+	/** Configurable synapse address, bits 0-5. */
+	GENPYBIND(getter_for(synapse_address))
+	SynapseQuad::Synapse::Address get_synapse_address() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(synapse_address))
+	void set_synapse_address(SynapseQuad::Synapse::Address value) SYMBOL_VISIBLE;
+};
+
 typedef fisch::vx::MADCSampleFromChip MADCSampleFromChip GENPYBIND(opaque(false));
-typedef fisch::vx::SpikeFromChipEvent SpikeFromChipEvent GENPYBIND(opaque(false));
 typedef fisch::vx::MADCSampleFromChipEvent MADCSampleFromChipEvent GENPYBIND(opaque(false));
 
 #define SpikePackToChip(Num)                                                                       \
@@ -88,4 +133,95 @@ SpikePackToChip(3)
 
 #undef SpikePackToChip
 
+
+typedef fisch::vx::FPGATime FPGATime GENPYBIND(visible);
+typedef fisch::vx::ChipTime ChipTime GENPYBIND(visible);
+
+/**
+ * Spike from chip.
+ * It is comprised of its label, FPGA and chip time annotation.
+ */
+class GENPYBIND(visible) SpikeFromChip
+{
+public:
+	/** Default constructor. */
+	SpikeFromChip() SYMBOL_VISIBLE;
+
+	/**
+	 * Construct spike from chip via a label, FPGa and chip time information.
+	 * @param label SpikeLabel to use
+	 * @param fpga_time FPGATime to use
+	 * @param chip_time ChipTime to use
+	 */
+	SpikeFromChip(SpikeLabel const& label, FPGATime const& fpga_time, ChipTime const& chip_time)
+	    SYMBOL_VISIBLE;
+
+	/**
+	 * Construct a spike from chip from the data respresentation.
+	 * @param data Data to use
+	 */
+	SpikeFromChip(fisch::vx::SpikeFromChipEvent const& data) SYMBOL_VISIBLE;
+
+	/**
+	 * Get spike label.
+	 * @return SpikeLabel value
+	 */
+	GENPYBIND(getter_for(label))
+	SpikeLabel get_label() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set spike label.
+	 * @param value SpikeLabel value to set
+	 */
+	GENPYBIND(setter_for(label))
+	void set_label(SpikeLabel value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get FPGA time.
+	 * @return FPGATime value
+	 */
+	GENPYBIND(getter_for(fpga_time))
+	FPGATime get_fpga_time() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set FPGA time.
+	 * @param value FPGATime value to set
+	 */
+	GENPYBIND(setter_for(fpga_time))
+	void set_fpga_time(FPGATime value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get chip time.
+	 * @return ChipTime value
+	 */
+	GENPYBIND(getter_for(chip_time))
+	ChipTime get_chip_time() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set chip time.
+	 * @param value ChipTime value to set
+	 */
+	GENPYBIND(setter_for(chip_time))
+	void set_chip_time(ChipTime value) SYMBOL_VISIBLE;
+
+	bool operator==(SpikeFromChip const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SpikeFromChip const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SpikeFromChip const& spike) SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar);
+
+	SpikeLabel m_label;
+	FPGATime m_fpga_time;
+	ChipTime m_chip_time;
+};
+
 } // namespace haldls::vx
+
+namespace std {
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SpikeLabel)
+} // namespace std

@@ -6,6 +6,7 @@
 #include "stadls/vx/playback_program_builder.h"
 
 #include "executor.h"
+#include "test-helper.h"
 #include "test-init_helper.h"
 
 using namespace halco::common;
@@ -30,15 +31,14 @@ using namespace stadls::vx;
                                                                                                    \
 		std::vector<SpikeLabel> to_fpga_spike_labels;                                              \
 		for (size_t i = 0; i < num_spikes; ++i) {                                                  \
-			auto label = SpikeLabel(                                                               \
-			    NeuronLabel(i % NeuronLabel::size), SPL1Address(i % SPL1Address::size));           \
+			auto label = draw_non_default_value<SpikeLabel>(SpikeLabel(0));                        \
 			SpikePack##Num##ToChip::labels_type labels;                                            \
-			labels.fill(label);                                                                    \
+			labels.fill(fisch::vx::SpikeLabel(label));                                             \
 			SpikePack##Num##ToChip spike(labels);                                                  \
 			builder.write(SpikePack##Num##ToChipOnDLS(), spike);                                   \
 			builder.write(TimerOnDLS(), Timer());                                                  \
 			builder.wait_until(TimerOnDLS(), Timer::Value(10));                                    \
-			to_fpga_spike_labels.push_back(spike.get_labels().at(0));                              \
+			to_fpga_spike_labels.push_back(label);                                                 \
 		}                                                                                          \
                                                                                                    \
 		builder.write(TimerOnDLS(), Timer());                                                      \
@@ -55,8 +55,7 @@ using namespace stadls::vx;
                                                                                                    \
 		for (auto spike : spikes) {                                                                \
 			auto it = std::find(                                                                   \
-			    to_fpga_spike_labels.cbegin(), to_fpga_spike_labels.cend(),                        \
-			    spike.get_spike().get_label());                                                    \
+			    to_fpga_spike_labels.cbegin(), to_fpga_spike_labels.cend(), spike.get_label());    \
 			EXPECT_TRUE(it != to_fpga_spike_labels.cend()) << "Received spike not sent.";          \
 		}                                                                                          \
 	}

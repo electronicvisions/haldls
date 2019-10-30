@@ -102,7 +102,7 @@ public:
 	/** Default constructor. */
 	PlaybackProgram() SYMBOL_VISIBLE;
 
-	typedef std::vector<haldls::vx::SpikeFromChipEvent> spikes_type;
+	typedef std::vector<haldls::vx::SpikeFromChip> spikes_type;
 	typedef std::vector<haldls::vx::MADCSampleFromChipEvent> madc_samples_type;
 
 	typedef fisch::vx::PlaybackProgram::spike_pack_counts_type spike_pack_counts_type
@@ -115,7 +115,7 @@ public:
 	 * @return Vector of spike events
 	 */
 	GENPYBIND(getter_for(spikes))
-	spikes_type const& get_spikes() const SYMBOL_VISIBLE;
+	spikes_type get_spikes() const SYMBOL_VISIBLE;
 
 	/**
 	 * Get vector of time-annotated MADC sample events.

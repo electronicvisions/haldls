@@ -72,9 +72,12 @@ typename PlaybackProgram::fpga_time_type PlaybackProgram::ContainerTicket<T>::ge
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/container.def"
 
-typename PlaybackProgram::spikes_type const& PlaybackProgram::get_spikes() const
+typename PlaybackProgram::spikes_type PlaybackProgram::get_spikes() const
 {
-	return m_program_impl->get_spikes();
+	spikes_type spikes;
+	auto const& spikes_impl = m_program_impl->get_spikes();
+	std::copy(spikes_impl.begin(), spikes_impl.end(), std::back_inserter(spikes));
+	return spikes;
 }
 
 typename PlaybackProgram::madc_samples_type const& PlaybackProgram::get_madc_samples() const

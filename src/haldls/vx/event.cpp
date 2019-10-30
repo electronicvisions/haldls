@@ -1,7 +1,64 @@
 #include "haldls/vx/event.h"
+
+#include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.h"
 
 namespace haldls::vx {
+
+halco::hicann_dls::vx::SPL1Address SpikeLabel::get_spl1_address() const
+{
+	return halco::hicann_dls::vx::SPL1Address(value() >> 14);
+}
+
+void SpikeLabel::set_spl1_address(halco::hicann_dls::vx::SPL1Address const value)
+{
+	operator=(SpikeLabel(
+	    (this->value() & halco::hicann_dls::vx::NeuronLabel::max) |
+	    (static_cast<uint16_t>(value) << 14)));
+}
+
+halco::hicann_dls::vx::NeuronLabel SpikeLabel::get_neuron_label() const
+{
+	return halco::hicann_dls::vx::NeuronLabel(value() & halco::hicann_dls::vx::NeuronLabel::max);
+}
+
+void SpikeLabel::set_neuron_label(halco::hicann_dls::vx::NeuronLabel const value)
+{
+	operator=(SpikeLabel(
+	    (static_cast<uint16_t>(value) & halco::hicann_dls::vx::NeuronLabel::max) |
+	    (this->value() & 0xc000)));
+}
+
+SpikeLabel::PADILabel SpikeLabel::get_padi_label() const
+{
+	return PADILabel(value() & 0x3ff);
+}
+
+void SpikeLabel::set_padi_label(PADILabel const value)
+{
+	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0x3ff) | (this->value() & 0xfc00)));
+}
+
+NeuronBackendConfig::AddressOut SpikeLabel::get_neuron_backend_address_out() const
+{
+	return NeuronBackendConfig::AddressOut(value() & 0xff);
+}
+
+void SpikeLabel::set_neuron_backend_address_out(NeuronBackendConfig::AddressOut const value)
+{
+	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0xff) | (this->value() & 0xff00)));
+}
+
+SynapseQuad::Synapse::Address SpikeLabel::get_synapse_address() const
+{
+	return SynapseQuad::Synapse::Address(value() & 0x3f);
+}
+
+void SpikeLabel::set_synapse_address(SynapseQuad::Synapse::Address const value)
+{
+	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0x3f) | (this->value() & 0xffc0)));
+}
+
 
 #define SpikePackToChip(Num)                                                                       \
 	SpikePack##Num##ToChip::SpikePack##Num##ToChip() : m_impl() {}                                 \
@@ -69,5 +126,83 @@ SpikePackToChip(3)
 // clang-format on
 
 #undef SpikePackToChip
+
+
+SpikeFromChip::SpikeFromChip() :
+    m_label(),
+    m_fpga_time(),
+    m_chip_time()
+{}
+
+SpikeFromChip::SpikeFromChip(
+    SpikeLabel const& label, FPGATime const& fpga_time, ChipTime const& chip_time) :
+    m_label(label),
+    m_fpga_time(fpga_time),
+    m_chip_time(chip_time)
+{}
+
+SpikeFromChip::SpikeFromChip(fisch::vx::SpikeFromChipEvent const& data) :
+    m_label(data.get_spike().get_label()),
+    m_fpga_time(data.get_fpga_time()),
+    m_chip_time(data.get_spike().get_chip_time())
+{}
+
+SpikeLabel SpikeFromChip::get_label() const
+{
+	return m_label;
+}
+
+void SpikeFromChip::set_label(SpikeLabel const value)
+{
+	m_label = value;
+}
+
+FPGATime SpikeFromChip::get_fpga_time() const
+{
+	return m_fpga_time;
+}
+
+void SpikeFromChip::set_fpga_time(FPGATime const value)
+{
+	m_fpga_time = value;
+}
+
+ChipTime SpikeFromChip::get_chip_time() const
+{
+	return m_chip_time;
+}
+
+void SpikeFromChip::set_chip_time(ChipTime const value)
+{
+	m_chip_time = value;
+}
+
+bool SpikeFromChip::operator==(SpikeFromChip const& other) const
+{
+	return m_label == other.m_label && m_fpga_time == other.m_fpga_time &&
+	       m_chip_time == other.m_chip_time;
+}
+
+bool SpikeFromChip::operator!=(SpikeFromChip const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, SpikeFromChip const& spike)
+{
+	return (
+	    os << "SpikeFromChip(" << spike.m_label << ", " << spike.m_fpga_time << ", "
+	       << spike.m_chip_time << ")");
+}
+
+template <typename Archive>
+void SpikeFromChip::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_label));
+	ar(CEREAL_NVP(m_fpga_time));
+	ar(CEREAL_NVP(m_chip_time));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeFromChip)
 
 } // namespace haldls::vx
