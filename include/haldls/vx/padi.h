@@ -38,6 +38,30 @@ public:
 
 	using EventAddress = haldls::vx::SynapseQuad::Synapse::Address;
 
+	/**
+	 * Address in Hagen-mode.
+	 * The highest bit of the six-bit EventAddress payload is used as label.
+	 */
+	struct GENPYBIND(inline_base("*")) HagenAddress
+	    : public halco::common::detail::RantWrapper<HagenAddress, uint_fast16_t, 1, 0>
+	{
+		constexpr explicit HagenAddress(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	/**
+	 * Activation payload in Hagen-mode.
+	 * The lower five bits of the six-bit EventAddress payload are used to modulate the pulselength.
+	 */
+	struct GENPYBIND(inline_base("*")) HagenActivation
+	    : public halco::common::detail::RantWrapper<HagenActivation, uint_fast16_t, 31, 0>
+	{
+		constexpr explicit HagenActivation(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
 	struct GENPYBIND(inline_base("*")) RowSelectAddress
 	    : public halco::common::detail::RantWrapper<RowSelectAddress, uint_fast16_t, 31, 0>
 	{
@@ -64,6 +88,24 @@ public:
 	EventAddress get_event_address() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(event_address))
 	void set_event_address(EventAddress const value) SYMBOL_VISIBLE;
+
+	/**
+	 * Set Hagen-mode address, which is eventually forwarded to synapses.
+	 * This setting accesses the highest bit of the EventAddress.
+	 */
+	GENPYBIND(getter_for(hagen_address))
+	HagenAddress get_hagen_address() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(hagen_address))
+	void set_hagen_address(HagenAddress const value) SYMBOL_VISIBLE;
+
+	/**
+	 * Set Hagen-mode activation payload, which is eventually forwarded to synapses.
+	 * This setting accesses the lower five bits of the EventAddress.
+	 */
+	GENPYBIND(getter_for(hagen_activation))
+	HagenActivation get_hagen_activation() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(hagen_activation))
+	void set_hagen_activation(HagenActivation const value) SYMBOL_VISIBLE;
 
 	/**
 	 * Set row select address determining the synapse driver which is supposed to

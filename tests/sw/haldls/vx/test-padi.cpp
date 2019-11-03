@@ -34,6 +34,20 @@ TEST(PADIEvent, General)
 	}
 
 	{
+		auto value = draw_ranged_non_default_value<decltype(event.get_hagen_address())>(
+		    event.get_hagen_address());
+		event.set_hagen_address(value);
+		EXPECT_EQ(event.get_hagen_address(), value);
+	}
+
+	{
+		auto value = draw_ranged_non_default_value<decltype(event.get_hagen_activation())>(
+		    event.get_hagen_activation());
+		event.set_hagen_activation(value);
+		EXPECT_EQ(event.get_hagen_activation(), value);
+	}
+
+	{
 		auto value = draw_ranged_non_default_value<decltype(event.get_row_select_address())>(
 		    event.get_row_select_address());
 		event.set_row_select_address(value);

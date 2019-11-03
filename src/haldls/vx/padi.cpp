@@ -59,6 +59,26 @@ void PADIEvent::set_event_address(PADIEvent::EventAddress const value)
 	m_event_address = value;
 }
 
+PADIEvent::HagenAddress PADIEvent::get_hagen_address() const
+{
+	return HagenAddress(m_event_address >> 5);
+}
+
+void PADIEvent::set_hagen_address(PADIEvent::HagenAddress const value)
+{
+	m_event_address = EventAddress(value << 5 | (m_event_address & 0x1f));
+}
+
+PADIEvent::HagenActivation PADIEvent::get_hagen_activation() const
+{
+	return HagenActivation(m_event_address & 0x1f);
+}
+
+void PADIEvent::set_hagen_activation(PADIEvent::HagenActivation const value)
+{
+	m_event_address = EventAddress((value & 0x1f) | (m_event_address & 0x20));
+}
+
 PADIEvent::RowSelectAddress PADIEvent::get_row_select_address() const
 {
 	return m_row_select_address;
