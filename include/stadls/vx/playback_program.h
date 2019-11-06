@@ -88,14 +88,14 @@ public:
 #ifdef __GENPYBIND__
 // Explicit instantiation of template class for all valid playback container types.
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	typedef PlaybackProgram::ContainerTicket<Type> _##Name##ContainerTicket GENPYBIND(opaque);
+	typedef PlaybackProgram::ContainerTicket<Type> ContainerTicket_##Name GENPYBIND(opaque);
 #include "haldls/vx/container.def"
 #endif // __GENPYBIND__
 
 #ifdef __GENPYBIND__
 // Explicit instantiation of template class for all valid playback container types.
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	typedef PlaybackProgram::ContainerTicket<Type> _##Name##ContainerTicket GENPYBIND(opaque);
+	typedef PlaybackProgram::ContainerTicket<Type> ContainerTicket_##Name GENPYBIND(opaque);
 #include "lola/vx/container.def"
 #endif // __GENPYBIND__
 
