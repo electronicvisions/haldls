@@ -380,10 +380,10 @@ std::array<WordT, SynapseQuad::config_size_in_words> SynapseQuad::encode() const
 #define SYNAPSE_ENCODE(index)                                                                      \
 	{                                                                                              \
 		SynapseQuad::Synapse const& config = m_synapses.at(EntryOnQuad(index));                    \
-		bitfield.u.m.time_calib_##index = config.get_time_calib();                                 \
-		bitfield.u.m.weight_##index = weight_permutation(config.get_weight());                     \
-		bitfield.u.m.amp_calib_##index = config.get_amp_calib();                                   \
-		bitfield.u.m.address_##index = config.get_address();                                       \
+		bitfield.u.m.time_calib_##index = config.m_time_calib;                                     \
+		bitfield.u.m.weight_##index = weight_permutation(config.m_weight);                         \
+		bitfield.u.m.amp_calib_##index = config.m_amp_calib;                                       \
+		bitfield.u.m.address_##index = config.m_address;                                           \
 	}
 
 	SYNAPSE_ENCODE(0)

@@ -16,6 +16,11 @@ class OmnibusChip;
 class OmnibusChipOverJTAG;
 } // namespace fisch::vx
 
+namespace lola::vx {
+class SynapseMatrix;
+class SynapseRow;
+} // namespace lola::vx
+
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
@@ -202,6 +207,10 @@ public:
 		friend class cereal::access;
 		template <class Archive>
 		void serialize(Archive& ar);
+		// used for direct member access without function calls
+		friend class SynapseQuad;
+		friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseMatrix>;
+		friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseRow>;
 
 		Weight m_weight;
 		Address m_address;
@@ -234,6 +243,9 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	// used for direct member access without function calls
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseMatrix>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseRow>;
 
 	halco::common::typed_array<Synapse, halco::hicann_dls::vx::EntryOnQuad> m_synapses;
 };

@@ -345,13 +345,12 @@ struct VisitPreorderImpl<lola::vx::SynapseRow>
 		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
 			haldls::vx::SynapseQuad quad_config;
 			for (auto const syn : iter_all<EntryOnQuad>()) {
-				SynapseOnSynapseRow syn_on_row(syn, quad);
-				haldls::vx::SynapseQuad::Synapse syn_config;
-				syn_config.set_weight(config.weights[syn_on_row]);
-				syn_config.set_address(config.addresses[syn_on_row]);
-				syn_config.set_time_calib(config.time_calibs[syn_on_row]);
-				syn_config.set_amp_calib(config.amp_calibs[syn_on_row]);
-				quad_config.set_synapse(syn, syn_config);
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				auto& syn_config = quad_config.m_synapses[syn];
+				syn_config.m_weight = config.weights[syn_on_row];
+				syn_config.m_address = config.addresses[syn_on_row];
+				syn_config.m_time_calib = config.time_calibs[syn_on_row];
+				syn_config.m_amp_calib = config.amp_calibs[syn_on_row];
 			}
 			visit_preorder(
 			    quad_config,
@@ -361,12 +360,12 @@ struct VisitPreorderImpl<lola::vx::SynapseRow>
 			// only on alteration
 			if constexpr (!std::is_same<ContainerT, lola::vx::SynapseRow const>::value) {
 				for (auto const syn : iter_all<EntryOnQuad>()) {
-					SynapseOnSynapseRow syn_on_row(syn, quad);
-					auto syn_config = quad_config.get_synapse(syn);
-					config.weights[syn_on_row] = syn_config.get_weight();
-					config.addresses[syn_on_row] = syn_config.get_address();
-					config.time_calibs[syn_on_row] = syn_config.get_time_calib();
-					config.amp_calibs[syn_on_row] = syn_config.get_amp_calib();
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					auto const& syn_config = quad_config.m_synapses[syn];
+					config.weights[syn_on_row] = syn_config.m_weight;
+					config.addresses[syn_on_row] = syn_config.m_address;
+					config.time_calibs[syn_on_row] = syn_config.m_time_calib;
+					config.amp_calibs[syn_on_row] = syn_config.m_amp_calib;
 				}
 			}
 		}
@@ -397,18 +396,29 @@ struct VisitPreorderImpl<lola::vx::SynapseMatrix>
 		visitor(coord, config);
 
 		for (auto const row : iter_all<SynapseRowOnSynram>()) {
-			lola::vx::SynapseRow row_config;
-			row_config.weights = config.weights[row];
-			row_config.addresses = config.addresses[row];
-			row_config.time_calibs = config.time_calibs[row];
-			row_config.amp_calibs = config.amp_calibs[row];
-			visit_preorder(row_config, SynapseRowOnDLS(row, coord), visitor);
-			// only on alteration
-			if constexpr (!std::is_same<ContainerT, lola::vx::SynapseMatrix const>::value) {
-				config.weights[row] = row_config.weights;
-				config.addresses[row] = row_config.addresses;
-				config.time_calibs[row] = row_config.time_calibs;
-				config.amp_calibs[row] = row_config.amp_calibs;
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				haldls::vx::SynapseQuad quad_config;
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					auto& syn_config = quad_config.m_synapses[syn];
+					syn_config.m_weight = config.weights[row][syn_on_row];
+					syn_config.m_address = config.addresses[row][syn_on_row];
+					syn_config.m_time_calib = config.time_calibs[row][syn_on_row];
+					syn_config.m_amp_calib = config.amp_calibs[row][syn_on_row];
+				}
+				visit_preorder(
+				    quad_config, SynapseQuadOnDLS(SynapseQuadOnSynram(quad, row), coord), visitor);
+				// only on alteration
+				if constexpr (!std::is_same<ContainerT, lola::vx::SynapseMatrix const>::value) {
+					for (auto const syn : iter_all<EntryOnQuad>()) {
+						SynapseOnSynapseRow const syn_on_row(syn, quad);
+						auto const& syn_config = quad_config.m_synapses[syn];
+						config.weights[row][syn_on_row] = syn_config.m_weight;
+						config.addresses[row][syn_on_row] = syn_config.m_address;
+						config.time_calibs[row][syn_on_row] = syn_config.m_time_calib;
+						config.amp_calibs[row][syn_on_row] = syn_config.m_amp_calib;
+					}
+				}
 			}
 		}
 	}
