@@ -31,21 +31,17 @@ TEST(SynapseDriverConfig, General)
 	config.set_enable_address_out(value);
 	ASSERT_EQ(config.get_enable_address_out(), value);
 
-	value = !config.get_enable_excitatory_bottom();
-	config.set_enable_excitatory_bottom(value);
-	ASSERT_EQ(config.get_enable_excitatory_bottom(), value);
+	{
+		auto const value = SynapseDriverConfig::RowMode::excitatory;
+		config.set_row_mode_bottom(value);
+		ASSERT_EQ(config.get_row_mode_bottom(), value);
+	}
 
-	value = !config.get_enable_excitatory_top();
-	config.set_enable_excitatory_top(value);
-	ASSERT_EQ(config.get_enable_excitatory_top(), value);
-
-	value = !config.get_enable_inhibitory_bottom();
-	config.set_enable_inhibitory_bottom(value);
-	ASSERT_EQ(config.get_enable_inhibitory_bottom(), value);
-
-	value = !config.get_enable_inhibitory_top();
-	config.set_enable_inhibitory_top(value);
-	ASSERT_EQ(config.get_enable_inhibitory_top(), value);
+	{
+		auto const value = SynapseDriverConfig::RowMode::inhibitory;
+		config.set_row_mode_top(value);
+		ASSERT_EQ(config.get_row_mode_top(), value);
+	}
 
 	value = !config.get_enable_readout();
 	config.set_enable_readout(value);
@@ -109,7 +105,7 @@ TEST(SynapseDriverConfig, EncodeDecode)
 	SynapseDriverConfig config;
 	config.set_recovery(SynapseDriverConfig::Recovery(7));
 	config.set_enable_receiver(true);
-	config.set_enable_excitatory_top(true);
+	config.set_row_mode_top(SynapseDriverConfig::RowMode::excitatory);
 	config.set_enable_readout(true);
 
 	auto coord =
@@ -151,19 +147,14 @@ TEST(SynapseDriverConfig, CerealizeCoverage)
 {
 	SynapseDriverConfig c1, c2;
 	c1.set_recovery(SynapseDriverConfig::Recovery(7));
-	c1.set_enable_excitatory_top(true);
-	c1.set_enable_readout(true);
-
+	c1.set_row_mode_top(SynapseDriverConfig::RowMode::excitatory);
+	c1.set_row_mode_bottom(SynapseDriverConfig::RowMode::inhibitory);
 	c1.set_enable_receiver(true);
 	c1.set_row_address_compare_mask(SynapseDriverConfig::RowAddressCompareMask(0b01010));
 	c1.set_enable_address_out(false);
 	c1.set_utilization(SynapseDriverConfig::Utilization(3));
 	c1.set_offset(SynapseDriverConfig::Offset(4));
 	c1.set_recovery(SynapseDriverConfig::Recovery(5));
-	c1.set_enable_excitatory_bottom(true);
-	c1.set_enable_excitatory_top(true);
-	c1.set_enable_inhibitory_bottom(true);
-	c1.set_enable_inhibitory_top(true);
 	c1.set_select_target_voltages(SynapseDriverConfig::TargetVoltages(1));
 	c1.set_enable_readout(true);
 	c1.set_enable_renewing(true);

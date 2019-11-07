@@ -12,23 +12,21 @@ namespace haldls {
 namespace vx {
 
 SynapseDriverConfig::SynapseDriverConfig() :
-	m_en_receiver(false),
-	m_row_address_compare_mask(),
-	m_en_address_out(true),
-	m_utilization(),
-	m_offset(),
-	m_recovery(),
-	m_en_exc_bottom(false),
-	m_en_exc_top(false),
-	m_en_inh_bottom(false),
-	m_en_inh_top(false),
-	m_select_target_voltages(),
-	m_en_readout(false),
-	m_en_renewing(false),
-	m_en_hagen_modulation(false),
-	m_en_stp(false),
-	m_en_charge_sharing(false),
-	m_en_recovery(false)
+    m_en_receiver(false),
+    m_row_address_compare_mask(),
+    m_en_address_out(true),
+    m_utilization(),
+    m_offset(),
+    m_recovery(),
+    m_row_mode_bottom(RowMode::disabled),
+    m_row_mode_top(RowMode::disabled),
+    m_select_target_voltages(),
+    m_en_readout(false),
+    m_en_renewing(false),
+    m_en_hagen_modulation(false),
+    m_en_stp(false),
+    m_en_charge_sharing(false),
+    m_en_recovery(false)
 {}
 
 struct SynapseDriverConfig::SynapseDriverConfigBitfield
@@ -136,44 +134,24 @@ void SynapseDriverConfig::set_recovery(SynapseDriverConfig::Recovery const value
 	m_recovery = value;
 }
 
-bool SynapseDriverConfig::get_enable_excitatory_bottom() const
+SynapseDriverConfig::RowMode SynapseDriverConfig::get_row_mode_bottom() const
 {
-	return m_en_exc_bottom;
+	return m_row_mode_bottom;
 }
 
-void SynapseDriverConfig::set_enable_excitatory_bottom(bool const value)
+void SynapseDriverConfig::set_row_mode_bottom(RowMode const value)
 {
-	m_en_exc_bottom = value;
+	m_row_mode_bottom = value;
 }
 
-bool SynapseDriverConfig::get_enable_excitatory_top() const
+SynapseDriverConfig::RowMode SynapseDriverConfig::get_row_mode_top() const
 {
-	return m_en_exc_top;
+	return m_row_mode_top;
 }
 
-void SynapseDriverConfig::set_enable_excitatory_top(bool const value)
+void SynapseDriverConfig::set_row_mode_top(RowMode const value)
 {
-	m_en_exc_top = value;
-}
-
-bool SynapseDriverConfig::get_enable_inhibitory_bottom() const
-{
-	return m_en_inh_bottom;
-}
-
-void SynapseDriverConfig::set_enable_inhibitory_bottom(bool const value)
-{
-	m_en_inh_bottom = value;
-}
-
-bool SynapseDriverConfig::get_enable_inhibitory_top() const
-{
-	return m_en_inh_top;
-}
-
-void SynapseDriverConfig::set_enable_inhibitory_top(bool const value)
-{
-	m_en_inh_top = value;
+	m_row_mode_top = value;
 }
 
 SynapseDriverConfig::TargetVoltages SynapseDriverConfig::get_select_target_voltages() const
@@ -282,10 +260,14 @@ SynapseDriverConfig::SynapseDriverConfigBitfield SynapseDriverConfig::to_bitfiel
 	bitfield.u.m.utilization = m_utilization;
 	bitfield.u.m.offset = m_offset;
 	bitfield.u.m.recovery = m_recovery;
-	bitfield.u.m.en_exc_bottom = m_en_exc_bottom;
-	bitfield.u.m.en_exc_top = m_en_exc_top;
-	bitfield.u.m.en_inh_bottom = m_en_inh_bottom;
-	bitfield.u.m.en_inh_top = m_en_inh_top;
+	bitfield.u.m.en_exc_bottom = (m_row_mode_bottom == RowMode::excitatory) ||
+	                             (m_row_mode_bottom == RowMode::excitatory_and_inhibitory);
+	bitfield.u.m.en_exc_top = (m_row_mode_top == RowMode::excitatory) ||
+	                          (m_row_mode_top == RowMode::excitatory_and_inhibitory);
+	bitfield.u.m.en_inh_bottom = (m_row_mode_bottom == RowMode::inhibitory) ||
+	                             (m_row_mode_bottom == RowMode::excitatory_and_inhibitory);
+	bitfield.u.m.en_inh_top = (m_row_mode_top == RowMode::inhibitory) ||
+	                          (m_row_mode_top == RowMode::excitatory_and_inhibitory);
 	bitfield.u.m.select_target_voltages = m_select_target_voltages;
 	bitfield.u.m.en_readout = m_en_readout;
 	bitfield.u.m.en_renewing = m_en_renewing;
@@ -304,10 +286,15 @@ void SynapseDriverConfig::from_bitfield(SynapseDriverConfig::SynapseDriverConfig
 	m_utilization = Utilization(bitfield.u.m.utilization);
 	m_offset = Offset(bitfield.u.m.offset);
 	m_recovery = Recovery(bitfield.u.m.recovery);
-	m_en_exc_bottom = bitfield.u.m.en_exc_bottom;
-	m_en_exc_top = bitfield.u.m.en_exc_top;
-	m_en_inh_bottom = bitfield.u.m.en_inh_bottom;
-	m_en_inh_top = bitfield.u.m.en_inh_top;
+	m_row_mode_bottom =
+	    bitfield.u.m.en_exc_bottom
+	        ? (bitfield.u.m.en_inh_bottom ? RowMode::excitatory_and_inhibitory
+	                                      : RowMode::excitatory)
+	        : (bitfield.u.m.en_inh_bottom ? RowMode::inhibitory : RowMode::disabled);
+	m_row_mode_top =
+	    bitfield.u.m.en_exc_top
+	        ? (bitfield.u.m.en_inh_top ? RowMode::excitatory_and_inhibitory : RowMode::excitatory)
+	        : (bitfield.u.m.en_inh_top ? RowMode::inhibitory : RowMode::disabled);
 	m_select_target_voltages = TargetVoltages(bitfield.u.m.select_target_voltages);
 	m_en_readout = bitfield.u.m.en_readout;
 	m_en_renewing = bitfield.u.m.en_renewing;
@@ -351,6 +338,22 @@ template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::OmnibusChipO
 template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, SynapseDriverConfig::config_size_in_words> const& data);
 
+std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& mode)
+{
+	switch (mode) {
+		case SynapseDriverConfig::RowMode::disabled:
+			return os << "disabled";
+		case SynapseDriverConfig::RowMode::excitatory:
+			return os << "excitatory";
+		case SynapseDriverConfig::RowMode::inhibitory:
+			return os << "inhibitory";
+		case SynapseDriverConfig::RowMode::excitatory_and_inhibitory:
+			return os << "excitatory_and_inhibitory";
+		default:
+			throw std::logic_error("Ostream operator of specified RowMode not implemented");
+	}
+}
+
 std::ostream& operator<<(std::ostream& os, SynapseDriverConfig const& config)
 {
 	print_words_for_each_backend<SynapseDriverConfig>(os, config);
@@ -363,10 +366,8 @@ std::ostream& operator<<(std::ostream& os, SynapseDriverConfig const& config)
 	<< "utilization              \t" << config.m_utilization << "\tparameter (BUG: no effect)" << std::endl
 	<< "offset                   \t" << config.m_offset << "\tcalibration of pulse lengths" << std::endl
 	<< "recovery                 \t" << config.m_recovery << "\tspeed of recovery" << std::endl
-	<< "en_exc_bottom            \t" << config.m_en_exc_bottom << "\tset bottom row to be excitatory" << std::endl
-	<< "en_exc_top               \t" << config.m_en_exc_top << "\tset top row to be excitatory" << std::endl
-	<< "en_inh_bottom            \t" << config.m_en_inh_bottom << "\tset bottom row to be inhibitory" << std::endl
-	<< "en_inh_top               \t" << config.m_en_inh_top << "\tset top row to be inhibitory" << std::endl
+	<< "row_mode_bottom            \t" << config.m_row_mode_bottom << "\tset bottom row mode" << std::endl
+	<< "row_mode_top               \t" << config.m_row_mode_top << "\tset top row mode" << std::endl
 	<< "select_target_voltages   \t" << config.m_select_target_voltages << "\tselect pair of baseline and target voltage" << std::endl
 	<< "en_readout               \t" << config.m_en_readout << "\tenable readout of STP voltage" << std::endl
 	<< "en_renewing              \t" << config.m_en_renewing << "\tenable renewing synapses (BUG: no effect)" << std::endl
@@ -388,10 +389,8 @@ bool SynapseDriverConfig::operator==(SynapseDriverConfig const& other) const
 	m_utilization == other.get_utilization() &&
 	m_offset == other.get_offset() &&
 	m_recovery == other.get_recovery() &&
-	m_en_exc_bottom == other.get_enable_excitatory_bottom() &&
-	m_en_exc_top == other.get_enable_excitatory_top() &&
-	m_en_inh_bottom == other.get_enable_inhibitory_bottom() &&
-	m_en_inh_top == other.get_enable_inhibitory_top() &&
+	m_row_mode_bottom == other.m_row_mode_bottom &&
+	m_row_mode_top == other.m_row_mode_top &&
 	m_select_target_voltages == other.get_select_target_voltages() &&
 	m_en_readout == other.get_enable_readout() &&
 	m_en_renewing == other.get_enable_renewing() &&
@@ -417,10 +416,8 @@ void SynapseDriverConfig::serialize(Archive& ar)
 	ar(CEREAL_NVP(m_utilization));
 	ar(CEREAL_NVP(m_offset));
 	ar(CEREAL_NVP(m_recovery));
-	ar(CEREAL_NVP(m_en_exc_bottom));
-	ar(CEREAL_NVP(m_en_exc_top));
-	ar(CEREAL_NVP(m_en_inh_bottom));
-	ar(CEREAL_NVP(m_en_inh_top));
+	ar(CEREAL_NVP(m_row_mode_bottom));
+	ar(CEREAL_NVP(m_row_mode_top));
 	ar(CEREAL_NVP(m_select_target_voltages));
 	ar(CEREAL_NVP(m_en_readout));
 	ar(CEREAL_NVP(m_en_renewing));

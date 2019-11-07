@@ -68,6 +68,14 @@ public:
 		{}
 	};
 
+	enum class GENPYBIND(visible) RowMode
+	{
+		disabled,
+		excitatory,
+		inhibitory,
+		excitatory_and_inhibitory
+	};
+
 	SynapseDriverConfig() SYMBOL_VISIBLE;
 
 	// accessors
@@ -120,29 +128,17 @@ public:
 	GENPYBIND(setter_for(recovery))
 	void set_recovery(Recovery const value) SYMBOL_VISIBLE;
 
-	/** Set bottom row of synapses to be excitatory. */
-	GENPYBIND(getter_for(enable_excitatory_bottom))
-	bool get_enable_excitatory_bottom() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_excitatory_bottom))
-	void set_enable_excitatory_bottom(bool const value) SYMBOL_VISIBLE;
+	/** Set bottom row mode. */
+	GENPYBIND(getter_for(row_mode_bottom))
+	RowMode get_row_mode_bottom() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(row_mode_bottom))
+	void set_row_mode_bottom(RowMode value) SYMBOL_VISIBLE;
 
-	/** Set top row of synapses to be excitatory. */
-	GENPYBIND(getter_for(enable_excitatory_top))
-	bool get_enable_excitatory_top() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_excitatory_top))
-	void set_enable_excitatory_top(bool const value) SYMBOL_VISIBLE;
-
-	/** Set bottom row of synapses to be inhibitory. */
-	GENPYBIND(getter_for(enable_inhibitory_bottom))
-	bool get_enable_inhibitory_bottom() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_inhibitory_bottom))
-	void set_enable_inhibitory_bottom(bool const value) SYMBOL_VISIBLE;
-
-	/** Set top row of synapses to be inhibitory. */
-	GENPYBIND(getter_for(enable_inhibitory_top))
-	bool get_enable_inhibitory_top() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_inhibitory_top))
-	void set_enable_inhibitory_top(bool const value) SYMBOL_VISIBLE;
+	/** Set top row mode. */
+	GENPYBIND(getter_for(row_mode_top))
+	RowMode get_row_mode_top() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(row_mode_top))
+	void set_row_mode_top(RowMode value) SYMBOL_VISIBLE;
 
 	/**
 	 * Select a pair of STP target voltages (vrecover, vcharge).
@@ -238,10 +234,8 @@ private:
 	Utilization m_utilization;
 	Offset m_offset;
 	Recovery m_recovery;
-	bool m_en_exc_bottom;
-	bool m_en_exc_top;
-	bool m_en_inh_bottom;
-	bool m_en_inh_top;
+	RowMode m_row_mode_bottom;
+	RowMode m_row_mode_top;
 	TargetVoltages m_select_target_voltages;
 	bool m_en_readout;
 	bool m_en_renewing;
