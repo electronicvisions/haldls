@@ -27,51 +27,24 @@ def run_program(program_path: str,
     ppu_control_reg_end = hal.PPUControlRegister()
     ppu_control_reg_end.inhibit_reset = False
 
-    # Playback program
-    builder = sta.PlaybackProgramBuilder()
+    # Chip initialization
+    builder, _ = sta.generate(sta.InitGenerator())
 
-    # enable reset chip pin
-    builder.write(halco.ResetChipOnDLS(), True)
-    builder.write(halco.TimerOnDLS(), hal.Timer(0))
-    builder.wait_until(halco.TimerOnDLS(), 10)
-
-    # disable reset chip pin
-    builder.write(halco.ResetChipOnDLS(), False)
-    builder.write(halco.TimerOnDLS(), hal.Timer(0))
-    builder.wait_until(halco.TimerOnDLS(), 100)
-
-    # write JTAG clock scaler, reset JTAG TAP
-    builder.write(halco.JTAGClockScalerOnDLS(), hal.JTAGClockScaler(3))
-    builder.write(halco.ResetJTAGTapOnDLS(), hal.ResetJTAGTap())
-
-    # write ADPLL config via JTAG
-    for adpll_coord in halco.iter_all(halco.ADPLLOnDLS):
-        builder.write(adpll_coord, hal.ADPLL())
-
-    # write PLLClockOutputBlock config via JTAG
-    builder.write(
-        halco.PLLClockOutputBlockOnDLS(), hal.PLLClockOutputBlock())
-    builder.write(halco.TimerOnDLS(), hal.Timer(0))
-    builder.wait_until(halco.TimerOnDLS(),
-                       hal.Timer.Value(
-                           int(hal.Timer.Value.fpga_clock_cycles_per_us)
-                           * 100))
-
-    backend = hal.Backend.OmnibusChipOverJTAG
     # write, execute PPU program and read back results
-    builder.write(halco.PPUMemoryOnDLS(), program, backend)
-    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_end,
-                  backend)
-    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_start,
-                  backend)
+    builder.write(halco.PPUMemoryOnDLS(), program)
+    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_end)
+    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_start)
     builder.write(halco.TimerOnDLS(), hal.Timer(0))
     builder.wait_until(halco.TimerOnDLS(), wait)
-    status_handle = builder.read(halco.PPUStatusRegisterOnDLS(), backend)
-    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_end,
-                  backend)
-    program_handle = builder.read(halco.PPUMemoryOnDLS(), backend)
+    status_handle = builder.read(halco.PPUStatusRegisterOnDLS())
+    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_end)
+    program_handle = builder.read(halco.PPUMemoryOnDLS())
     mailbox_handle = builder.read(
-        halco.PPUMemoryBlockOnDLS(halco.PPUMemoryBlockOnPPU.mailbox), backend)
+        halco.PPUMemoryBlockOnDLS(halco.PPUMemoryBlockOnPPU.mailbox))
+
+    # Wait for all read responses to arrive
+    builder.write(halco.TimerOnDLS(), hal.Timer(0))
+    builder.wait_until(halco.TimerOnDLS(), 1000)
 
     # Connect and execute
     with sta.AutoConnection() as connection:
