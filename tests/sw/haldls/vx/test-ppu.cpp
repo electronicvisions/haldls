@@ -312,8 +312,7 @@ TEST(PPUMemory, EncodeDecode)
 {
 	PPUMemory config;
 
-	PPUMemoryOnPPU coord;
-	PPUMemoryOnDLS coord_on_dls(coord);
+	PPUMemoryOnDLS coord_on_dls;
 
 	PPUMemory::words_type memory;
 
@@ -436,7 +435,7 @@ TEST(PPUControlRegister, EncodeDecode)
 	config.set_force_clock_on(false);
 	config.set_force_clock_off(true);
 
-	PPUControlRegisterOnDLS coord(PPUControlRegisterOnPPU(), PPUOnDLS(0));
+	PPUControlRegisterOnDLS coord;
 
 	std::array<OmnibusChipOverJTAGAddress, PPUControlRegister::config_size_in_words> ref_addresses =
 	    {OmnibusChipOverJTAGAddress{0x2a00000}};
@@ -493,7 +492,7 @@ TEST(PPUStatusRegister, EncodeDecode)
 {
 	PPUStatusRegister config;
 
-	PPUStatusRegisterOnDLS coord(PPUStatusRegisterOnPPU(), PPUOnDLS(0));
+	PPUStatusRegisterOnDLS coord;
 
 	std::array<OmnibusChipOverJTAGAddress, PPUStatusRegister::config_size_in_words> ref_addresses =
 	    {OmnibusChipOverJTAGAddress{0x2a00001ul}};

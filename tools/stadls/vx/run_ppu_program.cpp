@@ -156,11 +156,11 @@ int main(int argc, char* argv[])
 	    PPUMemoryBlockOnPPU(PPUMemoryWordOnPPU(ppu_memory_program.size()), stack_begin), ppu_coord);
 	PPUMemoryBlockOnDLS ppu_mailbox_coord(mailbox_coord_on_ppu, ppu_coord);
 	PPUMemoryWordOnDLS ppu_return_code_coord(return_code, ppu_coord);
-	PPUMemoryOnDLS ppu_memory_coord(PPUMemoryOnPPU(), ppu_coord);
+	PPUMemoryOnDLS ppu_memory_coord = ppu_coord.toPPUMemoryOnDLS();
 
 	PPUControlRegister ppu_control_register;
-	PPUControlRegisterOnDLS ppu_control_register_coord(PPUControlRegisterOnPPU(), ppu_coord);
-	PPUStatusRegisterOnDLS ppu_status_register_coord(PPUStatusRegisterOnPPU(), ppu_coord);
+	PPUControlRegisterOnDLS ppu_control_register_coord = ppu_coord.toPPUControlRegisterOnDLS();
+	PPUStatusRegisterOnDLS ppu_status_register_coord = ppu_coord.toPPUStatusRegisterOnDLS();
 	ppu_control_register.set_inhibit_reset(false);
 	LOG4CXX_INFO(logger, "Emitting write for control register.")
 	builder.write(ppu_control_register_coord, ppu_control_register, backend);

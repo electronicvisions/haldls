@@ -104,8 +104,8 @@ TEST(PPUControlRegister, WROverJTAG)
 	builder.write(TimerOnDLS(), Timer());
 
 	PPUControlRegister reg1, reg2;
-	PPUOnDLS ppu_coord1(0);
-	PPUOnDLS ppu_coord2(1);
+	PPUControlRegisterOnDLS ppu_coord1(0);
+	PPUControlRegisterOnDLS ppu_coord2(1);
 	reg1.set_cache_controller_enable(true);
 	reg1.set_inhibit_reset(true);
 	reg1.set_force_clock_on(true);
@@ -117,35 +117,19 @@ TEST(PPUControlRegister, WROverJTAG)
 	reg2.set_force_clock_off(true);
 
 	// Write and read back reg1
-	builder.write(
-	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord1), reg1,
-	    Backend::OmnibusChipOverJTAG);
-	builder.write(
-	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2), reg1,
-	    Backend::OmnibusChipOverJTAG);
+	builder.write(ppu_coord1, reg1, Backend::OmnibusChipOverJTAG);
+	builder.write(ppu_coord2, reg1, Backend::OmnibusChipOverJTAG);
 	std::vector<PlaybackProgram::ContainerTicket<PPUControlRegister>> reg1_tickets;
-	reg1_tickets.push_back(builder.read(
-	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord1),
-	    Backend::OmnibusChipOverJTAG));
-	reg1_tickets.push_back(builder.read(
-	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2),
-	    Backend::OmnibusChipOverJTAG));
+	reg1_tickets.push_back(builder.read(ppu_coord1, Backend::OmnibusChipOverJTAG));
+	reg1_tickets.push_back(builder.read(ppu_coord2, Backend::OmnibusChipOverJTAG));
 
 
 	// Write and read back reg2
-	builder.write(
-	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord1), reg2,
-	    Backend::OmnibusChipOverJTAG);
-	builder.write(
-	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2), reg2,
-	    Backend::OmnibusChipOverJTAG);
+	builder.write(ppu_coord1, reg2, Backend::OmnibusChipOverJTAG);
+	builder.write(ppu_coord2, reg2, Backend::OmnibusChipOverJTAG);
 	std::vector<PlaybackProgram::ContainerTicket<PPUControlRegister>> reg2_tickets;
-	reg2_tickets.push_back(builder.read(
-	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord1),
-	    Backend::OmnibusChipOverJTAG));
-	reg2_tickets.push_back(builder.read(
-	    PPUControlRegisterOnDLS(PPUControlRegisterOnPPU(), ppu_coord2),
-	    Backend::OmnibusChipOverJTAG));
+	reg2_tickets.push_back(builder.read(ppu_coord1, Backend::OmnibusChipOverJTAG));
+	reg2_tickets.push_back(builder.read(ppu_coord2, Backend::OmnibusChipOverJTAG));
 
 	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
