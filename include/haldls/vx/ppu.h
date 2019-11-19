@@ -325,16 +325,16 @@ template <>
 struct BackendContainerTrait<PPUStatusRegister>
     : public BackendContainerBase<
           PPUStatusRegister,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<PPUControlRegister>
     : public BackendContainerBase<
           PPUControlRegister,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
