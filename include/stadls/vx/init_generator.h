@@ -39,6 +39,13 @@ public:
 	/** DAC channel configs on xBoard. */
 	lola::vx::DACChannelBlock dac_channel_block;
 
+	/**
+	 * Enable xBoard DAC and shift register configuration.
+	 * Disabling this allows to discard unnecessary configuration when simulating.
+	 * @note Disabling this discards all xBoard configuration
+	 */
+	bool enable_xboard;
+
 	/** JTAG clock scaler setting. */
 	haldls::vx::JTAGClockScaler jtag_clock_scaler;
 

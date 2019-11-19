@@ -15,6 +15,12 @@ stadls::vx::PlaybackProgramExecutor generate_playback_program_test_executor()
 	return executor;
 }
 
+#if REDUCED_TESTS
+std::optional<size_t> SYMBOL_VISIBLE max_words_per_reduced_test = MAX_WORDS_PER_REDUCED_TEST;
+#else
+std::optional<size_t> SYMBOL_VISIBLE max_words_per_reduced_test = std::nullopt;
+#endif
+
 int main(int argc, char* argv[])
 {
 	testing::InitGoogleTest(&argc, argv);

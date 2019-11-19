@@ -8,8 +8,6 @@
 
 #include "executor.h"
 
-#include "test-helper.h"
-
 using namespace haldls::vx;
 using namespace stadls::vx;
 using namespace halco::hicann_dls::vx;

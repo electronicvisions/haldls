@@ -230,9 +230,11 @@ def build(bld):
     bld(
         target = 'stadls_hwtest_vx',
         features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/hw/stadls/vx/test-*.cpp'),
+        source = bld.path.ant_glob('tests/hw/stadls/vx/hw/test-*.cpp')
+                 + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'stadls_vx', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc'],
+        defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
         skip_run = not bld.env.DLSvx_HARDWARE_AVAILABLE
@@ -241,9 +243,11 @@ def build(bld):
     bld(
         target = 'stadls_simtest_vx',
         features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/hw/stadls/vx/test-*.cpp'),
+        source = bld.path.ant_glob('tests/hw/stadls/vx/sim/test-*.cpp')
+                 + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'GTEST', 'stadls_simtest_vx_inc', 'stadls_vx', 'haldls_test_common_inc'],
+        defines = ['REDUCED_TESTS=1', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
         skip_run = not bld.env.DLSvx_SIM_AVAILABLE

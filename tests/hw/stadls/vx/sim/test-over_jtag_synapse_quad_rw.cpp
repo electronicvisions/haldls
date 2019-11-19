@@ -16,22 +16,25 @@ using namespace halco::hicann_dls::vx;
 using namespace haldls::vx;
 using namespace stadls::vx;
 
+extern std::optional<size_t> const max_words_per_reduced_test;
+
 /**
  * Enable over JTAG omnibus connection and write and read all Synapse blocks for verification.
- * Disabled due to failing read-back probably caused by wrong timing settings.
  */
-TEST(SynapseQuad, DISABLED_WROverJTAG)
+TEST(SynapseQuad, WROverJTAG)
 {
 	auto sequence = DigitalInit();
 	sequence.enable_highspeed_link = false;
 	auto [builder, _] = generate(sequence);
 
-	typed_array<SynapseQuad, SynapseQuadOnDLS> configs;
+	std::map<SynapseQuadOnDLS, SynapseQuad> quads;
+	std::map<SynapseQuadOnDLS, PlaybackProgram::ContainerTicket<SynapseQuad>> quad_tickets;
 
-	// Fill configs with random data
-	for (auto coord : iter_all<SynapseQuadOnDLS>()) {
+	PlaybackProgramBuilder read_builder;
+	for (auto const quad : iter_sparse<SynapseQuadOnDLS>(max_words_per_reduced_test)) {
+		SynapseQuad config;
 		for (auto syn : iter_all<EntryOnQuad>()) {
-			auto synapse = configs[coord].get_synapse(syn);
+			auto synapse = config.get_synapse(syn);
 			synapse.set_weight(draw_ranged_non_default_value<decltype(synapse.get_weight())>(
 			    synapse.get_weight()));
 			synapse.set_address(draw_ranged_non_default_value<decltype(synapse.get_address())>(
@@ -41,20 +44,15 @@ TEST(SynapseQuad, DISABLED_WROverJTAG)
 			        synapse.get_time_calib()));
 			synapse.set_amp_calib(draw_ranged_non_default_value<decltype(synapse.get_amp_calib())>(
 			    synapse.get_amp_calib()));
-			configs[coord].set_synapse(syn, synapse);
+			config.set_synapse(syn, synapse);
 		}
+		quads.insert(std::make_pair(quad, config));
+		builder.write(quad, quads.at(quad), Backend::OmnibusChipOverJTAG);
+		quad_tickets.emplace(
+		    std::make_pair(quad, read_builder.read(quad, Backend::OmnibusChipOverJTAG)));
 	}
+	builder.merge_back(read_builder);
 
-	// Write using JTAG
-	for (auto coord : iter_all<SynapseQuadOnDLS>()) {
-		builder.write(coord, configs[coord], Backend::OmnibusChipOverJTAG);
-	}
-
-	std::vector<PlaybackProgram::ContainerTicket<SynapseQuad>> tickets;
-	// Read back
-	for (auto coord : iter_all<SynapseQuadOnDLS>()) {
-		tickets.push_back(builder.read(coord, Backend::OmnibusChipOverJTAG));
-	}
 	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
 	auto program = builder.done();
@@ -62,8 +60,8 @@ TEST(SynapseQuad, DISABLED_WROverJTAG)
 	auto executor = generate_playback_program_test_executor();
 	executor.run(program);
 
-	for (auto coord : iter_all<SynapseQuadOnDLS>()) {
-		EXPECT_TRUE(tickets[coord.toEnum()].valid());
-		EXPECT_EQ(tickets[coord.toEnum()].get(), configs[coord]) << coord;
+	for (auto const [quad, ticket] : quad_tickets) {
+		EXPECT_TRUE(ticket.valid());
+		EXPECT_EQ(ticket.get(), quads.at(quad)) << quad;
 	}
 }

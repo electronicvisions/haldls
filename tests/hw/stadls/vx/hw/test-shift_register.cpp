@@ -37,7 +37,7 @@ TEST(ShiftRegister, ToggleLEDs)
 
 	// enable LEDs
 	ShiftRegister shift_register;
-	for (auto led: iter_all<LEDOnBoard>()) {
+	for (auto led : iter_all<LEDOnBoard>()) {
 		shift_register.set_enable_led(led, true);
 	}
 	builder.write(ShiftRegisterOnBoard(), shift_register);

@@ -17,6 +17,7 @@ InitGenerator::InitGenerator() :
     shift_register(),
     dac_control_block(),
     dac_channel_block(lola::vx::DACChannelBlock::default_ldo_2),
+    enable_xboard(true),
     jtag_clock_scaler(),
     pll_clock_output_block(),
     adplls(),
@@ -46,18 +47,20 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 
 	PlaybackProgramBuilder builder;
 
-	// Set shift register values
-	builder.write(ShiftRegisterOnBoard(), shift_register);
+	if (enable_xboard) {
+		// Set shift register values
+		builder.write(ShiftRegisterOnBoard(), shift_register);
 
-	// Set DAC on xBoard channel values
-	builder.write(DACChannelBlockOnBoard(), dac_channel_block);
+		// Set DAC on xBoard channel values
+		builder.write(DACChannelBlockOnBoard(), dac_channel_block);
 
-	// Set DAC on xBoard enable values
-	builder.write(DACControlBlockOnBoard(), dac_control_block);
+		// Set DAC on xBoard enable values
+		builder.write(DACControlBlockOnBoard(), dac_control_block);
 
-	// Wait until DAC config is set
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), xboard_dac_settling_duration);
+		// Wait until DAC config is set
+		builder.write(TimerOnDLS(), Timer());
+		builder.wait_until(TimerOnDLS(), xboard_dac_settling_duration);
+	}
 
 	// Reset chip
 	builder.write(ResetChipOnDLS(), ResetChip(true));

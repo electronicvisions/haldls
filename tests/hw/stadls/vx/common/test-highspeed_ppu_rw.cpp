@@ -17,6 +17,8 @@ using namespace halco::hicann_dls::vx;
 using namespace haldls::vx;
 using namespace stadls::vx;
 
+extern std::optional<size_t> const max_words_per_reduced_test;
+
 /**
  * Enable highspeed omnibus connection and write and read all PPU memory words for verification.
  */
@@ -26,18 +28,17 @@ TEST(PPUMemoryWord, WRHighspeed)
 	sequence.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 
-	// Write all PPU memory words with highspeed backend
-	typed_array<PPUMemoryWord, PPUMemoryWordOnDLS> words;
-	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
-		words[word] = PPUMemoryWord(draw_ranged_non_default_value<PPUMemoryWord::Value>(0));
-		builder.write(word, words[word], Backend::OmnibusChip);
-	}
+	std::map<PPUMemoryWordOnDLS, PPUMemoryWord> words;
+	std::map<PPUMemoryWordOnDLS, PlaybackProgram::ContainerTicket<PPUMemoryWord>> word_tickets;
 
-	// Read all PPU memory words with highspeed backend
-	std::vector<PlaybackProgram::ContainerTicket<PPUMemoryWord>> responses;
-	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
-		responses.push_back(builder.read(word, Backend::OmnibusChip));
+	PlaybackProgramBuilder read_builder;
+	for (auto const word : iter_sparse<PPUMemoryWordOnDLS>(max_words_per_reduced_test)) {
+		auto const val = draw_ranged_non_default_value<PPUMemoryWord::Value>();
+		words.insert(std::make_pair(word, PPUMemoryWord(val)));
+		builder.write(word, words.at(word));
+		word_tickets.emplace(std::make_pair(word, read_builder.read(word)));
 	}
+	builder.merge_back(read_builder);
 
 	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
@@ -46,8 +47,8 @@ TEST(PPUMemoryWord, WRHighspeed)
 	auto executor = generate_playback_program_test_executor();
 	executor.run(program);
 
-	for (auto word : iter_all<PPUMemoryWordOnDLS>()) {
-		EXPECT_TRUE(responses[word.toEnum()].valid());
-		EXPECT_EQ(responses[word.toEnum()].get(), words[word]);
+	for (auto const [word, ticket] : word_tickets) {
+		EXPECT_TRUE(ticket.valid());
+		EXPECT_EQ(ticket.get(), words.at(word));
 	}
 }

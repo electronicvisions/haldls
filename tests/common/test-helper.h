@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 
+#include "halco/common/iter_sparse.h"
 #include "haldls/cerealization.h"
 #include "hate/math.h"
 #include "stadls/visitors.h"
