@@ -1,6 +1,6 @@
 #pragma once
 #include <boost/hana/adapt_struct.hpp>
-#include "halco/common/typed_array.h"
+#include "halco/common/typed_heap_array.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
@@ -26,13 +26,13 @@ public:
 	typedef haldls::vx::SynapseQuad::Synapse::TimeCalib TimeCalib GENPYBIND(visible);
 	typedef haldls::vx::SynapseQuad::Synapse::AmpCalib AmpCalib GENPYBIND(visible);
 
-	typedef halco::common::typed_array<Weight, halco::hicann_dls::vx::SynapseOnSynapseRow>
+	typedef halco::common::typed_heap_array<Weight, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _weights_type GENPYBIND(opaque);
-	typedef halco::common::typed_array<Address, halco::hicann_dls::vx::SynapseOnSynapseRow>
+	typedef halco::common::typed_heap_array<Address, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _addresses_type GENPYBIND(opaque);
-	typedef halco::common::typed_array<TimeCalib, halco::hicann_dls::vx::SynapseOnSynapseRow>
+	typedef halco::common::typed_heap_array<TimeCalib, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _time_calibs_type GENPYBIND(opaque);
-	typedef halco::common::typed_array<AmpCalib, halco::hicann_dls::vx::SynapseOnSynapseRow>
+	typedef halco::common::typed_heap_array<AmpCalib, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _amp_calibs_type GENPYBIND(opaque);
 
 	/** Default constructor. */
@@ -77,7 +77,7 @@ public:
 		                                   self)>::type::value_type::value_type> array) {
 			if (array.ndim() != 1) {
 				throw std::runtime_error(
-				    "Number of dimensions to assign to typed_array must be one.");
+				    "Number of dimensions to assign to typed_heap_array must be one.");
 			}
 			if (array.size() != ::halco::hicann_dls::vx::SynapseOnSynapseRow::size) {
 				throw std::runtime_error("Input shape does not match.");
@@ -170,8 +170,8 @@ public:
 	typedef halco::hicann_dls::vx::SynramOnDLS coordinate_type;
 
 	template <typename T>
-	using matrix_type = halco::common::typed_array<
-	    halco::common::typed_array<T, halco::hicann_dls::vx::SynapseOnSynapseRow>,
+	using matrix_type = halco::common::typed_heap_array<
+	    halco::common::typed_heap_array<T, halco::hicann_dls::vx::SynapseOnSynapseRow>,
 	    halco::hicann_dls::vx::SynapseRowOnSynram>;
 
 	typedef haldls::vx::SynapseQuad::Synapse::Weight Weight GENPYBIND(visible);

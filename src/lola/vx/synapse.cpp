@@ -1,9 +1,6 @@
 #include "lola/vx/synapse.h"
 
 #include <boost/hana/adapt_struct.hpp>
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.h"
 #include "lola/vx/gray_scale.h"
 #include "lola/vx/hana.h"
 

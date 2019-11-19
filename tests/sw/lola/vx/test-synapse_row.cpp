@@ -3,7 +3,7 @@
 
 #include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
+#include "halco/common/cerealization_typed_heap_array.h"
 #include "lola/vx/cerealization.h"
 #include "lola/vx/synapse.h"
 #include "stadls/visitors.h"
