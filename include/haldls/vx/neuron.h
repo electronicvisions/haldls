@@ -186,7 +186,7 @@ public:
 	 * between refractory period and reset duration defines the reset-holdoff period.
 	 */
 	struct GENPYBIND(inline_base("*")) ResetHoldoff
-	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 3, 0>
+	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0>
 	{
 		constexpr explicit ResetHoldoff(uintmax_t const val = 0)
 		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
