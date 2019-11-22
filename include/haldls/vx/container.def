@@ -55,11 +55,12 @@ PLAYBACK_CONTAINER(SpikePack2ToChip, haldls::vx::SpikePack2ToChip)
 PLAYBACK_CONTAINER(SpikePack3ToChip, haldls::vx::SpikePack3ToChip)
 PLAYBACK_CONTAINER(FPGADeviceDNA, haldls::vx::FPGADeviceDNA)
 PLAYBACK_CONTAINER(BackgroundSpikeSource, haldls::vx::BackgroundSpikeSource)
-PLAYBACK_CONTAINER(SystimeSync, haldls::vx::SystimeSync)
 PLAYBACK_CONTAINER(CrossbarOutputConfig, haldls::vx::CrossbarOutputConfig)
 PLAYBACK_CONTAINER(CrossbarNode, haldls::vx::CrossbarNode)
 PLAYBACK_CONTAINER(CrossbarInputDropCounter, haldls::vx::CrossbarInputDropCounter)
-LAST_PLAYBACK_CONTAINER(CrossbarOutputEventCounter, haldls::vx::CrossbarOutputEventCounter)
+PLAYBACK_CONTAINER(CrossbarOutputEventCounter, haldls::vx::CrossbarOutputEventCounter)
+PLAYBACK_CONTAINER(SynapseBiasSelection, haldls::vx::SynapseBiasSelection)
+LAST_PLAYBACK_CONTAINER(SystimeSync, haldls::vx::SystimeSync)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER

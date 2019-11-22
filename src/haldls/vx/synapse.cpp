@@ -997,4 +997,222 @@ void ColumnCurrentQuad::serialize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentQuad)
 
+SynapseBiasSelection::SynapseBiasSelection() :
+    m_int_dac_bias(),
+    m_int_ramp_bias(),
+    m_int_store_bias(),
+    m_int_output_bias()
+{
+	for (auto coord : ::halco::common::iter_all<::halco::hicann_dls::vx::CapMemBlockOnDLS>()) {
+		m_int_dac_bias[coord] = true;
+		m_int_ramp_bias[coord] = true;
+		m_int_store_bias[coord] = true;
+		m_int_output_bias[coord] = true;
+	}
+}
+
+SynapseBiasSelection::bias_selection_type const&
+SynapseBiasSelection::get_enable_internal_dac_bias() const
+{
+	return m_int_dac_bias;
+}
+
+void SynapseBiasSelection::set_enable_internal_dac_bias(bias_selection_type const& value)
+{
+	m_int_dac_bias = value;
+}
+
+SynapseBiasSelection::bias_selection_type const&
+SynapseBiasSelection::get_enable_internal_ramp_bias() const
+{
+	return m_int_ramp_bias;
+}
+
+void SynapseBiasSelection::set_enable_internal_ramp_bias(bias_selection_type const& value)
+{
+	m_int_ramp_bias = value;
+}
+
+SynapseBiasSelection::bias_selection_type const&
+SynapseBiasSelection::get_enable_internal_store_bias() const
+{
+	return m_int_store_bias;
+}
+
+void SynapseBiasSelection::set_enable_internal_store_bias(bias_selection_type const& value)
+{
+	m_int_store_bias = value;
+}
+
+SynapseBiasSelection::bias_selection_type const&
+SynapseBiasSelection::get_enable_internal_output_bias() const
+{
+	return m_int_output_bias;
+}
+
+void SynapseBiasSelection::set_enable_internal_output_bias(bias_selection_type const& value)
+{
+	m_int_output_bias = value;
+}
+
+bool SynapseBiasSelection::operator==(SynapseBiasSelection const& other) const
+{
+	return (
+	    m_int_dac_bias == other.m_int_dac_bias && m_int_ramp_bias == other.m_int_ramp_bias &&
+	    m_int_store_bias == other.m_int_store_bias && m_int_output_bias == other.m_int_output_bias);
+}
+
+bool SynapseBiasSelection::operator!=(SynapseBiasSelection const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
+{
+	for (auto coord : ::halco::common::iter_all<::halco::hicann_dls::vx::CapMemBlockOnDLS>()) {
+		os << "Quadrant " << coord.toEnum() << ":" << std::endl;
+		os << "Enable internal synapse DAC bias:               \t" << config.m_int_dac_bias[coord]
+		   << std::endl;
+		os << "Enable internal synapse ramp bias:              \t" << config.m_int_ramp_bias[coord]
+		   << std::endl;
+		os << "Enable internal synapse store bias:             \t" << config.m_int_store_bias[coord]
+		   << std::endl;
+		os << "Enable internal synapse correlation output bias:\t"
+		   << config.m_int_output_bias[coord] << std::endl;
+	}
+	return print_words_for_each_backend(os, config);
+}
+
+template <typename AddressT>
+std::array<AddressT, SynapseBiasSelection::write_config_size_in_words>
+SynapseBiasSelection::write_addresses(coordinate_type const& /*coord*/) const
+{
+	return {AddressT(anncore_center_base_address)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    SynapseBiasSelection::write_config_size_in_words>
+SynapseBiasSelection::write_addresses(coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SynapseBiasSelection::write_config_size_in_words>
+SynapseBiasSelection::write_addresses(coordinate_type const& coord) const;
+
+template <typename AddressT>
+std::array<AddressT, SynapseBiasSelection::read_config_size_in_words>
+SynapseBiasSelection::read_addresses(coordinate_type const& /*coord*/) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    SynapseBiasSelection::read_config_size_in_words>
+SynapseBiasSelection::read_addresses(coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SynapseBiasSelection::read_config_size_in_words>
+SynapseBiasSelection::read_addresses(coordinate_type const& coord) const;
+namespace {
+
+struct SynapseBiasSelectionBitfield
+{
+	union
+	{
+		uint32_t raw;
+
+		// clang-format off
+		struct {
+			uint32_t int_output_q1 : 1;
+			uint32_t int_store_q1  : 1;
+			uint32_t int_ramp_q1   : 1;
+			uint32_t int_dac_q1    : 1;
+			uint32_t int_output_q0 : 1;
+			uint32_t int_store_q0  : 1;
+			uint32_t int_ramp_q0   : 1;
+			uint32_t int_dac_q0    : 1;
+			uint32_t int_output_q3 : 1;
+			uint32_t int_store_q3  : 1;
+			uint32_t int_ramp_q3   : 1;
+			uint32_t int_dac_q3    : 1;
+			uint32_t int_output_q2 : 1;
+			uint32_t int_store_q2  : 1;
+			uint32_t int_ramp_q2   : 1;
+			uint32_t int_dac_q2    : 1;
+		} m;
+		// clang-format on
+
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	SynapseBiasSelectionBitfield() { u.raw = 0ul; }
+
+	SynapseBiasSelectionBitfield(uint32_t data) { u.raw = data; }
+};
+
+} // anonymous namespace
+
+template <typename WordT>
+std::array<WordT, SynapseBiasSelection::write_config_size_in_words> SynapseBiasSelection::encode()
+    const
+{
+	SynapseBiasSelectionBitfield bitfield;
+
+	bitfield.u.m.int_dac_q0 = m_int_dac_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(0)];
+	bitfield.u.m.int_dac_q1 = m_int_dac_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(1)];
+	bitfield.u.m.int_dac_q2 = m_int_dac_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)];
+	bitfield.u.m.int_dac_q3 = m_int_dac_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)];
+
+	bitfield.u.m.int_ramp_q0 = m_int_ramp_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(0)];
+	bitfield.u.m.int_ramp_q1 = m_int_ramp_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(1)];
+	bitfield.u.m.int_ramp_q2 = m_int_ramp_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)];
+	bitfield.u.m.int_ramp_q3 = m_int_ramp_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)];
+
+	bitfield.u.m.int_store_q0 = m_int_store_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(0)];
+	bitfield.u.m.int_store_q1 = m_int_store_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(1)];
+	bitfield.u.m.int_store_q2 = m_int_store_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)];
+	bitfield.u.m.int_store_q3 = m_int_store_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)];
+
+	bitfield.u.m.int_output_q0 = m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(0)];
+	bitfield.u.m.int_output_q1 = m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(1)];
+	bitfield.u.m.int_output_q2 = m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)];
+	bitfield.u.m.int_output_q3 = m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)];
+
+	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, SynapseBiasSelection::write_config_size_in_words>
+    SynapseBiasSelection::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseBiasSelection::write_config_size_in_words>
+    SynapseBiasSelection::encode() const;
+
+template <typename WordT>
+void SynapseBiasSelection::decode(
+    std::array<WordT, SynapseBiasSelection::read_config_size_in_words> const& /*words*/)
+{}
+
+template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
+    std::array<fisch::vx::OmnibusChip, SynapseBiasSelection::read_config_size_in_words> const&
+        words);
+template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
+    std::array<
+        fisch::vx::OmnibusChipOverJTAG,
+        SynapseBiasSelection::read_config_size_in_words> const& words);
+
+template <class Archive>
+void SynapseBiasSelection::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_int_dac_bias));
+	ar(CEREAL_NVP(m_int_ramp_bias));
+	ar(CEREAL_NVP(m_int_store_bias));
+	ar(CEREAL_NVP(m_int_output_bias));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseBiasSelection)
+
 } // namespace haldls::vx

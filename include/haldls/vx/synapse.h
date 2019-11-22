@@ -534,6 +534,77 @@ private:
 	halco::common::typed_array<ColumnCurrentSwitch, halco::hicann_dls::vx::EntryOnQuad> m_switches;
 };
 
+class GENPYBIND(visible) SynapseBiasSelection
+{
+public:
+	typedef halco::hicann_dls::vx::SynapseBiasSelectionOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::CapMemBlockOnDLS>
+	    bias_selection_type GENPYBIND(opaque, expose_as(_bias_selection_type));
+
+	/** Construct Synapse Bias Selection container with all internal biases enabled. */
+	explicit SynapseBiasSelection() SYMBOL_VISIBLE;
+
+	/** Set enable for internal synapse DAC bias current. */
+	GENPYBIND(getter_for(enable_internal_dac_bias), return_value_policy(reference))
+	bias_selection_type const& get_enable_internal_dac_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_internal_dac_bias), return_value_policy(reference))
+	void set_enable_internal_dac_bias(bias_selection_type const& value) SYMBOL_VISIBLE;
+
+	/** Set enable for internal synapse correlation ramp bias current. */
+	GENPYBIND(getter_for(enable_internal_ramp_bias), return_value_policy(reference))
+	bias_selection_type const& get_enable_internal_ramp_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_internal_ramp_bias), return_value_policy(reference))
+	void set_enable_internal_ramp_bias(bias_selection_type const& value) SYMBOL_VISIBLE;
+
+	/** Set enable for internal synapse correlation store bias current. */
+	GENPYBIND(getter_for(enable_internal_store_bias), return_value_policy(reference))
+	bias_selection_type const& get_enable_internal_store_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_internal_store_bias), return_value_policy(reference))
+	void set_enable_internal_store_bias(bias_selection_type const& value) SYMBOL_VISIBLE;
+
+	/** Set enable for internal synapse correlation output bias current. */
+	GENPYBIND(getter_for(enable_internal_output_bias), return_value_policy(reference))
+	bias_selection_type const& get_enable_internal_output_bias() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_internal_output_bias), return_value_policy(reference))
+	void set_enable_internal_output_bias(bias_selection_type const& value) SYMBOL_VISIBLE;
+
+	bool operator==(SynapseBiasSelection const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SynapseBiasSelection const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+
+	template <typename AddressT>
+	std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	template <typename AddressT>
+	std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	template <typename WordT>
+	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	template <typename WordT>
+	void decode(std::array<WordT, read_config_size_in_words> const& words) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+	bias_selection_type m_int_dac_bias;
+	bias_selection_type m_int_ramp_bias;
+	bias_selection_type m_int_store_bias;
+	bias_selection_type m_int_output_bias;
+};
 
 namespace detail {
 
@@ -565,6 +636,14 @@ template <>
 struct BackendContainerTrait<ColumnCurrentQuad>
     : public BackendContainerBase<
           ColumnCurrentQuad,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct BackendContainerTrait<SynapseBiasSelection>
+    : public BackendContainerBase<
+          SynapseBiasSelection,
           fisch::vx::OmnibusChip,
           fisch::vx::OmnibusChipOverJTAG>
 {};
