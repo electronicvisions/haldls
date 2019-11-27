@@ -60,6 +60,7 @@ PLAYBACK_CONTAINER(CrossbarNode, haldls::vx::CrossbarNode)
 PLAYBACK_CONTAINER(CrossbarInputDropCounter, haldls::vx::CrossbarInputDropCounter)
 PLAYBACK_CONTAINER(CrossbarOutputEventCounter, haldls::vx::CrossbarOutputEventCounter)
 PLAYBACK_CONTAINER(SynapseBiasSelection, haldls::vx::SynapseBiasSelection)
+PLAYBACK_CONTAINER(ReferenceGeneratorConfig, haldls::vx::ReferenceGeneratorConfig)
 LAST_PLAYBACK_CONTAINER(SystimeSync, haldls::vx::SystimeSync)
 
 #undef PLAYBACK_CONTAINER

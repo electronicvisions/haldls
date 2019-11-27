@@ -122,4 +122,6 @@ constexpr uint32_t crossbar_input_drop_counter_base_address{crossbar_node_base_a
 constexpr uint32_t crossbar_output_event_counter_base_address{
     crossbar_input_drop_counter_base_address + 20};
 
+constexpr uint32_t madc_base_address{0x000c'0000};
+
 } // namespace haldls::vx
