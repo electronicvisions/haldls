@@ -231,6 +231,7 @@ def build(bld):
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'stadls_vx', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
+        linkflags = ['-lboost_program_options-mt'],
         skip_run = not bld.env.DLSvx_HARDWARE_AVAILABLE
     )
 
@@ -241,6 +242,7 @@ def build(bld):
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'GTEST', 'stadls_simtest_vx_inc', 'stadls_vx', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
+        linkflags = ['-lboost_program_options-mt'],
         skip_run = not bld.env.DLSvx_SIM_AVAILABLE
     )
 
