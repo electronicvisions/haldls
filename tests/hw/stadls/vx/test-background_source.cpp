@@ -16,7 +16,7 @@ using namespace stadls::vx;
 void test_background_spike_source_regular(
     BackgroundSpikeSource::Period period, Timer::Value running_period, size_t spike_count_deviation)
 {
-	auto sequence = InitGenerator();
+	auto sequence = DigitalInit();
 	auto [builder, _] = generate(sequence);
 
 	// reset time to wait for defined period

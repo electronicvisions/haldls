@@ -22,7 +22,7 @@ using namespace stadls::vx;
  */
 TEST(PPUMemoryWord, WRHighspeed)
 {
-	auto sequence = InitGenerator();
+	auto sequence = DigitalInit();
 	sequence.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 

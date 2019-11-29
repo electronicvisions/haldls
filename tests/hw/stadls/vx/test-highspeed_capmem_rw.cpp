@@ -21,7 +21,7 @@ using namespace stadls::vx;
  */
 TEST(CapMemBlock, WROverHighspeed)
 {
-	auto sequence = InitGenerator();
+	auto sequence = DigitalInit();
 	sequence.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 

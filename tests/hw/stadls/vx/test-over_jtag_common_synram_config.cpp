@@ -22,7 +22,7 @@ using namespace stadls::vx;
  */
 TEST(CommonSynramConfig, WROverJTAG)
 {
-	auto sequence = InitGenerator();
+	auto sequence = DigitalInit();
 	sequence.enable_highspeed_link = false;
 	auto [builder, _] = generate(sequence);
 

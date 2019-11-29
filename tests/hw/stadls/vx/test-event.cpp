@@ -17,7 +17,7 @@ using namespace stadls::vx;
 #define TEST_SPIKE(Num)                                                                            \
 	TEST(SpikePack##Num##ToChip, Loopback)                                                         \
 	{                                                                                              \
-		auto sequence = InitGenerator();                                                           \
+		auto sequence = DigitalInit();                                                             \
 		auto [builder, _] = generate(sequence);                                                    \
                                                                                                    \
 		constexpr size_t num_spikes = 1000;                                                        \

@@ -1,11 +1,17 @@
+#include <stdexcept>
+
 #include "stadls/vx/init_generator.h"
 
+#include "haldls/vx/capmem.h"
 #include "haldls/vx/constants.h"
 #include "haldls/vx/reset.h"
+#include "haldls/vx/synapse.h"
 #include "haldls/vx/timer.h"
 #include "stadls/vx/playback_program_builder.h"
 
 namespace stadls::vx {
+
+namespace detail {
 
 InitGenerator::InitGenerator() :
     shift_register(),
@@ -16,7 +22,11 @@ InitGenerator::InitGenerator() :
     adplls(),
     highspeed_link(),
     enable_highspeed_link(true),
-    common_synram_config()
+    common_synram_config(),
+    synapse_bias_selection(),
+    enable_capmem(false),
+    reference_generator_config(),
+    capmem_block_config()
 {}
 
 InitGenerator::HighspeedLink::HighspeedLink() :
@@ -98,6 +108,34 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 		}
 	}
 
+	if (enable_capmem) {
+		// Require highspeed to be turned on in chip init
+		if (enable_highspeed_link == false) {
+			throw std::runtime_error("Highspeed link needs to be enabled to configure CapMem.");
+		}
+
+		// Enable internal synapse bias currents
+		builder.write(SynapseBiasSelectionOnDLS(), synapse_bias_selection);
+
+		// Generate usable reference current for the CapMem
+		ReferenceGeneratorConfig config_with_reset = reference_generator_config;
+		config_with_reset.set_enable_reset(true);
+		builder.write(ReferenceGeneratorConfigOnDLS(), config_with_reset);
+		builder.write(TimerOnDLS(), Timer());
+		builder.wait_until(TimerOnDLS(), reference_generator_reset_duration);
+		builder.write(ReferenceGeneratorConfigOnDLS(), reference_generator_config);
+
+		// Set all CapMem cells to value zero
+		for (auto coord : iter_all<CapMemBlockOnDLS>()) {
+			builder.write(coord, CapMemBlock());
+		}
+
+		// Initialize the CapMem with usable default values.
+		for (auto coord : iter_all<CapMemBlockConfigOnDLS>()) {
+			builder.write(coord, capmem_block_config[coord]);
+		}
+	}
+
 	// Set Synram SRAM configs
 	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {
 		builder.write(coord, common_synram_config[coord], Backend::OmnibusChipOverJTAG);
@@ -110,5 +148,16 @@ std::ostream& operator<<(std::ostream& os, InitGenerator const&)
 {
 	return os;
 }
+
+} // namespace detail
+
+
+ExperimentInit::ExperimentInit() : detail::InitGenerator()
+{
+	enable_capmem = true;
+}
+
+
+DigitalInit::DigitalInit() : detail::InitGenerator() {}
 
 } // namespace stadls::vx

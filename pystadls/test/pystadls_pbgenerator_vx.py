@@ -1,7 +1,8 @@
 import unittest
 import inspect
 from typing import get_type_hints
-from pystadls_vx import PlaybackGenerator, generate, InitGenerator
+from pystadls_vx import PlaybackGenerator, generate, \
+    DigitalInit, ExperimentInit
 
 
 class PlaybackGeneratorTest(unittest.TestCase):
@@ -46,14 +47,16 @@ class PlaybackGeneratorTest(unittest.TestCase):
         """
         Check that C++ sequences are usable in python.
         """
-        self.assertTrue(isinstance(InitGenerator(), PlaybackGenerator),
-                        "Instances of 'InitGenerator' are not of type "
-                        f"'PlaybackGenerator' but {type(InitGenerator())}")
 
-        self.assertTrue(isinstance(generate(InitGenerator()),
-                                   tuple),
-                        "'generate(InitGenerator())' does not produce results"
-                        "of type 'tuple'.")
+        for generator in [DigitalInit, ExperimentInit]:
+            self.assertTrue(isinstance(generator(), PlaybackGenerator),
+                            f"Instances of {str(generator)} are not of type "
+                            f"'PlaybackGenerator' but {type(generator())}")
+
+            self.assertTrue(isinstance(generate(generator()),
+                                       tuple),
+                            f"'generate({str(generator)})' does not "
+                            "produce results of type 'tuple'.")
 
 
 if __name__ == '__main__':
