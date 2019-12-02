@@ -26,7 +26,7 @@ CommonNeuronBackendConfig::CommonNeuronBackendConfig() :
     m_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale()),
     m_wait_counter_init(CommonNeuronBackendConfig::WaitCounterInit())
 {
-	m_sample_pos_edge.fill(false);
+	m_sample_pos_edge.fill(true);
 }
 
 void CommonNeuronBackendConfig::set_enable_event_registers(bool const val)

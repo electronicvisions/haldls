@@ -41,8 +41,8 @@ TEST(CommonNeuronBackendConfig, General)
 	config.set_clock_scale_fast(clock);
 	ASSERT_EQ(config.get_clock_scale_fast(), clock);
 
-	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(0), true);
-	ASSERT_EQ(config.get_sample_positive_edge(EventOutputOnNeuronBackendBlock(0)), true);
+	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(0), false);
+	ASSERT_EQ(config.get_sample_positive_edge(EventOutputOnNeuronBackendBlock(0)), false);
 
 	clock = draw_ranged_non_default_value<CommonNeuronBackendConfig::ClockScale>();
 	config.set_clock_scale_adaptation_pulse(clock);
@@ -74,7 +74,7 @@ TEST(CommonNeuronBackendConfig, EncodeDecode)
 	config.set_enable_clocks(true);
 	config.set_clock_scale_slow(CommonNeuronBackendConfig::ClockScale(3));
 	config.set_clock_scale_fast(CommonNeuronBackendConfig::ClockScale(7));
-	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(1), true);
+	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(1), false);
 	config.set_clock_scale_adaptation_pulse(CommonNeuronBackendConfig::ClockScale(4));
 	config.set_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale(8));
 	config.set_wait_counter_init(CommonNeuronBackendConfig::WaitCounterInit(2342));
@@ -107,7 +107,7 @@ TEST(CommonNeuronBackendConfig, EncodeDecode)
 	ASSERT_TRUE(data[0].get() & 0b100);                                // en_clocks
 	ASSERT_TRUE((data[0].get() & 0b1111'0000) == (3 << 4));            // clock_scale_slow
 	ASSERT_TRUE((data[0].get() & 0b1111'0000'0000) == (7 << 8));       // clock_scale_fast
-	ASSERT_TRUE((data[0].get() & 0b1111'0000'0000'0000) == (2 << 12)); // sample_pos_edge
+	ASSERT_TRUE((data[0].get() & 0b1111'0000'0000'0000) == (13 << 12)); // sample_pos_edge
 	ASSERT_TRUE(
 	    (data[0].get() & 0b1111'0000'0000'0000'0000) == (4 << 16)); // clock_scale_adapt_pulse
 	ASSERT_TRUE(
