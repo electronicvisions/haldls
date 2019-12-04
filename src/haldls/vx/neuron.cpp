@@ -549,12 +549,12 @@ struct NeuronBackendConfig::NeuronBackendConfigBitfield
 		// clang-format off
 		struct __attribute__((packed)) {
 		                                                                     // bits ; word
-		uint32_t address_out_lsbs                                     :  6;  // 0-5  ; 0
+		uint32_t address_out_msbs                                     :  6;  // 0-5  ; 0
 		uint32_t reset_holdoff_1                                      :  2;  // 6-7  ; 0
 		uint32_t                                                      : 24;  // 8-31 ; 0
 
 		uint32_t refractory_time_1                                    :  4;  // 0-3  ; 1
-		uint32_t address_out_msbs                                     :  2;  // 4-5  ; 1
+		uint32_t address_out_lsbs                                     :  2;  // 4-5  ; 1
 		uint32_t reset_holdoff_2                                      :  2;  // 6-7  ; 1
 		uint32_t                                                      : 24;  // 8-31 ; 1
 
@@ -623,10 +623,10 @@ template SYMBOL_VISIBLE
 NeuronBackendConfig::NeuronBackendConfigBitfield NeuronBackendConfig::to_bitfield() const
 {
 	NeuronBackendConfig::NeuronBackendConfigBitfield bitfield;
-	bitfield.u.m.address_out_lsbs = (~m_address_out & 0b00111111); // bits are inverted
+	bitfield.u.m.address_out_lsbs = (~m_address_out & 0b00000011); // bits are inverted
 	bitfield.u.m.reset_holdoff_1 = m_reset_holdoff & 0b0011;
 	bitfield.u.m.refractory_time_1 = (~m_refractory_time & 0b11110000) >> 4;
-	bitfield.u.m.address_out_msbs = (~m_address_out & 0b11000000) >> 6; // bits are inverted
+	bitfield.u.m.address_out_msbs = (~m_address_out & 0b11111100) >> 2; // bits are inverted
 	bitfield.u.m.reset_holdoff_2 = (m_reset_holdoff & 0b1100) >> 2;
 	bitfield.u.m.post_overwrite = m_post_overwrite;
 	bitfield.u.m.select_input_clock = static_cast<uint32_t>(m_select_input_clock);
@@ -649,8 +649,8 @@ void NeuronBackendConfig::from_bitfield(
 {
 	// bits of address out are inverted
 	m_address_out = NeuronBackendConfig::AddressOut(
-	    ((~(bitfield.u.m.address_out_lsbs) & 0b111111) |
-	     (~(bitfield.u.m.address_out_msbs << 6) & 0b11000000)) &
+	    ((~(bitfield.u.m.address_out_lsbs) & 0b00000011) |
+	     (~(bitfield.u.m.address_out_msbs << 2) & 0b11111100)) &
 	    0xff);
 	m_reset_holdoff = NeuronBackendConfig::ResetHoldoff(
 	    bitfield.u.m.reset_holdoff_1 | (bitfield.u.m.reset_holdoff_2 << 2));

@@ -281,10 +281,11 @@ TEST(NeuronBackendConfig, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_TRUE(data[3].get() & 0b1000);          // connect_fire_to_right
-	ASSERT_TRUE(data[3].get() & 0b10000);         // en_spike_out
-	ASSERT_EQ((data[0].get() & 0b111111), 0b111000); // address_out
-	ASSERT_TRUE(data[2].get() & 0b1000000);       // en_adapt_pulse
+	ASSERT_TRUE(data[3].get() & 0b1000);               // connect_fire_to_right
+	ASSERT_TRUE(data[3].get() & 0b10000);              // en_spike_out
+	ASSERT_EQ((data[0].get() & 0b00111111), 0b111110); // address_out 6 MSBs
+	ASSERT_EQ((data[1].get() & 0b00110000), 0b00);     // address_out 2 LSBs
+	ASSERT_TRUE(data[2].get() & 0b1000000);            // en_adapt_pulse
 
 	// Decode back
 	NeuronBackendConfig config_copy;
