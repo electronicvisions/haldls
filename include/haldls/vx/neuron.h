@@ -48,12 +48,45 @@ public:
 	};
 
 	/**
-	 * TODO: Issue 3361 What does this describe?
+	 * Duration of the pulse triggering global post pulses for all neurons connected to that backend block.
 	 */
-	struct GENPYBIND(inline_base("*")) WaitCounterInit
-	    : public halco::common::detail::RantWrapper<WaitCounterInit, uint64_t, 4294967296 - 1, 0>
+	struct GENPYBIND(inline_base("*")) WaitGlobalPostPulse
+	    : public halco::common::detail::RantWrapper<WaitGlobalPostPulse, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit WaitCounterInit(uintmax_t const val = 0)
+		constexpr explicit WaitGlobalPostPulse(uintmax_t const val = 128)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	/**
+	 * Duration of the pulse triggering spike counter resets.
+	 */
+	struct GENPYBIND(inline_base("*")) WaitSpikeCounterReset
+	    : public halco::common::detail::RantWrapper<WaitSpikeCounterReset, uint_fast16_t, 255, 0>
+	{
+		constexpr explicit WaitSpikeCounterReset(uintmax_t const val = 4)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	/**
+	 * Wait time for letting the neuron backend circuits drive the counter content to the controller logic.
+	 */
+	struct GENPYBIND(inline_base("*")) WaitSpikeCounterRead
+	    : public halco::common::detail::RantWrapper<WaitSpikeCounterRead, uint_fast16_t, 255, 0>
+	{
+		constexpr explicit WaitSpikeCounterRead(uintmax_t const val = 112)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		{}
+	};
+
+	/**
+	 * Duration of pulse triggering the artificial neuron spikes.
+	 */
+	struct GENPYBIND(inline_base("*")) WaitFireNeuron
+	    : public halco::common::detail::RantWrapper<WaitFireNeuron, uint_fast16_t, 255, 0>
+	{
+		constexpr explicit WaitFireNeuron(uintmax_t const val = 4)
 		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
 		{}
 	};
@@ -101,10 +134,25 @@ public:
 	GENPYBIND(setter_for(clock_scale_post_pulse))
 	void set_clock_scale_post_pulse(ClockScale const val) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(wait_counter_init))
-	WaitCounterInit get_wait_counter_init() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(wait_counter_init))
-	void set_wait_counter_init(WaitCounterInit const val) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(wait_global_post_pulse))
+	WaitGlobalPostPulse get_wait_global_post_pulse() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(wait_global_post_pulse))
+	void set_wait_global_post_pulse(WaitGlobalPostPulse const val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(wait_spike_counter_reset))
+	WaitSpikeCounterReset get_wait_spike_counter_reset() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(wait_spike_counter_reset))
+	void set_wait_spike_counter_reset(WaitSpikeCounterReset const val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(wait_spike_counter_read))
+	WaitSpikeCounterRead get_wait_spike_counter_read() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(wait_spike_counter_read))
+	void set_wait_spike_counter_read(WaitSpikeCounterRead const val) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(wait_fire_neuron))
+	WaitFireNeuron get_wait_fire_neuron() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(wait_fire_neuron))
+	void set_wait_fire_neuron(WaitFireNeuron const val) SYMBOL_VISIBLE;
 
 	bool operator==(CommonNeuronBackendConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CommonNeuronBackendConfig const& other) const SYMBOL_VISIBLE;
@@ -142,7 +190,10 @@ private:
 	    m_sample_pos_edge;
 	ClockScale m_clock_scale_adapt_pulse;
 	ClockScale m_clock_scale_post_pulse;
-	WaitCounterInit m_wait_counter_init;
+	WaitGlobalPostPulse m_wait_global_post_pulse;
+	WaitSpikeCounterReset m_wait_spike_counter_reset;
+	WaitSpikeCounterRead m_wait_spike_counter_read;
+	WaitFireNeuron m_wait_fire_neuron;
 };
 
 /**

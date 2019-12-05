@@ -52,9 +52,21 @@ TEST(CommonNeuronBackendConfig, General)
 	config.set_clock_scale_post_pulse(clock);
 	ASSERT_EQ(config.get_clock_scale_post_pulse(), clock);
 
-	auto init = draw_ranged_non_default_value<CommonNeuronBackendConfig::WaitCounterInit>();
-	config.set_wait_counter_init(init);
-	ASSERT_EQ(config.get_wait_counter_init(), init);
+	auto w_post_debug = draw_ranged_non_default_value<CommonNeuronBackendConfig::WaitGlobalPostPulse>();
+	config.set_wait_global_post_pulse(w_post_debug);
+	ASSERT_EQ(config.get_wait_global_post_pulse(), w_post_debug);
+
+	auto w_counter_reset = draw_ranged_non_default_value<CommonNeuronBackendConfig::WaitSpikeCounterReset>();
+	config.set_wait_spike_counter_reset(w_counter_reset);
+	ASSERT_EQ(config.get_wait_spike_counter_reset(), w_counter_reset);
+
+	auto w_counter_read = draw_ranged_non_default_value<CommonNeuronBackendConfig::WaitSpikeCounterRead>();
+	config.set_wait_spike_counter_read(w_counter_read);
+	ASSERT_EQ(config.get_wait_spike_counter_read(), w_counter_read);
+
+	auto w_post_ind = draw_ranged_non_default_value<CommonNeuronBackendConfig::WaitFireNeuron>();
+	config.set_wait_fire_neuron(w_post_ind);
+	ASSERT_EQ(config.get_wait_fire_neuron(), w_post_ind);
 
 	CommonNeuronBackendConfig default_config;
 	ASSERT_NE(config, default_config);
@@ -77,7 +89,10 @@ TEST(CommonNeuronBackendConfig, EncodeDecode)
 	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(1), false);
 	config.set_clock_scale_adaptation_pulse(CommonNeuronBackendConfig::ClockScale(4));
 	config.set_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale(8));
-	config.set_wait_counter_init(CommonNeuronBackendConfig::WaitCounterInit(2342));
+	config.set_wait_global_post_pulse(CommonNeuronBackendConfig::WaitGlobalPostPulse(186));
+	config.set_wait_spike_counter_reset(CommonNeuronBackendConfig::WaitSpikeCounterReset(220));
+	config.set_wait_spike_counter_read(CommonNeuronBackendConfig::WaitSpikeCounterRead(13));
+	config.set_wait_fire_neuron(CommonNeuronBackendConfig::WaitFireNeuron(237));
 
 	auto backend_coord = NeuronBackendConfigBlockOnDLS(1);
 
@@ -112,7 +127,14 @@ TEST(CommonNeuronBackendConfig, EncodeDecode)
 	    (data[0].get() & 0b1111'0000'0000'0000'0000) == (4 << 16)); // clock_scale_adapt_pulse
 	ASSERT_TRUE(
 	    (data[0].get() & 0b1111'0000'0000'0000'0000'0000) == (8 << 20)); // clock_scale_post_pulse
-	ASSERT_TRUE(data[1].get() == 2342);                                  // wait_counter_init
+	ASSERT_TRUE(
+	    (data[1].get() & 0xFF) == (unsigned int)(186 << 0));          // wait_global_post_pulse
+	ASSERT_TRUE(
+	    (data[1].get() & 0xFF00) == (unsigned int)(220 << 8));        // wait_spike_counter_reset
+	ASSERT_TRUE(
+	    (data[1].get() & 0xFF0000) == (unsigned int)(13 << 16));      // wait_spike_counter_read
+	ASSERT_TRUE(
+	    (data[1].get() & 0xFF000000) == (unsigned int)(237 << 24));   // wait_fire_neuron
 
 	// Decode back
 	CommonNeuronBackendConfig config_copy;
@@ -132,7 +154,10 @@ TEST(CommonNeuronBackendConfig, CerealizeCoverage)
 	c1.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(0), true);
 	c1.set_clock_scale_adaptation_pulse(CommonNeuronBackendConfig::ClockScale(10));
 	c1.set_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale(10));
-	c1.set_wait_counter_init(CommonNeuronBackendConfig::WaitCounterInit(2342));
+	c1.set_wait_global_post_pulse(CommonNeuronBackendConfig::WaitGlobalPostPulse(186));
+	c1.set_wait_spike_counter_reset(CommonNeuronBackendConfig::WaitSpikeCounterReset(220));
+	c1.set_wait_spike_counter_read(CommonNeuronBackendConfig::WaitSpikeCounterRead(13));
+	c1.set_wait_fire_neuron(CommonNeuronBackendConfig::WaitFireNeuron(237));
 	std::ostringstream ostream;
 	{
 		cereal::JSONOutputArchive oa(ostream);

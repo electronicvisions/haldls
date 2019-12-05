@@ -24,7 +24,10 @@ CommonNeuronBackendConfig::CommonNeuronBackendConfig() :
     m_sample_pos_edge(),
     m_clock_scale_adapt_pulse(CommonNeuronBackendConfig::ClockScale()),
     m_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale()),
-    m_wait_counter_init(CommonNeuronBackendConfig::WaitCounterInit())
+    m_wait_global_post_pulse(CommonNeuronBackendConfig::WaitGlobalPostPulse()),
+    m_wait_spike_counter_reset(CommonNeuronBackendConfig::WaitSpikeCounterReset()),
+    m_wait_spike_counter_read(CommonNeuronBackendConfig::WaitSpikeCounterRead()),
+    m_wait_fire_neuron(CommonNeuronBackendConfig::WaitFireNeuron())
 {
 	m_sample_pos_edge.fill(true);
 }
@@ -70,9 +73,24 @@ void CommonNeuronBackendConfig::set_clock_scale_post_pulse(ClockScale const val)
 	m_clock_scale_post_pulse = val;
 }
 
-void CommonNeuronBackendConfig::set_wait_counter_init(WaitCounterInit const val)
+void CommonNeuronBackendConfig::set_wait_global_post_pulse(WaitGlobalPostPulse const val)
 {
-	m_wait_counter_init = val;
+	m_wait_global_post_pulse = val;
+}
+
+void CommonNeuronBackendConfig::set_wait_spike_counter_reset(WaitSpikeCounterReset const val)
+{
+	m_wait_spike_counter_reset = val;
+}
+
+void CommonNeuronBackendConfig::set_wait_spike_counter_read(WaitSpikeCounterRead const val)
+{
+	m_wait_spike_counter_read = val;
+}
+
+void CommonNeuronBackendConfig::set_wait_fire_neuron(WaitFireNeuron const val)
+{
+	m_wait_fire_neuron = val;
 }
 
 bool CommonNeuronBackendConfig::get_enable_event_registers() const
@@ -117,9 +135,24 @@ CommonNeuronBackendConfig::ClockScale CommonNeuronBackendConfig::get_clock_scale
 	return m_clock_scale_post_pulse;
 }
 
-CommonNeuronBackendConfig::WaitCounterInit CommonNeuronBackendConfig::get_wait_counter_init() const
+CommonNeuronBackendConfig::WaitGlobalPostPulse CommonNeuronBackendConfig::get_wait_global_post_pulse() const
 {
-	return m_wait_counter_init;
+	return m_wait_global_post_pulse;
+}
+
+CommonNeuronBackendConfig::WaitSpikeCounterReset CommonNeuronBackendConfig::get_wait_spike_counter_reset() const
+{
+	return m_wait_spike_counter_reset;
+}
+
+CommonNeuronBackendConfig::WaitSpikeCounterRead CommonNeuronBackendConfig::get_wait_spike_counter_read() const
+{
+	return m_wait_spike_counter_read;
+}
+
+CommonNeuronBackendConfig::WaitFireNeuron CommonNeuronBackendConfig::get_wait_fire_neuron() const
+{
+	return m_wait_fire_neuron;
 }
 
 struct CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield
@@ -141,7 +174,10 @@ struct CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield
         uint32_t clock_scale_post_pulse                               :  4;  // 20-23; 0
         uint32_t                                                      :  8;  // 24-31; 0
 
-        uint32_t wait_counter_init                                    :  32; // 0-31 ; 1
+        uint32_t wait_global_post_pulse                               :  8;  // 0-7  ; 1
+        uint32_t wait_spike_counter_reset                             :  8;  // 8-15 ; 1
+        uint32_t wait_spike_counter_read                              :  8;  // 16-23; 1
+        uint32_t wait_fire_neuron                                     :  8;  // 23-31; 1
         } m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
@@ -202,7 +238,10 @@ CommonNeuronBackendConfig::to_bitfield() const
 	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(3)] << 3);
 	bitfield.u.m.clock_scale_adapt_pulse = static_cast<uint32_t>(m_clock_scale_adapt_pulse);
 	bitfield.u.m.clock_scale_post_pulse = static_cast<uint32_t>(m_clock_scale_post_pulse);
-	bitfield.u.m.wait_counter_init = static_cast<uint32_t>(m_wait_counter_init);
+	bitfield.u.m.wait_global_post_pulse = static_cast<uint32_t>(m_wait_global_post_pulse);
+	bitfield.u.m.wait_spike_counter_reset = static_cast<uint32_t>(m_wait_spike_counter_reset);
+	bitfield.u.m.wait_spike_counter_read = static_cast<uint32_t>(m_wait_spike_counter_read);
+	bitfield.u.m.wait_fire_neuron = static_cast<uint32_t>(m_wait_fire_neuron);
 	return bitfield;
 }
 
@@ -223,8 +262,14 @@ void CommonNeuronBackendConfig::from_bitfield(
 	    CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_adapt_pulse);
 	m_clock_scale_post_pulse =
 	    CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_post_pulse);
-	m_wait_counter_init =
-	    CommonNeuronBackendConfig::WaitCounterInit(bitfield.u.m.wait_counter_init);
+	m_wait_global_post_pulse =
+	    CommonNeuronBackendConfig::WaitGlobalPostPulse(bitfield.u.m.wait_global_post_pulse);
+	m_wait_spike_counter_reset =
+	    CommonNeuronBackendConfig::WaitSpikeCounterReset(bitfield.u.m.wait_spike_counter_reset);
+	m_wait_spike_counter_read =
+	    CommonNeuronBackendConfig::WaitSpikeCounterRead(bitfield.u.m.wait_spike_counter_read);
+	m_wait_fire_neuron =
+	    CommonNeuronBackendConfig::WaitFireNeuron(bitfield.u.m.wait_fire_neuron);
 }
 
 template <typename WordT>
@@ -277,7 +322,10 @@ bool CommonNeuronBackendConfig::operator==(CommonNeuronBackendConfig const& othe
 	    m_sample_pos_edge == other.m_sample_pos_edge &&
 	    m_clock_scale_adapt_pulse == other.get_clock_scale_adaptation_pulse() &&
 	    m_clock_scale_post_pulse == other.get_clock_scale_post_pulse() &&
-	    m_wait_counter_init == other.get_wait_counter_init());
+	    m_wait_global_post_pulse == other.get_wait_global_post_pulse() &&
+	    m_wait_spike_counter_reset == other.get_wait_spike_counter_reset() &&
+	    m_wait_spike_counter_read == other.get_wait_spike_counter_read() &&
+	    m_wait_fire_neuron == other.get_wait_fire_neuron());
 }
 
 bool CommonNeuronBackendConfig::operator!=(CommonNeuronBackendConfig const& other) const
@@ -299,7 +347,10 @@ std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& conf
 	<< "sample_positive_edge\t\t\t" << hate::join_string(config.m_sample_pos_edge, ", ") << "\t?" << std::endl
 	<< "clock_scale_adaptation_pulse\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_adapt_pulse)) << "\t?" << std::endl
 	<< "clock_scale_post_pulse\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_post_pulse)) << "\t?" << std::endl
-	<< "wait_counter_init\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_counter_init)) << "\t?";
+	<< "wait_global_post_pulse\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_global_post_pulse)) << "\t?" << std::endl
+	<< "wait_spike_counter_reset\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_spike_counter_reset)) << "\t?" << std::endl
+	<< "wait_spike_counter_read\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_spike_counter_read)) << "\t?" << std::endl
+	<< "wait_fire_neuron\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_fire_neuron)) << "\t?";
 	// clang-format on
 	return os;
 }
@@ -315,7 +366,10 @@ void CommonNeuronBackendConfig::serialize(Archive& ar)
 	ar(CEREAL_NVP(m_sample_pos_edge));
 	ar(CEREAL_NVP(m_clock_scale_adapt_pulse));
 	ar(CEREAL_NVP(m_clock_scale_post_pulse));
-	ar(CEREAL_NVP(m_wait_counter_init));
+	ar(CEREAL_NVP(m_wait_global_post_pulse));
+	ar(CEREAL_NVP(m_wait_spike_counter_reset));
+	ar(CEREAL_NVP(m_wait_spike_counter_read));
+	ar(CEREAL_NVP(m_wait_fire_neuron));
 }
 
 // TODO: Initialize with reasonable default values, see Issue #3368
