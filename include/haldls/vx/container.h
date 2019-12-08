@@ -13,6 +13,7 @@
 #include "haldls/vx/phy.h"
 #include "haldls/vx/pll.h"
 #include "haldls/vx/ppu.h"
+#include "haldls/vx/readout.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/routing_crossbar.h"
 #include "haldls/vx/spi.h"
