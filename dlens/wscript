@@ -83,24 +83,15 @@ def build(bld):
         skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE
     )
 
-    bld(
-        name = 'run_ppu_program_v2_py',
-        features = 'use py pylint pycodestyle',
-        source = 'tools/v2/run_ppu_program.py',
-        use = ['dlens_v2'],
-        install_path = '${PREFIX}/lib',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-    )
+    # --- Deprecated aliases --- #
+    bld(name='run_ppu_program_v2_py',
+        features='use',
+        use=['dlens_v2'],
+        )
 
-    bld(
-        name = 'run_ppu_program_vx_py',
-        features = 'use py pylint pycodestyle',
-        source = 'tools/vx/run_ppu_program.py',
-        use = ['dlens_vx'],
-        install_path = '${PREFIX}/lib',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-    )
+    bld(name='run_ppu_program_vx_py',
+        features='use',
+        use=['dlens_vx'],
+        )
 
     bld.add_post_fun(summary)
