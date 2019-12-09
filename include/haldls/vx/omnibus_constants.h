@@ -105,6 +105,22 @@ constexpr uint32_t neuron_reset_right_sram_base_address{0x12'8000 | 1ul << 13};
 constexpr std::array<uint32_t, 2> neuron_reset_sram_base_addresses = {
     neuron_reset_left_sram_base_address, neuron_reset_right_sram_base_address};
 
+constexpr uint32_t spike_counter_read_left_sram_base_address{neuron_reset_left_sram_base_address |
+                                                             0x800};
+constexpr uint32_t spike_counter_read_right_sram_base_address{neuron_reset_right_sram_base_address |
+                                                              0x800};
+
+constexpr std::array<uint32_t, 2> spike_counter_read_sram_base_addresses = {
+    spike_counter_read_left_sram_base_address, spike_counter_read_right_sram_base_address};
+
+constexpr uint32_t spike_counter_reset_left_sram_base_address{neuron_reset_left_sram_base_address |
+                                                              0xc00};
+constexpr uint32_t spike_counter_reset_right_sram_base_address{
+    neuron_reset_right_sram_base_address | 0xc00};
+
+constexpr std::array<uint32_t, 2> spike_counter_reset_sram_base_addresses = {
+    spike_counter_reset_left_sram_base_address, spike_counter_reset_right_sram_base_address};
+
 constexpr uint32_t ut_omnibus_mask{0x0400'0000};
 constexpr uint32_t phy_omnibus_mask{0x0200'0000 | ut_omnibus_mask};
 constexpr uint32_t perftest_omnibus_mask{0x0800'0000};

@@ -7,6 +7,8 @@
 #endif
 
 PLAYBACK_CONTAINER(NeuronReset, haldls::vx::NeuronReset)
+PLAYBACK_CONTAINER(SpikeCounterRead, haldls::vx::SpikeCounterRead)
+PLAYBACK_CONTAINER(SpikeCounterReset, haldls::vx::SpikeCounterReset)
 PLAYBACK_CONTAINER(HicannARQStatus, haldls::vx::HicannARQStatus)
 PLAYBACK_CONTAINER(PhyStatus, haldls::vx::PhyStatus)
 PLAYBACK_CONTAINER(PPUMemoryWord, haldls::vx::PPUMemoryWord)

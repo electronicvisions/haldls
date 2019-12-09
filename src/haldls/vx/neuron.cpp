@@ -1453,7 +1453,9 @@ std::array<AddressT, NeuronReset::write_config_size_in_words> NeuronReset::write
 {
 	auto const base_address = neuron_reset_sram_base_addresses.at(neuron.toNeuronResetBlockOnDLS());
 	auto const neuron_coord = neuron.toNeuronResetOnNeuronResetBlock();
-	return {AddressT(base_address + neuron_coord * 4)};
+
+	// Multiply the neuron coordinate with the backend config size to get the true address
+	return {AddressT(base_address + neuron_coord * NeuronBackendConfig::config_size_in_words)};
 }
 
 template SYMBOL_VISIBLE std::array<
@@ -1512,6 +1514,223 @@ void NeuronReset::serialize(Archive&)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
+
+
+SpikeCounterRead::SpikeCounterRead() : m_count(), m_overflow(false) {}
+
+SpikeCounterRead::Count SpikeCounterRead::get_count() const
+{
+	return m_count;
+}
+
+void SpikeCounterRead::set_count(SpikeCounterRead::Count const cnt)
+{
+	m_count = cnt;
+}
+
+bool SpikeCounterRead::get_overflow() const
+{
+	return m_overflow;
+}
+
+void SpikeCounterRead::set_overflow(bool const ovrflw)
+{
+	m_overflow = ovrflw;
+}
+
+template <typename AddressT>
+std::array<AddressT, SpikeCounterRead::read_config_size_in_words> SpikeCounterRead::read_addresses(
+    SpikeCounterRead::coordinate_type const& neuron) const
+{
+	auto const base_address =
+	    spike_counter_read_sram_base_addresses.at(neuron.toSpikeCounterReadBlockOnDLS());
+	auto const neuron_coord = neuron.toSpikeCounterReadOnSpikeCounterReadBlock();
+
+	// Multiply the neuron coordinate with the backend config size to get the true address
+	return {AddressT(base_address + neuron_coord * NeuronBackendConfig::config_size_in_words)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SpikeCounterRead::read_config_size_in_words>
+SpikeCounterRead::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, SpikeCounterRead::read_config_size_in_words>
+    SpikeCounterRead::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename AddressT>
+std::array<AddressT, SpikeCounterRead::write_config_size_in_words>
+SpikeCounterRead::write_addresses(SpikeCounterRead::coordinate_type const& /* neuron */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SpikeCounterRead::write_config_size_in_words>
+SpikeCounterRead::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, SpikeCounterRead::write_config_size_in_words>
+    SpikeCounterRead::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename WordT>
+std::array<WordT, SpikeCounterRead::write_config_size_in_words> SpikeCounterRead::encode() const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, SpikeCounterRead::write_config_size_in_words>
+    SpikeCounterRead::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, SpikeCounterRead::write_config_size_in_words>
+    SpikeCounterRead::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void SpikeCounterRead::decode(
+    std::array<WordT, SpikeCounterRead::read_config_size_in_words> const& data)
+{
+	m_count = Count(data.at(0).get() & 0xFF);
+	m_overflow = data.at(0).get() & 0x100;
+}
+
+template SYMBOL_VISIBLE void SpikeCounterRead::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, SpikeCounterRead::read_config_size_in_words> const&
+        data);
+
+template SYMBOL_VISIBLE void SpikeCounterRead::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, SpikeCounterRead::read_config_size_in_words> const& data);
+
+std::ostream& operator<<(std::ostream& os, SpikeCounterRead const& config)
+{
+	print_words_for_each_backend<SpikeCounterRead>(os, config);
+	// clang-format off
+	os << "NAME\t\tVALUE\tDESCRIPTION" << std::endl
+	<< std::boolalpha
+	<< "counter_value\t" << std::to_string(static_cast<uint32_t>(config.m_count)) << "\tvalue of the spike counter" << std::endl
+	<< "overflow\t" << config.m_overflow << "\tan overflow occured in the 8 bit counter";
+	// clang-format on
+	return os;
+}
+
+bool SpikeCounterRead::operator==(SpikeCounterRead const& other) const
+{
+	return (m_count == other.get_count() && m_overflow == other.get_overflow());
+}
+
+bool SpikeCounterRead::operator!=(SpikeCounterRead const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void SpikeCounterRead::serialize(Archive& ar)
+{
+	ar(CEREAL_NVP(m_count));
+	ar(CEREAL_NVP(m_overflow));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterRead)
+
+
+SpikeCounterReset::SpikeCounterReset() {}
+
+template <typename AddressT>
+std::array<AddressT, SpikeCounterReset::read_config_size_in_words>
+SpikeCounterReset::read_addresses(SpikeCounterReset::coordinate_type const& /* neuron */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SpikeCounterReset::read_config_size_in_words>
+SpikeCounterReset::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, SpikeCounterReset::read_config_size_in_words>
+    SpikeCounterReset::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename AddressT>
+std::array<AddressT, SpikeCounterReset::write_config_size_in_words>
+SpikeCounterReset::write_addresses(SpikeCounterReset::coordinate_type const& neuron) const
+{
+	auto const base_address =
+	    spike_counter_reset_sram_base_addresses.at(neuron.toSpikeCounterResetBlockOnDLS());
+	auto const neuron_coord = neuron.toSpikeCounterResetOnSpikeCounterResetBlock();
+
+	// Multiply the neuron coordinate with the backend config size to get the true address
+	return {AddressT(base_address + neuron_coord * NeuronBackendConfig::config_size_in_words)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SpikeCounterReset::write_config_size_in_words>
+SpikeCounterReset::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, SpikeCounterReset::write_config_size_in_words>
+    SpikeCounterReset::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename WordT>
+std::array<WordT, SpikeCounterReset::write_config_size_in_words> SpikeCounterReset::encode() const
+{
+	// Value does not matter
+	return {WordT()};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, SpikeCounterReset::write_config_size_in_words>
+    SpikeCounterReset::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, SpikeCounterReset::write_config_size_in_words>
+    SpikeCounterReset::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void SpikeCounterReset::decode(
+    std::array<WordT, SpikeCounterReset::read_config_size_in_words> const&)
+{}
+
+template SYMBOL_VISIBLE void SpikeCounterReset::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, SpikeCounterReset::read_config_size_in_words> const&
+        data);
+
+template SYMBOL_VISIBLE void SpikeCounterReset::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, SpikeCounterReset::read_config_size_in_words> const& data);
+
+std::ostream& operator<<(std::ostream& os, SpikeCounterReset const&)
+{
+	os << "SpikeCounterReset()";
+	return os;
+}
+
+bool SpikeCounterReset::operator==(SpikeCounterReset const&) const
+{
+	return true;
+}
+
+bool SpikeCounterReset::operator!=(SpikeCounterReset const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void SpikeCounterReset::serialize(Archive&)
+{}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterReset)
 
 } // namespace vx
 } // namespace haldls

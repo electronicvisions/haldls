@@ -766,5 +766,138 @@ struct BackendContainerTrait<NeuronReset>
 
 } // namespace detail
 
+
+/**
+ * Container to read the spike counter of a single neuron.
+ */
+class GENPYBIND(visible) SpikeCounterRead
+{
+public:
+	typedef halco::hicann_dls::vx::SpikeCounterReadOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/**
+	 * Count of rate counter.
+	 */
+	struct GENPYBIND(inline_base("*")) Count
+	    : public halco::common::detail::RantWrapper<Count, uint_fast16_t, 255, 0>
+	{
+		constexpr explicit Count(uintmax_t const val = 0)
+		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		{}
+	};
+
+	/** Default constructor */
+	SpikeCounterRead() SYMBOL_VISIBLE;
+
+	/**
+	 * Get count, i.e. number of spikes since last reset.
+	 * @return Count
+	 */
+	GENPYBIND(getter_for(count))
+	Count get_count() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(count))
+	void set_count(Count const cnt) SYMBOL_VISIBLE;
+
+	// Overflow bit
+	GENPYBIND(getter_for(overflow))
+	bool get_overflow() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(overflow))
+	void set_overflow(bool const ovrflw) SYMBOL_VISIBLE;
+
+	bool operator==(SpikeCounterRead const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SpikeCounterRead const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
+	template <typename AddressT>
+	std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename AddressT>
+	std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SpikeCounterRead const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+	Count m_count;
+	bool m_overflow;
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<SpikeCounterRead>
+    : public BackendContainerBase<
+          SpikeCounterRead,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+} // namespace detail
+
+
+/**
+ * Container to reset the spike counter of a single neuron.
+ */
+class GENPYBIND(visible) SpikeCounterReset
+{
+public:
+	typedef halco::hicann_dls::vx::SpikeCounterResetOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/** Default constructor */
+	SpikeCounterReset() SYMBOL_VISIBLE;
+
+	bool operator==(SpikeCounterReset const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SpikeCounterReset const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	template <typename AddressT>
+	std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename AddressT>
+	std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SpikeCounterReset const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<SpikeCounterReset>
+    : public BackendContainerBase<
+          SpikeCounterReset,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+} // namespace detail
+
 } // namespace vx
 } // namespace haldls

@@ -578,3 +578,113 @@ TEST(NeuronReset, CerealizeCoverage)
 	}
 	ASSERT_EQ(c1, c2);
 }
+
+TEST(SpikeCounterRead, General)
+{
+	SpikeCounterRead config;
+	config.set_count(SpikeCounterRead::Count(100));
+	config.set_overflow(true);
+
+	SpikeCounterRead default_config;
+	ASSERT_NE(config, default_config);
+	ASSERT_TRUE(config != default_config);
+	ASSERT_FALSE(config == default_config);
+	default_config = config;
+	ASSERT_EQ(config, default_config);
+	ASSERT_TRUE(config == default_config);
+	ASSERT_FALSE(config != default_config);
+}
+
+TEST(SpikeCounterRead, EncodeDecode)
+{
+	SpikeCounterRead config;
+	config.set_count(SpikeCounterRead::Count(100));
+	config.set_overflow(true);
+
+	auto neuron_coord = SpikeCounterReadOnDLS(
+	    SpikeCounterReadOnSpikeCounterReadBlock(22), SpikeCounterReadBlockOnDLS(0));
+
+	std::array<OmnibusChipOverJTAGAddress, SpikeCounterRead::read_config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0x122858}};
+
+	{ // check if read addresses are correct
+		addresses_type read_addresses;
+		visit_preorder(
+		    config, neuron_coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	// Decode
+	words_type data = {fisch::vx::OmnibusData(0x164)};
+	SpikeCounterRead config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, neuron_coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(SpikeCounterRead, CerealizeCoverage)
+{
+	SpikeCounterRead c1, c2;
+	c1.set_count(SpikeCounterRead::Count(100));
+	c1.set_overflow(true);
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(c1);
+	}
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(c2);
+	}
+	ASSERT_EQ(c1, c2);
+}
+
+TEST(SpikeCounterReset, General)
+{
+	SpikeCounterReset config;
+
+	SpikeCounterReset default_config;
+	ASSERT_EQ(config, default_config);
+	ASSERT_TRUE(config == default_config);
+	ASSERT_FALSE(config != default_config);
+}
+
+TEST(SpikeCounterReset, EncodeDecode)
+{
+	SpikeCounterReset config;
+
+	auto neuron_coord = SpikeCounterResetOnDLS(
+	    SpikeCounterResetOnSpikeCounterResetBlock(21), SpikeCounterResetBlockOnDLS(0));
+
+	std::array<OmnibusChipOverJTAGAddress, SpikeCounterReset::write_config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0x122c54}};
+
+	{ // check if write addresses are correct
+		addresses_type write_addresses;
+		visit_preorder(
+		    config, neuron_coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	// Encode
+	words_type data;
+	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
+	ASSERT_EQ(data[0].get(), 0x0);
+}
+
+TEST(SpikeCounterReset, CerealizeCoverage)
+{
+	SpikeCounterReset c1, c2;
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(c1);
+	}
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(c2);
+	}
+	ASSERT_EQ(c1, c2);
+}
