@@ -232,12 +232,175 @@ private:
 	bool m_differential_to_pad;
 };
 
+
+/**
+ * Configuration container for the two mux and buffer blocks for voltage readout.
+ * Allows selection of various signal sources on chip and drives the signals.
+ * To reach the pads, the buffer_to_pad option in the ReadoutMuxConfig needs to be set.
+ *
+ * Some of the selectable voltages in this container can also be selected in the
+ * ReadoutMuxConfig directly. Note that there the connection is direct, not buffered,
+ * while here the signal is amplified. Do not enable both connections, as there
+ * will be feedback otherwise!
+ */
+class GENPYBIND(visible) ReadoutBufferConfigBlock
+{
+public:
+	typedef halco::hicann_dls::vx::ReadoutBufferConfigBlockOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	struct ReadoutBufferConfig
+	{
+		/** Default constructor with all inputs disabled. */
+		ReadoutBufferConfig() SYMBOL_VISIBLE;
+
+		typedef halco::common::typed_array<bool, halco::hicann_dls::vx::HemisphereOnDLS>
+		    hemisphere_type GENPYBIND(opaque(false));
+
+		/** Connect plus/signal line of differential debug readout to mux. */
+		GENPYBIND(getter_for(differential_signal))
+		bool get_differential_signal() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(differential_signal))
+		void set_differential_signal(bool value) SYMBOL_VISIBLE;
+
+		/** Connect minus/reference line of differential debug readout to mux. */
+		GENPYBIND(getter_for(differential_reference))
+		bool get_differential_reference() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(differential_reference))
+		void set_differential_reference(bool value) SYMBOL_VISIBLE;
+
+		/** Connect output line of idac_i_out to mux.
+		 * This current-dac in the readout section can also
+		 * be connected to neuron membranes or the synaptic input, to mux. */
+		GENPYBIND(getter_for(current_dac))
+		bool get_current_dac() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(current_dac))
+		void set_current_dac(bool value) SYMBOL_VISIBLE;
+
+		/** Connect synaptic input inhibitory debug line to mux. */
+		GENPYBIND(getter_for(synin_debug_inhibitory))
+		bool get_synin_debug_inhibitory() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(synin_debug_inhibitory))
+		void set_synin_debug_inhibitory(bool value) SYMBOL_VISIBLE;
+
+		/** Connect synaptic input excitatory debug line to mux. */
+		GENPYBIND(getter_for(synin_debug_excitatory))
+		bool get_synin_debug_excitatory() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(synin_debug_excitatory))
+		void set_synin_debug_excitatory(bool value) SYMBOL_VISIBLE;
+
+		/** Connect CADC causal debug line to mux. */
+		GENPYBIND(getter_for(cadc_debug_causal))
+		bool get_cadc_debug_causal() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(cadc_debug_causal))
+		void set_cadc_debug_causal(bool value) SYMBOL_VISIBLE;
+
+		/** Connect CADC acausal debug line to mux. */
+		GENPYBIND(getter_for(cadc_debug_acausal))
+		bool get_cadc_debug_acausal() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(cadc_debug_acausal))
+		void set_cadc_debug_acausal(bool value) SYMBOL_VISIBLE;
+
+		/** Connect synapse driver debug voltage readout to mux. */
+		GENPYBIND(getter_for(synapse_driver_debug), return_value_policy(reference))
+		hemisphere_type const& get_synapse_driver_debug() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(synapse_driver_debug), return_value_policy(reference))
+		void set_synapse_driver_debug(hemisphere_type const& value) SYMBOL_VISIBLE;
+
+		/** Connect analog neuron readout for odd neurons (1, 3, ..., 255) to mux. */
+		GENPYBIND(getter_for(neuron_odd), return_value_policy(reference))
+		hemisphere_type const& get_neuron_odd() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(neuron_odd), return_value_policy(reference))
+		void set_neuron_odd(hemisphere_type const& value) SYMBOL_VISIBLE;
+
+		/** Connect analog neuron readout for even neurons (0, 2, ..., 254) to mux. */
+		GENPYBIND(getter_for(neuron_even), return_value_policy(reference))
+		hemisphere_type const& get_neuron_even() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(neuron_even), return_value_policy(reference))
+		void set_neuron_even(hemisphere_type const& value) SYMBOL_VISIBLE;
+
+		/** Enable buffer after the mux. */
+		GENPYBIND(getter_for(enable_buffer))
+		bool get_enable_buffer() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(enable_buffer))
+		void set_enable_buffer(bool value) SYMBOL_VISIBLE;
+
+		bool operator==(ReadoutBufferConfig const& other) const SYMBOL_VISIBLE;
+		bool operator!=(ReadoutBufferConfig const& other) const SYMBOL_VISIBLE;
+
+	private:
+		friend class ReadoutBufferConfigBlock;
+		friend class cereal::access;
+		template <class Archive>
+		void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+		bool m_differential_signal;
+		bool m_differential_reference;
+		bool m_current_dac;
+		bool m_synin_debug_inhibitory;
+		bool m_synin_debug_excitatory;
+		bool m_cadc_debug_causal;
+		bool m_cadc_debug_acausal;
+		hemisphere_type m_synapse_driver_debug;
+		hemisphere_type m_neuron_odd;
+		hemisphere_type m_neuron_even;
+		bool m_enable_buffer;
+	};
+
+	/** Default constructor with both buffers/muxes disabled. */
+	ReadoutBufferConfigBlock() SYMBOL_VISIBLE;
+
+	ReadoutBufferConfig get_buffer(
+	    halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock const& buffer) const
+	    SYMBOL_VISIBLE;
+	void set_buffer(
+	    halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock const& buffer,
+	    ReadoutBufferConfig const& value) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
+
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& block) const
+	    GENPYBIND(hidden);
+
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ReadoutBufferConfigBlock const& config)
+	    SYMBOL_VISIBLE;
+
+	bool operator==(ReadoutBufferConfigBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ReadoutBufferConfigBlock const& other) const SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar);
+
+	halco::common::typed_array<
+	    ReadoutBufferConfig,
+	    halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock>
+	    m_buffers;
+};
+
 namespace detail {
 
 template <>
 struct BackendContainerTrait<ReadoutMuxConfig>
     : public BackendContainerBase<
           ReadoutMuxConfig,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct BackendContainerTrait<ReadoutBufferConfigBlock>
+    : public BackendContainerBase<
+          ReadoutBufferConfigBlock,
           fisch::vx::OmnibusChip,
           fisch::vx::OmnibusChipOverJTAG>
 {};
