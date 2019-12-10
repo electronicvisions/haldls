@@ -3,7 +3,7 @@
 #include <memory>
 #include <variant>
 #include "fisch/vx/playback_executor.h"
-#include "sctrltp/fpga_ip_list.h"
+#include "hxcomm/common/fpga_ip_list.h"
 #include "stadls/vx/playback_program.h"
 
 namespace stadls::vx {
@@ -40,14 +40,7 @@ void PlaybackProgramExecutor::connect_hardware(ip_t const ip)
 
 void PlaybackProgramExecutor::connect_hardware()
 {
-	auto fpga_ip_list = sctrltp::get_fpga_ip_list();
-	if (fpga_ip_list.size() == 1) {
-		connect_hardware(fpga_ip_list.front());
-	} else if (fpga_ip_list.size() > 1) {
-		throw std::runtime_error("Found more than one FPGA IP in environment to connect to.");
-	} else {
-		throw std::runtime_error("No executor backend found to connect to.");
-	}
+	connect_hardware(hxcomm::get_fpga_ip());
 }
 
 void PlaybackProgramExecutor::connect_simulator(ip_t const ip, port_t const port)
@@ -80,7 +73,7 @@ void PlaybackProgramExecutor::connect()
 		throw std::logic_error("Unexpected access to moved-from object.");
 	}
 
-	auto fpga_ip_list = sctrltp::get_fpga_ip_list();
+	auto fpga_ip_list = hxcomm::get_fpga_ip_list();
 	char const* env_simulator = std::getenv("FLANGE_SIMULATION_RCF_PORT");
 
 	if (fpga_ip_list.size() == 1) {
