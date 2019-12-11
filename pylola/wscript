@@ -59,7 +59,7 @@ def build(bld):
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_environ = dict(TEST_PPU_PROGRAM=join(get_toplevel_path(), 'build', 'haldls', 'lola_ppu_test_elf_file.bin'))
+        test_environ=dict(TEST_PPU_PROGRAM=join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'vx', 'lola_ppu_test_elf_file.bin'))
     )
 
     bld.add_post_fun(summary)

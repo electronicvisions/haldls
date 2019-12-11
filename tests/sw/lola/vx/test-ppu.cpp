@@ -13,6 +13,28 @@ using namespace lola::vx;
 using namespace halco::hicann_dls::vx;
 
 static std::string const test_ppu_program = TEST_PPU_PROGRAM;
+/**
+ * The source code to the pregenerated test program looks like:
+ *
+ * #include <s2pp.h>
+ *
+ * uint32_t a;
+ *
+ * double b;
+ *
+ * struct S
+ * {
+ *  int a;
+ *  double b;
+ * };
+ *
+ * void start()
+ * {
+ *  a = 3;
+ *  b = 4.0;
+ * }
+ *
+ */
 
 TEST(PPUElfFile, General)
 {

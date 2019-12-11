@@ -1,7 +1,6 @@
 @Library("jenlib") _
 
 wafDefaultPipeline(projects: ["haldls"],
-                   moduleOptions: [modules: ["ppu-toolchain"]],
                    container: [app: "visionary-dls"],
                    postPipelineCleanup: false,
                    testOptions: "--test-execall -j1",
