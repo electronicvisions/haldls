@@ -2,7 +2,7 @@ import ctypes
 import argparse
 from dlens_vx import halco
 from dlens_vx.sta import PlaybackProgramBuilder, PlaybackProgramExecutor, \
-    AutoConnection
+    AutoConnection, DigitalInit, generate
 from pyhaldls_vx import PPUMemory, PPUControlRegister, Timer  # Issue 3429
 
 
@@ -115,6 +115,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     with AutoConnection() as connection:
+        init_builder, _ = generate(DigitalInit())
+        connection.run(init_builder.done())
+
         load_and_start_program(connection, args.program)
         wait_until_ppu_finished(connection, args.wait)
         exit_code = stop_program(connection)
