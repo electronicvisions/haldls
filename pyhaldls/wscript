@@ -6,8 +6,6 @@ from waflib.extras.gtest import summary
 from waflib.extras.symwaf2ic import get_toplevel_path
 
 def depends(ctx):
-    ctx('pyublas')
-    ctx('pywrap')
     ctx('haldls')
     ctx('halco', 'pyhalco')
     ctx('code-format')
