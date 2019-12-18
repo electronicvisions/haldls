@@ -81,4 +81,5 @@ class SimulatorConnection(ExecutorConnection):
     def _connect(self):
         if self.ip_address is None and self.port is None:
             self.executor.connect_simulator()
-        self.executor.connect_simulator(self.ip_address, self.port)
+        else:
+            self.executor.connect_simulator(self.ip_address, self.port)
