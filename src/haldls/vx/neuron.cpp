@@ -155,30 +155,32 @@ CommonNeuronBackendConfig::WaitFireNeuron CommonNeuronBackendConfig::get_wait_fi
 	return m_wait_fire_neuron;
 }
 
-struct CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield
+namespace {
+
+struct CommonNeuronBackendConfigBitfield
 {
 	union
 	{
 		std::array<uint32_t, CommonNeuronBackendConfig::config_size_in_words> words;
 		// clang-format off
-        struct __attribute__((packed)) {
-                                                                             // bits ; word
-        uint32_t en_event_regs                                        :  1;  // 0    ; 0
-        uint32_t force_reset                                          :  1;  // 1    ; 0
-        uint32_t en_clocks                                            :  1;  // 2    ; 0
-        uint32_t                                                      :  1;  // 3    ; 0
-        uint32_t clock_scale_slow                                     :  4;  // 4-7  ; 0
-        uint32_t clock_scale_fast                                     :  4;  // 8-11 ; 0
-        uint32_t sample_pos_edge                                      :  4;  // 12-15; 0
-        uint32_t clock_scale_adapt_pulse                              :  4;  // 16-19; 0
-        uint32_t clock_scale_post_pulse                               :  4;  // 20-23; 0
-        uint32_t                                                      :  8;  // 24-31; 0
+		struct __attribute__((packed)) {
+			                                                                     // bits ; word
+			uint32_t en_event_regs                                        :  1;  // 0    ; 0
+			uint32_t force_reset                                          :  1;  // 1    ; 0
+			uint32_t en_clocks                                            :  1;  // 2    ; 0
+			uint32_t                                                      :  1;  // 3    ; 0
+			uint32_t clock_scale_slow                                     :  4;  // 4-7  ; 0
+			uint32_t clock_scale_fast                                     :  4;  // 8-11 ; 0
+			uint32_t sample_pos_edge                                      :  4;  // 12-15; 0
+			uint32_t clock_scale_adapt_pulse                              :  4;  // 16-19; 0
+			uint32_t clock_scale_post_pulse                               :  4;  // 20-23; 0
+			uint32_t                                                      :  8;  // 24-31; 0
 
-        uint32_t wait_global_post_pulse                               :  8;  // 0-7  ; 1
-        uint32_t wait_spike_counter_reset                             :  8;  // 8-15 ; 1
-        uint32_t wait_spike_counter_read                              :  8;  // 16-23; 1
-        uint32_t wait_fire_neuron                                     :  8;  // 23-31; 1
-        } m;
+			uint32_t wait_global_post_pulse                               :  8;  // 0-7  ; 1
+			uint32_t wait_spike_counter_reset                             :  8;  // 8-15 ; 1
+			uint32_t wait_spike_counter_read                              :  8;  // 16-23; 1
+			uint32_t wait_fire_neuron                                     :  8;  // 23-31; 1
+		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
 	} u;
@@ -192,6 +194,8 @@ struct CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield
 		u.words[1] = data[1];
 	}
 };
+
+} // anonymous namespace
 
 template <typename AddressT>
 std::array<AddressT, CommonNeuronBackendConfig::config_size_in_words>
@@ -221,11 +225,12 @@ template SYMBOL_VISIBLE std::array<
 CommonNeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
     coordinate_type const& cell) const;
 
-CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield
-CommonNeuronBackendConfig::to_bitfield() const
+template <typename WordT>
+std::array<WordT, CommonNeuronBackendConfig::config_size_in_words>
+CommonNeuronBackendConfig::encode() const
 {
 	using namespace halco::hicann_dls::vx;
-	CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield bitfield;
+	CommonNeuronBackendConfigBitfield bitfield;
 	bitfield.u.m.en_event_regs = m_en_event_regs;
 	bitfield.u.m.force_reset = m_force_reset;
 	bitfield.u.m.en_clocks = m_en_clocks;
@@ -242,13 +247,30 @@ CommonNeuronBackendConfig::to_bitfield() const
 	bitfield.u.m.wait_spike_counter_reset = static_cast<uint32_t>(m_wait_spike_counter_reset);
 	bitfield.u.m.wait_spike_counter_read = static_cast<uint32_t>(m_wait_spike_counter_read);
 	bitfield.u.m.wait_fire_neuron = static_cast<uint32_t>(m_wait_fire_neuron);
-	return bitfield;
+	std::array<WordT, CommonNeuronBackendConfig::config_size_in_words> data;
+	std::transform(
+	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
+	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	return data;
 }
 
-void CommonNeuronBackendConfig::from_bitfield(
-    CommonNeuronBackendConfig::CommonNeuronBackendConfigBitfield const& bitfield)
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, CommonNeuronBackendConfig::config_size_in_words>
+    CommonNeuronBackendConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, CommonNeuronBackendConfig::config_size_in_words>
+    CommonNeuronBackendConfig::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void CommonNeuronBackendConfig::decode(
+    std::array<WordT, CommonNeuronBackendConfig::config_size_in_words> const& data)
 {
 	using namespace halco::hicann_dls::vx;
+	std::array<uint32_t, CommonNeuronBackendConfig::config_size_in_words> raw_data;
+	std::transform(
+	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	CommonNeuronBackendConfigBitfield bitfield(raw_data);
 	m_en_event_regs = bitfield.u.m.en_event_regs;
 	m_force_reset = bitfield.u.m.force_reset;
 	m_en_clocks = bitfield.u.m.en_clocks;
@@ -270,37 +292,6 @@ void CommonNeuronBackendConfig::from_bitfield(
 	    CommonNeuronBackendConfig::WaitSpikeCounterRead(bitfield.u.m.wait_spike_counter_read);
 	m_wait_fire_neuron =
 	    CommonNeuronBackendConfig::WaitFireNeuron(bitfield.u.m.wait_fire_neuron);
-}
-
-template <typename WordT>
-std::array<WordT, CommonNeuronBackendConfig::config_size_in_words>
-CommonNeuronBackendConfig::encode() const
-{
-	auto bitfield = to_bitfield();
-	std::array<WordT, CommonNeuronBackendConfig::config_size_in_words> data;
-	std::transform(
-	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
-	return data;
-}
-
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonNeuronBackendConfig::config_size_in_words>
-    CommonNeuronBackendConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
-
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CommonNeuronBackendConfig::config_size_in_words>
-    CommonNeuronBackendConfig::encode<fisch::vx::OmnibusChip>() const;
-
-template <typename WordT>
-void CommonNeuronBackendConfig::decode(
-    std::array<WordT, CommonNeuronBackendConfig::config_size_in_words> const& data)
-{
-	std::array<uint32_t, CommonNeuronBackendConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
-	CommonNeuronBackendConfigBitfield bitfield(raw_data);
-	from_bitfield(bitfield);
 }
 
 template SYMBOL_VISIBLE void CommonNeuronBackendConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
@@ -541,39 +532,41 @@ bool NeuronBackendConfig::get_enable_bayesian_1() const
 	return m_en_1_baesian;
 }
 
-struct NeuronBackendConfig::NeuronBackendConfigBitfield
+namespace {
+
+struct NeuronBackendConfigBitfield
 {
 	union
 	{
 		std::array<uint32_t, NeuronBackendConfig::config_size_in_words> words;
 		// clang-format off
 		struct __attribute__((packed)) {
-		                                                                     // bits ; word
-		uint32_t address_out_msbs                                     :  6;  // 0-5  ; 0
-		uint32_t reset_holdoff_1                                      :  2;  // 6-7  ; 0
-		uint32_t                                                      : 24;  // 8-31 ; 0
+			                                                                     // bits ; word
+			uint32_t address_out_msbs                                     :  6;  // 0-5  ; 0
+			uint32_t reset_holdoff_1                                      :  2;  // 6-7  ; 0
+			uint32_t                                                      : 24;  // 8-31 ; 0
 
-		uint32_t refractory_time_1                                    :  4;  // 0-3  ; 1
-		uint32_t address_out_lsbs                                     :  2;  // 4-5  ; 1
-		uint32_t reset_holdoff_2                                      :  2;  // 6-7  ; 1
-		uint32_t                                                      : 24;  // 8-31 ; 1
+			uint32_t refractory_time_1                                    :  4;  // 0-3  ; 1
+			uint32_t address_out_lsbs                                     :  2;  // 4-5  ; 1
+			uint32_t reset_holdoff_2                                      :  2;  // 6-7  ; 1
+			uint32_t                                                      : 24;  // 8-31 ; 1
 
-		uint32_t post_overwrite                                       :  1;  // 0    ; 2
-		uint32_t select_input_clock                                   :  1;  // 1    ; 2
-		uint32_t refractory_time_2                                    :  4;  // 2-5  ; 2
-		uint32_t en_adapt_pulse                                       :  1;  // 6    ; 2
-		uint32_t en_baesian_extension                                 :  1;  // 7    ; 2
-		uint32_t                                                      : 24;  // 8-31 ; 2
+			uint32_t post_overwrite                                       :  1;  // 0    ; 2
+			uint32_t select_input_clock                                   :  1;  // 1    ; 2
+			uint32_t refractory_time_2                                    :  4;  // 2-5  ; 2
+			uint32_t en_adapt_pulse                                       :  1;  // 6    ; 2
+			uint32_t en_baesian_extension                                 :  1;  // 7    ; 2
+			uint32_t                                                      : 24;  // 8-31 ; 2
 
-		uint32_t en_neuron_slave                                      :  1;  // 0    ; 3
-		uint32_t connect_fire_bottom                                  :  1;  // 1    ; 3
-		uint32_t connect_fire_from_right                              :  1;  // 2    ; 3
-		uint32_t connect_fire_to_right                                :  1;  // 3    ; 3
-		uint32_t en_spike_out                                         :  1;  // 4    ; 3
-		uint32_t en_neuron_master                                     :  1;  // 5    ; 3
-		uint32_t en_0_baesian                                         :  1;  // 6    ; 3
-		uint32_t en_1_baesian                                         :  1;  // 7    ; 3
-		uint32_t                                                      : 24;  // 8-31 ; 3
+			uint32_t en_neuron_slave                                      :  1;  // 0    ; 3
+			uint32_t connect_fire_bottom                                  :  1;  // 1    ; 3
+			uint32_t connect_fire_from_right                              :  1;  // 2    ; 3
+			uint32_t connect_fire_to_right                                :  1;  // 3    ; 3
+			uint32_t en_spike_out                                         :  1;  // 4    ; 3
+			uint32_t en_neuron_master                                     :  1;  // 5    ; 3
+			uint32_t en_0_baesian                                         :  1;  // 6    ; 3
+			uint32_t en_1_baesian                                         :  1;  // 7    ; 3
+			uint32_t                                                      : 24;  // 8-31 ; 3
 		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
@@ -590,6 +583,8 @@ struct NeuronBackendConfig::NeuronBackendConfigBitfield
 		u.words[3] = data[3];
 	}
 };
+
+} // anonymous namespace
 
 template <typename AddressT>
 std::array<AddressT, NeuronBackendConfig::config_size_in_words> NeuronBackendConfig::addresses(
@@ -620,9 +615,10 @@ template SYMBOL_VISIBLE
     NeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
         coordinate_type const& cell) const;
 
-NeuronBackendConfig::NeuronBackendConfigBitfield NeuronBackendConfig::to_bitfield() const
+template <typename WordT>
+std::array<WordT, NeuronBackendConfig::config_size_in_words> NeuronBackendConfig::encode() const
 {
-	NeuronBackendConfig::NeuronBackendConfigBitfield bitfield;
+	NeuronBackendConfigBitfield bitfield;
 	bitfield.u.m.address_out_lsbs = (~m_address_out & 0b00000011); // bits are inverted
 	bitfield.u.m.reset_holdoff_1 = m_reset_holdoff & 0b0011;
 	bitfield.u.m.refractory_time_1 = (~m_refractory_time & 0b11110000) >> 4;
@@ -641,41 +637,6 @@ NeuronBackendConfig::NeuronBackendConfigBitfield NeuronBackendConfig::to_bitfiel
 	bitfield.u.m.en_neuron_master = m_en_neuron_master;
 	bitfield.u.m.en_0_baesian = m_en_0_baesian;
 	bitfield.u.m.en_1_baesian = m_en_1_baesian;
-	return bitfield;
-}
-
-void NeuronBackendConfig::from_bitfield(
-    NeuronBackendConfig::NeuronBackendConfigBitfield const& bitfield)
-{
-	// bits of address out are inverted
-	m_address_out = NeuronBackendConfig::AddressOut(
-	    ((~(bitfield.u.m.address_out_lsbs) & 0b00000011) |
-	     (~(bitfield.u.m.address_out_msbs << 2) & 0b11111100)) &
-	    0xff);
-	m_reset_holdoff = NeuronBackendConfig::ResetHoldoff(
-	    bitfield.u.m.reset_holdoff_1 | (bitfield.u.m.reset_holdoff_2 << 2));
-	m_refractory_time = NeuronBackendConfig::RefractoryTime(
-	    ((~(bitfield.u.m.refractory_time_2) & 0xf) |
-	     (~(bitfield.u.m.refractory_time_1 << 4) & 0xf0)) &
-	    0xff);
-	m_post_overwrite = bitfield.u.m.post_overwrite;
-	m_select_input_clock = NeuronBackendConfig::InputClock(bitfield.u.m.select_input_clock);
-	m_en_adapt_pulse = bitfield.u.m.en_adapt_pulse;
-	m_en_baesian_extension = bitfield.u.m.en_baesian_extension;
-	m_en_neuron_slave = bitfield.u.m.en_neuron_slave;
-	m_connect_fire_bottom = bitfield.u.m.connect_fire_bottom;
-	m_connect_fire_from_right = bitfield.u.m.connect_fire_from_right;
-	m_connect_fire_to_right = bitfield.u.m.connect_fire_to_right;
-	m_en_spike_out = bitfield.u.m.en_spike_out;
-	m_en_neuron_master = bitfield.u.m.en_neuron_master;
-	m_en_0_baesian = bitfield.u.m.en_0_baesian;
-	m_en_1_baesian = bitfield.u.m.en_1_baesian;
-}
-
-template <typename WordT>
-std::array<WordT, NeuronBackendConfig::config_size_in_words> NeuronBackendConfig::encode() const
-{
-	auto bitfield = to_bitfield();
 	std::array<WordT, NeuronBackendConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
@@ -699,7 +660,29 @@ void NeuronBackendConfig::decode(
 	std::transform(
 	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
 	NeuronBackendConfigBitfield bitfield(raw_data);
-	from_bitfield(bitfield);
+	// bits of address out are inverted
+	m_address_out = NeuronBackendConfig::AddressOut(
+	    ((~(bitfield.u.m.address_out_lsbs) & 0b00000011) |
+	     (~(bitfield.u.m.address_out_msbs << 2) & 0b11111100)) &
+	    0xff);
+	m_reset_holdoff = NeuronBackendConfig::ResetHoldoff(
+	    bitfield.u.m.reset_holdoff_1 | (bitfield.u.m.reset_holdoff_2 << 2));
+	m_refractory_time = NeuronBackendConfig::RefractoryTime(
+	    ((~(bitfield.u.m.refractory_time_2) & 0xf) |
+	     (~(bitfield.u.m.refractory_time_1 << 4) & 0xf0)) &
+	    0xff);
+	m_post_overwrite = bitfield.u.m.post_overwrite;
+	m_select_input_clock = NeuronBackendConfig::InputClock(bitfield.u.m.select_input_clock);
+	m_en_adapt_pulse = bitfield.u.m.en_adapt_pulse;
+	m_en_baesian_extension = bitfield.u.m.en_baesian_extension;
+	m_en_neuron_slave = bitfield.u.m.en_neuron_slave;
+	m_connect_fire_bottom = bitfield.u.m.connect_fire_bottom;
+	m_connect_fire_from_right = bitfield.u.m.connect_fire_from_right;
+	m_connect_fire_to_right = bitfield.u.m.connect_fire_to_right;
+	m_en_spike_out = bitfield.u.m.en_spike_out;
+	m_en_neuron_master = bitfield.u.m.en_neuron_master;
+	m_en_0_baesian = bitfield.u.m.en_0_baesian;
+	m_en_1_baesian = bitfield.u.m.en_1_baesian;
 }
 
 template SYMBOL_VISIBLE void NeuronBackendConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
@@ -816,61 +799,63 @@ NeuronConfig::NeuronConfig() :
     m_en_leak_mul(false)
 {}
 
-struct NeuronConfig::NeuronConfigBitfield
+namespace {
+
+struct NeuronConfigBitfield
 {
 	union
 	{
 		std::array<uint32_t, NeuronConfig::config_size_in_words> words;
 		// clang-format off
-        struct __attribute__((packed)) {
-                                                                             // bits ; word
-        uint32_t en_reset_deg                                         :  1;  // 0    ; 2
-        uint32_t en_reset_div                                         :  1;  // 1    ; 2
-        uint32_t en_reset_mul                                         :  1;  // 2    ; 2
-        uint32_t en_leak_deg                                          :  1;  // 3    ; 2
-        uint32_t en_leak_div                                          :  1;  // 4    ; 2
-        uint32_t en_leak_mul                                          :  1;  // 5    ; 2
-        uint32_t                                                      : 26;  // 6-31 ; 2
+		struct __attribute__((packed)) {
+			                                                                     // bits ; word
+			uint32_t en_reset_deg                                         :  1;  // 0    ; 2
+			uint32_t en_reset_div                                         :  1;  // 1    ; 2
+			uint32_t en_reset_mul                                         :  1;  // 2    ; 2
+			uint32_t en_leak_deg                                          :  1;  // 3    ; 2
+			uint32_t en_leak_div                                          :  1;  // 4    ; 2
+			uint32_t en_leak_mul                                          :  1;  // 5    ; 2
+			uint32_t                                                      : 26;  // 6-31 ; 2
 
-        uint32_t en_read_vw                                           :  1;  // 0    ; 3
-        uint32_t                                                      :  2;  // 1-2  ; 3
-        uint32_t en_unbuf_access                                      :  1;  // 3    ; 3
-        uint32_t en_readout_amp                                       :  1;  // 4    ; 3
-        uint32_t readout_select                                       :  2;  // 5-6  ; 3
-        uint32_t en_readout                                           :  1;  // 7    ; 3
-        uint32_t                                                      : 24;  // 8-31 ; 3
+			uint32_t en_read_vw                                           :  1;  // 0    ; 3
+			uint32_t                                                      :  2;  // 1-2  ; 3
+			uint32_t en_unbuf_access                                      :  1;  // 3    ; 3
+			uint32_t en_readout_amp                                       :  1;  // 4    ; 3
+			uint32_t readout_select                                       :  2;  // 5-6  ; 3
+			uint32_t en_readout                                           :  1;  // 7    ; 3
+			uint32_t                                                      : 24;  // 8-31 ; 3
 
-        uint32_t invert_adapt_a                                       :  1;  // 0    ; 4
-        uint32_t invert_adapt_b                                       :  1;  // 1    ; 4
-        uint32_t en_adapt                                             :  1;  // 2    ; 4
-        uint32_t en_adapt_cap                                         :  1;  // 3    ; 4
-        uint32_t exp_weight                                           :  3;  // 4-6  ; 4
-        uint32_t en_exp                                               :  1;  // 7    ; 4
-        uint32_t                                                      : 24;  // 8-31 ; 4
+			uint32_t invert_adapt_a                                       :  1;  // 0    ; 4
+			uint32_t invert_adapt_b                                       :  1;  // 1    ; 4
+			uint32_t en_adapt                                             :  1;  // 2    ; 4
+			uint32_t en_adapt_cap                                         :  1;  // 3    ; 4
+			uint32_t exp_weight                                           :  3;  // 4-6  ; 4
+			uint32_t en_exp                                               :  1;  // 7    ; 4
+			uint32_t                                                      : 24;  // 8-31 ; 4
 
-        uint32_t en_mem_off                                           :  1;  // 0    ; 5
-        uint32_t en_cap_merge                                         :  1;  // 1    ; 5
-        uint32_t mem_cap_size                                         :  6;  // 2-7  ; 5
-        uint32_t                                                      : 24;  // 8-31 ; 5
+			uint32_t en_mem_off                                           :  1;  // 0    ; 5
+			uint32_t en_cap_merge                                         :  1;  // 1    ; 5
+			uint32_t mem_cap_size                                         :  6;  // 2-7  ; 5
+			uint32_t                                                      : 24;  // 8-31 ; 5
 
-        uint32_t                                                      :  2;  // 0-1  ; 6
-        uint32_t en_fire                                              :  1;  // 2    ; 6
-        uint32_t en_thresh_comp                                       :  1;  // 3    ; 6
-        uint32_t en_synin_inh                                         :  1;  // 4    ; 6
-        uint32_t en_synin_exc                                         :  1;  // 5    ; 6
-        uint32_t en_byp_inh                                           :  1;  // 6    ; 6
-        uint32_t en_byp_exc                                           :  1;  // 7    ; 6
-        uint32_t                                                      : 24;  // 8-31 ; 6
+			uint32_t                                                      :  2;  // 0-1  ; 6
+			uint32_t en_fire                                              :  1;  // 2    ; 6
+			uint32_t en_thresh_comp                                       :  1;  // 3    ; 6
+			uint32_t en_synin_inh                                         :  1;  // 4    ; 6
+			uint32_t en_synin_exc                                         :  1;  // 5    ; 6
+			uint32_t en_byp_inh                                           :  1;  // 6    ; 6
+			uint32_t en_byp_exc                                           :  1;  // 7    ; 6
+			uint32_t                                                      : 24;  // 8-31 ; 6
 
-        uint32_t en_comp_cond_div                                     :  1;  // 0    ; 7
-        uint32_t en_comp_cond_mul                                     :  1;  // 1    ; 7
-        uint32_t connect_soma                                         :  1;  // 2    ; 7
-        uint32_t connect_membrane_right                               :  1;  // 3    ; 7
-        uint32_t en_comp_cond                                         :  1;  // 4    ; 7
-        uint32_t connect_bottom                                       :  1;  // 5    ; 7
-        uint32_t connect_somata                                       :  1;  // 6    ; 7
-        uint32_t                                                      : 25;  // 7-31 ; 7
-        } m;
+			uint32_t en_comp_cond_div                                     :  1;  // 0    ; 7
+			uint32_t en_comp_cond_mul                                     :  1;  // 1    ; 7
+			uint32_t connect_soma                                         :  1;  // 2    ; 7
+			uint32_t connect_membrane_right                               :  1;  // 3    ; 7
+			uint32_t en_comp_cond                                         :  1;  // 4    ; 7
+			uint32_t connect_bottom                                       :  1;  // 5    ; 7
+			uint32_t connect_somata                                       :  1;  // 6    ; 7
+			uint32_t                                                      : 25;  // 7-31 ; 7
+		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
 	} u;
@@ -887,6 +872,8 @@ struct NeuronConfig::NeuronConfigBitfield
 		u.words[5] = data[5] & 0b0111'1111u;
 	}
 };
+
+} // anonymous namespace
 
 bool NeuronConfig::get_enable_divide_multicomp_conductance_bias() const
 {
@@ -1213,8 +1200,8 @@ template SYMBOL_VISIBLE
     NeuronConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
         coordinate_type const& cell) const;
 
-
-NeuronConfig::NeuronConfigBitfield NeuronConfig::to_bitfield() const
+template <typename WordT>
+std::array<WordT, NeuronConfig::config_size_in_words> NeuronConfig::encode() const
 {
 	NeuronConfigBitfield bitfield;
 	bitfield.u.m.en_comp_cond_div = m_en_comp_cond_div;
@@ -1250,11 +1237,27 @@ NeuronConfig::NeuronConfigBitfield NeuronConfig::to_bitfield() const
 	bitfield.u.m.en_leak_deg = m_en_leak_deg;
 	bitfield.u.m.en_leak_div = m_en_leak_div;
 	bitfield.u.m.en_leak_mul = m_en_leak_mul;
-	return bitfield;
+	std::array<WordT, NeuronConfig::config_size_in_words> data;
+	std::transform(
+	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
+	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	return data;
 }
 
-void NeuronConfig::from_bitfield(NeuronConfig::NeuronConfigBitfield const& bitfield)
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronConfig::config_size_in_words>
+    NeuronConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, NeuronConfig::config_size_in_words>
+NeuronConfig::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> const& data)
 {
+	std::array<uint32_t, NeuronConfig::config_size_in_words> raw_data;
+	std::transform(
+	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	NeuronConfigBitfield bitfield(raw_data);
 	m_en_comp_cond_div = bitfield.u.m.en_comp_cond_div;
 	m_en_comp_cond_mul = bitfield.u.m.en_comp_cond_mul;
 	m_connect_soma = bitfield.u.m.connect_soma;
@@ -1290,34 +1293,6 @@ void NeuronConfig::from_bitfield(NeuronConfig::NeuronConfigBitfield const& bitfi
 	m_en_leak_mul = bitfield.u.m.en_leak_mul;
 }
 
-template <typename WordT>
-std::array<WordT, NeuronConfig::config_size_in_words> NeuronConfig::encode() const
-{
-	auto bitfield = to_bitfield();
-	std::array<WordT, NeuronConfig::config_size_in_words> data;
-	std::transform(
-	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
-	return data;
-}
-
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronConfig::config_size_in_words>
-    NeuronConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
-
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, NeuronConfig::config_size_in_words>
-NeuronConfig::encode<fisch::vx::OmnibusChip>() const;
-
-template <typename WordT>
-void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> const& data)
-{
-	std::array<uint32_t, NeuronConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
-	NeuronConfigBitfield bitfield(raw_data);
-	from_bitfield(bitfield);
-}
-
 template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronConfig::config_size_in_words> const& data);
 
@@ -1328,84 +1303,81 @@ std::ostream& operator<<(std::ostream& os, NeuronConfig const& config)
 {
 	print_words_for_each_backend<NeuronConfig>(os, config);
 	// clang-format off
-    os << "NAME\t\t\t\t\t\tVALUE\tDESCRIPTION" << std::endl
-    << std::boolalpha
-    << "enable_divide_multicomp_conductance_bias\t" << config.m_en_comp_cond_div << "\tdivide inter-compartment conductance bias by 4" << std::endl
-    << "enable_multiply_multicomp_conductance_bias\t" << config.m_en_comp_cond_mul << "\tmultiply inter-compartment conductance bias by 4" << std::endl
-    << "connect_soma\t\t\t\t\t" << config.m_connect_soma << "\tconnect local membrane to soma" << std::endl
-    << "connect_membrane_right\t\t\t\t" << config.m_connect_membrane_right << "\tconnect local membrane to membrane on right" << std::endl
-    << "enable_multicomp_conductance\t\t\t" << config.m_en_comp_cond << "\tenable inter-compartment conductance" << std::endl
-    << "connect_bottom\t\t\t\t\t" << config.m_connect_bottom << "\tconnect local membrane to bottom membrane" << std::endl
-    << "connect_somata\t\t\t\t\t" << config.m_connect_somata << "\tconnect soma to soma on the right" << std::endl
-    << "enable_fire\t\t\t\t\t" << config.m_en_fire << "\tenable fire output of neuron (also gates bypass circuits)" << std::endl
-    << "enable_threshold_comparator\t\t\t" << config.m_en_thresh_comp << "\tenable threshold comparator" << std::endl
-    << "enable_synaptic_input_inhibitory\t\t" << config.m_en_synin_inh << "\tenable inh. synaptic input" << std::endl
-    << "enable_synaptic_input_excitatory\t\t" << config.m_en_synin_exc << "\tenable exc. synaptic input" << std::endl
-    << "enable_bypass_inhibitory\t\t\t" << config.m_en_byp_inh << "\tenable inh. bypass circuit" << std::endl
-    << "enable_bypass_excitatory\t\t\t" << config.m_en_byp_exc << "\tenable exc. bypass circuit" << std::endl
-    << "enable_membrane_offset\t\t\t\t" << config.m_en_mem_off << "\tenable membrane offset current (can also be used for stimulus/step current)" << std::endl
-    << "enable_capacitor_merge\t\t\t\t" << config.m_en_cap_merge << "\tenable merging of membrane and adaptation capacitances" << std::endl
-    << "membrane_capacitor_size\t\t\t\t" << std::to_string(config.m_mem_cap_size) << "\tconfigure membrane size" << std::endl
-    << "invert_adaptation_a\t\t\t\t" << config.m_invert_adapt_a << "\tflip the sign of a" << std::endl
-    << "invert_adaptation_b\t\t\t\t" << config.m_invert_adapt_b << "\tflip the sign of b" << std::endl
-    << "enable_adaptation\t\t\t\t" << config.m_en_adapt << "\tenable adaptation" << std::endl
-    << "enable_adaptation_capacitor\t\t\t" << config.m_en_adapt_cap << "\tenable adaptation capacitance" << std::endl
-    << "exponential_term_strength\t\t\t" << std::to_string(config.m_exp_weight) << "\tstrength of exponential term" << std::endl
-    << "enable_exponential\t\t\t\t" << config.m_en_exp << "\tenable exponential term" << std::endl
-    << "enable_adaptation_readout\t\t\t" << config.m_en_read_vw << "\tenable readout of adaptation voltage (user must also configure readout_select!)" << std::endl
-    << "enable_unbuffered_access\t\t\t" << config.m_en_unbuf_access << "\tenable direct, unbuffered access to membrane" << std::endl
-    << "enable_readout_amplifier\t\t\t" << config.m_en_readout_amp << "\tenable readout amplifier" << std::endl
-    << "readout_source\t\t\t\t\t" << std::to_string(static_cast<uint_fast8_t>(config.m_readout_select)) << "\tselect readout source (0: membrane, 1: exc. synin, 2: inh. synin, 3: adaptation)" << std::endl
-    << "enable_readout\t\t\t\t\t" << config.m_en_readout << "\tenable readout" << std::endl
-    << "enable_reset_degeneration\t\t\t" << config.m_en_reset_deg << "\tenable source degeneration of leak/reset OTA in reset mode" << std::endl
-    << "enable_reset_division\t\t\t\t" << config.m_en_reset_div << "\tenable division (8x) of conductance in reset mode" << std::endl
-    << "enable_reset_multiplication\t\t\t" << config.m_en_reset_mul << "\tenable multiplication (8x) of conductance in reset mode" << std::endl
-    << "enable_leak_degeneration\t\t\t" << config.m_en_leak_deg << "\tenable source degeneration of leak/reset OTA in leak mode" << std::endl
-    << "enable_leak_division\t\t\t\t" << config.m_en_leak_div << "\tenable division (8x) of conductance in leak mode" << std::endl
-    << "enable_leak_multiplication\t\t\t" << config.m_en_leak_mul << "\tenable multiplication (8x) of conductance in leak mode";
+	os << "NAME\t\t\t\t\t\tVALUE\tDESCRIPTION" << std::endl
+	<< std::boolalpha
+	<< "enable_divide_multicomp_conductance_bias\t" << config.m_en_comp_cond_div << "\tdivide inter-compartment conductance bias by 4" << std::endl
+	<< "enable_multiply_multicomp_conductance_bias\t" << config.m_en_comp_cond_mul << "\tmultiply inter-compartment conductance bias by 4" << std::endl
+	<< "connect_soma\t\t\t\t\t" << config.m_connect_soma << "\tconnect local membrane to soma" << std::endl
+	<< "connect_membrane_right\t\t\t\t" << config.m_connect_membrane_right << "\tconnect local membrane to membrane on right" << std::endl
+	<< "enable_multicomp_conductance\t\t\t" << config.m_en_comp_cond << "\tenable inter-compartment conductance" << std::endl
+	<< "connect_bottom\t\t\t\t\t" << config.m_connect_bottom << "\tconnect local membrane to bottom membrane" << std::endl
+	<< "connect_somata\t\t\t\t\t" << config.m_connect_somata << "\tconnect soma to soma on the right" << std::endl
+	<< "enable_fire\t\t\t\t\t" << config.m_en_fire << "\tenable fire output of neuron (also gates bypass circuits)" << std::endl
+	<< "enable_threshold_comparator\t\t\t" << config.m_en_thresh_comp << "\tenable threshold comparator" << std::endl
+	<< "enable_synaptic_input_inhibitory\t\t" << config.m_en_synin_inh << "\tenable inh. synaptic input" << std::endl
+	<< "enable_synaptic_input_excitatory\t\t" << config.m_en_synin_exc << "\tenable exc. synaptic input" << std::endl
+	<< "enable_bypass_inhibitory\t\t\t" << config.m_en_byp_inh << "\tenable inh. bypass circuit" << std::endl
+	<< "enable_bypass_excitatory\t\t\t" << config.m_en_byp_exc << "\tenable exc. bypass circuit" << std::endl
+	<< "enable_membrane_offset\t\t\t\t" << config.m_en_mem_off << "\tenable membrane offset current (can also be used for stimulus/step current)" << std::endl
+	<< "enable_capacitor_merge\t\t\t\t" << config.m_en_cap_merge << "\tenable merging of membrane and adaptation capacitances" << std::endl
+	<< "membrane_capacitor_size\t\t\t\t" << std::to_string(config.m_mem_cap_size) << "\tconfigure membrane size" << std::endl
+	<< "invert_adaptation_a\t\t\t\t" << config.m_invert_adapt_a << "\tflip the sign of a" << std::endl
+	<< "invert_adaptation_b\t\t\t\t" << config.m_invert_adapt_b << "\tflip the sign of b" << std::endl
+	<< "enable_adaptation\t\t\t\t" << config.m_en_adapt << "\tenable adaptation" << std::endl
+	<< "enable_adaptation_capacitor\t\t\t" << config.m_en_adapt_cap << "\tenable adaptation capacitance" << std::endl
+	<< "exponential_term_strength\t\t\t" << std::to_string(config.m_exp_weight) << "\tstrength of exponential term" << std::endl
+	<< "enable_exponential\t\t\t\t" << config.m_en_exp << "\tenable exponential term" << std::endl
+	<< "enable_adaptation_readout\t\t\t" << config.m_en_read_vw << "\tenable readout of adaptation voltage (user must also configure readout_select!)" << std::endl
+	<< "enable_unbuffered_access\t\t\t" << config.m_en_unbuf_access << "\tenable direct, unbuffered access to membrane" << std::endl
+	<< "enable_readout_amplifier\t\t\t" << config.m_en_readout_amp << "\tenable readout amplifier" << std::endl
+	<< "readout_source\t\t\t\t\t" << std::to_string(static_cast<uint_fast8_t>(config.m_readout_select)) << "\tselect readout source (0: membrane, 1: exc. synin, 2: inh. synin, 3: adaptation)" << std::endl
+	<< "enable_readout\t\t\t\t\t" << config.m_en_readout << "\tenable readout" << std::endl
+	<< "enable_reset_degeneration\t\t\t" << config.m_en_reset_deg << "\tenable source degeneration of leak/reset OTA in reset mode" << std::endl
+	<< "enable_reset_division\t\t\t\t" << config.m_en_reset_div << "\tenable division (8x) of conductance in reset mode" << std::endl
+	<< "enable_reset_multiplication\t\t\t" << config.m_en_reset_mul << "\tenable multiplication (8x) of conductance in reset mode" << std::endl
+	<< "enable_leak_degeneration\t\t\t" << config.m_en_leak_deg << "\tenable source degeneration of leak/reset OTA in leak mode" << std::endl
+	<< "enable_leak_division\t\t\t\t" << config.m_en_leak_div << "\tenable division (8x) of conductance in leak mode" << std::endl
+	<< "enable_leak_multiplication\t\t\t" << config.m_en_leak_mul << "\tenable multiplication (8x) of conductance in leak mode";
 	// clang-format on
 	return os;
 }
 
 bool NeuronConfig::operator==(NeuronConfig const& other) const
 {
-	// clang-format off
-    return (
-        m_en_comp_cond_div  == other.get_enable_divide_multicomp_conductance_bias() &&
-        m_en_comp_cond_mul  == other.get_enable_multiply_multicomp_conductance_bias() &&
-        m_connect_soma  == other.get_connect_soma() &&
-        m_connect_membrane_right  == other.get_connect_membrane_right() &&
-        m_en_comp_cond  == other.get_enable_multicomp_conductance() &&
-        m_connect_bottom  == other.get_connect_bottom() &&
-        m_connect_somata  == other.get_connect_soma_right() &&
-        m_en_fire  == other.get_enable_fire() &&
-        m_en_thresh_comp  == other.get_enable_threshold_comparator() &&
-        m_en_synin_inh  == other.get_enable_synaptic_input_inhibitory() &&
-        m_en_synin_exc  == other.get_enable_synaptic_input_excitatory() &&
-        m_en_byp_inh  == other.get_enable_bypass_inhibitory() &&
-        m_en_byp_exc  == other.get_enable_bypass_excitatory() &&
-        m_en_mem_off  == other.get_enable_membrane_offset() &&
-        m_en_cap_merge  == other.get_enable_capacitor_merge() &&
-        m_mem_cap_size  == other.get_membrane_capacitor_size() &&
-        m_invert_adapt_a  == other.get_invert_adaptation_a() &&
-        m_invert_adapt_b  == other.get_invert_adaptation_b() &&
-        m_en_adapt  == other.get_enable_adaptation() &&
-        m_en_adapt_cap  == other.get_enable_adaptation_capacitor() &&
-        m_exp_weight  == other.get_exponential_term_strength() &&
-        m_en_exp  == other.get_enable_exponential() &&
-        m_en_read_vw  == other.get_enable_adaptation_readout() &&
-        m_en_unbuf_access  == other.get_enable_unbuffered_access() &&
-        m_en_readout_amp  == other.get_enable_readout_amplifier() &&
-        m_readout_select  == other.get_readout_source() &&
-        m_en_readout  == other.get_enable_readout() &&
-        m_en_reset_deg  == other.get_enable_reset_degeneration() &&
-        m_en_reset_div  == other.get_enable_reset_division() &&
-        m_en_reset_mul  == other.get_enable_reset_multiplication() &&
-        m_en_leak_deg  == other.get_enable_leak_degeneration() &&
-        m_en_leak_div  == other.get_enable_leak_division() &&
-        m_en_leak_mul  == other.get_enable_leak_multiplication()
-    );
-	// clang-format on
+	return (
+	    m_en_comp_cond_div == other.get_enable_divide_multicomp_conductance_bias() &&
+	    m_en_comp_cond_mul == other.get_enable_multiply_multicomp_conductance_bias() &&
+	    m_connect_soma == other.get_connect_soma() &&
+	    m_connect_membrane_right == other.get_connect_membrane_right() &&
+	    m_en_comp_cond == other.get_enable_multicomp_conductance() &&
+	    m_connect_bottom == other.get_connect_bottom() &&
+	    m_connect_somata == other.get_connect_soma_right() &&
+	    m_en_fire == other.get_enable_fire() &&
+	    m_en_thresh_comp == other.get_enable_threshold_comparator() &&
+	    m_en_synin_inh == other.get_enable_synaptic_input_inhibitory() &&
+	    m_en_synin_exc == other.get_enable_synaptic_input_excitatory() &&
+	    m_en_byp_inh == other.get_enable_bypass_inhibitory() &&
+	    m_en_byp_exc == other.get_enable_bypass_excitatory() &&
+	    m_en_mem_off == other.get_enable_membrane_offset() &&
+	    m_en_cap_merge == other.get_enable_capacitor_merge() &&
+	    m_mem_cap_size == other.get_membrane_capacitor_size() &&
+	    m_invert_adapt_a == other.get_invert_adaptation_a() &&
+	    m_invert_adapt_b == other.get_invert_adaptation_b() &&
+	    m_en_adapt == other.get_enable_adaptation() &&
+	    m_en_adapt_cap == other.get_enable_adaptation_capacitor() &&
+	    m_exp_weight == other.get_exponential_term_strength() &&
+	    m_en_exp == other.get_enable_exponential() &&
+	    m_en_read_vw == other.get_enable_adaptation_readout() &&
+	    m_en_unbuf_access == other.get_enable_unbuffered_access() &&
+	    m_en_readout_amp == other.get_enable_readout_amplifier() &&
+	    m_readout_select == other.get_readout_source() &&
+	    m_en_readout == other.get_enable_readout() &&
+	    m_en_reset_deg == other.get_enable_reset_degeneration() &&
+	    m_en_reset_div == other.get_enable_reset_division() &&
+	    m_en_reset_mul == other.get_enable_reset_multiplication() &&
+	    m_en_leak_deg == other.get_enable_leak_degeneration() &&
+	    m_en_leak_div == other.get_enable_leak_division() &&
+	    m_en_leak_mul == other.get_enable_leak_multiplication());
 }
 
 bool NeuronConfig::operator!=(NeuronConfig const& other) const

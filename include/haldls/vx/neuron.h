@@ -176,11 +176,6 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar) SYMBOL_VISIBLE;
 
-	struct CommonNeuronBackendConfigBitfield;
-
-	CommonNeuronBackendConfigBitfield to_bitfield() const;
-	void from_bitfield(CommonNeuronBackendConfigBitfield const& bitfield);
-
 	bool m_en_event_regs;
 	bool m_force_reset;
 	bool m_en_clocks;
@@ -378,11 +373,6 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar);
-
-	struct NeuronBackendConfigBitfield;
-
-	NeuronBackendConfigBitfield to_bitfield() const;
-	void from_bitfield(NeuronBackendConfigBitfield const& bitfield);
 
 	AddressOut m_address_out;
 	ResetHoldoff m_reset_holdoff;
@@ -661,11 +651,6 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar) SYMBOL_VISIBLE;
-
-	struct NeuronConfigBitfield;
-
-	NeuronConfigBitfield to_bitfield() const;
-	void from_bitfield(NeuronConfigBitfield const& bitfield);
 
 	bool m_en_comp_cond_div;
 	bool m_en_comp_cond_mul;
