@@ -1,7 +1,7 @@
 #include "stadls/vx/playback_program_builder.h"
 
 #include <optional>
-#include "fisch/vx/playback_program.h"
+#include "fisch/vx/playback_program_builder.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
 #include "stadls/vx/playback_program.h"

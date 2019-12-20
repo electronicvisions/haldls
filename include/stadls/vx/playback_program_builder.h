@@ -12,6 +12,8 @@
 #include "lola/vx/container.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
+// needed for python wrapping
+#include "fisch/vx/playback_program_builder.h"
 
 namespace fisch::vx {
 class PlaybackProgramBuilder;
