@@ -12,6 +12,12 @@ PlaybackProgramBuilder::PlaybackProgramBuilder() :
     m_builder_impl(std::make_unique<fisch::vx::PlaybackProgramBuilder>())
 {}
 
+PlaybackProgramBuilder::PlaybackProgramBuilder(PlaybackProgramBuilder&& other) :
+    m_builder_impl(std::move(other.m_builder_impl))
+{}
+
+PlaybackProgramBuilder::~PlaybackProgramBuilder() {}
+
 void PlaybackProgramBuilder::wait_until(
     typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value const time)
 {

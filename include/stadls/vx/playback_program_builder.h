@@ -31,6 +31,10 @@ public:
 	/** Default constructor. */
 	PlaybackProgramBuilder() SYMBOL_VISIBLE;
 
+	PlaybackProgramBuilder(PlaybackProgramBuilder&& other) SYMBOL_VISIBLE;
+	PlaybackProgramBuilder(PlaybackProgramBuilder const&) = delete;
+	~PlaybackProgramBuilder() SYMBOL_VISIBLE;
+
 	/**
 	 * Add instruction to block execution until specified timer has reached specified value.
 	 * @param coord Timer coordinate for which to wait
