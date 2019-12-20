@@ -2,7 +2,8 @@
 #include <type_traits>
 
 #include <boost/variant.hpp>
-#include "fisch/vx/playback_program.h"
+#include "fisch/vx/container.h"
+#include "fisch/vx/container_ticket.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"
 
@@ -132,8 +133,7 @@ struct to_ticket_variant;
 template <typename... BackendContainer>
 struct to_ticket_variant<hate::type_list<BackendContainer...>>
 {
-	typedef boost::variant<fisch::vx::PlaybackProgram::ContainerVectorTicket<BackendContainer>...>
-	    type;
+	typedef boost::variant<fisch::vx::ContainerVectorTicket<BackendContainer>...> type;
 };
 
 } // namespace detail
