@@ -34,7 +34,9 @@ public:
 	struct GENPYBIND(inline_base("*")) Value
 	    : public halco::common::detail::RantWrapper<Value, uint64_t, 0x7ffffffffff, 0>
 	{
-		constexpr explicit Value(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
 	};
 
 	explicit SystimeSyncBase(Value const value = Value()) SYMBOL_VISIBLE;
