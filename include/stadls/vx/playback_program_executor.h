@@ -60,7 +60,8 @@ public:
 	/**
 	 * Connect to backend by automatically finding possible executor.
 	 * If both hardware and simulator executor are available, hardware is favoured.
-	 * A simulator executor is found if the environment features FLANGE_SIMULATION_RCF_PORT.
+	 * A simulator executor is found if the environment features FLANGE_SIMULATION_RCF_PORT
+	 * and (optionally) FLANGE_SIMULATION_RCF_HOST.
 	 * A hardware executor is found if the environment features SLURM_FPGA_IPS.
 	 * @throws std::runtime_error On no executor backend found
 	 */

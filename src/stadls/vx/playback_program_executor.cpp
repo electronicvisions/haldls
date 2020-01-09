@@ -58,10 +58,16 @@ void PlaybackProgramExecutor::connect_simulator(ip_t const ip, port_t const port
 
 void PlaybackProgramExecutor::connect_simulator()
 {
-	char const* env_simulator = std::getenv("FLANGE_SIMULATION_RCF_PORT");
+	char const* env_sim_port = std::getenv("FLANGE_SIMULATION_RCF_PORT");
+	char const* env_sim_host = std::getenv("FLANGE_SIMULATION_RCF_HOST");
 
-	if (env_simulator != nullptr) {
-		connect_simulator("127.0.0.1", static_cast<uint16_t>(atoi(env_simulator)));
+	static std::string default_host = "127.0.0.1";
+	if (env_sim_host == nullptr) {
+		env_sim_host = default_host.c_str();
+	}
+
+	if (env_sim_port != nullptr) {
+		connect_simulator(env_sim_host, static_cast<uint16_t>(atoi(env_sim_port)));
 	} else {
 		throw std::runtime_error("No executor backend found to connect to.");
 	}
@@ -74,14 +80,20 @@ void PlaybackProgramExecutor::connect()
 	}
 
 	auto fpga_ip_list = hxcomm::get_fpga_ip_list();
-	char const* env_simulator = std::getenv("FLANGE_SIMULATION_RCF_PORT");
+	char const* env_sim_port = std::getenv("FLANGE_SIMULATION_RCF_PORT");
+	char const* env_sim_host = std::getenv("FLANGE_SIMULATION_RCF_HOST");
+
+	static std::string default_host = "127.0.0.1";
+	if (env_sim_host == nullptr) {
+		env_sim_host = default_host.c_str();
+	}
 
 	if (fpga_ip_list.size() == 1) {
 		connect_hardware(fpga_ip_list.front());
 	} else if (fpga_ip_list.size() > 1) {
 		throw std::runtime_error("Found more than one FPGA IP in environment to connect to.");
-	} else if (env_simulator != nullptr) {
-		connect_simulator("127.0.0.1", static_cast<uint16_t>(atoi(env_simulator)));
+	} else if (env_sim_port != nullptr) {
+		connect_simulator(env_sim_host, static_cast<uint16_t>(atoi(env_sim_port)));
 	} else {
 		throw std::runtime_error("No executor backend found to connect to.");
 	}
