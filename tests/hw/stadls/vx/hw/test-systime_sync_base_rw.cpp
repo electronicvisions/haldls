@@ -16,6 +16,9 @@ using namespace haldls::vx;
 using namespace stadls::vx;
 using namespace halco::hicann_dls::vx;
 
+/**
+ * This test triggers issue #3460 and has therefore been disabled in simulation.
+ */
 TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)
 {
 	PlaybackProgramBuilder builder;

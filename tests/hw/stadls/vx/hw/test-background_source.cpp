@@ -87,6 +87,8 @@ void test_background_spike_source_regular(
 
 /**
  * Enable background sources and generate regular spike-trains.
+ *
+ * This test has been disabled for simulation due to its long runtime (issue #3458).
  */
 TEST(BackgroundSpikeSource, Regular)
 {

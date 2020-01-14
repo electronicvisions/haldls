@@ -250,7 +250,8 @@ def build(bld):
         defines = ['REDUCED_TESTS=1', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
-        skip_run = not bld.env.DLSvx_SIM_AVAILABLE
+        skip_run = not bld.env.DLSvx_SIM_AVAILABLE,
+        test_timeout = 3600
     )
 
     bld(target = 'stadls_hwtest_v2',
