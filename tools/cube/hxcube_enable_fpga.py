@@ -9,7 +9,7 @@ Communicates via USB HID, using pyhid_cube (TUD) -> pyhid (TUD) -> libusb.
 import os
 import argparse
 import time
-import pyhid  # pylint: disable=import-error
+import pyhid
 import pyhid_cube
 
 

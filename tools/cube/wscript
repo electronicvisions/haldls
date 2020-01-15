@@ -27,14 +27,16 @@ def configure(cfg):
 
 def build(bld):
     bld(name='tud_cube',
-        features='py',
+        features='use py',
+        use='pyhid',
         source=['cube_ctrl.py', 'pyhid_cube.py'],
         relative_trick=True,
         install_path = '${PREFIX}/lib'
     )
 
     bld(name='cubetools',
-        features='py pylint pycodestyle',
+        features='use py pylint pycodestyle',
+        use='pyhid tud_cube',
         source=bld.path.ant_glob('hxcube_*.py'),
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
