@@ -259,8 +259,8 @@ template <>
 struct BackendContainerTrait<BackgroundSpikeSource>
     : public BackendContainerBase<
           BackgroundSpikeSource,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

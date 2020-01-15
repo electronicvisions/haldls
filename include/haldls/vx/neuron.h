@@ -693,16 +693,16 @@ template <>
 struct BackendContainerTrait<CommonNeuronBackendConfig>
     : public BackendContainerBase<
           CommonNeuronBackendConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<NeuronBackendConfig>
     : public BackendContainerBase<
           NeuronBackendConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>

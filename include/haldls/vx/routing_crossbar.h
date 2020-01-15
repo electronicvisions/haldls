@@ -95,8 +95,8 @@ template <>
 struct BackendContainerTrait<CrossbarOutputConfig>
     : public BackendContainerBase<
           CrossbarOutputConfig,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -175,8 +175,8 @@ template <>
 struct BackendContainerTrait<CrossbarInputDropCounter>
     : public BackendContainerBase<
           CrossbarInputDropCounter,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -254,8 +254,8 @@ template <>
 struct BackendContainerTrait<CrossbarOutputEventCounter>
     : public BackendContainerBase<
           CrossbarOutputEventCounter,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -347,8 +347,8 @@ template <>
 struct BackendContainerTrait<CrossbarNode>
     : public BackendContainerBase<
           CrossbarNode,
-          fisch::vx::OmnibusChipOverJTAG,
-          fisch::vx::OmnibusChip>
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
