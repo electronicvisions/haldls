@@ -55,6 +55,7 @@ TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)
 		tickets.push_back(builder.read(coord, Backend::OmnibusChipOverJTAG));
 	}
 
+	builder.write(TimerOnDLS(), Timer());
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
 	auto program = builder.done();
 
