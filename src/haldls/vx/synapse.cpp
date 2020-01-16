@@ -1215,4 +1215,95 @@ void SynapseBiasSelection::serialize(Archive& ar)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseBiasSelection)
 
+CorrelationReset::CorrelationReset() {}
+
+template <typename AddressT>
+std::array<AddressT, CorrelationReset::read_config_size_in_words> CorrelationReset::read_addresses(
+    CorrelationReset::coordinate_type const& /* neuron */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CorrelationReset::read_config_size_in_words>
+CorrelationReset::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, CorrelationReset::read_config_size_in_words>
+    CorrelationReset::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename AddressT>
+std::array<AddressT, CorrelationReset::write_config_size_in_words>
+CorrelationReset::write_addresses(CorrelationReset::coordinate_type const& coord) const
+{
+	auto const base_address = correlation_reset_base_addresses.at(coord.toSynramOnDLS());
+	int row_offset =
+	    coord.toSynapseRowOnSynram().toEnum() * halco::hicann_dls::vx::SynapseQuadColumnOnDLS::size;
+	int quad_offset = detail::to_synram_quad_address_offset(coord.toSynapseQuadColumnOnDLS());
+
+	return {AddressT(base_address + row_offset + quad_offset)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CorrelationReset::write_config_size_in_words>
+CorrelationReset::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, CorrelationReset::write_config_size_in_words>
+    CorrelationReset::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename WordT>
+std::array<WordT, CorrelationReset::write_config_size_in_words> CorrelationReset::encode() const
+{
+	// Value does not matter
+	return {WordT()};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, CorrelationReset::write_config_size_in_words>
+    CorrelationReset::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, CorrelationReset::write_config_size_in_words>
+    CorrelationReset::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void CorrelationReset::decode(std::array<WordT, CorrelationReset::read_config_size_in_words> const&)
+{}
+
+template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, CorrelationReset::read_config_size_in_words> const&
+        data);
+
+template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, CorrelationReset::read_config_size_in_words> const& data);
+
+std::ostream& operator<<(std::ostream& os, CorrelationReset const&)
+{
+	os << "CorrelationReset()";
+	return os;
+}
+
+bool CorrelationReset::operator==(CorrelationReset const&) const
+{
+	return true;
+}
+
+bool CorrelationReset::operator!=(CorrelationReset const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void CorrelationReset::serialize(Archive&)
+{}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CorrelationReset)
+
 } // namespace haldls::vx

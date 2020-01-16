@@ -10,6 +10,9 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
+typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
+typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+
 TEST(SynapseQuad_Synapse, General)
 {
 	SynapseQuad::Synapse synapse;
@@ -166,4 +169,53 @@ TEST(SynapseQuad, CerealizeCoverage)
 		ia(obj2);
 	}
 	ASSERT_EQ(obj1, obj2);
+}
+
+TEST(CorrelationReset, General)
+{
+	CorrelationReset config;
+
+	CorrelationReset default_config;
+	ASSERT_EQ(config, default_config);
+	ASSERT_TRUE(config == default_config);
+	ASSERT_FALSE(config != default_config);
+}
+
+TEST(CorrelationReset, EncodeDecode)
+{
+	CorrelationReset config;
+
+	auto coord = CorrelationResetOnDLS(
+	    SynapseQuadOnSynram(SynapseQuadColumnOnDLS(3), SynapseRowOnSynram(31)), SynramOnDLS(1));
+
+	std::array<OmnibusChipOverJTAGAddress, CorrelationReset::write_config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0x03c907c0}};
+
+	{ // check if write addresses are correct
+		addresses_type write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	// Encode
+	words_type data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+	ASSERT_EQ(data[0].get(), 0x0);
+	ASSERT_EQ(data.size(), CorrelationReset::write_config_size_in_words);
+}
+
+TEST(CorrelationReset, CerealizeCoverage)
+{
+	CorrelationReset c1, c2;
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(c1);
+	}
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(c2);
+	}
+	ASSERT_EQ(c1, c2);
 }

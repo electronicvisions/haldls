@@ -618,6 +618,46 @@ private:
 	bias_selection_type m_int_output_bias;
 };
 
+
+/**
+ * Container to trigger reset of correlation measurements on a synapse quad.
+ */
+class GENPYBIND(visible) CorrelationReset
+{
+public:
+	typedef halco::hicann_dls::vx::CorrelationResetOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/** Default constructor */
+	CorrelationReset() SYMBOL_VISIBLE;
+
+	bool operator==(CorrelationReset const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CorrelationReset const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	template <typename AddressT>
+	std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename AddressT>
+	std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, CorrelationReset const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+};
+
 namespace detail {
 
 template <>
@@ -656,6 +696,14 @@ template <>
 struct BackendContainerTrait<SynapseBiasSelection>
     : public BackendContainerBase<
           SynapseBiasSelection,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct BackendContainerTrait<CorrelationReset>
+    : public BackendContainerBase<
+          CorrelationReset,
           fisch::vx::OmnibusChip,
           fisch::vx::OmnibusChipOverJTAG>
 {};
