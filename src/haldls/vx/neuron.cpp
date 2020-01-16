@@ -1,5 +1,6 @@
 #include <string>
 
+#include "haldls/vx/address_transformation.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
@@ -1514,6 +1515,97 @@ void NeuronReset::serialize(Archive&)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
+
+
+NeuronResetQuad::NeuronResetQuad() {}
+
+template <typename AddressT>
+std::array<AddressT, NeuronResetQuad::read_config_size_in_words> NeuronResetQuad::read_addresses(
+    NeuronResetQuad::coordinate_type const& /* neuron */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    NeuronResetQuad::read_config_size_in_words>
+NeuronResetQuad::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronResetQuad::read_config_size_in_words>
+    NeuronResetQuad::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename AddressT>
+std::array<AddressT, NeuronResetQuad::write_config_size_in_words> NeuronResetQuad::write_addresses(
+    NeuronResetQuad::coordinate_type const& neuron) const
+{
+	auto const base_address = correlation_reset_base_addresses.at(neuron.toSynramOnDLS());
+	int row_offset = halco::hicann_dls::vx::SynapseRowOnSynram::size *
+	                 halco::hicann_dls::vx::SynapseQuadColumnOnDLS::size;
+	int quad_offset = detail::to_synram_quad_address_offset(neuron.toSynapseQuadColumnOnDLS());
+	return {AddressT(base_address + row_offset + quad_offset)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    NeuronResetQuad::write_config_size_in_words>
+NeuronResetQuad::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronResetQuad::write_config_size_in_words>
+    NeuronResetQuad::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename WordT>
+std::array<WordT, NeuronResetQuad::write_config_size_in_words> NeuronResetQuad::encode() const
+{
+	// Value does not matter
+	return {WordT()};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronResetQuad::write_config_size_in_words>
+    NeuronResetQuad::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, NeuronResetQuad::write_config_size_in_words>
+    NeuronResetQuad::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void NeuronResetQuad::decode(std::array<WordT, NeuronResetQuad::read_config_size_in_words> const&)
+{}
+
+template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronResetQuad::read_config_size_in_words> const&
+        data);
+
+template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, NeuronResetQuad::read_config_size_in_words> const& data);
+
+std::ostream& operator<<(std::ostream& os, NeuronResetQuad const&)
+{
+	os << "NeuronResetQuad()";
+	return os;
+}
+
+bool NeuronResetQuad::operator==(NeuronResetQuad const&) const
+{
+	return true;
+}
+
+bool NeuronResetQuad::operator!=(NeuronResetQuad const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void NeuronResetQuad::serialize(Archive&)
+{}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronResetQuad)
 
 
 SpikeCounterRead::SpikeCounterRead() : m_count(), m_overflow(false) {}
