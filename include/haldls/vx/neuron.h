@@ -337,6 +337,12 @@ public:
 	GENPYBIND(setter_for(enable_spike_out))
 	void set_enable_spike_out(bool val) SYMBOL_VISIBLE;
 
+	/** Enable the fire output of a neuron.
+	 * If the threshold comparator creates a fire signal, all connected neurons
+	 * receive a fire input. Even if no neurons are connected, this setting
+	 * needs to be switched on in order to process the fire signal.
+	 * If this setting is disabled, spikes will not trigger post pulses in the synapses.
+	 */
 	GENPYBIND(getter_for(enable_neuron_master))
 	bool get_enable_neuron_master() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_neuron_master))
