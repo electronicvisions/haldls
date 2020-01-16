@@ -9,6 +9,7 @@ from waflib import Utils
 def depends(ctx):
     ctx('code-format')
     ctx('pyhid')
+    ctx('hmf-fpga', 'units/startup_top/software')
 
 
 def options(opt):
