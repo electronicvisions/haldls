@@ -87,7 +87,7 @@ TEST(BackgroundSpikeSource, EncodeDecode)
 
 	auto coord = typename BackgroundSpikeSource::coordinate_type(3);
 
-	std::array<OmnibusChipOverJTAGAddress, BackgroundSpikeSource::write_config_size_in_words>
+	std::array<OmnibusChipOverJTAGAddress, BackgroundSpikeSource::config_size_in_words>
 	    ref_addresses = {OmnibusChipOverJTAGAddress{0x130001 + coord.toEnum() * 3 + 1},
 	                     OmnibusChipOverJTAGAddress{0x130001 + coord.toEnum() * 3 + 2},
 	                     OmnibusChipOverJTAGAddress{0x130001 + coord.toEnum() * 3 + 0}};
@@ -104,6 +104,11 @@ TEST(BackgroundSpikeSource, EncodeDecode)
 	EXPECT_EQ(data[0].get(), 14ul);                              // seed
 	EXPECT_EQ(data[1].get(), 15ul | (13ul << 8) | (16ul << 16)); // rate, mask, neuron_label
 	EXPECT_EQ(data[2].get(), 1ul | (12ul << 16)); // period, enable, enable_random, written last
+
+	BackgroundSpikeSource copy;
+	ASSERT_NE(config, copy);
+	visit_preorder(copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, copy);
 }
 
 TEST(BackgroundSpikeSource, CerealizeCoverage)

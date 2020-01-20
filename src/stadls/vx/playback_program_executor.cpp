@@ -115,6 +115,17 @@ PlaybackProgramExecutor::~PlaybackProgramExecutor() = default;
 
 void PlaybackProgramExecutor::run(PlaybackProgram& program)
 {
+	if (program.get_executable_restriction()) {
+		if (((*(program.get_executable_restriction()) == ExecutorBackend::simulation) &&
+		     std::holds_alternative<fisch::vx::PlaybackProgramARQExecutor>(
+		         *(m_impl->m_fisch_executor))) ||
+		    ((*(program.get_executable_restriction()) == ExecutorBackend::hardware) &&
+		     std::holds_alternative<fisch::vx::PlaybackProgramSimExecutor>(
+		         *(m_impl->m_fisch_executor)))) {
+			throw std::runtime_error(
+			    "Trying to execute program with non-matching executable restriction.");
+		}
+	}
 	run(program.m_program_impl);
 }
 

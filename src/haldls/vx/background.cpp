@@ -109,30 +109,10 @@ std::ostream& operator<<(std::ostream& os, BackgroundSpikeSource const& config)
 }
 
 template <typename AddressT>
-std::array<AddressT, BackgroundSpikeSource::read_config_size_in_words>
-BackgroundSpikeSource::read_addresses(coordinate_type const& /* coord */) const
+std::array<AddressT, BackgroundSpikeSource::config_size_in_words> BackgroundSpikeSource::addresses(
+    coordinate_type const& coord) const
 {
-	return {};
-}
-
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    BackgroundSpikeSource::read_config_size_in_words>
-BackgroundSpikeSource::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
-
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    BackgroundSpikeSource::read_config_size_in_words>
-BackgroundSpikeSource::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
-
-template <typename AddressT>
-std::array<AddressT, BackgroundSpikeSource::write_config_size_in_words>
-BackgroundSpikeSource::write_addresses(coordinate_type const& coord) const
-{
-	uint32_t const base =
-	    background_spike_source_base_address + (coord * write_config_size_in_words);
+	uint32_t const base = background_spike_source_base_address + (coord * config_size_in_words);
 	// first word at end so that on enabling, all configuration is already present
 	// otherwise the seed is not applied FIXME: make issue
 	return {AddressT(base + 1), AddressT(base + 2), AddressT(base)};
@@ -140,15 +120,14 @@ BackgroundSpikeSource::write_addresses(coordinate_type const& coord) const
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    BackgroundSpikeSource::write_config_size_in_words>
-BackgroundSpikeSource::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    BackgroundSpikeSource::config_size_in_words>
+BackgroundSpikeSource::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord) const;
 
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    BackgroundSpikeSource::write_config_size_in_words>
-BackgroundSpikeSource::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, BackgroundSpikeSource::config_size_in_words>
+    BackgroundSpikeSource::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& coord) const;
 
 namespace {
 
@@ -156,7 +135,7 @@ struct BackgroundSpikeSourceBitfield
 {
 	union
 	{
-		std::array<uint32_t, BackgroundSpikeSource::write_config_size_in_words> raw;
+		std::array<uint32_t, BackgroundSpikeSource::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
 			uint32_t enable        :  1;
@@ -176,7 +155,7 @@ struct BackgroundSpikeSourceBitfield
 	BackgroundSpikeSourceBitfield() { u.raw = {0u, 0u, 0u}; }
 
 	BackgroundSpikeSourceBitfield(
-	    std::array<uint32_t, BackgroundSpikeSource::write_config_size_in_words> data)
+	    std::array<uint32_t, BackgroundSpikeSource::config_size_in_words> data)
 	{
 		u.raw = data;
 	}
@@ -185,8 +164,7 @@ struct BackgroundSpikeSourceBitfield
 } // namespace
 
 template <typename WordT>
-std::array<WordT, BackgroundSpikeSource::write_config_size_in_words> BackgroundSpikeSource::encode()
-    const
+std::array<WordT, BackgroundSpikeSource::config_size_in_words> BackgroundSpikeSource::encode() const
 {
 	BackgroundSpikeSourceBitfield bitfield;
 	bitfield.u.m.enable = m_enable;
@@ -203,26 +181,37 @@ std::array<WordT, BackgroundSpikeSource::write_config_size_in_words> BackgroundS
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, BackgroundSpikeSource::write_config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, BackgroundSpikeSource::config_size_in_words>
     BackgroundSpikeSource::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, BackgroundSpikeSource::write_config_size_in_words>
+    std::array<fisch::vx::OmnibusChip, BackgroundSpikeSource::config_size_in_words>
     BackgroundSpikeSource::encode<fisch::vx::OmnibusChip>() const;
 
 template <typename WordT>
 void BackgroundSpikeSource::decode(
-    std::array<WordT, BackgroundSpikeSource::read_config_size_in_words> const& /* data */)
-{}
+    std::array<WordT, BackgroundSpikeSource::config_size_in_words> const& data)
+{
+	BackgroundSpikeSourceBitfield bitfield;
+	bitfield.u.raw[0] = data.at(2).get();
+	bitfield.u.raw[1] = data.at(0).get();
+	bitfield.u.raw[2] = data.at(1).get();
+
+	m_enable = bitfield.u.m.enable;
+	m_enable_random = bitfield.u.m.enable_random;
+	m_period = Period(bitfield.u.m.period);
+	m_rate = Rate(bitfield.u.m.rate);
+	m_seed = Seed(bitfield.u.m.seed);
+	m_mask = Mask(bitfield.u.m.mask);
+	m_neuron_label = halco::hicann_dls::vx::NeuronLabel(bitfield.u.m.neuron_label);
+}
 
 template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<
-        fisch::vx::OmnibusChipOverJTAG,
-        BackgroundSpikeSource::read_config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChipOverJTAG, BackgroundSpikeSource::config_size_in_words> const&
+        data);
 
 template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, BackgroundSpikeSource::read_config_size_in_words> const&
-        data);
+    std::array<fisch::vx::OmnibusChip, BackgroundSpikeSource::config_size_in_words> const& data);
 
 template <class Archive>
 void BackgroundSpikeSource::serialize(Archive& ar)

@@ -10,6 +10,7 @@
 #include "haldls/vx/container.h"
 #include "hate/visibility.h"
 #include "lola/vx/container.h"
+#include "stadls/vx/executor_backend.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
 // needed for python wrapping
@@ -30,8 +31,12 @@ class PlaybackProgram;
 class GENPYBIND(visible) PlaybackProgramBuilder
 {
 public:
-	/** Default constructor. */
-	PlaybackProgramBuilder() SYMBOL_VISIBLE;
+	/**
+	 * Construct builder.
+	 * @param executable_restriction Restrict execution to given executor type.
+	 */
+	PlaybackProgramBuilder(std::optional<ExecutorBackend> executable_restriction = std::nullopt)
+	    SYMBOL_VISIBLE;
 
 	PlaybackProgramBuilder(PlaybackProgramBuilder&& other) SYMBOL_VISIBLE;
 	PlaybackProgramBuilder(PlaybackProgramBuilder const&) = delete;
@@ -166,6 +171,8 @@ private:
 	    std::index_sequence<SupportedBackendIndex...>) SYMBOL_VISIBLE;
 
 	std::unique_ptr<fisch::vx::PlaybackProgramBuilder> m_builder_impl;
+
+	std::optional<ExecutorBackend> m_executable_restriction;
 };
 
 } // namespace vx

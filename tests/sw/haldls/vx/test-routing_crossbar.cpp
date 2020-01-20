@@ -78,22 +78,27 @@ TEST(CrossbarOutputConfig, EncodeDecode)
 
 	std::array<
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-	    CrossbarOutputConfig::write_config_size_in_words>
+	    CrossbarOutputConfig::config_size_in_words>
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{crossbar_out_mux_base_address}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputConfig::write_config_size_in_words>
+	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputConfig::config_size_in_words>
 	    ref_data = {static_cast<fisch::vx::OmnibusData>(
 	        (1ul << 2) | (1ul << (7 + CrossbarL2OutputOnDLS::size)))};
 
 	{ // write addresses
-		addresses_type write_addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
-		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+		addresses_type addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{addresses});
+		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	CrossbarOutputConfig copy;
+	ASSERT_NE(config, copy);
+	visit_preorder(copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, copy);
 }
 
 TEST(CrossbarInputDropCounter, General)
@@ -125,15 +130,15 @@ TEST(CrossbarInputDropCounter, EncodeDecode)
 	    ref_data = {static_cast<fisch::vx::OmnibusData>(val)};
 
 	{ // write addresses
-		addresses_type write_addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
-		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+		addresses_type addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{addresses});
+		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	{ // read addresses
-		addresses_type read_addresses;
-		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
-		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+		addresses_type addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{addresses});
+		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	words_type data;
@@ -175,15 +180,15 @@ TEST(CrossbarOutputEventCounter, EncodeDecode)
 	    ref_data = {static_cast<fisch::vx::OmnibusData>(val)};
 
 	{ // write addresses
-		addresses_type write_addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
-		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+		addresses_type addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{addresses});
+		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	{ // read addresses
-		addresses_type read_addresses;
-		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
-		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+		addresses_type addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{addresses});
+		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	words_type data;
@@ -261,19 +266,24 @@ TEST(CrossbarNode, EncodeDecode)
 	CrossbarNodeOnDLS coord(CrossbarOutputOnDLS(4), CrossbarInputOnDLS(4));
 
 	std::array<
-	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CrossbarNode::write_config_size_in_words>
+	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CrossbarNode::config_size_in_words>
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{
 	        crossbar_node_base_address + coord.toEnum()}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::write_config_size_in_words> ref_data =
-	    {static_cast<fisch::vx::OmnibusData>(8ul | (9ul << 16) | (1ul << 31))};
+	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::config_size_in_words> ref_data = {
+	    static_cast<fisch::vx::OmnibusData>(8ul | (9ul << 16) | (1ul << 31))};
 
 	{ // write addresses
-		addresses_type write_addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
-		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+		addresses_type addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{addresses});
+		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	CrossbarNode copy;
+	ASSERT_NE(config, copy);
+	visit_preorder(copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, copy);
 }

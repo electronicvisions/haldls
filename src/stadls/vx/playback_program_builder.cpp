@@ -3,18 +3,24 @@
 #include <optional>
 #include "fisch/vx/playback_program_builder.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/is_readable.h"
 #include "stadls/visitors.h"
 #include "stadls/vx/playback_program.h"
 
 namespace stadls::vx {
 
-PlaybackProgramBuilder::PlaybackProgramBuilder() :
-    m_builder_impl(std::make_unique<fisch::vx::PlaybackProgramBuilder>())
+PlaybackProgramBuilder::PlaybackProgramBuilder(
+    std::optional<ExecutorBackend> const executable_restriction) :
+    m_builder_impl(std::make_unique<fisch::vx::PlaybackProgramBuilder>()),
+    m_executable_restriction(executable_restriction)
 {}
 
 PlaybackProgramBuilder::PlaybackProgramBuilder(PlaybackProgramBuilder&& other) :
-    m_builder_impl(std::move(other.m_builder_impl))
-{}
+    m_builder_impl(std::move(other.m_builder_impl)),
+    m_executable_restriction(other.m_executable_restriction)
+{
+	other.m_executable_restriction = std::nullopt;
+}
 
 PlaybackProgramBuilder::~PlaybackProgramBuilder() {}
 
@@ -149,6 +155,7 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
     size_t backend_index,
     std::index_sequence<SupportedBackendIndex...>)
 {
+	using namespace haldls::vx::detail;
 	std::array<
 	    PlaybackProgram::ContainerTicket<T> (*)(
 	        PlaybackProgramBuilder&, typename T::coordinate_type const&),
@@ -159,6 +166,26 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 		        SupportedBackendIndex,
 		        typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 		        backend_container_type;
+		    if constexpr (
+		        !is_hardware_readable<T, backend_container_type>() &&
+		        !is_simulation_readable<T, backend_container_type>()) {
+			    throw std::runtime_error("Container not readable.");
+		    }
+		    if (!builder.m_executable_restriction) {
+			    if constexpr (!is_simulation_readable<T, backend_container_type>()) {
+				    builder.m_executable_restriction = ExecutorBackend::hardware;
+			    } else if constexpr (!is_hardware_readable<T, backend_container_type>()) {
+				    builder.m_executable_restriction = ExecutorBackend::simulation;
+			    }
+		    } else {
+			    if ((!is_simulation_readable<T, backend_container_type>() &&
+			         (builder.m_executable_restriction == ExecutorBackend::simulation)) ||
+			        (!is_hardware_readable<T, backend_container_type>() &&
+			         (builder.m_executable_restriction == ExecutorBackend::hardware))) {
+				    throw std::runtime_error(
+				        "Container not readable for current executor backend restriction.");
+			    }
+		    }
 
 		    typedef std::vector<typename backend_container_type::coordinate_type> addresses_type;
 		    addresses_type read_addresses;
@@ -210,6 +237,13 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 void PlaybackProgramBuilder::merge_back(PlaybackProgramBuilder& other)
 {
 	m_builder_impl->merge_back(*(other.m_builder_impl));
+	if (other.m_executable_restriction) {
+		if (!m_executable_restriction) {
+			m_executable_restriction = other.m_executable_restriction;
+		} else if (m_executable_restriction != other.m_executable_restriction) {
+			throw std::runtime_error("executor restrictions don't match.");
+		}
+	}
 }
 
 void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder& other)
@@ -219,7 +253,7 @@ void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder& other
 
 PlaybackProgram PlaybackProgramBuilder::done()
 {
-	return PlaybackProgram(m_builder_impl->done());
+	return PlaybackProgram(m_builder_impl->done(), m_executable_restriction);
 }
 
 std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder)

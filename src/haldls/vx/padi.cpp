@@ -267,8 +267,8 @@ void CommonPADIBusConfig::set_dacen_pulse_extension(
 }
 
 template <typename AddressT>
-std::array<AddressT, CommonPADIBusConfig::write_config_size_in_words>
-CommonPADIBusConfig::write_addresses(CommonPADIBusConfig::coordinate_type const& coord) const
+std::array<AddressT, CommonPADIBusConfig::config_size_in_words> CommonPADIBusConfig::addresses(
+    CommonPADIBusConfig::coordinate_type const& coord) const
 {
 	auto const base_address = padi_base_addresses.at(coord);
 	return {AddressT(base_address + 1)};
@@ -276,38 +276,18 @@ CommonPADIBusConfig::write_addresses(CommonPADIBusConfig::coordinate_type const&
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CommonPADIBusConfig::write_config_size_in_words>
-CommonPADIBusConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    CommonPADIBusConfig::config_size_in_words>
+CommonPADIBusConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord) const;
 
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    CommonPADIBusConfig::write_config_size_in_words>
-CommonPADIBusConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
-
-
-template <typename AddressT>
-std::array<AddressT, CommonPADIBusConfig::read_config_size_in_words>
-CommonPADIBusConfig::read_addresses(coordinate_type const& /* coord */) const
-{
-	return {};
-}
-
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CommonPADIBusConfig::read_config_size_in_words>
-CommonPADIBusConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
-
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, CommonPADIBusConfig::read_config_size_in_words>
-    CommonPADIBusConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CommonPADIBusConfig::config_size_in_words>
+    CommonPADIBusConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
         coordinate_type const& coord) const;
 
+
 template <typename WordT>
-std::array<WordT, CommonPADIBusConfig::write_config_size_in_words> CommonPADIBusConfig::encode()
-    const
+std::array<WordT, CommonPADIBusConfig::config_size_in_words> CommonPADIBusConfig::encode() const
 {
 	CommonPADIBusConfigBitfield bitfield;
 
@@ -338,25 +318,50 @@ std::array<WordT, CommonPADIBusConfig::write_config_size_in_words> CommonPADIBus
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::write_config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words>
     CommonPADIBusConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CommonPADIBusConfig::write_config_size_in_words>
+    std::array<fisch::vx::OmnibusChip, CommonPADIBusConfig::config_size_in_words>
     CommonPADIBusConfig::encode<fisch::vx::OmnibusChip>() const;
 
 template <typename WordT>
 void CommonPADIBusConfig::decode(
-    std::array<WordT, CommonPADIBusConfig::read_config_size_in_words> const& /* data */)
-{}
+    std::array<WordT, CommonPADIBusConfig::config_size_in_words> const& data)
+{
+	CommonPADIBusConfigBitfield bitfield;
+	bitfield.u.raw = data.at(0).get();
+
+	m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(0)] = bitfield.u.m.enable_spl1_0;
+	m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(1)] = bitfield.u.m.enable_spl1_1;
+	m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(2)] = bitfield.u.m.enable_spl1_2;
+	m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)] = bitfield.u.m.enable_spl1_3;
+
+	m_enable_extended_timing[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(0)] =
+	    bitfield.u.m.enable_extended_timing_0;
+	m_enable_extended_timing[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(1)] =
+	    bitfield.u.m.enable_extended_timing_1;
+	m_enable_extended_timing[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(2)] =
+	    bitfield.u.m.enable_extended_timing_2;
+	m_enable_extended_timing[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)] =
+	    bitfield.u.m.enable_extended_timing_3;
+
+	m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(0)] =
+	    DacenPulseExtension(bitfield.u.m.dacen_pulse_extension_0);
+	m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(1)] =
+	    DacenPulseExtension(bitfield.u.m.dacen_pulse_extension_1);
+	m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(2)] =
+	    DacenPulseExtension(bitfield.u.m.dacen_pulse_extension_2);
+	m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)] =
+	    DacenPulseExtension(bitfield.u.m.dacen_pulse_extension_3);
+}
 
 template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<
-        fisch::vx::OmnibusChipOverJTAG,
-        CommonPADIBusConfig::read_config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words> const&
+        data);
 
 template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CommonPADIBusConfig::read_config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChip, CommonPADIBusConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CommonPADIBusConfig const& config)
 {

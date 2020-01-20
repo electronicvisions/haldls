@@ -6,6 +6,7 @@
 #include "fisch/vx/container_ticket.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"
+#include "hate/visibility.h"
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
@@ -138,4 +139,4 @@ struct to_ticket_variant<hate::type_list<BackendContainer...>>
 
 } // namespace detail
 
-} // namespace haldls::vx::detail
+} // namespace haldls::vx

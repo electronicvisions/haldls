@@ -216,11 +216,11 @@ TEST(CommonPADIBusConfig, EncodeDecode)
 
 	std::array<
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-	    CommonPADIBusConfig::write_config_size_in_words>
+	    CommonPADIBusConfig::config_size_in_words>
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{padi_base_addresses[coord] + 1}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::write_config_size_in_words>
-	    ref_data = {static_cast<fisch::vx::OmnibusData>(0b1010 | (0b0001 << 4) | (3 << 24))};
+	std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words> ref_data =
+	    {static_cast<fisch::vx::OmnibusData>(0b1010 | (0b0001 << 4) | (3 << 24))};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -231,6 +231,11 @@ TEST(CommonPADIBusConfig, EncodeDecode)
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	CommonPADIBusConfig copy;
+	ASSERT_NE(config, copy);
+	visit_preorder(copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, copy);
 }
 
 TEST(CommonSTPConfig, General)

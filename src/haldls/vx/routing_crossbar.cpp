@@ -57,42 +57,22 @@ std::ostream& operator<<(std::ostream& os, CrossbarOutputConfig const& config)
 }
 
 template <typename AddressT>
-std::array<AddressT, CrossbarOutputConfig::read_config_size_in_words>
-CrossbarOutputConfig::read_addresses(coordinate_type const& /* coord */) const
-{
-	return {};
-}
-
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CrossbarOutputConfig::read_config_size_in_words>
-CrossbarOutputConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
-
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    CrossbarOutputConfig::read_config_size_in_words>
-CrossbarOutputConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
-
-template <typename AddressT>
-std::array<AddressT, CrossbarOutputConfig::write_config_size_in_words>
-CrossbarOutputConfig::write_addresses(coordinate_type const& /* coord */) const
+std::array<AddressT, CrossbarOutputConfig::config_size_in_words> CrossbarOutputConfig::addresses(
+    coordinate_type const& /* coord */) const
 {
 	return {AddressT(crossbar_out_mux_base_address)};
 }
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CrossbarOutputConfig::write_config_size_in_words>
-CrossbarOutputConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    CrossbarOutputConfig::config_size_in_words>
+CrossbarOutputConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord) const;
 
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    CrossbarOutputConfig::write_config_size_in_words>
-CrossbarOutputConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarOutputConfig::config_size_in_words>
+    CrossbarOutputConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& coord) const;
 
 namespace {
 
@@ -119,8 +99,7 @@ struct CrossbarOutputConfigBitfield
 } // namespace
 
 template <typename WordT>
-std::array<WordT, CrossbarOutputConfig::write_config_size_in_words> CrossbarOutputConfig::encode()
-    const
+std::array<WordT, CrossbarOutputConfig::config_size_in_words> CrossbarOutputConfig::encode() const
 {
 	CrossbarOutputConfigBitfield bitfield;
 
@@ -140,26 +119,38 @@ std::array<WordT, CrossbarOutputConfig::write_config_size_in_words> CrossbarOutp
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputConfig::write_config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputConfig::config_size_in_words>
     CrossbarOutputConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CrossbarOutputConfig::write_config_size_in_words>
+    std::array<fisch::vx::OmnibusChip, CrossbarOutputConfig::config_size_in_words>
     CrossbarOutputConfig::encode<fisch::vx::OmnibusChip>() const;
 
 template <typename WordT>
 void CrossbarOutputConfig::decode(
-    std::array<WordT, CrossbarOutputConfig::read_config_size_in_words> const& /* data */)
-{}
+    std::array<WordT, CrossbarOutputConfig::config_size_in_words> const& data)
+{
+	CrossbarOutputConfigBitfield bitfield({data.at(0).get().value()});
+
+	hate::bitset<halco::hicann_dls::vx::CrossbarL2OutputOnDLS::size> enable_slow(
+	    bitfield.u.m.enable_slow);
+	for (auto l2out : halco::common::iter_all<halco::hicann_dls::vx::CrossbarL2OutputOnDLS>()) {
+		m_enable_slow[l2out] = enable_slow.test(l2out.toEnum());
+	}
+
+	hate::bitset<halco::hicann_dls::vx::CrossbarOutputOnDLS::size> enable_event_counter(
+	    bitfield.u.m.enable_event_counter);
+	for (auto out : halco::common::iter_all<halco::hicann_dls::vx::CrossbarOutputOnDLS>()) {
+		m_enable_event_counter[out] = enable_event_counter.test(out.toEnum());
+	}
+}
 
 template SYMBOL_VISIBLE void CrossbarOutputConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<
-        fisch::vx::OmnibusChipOverJTAG,
-        CrossbarOutputConfig::read_config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputConfig::config_size_in_words> const&
+        data);
 
 template SYMBOL_VISIBLE void CrossbarOutputConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CrossbarOutputConfig::read_config_size_in_words> const&
-        data);
+    std::array<fisch::vx::OmnibusChip, CrossbarOutputConfig::config_size_in_words> const& data);
 
 template <class Archive>
 void CrossbarOutputConfig::serialize(Archive& ar)
@@ -394,39 +385,20 @@ std::ostream& operator<<(std::ostream& os, CrossbarNode const& config)
 }
 
 template <typename AddressT>
-std::array<AddressT, CrossbarNode::read_config_size_in_words> CrossbarNode::read_addresses(
-    coordinate_type const& /* coord */) const
-{
-	return {};
-}
-
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CrossbarNode::read_config_size_in_words>
-CrossbarNode::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
-
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarNode::read_config_size_in_words>
-    CrossbarNode::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
-
-template <typename AddressT>
-std::array<AddressT, CrossbarNode::write_config_size_in_words> CrossbarNode::write_addresses(
+std::array<AddressT, CrossbarNode::config_size_in_words> CrossbarNode::addresses(
     coordinate_type const& coord) const
 {
 	return {AddressT(crossbar_node_base_address + coord.toEnum())};
 }
 
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CrossbarNode::write_config_size_in_words>
-CrossbarNode::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CrossbarNode::config_size_in_words>
+    CrossbarNode::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+        coordinate_type const& coord) const;
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarNode::write_config_size_in_words>
-    CrossbarNode::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarNode::config_size_in_words>
+    CrossbarNode::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
         coordinate_type const& coord) const;
 
 namespace {
@@ -456,7 +428,7 @@ struct CrossbarNodeBitfield
 } // namespace
 
 template <typename WordT>
-std::array<WordT, CrossbarNode::write_config_size_in_words> CrossbarNode::encode() const
+std::array<WordT, CrossbarNode::config_size_in_words> CrossbarNode::encode() const
 {
 	CrossbarNodeBitfield bitfield;
 	bitfield.u.m.mask = m_mask;
@@ -467,23 +439,26 @@ std::array<WordT, CrossbarNode::write_config_size_in_words> CrossbarNode::encode
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::write_config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::config_size_in_words>
     CrossbarNode::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CrossbarNode::write_config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CrossbarNode::config_size_in_words>
 CrossbarNode::encode<fisch::vx::OmnibusChip>() const;
 
 template <typename WordT>
-void CrossbarNode::decode(
-    std::array<WordT, CrossbarNode::read_config_size_in_words> const& /* data */)
-{}
+void CrossbarNode::decode(std::array<WordT, CrossbarNode::config_size_in_words> const& data)
+{
+	CrossbarNodeBitfield bitfield({data.at(0).get().value()});
+	m_mask = neuron_label_type(bitfield.u.m.mask);
+	m_target = neuron_label_type(bitfield.u.m.target);
+	m_enable_drop_counter = bitfield.u.m.enable_drop_counter;
+}
 
 template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::read_config_size_in_words> const&
-        data);
+    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::config_size_in_words> const& data);
 
 template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CrossbarNode::read_config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChip, CrossbarNode::config_size_in_words> const& data);
 
 template <class Archive>
 void CrossbarNode::serialize(Archive& ar)

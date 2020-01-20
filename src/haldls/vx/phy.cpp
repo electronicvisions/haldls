@@ -466,8 +466,13 @@ CommonPhyConfigFPGA::encode() const
 }
 
 void CommonPhyConfigFPGA::decode(
-    std::array<fisch::vx::OmnibusFPGA, CommonPhyConfigFPGA::config_size_in_words> const& /*data*/)
-{}
+    std::array<fisch::vx::OmnibusFPGA, CommonPhyConfigFPGA::config_size_in_words> const& data)
+{
+	hate::bitset<halco::hicann_dls::vx::PhyConfigFPGAOnDLS::size> enable_mask(data.at(0).get());
+	for (auto phy : halco::common::iter_all<halco::hicann_dls::vx::PhyConfigFPGAOnDLS>()) {
+		m_enable_phy[phy] = enable_mask.test(phy.toEnum());
+	}
+}
 
 template <typename Archive>
 void CommonPhyConfigFPGA::serialize(Archive& ar)

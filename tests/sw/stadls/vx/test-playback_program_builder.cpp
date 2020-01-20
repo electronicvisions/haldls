@@ -43,3 +43,30 @@ TEST(PlaybackProgramBuilder, NoDifferentialWriteAllowed)
 	PlaybackProgramBuilder builder;
 	EXPECT_THROW(builder.write(PADIEventOnDLS(), PADIEvent(), PADIEvent()), std::logic_error);
 }
+
+TEST(PlaybackProgramBuilder, ExecutableRestriction)
+{
+	PlaybackProgramBuilder builder;
+	auto const program_unrestricted = builder.done();
+	EXPECT_FALSE(program_unrestricted.get_executable_restriction());
+
+	builder.read(CrossbarNodeOnDLS());
+	auto const program_simulation_restricted = builder.done();
+	EXPECT_TRUE(program_simulation_restricted.get_executable_restriction());
+	EXPECT_EQ(
+	    *(program_simulation_restricted.get_executable_restriction()), ExecutorBackend::simulation);
+
+	{
+		PlaybackProgramBuilder builder(ExecutorBackend::hardware);
+		auto const program = builder.done();
+		EXPECT_TRUE(program.get_executable_restriction());
+		EXPECT_EQ(*(program.get_executable_restriction()), ExecutorBackend::hardware);
+	}
+
+	{
+		PlaybackProgramBuilder builder(ExecutorBackend::simulation);
+		auto const program = builder.done();
+		EXPECT_TRUE(program.get_executable_restriction());
+		EXPECT_EQ(*(program.get_executable_restriction()), ExecutorBackend::simulation);
+	}
+}

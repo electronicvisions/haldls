@@ -61,18 +61,14 @@ public:
 	bool operator==(CrossbarOutputConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CrossbarOutputConfig const& other) const SYMBOL_VISIBLE;
 
-	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
-	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
-	std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename AddressT>
-	std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
-	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
-	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
@@ -314,18 +310,14 @@ public:
 	bool operator==(CrossbarNode const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CrossbarNode const& other) const SYMBOL_VISIBLE;
 
-	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
-	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
-	std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename AddressT>
-	std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
-	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
-	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
