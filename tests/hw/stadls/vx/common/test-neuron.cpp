@@ -75,7 +75,7 @@ TEST(NeuronBackend, ResetCounterTest)
 	// So resetting all Neurons 512 times (Two times the size of the Counter)
 	// should enable the overflow bit. The value of the counter however
 	// should be the same as before, namely three.
-	for (size_t i = 0; i < SpikeCounterRead::size * 2; i++) {
+	for (size_t i = 0; i < SpikeCounterRead::Count::size * 2; i++) {
 		for (auto nrn_reset : iter_all<NeuronResetOnDLS>()) {
 			builder.write(nrn_reset, NeuronReset());
 		}
