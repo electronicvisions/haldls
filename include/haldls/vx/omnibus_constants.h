@@ -36,6 +36,10 @@ constexpr std::array<std::array<uint32_t, 2>, 2> synram_cadc_base_addresses{
      {synram_causal_cadc_bottom_base_address, synram_acausal_cadc_bottom_base_address}}};
 
 constexpr uint32_t cadc_buffer_enable_mask = 0x0020'0000;
+constexpr uint32_t correlation_config_offset = 0x0020'0000;
+constexpr std::array<uint32_t, 2> correlation_config_base_addresses = {
+    ppu_top_subtree_address + correlation_config_offset,
+    ppu_bottom_subtree_address + correlation_config_offset};
 
 constexpr uint32_t phy_on_chip_base_address{0x0004'0000};
 constexpr uint32_t pll_base_address{0x0008'0000};
