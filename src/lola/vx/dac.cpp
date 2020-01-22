@@ -8,7 +8,8 @@
 
 namespace lola::vx {
 
-DACChannelBlock::DACChannelBlock() : value() {}
+DACChannelBlock::DACChannelBlock() : value()
+{}
 
 bool DACChannelBlock::operator==(DACChannelBlock const& other) const
 {
@@ -64,10 +65,7 @@ DACChannelBlock const DACChannelBlock::default_ldo_2 = []() -> DACChannelBlock {
 
 DACControlBlock::DACControlBlock() : enable()
 {
-	enable.fill(false);
-	for (auto coord : halco::common::iter_all<halco::hicann_dls::vx::VDDOnBoard>()) {
-		enable[coord.toDACChannelOnBoard()] = true;
-	}
+	enable.fill(true);
 }
 
 bool DACControlBlock::operator==(DACControlBlock const& other) const
