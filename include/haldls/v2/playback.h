@@ -14,6 +14,8 @@
 #include "hate/type_list.h"
 #include "hate/visibility.h"
 
+#include <pybind11/pybind11.h>
+
 namespace stadls {
 namespace v2 {
 class LocalBoardControl;

@@ -115,15 +115,17 @@ def build(bld):
 
     bld.shlib(
         target = 'haldls_v2',
+        features = 'pyembed',
         source = bld.path.ant_glob('src/haldls/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
         use = ['dls_common', 'bitter', 'uni', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
         uselib = 'HALDLS_LIBRARIES',
     )
-    bld.shlib(
+    bld(
         target = 'haldls_vx',
         source = bld.path.ant_glob('src/haldls/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
+        features = 'cxx cxxshlib pyembed',
         use = ['dls_common', 'bitter', 'uni', 'halco_hicann_dls_vx_inc', 'halco_hicann_dls_vx', 'fisch_vx'],
         uselib = 'HALDLS_LIBRARIES',
     )
@@ -137,16 +139,17 @@ def build(bld):
         uselib = 'HALDLS_LIBRARIES',
     )
 
-    bld.shlib(
+    bld(
         target = 'stadls_vx',
         source = bld.path.ant_glob('src/stadls/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
+        features = 'cxx cxxshlib pyembed',
         use = ['dls_common', 'haldls_vx', 'lola_vx'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
     bld(
-        features = 'cxx cxxshlib',
+        features = 'cxx cxxshlib pyembed',
         target = 'lola_vx',
         source = bld.path.ant_glob('src/lola/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
