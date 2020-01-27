@@ -26,7 +26,7 @@ using namespace stadls::vx;
 		for (size_t i = 0; i < num_spikes; ++i) {                                                  \
 			auto label = draw_non_default_value<SpikeLabel>(SpikeLabel(0));                        \
 			SpikePack##Num##ToChip::labels_type labels;                                            \
-			labels.fill(fisch::vx::SpikeLabel(label));                                             \
+			labels.fill(SpikeLabel(label));                                                        \
 			SpikePack##Num##ToChip spike(labels);                                                  \
 			builder.write(SpikePack##Num##ToChipOnDLS(), spike);                                   \
 			builder.write(TimerOnDLS(), Timer());                                                  \

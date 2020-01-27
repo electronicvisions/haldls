@@ -1,6 +1,7 @@
 #include "haldls/vx/event.h"
-
+#include <cereal/types/array.hpp>
 #include "halco/common/cerealization_geometry.h"
+#include "hate/join.h"
 #include "haldls/cerealization.h"
 
 namespace haldls::vx {
@@ -67,13 +68,10 @@ void SpikeLabel::set_synapse_address(SynapseQuad::Synapse::Address const value)
                                                                                                    \
 	typename SpikePack##Num##ToChip::labels_type SpikePack##Num##ToChip::get_labels() const        \
 	{                                                                                              \
-		return m_impl.get_labels();                                                                \
+		return m_impl;                                                                             \
 	}                                                                                              \
                                                                                                    \
-	void SpikePack##Num##ToChip::set_labels(labels_type const& value)                              \
-	{                                                                                              \
-		m_impl.set_labels(value);                                                                  \
-	}                                                                                              \
+	void SpikePack##Num##ToChip::set_labels(labels_type const& value) { m_impl = value; }          \
                                                                                                    \
 	bool SpikePack##Num##ToChip::operator==(SpikePack##Num##ToChip const& other) const             \
 	{                                                                                              \
@@ -87,7 +85,8 @@ void SpikeLabel::set_synapse_address(SynapseQuad::Synapse::Address const value)
                                                                                                    \
 	std::ostream& operator<<(std::ostream& os, SpikePack##Num##ToChip const& spike_pack)           \
 	{                                                                                              \
-		os << spike_pack.m_impl;                                                                   \
+		os << "SpikePack" << #Num << "ToChip(" << hate::join_string(spike_pack.m_impl, ", ")       \
+		   << ")";                                                                                 \
 		return os;                                                                                 \
 	}                                                                                              \
                                                                                                    \
@@ -102,13 +101,21 @@ void SpikeLabel::set_synapse_address(SynapseQuad::Synapse::Address const value)
 	std::array<fisch::vx::SpikePack##Num##ToChip, SpikePack##Num##ToChip::config_size_in_words>    \
 	    SpikePack##Num##ToChip::encode() const                                                     \
 	{                                                                                              \
-		return {m_impl};                                                                           \
+		fisch::vx::SpikePack##Num##ToChip::labels_type ret;                                        \
+		std::transform(                                                                            \
+		    std::begin(m_impl), std::end(m_impl), std::begin(ret),                                 \
+		    [](SpikeLabel const& sl) { return fisch::vx::SpikeLabel{sl}; });                       \
+		return {fisch::vx::SpikePack##Num##ToChip{ret}};                                           \
 	}                                                                                              \
                                                                                                    \
 	void SpikePack##Num##ToChip::decode(                                                           \
 	    std::array<fisch::vx::SpikePack##Num##ToChip, config_size_in_words> const& data)           \
 	{                                                                                              \
-		m_impl = data[0];                                                                          \
+		fisch::vx::SpikePack##Num##ToChip tmp = data[0];                                           \
+		auto const& labels = tmp.get_labels();                                                     \
+		std::transform(                                                                            \
+		    std::begin(labels), std::end(labels), std::begin(m_impl),                              \
+		    [](fisch::vx::SpikeLabel const& sl) { return SpikeLabel{sl}; });                       \
 	}                                                                                              \
                                                                                                    \
 	template <typename Archive>                                                                    \

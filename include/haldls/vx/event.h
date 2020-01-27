@@ -1,11 +1,13 @@
 #pragma once
+
 #include "fisch/vx/event.h"
 #include "halco/hicann-dls/vx/event.h"
+#include "hate/visibility.h"
+
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
-#include "hate/visibility.h"
 
 namespace cereal {
 class access;
@@ -68,7 +70,7 @@ typedef fisch::vx::MADCSampleFromChipEvent MADCSampleFromChipEvent GENPYBIND(opa
 		typedef halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS coordinate_type;                \
 		typedef std::true_type is_leaf_node;                                                       \
                                                                                                    \
-		typedef typename fisch::vx::SpikePack##Num##ToChip::labels_type labels_type;               \
+		typedef std::array<SpikeLabel, Num> labels_type;                                           \
                                                                                                    \
 		/** Default constructor. */                                                                \
 		SpikePack##Num##ToChip() SYMBOL_VISIBLE;                                                   \
@@ -77,7 +79,7 @@ typedef fisch::vx::MADCSampleFromChipEvent MADCSampleFromChipEvent GENPYBIND(opa
 		 * Construct spike pack with labels.                                                       \
 		 * @param labels Array of SpikeLabel values to use                                         \
 		 */                                                                                        \
-		SpikePack##Num##ToChip(labels_type const& labels) SYMBOL_VISIBLE;                          \
+		explicit SpikePack##Num##ToChip(labels_type const& labels) SYMBOL_VISIBLE;                 \
                                                                                                    \
 		/**                                                                                        \
 		 * Get spike labels.                                                                       \
@@ -113,7 +115,7 @@ typedef fisch::vx::MADCSampleFromChipEvent MADCSampleFromChipEvent GENPYBIND(opa
 		template <class Archive>                                                                   \
 		void serialize(Archive& ar) SYMBOL_VISIBLE;                                                \
                                                                                                    \
-		fisch::vx::SpikePack##Num##ToChip m_impl;                                                  \
+		labels_type m_impl;                                                                        \
 	};                                                                                             \
                                                                                                    \
 	namespace detail {                                                                             \
