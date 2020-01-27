@@ -13,7 +13,7 @@ import pyhid
 import pyhid_cube
 
 
-# c.f. https://brainscales-r.kip.uni-heidelberg.de/projects/symap2ic/wiki/hx-cube-setup-inventory#CUBE-IO-Boards-v-2018  # noqa
+# c.f. https://brainscales-r.kip.uni-heidelberg.de/projects/symap2ic/wiki/hx-cube-setup-inventory#CUBE-IO-Boards-v-2018  # pylint: disable=line-too-long
 LICENSE_SERIAL_LUT = {
     "cubex0": "AFE25B4712002000",
     "cubex2": "AFE25B4713002000",
