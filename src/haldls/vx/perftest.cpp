@@ -32,7 +32,7 @@ bool PerfTest::operator!=(PerfTest const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(PerfTest)
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PerfTest::config_size_in_words>
-PerfTest::addresses(coordinate_type const& /*coord*/) const
+PerfTest::addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusFPGAAddress(perftest_omnibus_mask)};
 }
@@ -115,7 +115,7 @@ bool PerfTestStatus::operator!=(PerfTestStatus const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(PerfTestStatus)
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PerfTestStatus::read_config_size_in_words>
-PerfTestStatus::read_addresses(coordinate_type const& /*coord*/) const
+PerfTestStatus::read_addresses(coordinate_type const& /*coord*/)
 {
 	auto base = perftest_omnibus_mask;
 	return {halco::hicann_dls::vx::OmnibusFPGAAddress(base + 1),
@@ -125,7 +125,7 @@ PerfTestStatus::read_addresses(coordinate_type const& /*coord*/) const
 }
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PerfTestStatus::write_config_size_in_words>
-PerfTestStatus::write_addresses(coordinate_type const& /*coord*/) const
+PerfTestStatus::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
 }

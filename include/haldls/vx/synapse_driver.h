@@ -207,8 +207,8 @@ public:
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 3;
 	template <typename AddressT>
-	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& synapse_driver) const
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, config_size_in_words> addresses(
+	    coordinate_type const& synapse_driver) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>

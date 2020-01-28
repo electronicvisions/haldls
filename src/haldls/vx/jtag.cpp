@@ -24,7 +24,7 @@ bool JTAGClockScaler::operator!=(JTAGClockScaler const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(JTAGClockScaler)
 
 std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, JTAGClockScaler::config_size_in_words>
-JTAGClockScaler::addresses(coordinate_type const& coord) const
+JTAGClockScaler::addresses(coordinate_type const& coord)
 {
 	return {coord};
 }
@@ -63,7 +63,7 @@ bool ResetJTAGTap::operator!=(ResetJTAGTap const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(ResetJTAGTap)
 
 std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, ResetJTAGTap::config_size_in_words>
-ResetJTAGTap::addresses(coordinate_type const& coord) const
+ResetJTAGTap::addresses(coordinate_type const& coord)
 {
 	return {coord};
 }
@@ -106,13 +106,13 @@ bool JTAGIdCode::operator!=(JTAGIdCode const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(JTAGIdCode)
 
 std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, JTAGIdCode::read_config_size_in_words>
-JTAGIdCode::read_addresses(coordinate_type const& coord) const
+JTAGIdCode::read_addresses(coordinate_type const& coord)
 {
 	return {coord};
 }
 
 std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, JTAGIdCode::write_config_size_in_words>
-JTAGIdCode::write_addresses(coordinate_type const& /* coord */) const
+JTAGIdCode::write_addresses(coordinate_type const& /* coord */)
 {
 	return {};
 }

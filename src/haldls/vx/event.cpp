@@ -93,7 +93,7 @@ void SpikeLabel::set_synapse_address(SynapseQuad::Synapse::Address const value)
 	std::array<                                                                                    \
 	    halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS,                                        \
 	    SpikePack##Num##ToChip::config_size_in_words>                                              \
-	    SpikePack##Num##ToChip::addresses(coordinate_type const& coord) const                      \
+	    SpikePack##Num##ToChip::addresses(coordinate_type const& coord)                            \
 	{                                                                                              \
 		return {coord};                                                                            \
 	}                                                                                              \

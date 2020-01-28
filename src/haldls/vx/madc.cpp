@@ -95,7 +95,7 @@ void MADCControl::set_wake_up(bool const value)
 
 template <typename AddressT>
 std::array<AddressT, MADCControl::write_config_size_in_words> MADCControl::write_addresses(
-    coordinate_type const& /* coord */) const
+    coordinate_type const& /* coord */)
 {
 	return {AddressT(madc_base_address)};
 }
@@ -104,17 +104,17 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     MADCControl::write_config_size_in_words>
 MADCControl::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, MADCControl::write_config_size_in_words>
     MADCControl::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 
 template <typename AddressT>
 std::array<AddressT, MADCControl::read_config_size_in_words> MADCControl::read_addresses(
-    coordinate_type const& /* coord */) const
+    coordinate_type const& /* coord */)
 {
 	return {};
 }
@@ -122,12 +122,12 @@ std::array<AddressT, MADCControl::read_config_size_in_words> MADCControl::read_a
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, MADCControl::read_config_size_in_words>
     MADCControl::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, MADCControl::read_config_size_in_words>
     MADCControl::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 namespace {
 

@@ -226,7 +226,7 @@ void SynapseDriverConfig::set_enable_recovery(bool const value)
 
 template <typename AddressT>
 std::array<AddressT, SynapseDriverConfig::config_size_in_words> SynapseDriverConfig::addresses(
-    SynapseDriverConfig::coordinate_type const& synapse_driver) const
+    SynapseDriverConfig::coordinate_type const& synapse_driver)
 {
 	assert(synapse_driver.toSynapseDriverBlockOnDLS() < synapse_driver_sram_base_addresses.size());
 	auto const base_address = synapse_driver_sram_base_addresses.at(synapse_driver.toSynapseDriverBlockOnDLS());
@@ -240,15 +240,16 @@ std::array<AddressT, SynapseDriverConfig::config_size_in_words> SynapseDriverCon
 	return data;
 }
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, SynapseDriverConfig::config_size_in_words>
-    SynapseDriverConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SynapseDriverConfig::config_size_in_words>
+SynapseDriverConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseDriverConfig::config_size_in_words>
     SynapseDriverConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 
 SynapseDriverConfig::SynapseDriverConfigBitfield SynapseDriverConfig::to_bitfield() const

@@ -110,7 +110,7 @@ std::ostream& operator<<(std::ostream& os, BackgroundSpikeSource const& config)
 
 template <typename AddressT>
 std::array<AddressT, BackgroundSpikeSource::config_size_in_words> BackgroundSpikeSource::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	uint32_t const base = background_spike_source_base_address + (coord * config_size_in_words);
 	// first word at end so that on enabling, all configuration is already present
@@ -122,12 +122,12 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     BackgroundSpikeSource::config_size_in_words>
 BackgroundSpikeSource::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, BackgroundSpikeSource::config_size_in_words>
     BackgroundSpikeSource::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 namespace {
 

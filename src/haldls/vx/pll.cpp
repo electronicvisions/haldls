@@ -299,16 +299,16 @@ struct ADPLLUpperBitfield
 } // namespace
 
 template <>
-std::array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, ADPLL::config_size_in_words> ADPLL::addresses(
-    coordinate_type const& coord) const
+std::array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, ADPLL::config_size_in_words>
+ADPLL::addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::JTAGPLLRegisterOnDLS(0 + coord.toEnum() * 2),
 	        halco::hicann_dls::vx::JTAGPLLRegisterOnDLS(1 + coord.toEnum() * 2)};
 }
 
 template <>
-std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ADPLL::config_size_in_words> ADPLL::addresses(
-    coordinate_type const& coord) const
+std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ADPLL::config_size_in_words>
+ADPLL::addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 0 + coord.toEnum() * 2),
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 1 + coord.toEnum() * 2)};
@@ -316,11 +316,11 @@ std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ADPLL::config_size
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, ADPLL::config_size_in_words>
-    ADPLL::addresses(coordinate_type const& coord) const;
+    ADPLL::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ADPLL::config_size_in_words>
-    ADPLL::addresses(coordinate_type const& coord) const;
+    ADPLL::addresses(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, ADPLL::config_size_in_words> ADPLL::encode() const
@@ -590,25 +590,29 @@ struct PLLClockOutputBlockBitfield
 
 template <>
 std::array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, PLLClockOutputBlock::config_size_in_words>
-PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/) const
+PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::JTAGPLLRegisterOnDLS(4)};
 }
 
 template <>
-std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLClockOutputBlock::config_size_in_words>
-PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/) const
+std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    PLLClockOutputBlock::config_size_in_words>
+PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 4)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, PLLClockOutputBlock::config_size_in_words>
-    PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/) const;
+template SYMBOL_VISIBLE std::array<
+	halco::hicann_dls::vx::JTAGPLLRegisterOnDLS,
+	PLLClockOutputBlock::config_size_in_words>
+PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/);
 
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLClockOutputBlock::config_size_in_words>
-    PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/) const;
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    PLLClockOutputBlock::config_size_in_words>
+PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/);
 
 template <typename WordT>
 std::array<WordT, PLLClockOutputBlock::config_size_in_words> PLLClockOutputBlock::encode() const
@@ -836,25 +840,25 @@ struct PLLSelfTestBitfield
 
 template <>
 std::array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, PLLSelfTest::config_size_in_words>
-PLLSelfTest::addresses(coordinate_type const& /*coord*/) const
+PLLSelfTest::addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::JTAGPLLRegisterOnDLS(5)};
 }
 
 template <>
 std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTest::config_size_in_words>
-PLLSelfTest::addresses(coordinate_type const& /*coord*/) const
+PLLSelfTest::addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 5)};
 }
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTest::config_size_in_words>
-    PLLSelfTest::addresses(coordinate_type const& coord) const;
+    PLLSelfTest::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, PLLSelfTest::config_size_in_words>
-    PLLSelfTest::addresses(coordinate_type const& coord) const;
+    PLLSelfTest::addresses(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, PLLSelfTest::config_size_in_words> PLLSelfTest::encode() const
@@ -973,7 +977,7 @@ template <>
 std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     PLLSelfTestStatus::read_config_size_in_words>
-PLLSelfTestStatus::read_addresses(coordinate_type const& /*coord*/) const
+PLLSelfTestStatus::read_addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 7)};
 }
@@ -981,13 +985,13 @@ PLLSelfTestStatus::read_addresses(coordinate_type const& /*coord*/) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     PLLSelfTestStatus::read_config_size_in_words>
-PLLSelfTestStatus::read_addresses(coordinate_type const& coord) const;
+PLLSelfTestStatus::read_addresses(coordinate_type const& coord);
 
 template <>
 std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     PLLSelfTestStatus::write_config_size_in_words>
-PLLSelfTestStatus::write_addresses(coordinate_type const& /*coord*/) const
+PLLSelfTestStatus::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
 }
@@ -995,7 +999,7 @@ PLLSelfTestStatus::write_addresses(coordinate_type const& /*coord*/) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     PLLSelfTestStatus::write_config_size_in_words>
-PLLSelfTestStatus::write_addresses(coordinate_type const& coord) const;
+PLLSelfTestStatus::write_addresses(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, PLLSelfTestStatus::write_config_size_in_words> PLLSelfTestStatus::encode() const

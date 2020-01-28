@@ -103,8 +103,9 @@ typedef fisch::vx::MADCSampleFromChipEvent MADCSampleFromChipEvent GENPYBIND(opa
 		    SYMBOL_VISIBLE;                                                                        \
                                                                                                    \
 		constexpr static size_t GENPYBIND(hidden) config_size_in_words = 1;                        \
-		std::array<halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS, config_size_in_words>       \
-		addresses(coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);             \
+		static std::array<                                                                         \
+			halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS, config_size_in_words>              \
+		addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);                   \
 		std::array<fisch::vx::SpikePack##Num##ToChip, config_size_in_words> encode() const         \
 		    SYMBOL_VISIBLE GENPYBIND(hidden);                                                      \
 		void decode(std::array<fisch::vx::SpikePack##Num##ToChip, config_size_in_words> const&     \

@@ -89,7 +89,7 @@ public:
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
-	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& cell) const
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& cell)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
@@ -374,7 +374,7 @@ public:
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 10;
 	template <typename AddressT>
-	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord) const
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord)
 	    GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
@@ -522,7 +522,7 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 3;
 
 	template <typename AddressT>
-	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord) const
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	template <typename WordT>

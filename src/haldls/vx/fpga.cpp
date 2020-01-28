@@ -40,14 +40,14 @@ std::ostream& operator<<(std::ostream& os, FPGADeviceDNA const& config)
 }
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, FPGADeviceDNA::read_config_size_in_words>
-FPGADeviceDNA::read_addresses(coordinate_type const& /*coord*/) const
+FPGADeviceDNA::read_addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusFPGAAddress(fpga_device_dna_base_address),
 	        halco::hicann_dls::vx::OmnibusFPGAAddress(fpga_device_dna_base_address + 1)};
 }
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, FPGADeviceDNA::write_config_size_in_words>
-FPGADeviceDNA::write_addresses(coordinate_type const& /*coord*/) const
+FPGADeviceDNA::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
 }

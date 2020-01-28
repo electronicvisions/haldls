@@ -349,7 +349,7 @@ bool PhyConfigFPGA::operator!=(PhyConfigFPGA const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(PhyConfigFPGA)
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyConfigFPGA::config_size_in_words>
-PhyConfigFPGA::addresses(coordinate_type const& coord) const
+PhyConfigFPGA::addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::OmnibusFPGAAddress(phy_omnibus_mask + coord.toEnum())};
 }
@@ -394,7 +394,7 @@ bool PhyConfigChip::operator!=(PhyConfigChip const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(PhyConfigChip)
 
 std::array<halco::hicann_dls::vx::JTAGPhyRegisterOnDLS, PhyConfigChip::config_size_in_words>
-PhyConfigChip::addresses(coordinate_type const& coord) const
+PhyConfigChip::addresses(coordinate_type const& coord)
 {
 	return {coord.toJTAGPhyRegisterOnDLS()};
 }
@@ -448,7 +448,7 @@ bool CommonPhyConfigFPGA::operator!=(CommonPhyConfigFPGA const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(CommonPhyConfigFPGA)
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, CommonPhyConfigFPGA::config_size_in_words>
-CommonPhyConfigFPGA::addresses(coordinate_type const& /*coord*/) const
+CommonPhyConfigFPGA::addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusFPGAAddress(ut_omnibus_mask)};
 }
@@ -515,7 +515,7 @@ HALDLS_VX_DEFAULT_OSTREAM_OP(CommonPhyConfigChip)
 std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CommonPhyConfigChip::config_size_in_words>
-CommonPhyConfigChip::addresses(coordinate_type const& /*coord*/) const
+CommonPhyConfigChip::addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(phy_on_chip_base_address)};
 }
@@ -628,7 +628,7 @@ std::ostream& operator<<(std::ostream& os, PhyStatus const& config)
 }
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyStatus::read_config_size_in_words>
-PhyStatus::read_addresses(coordinate_type const& coord) const
+PhyStatus::read_addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::OmnibusFPGAAddress(ut_omnibus_mask + 4 + coord.value()),
 	        halco::hicann_dls::vx::OmnibusFPGAAddress(
@@ -640,7 +640,7 @@ PhyStatus::read_addresses(coordinate_type const& coord) const
 }
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyStatus::write_config_size_in_words>
-PhyStatus::write_addresses(coordinate_type const& /*coord*/) const
+PhyStatus::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
 }

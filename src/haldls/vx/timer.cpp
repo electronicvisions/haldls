@@ -28,7 +28,7 @@ bool Timer::operator!=(Timer const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(Timer)
 
 std::array<halco::hicann_dls::vx::TimerOnDLS, Timer::config_size_in_words> Timer::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	return {coord};
 }

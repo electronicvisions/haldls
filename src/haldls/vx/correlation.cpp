@@ -123,7 +123,7 @@ HALDLS_VX_DEFAULT_OSTREAM_OP(CommonCorrelationConfig)
 
 template <typename AddressT>
 std::array<AddressT, CommonCorrelationConfig::config_size_in_words>
-CommonCorrelationConfig::addresses(coordinate_type const& coord) const
+CommonCorrelationConfig::addresses(coordinate_type const& coord)
 {
 	return {AddressT(correlation_config_base_addresses.at(coord.toEnum())),
 	        AddressT(correlation_config_base_addresses.at(coord.toEnum()) + 1),
@@ -134,10 +134,10 @@ CommonCorrelationConfig::addresses(coordinate_type const& coord) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CommonCorrelationConfig::config_size_in_words>
-CommonCorrelationConfig::addresses(coordinate_type const& coord) const;
+CommonCorrelationConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, CommonCorrelationConfig::config_size_in_words>
-    CommonCorrelationConfig::addresses(coordinate_type const& coord) const;
+    CommonCorrelationConfig::addresses(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, CommonCorrelationConfig::config_size_in_words> CommonCorrelationConfig::encode()

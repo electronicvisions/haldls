@@ -101,17 +101,17 @@ HALDLS_VX_DEFAULT_OSTREAM_OP(CADCConfig)
 
 template <typename AddressT>
 std::array<AddressT, CADCConfig::config_size_in_words> CADCConfig::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	return {AddressT(cadc_busreg_addresses.at(coord.toEnum()))};
 }
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CADCConfig::config_size_in_words>
-    CADCConfig::addresses(coordinate_type const& coord) const;
+    CADCConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCConfig::config_size_in_words>
-    CADCConfig::addresses(coordinate_type const& coord) const;
+    CADCConfig::addresses(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, CADCConfig::config_size_in_words> CADCConfig::encode() const
@@ -201,7 +201,7 @@ HALDLS_VX_DEFAULT_OSTREAM_OP(CADCChannelConfig)
 
 template <typename AddressT>
 std::array<AddressT, CADCChannelConfig::config_size_in_words> CADCChannelConfig::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	bool const is_east = coord.toCADCChannelColumnOnSynram() >=
 	                     (halco::hicann_dls::vx::CADCChannelColumnOnSynram::size / 2);
@@ -216,10 +216,10 @@ std::array<AddressT, CADCChannelConfig::config_size_in_words> CADCChannelConfig:
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CADCChannelConfig::config_size_in_words>
-CADCChannelConfig::addresses(coordinate_type const& coord) const;
+CADCChannelConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCChannelConfig::config_size_in_words>
-    CADCChannelConfig::addresses(coordinate_type const& coord) const;
+    CADCChannelConfig::addresses(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, CADCChannelConfig::config_size_in_words> CADCChannelConfig::encode() const
@@ -314,7 +314,7 @@ std::ostream& operator<<(std::ostream& os, CADCSampleQuad const& config)
 }
 
 std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCSampleQuad::read_config_size_in_words>
-CADCSampleQuad::read_addresses(coordinate_type const& coord) const
+CADCSampleQuad::read_addresses(coordinate_type const& coord)
 {
 	uint32_t const base = synram_cadc_base_addresses.at(coord.toSynramOnDLS().toEnum())
 	                          .at(coord.toCADCChannelType().toEnum()) |
@@ -328,7 +328,7 @@ CADCSampleQuad::read_addresses(coordinate_type const& coord) const
 }
 
 std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCSampleQuad::write_config_size_in_words>
-CADCSampleQuad::write_addresses(coordinate_type const& /* coord */) const
+CADCSampleQuad::write_addresses(coordinate_type const& /* coord */)
 {
 	return {};
 }

@@ -50,7 +50,7 @@ void HicannARQStatus::set_tx_count(TxCount const value)
 }
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, HicannARQStatus::read_config_size_in_words>
-HicannARQStatus::read_addresses(HicannARQStatus::coordinate_type const& /*coord*/) const
+HicannARQStatus::read_addresses(HicannARQStatus::coordinate_type const& /*coord*/)
 {
 	std::array<
 	    halco::hicann_dls::vx::OmnibusFPGAAddress, HicannARQStatus::read_config_size_in_words>
@@ -64,7 +64,7 @@ HicannARQStatus::read_addresses(HicannARQStatus::coordinate_type const& /*coord*
 }
 
 std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, HicannARQStatus::write_config_size_in_words>
-HicannARQStatus::write_addresses(HicannARQStatus::coordinate_type const& /*coord*/) const
+HicannARQStatus::write_addresses(HicannARQStatus::coordinate_type const& /*coord*/)
 {
 	return {};
 }

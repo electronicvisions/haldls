@@ -159,7 +159,7 @@ public:
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	template <typename AddressT>
-	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron) const
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
@@ -363,7 +363,7 @@ public:
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 4;
 	template <typename AddressT>
-	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron) const
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
@@ -642,7 +642,7 @@ public:
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 6;
 	template <typename AddressT>
-	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron) const
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
@@ -740,11 +740,11 @@ public:
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
 	template <typename AddressT>
-	std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename AddressT>
-	std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
@@ -793,11 +793,11 @@ public:
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
 	template <typename AddressT>
-	std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename AddressT>
-	std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
@@ -847,11 +847,11 @@ public:
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
 	template <typename AddressT>
-	std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& block) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& block) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename AddressT>
-	std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& block) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& block) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
@@ -924,11 +924,11 @@ public:
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
-	std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename AddressT>
-	std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
@@ -979,11 +979,11 @@ public:
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
 	template <typename AddressT>
-	std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename AddressT>
-	std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& neuron) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
 	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>

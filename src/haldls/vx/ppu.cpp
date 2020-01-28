@@ -57,7 +57,7 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
 
 template <typename AddressT>
 std::array<AddressT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	uint32_t tmp = coord.toPPUMemoryWordOnPPU().value();
 	if (coord.toPPUOnDLS() == halco::hicann_dls::vx::PPUOnDLS::top) {
@@ -71,12 +71,12 @@ std::array<AddressT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::address
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PPUMemoryWord::config_size_in_words>
     PPUMemoryWord::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, PPUMemoryWord::config_size_in_words>
     PPUMemoryWord::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
@@ -499,7 +499,7 @@ struct PPUControlRegisterBitfield
 
 template <typename AddressT>
 std::array<AddressT, PPUControlRegister::config_size_in_words> PPUControlRegister::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	uint32_t tmp;
 	if (coord.toPPUOnDLS().value() == 0) {
@@ -515,12 +515,12 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     PPUControlRegister::config_size_in_words>
 PPUControlRegister::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, PPUControlRegister::config_size_in_words>
     PPUControlRegister::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, PPUControlRegister::config_size_in_words> PPUControlRegister::encode() const
@@ -588,7 +588,7 @@ bool PPUStatusRegister::operator!=(PPUStatusRegister const& other) const
 
 template <typename AddressT>
 std::array<AddressT, PPUStatusRegister::read_config_size_in_words>
-PPUStatusRegister::read_addresses(coordinate_type const& coord) const
+PPUStatusRegister::read_addresses(coordinate_type const& coord)
 {
 	uint32_t tmp;
 	if (coord.toPPUOnDLS().value() == 0) {
@@ -604,16 +604,16 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     PPUStatusRegister::read_config_size_in_words>
 PPUStatusRegister::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, PPUStatusRegister::read_config_size_in_words>
     PPUStatusRegister::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template <typename AddressT>
 std::array<AddressT, PPUStatusRegister::write_config_size_in_words>
-PPUStatusRegister::write_addresses(coordinate_type const& /* coord */) const
+PPUStatusRegister::write_addresses(coordinate_type const& /* coord */)
 {
 	return {};
 }
@@ -622,12 +622,12 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     PPUStatusRegister::write_config_size_in_words>
 PPUStatusRegister::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, PPUStatusRegister::write_config_size_in_words>
     PPUStatusRegister::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, PPUStatusRegister::write_config_size_in_words> PPUStatusRegister::encode() const

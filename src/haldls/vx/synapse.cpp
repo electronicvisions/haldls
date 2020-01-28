@@ -83,7 +83,7 @@ bool CommonSynramConfig::operator!=(CommonSynramConfig const& other) const
 
 template <typename AddressT>
 std::array<AddressT, CommonSynramConfig::config_size_in_words> CommonSynramConfig::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	size_t base;
 	if (coord == CommonSynramConfig::coordinate_type::bottom) {
@@ -96,12 +96,12 @@ std::array<AddressT, CommonSynramConfig::config_size_in_words> CommonSynramConfi
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, CommonSynramConfig::config_size_in_words>
-    CommonSynramConfig::addresses(coordinate_type const& coord) const;
+    CommonSynramConfig::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CommonSynramConfig::config_size_in_words>
-CommonSynramConfig::addresses(coordinate_type const& coord) const;
+CommonSynramConfig::addresses(coordinate_type const& coord);
 
 namespace {
 
@@ -286,7 +286,7 @@ bool SynapseQuad::operator!=(SynapseQuad const& other) const
 
 template <typename AddressT>
 std::array<AddressT, SynapseQuad::config_size_in_words> SynapseQuad::addresses(
-    SynapseQuad::coordinate_type const& block) const
+    SynapseQuad::coordinate_type const& block)
 {
 	using namespace halco::hicann_dls::vx;
 	uint32_t base;
@@ -304,11 +304,11 @@ std::array<AddressT, SynapseQuad::config_size_in_words> SynapseQuad::addresses(
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseQuad::config_size_in_words>
-    SynapseQuad::addresses(coordinate_type const& coord) const;
+    SynapseQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, SynapseQuad::config_size_in_words>
-    SynapseQuad::addresses(coordinate_type const& coord) const;
+    SynapseQuad::addresses(coordinate_type const& coord);
 
 namespace {
 
@@ -549,7 +549,7 @@ bool ColumnCorrelationQuad::operator!=(ColumnCorrelationQuad const& other) const
 
 template <typename AddressT>
 std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelationQuad::addresses(
-    coordinate_type const& block) const
+    coordinate_type const& block)
 {
 	using namespace halco::hicann_dls::vx;
 	uint32_t base;
@@ -567,12 +567,12 @@ std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelat
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCorrelationQuad::config_size_in_words>
-    ColumnCorrelationQuad::addresses(coordinate_type const& coord) const;
+    ColumnCorrelationQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     ColumnCorrelationQuad::config_size_in_words>
-ColumnCorrelationQuad::addresses(coordinate_type const& coord) const;
+ColumnCorrelationQuad::addresses(coordinate_type const& coord);
 
 namespace {
 
@@ -829,7 +829,7 @@ bool ColumnCurrentQuad::operator!=(ColumnCurrentQuad const& other) const
 
 template <typename AddressT>
 std::array<AddressT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad::addresses(
-    coordinate_type const& block) const
+    coordinate_type const& block)
 {
 	using namespace halco::hicann_dls::vx;
 	uint32_t base;
@@ -846,12 +846,12 @@ std::array<AddressT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad:
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCurrentQuad::config_size_in_words>
-    ColumnCurrentQuad::addresses(coordinate_type const& coord) const;
+    ColumnCurrentQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     ColumnCurrentQuad::config_size_in_words>
-ColumnCurrentQuad::addresses(coordinate_type const& coord) const;
+ColumnCurrentQuad::addresses(coordinate_type const& coord);
 
 namespace {
 
@@ -1085,7 +1085,7 @@ std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
 
 template <typename AddressT>
 std::array<AddressT, SynapseBiasSelection::write_config_size_in_words>
-SynapseBiasSelection::write_addresses(coordinate_type const& /*coord*/) const
+SynapseBiasSelection::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {AddressT(anncore_center_base_address)};
 }
@@ -1093,16 +1093,16 @@ SynapseBiasSelection::write_addresses(coordinate_type const& /*coord*/) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipAddress,
     SynapseBiasSelection::write_config_size_in_words>
-SynapseBiasSelection::write_addresses(coordinate_type const& coord) const;
+SynapseBiasSelection::write_addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     SynapseBiasSelection::write_config_size_in_words>
-SynapseBiasSelection::write_addresses(coordinate_type const& coord) const;
+SynapseBiasSelection::write_addresses(coordinate_type const& coord);
 
 template <typename AddressT>
 std::array<AddressT, SynapseBiasSelection::read_config_size_in_words>
-SynapseBiasSelection::read_addresses(coordinate_type const& /*coord*/) const
+SynapseBiasSelection::read_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
 }
@@ -1110,12 +1110,12 @@ SynapseBiasSelection::read_addresses(coordinate_type const& /*coord*/) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipAddress,
     SynapseBiasSelection::read_config_size_in_words>
-SynapseBiasSelection::read_addresses(coordinate_type const& coord) const;
+SynapseBiasSelection::read_addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     SynapseBiasSelection::read_config_size_in_words>
-SynapseBiasSelection::read_addresses(coordinate_type const& coord) const;
+SynapseBiasSelection::read_addresses(coordinate_type const& coord);
 namespace {
 
 struct SynapseBiasSelectionBitfield
@@ -1219,7 +1219,7 @@ CorrelationReset::CorrelationReset() {}
 
 template <typename AddressT>
 std::array<AddressT, CorrelationReset::read_config_size_in_words> CorrelationReset::read_addresses(
-    CorrelationReset::coordinate_type const& /* neuron */) const
+    CorrelationReset::coordinate_type const& /* neuron */)
 {
 	return {};
 }
@@ -1228,16 +1228,16 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CorrelationReset::read_config_size_in_words>
 CorrelationReset::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& cell) const;
+    coordinate_type const& cell);
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, CorrelationReset::read_config_size_in_words>
     CorrelationReset::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& cell) const;
+        coordinate_type const& cell);
 
 template <typename AddressT>
 std::array<AddressT, CorrelationReset::write_config_size_in_words>
-CorrelationReset::write_addresses(CorrelationReset::coordinate_type const& coord) const
+CorrelationReset::write_addresses(CorrelationReset::coordinate_type const& coord)
 {
 	auto const base_address = correlation_reset_base_addresses.at(coord.toSynramOnDLS());
 	int row_offset =
@@ -1251,12 +1251,12 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CorrelationReset::write_config_size_in_words>
 CorrelationReset::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& cell) const;
+    coordinate_type const& cell);
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, CorrelationReset::write_config_size_in_words>
     CorrelationReset::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& cell) const;
+        coordinate_type const& cell);
 
 template <typename WordT>
 std::array<WordT, CorrelationReset::write_config_size_in_words> CorrelationReset::encode() const

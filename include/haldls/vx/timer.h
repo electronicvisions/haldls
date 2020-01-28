@@ -55,8 +55,8 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, Timer const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<halco::hicann_dls::vx::TimerOnDLS, config_size_in_words> addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::TimerOnDLS, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::Timer, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 	void decode(std::array<fisch::vx::Timer, config_size_in_words> const& data) SYMBOL_VISIBLE

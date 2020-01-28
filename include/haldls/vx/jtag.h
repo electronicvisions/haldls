@@ -60,8 +60,8 @@ public:
 	 * Get word addresses for encoding a write or reading.
 	 * @return Array of addresses
 	 */
-	std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, config_size_in_words> addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	/**
 	 * Get container config encoded in writable words.
@@ -114,8 +114,8 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, ResetJTAGTap const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, config_size_in_words> addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::ResetJTAGTap, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 	void decode(std::array<fisch::vx::ResetJTAGTap, config_size_in_words> const& data)
@@ -171,10 +171,10 @@ public:
 
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
-	std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, read_config_size_in_words> read_addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, write_config_size_in_words> write_addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::JTAGIdCode, write_config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 	void decode(std::array<fisch::vx::JTAGIdCode, read_config_size_in_words> const& data)

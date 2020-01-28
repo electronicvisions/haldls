@@ -24,7 +24,7 @@ bool ResetChip::operator!=(ResetChip const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(ResetChip)
 
 std::array<halco::hicann_dls::vx::ResetChipOnDLS, ResetChip::config_size_in_words>
-ResetChip::addresses(coordinate_type const& coord) const
+ResetChip::addresses(coordinate_type const& coord)
 {
 	return {coord};
 }

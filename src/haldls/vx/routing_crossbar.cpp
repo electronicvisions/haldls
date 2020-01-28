@@ -58,7 +58,7 @@ std::ostream& operator<<(std::ostream& os, CrossbarOutputConfig const& config)
 
 template <typename AddressT>
 std::array<AddressT, CrossbarOutputConfig::config_size_in_words> CrossbarOutputConfig::addresses(
-    coordinate_type const& /* coord */) const
+    coordinate_type const& /* coord */)
 {
 	return {AddressT(crossbar_out_mux_base_address)};
 }
@@ -67,12 +67,12 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CrossbarOutputConfig::config_size_in_words>
 CrossbarOutputConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarOutputConfig::config_size_in_words>
     CrossbarOutputConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 namespace {
 
@@ -193,7 +193,7 @@ std::ostream& operator<<(std::ostream& os, CrossbarInputDropCounter const& confi
 
 template <typename AddressT>
 std::array<AddressT, CrossbarInputDropCounter::read_config_size_in_words>
-CrossbarInputDropCounter::read_addresses(coordinate_type const& coord) const
+CrossbarInputDropCounter::read_addresses(coordinate_type const& coord)
 {
 	return {AddressT(crossbar_input_drop_counter_base_address + coord.toEnum())};
 }
@@ -202,17 +202,17 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CrossbarInputDropCounter::read_config_size_in_words>
 CrossbarInputDropCounter::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipAddress,
     CrossbarInputDropCounter::read_config_size_in_words>
 CrossbarInputDropCounter::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template <typename AddressT>
 std::array<AddressT, CrossbarInputDropCounter::write_config_size_in_words>
-CrossbarInputDropCounter::write_addresses(coordinate_type const& /* coord */) const
+CrossbarInputDropCounter::write_addresses(coordinate_type const& /* coord */)
 {
 	return {};
 }
@@ -221,13 +221,13 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CrossbarInputDropCounter::write_config_size_in_words>
 CrossbarInputDropCounter::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipAddress,
     CrossbarInputDropCounter::write_config_size_in_words>
 CrossbarInputDropCounter::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, CrossbarInputDropCounter::write_config_size_in_words>
@@ -297,7 +297,7 @@ std::ostream& operator<<(std::ostream& os, CrossbarOutputEventCounter const& con
 
 template <typename AddressT>
 std::array<AddressT, CrossbarOutputEventCounter::read_config_size_in_words>
-CrossbarOutputEventCounter::read_addresses(coordinate_type const& coord) const
+CrossbarOutputEventCounter::read_addresses(coordinate_type const& coord)
 {
 	return {AddressT(crossbar_output_event_counter_base_address + coord.toEnum())};
 }
@@ -306,17 +306,17 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CrossbarOutputEventCounter::read_config_size_in_words>
 CrossbarOutputEventCounter::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipAddress,
     CrossbarOutputEventCounter::read_config_size_in_words>
 CrossbarOutputEventCounter::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template <typename AddressT>
 std::array<AddressT, CrossbarOutputEventCounter::write_config_size_in_words>
-CrossbarOutputEventCounter::write_addresses(coordinate_type const& /* coord */) const
+CrossbarOutputEventCounter::write_addresses(coordinate_type const& /* coord */)
 {
 	return {};
 }
@@ -325,13 +325,13 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CrossbarOutputEventCounter::write_config_size_in_words>
 CrossbarOutputEventCounter::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipAddress,
     CrossbarOutputEventCounter::write_config_size_in_words>
 CrossbarOutputEventCounter::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, CrossbarOutputEventCounter::write_config_size_in_words>
@@ -423,7 +423,7 @@ std::ostream& operator<<(std::ostream& os, CrossbarNode const& config)
 
 template <typename AddressT>
 std::array<AddressT, CrossbarNode::config_size_in_words> CrossbarNode::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	return {AddressT(crossbar_node_base_address + coord.toEnum())};
 }
@@ -431,12 +431,12 @@ std::array<AddressT, CrossbarNode::config_size_in_words> CrossbarNode::addresses
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CrossbarNode::config_size_in_words>
     CrossbarNode::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarNode::config_size_in_words>
     CrossbarNode::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 namespace {
 

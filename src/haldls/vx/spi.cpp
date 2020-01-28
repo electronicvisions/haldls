@@ -159,8 +159,8 @@ bool ShiftRegister::operator!=(ShiftRegister const& other) const
 
 HALDLS_VX_DEFAULT_OSTREAM_OP(ShiftRegister)
 
-std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, ShiftRegister::config_size_in_words> ShiftRegister::addresses(
-    coordinate_type const& /*coord*/) const
+std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, ShiftRegister::config_size_in_words>
+ShiftRegister::addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::SPIShiftRegisterOnBoard()};
 }
@@ -283,7 +283,7 @@ bool DACChannel::operator!=(DACChannel const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(DACChannel)
 
 std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::config_size_in_words>
-DACChannel::addresses(coordinate_type const& coord) const
+DACChannel::addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::SPIDACDataRegisterOnBoard(coord.toEnum())};
 }
@@ -336,7 +336,7 @@ bool DACControl::operator!=(DACControl const& other) const
 HALDLS_VX_DEFAULT_OSTREAM_OP(DACControl)
 
 std::array<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard, DACControl::config_size_in_words>
-DACControl::addresses(coordinate_type const& coord) const
+DACControl::addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::SPIDACControlRegisterOnBoard(
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::gain_reference, coord),

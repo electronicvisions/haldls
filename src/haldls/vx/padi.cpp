@@ -91,39 +91,43 @@ void PADIEvent::set_row_select_address(PADIEvent::RowSelectAddress const value)
 
 template <typename AddressT>
 std::array<AddressT, PADIEvent::write_config_size_in_words> PADIEvent::write_addresses(
-    coordinate_type const& coord) const
+	coordinate_type const& coord)
 {
 	auto const base_address = padi_base_addresses.at(coord);
 	return {AddressT(base_address + 0)};
 }
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PADIEvent::write_config_size_in_words>
-    PADIEvent::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+	halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+	PADIEvent::write_config_size_in_words>
+PADIEvent::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+	coordinate_type const& coord);
 
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, PADIEvent::write_config_size_in_words>
-    PADIEvent::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+	halco::hicann_dls::vx::OmnibusChipAddress,
+	PADIEvent::write_config_size_in_words>
+PADIEvent::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+	coordinate_type const& coord);
 
 
 template <typename AddressT>
 std::array<AddressT, PADIEvent::read_config_size_in_words> PADIEvent::read_addresses(
-    coordinate_type const& /* coord */) const
+	coordinate_type const& /* coord */)
 {
 	return {};
 }
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PADIEvent::read_config_size_in_words>
-    PADIEvent::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+	halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+	PADIEvent::read_config_size_in_words>
+PADIEvent::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+	coordinate_type const& coord);
 
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, PADIEvent::read_config_size_in_words>
-    PADIEvent::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+	halco::hicann_dls::vx::OmnibusChipAddress,
+	PADIEvent::read_config_size_in_words>
+PADIEvent::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+	coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, PADIEvent::write_config_size_in_words> PADIEvent::encode() const
@@ -268,7 +272,7 @@ void CommonPADIBusConfig::set_dacen_pulse_extension(
 
 template <typename AddressT>
 std::array<AddressT, CommonPADIBusConfig::config_size_in_words> CommonPADIBusConfig::addresses(
-    CommonPADIBusConfig::coordinate_type const& coord) const
+    CommonPADIBusConfig::coordinate_type const& coord)
 {
 	auto const base_address = padi_base_addresses.at(coord);
 	return {AddressT(base_address + 1)};
@@ -278,12 +282,12 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CommonPADIBusConfig::config_size_in_words>
 CommonPADIBusConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+    coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, CommonPADIBusConfig::config_size_in_words>
     CommonPADIBusConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 
 template <typename WordT>
@@ -456,41 +460,43 @@ void CommonSTPConfig::set_recovery_clock_speed(CommonSTPConfig::RecoveryClockSpe
 
 template <typename AddressT>
 std::array<AddressT, CommonSTPConfig::write_config_size_in_words> CommonSTPConfig::write_addresses(
-    coordinate_type const& coord) const
+	coordinate_type const& coord)
 {
 	auto const base_address = padi_base_addresses.at(coord);
 	return {AddressT(base_address + 2)};
 }
 
 template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CommonSTPConfig::write_config_size_in_words>
+	halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+	CommonSTPConfig::write_config_size_in_words>
 CommonSTPConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+	coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, CommonSTPConfig::write_config_size_in_words>
-    CommonSTPConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+	halco::hicann_dls::vx::OmnibusChipAddress,
+	CommonSTPConfig::write_config_size_in_words>
+CommonSTPConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+	coordinate_type const& coord);
 
 
 template <typename AddressT>
 std::array<AddressT, CommonSTPConfig::read_config_size_in_words> CommonSTPConfig::read_addresses(
-    coordinate_type const& /* coord */) const
+	coordinate_type const& /* coord */)
 {
 	return {};
 }
 
 template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CommonSTPConfig::read_config_size_in_words>
+	halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+	CommonSTPConfig::read_config_size_in_words>
 CommonSTPConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-    coordinate_type const& coord) const;
+	coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, CommonSTPConfig::read_config_size_in_words>
-    CommonSTPConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+	halco::hicann_dls::vx::OmnibusChipAddress,
+	CommonSTPConfig::read_config_size_in_words>
+CommonSTPConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+	coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, CommonSTPConfig::write_config_size_in_words> CommonSTPConfig::encode() const

@@ -58,8 +58,8 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PerfTest const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, config_size_in_words> addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::OmnibusFPGA, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 	void decode(std::array<fisch::vx::OmnibusFPGA, config_size_in_words> const& data) SYMBOL_VISIBLE
@@ -187,10 +187,10 @@ public:
 
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 4;
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
-	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, read_config_size_in_words> read_addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, write_config_size_in_words>
-	write_addresses(coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::OmnibusFPGA, write_config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 	void decode(std::array<fisch::vx::OmnibusFPGA, read_config_size_in_words> const& data)

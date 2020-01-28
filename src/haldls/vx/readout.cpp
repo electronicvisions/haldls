@@ -254,7 +254,7 @@ std::ostream& operator<<(std::ostream& os, ReadoutMuxConfig const& config)
 
 template <typename AddressT>
 std::array<AddressT, ReadoutMuxConfig::config_size_in_words> ReadoutMuxConfig::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	return {
 	    AddressT(madc_base_address + 14 + coord.toEnum() * ReadoutMuxConfig::config_size_in_words),
@@ -263,11 +263,11 @@ std::array<AddressT, ReadoutMuxConfig::config_size_in_words> ReadoutMuxConfig::a
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, ReadoutMuxConfig::config_size_in_words>
-    ReadoutMuxConfig::addresses(coordinate_type const& coord) const;
+    ReadoutMuxConfig::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ReadoutMuxConfig::config_size_in_words>
-    ReadoutMuxConfig::addresses(coordinate_type const& coord) const;
+    ReadoutMuxConfig::addresses(coordinate_type const& coord);
 
 namespace {
 
@@ -697,19 +697,19 @@ std::ostream& operator<<(std::ostream& os, ReadoutBufferConfigBlock const& confi
 
 template <typename AddressT>
 std::array<AddressT, ReadoutBufferConfigBlock::config_size_in_words>
-ReadoutBufferConfigBlock::addresses(coordinate_type const& /* coord */) const
+ReadoutBufferConfigBlock::addresses(coordinate_type const& /* coord */)
 {
 	return {AddressT(madc_base_address + 12), AddressT(madc_base_address + 13)};
 }
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, ReadoutBufferConfigBlock::config_size_in_words>
-    ReadoutBufferConfigBlock::addresses(coordinate_type const& coord) const;
+    ReadoutBufferConfigBlock::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     ReadoutBufferConfigBlock::config_size_in_words>
-ReadoutBufferConfigBlock::addresses(coordinate_type const& coord) const;
+ReadoutBufferConfigBlock::addresses(coordinate_type const& coord);
 
 namespace {
 

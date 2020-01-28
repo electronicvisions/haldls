@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& os, SystimeSyncBase const& config)
 
 template <typename AddressT>
 std::array<AddressT, SystimeSyncBase::config_size_in_words> SystimeSyncBase::addresses(
-    coordinate_type const& /*coord*/) const
+    coordinate_type const& /*coord*/)
 {
 	return {AddressT(systime_base_address), AddressT(systime_base_address + 1)};
 }
@@ -77,12 +77,12 @@ struct SystimeSyncBaseBitfield
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, SystimeSyncBase::config_size_in_words>
     SystimeSyncBase::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, SystimeSyncBase::config_size_in_words>
     SystimeSyncBase::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, SystimeSyncBase::config_size_in_words> SystimeSyncBase::encode() const
@@ -153,13 +153,13 @@ std::ostream& operator<<(std::ostream& os, SystimeSync const& config)
 }
 
 std::array<SystimeSync::coordinate_type, SystimeSync::read_config_size_in_words>
-SystimeSync::read_addresses(coordinate_type const& /*coord*/) const
+SystimeSync::read_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
 }
 
 std::array<SystimeSync::coordinate_type, SystimeSync::write_config_size_in_words>
-SystimeSync::write_addresses(coordinate_type const& coord) const
+SystimeSync::write_addresses(coordinate_type const& coord)
 {
 	return {coord};
 }

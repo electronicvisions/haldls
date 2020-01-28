@@ -37,7 +37,7 @@ void CapMemCell::set_value(value_type const& value)
 
 template <typename AddressT>
 std::array<AddressT, CapMemCell::config_size_in_words> CapMemCell::addresses(
-    coordinate_type const& cell) const
+    coordinate_type const& cell)
 {
 	static_assert(
 	    halco::hicann_dls::vx::CapMemBlockOnDLS::size == capmem_sram_base_addresses.size(),
@@ -53,12 +53,11 @@ std::array<AddressT, CapMemCell::config_size_in_words> CapMemCell::addresses(
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CapMemCell::config_size_in_words>
     CapMemCell::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& cell) const;
+        coordinate_type const& cell);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, CapMemCell::config_size_in_words>
-    CapMemCell::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& cell) const;
+    CapMemCell::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(coordinate_type const& cell);
 
 template <typename WordT>
 std::array<WordT, CapMemCell::config_size_in_words> CapMemCell::encode() const
@@ -504,7 +503,7 @@ struct CapMemBlockConfigBitfield
 
 template <typename AddressT>
 std::array<AddressT, CapMemBlockConfig::config_size_in_words> CapMemBlockConfig::addresses(
-    coordinate_type const& coord) const
+    coordinate_type const& coord)
 {
 	uint32_t const base_address = capmem_config_base_addresses.at(coord.value());
 	std::array<AddressT, CapMemBlockConfig::config_size_in_words> result;
@@ -518,10 +517,10 @@ std::array<AddressT, CapMemBlockConfig::config_size_in_words> CapMemBlockConfig:
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CapMemBlockConfig::config_size_in_words>
-CapMemBlockConfig::addresses(coordinate_type const& coord) const;
+CapMemBlockConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipAddress, CapMemBlockConfig::config_size_in_words>
-    CapMemBlockConfig::addresses(coordinate_type const& coord) const;
+    CapMemBlockConfig::addresses(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, CapMemBlockConfig::config_size_in_words> CapMemBlockConfig::encode() const
@@ -790,7 +789,7 @@ std::ostream& operator<<(std::ostream& os, ReferenceGeneratorConfig const& confi
 
 template <typename AddressT>
 std::array<AddressT, ReferenceGeneratorConfig::config_size_in_words>
-ReferenceGeneratorConfig::addresses(coordinate_type const& /*coord*/) const
+ReferenceGeneratorConfig::addresses(coordinate_type const& /*coord*/)
 {
 	return {AddressT(madc_base_address + 18), AddressT(madc_base_address + 19),
 	        AddressT(madc_base_address + 20)};
@@ -798,12 +797,12 @@ ReferenceGeneratorConfig::addresses(coordinate_type const& /*coord*/) const
 
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusChipAddress, ReferenceGeneratorConfig::config_size_in_words>
-    ReferenceGeneratorConfig::addresses(coordinate_type const& coord) const;
+    ReferenceGeneratorConfig::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     ReferenceGeneratorConfig::config_size_in_words>
-ReferenceGeneratorConfig::addresses(coordinate_type const& coord) const;
+ReferenceGeneratorConfig::addresses(coordinate_type const& coord);
 
 namespace {
 struct ReferenceGeneratorConfigBitfield
