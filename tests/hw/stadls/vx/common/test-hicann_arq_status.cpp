@@ -83,8 +83,10 @@ TEST(HicannARQStatus, OmnibusReadCount)
 /**
  * Enable Highspeed omnibus connection, write a container of known length and compare to ARQ status
  * counts.
+ *
+ * Disabled due to issue #3474.
  */
-TEST(HicannARQStatus, OmnibusWriteCount)
+TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 {
 	auto sequence = DigitalInit();
 	sequence.highspeed_link.enable_systime = false;
