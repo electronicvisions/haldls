@@ -183,7 +183,7 @@ def build(bld):
 
     bld(
         target = 'stadls_swtest_vx',
-        features = 'gtest cxx cxxprogram',
+        features = 'gtest cxx cxxprogram pyembed',
         source = bld.path.ant_glob('tests/sw/stadls/vx/test-*.cpp'),
         use = ['haldls_vx', 'stadls_vx', 'GTEST'],
         install_path = '${PREFIX}/bin',
@@ -204,7 +204,7 @@ def build(bld):
 
     bld(
         target = 'haldls_swtest_vx',
-        features = 'gtest cxx cxxprogram',
+        features = 'gtest cxx cxxprogram pyembed',
         source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp'),
         use = ['haldls_vx', 'haldls_test_common_inc', 'GTEST'],
         install_path = '${PREFIX}/bin',
@@ -212,7 +212,7 @@ def build(bld):
 
     bld(
         target = 'lola_swtest_vx',
-        features = 'gtest cxx cxxprogram',
+        features = 'gtest cxx cxxprogram pyembed',
         source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp'),
         use = ['lola_vx', 'GTEST', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
@@ -231,7 +231,7 @@ def build(bld):
 
     bld(
         target = 'stadls_hwtest_vx',
-        features = 'gtest cxx cxxprogram',
+        features = 'gtest cxx cxxprogram pyembed',
         source = bld.path.ant_glob('tests/hw/stadls/vx/hw/test-*.cpp')
                  + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
@@ -244,7 +244,7 @@ def build(bld):
 
     bld(
         target = 'stadls_simtest_vx',
-        features = 'gtest cxx cxxprogram',
+        features = 'gtest cxx cxxprogram pyembed',
         source = bld.path.ant_glob('tests/hw/stadls/vx/sim/test-*.cpp')
                  + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
@@ -286,7 +286,7 @@ def build(bld):
 
     bld(
         target = 'run_ppu_program_vx',
-        features = 'cxx cxxprogram',
+        features = 'cxx cxxprogram pyembed',
         source = 'tools/stadls/vx/run_ppu_program.cpp',
         use = ['haldls_vx', 'logger_obj', 'stadls_vx'],
         install_path = '${PREFIX}/bin',
