@@ -1,6 +1,7 @@
 import ctypes
 import argparse
 from dlens_v2 import hal, halco, sta
+from pylola_v2 import PPUElfFile
 
 
 class PPUTimeoutError(Exception):
@@ -11,15 +12,22 @@ def run_program(
         program_path: str, as_string: bool = False,
         wait: int = int(1E7), board_id: str = None) -> int:
     """
-    :param program_path: PPU program binary
+    :param program_path: Unstripped PPU program binary
     :param board_id: Optional FlySPI ID to connect to
     :param as_string: Interpret mailbox content as string
     :param wait: Wait for n cycles before aborting the run
     :return: Exit code from program execution
     """
+    # pylint: disable=too-many-locals
+
     # Load the data
-    program = hal.PPUMemory()
-    program.load_from_file(program_path)
+    program_file = PPUElfFile(program_path)
+    program_data = program_file.read_program()
+
+    program_on_dls = halco.PPUMemoryBlockOnDLS(
+        halco.PPUMemoryWordOnDLS(0),
+        halco.PPUMemoryWordOnDLS(program_data.size() - 1)
+    )
 
     # PPU control register
     ppu_control_reg_start = hal.PPUControlRegister()
@@ -30,7 +38,15 @@ def run_program(
 
     # Playback memory program
     builder = hal.PlaybackProgramBuilder()
-    builder.write(halco.PPUMemoryOnDLS(), program)
+
+    # Manually initialize memory where symbols will lie, issue #3477
+    for _name, symbol in program_file.read_symbols().items():
+        value = hal.PPUMemoryBlock(symbol.coordinate.toPPUMemoryBlockSize())
+        builder.write(halco.PPUMemoryBlockOnDLS(symbol.coordinate), value)
+
+    # Write PPU program
+    builder.write(program_on_dls, program_data)
+
     builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_end)
     builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_start)
     builder.set_time(0)

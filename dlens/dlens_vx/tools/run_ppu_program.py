@@ -3,7 +3,8 @@ import argparse
 from dlens_vx import halco
 from dlens_vx.sta import PlaybackProgramBuilder, PlaybackProgramExecutor, \
     AutoConnection, DigitalInit, generate
-from pyhaldls_vx import PPUMemory, PPUControlRegister, Timer  # Issue 3429
+from pyhaldls_vx import PPUControlRegister, Timer, PPUMemoryBlock  # Issue 3429
+from pylola_vx import PPUElfFile
 
 
 class PPUTimeoutError(Exception):
@@ -17,30 +18,51 @@ def load_and_start_program(executor: PlaybackProgramExecutor,
 
     :param executor: Connected executor to be used for loading and starting the
                      program.
-    :param binary_path: Path to the program to be loaded
+    :param binary_path: Path to the unstripped (*.bin) program to be loaded
     """
-    program = PPUMemory()
-    program.load_from_file(binary_path)
-
-    ppu_control_reg_start = PPUControlRegister()
-    ppu_control_reg_start.inhibit_reset = True
-
-    ppu_control_reg_end = PPUControlRegister()
-    ppu_control_reg_end.inhibit_reset = False
-
     builder = PlaybackProgramBuilder()
-    builder.write(halco.PPUMemoryOnDLS(), program)
-    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_end)
-    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_start)
 
+    ppu_control_reg_run = PPUControlRegister()
+    ppu_control_reg_run.inhibit_reset = True
+
+    ppu_control_reg_reset = PPUControlRegister()
+    ppu_control_reg_reset.inhibit_reset = False
+
+    program_file = PPUElfFile(binary_path)
+    program = program_file.read_program()
+    program_on_ppu = halco.PPUMemoryBlockOnPPU(
+        halco.PPUMemoryWordOnPPU(0),
+        halco.PPUMemoryWordOnPPU(program.size() - 1)
+    )
+
+    program_on_dls = halco.PPUMemoryBlockOnDLS(program_on_ppu,
+                                               halco.PPUOnDLS())
+
+    # Ensure PPU is in reset state
+    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_reset)
+
+    # Manually initialize memory where symbols will lie, issue #3477
+    for _name, symbol in program_file.read_symbols().items():
+        value = PPUMemoryBlock(symbol.coordinate.toPPUMemoryBlockSize())
+        symbol_on_dls = halco.PPUMemoryBlockOnDLS(symbol.coordinate,
+                                                  halco.PPUOnDLS())
+        builder.write(symbol_on_dls, value)
+
+    # Write PPU program
+    builder.write(program_on_dls, program)
+
+    # Set PPU to run state, start execution
+    builder.write(halco.PPUControlRegisterOnDLS(), ppu_control_reg_run)
     executor.run(builder.done())
 
 
-def stop_program(executor: PlaybackProgramExecutor) -> int:
+def stop_program(executor: PlaybackProgramExecutor,
+                 print_mailbox: bool = True) -> int:
     """
     Stop the PPU, print the memory contents and evaluate the exit code.
 
     :param executor: Connected executor to be used for stopping the program.
+    :param print_mailbox: Print the mailbox as string to stdout.
     :return Exit code of the program
     """
     ppu_control_reg_end = PPUControlRegister()
@@ -62,7 +84,8 @@ def stop_program(executor: PlaybackProgramExecutor) -> int:
     executor.run(builder.done())
 
     # Print Mailbox
-    print(mailbox_handle.get().to_string())
+    if print_mailbox:
+        print(mailbox_handle.get().to_string())
 
     # Return the exit code
     return ctypes.c_int32(int(return_handle.get().value)).value
