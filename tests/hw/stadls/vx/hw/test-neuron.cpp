@@ -18,6 +18,8 @@ using namespace stadls::vx;
  * First the Counters are resettet, following three Neuron Resets which should give a counter
  * value of 3. After this is verified the counters are resetted and now the values of
  * every counter should be 0.
+ *
+ * Disabled for simulation due to #3475.
  */
 TEST(NeuronBackend, ResetCounterTest)
 {
