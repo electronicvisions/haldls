@@ -14,7 +14,9 @@
 #include "hate/type_list.h"
 #include "hate/visibility.h"
 
+#ifdef __GENPYBIND__
 #include <pybind11/pybind11.h>
+#endif
 
 namespace stadls {
 namespace v2 {

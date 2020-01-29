@@ -115,7 +115,6 @@ def build(bld):
 
     bld.shlib(
         target = 'haldls_v2',
-        features = 'pyembed',
         source = bld.path.ant_glob('src/haldls/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
         use = ['dls_common', 'bitter', 'uni', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
