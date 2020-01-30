@@ -69,6 +69,7 @@ PLAYBACK_CONTAINER(MADCControl, haldls::vx::MADCControl)
 PLAYBACK_CONTAINER(CorrelationReset, haldls::vx::CorrelationReset)
 PLAYBACK_CONTAINER(NeuronResetQuad, haldls::vx::NeuronResetQuad)
 PLAYBACK_CONTAINER(CommonCorrelationConfig, haldls::vx::CommonCorrelationConfig)
+PLAYBACK_CONTAINER(BlockPostPulse, haldls::vx::BlockPostPulse)
 LAST_PLAYBACK_CONTAINER(SystimeSync, haldls::vx::SystimeSync)
 
 #undef PLAYBACK_CONTAINER

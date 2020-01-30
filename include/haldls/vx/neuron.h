@@ -827,6 +827,60 @@ struct BackendContainerTrait<NeuronResetQuad>
 
 
 /**
+ * Container to send post pulses to one half of the neurons (left/right).
+ * Enable post_overwrite in the neurons to forward the pulse into the synapse array.
+ * The timing this pulse arrives may not be precise, it may vary between
+ * neurons in the block.
+ */
+class GENPYBIND(visible) BlockPostPulse
+{
+public:
+	typedef halco::hicann_dls::vx::BlockPostPulseOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/** Default constructor */
+	BlockPostPulse() SYMBOL_VISIBLE;
+
+	bool operator==(BlockPostPulse const& other) const SYMBOL_VISIBLE;
+	bool operator!=(BlockPostPulse const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	template <typename AddressT>
+	std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& block) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename AddressT>
+	std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& block) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, BlockPostPulse const& config) SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<BlockPostPulse>
+    : public BackendContainerBase<
+          BlockPostPulse,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+} // namespace detail
+
+
+/**
  * Container to read the spike counter of a single neuron.
  */
 class GENPYBIND(visible) SpikeCounterRead

@@ -1608,6 +1608,93 @@ void NeuronResetQuad::serialize(Archive&)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronResetQuad)
 
 
+BlockPostPulse::BlockPostPulse() {}
+
+template <typename AddressT>
+std::array<AddressT, BlockPostPulse::read_config_size_in_words> BlockPostPulse::read_addresses(
+    BlockPostPulse::coordinate_type const& /* neuron */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    BlockPostPulse::read_config_size_in_words>
+BlockPostPulse::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell) const;
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, BlockPostPulse::read_config_size_in_words>
+    BlockPostPulse::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& cell) const;
+
+template <typename AddressT>
+std::array<AddressT, BlockPostPulse::write_config_size_in_words> BlockPostPulse::write_addresses(
+    BlockPostPulse::coordinate_type const& block) const
+{
+	return {AddressT(neuron_post_pulse_addresses.at(block.toEnum()))};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    BlockPostPulse::write_config_size_in_words>
+BlockPostPulse::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& block) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, BlockPostPulse::write_config_size_in_words>
+    BlockPostPulse::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& block) const;
+
+template <typename WordT>
+std::array<WordT, BlockPostPulse::write_config_size_in_words> BlockPostPulse::encode() const
+{
+	// Value does not matter
+	return {WordT()};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, BlockPostPulse::write_config_size_in_words>
+    BlockPostPulse::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, BlockPostPulse::write_config_size_in_words>
+    BlockPostPulse::encode<fisch::vx::OmnibusChip>() const;
+
+template <typename WordT>
+void BlockPostPulse::decode(std::array<WordT, BlockPostPulse::read_config_size_in_words> const&)
+{}
+
+template SYMBOL_VISIBLE void BlockPostPulse::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, BlockPostPulse::read_config_size_in_words> const&
+        data);
+
+template SYMBOL_VISIBLE void BlockPostPulse::decode<fisch::vx::OmnibusChip>(
+    std::array<fisch::vx::OmnibusChip, BlockPostPulse::read_config_size_in_words> const& data);
+
+std::ostream& operator<<(std::ostream& os, BlockPostPulse const&)
+{
+	os << "BlockPostPulse()";
+	return os;
+}
+
+bool BlockPostPulse::operator==(BlockPostPulse const&) const
+{
+	return true;
+}
+
+bool BlockPostPulse::operator!=(BlockPostPulse const& other) const
+{
+	return !(*this == other);
+}
+
+template <class Archive>
+void BlockPostPulse::serialize(Archive&)
+{}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(BlockPostPulse)
+
+
 SpikeCounterRead::SpikeCounterRead() : m_count(), m_overflow(false) {}
 
 SpikeCounterRead::Count SpikeCounterRead::get_count() const

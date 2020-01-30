@@ -627,6 +627,54 @@ TEST(NeuronResetQuad, CerealizeCoverage)
 	ASSERT_EQ(c1, c2);
 }
 
+TEST(BlockPostPulse, General)
+{
+	BlockPostPulse config;
+
+	BlockPostPulse default_config;
+	ASSERT_EQ(config, default_config);
+	ASSERT_TRUE(config == default_config);
+	ASSERT_FALSE(config != default_config);
+}
+
+TEST(BlockPostPulse, EncodeDecode)
+{
+	BlockPostPulse config;
+
+	auto neuron_coord = BlockPostPulseOnDLS(BlockPostPulseOnDLS(1));
+
+	std::array<OmnibusChipOverJTAGAddress, BlockPostPulse::write_config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0x0012'a400}};
+
+	{ // check if write addresses are correct
+		addresses_type write_addresses;
+		visit_preorder(
+		    config, neuron_coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	// Encode
+	words_type data;
+	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
+	ASSERT_EQ(data[0].get(), 0x0);
+}
+
+TEST(BlockPostPulse, CerealizeCoverage)
+{
+	BlockPostPulse c1, c2;
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(c1);
+	}
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(c2);
+	}
+	ASSERT_EQ(c1, c2);
+}
+
 TEST(SpikeCounterRead, General)
 {
 	SpikeCounterRead config;

@@ -115,6 +115,12 @@ constexpr uint32_t neuron_reset_right_sram_base_address{0x12'8000 | 1ul << 13};
 constexpr std::array<uint32_t, 2> neuron_reset_sram_base_addresses = {
     neuron_reset_left_sram_base_address, neuron_reset_right_sram_base_address};
 
+constexpr uint32_t neuron_post_pulse_left_address{0x12'2400};
+constexpr uint32_t neuron_post_pulse_right_address{0x12'a400};
+
+constexpr std::array<uint32_t, 2> neuron_post_pulse_addresses = {neuron_post_pulse_left_address,
+                                                                 neuron_post_pulse_right_address};
+
 constexpr uint32_t spike_counter_read_left_sram_base_address{neuron_reset_left_sram_base_address |
                                                              0x800};
 constexpr uint32_t spike_counter_read_right_sram_base_address{neuron_reset_right_sram_base_address |
