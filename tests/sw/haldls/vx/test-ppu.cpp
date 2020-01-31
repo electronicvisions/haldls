@@ -242,6 +242,32 @@ TEST(PPUMemoryBlock, CerealizeCoverage)
 	ASSERT_EQ(obj1, obj2);
 }
 
+TEST(PPUMemoryBlock, to_string)
+{
+	static std::mt19937 random_generator(123456789);
+	PPUMemoryBlock block;
+	auto words = block.get_words();
+
+	// Encoded "Hello World!\0Hel"
+	words[0] = PPUMemoryWord(PPUMemoryWord::Value(0x48656c6c));
+	words[1] = PPUMemoryWord(PPUMemoryWord::Value(0x6f20576f));
+	words[2] = PPUMemoryWord(PPUMemoryWord::Value(0x726c6421));
+	words[3] = PPUMemoryWord(PPUMemoryWord::Value(0x0048656c));
+	block.set_words(words);
+	ASSERT_EQ(block.to_string(), "Hello World!");
+
+	// test random memory contents
+	std::uniform_int_distribution<std::mt19937::result_type> dist(
+	    PPUMemoryWord::Value::min, PPUMemoryWord::Value::max);
+	for (unsigned int i = 0; i < 10000; ++i) {
+		for (auto& word : words) {
+			word = PPUMemoryWord(PPUMemoryWord::Value(dist(random_generator)));
+		}
+		block.set_words(words);
+		EXPECT_NO_THROW(block.to_string());
+	}
+}
+
 TEST(PPUMemory, General)
 {
 	PPUMemory memory;
