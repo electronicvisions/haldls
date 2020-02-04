@@ -172,7 +172,8 @@ haldls::v2::PPUMemoryBlock PPUElfFile::read_program()
 
 	// convert to words
 	uint32_t* iter = reinterpret_cast<uint32_t*>(bytes.data());
-	std::vector<uint32_t> words(iter, iter + bytes.size() / sizeof(uint32_t));
+	std::vector<uint32_t> words(
+	    iter, iter + (bytes.size() + sizeof(uint32_t) - 1) / sizeof(uint32_t));
 
 	// correct endianness
 	std::transform(words.begin(), words.end(), words.begin(), ntohl);

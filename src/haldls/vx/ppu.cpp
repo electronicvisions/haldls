@@ -345,7 +345,8 @@ void PPUMemory::load_from_file(std::string const& filename)
 
 	// convert to words
 	uint32_t* iter = reinterpret_cast<uint32_t*>(program_bytes.data());
-	std::vector<uint32_t> words(iter, iter + program_bytes.size() / sizeof(uint32_t));
+	std::vector<uint32_t> words(
+	    iter, iter + (program_bytes.size() + sizeof(uint32_t) - 1) / sizeof(uint32_t));
 
 	// correct endianness
 	std::transform(words.begin(), words.end(), words.begin(), ntohl);
