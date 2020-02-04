@@ -40,6 +40,11 @@ def options(opt):
              'authentification support')
     hopts.add_withoption('haldls-python-bindings', default=True,
             help='Toggle the generation and build of haldls python bindings')
+    hopts.add_option("--disable-coverage-reduction", default=False,
+                     action="store_true",
+                     help="Disable test coverage (and runtime!) reduction. "
+                          "Currently only applies to hardware/software "
+                          "cosimulation runs, other tests are never reduced.")
 
 
 def configure(cfg):
@@ -89,6 +94,15 @@ def build(bld):
     bld.env.DLSv2_HARDWARE_AVAILABLE = "dls" == os.environ.get("SLURM_JOB_PARTITION")
     bld.env.DLSvx_HARDWARE_AVAILABLE = "cube" == os.environ.get("SLURM_JOB_PARTITION")
     bld.env.DLSvx_SIM_AVAILABLE = "FLANGE_SIMULATION_RCF_PORT" in os.environ
+
+    if bld.options.disable_coverage_reduction:
+        bld.env.SIMTEST_TIMEOUT_SECONDS = 40 * 3600
+        bld.env.DEFINES_REDUCED_SIMTESTS = ["REDUCED_TESTS=0",
+                                            "MAX_WORDS_PER_REDUCED_TEST=10"]
+    else:
+        bld.env.SIMTEST_TIMEOUT_SECONDS = 1 * 3600
+        bld.env.DEFINES_REDUCED_SIMTESTS = ["REDUCED_TESTS=1",
+                                            "MAX_WORDS_PER_REDUCED_TEST=10"]
 
     bld(
         target = 'lola_inc',
@@ -266,11 +280,11 @@ def build(bld):
                  + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'GTEST', 'stadls_simtest_vx_inc', 'stadls_vx', 'haldls_test_common_inc'],
-        defines = ['REDUCED_TESTS=1', 'MAX_WORDS_PER_REDUCED_TEST=10'],
+        defines = bld.env.DEFINES_REDUCED_SIMTESTS,
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
         skip_run = not bld.env.DLSvx_SIM_AVAILABLE,
-        test_timeout = 3600
+        test_timeout = bld.env.SIMTEST_TIMEOUT_SECONDS
     )
 
     bld(target = 'stadls_hwtest_v2',
