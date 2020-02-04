@@ -139,9 +139,13 @@ PPUElfFile::symbols_type PPUElfFile::read_symbols()
 					}
 				}
 				auto const name = std::string(strtab + x.st_name);
-				auto min = halco::hicann_dls::vx::PPUMemoryWordOnPPU(x.st_value / sizeof(uint32_t));
+				auto min = halco::hicann_dls::vx::PPUMemoryWordOnPPU(
+				    x.st_value / sizeof(haldls::vx::PPUMemoryWord::raw_type));
 				auto max = halco::hicann_dls::vx::PPUMemoryWordOnPPU(
-				    min + (x.st_size + sizeof(uint32_t) - 1) / sizeof(uint32_t) - 1);
+				    min +
+				    (x.st_size + sizeof(haldls::vx::PPUMemoryWord::raw_type) - 1) /
+				        sizeof(haldls::vx::PPUMemoryWord::raw_type) -
+				    1);
 				symbol.coordinate = halco::hicann_dls::vx::PPUMemoryBlockOnPPU(min, max);
 				symbols.insert({name, symbol});
 			}
@@ -168,18 +172,27 @@ haldls::vx::PPUMemoryBlock PPUElfFile::read_program()
 	std::vector<char> bytes(phdr->p_filesz);
 	pread(m_fd, bytes.data(), phdr->p_filesz, phdr->p_offset);
 
-	// convert to words
-	uint32_t* iter = reinterpret_cast<uint32_t*>(bytes.data());
-	std::vector<uint32_t> words(iter, iter + bytes.size() / sizeof(uint32_t));
+	// pad to multiple of raw word size
+	while ((bytes.size() % sizeof(haldls::vx::PPUMemoryWord::raw_type)) != 0) {
+		bytes.push_back(0);
+	}
 
-	// correct endianness
+	// convert to words
+	haldls::vx::PPUMemoryWord::raw_type* iter =
+	    reinterpret_cast<haldls::vx::PPUMemoryWord::raw_type*>(bytes.data());
+	std::vector<haldls::vx::PPUMemoryWord::raw_type> words(
+	    iter, iter + bytes.size() / sizeof(haldls::vx::PPUMemoryWord::raw_type));
+
+	// "correct" endianness (we perform a htonl afterwards for PPUMemoryWord)
 	std::transform(words.begin(), words.end(), words.begin(), ntohl);
 
 	// convert to PPUMemoryWords
 	std::vector<haldls::vx::PPUMemoryWord> ppu_memory_words(words.size());
-	std::transform(words.begin(), words.end(), ppu_memory_words.begin(), [](uint32_t const x) {
-		return haldls::vx::PPUMemoryWord(haldls::vx::PPUMemoryWord::Value(x));
-	});
+	std::transform(
+	    words.begin(), words.end(), ppu_memory_words.begin(),
+	    [](haldls::vx::PPUMemoryWord::raw_type const x) {
+		    return haldls::vx::PPUMemoryWord(haldls::vx::PPUMemoryWord::Value(x));
+	    });
 
 	haldls::vx::PPUMemoryBlock block(
 	    halco::hicann_dls::vx::PPUMemoryBlockSize(ppu_memory_words.size()));

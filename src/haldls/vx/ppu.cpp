@@ -47,7 +47,7 @@ bool PPUMemoryWord::operator!=(PPUMemoryWord const& other) const
 std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
 {
 	using namespace hate::math;
-	uint32_t w = static_cast<uint32_t>(pmw.get_value());
+	auto const w = static_cast<PPUMemoryWord::raw_type>(pmw.get_value());
 	std::stringstream out;
 	out << std::showbase << std::internal << std::setfill('0') << std::hex
 	    << std::setw(round_up_integer_division(num_bits(PPUMemoryWord::Value::max), 4)) << w;
@@ -59,7 +59,7 @@ template <typename AddressT>
 std::array<AddressT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::addresses(
     coordinate_type const& coord)
 {
-	uint32_t tmp = coord.toPPUMemoryWordOnPPU().value();
+	PPUMemoryWord::raw_type tmp = coord.toPPUMemoryWordOnPPU().value();
 	if (coord.toPPUOnDLS() == halco::hicann_dls::vx::PPUOnDLS::top) {
 		tmp += top_ppu_base_address;
 	} else {
@@ -208,9 +208,9 @@ std::string PPUMemoryBlock::to_string() const
 	for (auto x : m_words) {
 		// access single characters in word
 		// endianess-flip due to different endianess on PPU
-		uint32_t const w = ntohl(static_cast<uint32_t>((x.get_value())));
+		auto const w = ntohl(static_cast<PPUMemoryWord::raw_type>((x.get_value())));
 		char const* c = reinterpret_cast<char const*>(&w);
-		for (size_t i = 0; i < sizeof(uint32_t); ++i) {
+		for (size_t i = 0; i < sizeof(PPUMemoryWord::raw_type); ++i) {
 			// Return if null byte is found
 			if (c[i] == 0) {
 				return ss.str();
@@ -241,15 +241,15 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 		std::stringstream halfwords;
 		halfwords << std::hex << std::internal << std::setfill('0');
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			uint32_t word = static_cast<uint32_t>(words[i + j].get_value());
+			auto const word = static_cast<PPUMemoryWord::raw_type>(words[i + j].get_value());
 			halfwords << std::setw(4) << (word >> 16) << " " << std::setw(4) << (word & 0xffff)
 			          << " ";
 		}
 		// print as ascii
 		std::stringstream ascii;
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get_value()));
-			char* chars = reinterpret_cast<char*>(&word);
+			auto const word = ntohl(static_cast<PPUMemoryWord::raw_type>(words[i + j].get_value()));
+			char const* chars = reinterpret_cast<char const*>(&word);
 			for (int k = 0; k < 4; k++) {
 				ascii << (isprint(chars[k]) ? chars[k] : '.');
 			}
@@ -335,27 +335,28 @@ void PPUMemory::load_from_file(std::string const& filename)
 	}
 
 	// pad to multiple of word size
-	while ((program_bytes.size() % sizeof(uint32_t)) != 0) {
+	while ((program_bytes.size() % sizeof(PPUMemoryWord::raw_type)) != 0) {
 		program_bytes.push_back(0);
 	}
 
-	if (program_bytes.size() > m_words.size() * sizeof(uint32_t)) {
+	if (program_bytes.size() > m_words.size() * sizeof(PPUMemoryWord::raw_type)) {
 		throw std::runtime_error("PPU program to be loaded too large for memory bounds.");
 	}
 
 	// convert to words
-	uint32_t* iter = reinterpret_cast<uint32_t*>(program_bytes.data());
-	std::vector<uint32_t> words(
-	    iter, iter + (program_bytes.size() + sizeof(uint32_t) - 1) / sizeof(uint32_t));
+	PPUMemoryWord::raw_type* iter =
+	    reinterpret_cast<PPUMemoryWord::raw_type*>(program_bytes.data());
+	std::vector<PPUMemoryWord::raw_type> words(
+	    iter, iter + program_bytes.size() / sizeof(PPUMemoryWord::raw_type));
 
-	// correct endianness
+	// "correct" endianness (we perform a htonl afterwards for PPUMemoryWord)
 	std::transform(words.begin(), words.end(), words.begin(), ntohl);
 
 	// convert to PPUMemoryWords
 	std::vector<PPUMemoryWord> ppu_memory_words(words.size());
-	std::transform(words.begin(), words.end(), ppu_memory_words.begin(), [](uint32_t const x) {
-		return PPUMemoryWord(PPUMemoryWord::Value(x));
-	});
+	std::transform(
+	    words.begin(), words.end(), ppu_memory_words.begin(),
+	    [](PPUMemoryWord::raw_type const x) { return PPUMemoryWord(PPUMemoryWord::Value(x)); });
 
 	std::copy(ppu_memory_words.cbegin(), ppu_memory_words.cend(), m_words.begin());
 }
@@ -384,15 +385,15 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 		std::stringstream halfwords;
 		halfwords << std::hex << std::internal << std::setfill('0');
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			uint32_t word = static_cast<uint32_t>(words[i + j].get_value());
+			auto const word = static_cast<PPUMemoryWord::raw_type>(words[i + j].get_value());
 			halfwords << std::setw(4) << (word >> 16) << " " << std::setw(4) << (word & 0xffff)
 			          << " ";
 		}
 		// print as ascii
 		std::stringstream ascii;
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			uint32_t word = ntohl(static_cast<uint32_t>(words[i + j].get_value()));
-			char* chars = reinterpret_cast<char*>(&word);
+			auto const word = ntohl(static_cast<PPUMemoryWord::raw_type>(words[i + j].get_value()));
+			char const* chars = reinterpret_cast<char const*>(&word);
 			for (int k = 0; k < 4; k++) {
 				ascii << (isprint(chars[k]) ? chars[k] : '.');
 			}

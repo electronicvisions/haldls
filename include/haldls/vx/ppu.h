@@ -34,6 +34,11 @@ public:
 		constexpr explicit Value(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
+	typedef uint32_t raw_type;
+	// verify that the underlying word size matches the value type size
+	static_assert(
+	    static_cast<raw_type>(-1) == Value::max, "ray_type size does not match Value type.");
+
 	explicit PPUMemoryWord(Value value = Value()) SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(value))
