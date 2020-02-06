@@ -76,7 +76,7 @@ def build(bld):
         bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=0",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
     else:
-        bld.env.SIMTEST_TIMEOUT_SECONDS = 1 * 3600
+        bld.env.SIMTEST_TIMEOUT_SECONDS = 1 * 7200
         bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=1",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
 

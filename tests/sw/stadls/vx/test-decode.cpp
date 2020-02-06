@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "fisch/vx/traits.h"
 #include "haldls/vx/container.h"
 #include "haldls/vx/is_readable.h"
 #include "lola/vx/container.h"
@@ -19,8 +20,8 @@ typedef hate::type_list<haldls::vx::CommonPhyConfigChip, haldls::vx::CommonPhyCo
 			stadls::vx::decode_random<Type>(rng, config);                                          \
 			typedef typename haldls::vx::detail::BackendContainerTrait<Type>::default_container    \
 			    word_type;                                                                         \
-			if (haldls::vx::detail::is_simulation_readable<Type, word_type>() ||                   \
-			    haldls::vx::detail::is_hardware_readable<Type, word_type>()) {                     \
+			if (haldls::vx::detail::IsReadable<Type>::value &&                                     \
+			    fisch::vx::IsReadable<word_type>::value) {                                         \
 				EXPECT_NE(config, Type());                                                         \
 			}                                                                                      \
 		}                                                                                          \
@@ -35,8 +36,8 @@ typedef hate::type_list<haldls::vx::CommonPhyConfigChip, haldls::vx::CommonPhyCo
 				typedef                                                                            \
 				    typename haldls::vx::detail::BackendContainerTrait<Type>::default_container    \
 				        word_type;                                                                 \
-				if (haldls::vx::detail::is_simulation_readable<Type, word_type>() ||               \
-				    haldls::vx::detail::is_hardware_readable<Type, word_type>()) {                 \
+				if (haldls::vx::detail::IsReadable<Type>::value &&                                 \
+				    fisch::vx::IsReadable<word_type>::value) {                                     \
 					if constexpr (!hate::is_in_type_list<Type, DefaultOnedTypes>::value) {         \
 						EXPECT_NE(config, Type());                                                 \
 					}                                                                              \

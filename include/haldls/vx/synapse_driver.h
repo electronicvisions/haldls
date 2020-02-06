@@ -28,7 +28,7 @@ public:
 	typedef halco::hicann_dls::vx::SynapseDriverOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
-	    hxcomm::vx::Target::simulation};
+	    hxcomm::vx::Target::simulation, hxcomm::vx::Target::hardware};
 
 	struct GENPYBIND(inline_base("*")) Utilization
 	    : public halco::common::detail::RantWrapper<Utilization, uint_fast8_t, 15, 0>
@@ -269,6 +269,8 @@ class GENPYBIND(visible) SynapseDriverSRAMTimingConfig : public detail::SRAMTimi
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseDriverSRAMTimingConfigOnDLS coordinate_type;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation, hxcomm::vx::Target::hardware};
 
 	bool operator==(SynapseDriverSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(SynapseDriverSRAMTimingConfig const& other) const SYMBOL_VISIBLE;

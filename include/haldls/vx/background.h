@@ -10,6 +10,7 @@
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+#include "hxcomm/vx/target.h"
 
 namespace cereal {
 class access;
@@ -36,6 +37,8 @@ class GENPYBIND(visible) BackgroundSpikeSource
 public:
 	typedef halco::hicann_dls::vx::BackgroundSpikeSourceOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::hardware};
 
 	/**
 	 * Inter-spike interval for regular and inter-bin interval for Poisson spike generation.

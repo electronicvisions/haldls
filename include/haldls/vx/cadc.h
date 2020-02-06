@@ -6,6 +6,7 @@
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include "hxcomm/vx/target.h"
 
 namespace cereal {
 class access;
@@ -145,6 +146,8 @@ class GENPYBIND(visible) CADCChannelConfig
 public:
 	typedef std::true_type is_leaf_node;
 	typedef halco::hicann_dls::vx::CADCChannelConfigOnDLS coordinate_type;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::hardware};
 
 	/**
 	 * Offset value to add to measurement.

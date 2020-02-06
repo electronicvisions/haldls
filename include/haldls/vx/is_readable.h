@@ -6,103 +6,43 @@
 
 namespace haldls::vx::detail {
 
+template <typename T, typename = void>
+struct IsReadable : public std::false_type
+{};
+
+template <typename T>
+struct IsReadable<T, typename boost::enable_if_has_type<decltype(T::config_size_in_words)>::type>
+    : public std::true_type
+{};
+
+template <typename T>
+struct IsReadable<
+    T,
+    typename boost::enable_if_has_type<decltype(T::read_config_size_in_words)>::type>
+{
+	constexpr static bool value = T::read_config_size_in_words;
+};
+
 typedef hate::type_list<
-    NullPayloadReadable,
-    NeuronSRAMTimingConfig,
-    CADCOffsetSRAMTimingConfig,
-    ADPLL,
-    PLLSelfTest,
-    PLLClockOutputBlock,
-    SpikeCounterRead,
-    HicannARQStatus,
-    PhyStatus,
-    PPUMemoryWord,
     PPUMemoryBlock,
-    PPUControlRegister,
-    PPUStatusRegister,
-    JTAGIdCode,
-    CapMemCell,
     CapMemBlock,
-    CommonNeuronBackendConfig,
-    CommonPhyConfigFPGA,
-    PLLSelfTestStatus,
-    PerfTest,
-    PerfTestStatus,
-    SystimeSyncBase,
-    CommonSynramConfig,
-    SynapseQuad,
-    ColumnCorrelationQuad,
-    ColumnCurrentQuad,
-    CADCConfig,
-    CADCChannelConfig,
-    CADCSampleQuad,
-    FPGADeviceDNA,
-    EventRecordingConfig,
-    ReferenceGeneratorConfig,
-    PadMultiplexerConfig,
-    ReadoutSourceSelection,
     lola::vx::CADCSampleRow,
-    lola::vx::CADCSamples,
-    lola::vx::SynapseMatrix,
     lola::vx::SynapseRow,
-    MADCConfig>
-    ReadableContainerList;
+    lola::vx::SynapseWeightRow,
+    lola::vx::SynapseLabelRow,
+    lola::vx::SynapseCorrelationCalibRow,
+    lola::vx::SynapseMatrix,
+    lola::vx::SynapseWeightMatrix,
+    lola::vx::SynapseLabelMatrix,
+    lola::vx::SynapseCorrelationCalibMatrix>
+    NonLeafNodeReadableContainerList;
 
-typedef hate::type_list<
-    CapMemBlockConfig,
-    CommonPADIBusConfig,
-    BackgroundSpikeSource,
-    CrossbarOutputConfig,
-    CrossbarNode,
-    CrossbarInputDropCounter,
-    CrossbarOutputEventCounter>
-    OnlyWithSimulationReadbackReadableContainerList;
-
-typedef hate::
-    type_list<NeuronConfig, NeuronBackendConfig, PhyConfigFPGA, PhyConfigChip, SynapseDriverConfig>
-        OnlyWithHardwareReadableContainerList;
-
-/**
- * Get if container type is readable on hardware.
- * @tparam ContainerT Type of container
- * @tparam BackendT Type of backend
- * @return Boolean value
- */
-template <typename ContainerT, typename BackendT>
-constexpr bool is_hardware_readable()
-{
-	if constexpr (!fisch::vx::IsReadable<BackendT>::value) {
-		return false;
-	}
-	if constexpr (hate::is_in_type_list<ContainerT, ReadableContainerList>::value) {
-		return true;
-	}
-	if constexpr (hate::is_in_type_list<ContainerT, OnlyWithHardwareReadableContainerList>::value) {
-		return true;
-	}
-	return false;
-}
-
-/**
- * Get if container type is readable in simulation.
- * @tparam ContainerT Type of container
- * @tparam BackendT Type of backend
- * @return Boolean value
- */
-template <typename ContainerT, typename BackendT>
-constexpr bool is_simulation_readable()
-{
-	if constexpr (!fisch::vx::IsReadable<BackendT>::value) {
-		return false;
-	}
-	if constexpr (hate::is_in_type_list<ContainerT, ReadableContainerList>::value) {
-		return true;
-	}
-	if constexpr (hate::is_in_type_list<
-	                  ContainerT, OnlyWithSimulationReadbackReadableContainerList>::value) {
-		return true;
-	}
-	return false;
-}
+// manually add all non-leaf node containers which are readable
+template <typename T>
+struct IsReadable<
+    T,
+    std::enable_if_t<hate::is_in_type_list<T, NonLeafNodeReadableContainerList>::value>>
+    : std::true_type
+{};
 
 } // namespace haldls::vx::detail

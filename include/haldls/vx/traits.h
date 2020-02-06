@@ -139,4 +139,19 @@ struct to_ticket_variant<hate::type_list<BackendContainer...>>
 
 } // namespace detail
 
+
+template <typename T, typename = void>
+struct HasLocalData : public std::false_type
+{};
+
+template <typename T>
+struct HasLocalData<T, typename boost::enable_if_has_type<typename T::has_local_data>::type>
+    : public T::has_local_data
+{};
+
+template <typename T>
+struct HasLocalData<T, typename boost::enable_if_has_type<typename T::is_leaf_node>::type>
+    : public T::is_leaf_node
+{};
+
 } // namespace haldls::vx

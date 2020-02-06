@@ -1025,6 +1025,8 @@ class GENPYBIND(visible) NeuronSRAMTimingConfig : public detail::SRAMTimingConfi
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronSRAMTimingConfigOnDLS coordinate_type;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
 
 	bool operator==(NeuronSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(NeuronSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
@@ -1061,6 +1063,8 @@ class GENPYBIND(visible) NeuronBackendSRAMTimingConfig : public detail::SRAMTimi
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronBackendSRAMTimingConfigOnDLS coordinate_type;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation, hxcomm::vx::Target::hardware};
 
 	bool operator==(NeuronBackendSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(NeuronBackendSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
