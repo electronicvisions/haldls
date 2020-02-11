@@ -1,5 +1,6 @@
 import ctypes
 import argparse
+
 from dlens_vx import halco
 from dlens_vx.sta import PlaybackProgramBuilder, PlaybackProgramExecutor, \
     AutoConnection, DigitalInit, generate
@@ -59,10 +60,11 @@ def load_and_start_program(executor: PlaybackProgramExecutor,
 def stop_program(executor: PlaybackProgramExecutor,
                  print_mailbox: bool = True) -> int:
     """
-    Stop the PPU, print the memory contents and evaluate the exit code.
+    Stop the PPU and evaluate the exit code. Optionally, read back the mailbox
+    and print it.
 
     :param executor: Connected executor to be used for stopping the program.
-    :param print_mailbox: Print the mailbox as string to stdout.
+    :param print_mailbox: Read back and print the mailbox as string to stdout.
     :return Exit code of the program
     """
     ppu_control_reg_end = PPUControlRegister()
@@ -73,8 +75,12 @@ def stop_program(executor: PlaybackProgramExecutor,
     return_handle = builder.read(
         halco.PPUMemoryWordOnDLS(halco.PPUMemoryWordOnPPU.return_code,
                                  halco.PPUOnDLS()))
-    mailbox_handle = builder.read(
-        halco.PPUMemoryBlockOnDLS(halco.PPUMemoryBlockOnPPU.mailbox))
+
+    if print_mailbox:
+        mailbox_handle = builder.read(
+            halco.PPUMemoryBlockOnDLS(halco.PPUMemoryBlockOnPPU.mailbox))
+    else:
+        mailbox_handle = None
 
     # Wait for all read responses to arrive
     builder.write(halco.TimerOnDLS(), Timer(0))
