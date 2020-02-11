@@ -100,4 +100,23 @@ std::ostream& operator<<(std::ostream& os, SynapseMatrix const& matrix)
 	return os;
 }
 
+
+CorrelationResetRow::CorrelationResetRow() {}
+
+bool CorrelationResetRow::operator==(CorrelationResetRow const& /* other */) const
+{
+	return true;
+}
+
+bool CorrelationResetRow::operator!=(CorrelationResetRow const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, CorrelationResetRow const& /* row */)
+{
+	os << "CorrelationResetRow()";
+	return os;
+}
+
 } // namespace lola::vx

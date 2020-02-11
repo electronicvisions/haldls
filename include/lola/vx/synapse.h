@@ -318,6 +318,35 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<SynapseMatrix>;
 };
 
+/**
+ * Reset correlation capacitors in all quads of a given row on synram.
+ * Using this container is equivalent to writing haldls CorrelationReset containers
+ * to all quads of the row.
+ */
+class GENPYBIND(visible) CorrelationResetRow
+{
+public:
+	typedef std::false_type has_local_data;
+	typedef halco::hicann_dls::vx::CorrelationResetRowOnDLS coordinate_type;
+
+	/** Default constructor */
+	CorrelationResetRow() SYMBOL_VISIBLE;
+
+	bool operator==(CorrelationResetRow const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CorrelationResetRow const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, CorrelationResetRow const& row)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class haldls::vx::detail::VisitPreorderImpl<CorrelationResetRow>;
+	friend class cereal::access;
+
+	template <typename Archive>
+	void serialize(Archive& ar);
+};
+
 } // namespace lola::vx
 
 namespace haldls::vx::detail {
@@ -420,6 +449,38 @@ struct VisitPreorderImpl<lola::vx::SynapseMatrix>
 					}
 				}
 			}
+		}
+	}
+};
+
+template <>
+struct BackendContainerTrait<lola::vx::CorrelationResetRow>
+    : public BackendContainerBase<
+          lola::vx::CorrelationResetRow,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct VisitPreorderImpl<lola::vx::CorrelationResetRow>
+{
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    lola::vx::CorrelationResetRow::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+		CorrelationReset reset_container;
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			SynapseQuadOnSynram const quad_on_synram(quad, coord.toSynapseRowOnSynram());
+			CorrelationResetOnDLS const reset_coord(quad_on_synram, coord.toSynramOnDLS());
+
+			visit_preorder(reset_container, reset_coord, visitor);
 		}
 	}
 };
