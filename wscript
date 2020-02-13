@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import os
 from os.path import join
 from waflib.extras.symwaf2ic import get_toplevel_path
@@ -34,10 +35,15 @@ def options(opt):
     opt.recurse("dlens")
     opt.recurse("tools/cube")
 
+    try:
+        opt.add_withoption('munge', default=True,
+                           help='Toggle build of quiggeldy with munge-based '
+                                'authentification support')
+    except argparse.ArgumentError:
+        # fisch has already defined --with-munge -> ignore
+        pass
+
     hopts = opt.add_option_group('HALDLS options')
-    hopts.add_withoption('munge', default=True,
-                         help='Toggle build of quiggeldy with munge-based '
-                              'authentification support')
     hopts.add_withoption('haldls-python-bindings', default=True,
                          help='Toggle the generation and build of haldls python bindings')
     hopts.add_option("--disable-coverage-reduction", default=False,
@@ -330,7 +336,6 @@ def build(bld):
         bld.recurse("pylola")
         bld.recurse("dlens")
     bld.recurse("tools/cube")
-
 
     bld(
         features = 'doxygen',
