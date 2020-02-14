@@ -19,6 +19,8 @@ extern std::optional<size_t> const max_words_per_reduced_test;
 
 /**
  * Enable Highspeed omnibus connection and write and read all CapMemCells for verification.
+ *
+ * Disabled on hardware due to #3478.
  */
 TEST(CapMemCell, WROverHighspeed)
 {
