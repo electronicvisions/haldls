@@ -97,11 +97,11 @@ def build(bld):
 
     if bld.options.disable_coverage_reduction:
         bld.env.SIMTEST_TIMEOUT_SECONDS = 40 * 3600
-        bld.env.DEFINES_REDUCED_SIMTESTS = ["REDUCED_TESTS=0",
+        bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=0",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
     else:
         bld.env.SIMTEST_TIMEOUT_SECONDS = 1 * 3600
-        bld.env.DEFINES_REDUCED_SIMTESTS = ["REDUCED_TESTS=1",
+        bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=1",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
 
     bld(
@@ -280,7 +280,7 @@ def build(bld):
                  + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'GTEST', 'stadls_simtest_vx_inc', 'stadls_vx', 'haldls_test_common_inc'],
-        defines = bld.env.DEFINES_REDUCED_SIMTESTS,
+        defines = bld.env.REDUCED_SIMTESTS_DEFINES,
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
         skip_run = not bld.env.DLSvx_SIM_AVAILABLE,
