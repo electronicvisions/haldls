@@ -154,8 +154,35 @@ public:
 	/** Default constructor. */
 	ExperimentInit() SYMBOL_VISIBLE;
 
+	/** Set common neuron backend with clocks enabled.
+	 * If clocks are disabled, it may behave strangely. */
+	typedef halco::common::typed_array<
+	    haldls::vx::CommonNeuronBackendConfig,
+	    halco::hicann_dls::vx::CommonNeuronBackendConfigOnDLS>
+	    common_neuron_backend_config_type GENPYBIND(opaque(false));
+	common_neuron_backend_config_type common_neuron_backend_config;
+
+	/** Set ColumnCorrelationQuad/Switch connections. */
+	typedef halco::common::typed_array<
+	    haldls::vx::ColumnCorrelationQuad,
+	    halco::hicann_dls::vx::ColumnCorrelationQuadOnDLS>
+	    column_correlation_quad_type GENPYBIND(opaque(false));
+	column_correlation_quad_type column_correlation_quad_config;
+
+	/** Set ColumnCurrentQuad/Switch connections. */
+	typedef halco::common::
+	    typed_array<haldls::vx::ColumnCurrentQuad, halco::hicann_dls::vx::ColumnCurrentQuadOnDLS>
+	        column_current_quad_type GENPYBIND(opaque(false));
+	column_current_quad_type column_current_quad_config;
+
 private:
 	friend auto stadls::vx::generate<ExperimentInit>(ExperimentInit const&);
+
+	/**
+	 * Generate PlaybackProgramBuilder.
+	 * @return PlaybackGeneratorReturn instance with sequence embodied and specified Result value
+	 */
+	PlaybackGeneratorReturn<Result> generate() const SYMBOL_VISIBLE;
 };
 
 
