@@ -48,7 +48,7 @@ TEST(NeuronBackend, ResetCounterTest)
 	for (auto coord : iter_all<EventOutputOnNeuronBackendBlock>()) {
 		common_nrn_backend.set_sample_positive_edge(coord, true);
 	}
-	for (auto coord : iter_all<NeuronBackendConfigBlockOnDLS>()) {
+	for (auto coord : iter_all<CommonNeuronBackendConfigOnDLS>()) {
 		builder.write(coord, common_nrn_backend);
 	}
 

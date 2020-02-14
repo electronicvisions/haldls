@@ -29,7 +29,7 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 class GENPYBIND(visible) CommonNeuronBackendConfig : public DifferentialWriteTrait
 {
 public:
-	typedef halco::hicann_dls::vx::NeuronBackendConfigBlockOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::CommonNeuronBackendConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
 	/**

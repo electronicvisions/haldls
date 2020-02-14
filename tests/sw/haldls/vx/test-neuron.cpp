@@ -94,7 +94,7 @@ TEST(CommonNeuronBackendConfig, EncodeDecode)
 	config.set_wait_spike_counter_read(CommonNeuronBackendConfig::WaitSpikeCounterRead(13));
 	config.set_wait_fire_neuron(CommonNeuronBackendConfig::WaitFireNeuron(237));
 
-	auto backend_coord = NeuronBackendConfigBlockOnDLS(1);
+	auto backend_coord = CommonNeuronBackendConfigOnDLS(1);
 
 	std::array<OmnibusChipOverJTAGAddress, CommonNeuronBackendConfig::config_size_in_words>
 	    ref_addresses = {OmnibusChipOverJTAGAddress{0x1a9800 + 0},
