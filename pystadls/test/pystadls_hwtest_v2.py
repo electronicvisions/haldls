@@ -14,6 +14,7 @@ NUM_SPIKES = 50
 
 
 class TestPyhaldlsIOV2Hardware(unittest.TestCase):
+    @unittest.skip("Issue #3243")
     def test_playback(self):
         capmem_config = Ct.CapMem()
         for cell in C.iter_all(C.CapMemCellOnDLS):
