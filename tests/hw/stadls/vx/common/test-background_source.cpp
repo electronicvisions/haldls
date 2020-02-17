@@ -96,10 +96,10 @@ TEST(BackgroundSpikeSource, Regular)
 	test_background_spike_source_regular(
 	    BackgroundSpikeSource::Period(100), Timer::Value(10000), 10);
 #else
-	// 1.5% allowed deviation in spike count
+	// 5% allowed deviation in spike count
 	test_background_spike_source_regular(
-	    BackgroundSpikeSource::Period(1000), Timer::Value(10000000), 300);
+	    BackgroundSpikeSource::Period(1000), Timer::Value(10000000), 1000);
 	test_background_spike_source_regular(
-	    BackgroundSpikeSource::Period(10000), Timer::Value(100000000), 300);
+	    BackgroundSpikeSource::Period(10000), Timer::Value(100000000), 1000);
 #endif
 }
