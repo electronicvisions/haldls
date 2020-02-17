@@ -23,7 +23,7 @@ using namespace stadls::vx;
  */
 TEST(NeuronBackend, ResetCounterTest)
 {
-	auto sequence = DigitalInit();
+	auto sequence = ExperimentInit();
 	sequence.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 
