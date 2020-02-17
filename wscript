@@ -280,7 +280,7 @@ def build(bld):
                  + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
         use = ['haldls_vx', 'GTEST', 'stadls_simtest_vx_inc', 'stadls_vx', 'haldls_test_common_inc'],
-        defines = bld.env.REDUCED_SIMTESTS_DEFINES,
+        defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
         skip_run = not bld.env.DLSvx_SIM_AVAILABLE,
