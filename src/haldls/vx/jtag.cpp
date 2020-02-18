@@ -105,19 +105,25 @@ bool JTAGIdCode::operator!=(JTAGIdCode const& other) const
 
 HALDLS_VX_DEFAULT_OSTREAM_OP(JTAGIdCode)
 
-std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, JTAGIdCode::config_size_in_words>
-JTAGIdCode::addresses(coordinate_type const& coord) const
+std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, JTAGIdCode::read_config_size_in_words>
+JTAGIdCode::read_addresses(coordinate_type const& coord) const
 {
 	return {coord};
 }
 
-std::array<fisch::vx::JTAGIdCode, JTAGIdCode::config_size_in_words> JTAGIdCode::encode() const
+std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, JTAGIdCode::write_config_size_in_words>
+JTAGIdCode::write_addresses(coordinate_type const& /* coord */) const
 {
-	return {m_value};
+	return {};
+}
+
+std::array<fisch::vx::JTAGIdCode, JTAGIdCode::write_config_size_in_words> JTAGIdCode::encode() const
+{
+	return {};
 }
 
 void JTAGIdCode::decode(
-    std::array<fisch::vx::JTAGIdCode, JTAGIdCode::config_size_in_words> const& data)
+    std::array<fisch::vx::JTAGIdCode, JTAGIdCode::read_config_size_in_words> const& data)
 {
 	m_value = data[0];
 }

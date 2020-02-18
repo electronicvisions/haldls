@@ -970,28 +970,45 @@ struct PLLSelfTestStatusBitfield
 } // namespace
 
 template <>
-std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTestStatus::config_size_in_words>
-PLLSelfTestStatus::addresses(coordinate_type const& /*coord*/) const
+std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    PLLSelfTestStatus::read_config_size_in_words>
+PLLSelfTestStatus::read_addresses(coordinate_type const& /*coord*/) const
 {
 	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 7)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTestStatus::config_size_in_words>
-    PLLSelfTestStatus::addresses(coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    PLLSelfTestStatus::read_config_size_in_words>
+PLLSelfTestStatus::read_addresses(coordinate_type const& coord) const;
+
+template <>
+std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    PLLSelfTestStatus::write_config_size_in_words>
+PLLSelfTestStatus::write_addresses(coordinate_type const& /*coord*/) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    PLLSelfTestStatus::write_config_size_in_words>
+PLLSelfTestStatus::write_addresses(coordinate_type const& coord) const;
 
 template <typename WordT>
-std::array<WordT, PLLSelfTestStatus::config_size_in_words> PLLSelfTestStatus::encode() const
+std::array<WordT, PLLSelfTestStatus::write_config_size_in_words> PLLSelfTestStatus::encode() const
 {
-	return {{}};
+	return {};
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::write_config_size_in_words>
     PLLSelfTestStatus::encode() const;
 
 template <typename WordT>
-void PLLSelfTestStatus::decode(std::array<WordT, config_size_in_words> const& data)
+void PLLSelfTestStatus::decode(std::array<WordT, read_config_size_in_words> const& data)
 {
 	PLLSelfTestStatusBitfield bitfield;
 	bitfield.u.raw = data[0].get();
@@ -1002,7 +1019,7 @@ void PLLSelfTestStatus::decode(std::array<WordT, config_size_in_words> const& da
 }
 
 template SYMBOL_VISIBLE void PLLSelfTestStatus::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
+    std::array<fisch::vx::OmnibusChipOverJTAG, read_config_size_in_words> const& /*data*/);
 
 template <typename Archive>
 void PLLSelfTestStatus::serialize(Archive& ar)

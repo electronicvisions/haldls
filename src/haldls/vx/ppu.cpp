@@ -587,8 +587,8 @@ bool PPUStatusRegister::operator!=(PPUStatusRegister const& other) const
 }
 
 template <typename AddressT>
-std::array<AddressT, PPUStatusRegister::config_size_in_words> PPUStatusRegister::addresses(
-    coordinate_type const& coord) const
+std::array<AddressT, PPUStatusRegister::read_config_size_in_words>
+PPUStatusRegister::read_addresses(coordinate_type const& coord) const
 {
 	uint32_t tmp;
 	if (coord.toPPUOnDLS().value() == 0) {
@@ -602,41 +602,60 @@ std::array<AddressT, PPUStatusRegister::config_size_in_words> PPUStatusRegister:
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    PPUStatusRegister::config_size_in_words>
-PPUStatusRegister::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    PPUStatusRegister::read_config_size_in_words>
+PPUStatusRegister::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord) const;
 
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, PPUStatusRegister::config_size_in_words>
-    PPUStatusRegister::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, PPUStatusRegister::read_config_size_in_words>
+    PPUStatusRegister::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+        coordinate_type const& coord) const;
+
+template <typename AddressT>
+std::array<AddressT, PPUStatusRegister::write_config_size_in_words>
+PPUStatusRegister::write_addresses(coordinate_type const& /* coord */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    PPUStatusRegister::write_config_size_in_words>
+PPUStatusRegister::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, PPUStatusRegister::write_config_size_in_words>
+    PPUStatusRegister::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
         coordinate_type const& coord) const;
 
 template <typename WordT>
-std::array<WordT, PPUStatusRegister::config_size_in_words> PPUStatusRegister::encode() const
+std::array<WordT, PPUStatusRegister::write_config_size_in_words> PPUStatusRegister::encode() const
 {
-	return {{static_cast<WordT>(typename WordT::Value(m_sleep))}};
+	return {};
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PPUStatusRegister::config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, PPUStatusRegister::write_config_size_in_words>
     PPUStatusRegister::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, PPUStatusRegister::config_size_in_words>
-PPUStatusRegister::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, PPUStatusRegister::write_config_size_in_words>
+    PPUStatusRegister::encode<fisch::vx::OmnibusChip>() const;
 
 template <typename WordT>
 void PPUStatusRegister::decode(
-    std::array<WordT, PPUStatusRegister::config_size_in_words> const& data)
+    std::array<WordT, PPUStatusRegister::read_config_size_in_words> const& data)
 {
 	m_sleep = static_cast<bool>(data[0].get());
 }
 
 template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, PPUStatusRegister::config_size_in_words> const&
+    std::array<fisch::vx::OmnibusChipOverJTAG, PPUStatusRegister::read_config_size_in_words> const&
         data);
 
 template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, PPUStatusRegister::config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChip, PPUStatusRegister::read_config_size_in_words> const& data);
 
 template <class Archive>
 void PPUStatusRegister::serialize(Archive& ar)

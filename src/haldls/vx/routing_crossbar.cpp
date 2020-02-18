@@ -192,52 +192,70 @@ std::ostream& operator<<(std::ostream& os, CrossbarInputDropCounter const& confi
 }
 
 template <typename AddressT>
-std::array<AddressT, CrossbarInputDropCounter::config_size_in_words>
-CrossbarInputDropCounter::addresses(coordinate_type const& coord) const
+std::array<AddressT, CrossbarInputDropCounter::read_config_size_in_words>
+CrossbarInputDropCounter::read_addresses(coordinate_type const& coord) const
 {
 	return {AddressT(crossbar_input_drop_counter_base_address + coord.toEnum())};
 }
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CrossbarInputDropCounter::config_size_in_words>
-CrossbarInputDropCounter::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    CrossbarInputDropCounter::read_config_size_in_words>
+CrossbarInputDropCounter::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord) const;
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, CrossbarInputDropCounter::config_size_in_words>
-    CrossbarInputDropCounter::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    CrossbarInputDropCounter::read_config_size_in_words>
+CrossbarInputDropCounter::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    coordinate_type const& coord) const;
+
+template <typename AddressT>
+std::array<AddressT, CrossbarInputDropCounter::write_config_size_in_words>
+CrossbarInputDropCounter::write_addresses(coordinate_type const& /* coord */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CrossbarInputDropCounter::write_config_size_in_words>
+CrossbarInputDropCounter::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    CrossbarInputDropCounter::write_config_size_in_words>
+CrossbarInputDropCounter::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    coordinate_type const& coord) const;
 
 template <typename WordT>
-std::array<WordT, CrossbarInputDropCounter::config_size_in_words> CrossbarInputDropCounter::encode()
-    const
+std::array<WordT, CrossbarInputDropCounter::write_config_size_in_words>
+CrossbarInputDropCounter::encode() const
 {
-	return {WordT(fisch::vx::OmnibusData(m_value))};
+	return {};
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarInputDropCounter::config_size_in_words>
+    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarInputDropCounter::write_config_size_in_words>
     CrossbarInputDropCounter::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CrossbarInputDropCounter::config_size_in_words>
+    std::array<fisch::vx::OmnibusChip, CrossbarInputDropCounter::write_config_size_in_words>
     CrossbarInputDropCounter::encode<fisch::vx::OmnibusChip>() const;
 
 template <typename WordT>
 void CrossbarInputDropCounter::decode(
-    std::array<WordT, CrossbarInputDropCounter::config_size_in_words> const& data)
+    std::array<WordT, CrossbarInputDropCounter::read_config_size_in_words> const& data)
 {
 	m_value = Value(data.at(0).get() & Value::max);
 }
 
 template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<
-        fisch::vx::OmnibusChipOverJTAG,
-        CrossbarInputDropCounter::config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChipOverJTAG, read_config_size_in_words> const& data);
 
 template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CrossbarInputDropCounter::config_size_in_words> const& data);
+    std::array<fisch::vx::OmnibusChip, read_config_size_in_words> const& data);
 
 template <class Archive>
 void CrossbarInputDropCounter::serialize(Archive& ar)
@@ -278,42 +296,61 @@ std::ostream& operator<<(std::ostream& os, CrossbarOutputEventCounter const& con
 }
 
 template <typename AddressT>
-std::array<AddressT, CrossbarOutputEventCounter::config_size_in_words>
-CrossbarOutputEventCounter::addresses(coordinate_type const& coord) const
+std::array<AddressT, CrossbarOutputEventCounter::read_config_size_in_words>
+CrossbarOutputEventCounter::read_addresses(coordinate_type const& coord) const
 {
 	return {AddressT(crossbar_output_event_counter_base_address + coord.toEnum())};
 }
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    CrossbarOutputEventCounter::config_size_in_words>
-CrossbarOutputEventCounter::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    CrossbarOutputEventCounter::read_config_size_in_words>
+CrossbarOutputEventCounter::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord) const;
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipAddress,
-    CrossbarOutputEventCounter::config_size_in_words>
-CrossbarOutputEventCounter::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    CrossbarOutputEventCounter::read_config_size_in_words>
+CrossbarOutputEventCounter::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    coordinate_type const& coord) const;
+
+template <typename AddressT>
+std::array<AddressT, CrossbarOutputEventCounter::write_config_size_in_words>
+CrossbarOutputEventCounter::write_addresses(coordinate_type const& /* coord */) const
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CrossbarOutputEventCounter::write_config_size_in_words>
+CrossbarOutputEventCounter::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& coord) const;
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    CrossbarOutputEventCounter::write_config_size_in_words>
+CrossbarOutputEventCounter::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
     coordinate_type const& coord) const;
 
 template <typename WordT>
-std::array<WordT, CrossbarOutputEventCounter::config_size_in_words>
+std::array<WordT, CrossbarOutputEventCounter::write_config_size_in_words>
 CrossbarOutputEventCounter::encode() const
 {
-	return {WordT(fisch::vx::OmnibusData(m_value))};
+	return {};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputEventCounter::config_size_in_words>
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputEventCounter::write_config_size_in_words>
     CrossbarOutputEventCounter::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CrossbarOutputEventCounter::config_size_in_words>
+    std::array<fisch::vx::OmnibusChip, CrossbarOutputEventCounter::write_config_size_in_words>
     CrossbarOutputEventCounter::encode<fisch::vx::OmnibusChip>() const;
 
 template <typename WordT>
 void CrossbarOutputEventCounter::decode(
-    std::array<WordT, CrossbarOutputEventCounter::config_size_in_words> const& data)
+    std::array<WordT, CrossbarOutputEventCounter::read_config_size_in_words> const& data)
 {
 	m_value = Value(data.at(0).get() & Value::max);
 }
@@ -321,10 +358,10 @@ void CrossbarOutputEventCounter::decode(
 template SYMBOL_VISIBLE void CrossbarOutputEventCounter::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<
         fisch::vx::OmnibusChipOverJTAG,
-        CrossbarOutputEventCounter::config_size_in_words> const& data);
+        CrossbarOutputEventCounter::read_config_size_in_words> const& data);
 
 template SYMBOL_VISIBLE void CrossbarOutputEventCounter::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CrossbarOutputEventCounter::config_size_in_words> const&
+    std::array<fisch::vx::OmnibusChip, CrossbarOutputEventCounter::read_config_size_in_words> const&
         data);
 
 template <class Archive>

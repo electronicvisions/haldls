@@ -129,25 +129,27 @@ TEST(PerfTestStatus, EncodeDecode)
 	PerfTestStatusOnFPGA coord;
 
 	OmnibusFPGAAddress base_address(0x0800'0000);
-	std::array<OmnibusFPGAAddress, PerfTestStatus::config_size_in_words> ref_addresses = {
+	std::array<OmnibusFPGAAddress, PerfTestStatus::read_config_size_in_words> ref_addresses = {
 	    OmnibusFPGAAddress(base_address + 1), OmnibusFPGAAddress(base_address + 2),
-	    OmnibusFPGAAddress(base_address + 3),
-	    OmnibusFPGAAddress(base_address + 4)};
-	std::array<fisch::vx::OmnibusFPGA, PerfTestStatus::config_size_in_words> ref_data = {
+	    OmnibusFPGAAddress(base_address + 3), OmnibusFPGAAddress(base_address + 4)};
+
+	std::array<fisch::vx::OmnibusFPGA, PerfTestStatus::read_config_size_in_words> ref_data = {
 	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x123)),
 	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x456)),
 	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x789)),
 	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x010))};
 
 	{
-		addresses_type write_addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
-		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+		addresses_type read_addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
+	PerfTestStatus decoded_config;
 	words_type data;
-	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+	std::copy(ref_data.begin(), ref_data.end(), std::back_inserter(data));
+	visit_preorder(decoded_config, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	EXPECT_EQ(decoded_config, config);
 }
 
 TEST(PerfTestStatus, CerealizeCoverage)

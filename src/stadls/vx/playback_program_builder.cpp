@@ -55,6 +55,10 @@ void PlaybackProgramBuilder::write_table_entry(
 		throw std::logic_error("number of addresses and words do not match");
 	}
 
+	if (words.size() == 0) {
+		throw std::runtime_error("Container not writeable.");
+	}
+
 	if (config_reference) {
 		if constexpr (std::is_base_of<haldls::vx::DifferentialWriteTrait, T>::value) {
 			words_type reference_words;

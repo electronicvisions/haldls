@@ -520,16 +520,8 @@ TEST(PPUStatusRegister, EncodeDecode)
 
 	PPUStatusRegisterOnDLS coord;
 
-	std::array<OmnibusChipOverJTAGAddress, PPUStatusRegister::config_size_in_words> ref_addresses =
-	    {OmnibusChipOverJTAGAddress{0x2a00001ul}};
-	std::array<OmnibusChipOverJTAG, PPUStatusRegister::config_size_in_words> ref_data = {
-	    OmnibusData{0b0ul}};
-
-	{ // write addresses
-		addresses_type write_addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
-		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
-	}
+	std::array<OmnibusChipOverJTAGAddress, PPUStatusRegister::read_config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0x2a00001ul}};
 
 	{ // read addresses
 		addresses_type read_addresses;
@@ -538,8 +530,7 @@ TEST(PPUStatusRegister, EncodeDecode)
 	}
 
 	words_type data;
-	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+	data.push_back({OmnibusData{0b0ul}});
 
 	PPUStatusRegister config_copy;
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
@@ -555,7 +546,7 @@ TEST(PPUStatusRegister, EncodeDecode)
 TEST(PPUStatusRegister, CerealizeCoverage)
 {
 	PPUStatusRegister obj1, obj2;
-	std::array<OmnibusChipOverJTAG, PPUStatusRegister::config_size_in_words> data = {
+	std::array<OmnibusChipOverJTAG, PPUStatusRegister::read_config_size_in_words> data = {
 	    {static_cast<OmnibusData>(rand())}};
 	obj1.decode(data);
 

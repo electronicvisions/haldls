@@ -123,17 +123,11 @@ TEST(CrossbarInputDropCounter, EncodeDecode)
 
 	std::array<
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-	    CrossbarInputDropCounter::config_size_in_words>
+	    CrossbarInputDropCounter::read_config_size_in_words>
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{
 	        crossbar_input_drop_counter_base_address + coord.toEnum()}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarInputDropCounter::config_size_in_words>
+	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarInputDropCounter::read_config_size_in_words>
 	    ref_data = {static_cast<fisch::vx::OmnibusData>(val)};
-
-	{ // write addresses
-		addresses_type addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{addresses});
-		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
-	}
 
 	{ // read addresses
 		addresses_type addresses;
@@ -142,8 +136,7 @@ TEST(CrossbarInputDropCounter, EncodeDecode)
 	}
 
 	words_type data;
-	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+	data.push_back(ref_data.at(0));
 
 	CrossbarInputDropCounter config_copy;
 	ASSERT_NE(config, config_copy);
@@ -173,17 +166,12 @@ TEST(CrossbarOutputEventCounter, EncodeDecode)
 
 	std::array<
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-	    CrossbarOutputEventCounter::config_size_in_words>
+	    CrossbarOutputEventCounter::read_config_size_in_words>
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{
 	        crossbar_output_event_counter_base_address + coord.toEnum()}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputEventCounter::config_size_in_words>
+	std::array<
+	    fisch::vx::OmnibusChipOverJTAG, CrossbarOutputEventCounter::read_config_size_in_words>
 	    ref_data = {static_cast<fisch::vx::OmnibusData>(val)};
-
-	{ // write addresses
-		addresses_type addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{addresses});
-		EXPECT_THAT(addresses, ::testing::ElementsAreArray(ref_addresses));
-	}
 
 	{ // read addresses
 		addresses_type addresses;
@@ -192,8 +180,7 @@ TEST(CrossbarOutputEventCounter, EncodeDecode)
 	}
 
 	words_type data;
-	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+	data.push_back(ref_data.at(0));
 
 	CrossbarOutputEventCounter config_copy;
 	ASSERT_NE(config, config_copy);

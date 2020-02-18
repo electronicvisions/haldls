@@ -528,9 +528,11 @@ TEST(PLLSelfTestStatus, EncodeDecode)
 
 	// Omnibus over JTAG access
 	{
-		std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PLLSelfTestStatus::config_size_in_words> ref_addresses = {
-		    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x80007)};
-		std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::config_size_in_words>
+		std::array<
+		    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+		    PLLSelfTestStatus::read_config_size_in_words>
+		    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x80007)};
+		std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::read_config_size_in_words>
 		    ref_data = {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x00312345))};
 
 		{ // read addresses
@@ -558,8 +560,8 @@ TEST(PLLSelfTestStatus, CerealizeCoverage)
 	PLLSelfTestStatus obj1, obj2;
 
 	{
-		std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::config_size_in_words> data =
-		    {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x00312345))};
+		std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::read_config_size_in_words>
+		    data = {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x00312345))};
 		visit_preorder(
 		    obj1, PLLSelfTestStatusOnDLS(),
 		    stadls::DecodeVisitor<std::array<fisch::vx::OmnibusChipOverJTAG, data.size()>>(data));
