@@ -17,32 +17,6 @@ using namespace haldls::vx;
 using namespace stadls::vx;
 
 /**
- * Enable Highspeed omnibus connection, read ARQ status, expect counts == 0.
- */
-TEST(HicannARQStatus, ReadCount0)
-{
-	auto sequence = DigitalInit();
-	sequence.highspeed_link.enable_systime = false;
-	auto [builder, _] = generate(sequence);
-
-	auto ticket = builder.read(HicannARQStatusOnFPGA());
-
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
-	auto program = builder.done();
-
-	auto executor = generate_playback_program_test_executor();
-	executor.run(program);
-
-	EXPECT_TRUE(ticket.valid());
-	auto status = ticket.get();
-	EXPECT_EQ(status.get_read_count(), 0);
-	EXPECT_EQ(status.get_write_count(), 0);
-	EXPECT_EQ(status.get_rx_count(), 0);
-	EXPECT_EQ(status.get_tx_count(), 0);
-}
-
-/**
  * Enable Highspeed omnibus connection, read a container of known length and compare to ARQ status
  * counts.
  */
@@ -51,6 +25,12 @@ TEST(HicannARQStatus, OmnibusReadCount)
 	auto sequence = DigitalInit();
 	sequence.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
+
+	// wait to make sure, whole Omnibus access over Highspeed completed
+	builder.write(TimerOnDLS(), Timer());
+	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
+
+	auto ticket_ref = builder.read(HicannARQStatusOnFPGA());
 
 	builder.read(SystimeSyncBaseOnDLS(), Backend::OmnibusChip);
 
@@ -67,14 +47,17 @@ TEST(HicannARQStatus, OmnibusReadCount)
 	auto executor = generate_playback_program_test_executor();
 	executor.run(program);
 
+	EXPECT_TRUE(ticket_ref.valid());
 	EXPECT_TRUE(ticket.valid());
+	auto status_ref = ticket_ref.get();
 	auto status = ticket.get();
 	EXPECT_EQ(
-	    status.get_read_count(),
+	    status.get_read_count() - status_ref.get_read_count(),
 	    SystimeSyncBase::config_size_in_words * fisch::vx::OmnibusChip::decode_ut_message_count);
 	EXPECT_EQ(
-	    status.get_write_count(), SystimeSyncBase::config_size_in_words *
-	                                  fisch::vx::OmnibusChip::encode_read_ut_message_count);
+	    status.get_write_count() - status_ref.get_write_count(),
+	    SystimeSyncBase::config_size_in_words *
+	        fisch::vx::OmnibusChip::encode_read_ut_message_count);
 
 	EXPECT_GE(status.get_rx_count(), status.get_read_count());
 	EXPECT_GE(status.get_tx_count(), status.get_write_count());
