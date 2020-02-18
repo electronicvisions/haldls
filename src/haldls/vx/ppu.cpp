@@ -81,7 +81,7 @@ template SYMBOL_VISIBLE
 template <typename WordT>
 std::array<WordT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
 {
-	return {{static_cast<WordT>(typename WordT::value_type(get_value()))}};
+	return {{static_cast<WordT>(typename WordT::Value(get_value()))}};
 }
 
 template SYMBOL_VISIBLE
@@ -614,7 +614,7 @@ template SYMBOL_VISIBLE
 template <typename WordT>
 std::array<WordT, PPUStatusRegister::config_size_in_words> PPUStatusRegister::encode() const
 {
-	return {{static_cast<WordT>(typename WordT::value_type(m_sleep))}};
+	return {{static_cast<WordT>(typename WordT::Value(m_sleep))}};
 }
 
 template SYMBOL_VISIBLE
