@@ -141,7 +141,9 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 
 	// Set Synram SRAM configs
 	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {
-		builder.write(coord, common_synram_config[coord], Backend::OmnibusChipOverJTAG);
+		builder.write(
+		    coord, common_synram_config[coord],
+		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
 	}
 
 	return {std::move(builder), Result{}};
