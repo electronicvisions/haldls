@@ -131,7 +131,7 @@ def build(bld):
         target = 'haldls_v2',
         source = bld.path.ant_glob('src/haldls/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        use = ['dls_common', 'bitter', 'uni', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2'],
+        use = ['dls_common', 'bitter', 'uni', 'halco_hicann_dls_v2_inc', 'halco_hicann_dls_v2', 'logger_obj'],
         uselib = 'HALDLS_LIBRARIES',
     )
     bld(
