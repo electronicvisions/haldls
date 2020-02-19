@@ -181,12 +181,12 @@ void ReadoutMuxConfig::set_synin_debug_inhibitory_to_synapse_intermediate_mux(bo
 
 bool ReadoutMuxConfig::get_synin_debug_excitatory_to_synapse_intermediate_mux() const
 {
-	return m_synin_debug_inhibitory_to_inter;
+	return m_synin_debug_excitatory_to_inter;
 }
 
 void ReadoutMuxConfig::set_synin_debug_excitatory_to_synapse_intermediate_mux(bool const value)
 {
-	m_synin_debug_inhibitory_to_inter = value;
+	m_synin_debug_excitatory_to_inter = value;
 }
 
 bool ReadoutMuxConfig::get_synapse_intermediate_mux_to_pad() const
