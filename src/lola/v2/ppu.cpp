@@ -114,8 +114,9 @@ PPUElfFile::symbols_type PPUElfFile::read_symbols()
 		}
 		if ((shdr->sh_type == SHT_STRTAB) && (std::string(name) == ".strtab")) {
 			Elf_Data* data = nullptr;
-			data = elf_getdata(scn, data);
-			strtab = reinterpret_cast<char*>(data->d_buf);
+			if ((data = elf_getdata(scn, data)) != nullptr) {
+				strtab = reinterpret_cast<char*>(data->d_buf);
+			}
 		}
 		if (shdr->sh_type == SHT_SYMTAB) {
 			Elf_Data* data = nullptr;
@@ -165,7 +166,16 @@ PPUElfFile::symbols_type PPUElfFile::read_symbols()
 
 haldls::v2::PPUMemoryBlock PPUElfFile::read_program()
 {
+	size_t phdrnum = 0;
+
+	if (elf_getphdrnum(m_elf_ptr, &phdrnum) != 0) {
+		throw std::runtime_error("Getting number of program headers failed.");
+	}
+
 	Elf32_Phdr* phdr = elf32_getphdr(m_elf_ptr);
+	if (phdr == nullptr) {
+		throw std::runtime_error("No program header found.");
+	}
 
 	std::vector<char> bytes(phdr->p_filesz);
 	pread(m_fd, bytes.data(), phdr->p_filesz, phdr->p_offset);
