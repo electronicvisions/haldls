@@ -378,7 +378,7 @@ NeuronBackendConfig::NeuronBackendConfig() :
     m_connect_fire_from_right(false),
     m_connect_fire_to_right(false),
     m_en_spike_out(false),
-    m_en_neuron_master(false),
+    m_en_neuron_master(true),
     m_en_0_baesian(false),
     m_en_1_baesian(false)
 {}

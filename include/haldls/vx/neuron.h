@@ -234,7 +234,7 @@ public:
 	struct GENPYBIND(inline_base("*")) ResetHoldoff
 	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0>
 	{
-		constexpr explicit ResetHoldoff(uintmax_t const val = 0)
+		constexpr explicit ResetHoldoff(uintmax_t const val = 15)
 		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
 		{}
 	};
