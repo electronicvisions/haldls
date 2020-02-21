@@ -82,6 +82,7 @@ public:
 	 * @param program PlaybackProgram to run
 	 */
 	void run(PlaybackProgram& program) SYMBOL_VISIBLE;
+	void run(PlaybackProgram&& program) GENPYBIND(hidden) SYMBOL_VISIBLE;
 
 	/**
 	 * Transfer and execute the given playback program and fetch results.

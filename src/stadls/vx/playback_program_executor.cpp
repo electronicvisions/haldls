@@ -129,6 +129,11 @@ void PlaybackProgramExecutor::run(PlaybackProgram& program)
 	run(program.m_program_impl);
 }
 
+void PlaybackProgramExecutor::run(PlaybackProgram&& program)
+{
+	run(program.m_program_impl);
+}
+
 void PlaybackProgramExecutor::run(std::shared_ptr<fisch::vx::PlaybackProgram> const& program)
 {
 	if (!m_impl) {
