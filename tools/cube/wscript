@@ -43,7 +43,8 @@ def build(bld):
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
         relative_trick=True,
         chmod=Utils.O755,
-        install_path = '${PREFIX}/bin'
+        install_path = '${PREFIX}/bin',
+        test_timeout=120
     )
 
     bld.add_post_fun(summary)

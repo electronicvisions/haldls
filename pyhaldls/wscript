@@ -60,7 +60,8 @@ def build(bld):
         use=['pyhalco_hicann_dls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
     )
 
     bld(
@@ -82,7 +83,8 @@ def build(bld):
         use=['pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
     )
 
     bld.add_post_fun(summary)

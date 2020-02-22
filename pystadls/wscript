@@ -68,7 +68,8 @@ def build(bld):
         use=['pyhalco_hicann_dls_v2', 'pystadls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
     )
 
     bld(
@@ -78,7 +79,8 @@ def build(bld):
         use=['pystadls_vx'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
     )
 
     bld(
@@ -90,6 +92,7 @@ def build(bld):
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
         skip_run=not bld.env.DLSv2_HARDWARE_AVAILABLE,
+        test_timeout=120
     )
 
     bld(
@@ -100,7 +103,8 @@ def build(bld):
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE
+        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
+        test_timeout=120
     )
 
     bld.add_post_fun(summary)

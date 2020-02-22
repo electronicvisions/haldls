@@ -39,7 +39,8 @@ def build(bld):
         ],
         install_path = '${PREFIX}/lib',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
     )
 
     bld(name='dlens_vx',
@@ -53,7 +54,8 @@ def build(bld):
         ],
         install_path = '${PREFIX}/lib',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
     )
 
     bld(name='dlens_swtest_v2',
@@ -62,7 +64,8 @@ def build(bld):
         use=['dlens_v2'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
     )
 
     bld(name='dlens_swtest_vx',
@@ -71,7 +74,8 @@ def build(bld):
         use=['dlens_vx'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
     )
 
     bld(name='dlens_hwtest_vx',
@@ -81,7 +85,8 @@ def build(bld):
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE
+        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
+        test_timeout=120
     )
 
     # --- Deprecated aliases --- #
