@@ -237,7 +237,7 @@ template <typename WordT>
 void CrossbarInputDropCounter::decode(
     std::array<WordT, CrossbarInputDropCounter::config_size_in_words> const& data)
 {
-	m_value = Value(data.at(0).get());
+	m_value = Value(data.at(0).get() & Value::max);
 }
 
 template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::OmnibusChipOverJTAG>(
@@ -324,7 +324,7 @@ template <typename WordT>
 void CrossbarOutputEventCounter::decode(
     std::array<WordT, CrossbarOutputEventCounter::config_size_in_words> const& data)
 {
-	m_value = Value(data.at(0).get());
+	m_value = Value(data.at(0).get() & Value::max);
 }
 
 template SYMBOL_VISIBLE void CrossbarOutputEventCounter::decode<fisch::vx::OmnibusChipOverJTAG>(

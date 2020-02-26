@@ -79,7 +79,7 @@ CapMemCell::encode<fisch::vx::OmnibusChip>() const;
 template <typename WordT>
 void CapMemCell::decode(std::array<WordT, CapMemCell::config_size_in_words> const& data)
 {
-	auto value = data[0].get();
+	auto value = data[0].get() & DisableRefresh::max;
 	if (value == DisableRefresh()) {
 		m_value = DisableRefresh();
 	} else {
@@ -455,11 +455,13 @@ struct CapMemBlockConfigBitfield
 		array_type raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t hotbit_capmem_row          : 32;
+			uint32_t hotbit_capmem_row          : 24;
+			uint32_t /* unused */               : 8;
 
 			uint32_t capmem_column              : 32;
 
-			uint32_t debug_v_ref_select         : 32;
+			uint32_t debug_v_ref_select         :  2;
+			uint32_t /* unused */               : 30;
 
 			uint32_t v_global_bias              :  4;
 			uint32_t debug_level_shifter_bias   :  4;
@@ -467,9 +469,11 @@ struct CapMemBlockConfigBitfield
 			uint32_t debug_out_amp_bias         :  4;
 			uint32_t                            : 16;
 
-			uint32_t current_cell_res           : 32;
+			uint32_t current_cell_res           :  6;
+			uint32_t /* unused */               : 26;
 
-			uint32_t debug_i_out_select         : 32;
+			uint32_t debug_i_out_select         :  2;
+			uint32_t /* unused */               : 30;
 
 			uint32_t sub_counter                : 16;
 			uint32_t enable_capmem              :  1;
@@ -587,7 +591,7 @@ void CapMemBlockConfig::decode(
 		    CapMemRowOnCapMemBlock(CapMemRowOnCapMemBlock::max - position));
 	} else {
 		m_debug_readout_enable = false;
-		m_debug_capmem_coord = CapMemCellOnDLS();
+		m_debug_capmem_coord = CapMemCellOnCapMemBlock();
 	}
 	m_debug_v_ref_select = VRefSelect(bitfield.u.m.debug_v_ref_select);
 	m_debug_out_amp_bias = OutAmpBias(bitfield.u.m.debug_out_amp_bias);

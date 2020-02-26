@@ -259,7 +259,8 @@ struct PhyConfigBaseBitfield
 			uint32_t enable_manual_training_mode              :  1;
 			uint32_t enable_ber_loopback                      :  1;
 			uint32_t vbias                                    :  3;
-			uint32_t debug_outputs                            :  2;
+			uint32_t debug_outputs                            :  1;
+			uint32_t /* unused */                             :  1;
 			uint32_t enable_transmission_without_idle_pattern :  1;
 			uint32_t enable_clock_pre_alignment               :  1;
 			uint32_t enable_des_recal                         :  1;
