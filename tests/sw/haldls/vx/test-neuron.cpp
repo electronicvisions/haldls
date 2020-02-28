@@ -499,7 +499,7 @@ TEST(NeuronConfig, EncodeDecode)
 	words_type data;
 	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
 	ASSERT_TRUE(data[1].get() & 0b10000);            // en_readout_amp
-	ASSERT_TRUE(data[5].get() & 0b1000000);          // connect_somata
+	ASSERT_TRUE(data[5].get() & 0b0000001);          // connect_somata
 	ASSERT_FALSE(data[4].get() & 0b100000);          // en_synin_exc
 	ASSERT_EQ(data[1].get() & 0b1100000, 0b1100000); // readout_select
 

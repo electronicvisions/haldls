@@ -848,13 +848,13 @@ struct NeuronConfigBitfield
 			uint32_t en_byp_exc                                           :  1;  // 7    ; 6
 			uint32_t                                                      : 24;  // 8-31 ; 6
 
-			uint32_t en_comp_cond_div                                     :  1;  // 0    ; 7
-			uint32_t en_comp_cond_mul                                     :  1;  // 1    ; 7
-			uint32_t connect_soma                                         :  1;  // 2    ; 7
+			uint32_t connect_somata                                       :  1;  // 0    ; 7
+			uint32_t connect_bottom                                       :  1;  // 1    ; 7
+			uint32_t en_comp_cond                                         :  1;  // 2    ; 7
 			uint32_t connect_membrane_right                               :  1;  // 3    ; 7
-			uint32_t en_comp_cond                                         :  1;  // 4    ; 7
-			uint32_t connect_bottom                                       :  1;  // 5    ; 7
-			uint32_t connect_somata                                       :  1;  // 6    ; 7
+			uint32_t connect_soma                                         :  1;  // 4    ; 7
+			uint32_t en_comp_cond_mul                                     :  1;  // 5    ; 7
+			uint32_t en_comp_cond_div                                     :  1;  // 6    ; 7
 			uint32_t                                                      : 25;  // 7-31 ; 7
 		} m;
 		// clang-format on
