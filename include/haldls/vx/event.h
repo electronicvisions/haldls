@@ -1,13 +1,12 @@
 #pragma once
-
 #include "fisch/vx/event.h"
+#include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/event.h"
-#include "hate/visibility.h"
-
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
+#include "hate/visibility.h"
 
 namespace cereal {
 class access;

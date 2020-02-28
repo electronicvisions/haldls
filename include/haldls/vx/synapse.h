@@ -1,7 +1,12 @@
 #pragma once
-#include "halco/common/typed_array.h"
-#include "halco/hicann-dls/vx/coordinates.h"
+#include <array>
+#include <ostream>
 
+#include "halco/common/geometry.h"
+#include "halco/common/typed_array.h"
+#include "halco/hicann-dls/vx/capmem.h"
+#include "halco/hicann-dls/vx/switch_rows.h"
+#include "halco/hicann-dls/vx/synapse.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"

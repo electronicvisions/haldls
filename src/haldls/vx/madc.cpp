@@ -1,13 +1,11 @@
-#include <string>
-
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/madc.h"
-#include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.h"
 
 #include "fisch/vx/jtag.h"
+#include "fisch/vx/omnibus.h"
+#include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/cerealization.h"
+#include "haldls/vx/omnibus_constants.h"
+#include "haldls/vx/print.h"
 
 namespace haldls {
 namespace vx {

@@ -1,15 +1,13 @@
-#include <cctype>
-#include <iomanip>
-#include <utility>
-
-#include "fisch/vx/jtag.h"
-
-#include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.h"
 #include "haldls/vx/systime.h"
 
+#include "fisch/vx/jtag.h"
+#include "fisch/vx/omnibus.h"
+#include "fisch/vx/systime.h"
 #include "halco/common/cerealization_geometry.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/omnibus_constants.h"
+#include "haldls/vx/print.h"
 
 namespace haldls {
 namespace vx {

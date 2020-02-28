@@ -1,8 +1,11 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
 #include "haldls/vx/correlation.h"
+
+#include "fisch/vx/jtag.h"
+#include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/vx/common.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 

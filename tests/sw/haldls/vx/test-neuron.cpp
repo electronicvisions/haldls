@@ -4,7 +4,7 @@
 
 #include "fisch/vx/jtag.h"
 #include "halco/common/typed_array.h"
-#include "halco/hicann-dls/vx/coordinates.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/omnibus_constants.h"

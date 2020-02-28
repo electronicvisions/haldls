@@ -1,9 +1,10 @@
 #pragma once
-
 #include <array>
 #include <ostream>
 
-#include "halco/hicann-dls/vx/coordinates.h"
+#include "halco/common/geometry.h"
+#include "halco/common/iter_all.h"
+#include "halco/hicann-dls/vx/ppu.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"

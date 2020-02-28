@@ -2,13 +2,13 @@
 
 #include "fisch/vx/jtag.h"
 #include "fisch/vx/omnibus.h"
-
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
+#include "halco/common/iter_all.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
-
 #include "hate/bitset.h"
 
 namespace haldls {

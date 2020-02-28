@@ -4,6 +4,7 @@
 #include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/address_transformation.h"
 #include "haldls/vx/omnibus_constants.h"

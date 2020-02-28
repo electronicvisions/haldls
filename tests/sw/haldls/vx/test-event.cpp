@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "halco/hicann-dls/vx/event.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/event.h"
 

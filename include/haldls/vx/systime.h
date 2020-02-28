@@ -3,7 +3,7 @@
 #include <array>
 #include <ostream>
 
-#include "halco/hicann-dls/vx/coordinates.h"
+#include "halco/hicann-dls/vx/timing.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"

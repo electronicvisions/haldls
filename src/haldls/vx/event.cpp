@@ -1,5 +1,7 @@
 #include "haldls/vx/event.h"
+
 #include <cereal/types/array.hpp>
+
 #include "halco/common/cerealization_geometry.h"
 #include "hate/join.h"
 #include "haldls/cerealization.h"

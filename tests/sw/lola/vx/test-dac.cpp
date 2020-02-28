@@ -1,11 +1,13 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "lola/vx/dac.h"
+
 #include "fisch/vx/spi.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
+#include "halco/hicann-dls/vx/spi.h"
 #include "lola/vx/cerealization.h"
-#include "lola/vx/dac.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 

@@ -1,10 +1,8 @@
-#include <cctype>
-#include <iomanip>
-#include <utility>
+#include "haldls/vx/fpga.h"
 
 #include "halco/common/cerealization_geometry.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
-#include "haldls/vx/fpga.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
 

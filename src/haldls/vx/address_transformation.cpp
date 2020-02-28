@@ -1,5 +1,6 @@
 #include "haldls/vx/address_transformation.h"
-#include "halco/hicann-dls/vx/coordinates.h"
+
+#include "halco/hicann-dls/vx/synapse.h"
 
 namespace haldls::vx::detail {
 

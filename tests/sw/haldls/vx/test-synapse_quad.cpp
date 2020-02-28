@@ -2,6 +2,9 @@
 #include <gtest/gtest.h>
 
 #include "haldls/vx/synapse.h"
+
+#include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/vx/common.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 

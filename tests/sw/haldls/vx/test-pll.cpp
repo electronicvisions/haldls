@@ -1,6 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "halco/hicann-dls/vx/jtag.h"
+#include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/vx/common.h"
 #include "haldls/vx/pll.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"

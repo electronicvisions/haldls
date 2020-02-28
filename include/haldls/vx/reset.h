@@ -1,12 +1,9 @@
 #pragma once
-
 #include <array>
 #include <ostream>
 
 #include "fisch/vx/reset.h"
-
-#include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/vx/common.h"
+#include "halco/hicann-dls/vx/reset.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"

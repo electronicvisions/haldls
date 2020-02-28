@@ -1,10 +1,10 @@
 #pragma once
-
 #include <ostream>
 
-#include "halco/hicann-dls/vx/coordinates.h"
-
-#include "haldls/vx/common.h"
+#include "halco/common/typed_array.h"
+#include "halco/hicann-dls/vx/capmem.h"
+#include "halco/hicann-dls/vx/chip.h"
+#include "halco/hicann-dls/vx/readout.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"

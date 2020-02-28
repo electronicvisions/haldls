@@ -1,18 +1,14 @@
 #include "haldls/vx/pll.h"
 
-#include <array>
-#include <ostream>
-
+#include "fisch/vx/jtag.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
-#include "halco/common/typed_array.h"
-#include "halco/hicann-dls/vx/coordinates.h"
+#include "halco/hicann-dls/vx/jtag.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
-#include "haldls/vx/common.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
 #include "haldls/vx/traits.h"
-#include "hate/visibility.h"
 
 namespace haldls {
 namespace vx {

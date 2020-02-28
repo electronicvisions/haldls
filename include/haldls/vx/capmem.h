@@ -1,20 +1,19 @@
 #pragma once
-
 #include <array>
 #include <cstdint>
 #include <ostream>
 // std::variant not serializable by cereal with builtin support
 #include <boost/variant.hpp>
+#include <pybind11/stl.h>
 
+#include "halco/common/geometry.h"
+#include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
-#include "halco/hicann-dls/vx/coordinates.h"
-
+#include "halco/hicann-dls/vx/capmem.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-#include "pybind11/stl.h"
 
 namespace cereal {
 class access;

@@ -1,12 +1,10 @@
 #pragma once
-
 #include <array>
 #include <ostream>
 
 #include "fisch/vx/timer.h"
-
-#include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/vx/common.h"
+#include "halco/common/geometry.h"
+#include "halco/hicann-dls/vx/timing.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"

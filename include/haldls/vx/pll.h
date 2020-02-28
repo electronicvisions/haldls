@@ -1,13 +1,11 @@
 #pragma once
-
 #include <array>
 #include <ostream>
 
 #include "fisch/vx/jtag.h"
-
+#include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
-#include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/vx/common.h"
+#include "halco/hicann-dls/vx/pll.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"

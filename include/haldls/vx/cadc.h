@@ -1,6 +1,6 @@
 #pragma once
-#include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/vx/common.h"
+#include "halco/common/geometry.h"
+#include "halco/hicann-dls/vx/cadc.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"

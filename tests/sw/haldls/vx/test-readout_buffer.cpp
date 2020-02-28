@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/jtag.h"
-#include "halco/hicann-dls/vx/coordinates.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/readout.h"
 #include "test-helper.h"

@@ -1,15 +1,13 @@
-#include <string>
-
-#include "haldls/vx/address_transformation.h"
 #include "haldls/vx/neuron.h"
-#include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.h"
 
 #include "fisch/vx/jtag.h"
-
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/address_transformation.h"
+#include "haldls/vx/omnibus_constants.h"
+#include "haldls/vx/print.h"
 #include "hate/join.h"
 
 namespace haldls {

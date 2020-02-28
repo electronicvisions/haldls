@@ -1,10 +1,12 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "lola/vx/cadc.h"
+
 #include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
-#include "lola/vx/cadc.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "lola/vx/cerealization.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
