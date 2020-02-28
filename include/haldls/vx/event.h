@@ -36,8 +36,8 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 	struct GENPYBIND(inline_base("*")) PADILabel
 	    : public halco::common::detail::RantWrapper<PADILabel, uint_fast16_t, 0x3ff, 0>
 	{
-		constexpr explicit PADILabel(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit PADILabel(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 

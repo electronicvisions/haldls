@@ -30,14 +30,14 @@ public:
 	struct GENPYBIND(inline_base("*")) LoopFilterInt
 	    : public halco::common::detail::RantWrapper<LoopFilterInt, uint_fast16_t, 31, 1>
 	{
-		constexpr explicit LoopFilterInt(uintmax_t const val = 2) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit LoopFilterInt(uintmax_t const val = 2) : rant_t(val) {}
 	};
 
 	/** Proportional part of the PID controller for the DCO. */
 	struct GENPYBIND(inline_base("*")) LoopFilterProp
 	    : public halco::common::detail::RantWrapper<LoopFilterProp, uint_fast16_t, 31, 1>
 	{
-		constexpr explicit LoopFilterProp(uintmax_t const val = 8) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit LoopFilterProp(uintmax_t const val = 8) : rant_t(val) {}
 	};
 
 	/**
@@ -47,7 +47,7 @@ public:
 	struct GENPYBIND(inline_base("*")) LoopDivN
 	    : public halco::common::detail::RantWrapper<LoopDivN, uint_fast16_t, 31, 1>
 	{
-		constexpr explicit LoopDivN(uintmax_t const val = 10) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit LoopDivN(uintmax_t const val = 10) : rant_t(val) {}
 	};
 
 	/**
@@ -57,7 +57,7 @@ public:
 	struct GENPYBIND(inline_base("*")) CoreDivM0
 	    : public halco::common::detail::RantWrapper<CoreDivM0, uint_fast16_t, 31, 1>
 	{
-		constexpr explicit CoreDivM0(uintmax_t const val = 1) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit CoreDivM0(uintmax_t const val = 1) : rant_t(val) {}
 	};
 
 	/**
@@ -67,7 +67,7 @@ public:
 	struct GENPYBIND(inline_base("*")) CoreDivM1
 	    : public halco::common::detail::RantWrapper<CoreDivM1, uint_fast16_t, 31, 1>
 	{
-		constexpr explicit CoreDivM1(uintmax_t const val = 2) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit CoreDivM1(uintmax_t const val = 2) : rant_t(val) {}
 	};
 
 	/**
@@ -77,7 +77,7 @@ public:
 	struct GENPYBIND(inline_base("*")) PreDivP0
 	    : public halco::common::detail::RantWrapper<PreDivP0, uint_fast16_t, 4, 2>
 	{
-		constexpr explicit PreDivP0(uintmax_t const val = 2) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PreDivP0(uintmax_t const val = 2) : rant_t(val) {}
 	};
 
 	/**
@@ -88,7 +88,7 @@ public:
 	struct GENPYBIND(inline_base("*")) PreDivP1
 	    : public halco::common::detail::RantWrapper<PreDivP1, uint_fast16_t, 4, 2>
 	{
-		constexpr explicit PreDivP1(uintmax_t const val = 2) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PreDivP1(uintmax_t const val = 2) : rant_t(val) {}
 	};
 
 	/**
@@ -98,28 +98,28 @@ public:
 	struct GENPYBIND(inline_base("*")) PreDivP2
 	    : public halco::common::detail::RantWrapper<PreDivP2, uint_fast16_t, 4, 2>
 	{
-		constexpr explicit PreDivP2(uintmax_t const val = 2) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PreDivP2(uintmax_t const val = 2) : rant_t(val) {}
 	};
 
 	/** Tune value of the DCO. */
 	struct GENPYBIND(inline_base("*")) Tune
 	    : public halco::common::detail::RantWrapper<Tune, uint_fast16_t, 4095, 0>
 	{
-		constexpr explicit Tune(uintmax_t const val = 512) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Tune(uintmax_t const val = 512) : rant_t(val) {}
 	};
 
 	/** Number of activated PMOS header power switches during DCO operation. */
 	struct GENPYBIND(inline_base("*")) DcoPowerSwitch
 	    : public halco::common::detail::RantWrapper<DcoPowerSwitch, uint_fast16_t, 63, 0>
 	{
-		constexpr explicit DcoPowerSwitch(uintmax_t const val = 63) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit DcoPowerSwitch(uintmax_t const val = 63) : rant_t(val) {}
 	};
 
 	/** Loop filter gain boost by 2^n during lock-in, leads to lock time reduction. */
 	struct GENPYBIND(inline_base("*")) FilterShift
 	    : public halco::common::detail::RantWrapper<FilterShift, uint_fast16_t, 3, 0>
 	{
-		constexpr explicit FilterShift(uintmax_t const val = 3) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit FilterShift(uintmax_t const val = 3) : rant_t(val) {}
 	};
 
 	/** Default construct ADPLL. */
@@ -506,7 +506,7 @@ public:
 	struct GENPYBIND(inline_base("*")) PreScalerP
 	    : public halco::common::detail::RantWrapper<PreScalerP, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit PreScalerP(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit PreScalerP(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	/**
@@ -516,7 +516,7 @@ public:
 	struct GENPYBIND(inline_base("*")) CheckRange
 	    : public halco::common::detail::RantWrapper<CheckRange, uint_fast16_t, 15, 0>
 	{
-		constexpr explicit CheckRange(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit CheckRange(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	/**
@@ -527,7 +527,7 @@ public:
 	    : public halco::common::detail::
 	          RantWrapper<CheckValue, uint_fast16_t, 1048575 /*2^20-1*/, 0>
 	{
-		constexpr explicit CheckValue(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit CheckValue(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	/** Default construct PLL self test. */
@@ -635,7 +635,7 @@ public:
 	    : public halco::common::detail::
 	          RantWrapper<CounterValue, uint_fast16_t, 1048575 /*2^20-1*/, 0>
 	{
-		constexpr explicit CounterValue(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit CounterValue(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	/**

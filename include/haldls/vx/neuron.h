@@ -42,8 +42,8 @@ public:
 	struct GENPYBIND(inline_base("*")) ClockScale
 	    : public halco::common::detail::RantWrapper<ClockScale, uint_fast8_t, 15, 0>
 	{
-		constexpr explicit ClockScale(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit ClockScale(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -54,7 +54,8 @@ public:
 	    : public halco::common::detail::RantWrapper<WaitGlobalPostPulse, uint_fast16_t, 255, 0>
 	{
 		constexpr explicit WaitGlobalPostPulse(uintmax_t const val = 128)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -65,7 +66,8 @@ public:
 	    : public halco::common::detail::RantWrapper<WaitSpikeCounterReset, uint_fast16_t, 255, 0>
 	{
 		constexpr explicit WaitSpikeCounterReset(uintmax_t const val = 4)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -76,7 +78,8 @@ public:
 	    : public halco::common::detail::RantWrapper<WaitSpikeCounterRead, uint_fast16_t, 255, 0>
 	{
 		constexpr explicit WaitSpikeCounterRead(uintmax_t const val = 112)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -86,8 +89,8 @@ public:
 	struct GENPYBIND(inline_base("*")) WaitFireNeuron
 	    : public halco::common::detail::RantWrapper<WaitFireNeuron, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit WaitFireNeuron(uintmax_t const val = 4)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		constexpr explicit WaitFireNeuron(uintmax_t const val = 4) GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -210,8 +213,8 @@ public:
 	struct GENPYBIND(inline_base("*")) AddressOut
 	    : public halco::common::detail::RantWrapper<AddressOut, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit AddressOut(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit AddressOut(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -234,8 +237,8 @@ public:
 	struct GENPYBIND(inline_base("*")) ResetHoldoff
 	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0>
 	{
-		constexpr explicit ResetHoldoff(uintmax_t const val = 15)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit ResetHoldoff(uintmax_t const val = 15) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -257,8 +260,8 @@ public:
 	struct GENPYBIND(inline_base("*")) RefractoryTime
 	    : public halco::common::detail::RantWrapper<RefractoryTime, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit RefractoryTime(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit RefractoryTime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -421,7 +424,8 @@ public:
 	    : public halco::common::detail::RantWrapper<ExponentialTermStrength, uint_fast8_t, 7, 0>
 	{
 		constexpr explicit ExponentialTermStrength(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -430,7 +434,8 @@ public:
 	    : public halco::common::detail::RantWrapper<MembraneCapacitorSize, uint_fast8_t, 63, 0>
 	{
 		constexpr explicit MembraneCapacitorSize(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -895,8 +900,8 @@ public:
 	struct GENPYBIND(inline_base("*")) Count
 	    : public halco::common::detail::RantWrapper<Count, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit Count(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit Count(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 

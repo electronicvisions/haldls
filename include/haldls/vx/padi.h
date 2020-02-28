@@ -45,8 +45,8 @@ public:
 	struct GENPYBIND(inline_base("*")) HagenAddress
 	    : public halco::common::detail::RantWrapper<HagenAddress, uint_fast16_t, 1, 0>
 	{
-		constexpr explicit HagenAddress(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit HagenAddress(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -57,8 +57,8 @@ public:
 	struct GENPYBIND(inline_base("*")) HagenActivation
 	    : public halco::common::detail::RantWrapper<HagenActivation, uint_fast16_t, 31, 0>
 	{
-		constexpr explicit HagenActivation(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit HagenActivation(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -66,7 +66,8 @@ public:
 	    : public halco::common::detail::RantWrapper<RowSelectAddress, uint_fast16_t, 31, 0>
 	{
 		constexpr explicit RowSelectAddress(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -173,7 +174,8 @@ public:
 	    : public halco::common::detail::RantWrapper<DacenPulseExtension, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit DacenPulseExtension(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -259,7 +261,8 @@ public:
 	    : public halco::common::detail::RantWrapper<RecoveryClockSpeed, uint_fast16_t, 15, 0>
 	{
 		constexpr explicit RecoveryClockSpeed(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 

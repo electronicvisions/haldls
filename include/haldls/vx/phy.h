@@ -30,19 +30,19 @@ public:
 	struct GENPYBIND(inline_base("*")) ManualDelay
 	    : public halco::common::detail::RantWrapper<ManualDelay, uint_fast32_t, 15, 0>
 	{
-		constexpr explicit ManualDelay(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit ManualDelay(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	struct GENPYBIND(inline_base("*")) VBias
 	    : public halco::common::detail::RantWrapper<VBias, uint_fast32_t, 7, 0>
 	{
-		constexpr explicit VBias(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit VBias(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	struct GENPYBIND(inline_base("*")) DebugOutputs
 	    : public halco::common::detail::RantWrapper<DebugOutputs, uint_fast32_t, 1, 0>
 	{
-		constexpr explicit DebugOutputs(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit DebugOutputs(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	GENPYBIND(getter_for(enable_bit_slip))
@@ -359,8 +359,8 @@ public:
 	struct GENPYBIND(inline_base("*")) CRCErrorCount
 	    : public halco::common::detail::BaseType<CRCErrorCount, uint64_t>
 	{
-		constexpr explicit CRCErrorCount(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		constexpr explicit CRCErrorCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -370,8 +370,8 @@ public:
 	struct GENPYBIND(inline_base("*")) OnlineTime
 	    : public halco::common::detail::BaseType<OnlineTime, uint64_t>
 	{
-		constexpr explicit OnlineTime(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		constexpr explicit OnlineTime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -381,8 +381,8 @@ public:
 	struct GENPYBIND(inline_base("*")) RxDroppedCount
 	    : public halco::common::detail::BaseType<RxDroppedCount, uint64_t>
 	{
-		constexpr explicit RxDroppedCount(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		constexpr explicit RxDroppedCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -392,8 +392,8 @@ public:
 	struct GENPYBIND(inline_base("*")) RxCount
 	    : public halco::common::detail::BaseType<RxCount, uint64_t>
 	{
-		constexpr explicit RxCount(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		constexpr explicit RxCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -403,8 +403,8 @@ public:
 	struct GENPYBIND(inline_base("*")) TxCount
 	    : public halco::common::detail::BaseType<TxCount, uint64_t>
 	{
-		constexpr explicit TxCount(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		constexpr explicit TxCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 

@@ -30,7 +30,7 @@ public:
 	struct GENPYBIND(inline_base("*")) Value
 	    : public halco::common::detail::RantWrapper<Value, uint_fast32_t, 0xffffffff, 0>
 	{
-		constexpr explicit Value(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Value(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	explicit PPUMemoryWord(Value value = Value()) SYMBOL_VISIBLE;

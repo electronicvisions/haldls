@@ -96,28 +96,28 @@ public:
 	struct GENPYBIND(inline_base("*")) Sent
 	    : public halco::common::detail::RantWrapper<Sent, uint_fast32_t, 0xffffffff, 0>
 	{
-		constexpr explicit Sent(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Sent(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	/** Number of words received. */
 	struct GENPYBIND(inline_base("*")) Received
 	    : public halco::common::detail::RantWrapper<Received, uint_fast32_t, 0xffffffff, 0>
 	{
-		constexpr explicit Received(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit Received(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	/** Number of words received in order. */
 	struct GENPYBIND(inline_base("*")) InOrder
 	    : public halco::common::detail::RantWrapper<InOrder, uint_fast32_t, 0xffffffff, 0>
 	{
-		constexpr explicit InOrder(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit InOrder(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	/** First non-consecutive payload. */
 	struct GENPYBIND(inline_base("*")) ErrorWord
 	    : public halco::common::detail::RantWrapper<ErrorWord, uint_fast32_t, 0xffffffff, 0>
 	{
-		constexpr explicit ErrorWord(uintmax_t const val = 0) SYMBOL_VISIBLE : rant_t(val) {}
+		constexpr explicit ErrorWord(uintmax_t const val = 0) : rant_t(val) {}
 	};
 
 	/** Default constructor. */

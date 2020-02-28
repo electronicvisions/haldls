@@ -31,32 +31,32 @@ public:
 	struct GENPYBIND(inline_base("*")) Utilization
 	    : public halco::common::detail::RantWrapper<Utilization, uint_fast8_t, 15, 0>
 	{
-		constexpr explicit Utilization(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit Utilization(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
 	struct GENPYBIND(inline_base("*")) Offset
 	    : public halco::common::detail::RantWrapper<Offset, uint_fast8_t, 15, 0>
 	{
-		constexpr explicit Offset(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit Offset(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
 	struct GENPYBIND(inline_base("*")) Recovery
 	    : public halco::common::detail::RantWrapper<Recovery, uint_fast8_t, 15, 0>
 	{
-		constexpr explicit Recovery(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit Recovery(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
 	struct GENPYBIND(inline_base("*")) TargetVoltages
 	    : public halco::common::detail::RantWrapper<TargetVoltages, uint_fast8_t, 1, 0>
 	{
-		constexpr explicit TargetVoltages(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit TargetVoltages(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -64,7 +64,8 @@ public:
 	    : public halco::common::detail::RantWrapper<RowAddressCompareMask, uint_fast8_t, 31, 0>
 	{
 		constexpr explicit RowAddressCompareMask(uintmax_t const val = 0b11111)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 

@@ -112,8 +112,8 @@ public:
 	    : public halco::common::detail::
 	          RantWrapper<Value, uint_fast32_t, hate::math::pow(2, 16) - 1, 0>
 	{
-		constexpr explicit Value(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 
@@ -195,8 +195,8 @@ public:
 	    : public halco::common::detail::
 	          RantWrapper<Value, uint_fast32_t, hate::math::pow(2, 24) - 1, 0>
 	{
-		constexpr explicit Value(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
 		{}
 	};
 

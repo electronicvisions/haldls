@@ -46,7 +46,7 @@ public:
 	          RantWrapper<Period, uint_fast32_t, hate::math::pow(2, 16) - 1, 0>
 	{
 		constexpr explicit Period(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) : rant_t(val)
 		{}
 	};
 
@@ -61,7 +61,7 @@ public:
 	          RantWrapper<Rate, uint_fast16_t, hate::math::pow(2, 8) - 1, 0>
 	{
 		constexpr explicit Rate(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) : rant_t(val)
 		{}
 	};
 
@@ -74,7 +74,7 @@ public:
 	          RantWrapper<Seed, uint_fast64_t, hate::math::pow(2, 32) - 1, 0>
 	{
 		constexpr explicit Seed(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) : rant_t(val)
 		{}
 	};
 
@@ -89,7 +89,7 @@ public:
 	          RantWrapper<Mask, uint_fast16_t, hate::math::pow(2, 8) - 1, 0>
 	{
 		constexpr explicit Mask(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : rant_t(val)
+		    GENPYBIND(implicit_conversion) : rant_t(val)
 		{}
 	};
 

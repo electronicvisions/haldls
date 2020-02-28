@@ -34,7 +34,7 @@ public:
 	    : public halco::common::detail::BaseType<ReadCount, uint32_t>
 	{
 		constexpr explicit ReadCount(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		    GENPYBIND(implicit_conversion) : base_t(val)
 		{}
 	};
 
@@ -45,7 +45,7 @@ public:
 	    : public halco::common::detail::BaseType<WriteCount, uint32_t>
 	{
 		constexpr explicit WriteCount(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		    GENPYBIND(implicit_conversion) : base_t(val)
 		{}
 	};
 
@@ -56,7 +56,7 @@ public:
 	    : public halco::common::detail::BaseType<RxCount, uint32_t>
 	{
 		constexpr explicit RxCount(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		    GENPYBIND(implicit_conversion) : base_t(val)
 		{}
 	};
 
@@ -67,7 +67,7 @@ public:
 	    : public halco::common::detail::BaseType<TxCount, uint32_t>
 	{
 		constexpr explicit TxCount(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
+		    GENPYBIND(implicit_conversion) : base_t(val)
 		{}
 	};
 
