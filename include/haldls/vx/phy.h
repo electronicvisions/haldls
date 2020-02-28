@@ -357,7 +357,7 @@ public:
 	 * Number of CRC errors since last reset.
 	 */
 	struct GENPYBIND(inline_base("*")) CRCErrorCount
-	    : public halco::common::detail::BaseType<CRCErrorCount, uint64_t>
+	    : public halco::common::detail::BaseType<CRCErrorCount, uint32_t>
 	{
 		constexpr explicit CRCErrorCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)
@@ -368,7 +368,7 @@ public:
 	 * Online time in cycles since last reset.
 	 */
 	struct GENPYBIND(inline_base("*")) OnlineTime
-	    : public halco::common::detail::BaseType<OnlineTime, uint64_t>
+	    : public halco::common::detail::BaseType<OnlineTime, uint32_t>
 	{
 		constexpr explicit OnlineTime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)
@@ -379,7 +379,7 @@ public:
 	 * Number of dropped rx words.
 	 */
 	struct GENPYBIND(inline_base("*")) RxDroppedCount
-	    : public halco::common::detail::BaseType<RxDroppedCount, uint64_t>
+	    : public halco::common::detail::BaseType<RxDroppedCount, uint32_t>
 	{
 		constexpr explicit RxDroppedCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)
@@ -390,7 +390,7 @@ public:
 	 * Number of rx words from Chip since last reset.
 	 */
 	struct GENPYBIND(inline_base("*")) RxCount
-	    : public halco::common::detail::BaseType<RxCount, uint64_t>
+	    : public halco::common::detail::BaseType<RxCount, uint32_t>
 	{
 		constexpr explicit RxCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)
@@ -401,7 +401,7 @@ public:
 	 * Number of tx words to Chip since last reset.
 	 */
 	struct GENPYBIND(inline_base("*")) TxCount
-	    : public halco::common::detail::BaseType<TxCount, uint64_t>
+	    : public halco::common::detail::BaseType<TxCount, uint32_t>
 	{
 		constexpr explicit TxCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)
