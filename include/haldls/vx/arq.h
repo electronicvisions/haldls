@@ -31,7 +31,7 @@ public:
 	 * Number of words submitted to the ARQ from the Chip.
 	 */
 	struct GENPYBIND(inline_base("*")) ReadCount
-	    : public halco::common::detail::BaseType<ReadCount, uint64_t>
+	    : public halco::common::detail::BaseType<ReadCount, uint32_t>
 	{
 		constexpr explicit ReadCount(uintmax_t const val = 0)
 		    GENPYBIND(implicit_conversion) SYMBOL_VISIBLE : base_t(val)
