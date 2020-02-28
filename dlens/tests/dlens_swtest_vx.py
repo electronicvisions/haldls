@@ -1,5 +1,5 @@
 import unittest
-from dlens_vx import halco, hal, sta
+from dlens_vx import halco, hal, sta, lola
 
 
 class TestDlensVX(unittest.TestCase):
@@ -15,6 +15,9 @@ class TestDlensVX(unittest.TestCase):
 
         enum = halco.Enum(2)
         self.assertIsNotNone(enum)
+
+        row = lola.SynapseRow()
+        self.assertIsNotNone(row)
 
 
 if __name__ == "__main__":
