@@ -36,7 +36,7 @@ ReadoutMuxConfig::ReadoutMuxConfig() :
     m_synin_debug_excitatory_to_inter(false),
     m_synapse_inter_mux_to_pad(false),
     m_buffer_to_pad(),
-    m_differential_to_pad(false)
+    m_debug_to_pad(false)
 {}
 
 ReadoutMuxConfig::capmem_quadrant_type const& ReadoutMuxConfig::get_cadc_v_ramp_mux() const
@@ -209,14 +209,14 @@ void ReadoutMuxConfig::set_buffer_to_pad(buffer_type const& value)
 	m_buffer_to_pad = value;
 }
 
-bool ReadoutMuxConfig::get_differential_to_pad() const
+bool ReadoutMuxConfig::get_debug_to_pad() const
 {
-	return m_differential_to_pad;
+	return m_debug_to_pad;
 }
 
-void ReadoutMuxConfig::set_differential_to_pad(bool const value)
+void ReadoutMuxConfig::set_debug_to_pad(bool const value)
 {
-	m_differential_to_pad = value;
+	m_debug_to_pad = value;
 }
 
 bool ReadoutMuxConfig::operator==(ReadoutMuxConfig const& other) const
@@ -239,7 +239,7 @@ bool ReadoutMuxConfig::operator==(ReadoutMuxConfig const& other) const
 	    m_synin_debug_excitatory_to_inter == other.m_synin_debug_excitatory_to_inter &&
 	    m_synapse_inter_mux_to_pad == other.m_synapse_inter_mux_to_pad &&
 	    m_buffer_to_pad == other.m_buffer_to_pad &&
-	    m_differential_to_pad == other.m_differential_to_pad);
+	    m_debug_to_pad == other.m_debug_to_pad);
 }
 
 bool ReadoutMuxConfig::operator!=(ReadoutMuxConfig const& other) const
@@ -311,7 +311,7 @@ struct ReadoutMuxConfigBitfield
 			uint32_t synapse_mux_to_pad          : 1;  // 11
 			uint32_t buffer_to_pad_1             : 1;  // 12
 			uint32_t buffer_to_pad_0             : 1;  // 13
-			uint32_t differential_to_pad         : 1;  // 14
+			uint32_t debug_to_pad                : 1;  // 14
 			uint32_t neuron_i_stim_mux_to_pad    : 1;  // 15
 			uint32_t /* unused */                : 16; // 16...31
 			// clang-format on
@@ -387,7 +387,7 @@ std::array<WordT, ReadoutMuxConfig::config_size_in_words> ReadoutMuxConfig::enco
 	    m_buffer_to_pad[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)];
 	bitfield.u.m.buffer_to_pad_0 =
 	    m_buffer_to_pad[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)];
-	bitfield.u.m.differential_to_pad = m_differential_to_pad;
+	bitfield.u.m.debug_to_pad = m_debug_to_pad;
 
 	std::array<WordT, ReadoutMuxConfig::config_size_in_words> data;
 	std::transform(
@@ -461,7 +461,7 @@ void ReadoutMuxConfig::decode(std::array<WordT, ReadoutMuxConfig::config_size_in
 	    bitfield.u.m.buffer_to_pad_1;
 	m_buffer_to_pad[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)] =
 	    bitfield.u.m.buffer_to_pad_0;
-	m_differential_to_pad = bitfield.u.m.differential_to_pad;
+	m_debug_to_pad = bitfield.u.m.debug_to_pad;
 }
 
 template SYMBOL_VISIBLE void ReadoutMuxConfig::decode(
@@ -491,15 +491,15 @@ void ReadoutMuxConfig::serialize(Archive& ar)
 	ar(CEREAL_NVP(m_synin_debug_excitatory_to_inter));
 	ar(CEREAL_NVP(m_synapse_inter_mux_to_pad));
 	ar(CEREAL_NVP(m_buffer_to_pad));
-	ar(CEREAL_NVP(m_differential_to_pad));
+	ar(CEREAL_NVP(m_debug_to_pad));
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutMuxConfig)
 
 
 ReadoutBufferConfigBlock::ReadoutBufferConfig::ReadoutBufferConfig() :
-    m_differential_signal(false),
-    m_differential_reference(false),
+    m_debug_plus(false),
+    m_debug_minus(false),
     m_current_dac(false),
     m_synin_debug_inhibitory(false),
     m_synin_debug_excitatory(false),
@@ -511,24 +511,24 @@ ReadoutBufferConfigBlock::ReadoutBufferConfig::ReadoutBufferConfig() :
     m_enable_buffer(false)
 {}
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_differential_signal() const
+bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_debug_plus() const
 {
-	return m_differential_signal;
+	return m_debug_plus;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_differential_signal(bool const value)
+void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_debug_plus(bool const value)
 {
-	m_differential_signal = value;
+	m_debug_plus = value;
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_differential_reference() const
+bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_debug_minus() const
 {
-	return m_differential_reference;
+	return m_debug_minus;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_differential_reference(bool const value)
+void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_debug_minus(bool const value)
 {
-	m_differential_reference = value;
+	m_debug_minus = value;
 }
 
 bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_current_dac() const
@@ -629,8 +629,8 @@ bool ReadoutBufferConfigBlock::ReadoutBufferConfig::operator==(
     ReadoutBufferConfigBlock::ReadoutBufferConfig const& other) const
 {
 	return (
-	    m_differential_signal == other.m_differential_signal &&
-	    m_differential_reference == other.m_differential_reference &&
+	    m_debug_plus == other.m_debug_plus &&
+	    m_debug_minus == other.m_debug_minus &&
 	    m_synin_debug_inhibitory == other.m_synin_debug_inhibitory &&
 	    m_synin_debug_excitatory == other.m_synin_debug_excitatory &&
 	    m_cadc_debug_causal == other.m_cadc_debug_causal &&
@@ -649,8 +649,8 @@ bool ReadoutBufferConfigBlock::ReadoutBufferConfig::operator!=(
 template <class Archive>
 void ReadoutBufferConfigBlock::ReadoutBufferConfig::serialize(Archive& ar)
 {
-	ar(CEREAL_NVP(m_differential_signal));
-	ar(CEREAL_NVP(m_differential_reference));
+	ar(CEREAL_NVP(m_debug_plus));
+	ar(CEREAL_NVP(m_debug_minus));
 	ar(CEREAL_NVP(m_current_dac));
 	ar(CEREAL_NVP(m_synin_debug_inhibitory));
 	ar(CEREAL_NVP(m_synin_debug_excitatory));
@@ -722,8 +722,8 @@ struct ReadoutBufferConfigBlockBitfield
 		struct __attribute__((packed))
 		{
 			// clang-format off
-			uint32_t differential_plus_0    : 1;  // 0  in base + 12
-			uint32_t differential_minus_0   : 1;  // 1
+			uint32_t debug_plus_0           : 1;  // 0  in base + 12
+			uint32_t debug_minus_0          : 1;  // 1
 			uint32_t idac_i_out_0           : 1;  // 2
 			uint32_t synin_debug_inh_0      : 1;  // 3
 			uint32_t synin_debug_exc_0      : 1;  // 4
@@ -736,8 +736,8 @@ struct ReadoutBufferConfigBlockBitfield
 			uint32_t neuron_bottom_odd_0    : 1;  // 11
 			uint32_t neuron_bottom_even_0   : 1;  // 12
 			uint32_t /* unused */           : 19; // 13...31
-			uint32_t differential_plus_1    : 1;  // 0  in base + 13
-			uint32_t differential_minus_1   : 1;  // 1
+			uint32_t debug_plus_1           : 1;  // 0  in base + 13
+			uint32_t debug_minus_1          : 1;  // 1
 			uint32_t idac_i_out_1           : 1;  // 2
 			uint32_t synin_debug_inh_1      : 1;  // 3
 			uint32_t synin_debug_exc_1      : 1;  // 4
@@ -776,12 +776,12 @@ std::array<WordT, ReadoutBufferConfigBlock::config_size_in_words> ReadoutBufferC
 {
 	ReadoutBufferConfigBlockBitfield bitfield;
 
-	bitfield.u.m.differential_plus_0 =
+	bitfield.u.m.debug_plus_0 =
 	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	        .m_differential_signal;
-	bitfield.u.m.differential_minus_0 =
+	        .m_debug_plus;
+	bitfield.u.m.debug_minus_0 =
 	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	        .m_differential_reference;
+	        .m_debug_minus;
 	bitfield.u.m.idac_i_out_0 =
 	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
 	        .m_current_dac;
@@ -816,12 +816,12 @@ std::array<WordT, ReadoutBufferConfigBlock::config_size_in_words> ReadoutBufferC
 	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
 	        .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(1)];
 
-	bitfield.u.m.differential_plus_1 =
+	bitfield.u.m.debug_plus_1 =
 	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	        .m_differential_signal;
-	bitfield.u.m.differential_minus_1 =
+	        .m_debug_plus;
+	bitfield.u.m.debug_minus_1 =
 	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	        .m_differential_reference;
+	        .m_debug_minus;
 	bitfield.u.m.idac_i_out_1 =
 	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
 	        .m_current_dac;
@@ -887,9 +887,9 @@ void ReadoutBufferConfigBlock::decode(
 	ReadoutBufferConfigBlockBitfield bitfield(raw_data);
 
 	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	    .m_differential_signal = bitfield.u.m.differential_plus_0;
+	    .m_debug_plus = bitfield.u.m.debug_plus_0;
 	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	    .m_differential_reference = bitfield.u.m.differential_minus_0;
+	    .m_debug_minus = bitfield.u.m.debug_minus_0;
 	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
 	    .m_current_dac = bitfield.u.m.idac_i_out_0;
 	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
@@ -917,9 +917,9 @@ void ReadoutBufferConfigBlock::decode(
 	    bitfield.u.m.neuron_bottom_even_0;
 
 	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	    .m_differential_signal = bitfield.u.m.differential_plus_1;
+	    .m_debug_plus = bitfield.u.m.debug_plus_1;
 	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	    .m_differential_reference = bitfield.u.m.differential_minus_1;
+	    .m_debug_minus = bitfield.u.m.debug_minus_1;
 	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
 	    .m_current_dac = bitfield.u.m.idac_i_out_1;
 	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]

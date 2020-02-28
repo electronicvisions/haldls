@@ -19,17 +19,17 @@ TEST(ReadoutBufferConfigBlock, General)
 	ReadoutBufferConfigBlock::ReadoutBufferConfig config;
 
 	{
-		auto member = config.get_differential_signal();
+		auto member = config.get_debug_plus();
 		member = !member;
-		config.set_differential_signal(member);
-		EXPECT_EQ(config.get_differential_signal(), member);
+		config.set_debug_plus(member);
+		EXPECT_EQ(config.get_debug_plus(), member);
 	}
 
 	{
-		auto member = config.get_differential_reference();
+		auto member = config.get_debug_minus();
 		member = !member;
-		config.set_differential_reference(member);
-		EXPECT_EQ(config.get_differential_reference(), member);
+		config.set_debug_minus(member);
+		EXPECT_EQ(config.get_debug_minus(), member);
 	}
 
 	{
@@ -164,7 +164,7 @@ TEST(ReadoutBufferConfigBlock, EncodeDecode)
 	}
 
 	buffer_1.set_current_dac(true);
-	buffer_1.set_differential_signal(true);
+	buffer_1.set_debug_plus(true);
 	buffer_1.set_enable_buffer(true);
 
 	config.set_buffer(ReadoutBufferConfigOnReadoutBufferConfigBlock(0), buffer_0);
@@ -188,15 +188,15 @@ TEST(ReadoutBufferConfigBlock, CerealizeCoverage)
 	ReadoutBufferConfigBlock::ReadoutBufferConfig config;
 
 	{
-		auto member = config.get_differential_signal();
+		auto member = config.get_debug_plus();
 		member = !member;
-		config.set_differential_signal(member);
+		config.set_debug_plus(member);
 	}
 
 	{
-		auto member = config.get_differential_reference();
+		auto member = config.get_debug_minus();
 		member = !member;
-		config.set_differential_reference(member);
+		config.set_debug_minus(member);
 	}
 
 	{

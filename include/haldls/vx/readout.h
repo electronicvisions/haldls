@@ -169,14 +169,14 @@ public:
 	GENPYBIND(setter_for(buffer_to_pad), return_value_policy(reference))
 	void set_buffer_to_pad(buffer_type const& value) SYMBOL_VISIBLE;
 
-	/** Enable connection of differential debug output to pad.
-	 * Enabling this connection on pad 0 yields the plus/signal part of the differential output,
-	 * enabling this connection on pad 1 yields the minus/reference part of the differential output.
+	/** Enable connection of debug lines to pad.
+	 * Enabling this connection on pad 0 connects the `debug_plus` line to that pad,
+	 * enabling this connection on pad 1 connects the `debug_minus` line to that pad.
 	 */
-	GENPYBIND(getter_for(differential_to_pad))
-	bool get_differential_to_pad() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(differential_to_pad))
-	void set_differential_to_pad(bool value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(debug_to_pad))
+	bool get_debug_to_pad() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(debug_to_pad))
+	void set_debug_to_pad(bool value) SYMBOL_VISIBLE;
 
 	bool operator==(ReadoutMuxConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ReadoutMuxConfig const& other) const SYMBOL_VISIBLE;
@@ -229,7 +229,7 @@ private:
 
 	// Other readout chain outputs
 	buffer_type m_buffer_to_pad;
-	bool m_differential_to_pad;
+	bool m_debug_to_pad;
 };
 
 
@@ -257,17 +257,17 @@ public:
 		typedef halco::common::typed_array<bool, halco::hicann_dls::vx::HemisphereOnDLS>
 		    hemisphere_type GENPYBIND(opaque(false));
 
-		/** Connect plus/signal line of differential debug readout to mux. */
-		GENPYBIND(getter_for(differential_signal))
-		bool get_differential_signal() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(differential_signal))
-		void set_differential_signal(bool value) SYMBOL_VISIBLE;
+		/** Connect `debug_plus` line to mux. */
+		GENPYBIND(getter_for(debug_plus))
+		bool get_debug_plus() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(debug_plus))
+		void set_debug_plus(bool value) SYMBOL_VISIBLE;
 
-		/** Connect minus/reference line of differential debug readout to mux. */
-		GENPYBIND(getter_for(differential_reference))
-		bool get_differential_reference() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(differential_reference))
-		void set_differential_reference(bool value) SYMBOL_VISIBLE;
+		/** Connect `debug_minus` line to mux. */
+		GENPYBIND(getter_for(debug_minus))
+		bool get_debug_minus() const SYMBOL_VISIBLE;
+		GENPYBIND(setter_for(debug_minus))
+		void set_debug_minus(bool value) SYMBOL_VISIBLE;
 
 		/** Connect output line of idac_i_out to mux.
 		 * This current-dac in the readout section can also
@@ -334,8 +334,8 @@ public:
 		template <class Archive>
 		void serialize(Archive& ar) SYMBOL_VISIBLE;
 
-		bool m_differential_signal;
-		bool m_differential_reference;
+		bool m_debug_plus;
+		bool m_debug_minus;
 		bool m_current_dac;
 		bool m_synin_debug_inhibitory;
 		bool m_synin_debug_excitatory;
