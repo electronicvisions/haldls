@@ -24,6 +24,10 @@ InitGenerator::InitGenerator() :
     highspeed_link(),
     enable_highspeed_link(true),
     common_synram_config(),
+    cadc_offset_sram_timing_config(),
+    synapse_driver_sram_timing_config(),
+    neuron_sram_timing_config(),
+    neuron_backend_sram_timing_config(),
     synapse_bias_selection(),
     enable_capmem(false),
     reference_generator_config(),
@@ -143,6 +147,34 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {
 		builder.write(
 		    coord, common_synram_config[coord],
+		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+	}
+
+	// Set CADC offset SRAM configs
+	for (auto coord : iter_all<CADCOffsetSRAMTimingConfigOnDLS>()) {
+		builder.write(
+		    coord, cadc_offset_sram_timing_config[coord],
+		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+	}
+
+	// Set synapse driver SRAM configs
+	for (auto coord : iter_all<SynapseDriverSRAMTimingConfigOnDLS>()) {
+		builder.write(
+		    coord, synapse_driver_sram_timing_config[coord],
+		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+	}
+
+	// Set neuron SRAM configs
+	for (auto coord : iter_all<NeuronSRAMTimingConfigOnDLS>()) {
+		builder.write(
+		    coord, neuron_sram_timing_config[coord],
+		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+	}
+
+	// Set neuron backend SRAM configs
+	for (auto coord : iter_all<NeuronBackendSRAMTimingConfigOnDLS>()) {
+		builder.write(
+		    coord, neuron_backend_sram_timing_config[coord],
 		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
 	}
 

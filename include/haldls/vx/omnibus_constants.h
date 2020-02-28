@@ -86,10 +86,25 @@ constexpr std::array<uint32_t, 4> neuron_sram_base_addresses = {
     neuron_nw_sram_base_address, neuron_ne_sram_base_address, neuron_sw_sram_base_address,
     neuron_se_sram_base_address};
 
+constexpr uint32_t neuron_nw_sram_timing_base_address{neuron_nw_sram_base_address | 0x82};
+constexpr uint32_t neuron_ne_sram_timing_base_address{neuron_ne_sram_base_address | 0x82};
+constexpr uint32_t neuron_sw_sram_timing_base_address{neuron_sw_sram_base_address | 0x82};
+constexpr uint32_t neuron_se_sram_timing_base_address{neuron_se_sram_base_address | 0x82};
+constexpr std::array<uint32_t, 4> neuron_sram_timing_base_addresses = {
+    neuron_nw_sram_timing_base_address, neuron_ne_sram_timing_base_address,
+    neuron_sw_sram_timing_base_address, neuron_se_sram_timing_base_address};
+
 constexpr uint32_t synapse_driver_top_sram_base_address{0x11'0400};
 constexpr uint32_t synapse_driver_bottom_sram_base_address{0x11'8400};
 constexpr std::array<uint32_t, 2> synapse_driver_sram_base_addresses = {
     synapse_driver_top_sram_base_address, synapse_driver_bottom_sram_base_address};
+
+constexpr uint32_t synapse_driver_top_sram_timing_base_address{
+    synapse_driver_top_sram_base_address | 0x82};
+constexpr uint32_t synapse_driver_bottom_sram_timing_base_address{
+    synapse_driver_top_sram_base_address | 0x82};
+constexpr std::array<uint32_t, 2> synapse_driver_sram_timing_base_addresses = {
+    synapse_driver_top_sram_timing_base_address, synapse_driver_bottom_sram_timing_base_address};
 
 constexpr uint32_t padi_top_base_address{0x11'0000};
 constexpr uint32_t padi_bottom_base_address{0x11'8000};
@@ -100,11 +115,17 @@ constexpr uint32_t cadc_top_base_address(ppu_top_subtree_address | 0x0040'0000);
 constexpr uint32_t cadc_top_busreg_address(cadc_top_base_address | 0x0000'1000);
 constexpr uint32_t cadc_top_sram_west_base_address(cadc_top_base_address | 0x0000'0800);
 constexpr uint32_t cadc_top_sram_east_base_address(cadc_top_base_address);
+constexpr uint32_t cadc_top_sram_timing_west_base_address(cadc_top_sram_west_base_address | 0x102);
+constexpr uint32_t cadc_top_sram_timing_east_base_address(cadc_top_sram_east_base_address | 0x102);
 
 constexpr uint32_t cadc_bottom_base_address(ppu_bottom_subtree_address | 0x0040'0000);
 constexpr uint32_t cadc_bottom_busreg_address(cadc_bottom_base_address | 0x0000'1000);
 constexpr uint32_t cadc_bottom_sram_west_base_address(cadc_bottom_base_address | 0x0000'0800);
 constexpr uint32_t cadc_bottom_sram_east_base_address(cadc_bottom_base_address);
+constexpr uint32_t cadc_bottom_sram_timing_west_base_address(
+    cadc_bottom_sram_west_base_address | 0x102);
+constexpr uint32_t cadc_bottom_sram_timing_east_base_address(
+    cadc_bottom_sram_east_base_address | 0x102);
 
 constexpr std::array<uint32_t, 2> cadc_busreg_addresses = {cadc_top_busreg_address,
                                                            cadc_bottom_busreg_address};
@@ -112,6 +133,10 @@ constexpr std::array<uint32_t, 2> cadc_busreg_addresses = {cadc_top_busreg_addre
 constexpr std::array<uint32_t, 4> cadc_sram_base_addresses = {
     cadc_top_sram_west_base_address, cadc_top_sram_east_base_address,
     cadc_bottom_sram_west_base_address, cadc_bottom_sram_east_base_address};
+
+constexpr std::array<uint32_t, 4> cadc_offset_sram_timing_config_base_addresses = {
+    cadc_top_sram_timing_west_base_address, cadc_top_sram_timing_east_base_address,
+    cadc_bottom_sram_timing_west_base_address, cadc_bottom_sram_timing_east_base_address};
 
 constexpr uint32_t correlation_reset_base_top(ppu_top_subtree_address | 0x00c9'0000);
 constexpr uint32_t correlation_reset_base_bottom(ppu_bottom_subtree_address | 0x00c9'0000);
@@ -121,12 +146,19 @@ constexpr std::array<uint32_t, 2> correlation_reset_base_addresses = {
 
 constexpr uint32_t neuron_backend_west_sram_base_address{0x1a'1000};
 constexpr uint32_t neuron_backend_east_sram_base_address{0x1a'9000};
+constexpr uint32_t neuron_backend_west_sram_timing_base_address{
+    neuron_backend_west_sram_base_address | 0x102};
+constexpr uint32_t neuron_backend_east_sram_timing_base_address{
+    neuron_backend_west_sram_base_address | 0x102};
 
 constexpr uint32_t neuron_backend_west_register_base_address{0x1a'1800};
 constexpr uint32_t neuron_backend_east_register_base_address{0x1a'9800};
 
 constexpr uint32_t neuron_reset_left_sram_base_address{0x12'0000 | 1ul << 13};
 constexpr uint32_t neuron_reset_right_sram_base_address{0x12'8000 | 1ul << 13};
+
+constexpr std::array<uint32_t, 2> neuron_backend_sram_timing_base_addresses = {
+    neuron_backend_west_sram_timing_base_address, neuron_backend_east_sram_timing_base_address};
 
 constexpr std::array<uint32_t, 2> neuron_reset_sram_base_addresses = {
     neuron_reset_left_sram_base_address, neuron_reset_right_sram_base_address};

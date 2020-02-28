@@ -6,6 +6,10 @@
 #define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
 #endif
 
+PLAYBACK_CONTAINER(CADCOffsetSRAMTimingConfig, haldls::vx::CADCOffsetSRAMTimingConfig)
+PLAYBACK_CONTAINER(SynapseDriverSRAMTimingConfig, haldls::vx::SynapseDriverSRAMTimingConfig)
+PLAYBACK_CONTAINER(NeuronSRAMTimingConfig, haldls::vx::NeuronSRAMTimingConfig)
+PLAYBACK_CONTAINER(NeuronBackendSRAMTimingConfig, haldls::vx::NeuronBackendSRAMTimingConfig)
 PLAYBACK_CONTAINER(NeuronReset, haldls::vx::NeuronReset)
 PLAYBACK_CONTAINER(SpikeCounterRead, haldls::vx::SpikeCounterRead)
 PLAYBACK_CONTAINER(SpikeCounterReset, haldls::vx::SpikeCounterReset)

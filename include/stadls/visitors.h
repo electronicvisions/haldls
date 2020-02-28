@@ -159,20 +159,20 @@ public:
 	}
 
 private:
-	template <typename CoordinateT, typename ContainerT, size_t N>
+	template <typename CoordinateT, typename ContainerT, typename DecodeContainerT, size_t N>
 	void decode(
-		CoordinateT const& coord,
-		ContainerT& container,
-		void (ContainerT::*decode)(CoordinateT const&, std::array<value_type, N> const&))
+	    CoordinateT const& coord,
+	    ContainerT& container,
+	    void (DecodeContainerT::*decode)(CoordinateT const&, std::array<value_type, N> const&))
 	{
 		(container.*decode)(coord, slice<N>());
 	}
 
-	template <typename CoordinateT, typename ContainerT, size_t N>
+	template <typename CoordinateT, typename ContainerT, typename DecodeContainerT, size_t N>
 	void decode(
-		CoordinateT const&,
-		ContainerT& container,
-		void (ContainerT::*decode)(std::array<value_type, N> const&))
+	    CoordinateT const&,
+	    ContainerT& container,
+	    void (DecodeContainerT::*decode)(std::array<value_type, N> const&))
 	{
 		(container.*decode)(slice<N>());
 	}

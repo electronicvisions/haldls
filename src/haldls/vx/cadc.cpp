@@ -362,9 +362,48 @@ void CADCSampleQuad::decode(
 	    Value(reverse_byte(bitfield.u.m.sample_3));
 }
 
+
+bool CADCOffsetSRAMTimingConfig::operator==(CADCOffsetSRAMTimingConfig const& other) const
+{
+	return static_cast<SRAMTimingConfig>(*this) == static_cast<SRAMTimingConfig>(other);
+}
+
+bool CADCOffsetSRAMTimingConfig::operator!=(CADCOffsetSRAMTimingConfig const& other) const
+{
+	return !(*this == other);
+}
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(CADCOffsetSRAMTimingConfig)
+
+template <typename AddressT>
+std::array<AddressT, CADCOffsetSRAMTimingConfig::config_size_in_words>
+CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const
+{
+	return {AddressT(cadc_offset_sram_timing_config_base_addresses.at(coord.toEnum())),
+	        AddressT(cadc_offset_sram_timing_config_base_addresses.at(coord.toEnum()) + 1)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    CADCOffsetSRAMTimingConfig::config_size_in_words>
+CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    CADCOffsetSRAMTimingConfig::config_size_in_words>
+CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+
+template <typename Archive>
+void CADCOffsetSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(cereal::base_class<detail::SRAMTimingConfig>(this));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCOffsetSRAMTimingConfig)
+
 } // namespace vx
 } // namespace haldls
 
 CEREAL_CLASS_VERSION(haldls::vx::CADCSampleQuad, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CADCChannelConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CADCConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CADCOffsetSRAMTimingConfig, 0)

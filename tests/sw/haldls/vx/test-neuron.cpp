@@ -10,6 +10,7 @@
 #include "haldls/vx/omnibus_constants.h"
 #include "test-helper.h"
 
+using namespace fisch::vx;
 using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
@@ -783,4 +784,221 @@ TEST(SpikeCounterReset, CerealizeCoverage)
 		ia(c2);
 	}
 	ASSERT_EQ(c1, c2);
+}
+
+TEST(NeuronSRAMTimingConfig, General)
+{
+	NeuronSRAMTimingConfig config;
+
+	// test getter/setter
+	{
+		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::ReadDelay>(
+		    config.get_read_delay());
+		config.set_read_delay(value);
+		EXPECT_EQ(config.get_read_delay(), value);
+	}
+
+	{
+		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::AddressSetupTime>(
+		    config.get_address_setup_time());
+		config.set_address_setup_time(value);
+		EXPECT_EQ(config.get_address_setup_time(), value);
+	}
+
+	{
+		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::EnableWidth>(
+		    config.get_enable_width());
+		config.set_enable_width(value);
+		EXPECT_EQ(config.get_enable_width(), value);
+	}
+
+	NeuronSRAMTimingConfig config_eq = config;
+	NeuronSRAMTimingConfig config_default;
+
+	// test comparison
+	ASSERT_EQ(config, config_eq);
+	ASSERT_FALSE(config == config_default);
+
+	ASSERT_NE(config, config_default);
+	ASSERT_FALSE(config != config_eq);
+}
+
+TEST(NeuronSRAMTimingConfig, EncodeDecode)
+{
+	NeuronSRAMTimingConfig config;
+
+	config.set_read_delay(NeuronSRAMTimingConfig::ReadDelay(100));
+	config.set_address_setup_time(NeuronSRAMTimingConfig::AddressSetupTime(5));
+	config.set_enable_width(NeuronSRAMTimingConfig::EnableWidth(7));
+
+	auto coord = NeuronSRAMTimingConfigOnDLS(1);
+
+	std::array<OmnibusChipOverJTAGAddress, NeuronSRAMTimingConfig::config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{neuron_ne_sram_timing_base_address},
+	                     OmnibusChipOverJTAGAddress{neuron_ne_sram_timing_base_address + 1}};
+	std::array<OmnibusChipOverJTAG, NeuronSRAMTimingConfig::config_size_in_words> ref_data = {
+	    OmnibusData{100}, OmnibusData{5 | 7 << 4}};
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	NeuronSRAMTimingConfig config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(NeuronSRAMTimingConfig, CerealizeCoverage)
+{
+	NeuronSRAMTimingConfig obj1, obj2;
+	{
+		auto value =
+		    draw_ranged_non_default_value<NeuronSRAMTimingConfig::ReadDelay>(obj1.get_read_delay());
+		obj1.set_read_delay(value);
+	}
+	{
+		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::AddressSetupTime>(
+		    obj1.get_address_setup_time());
+		obj1.set_address_setup_time(value);
+	}
+	{
+		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::EnableWidth>(
+		    obj1.get_enable_width());
+		obj1.set_enable_width(value);
+	}
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
+TEST(NeuronBackendSRAMTimingConfig, General)
+{
+	NeuronBackendSRAMTimingConfig config;
+
+	// test getter/setter
+	{
+		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::ReadDelay>(
+		    config.get_read_delay());
+		config.set_read_delay(value);
+		EXPECT_EQ(config.get_read_delay(), value);
+	}
+
+	{
+		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::AddressSetupTime>(
+		    config.get_address_setup_time());
+		config.set_address_setup_time(value);
+		EXPECT_EQ(config.get_address_setup_time(), value);
+	}
+
+	{
+		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::EnableWidth>(
+		    config.get_enable_width());
+		config.set_enable_width(value);
+		EXPECT_EQ(config.get_enable_width(), value);
+	}
+
+	NeuronBackendSRAMTimingConfig config_eq = config;
+	NeuronBackendSRAMTimingConfig config_default;
+
+	// test comparison
+	ASSERT_EQ(config, config_eq);
+	ASSERT_FALSE(config == config_default);
+
+	ASSERT_NE(config, config_default);
+	ASSERT_FALSE(config != config_eq);
+}
+
+TEST(NeuronBackendSRAMTimingConfig, EncodeDecode)
+{
+	NeuronBackendSRAMTimingConfig config;
+
+	config.set_read_delay(NeuronBackendSRAMTimingConfig::ReadDelay(100));
+	config.set_address_setup_time(NeuronBackendSRAMTimingConfig::AddressSetupTime(5));
+	config.set_enable_width(NeuronBackendSRAMTimingConfig::EnableWidth(7));
+
+	auto coord = NeuronBackendSRAMTimingConfigOnDLS(1);
+
+	std::array<OmnibusChipOverJTAGAddress, NeuronBackendSRAMTimingConfig::config_size_in_words>
+	    ref_addresses = {
+	        OmnibusChipOverJTAGAddress{neuron_backend_east_sram_timing_base_address},
+	        OmnibusChipOverJTAGAddress{neuron_backend_east_sram_timing_base_address + 1}};
+	std::array<OmnibusChipOverJTAG, NeuronBackendSRAMTimingConfig::config_size_in_words> ref_data =
+	    {OmnibusData{100}, OmnibusData{5 | 7 << 4}};
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	NeuronBackendSRAMTimingConfig config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(NeuronBackendSRAMTimingConfig, CerealizeCoverage)
+{
+	NeuronBackendSRAMTimingConfig obj1, obj2;
+	{
+		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::ReadDelay>(
+		    obj1.get_read_delay());
+		obj1.set_read_delay(value);
+	}
+	{
+		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::AddressSetupTime>(
+		    obj1.get_address_setup_time());
+		obj1.set_address_setup_time(value);
+	}
+	{
+		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::EnableWidth>(
+		    obj1.get_enable_width());
+		obj1.set_enable_width(value);
+	}
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
 }

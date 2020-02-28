@@ -3,6 +3,7 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/cadc.h"
 #include "haldls/vx/genpybind.h"
+#include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
@@ -280,6 +281,42 @@ namespace detail {
 template <>
 struct BackendContainerTrait<CADCSampleQuad>
     : public BackendContainerBase<CADCSampleQuad, fisch::vx::OmnibusChip>
+{};
+
+} // namespace detail
+
+
+// TODO: Switch to CRTP pattern when https://github.com/kljohann/genpybind/issues/28 is solved
+class GENPYBIND(visible) CADCOffsetSRAMTimingConfig : public detail::SRAMTimingConfig
+{
+public:
+	typedef halco::hicann_dls::vx::CADCOffsetSRAMTimingConfigOnDLS coordinate_type;
+
+	bool operator==(CADCOffsetSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CADCOffsetSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, CADCOffsetSRAMTimingConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& word) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t);
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<CADCOffsetSRAMTimingConfig>
+    : public BackendContainerBase<
+          CADCOffsetSRAMTimingConfig,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

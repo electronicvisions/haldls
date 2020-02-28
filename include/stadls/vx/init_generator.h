@@ -105,6 +105,34 @@ public:
 	        common_synram_config_type GENPYBIND(opaque(false));
 	common_synram_config_type common_synram_config;
 
+	/** CADC offset SRAM timing setting. */
+	typedef halco::common::typed_array<
+	    haldls::vx::CADCOffsetSRAMTimingConfig,
+	    halco::hicann_dls::vx::CADCOffsetSRAMTimingConfigOnDLS>
+	    cadc_offset_sram_timing_config_type GENPYBIND(opaque(false));
+	cadc_offset_sram_timing_config_type cadc_offset_sram_timing_config;
+
+	/** Synapse driver SRAM timing setting. */
+	typedef halco::common::typed_array<
+	    haldls::vx::SynapseDriverSRAMTimingConfig,
+	    halco::hicann_dls::vx::SynapseDriverSRAMTimingConfigOnDLS>
+	    synapse_driver_sram_timing_config_type GENPYBIND(opaque(false));
+	synapse_driver_sram_timing_config_type synapse_driver_sram_timing_config;
+
+	/** Neuron SRAM timing setting. */
+	typedef halco::common::typed_array<
+	    haldls::vx::NeuronSRAMTimingConfig,
+	    halco::hicann_dls::vx::NeuronSRAMTimingConfigOnDLS>
+	    neuron_sram_timing_config_type GENPYBIND(opaque(false));
+	neuron_sram_timing_config_type neuron_sram_timing_config;
+
+	/** Neuron backend SRAM timing setting. */
+	typedef halco::common::typed_array<
+	    haldls::vx::NeuronBackendSRAMTimingConfig,
+	    halco::hicann_dls::vx::NeuronBackendSRAMTimingConfigOnDLS>
+	    neuron_backend_sram_timing_config_type GENPYBIND(opaque(false));
+	neuron_backend_sram_timing_config_type neuron_backend_sram_timing_config;
+
 	/** Select internal bias currents for synapses. */
 	haldls::vx::SynapseBiasSelection synapse_bias_selection;
 

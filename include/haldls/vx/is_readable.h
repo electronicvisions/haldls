@@ -7,6 +7,8 @@
 namespace haldls::vx::detail {
 
 typedef hate::type_list<
+    NeuronSRAMTimingConfig,
+    CADCOffsetSRAMTimingConfig,
     ADPLL,
     PLLSelfTest,
     PLLClockOutputBlock,

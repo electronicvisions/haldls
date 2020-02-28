@@ -19,6 +19,7 @@
 #include "haldls/vx/reset.h"
 #include "haldls/vx/routing_crossbar.h"
 #include "haldls/vx/spi.h"
+#include "haldls/vx/sram_controller.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/synapse_driver.h"
 #include "haldls/vx/systime.h"

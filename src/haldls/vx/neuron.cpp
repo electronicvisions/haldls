@@ -1912,11 +1912,88 @@ void SpikeCounterReset::serialize(Archive&, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterReset)
 
+
+bool NeuronSRAMTimingConfig::operator==(NeuronSRAMTimingConfig const& other) const
+{
+	return static_cast<SRAMTimingConfig>(*this) == static_cast<SRAMTimingConfig>(other);
+}
+
+bool NeuronSRAMTimingConfig::operator!=(NeuronSRAMTimingConfig const& other) const
+{
+	return !(*this == other);
+}
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(NeuronSRAMTimingConfig)
+
+template <typename AddressT>
+std::array<AddressT, NeuronSRAMTimingConfig::config_size_in_words>
+NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const
+{
+	return {AddressT(neuron_sram_timing_base_addresses.at(coord.toEnum())),
+	        AddressT(neuron_sram_timing_base_addresses.at(coord.toEnum()) + 1)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    NeuronSRAMTimingConfig::config_size_in_words>
+NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronSRAMTimingConfig::config_size_in_words>
+    NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+
+template <class Archive>
+void NeuronSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(cereal::base_class<detail::SRAMTimingConfig>(this));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronSRAMTimingConfig)
+
+
+bool NeuronBackendSRAMTimingConfig::operator==(NeuronBackendSRAMTimingConfig const& other) const
+{
+	return static_cast<SRAMTimingConfig>(*this) == static_cast<SRAMTimingConfig>(other);
+}
+
+bool NeuronBackendSRAMTimingConfig::operator!=(NeuronBackendSRAMTimingConfig const& other) const
+{
+	return !(*this == other);
+}
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(NeuronBackendSRAMTimingConfig)
+
+template <typename AddressT>
+std::array<AddressT, NeuronBackendSRAMTimingConfig::config_size_in_words>
+NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const
+{
+	return {AddressT(neuron_backend_sram_timing_base_addresses.at(coord.toEnum())),
+	        AddressT(neuron_backend_sram_timing_base_addresses.at(coord.toEnum()) + 1)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    NeuronBackendSRAMTimingConfig::config_size_in_words>
+NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    NeuronBackendSRAMTimingConfig::config_size_in_words>
+NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+
+template <class Archive>
+void NeuronBackendSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(cereal::base_class<detail::SRAMTimingConfig>(this));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendSRAMTimingConfig)
+
 } // namespace vx
 } // namespace haldls
 
 CEREAL_CLASS_VERSION(haldls::vx::NeuronConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::NeuronSRAMTimingConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::NeuronBackendConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::NeuronBackendSRAMTimingConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CommonNeuronBackendConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::NeuronReset, 0)
 CEREAL_CLASS_VERSION(haldls::vx::NeuronResetQuad, 0)

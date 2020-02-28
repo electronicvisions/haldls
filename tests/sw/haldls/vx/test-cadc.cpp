@@ -6,6 +6,7 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/omnibus_constants.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
@@ -260,6 +261,114 @@ TEST(CADCSampleQuad, CerealizeCoverage)
 	obj1.set_sample(
 	    EntryOnQuad(),
 	    draw_ranged_non_default_value<CADCSampleQuad::Value>(obj1.get_sample(EntryOnQuad())));
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
+TEST(CADCOffsetSRAMTimingConfig, General)
+{
+	CADCOffsetSRAMTimingConfig config;
+
+	// test getter/setter
+	{
+		auto value = draw_ranged_non_default_value<CADCOffsetSRAMTimingConfig::ReadDelay>(
+		    config.get_read_delay());
+		config.set_read_delay(value);
+		EXPECT_EQ(config.get_read_delay(), value);
+	}
+
+	{
+		auto value = draw_ranged_non_default_value<CADCOffsetSRAMTimingConfig::AddressSetupTime>(
+		    config.get_address_setup_time());
+		config.set_address_setup_time(value);
+		EXPECT_EQ(config.get_address_setup_time(), value);
+	}
+
+	{
+		auto value = draw_ranged_non_default_value<CADCOffsetSRAMTimingConfig::EnableWidth>(
+		    config.get_enable_width());
+		config.set_enable_width(value);
+		EXPECT_EQ(config.get_enable_width(), value);
+	}
+
+	CADCOffsetSRAMTimingConfig config_eq = config;
+	CADCOffsetSRAMTimingConfig config_default;
+
+	// test comparison
+	ASSERT_EQ(config, config_eq);
+	ASSERT_FALSE(config == config_default);
+
+	ASSERT_NE(config, config_default);
+	ASSERT_FALSE(config != config_eq);
+}
+
+TEST(CADCOffsetSRAMTimingConfig, EncodeDecode)
+{
+	CADCOffsetSRAMTimingConfig config;
+
+	config.set_read_delay(CADCOffsetSRAMTimingConfig::ReadDelay(100));
+	config.set_address_setup_time(CADCOffsetSRAMTimingConfig::AddressSetupTime(5));
+	config.set_enable_width(CADCOffsetSRAMTimingConfig::EnableWidth(7));
+
+	auto coord = CADCOffsetSRAMTimingConfigOnDLS(1);
+
+	std::array<OmnibusChipOverJTAGAddress, CADCOffsetSRAMTimingConfig::config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{cadc_top_sram_timing_east_base_address},
+	                     OmnibusChipOverJTAGAddress{cadc_top_sram_timing_east_base_address + 1}};
+	std::array<OmnibusChipOverJTAG, CADCOffsetSRAMTimingConfig::config_size_in_words> ref_data = {
+	    OmnibusData{100}, OmnibusData{5 | 7 << 4}};
+
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	CADCOffsetSRAMTimingConfig config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(CADCOffsetSRAMTimingConfig, CerealizeCoverage)
+{
+	CADCOffsetSRAMTimingConfig obj1, obj2;
+	{
+		auto value = draw_ranged_non_default_value<CADCOffsetSRAMTimingConfig::ReadDelay>(
+		    obj1.get_read_delay());
+		obj1.set_read_delay(value);
+	}
+	{
+		auto value = draw_ranged_non_default_value<CADCOffsetSRAMTimingConfig::AddressSetupTime>(
+		    obj1.get_address_setup_time());
+		obj1.set_address_setup_time(value);
+	}
+	{
+		auto value = draw_ranged_non_default_value<CADCOffsetSRAMTimingConfig::EnableWidth>(
+		    obj1.get_enable_width());
+		obj1.set_enable_width(value);
+	}
 
 	std::ostringstream ostream;
 	{

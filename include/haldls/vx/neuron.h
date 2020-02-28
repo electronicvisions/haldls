@@ -6,6 +6,7 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/neuron.h"
 #include "haldls/vx/genpybind.h"
+#include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
@@ -1011,6 +1012,78 @@ template <>
 struct BackendContainerTrait<SpikeCounterReset>
     : public BackendContainerBase<
           SpikeCounterReset,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+} // namespace detail
+
+
+// TODO: Switch to CRTP pattern when https://github.com/kljohann/genpybind/issues/28 is solved
+class GENPYBIND(visible) NeuronSRAMTimingConfig : public detail::SRAMTimingConfig
+{
+public:
+	typedef halco::hicann_dls::vx::NeuronSRAMTimingConfigOnDLS coordinate_type;
+
+	bool operator==(NeuronSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(NeuronSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, NeuronSRAMTimingConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& word) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t);
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<NeuronSRAMTimingConfig>
+    : public BackendContainerBase<
+          NeuronSRAMTimingConfig,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+} // namespace detail
+
+
+// TODO: Switch to CRTP pattern when https://github.com/kljohann/genpybind/issues/28 is solved
+class GENPYBIND(visible) NeuronBackendSRAMTimingConfig : public detail::SRAMTimingConfig
+{
+public:
+	typedef halco::hicann_dls::vx::NeuronBackendSRAMTimingConfigOnDLS coordinate_type;
+
+	bool operator==(NeuronBackendSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(NeuronBackendSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, NeuronBackendSRAMTimingConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	template <typename AddressT>
+	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& word) const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t);
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<NeuronBackendSRAMTimingConfig>
+    : public BackendContainerBase<
+          NeuronBackendSRAMTimingConfig,
           fisch::vx::OmnibusChip,
           fisch::vx::OmnibusChipOverJTAG>
 {};
