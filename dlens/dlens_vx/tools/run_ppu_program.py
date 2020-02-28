@@ -4,8 +4,8 @@ import argparse
 from dlens_vx import halco
 from dlens_vx.sta import PlaybackProgramBuilder, PlaybackProgramExecutor, \
     AutoConnection, DigitalInit, generate
-from pyhaldls_vx import PPUControlRegister, Timer, PPUMemoryBlock  # Issue 3429
-from pylola_vx import PPUElfFile
+from dlens_vx.hal import PPUControlRegister, Timer, PPUMemoryBlock
+from dlens_vx.lola import PPUElfFile
 
 _DEFAULT_PPU = halco.PPUOnDLS(0)
 
