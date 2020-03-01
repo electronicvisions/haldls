@@ -34,6 +34,7 @@ typedef hate::type_list<
     CADCChannelConfig,
     CADCSampleQuad,
     FPGADeviceDNA,
+    EventRecordingConfig,
     ReferenceGeneratorConfig,
     ReadoutMuxConfig,
     ReadoutBufferConfigBlock,

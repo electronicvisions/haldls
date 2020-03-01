@@ -45,6 +45,7 @@ constexpr uint32_t phy_on_chip_base_address{0x0004'0000};
 constexpr uint32_t pll_base_address{0x0008'0000};
 constexpr uint32_t systime_base_address{0x0};
 constexpr uint32_t fpga_device_dna_base_address{0x3};
+constexpr uint32_t event_recording_config_base_address{0x5};
 
 constexpr uint32_t capmem_nw_sram_base_address{0x140000};
 constexpr uint32_t capmem_ne_sram_base_address{0x148000};

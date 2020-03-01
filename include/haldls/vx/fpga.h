@@ -79,11 +79,66 @@ private:
 	Value m_value;
 };
 
+/**
+ * Container for the event (spikes, MADC samples) recording configuration register.
+ */
+class GENPYBIND(visible) EventRecordingConfig
+{
+public:
+	typedef halco::hicann_dls::vx::EventRecordingConfigOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	explicit EventRecordingConfig() SYMBOL_VISIBLE;
+
+	/**
+	 * Get enable event recording.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(enable_event_recording))
+	bool get_enable_event_recording() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable_event_recording.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(enable_event_recording))
+	void set_enable_event_recording(bool value) SYMBOL_VISIBLE;
+
+	bool operator==(EventRecordingConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(EventRecordingConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, EventRecordingConfig const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, read_config_size_in_words> read_addresses(
+	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::OmnibusFPGA, write_config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::OmnibusFPGA, read_config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar) SYMBOL_VISIBLE;
+
+	bool m_enable_event_recording;
+};
+
 namespace detail {
 
 template <>
 struct BackendContainerTrait<FPGADeviceDNA>
     : public BackendContainerBase<FPGADeviceDNA, fisch::vx::OmnibusFPGA>
+{};
+
+template <>
+struct BackendContainerTrait<EventRecordingConfig>
+    : public BackendContainerBase<EventRecordingConfig, fisch::vx::OmnibusFPGA>
 {};
 
 } // namespace detail
