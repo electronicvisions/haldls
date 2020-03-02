@@ -589,6 +589,22 @@ template <
     typename DoneType,
     template <typename>
     class CoordinateToContainer>
+size_t
+PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContainer>::size_from_fpga()
+    const
+{
+	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
+		return m_builder_impl->size_from_fpga();
+	} else {
+		throw std::runtime_error("BuilderStorage does not support size_from_fpga().");
+	}
+}
+
+template <
+    typename BuilderStorage,
+    typename DoneType,
+    template <typename>
+    class CoordinateToContainer>
 bool PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContainer>::is_write_only()
     const
 {

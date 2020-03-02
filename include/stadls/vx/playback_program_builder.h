@@ -253,6 +253,12 @@ public:
 	size_t size_to_fpga() const;
 
 	/**
+	 * Get number of expected UT messages from FPGA.
+	 * @return Size
+	 */
+	size_t size_from_fpga() const;
+
+	/**
 	 * Get whether builder only stores write instructions.
 	 * @return Boolean value
 	 */
