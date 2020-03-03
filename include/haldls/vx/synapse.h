@@ -321,6 +321,46 @@ public:
 		GENPYBIND(setter_for(enable_debug_acausal))
 		void set_enable_debug_acausal(bool value) SYMBOL_VISIBLE;
 
+		/**
+		 * Get enable value for connecting  the neuron's readout circuit to the respective causal
+		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
+		 * biased, but the neuron must not be connected to the readout chain via the collective
+		 * lines. Otherwise the neurons will be shorted.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_cadc_neuron_readout_causal))
+		bool get_enable_cadc_neuron_readout_causal() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for connecting  the neuron's readout circuit to the respective causal
+		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
+		 * biased, but the neuron must not be connected to the readout chain via the collective
+		 * lines. Otherwise the neurons will be shorted.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_cadc_neuron_readout_causal))
+		void set_enable_cadc_neuron_readout_causal(bool value) SYMBOL_VISIBLE;
+
+		/**
+		 * Get enable value for connecting  the neuron's readout circuit to the respective acausal
+		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
+		 * biased, but the neuron must not be connected to the readout chain via the collective
+		 * lines. Otherwise the neurons will be shorted.
+		 * @return Boolean enable value
+		 */
+		GENPYBIND(getter_for(enable_cadc_neuron_readout_acausal))
+		bool get_enable_cadc_neuron_readout_acausal() const SYMBOL_VISIBLE;
+
+		/**
+		 * Set enable value for connecting  the neuron's readout circuit to the respective acausal
+		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
+		 * biased, but the neuron must not be connected to the readout chain via the collective
+		 * lines. Otherwise the neurons will be shorted.
+		 * @param value Boolean enable value
+		 */
+		GENPYBIND(setter_for(enable_cadc_neuron_readout_acausal))
+		void set_enable_cadc_neuron_readout_acausal(bool value) SYMBOL_VISIBLE;
+
 		bool operator==(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
 		bool operator!=(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
 
@@ -333,6 +373,8 @@ public:
 		bool m_enable_internal_acausal;
 		bool m_enable_debug_causal;
 		bool m_enable_debug_acausal;
+		bool m_enable_cadc_neuron_readout_causal;
+		bool m_enable_cadc_neuron_readout_acausal;
 	};
 
 	/** Default constructor. */
@@ -344,7 +386,7 @@ public:
 	    halco::hicann_dls::vx::EntryOnQuad const& correlation_switch,
 	    ColumnCorrelationSwitch const& value) SYMBOL_VISIBLE;
 
-	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 4;
 	template <typename AddressT>
 	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& block)
 	    GENPYBIND(hidden);
@@ -464,46 +506,6 @@ public:
 		GENPYBIND(setter_for(enable_debug_inhibitory))
 		void set_enable_debug_inhibitory(bool value) SYMBOL_VISIBLE;
 
-		/**
-		 * Get enable value for connecting  the neuron's readout circuit to the respective causal
-		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
-		 * biased, but the neuron must not be connected to the readout chain via the collective
-		 * lines. Otherwise the neurons will be shorted.
-		 * @return Boolean enable value
-		 */
-		GENPYBIND(getter_for(enable_cadc_neuron_readout_causal))
-		bool get_enable_cadc_neuron_readout_causal() const SYMBOL_VISIBLE;
-
-		/**
-		 * Set enable value for connecting  the neuron's readout circuit to the respective causal
-		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
-		 * biased, but the neuron must not be connected to the readout chain via the collective
-		 * lines. Otherwise the neurons will be shorted.
-		 * @param value Boolean enable value
-		 */
-		GENPYBIND(setter_for(enable_cadc_neuron_readout_causal))
-		void set_enable_cadc_neuron_readout_causal(bool value) SYMBOL_VISIBLE;
-
-		/**
-		 * Get enable value for connecting  the neuron's readout circuit to the respective acausal
-		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
-		 * biased, but the neuron must not be connected to the readout chain via the collective
-		 * lines. Otherwise the neurons will be shorted.
-		 * @return Boolean enable value
-		 */
-		GENPYBIND(getter_for(enable_cadc_neuron_readout_acausal))
-		bool get_enable_cadc_neuron_readout_acausal() const SYMBOL_VISIBLE;
-
-		/**
-		 * Set enable value for connecting  the neuron's readout circuit to the respective acausal
-		 * CADC channel. Keep in mind that the neuron's readout amplifier must be enabled and
-		 * biased, but the neuron must not be connected to the readout chain via the collective
-		 * lines. Otherwise the neurons will be shorted.
-		 * @param value Boolean enable value
-		 */
-		GENPYBIND(setter_for(enable_cadc_neuron_readout_acausal))
-		void set_enable_cadc_neuron_readout_acausal(bool value) SYMBOL_VISIBLE;
-
 		bool operator==(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
 		bool operator!=(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
 
@@ -516,8 +518,6 @@ public:
 		bool m_enable_synaptic_current_inhibitory;
 		bool m_enable_debug_excitatory;
 		bool m_enable_debug_inhibitory;
-		bool m_enable_cadc_neuron_readout_causal;
-		bool m_enable_cadc_neuron_readout_acausal;
 	};
 
 	/** Default constructor. */

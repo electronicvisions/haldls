@@ -40,6 +40,18 @@ TEST(ColumnCorrelationQuad_ColumnCorrelationSwitch, General)
 		ASSERT_EQ(correlation_switch.get_enable_debug_acausal(), value);
 	}
 
+	{
+		auto value = !correlation_switch.get_enable_cadc_neuron_readout_causal();
+		correlation_switch.set_enable_cadc_neuron_readout_causal(value);
+		ASSERT_EQ(correlation_switch.get_enable_cadc_neuron_readout_causal(), value);
+	}
+
+	{
+		auto value = !correlation_switch.get_enable_cadc_neuron_readout_acausal();
+		correlation_switch.set_enable_cadc_neuron_readout_acausal(value);
+		ASSERT_EQ(correlation_switch.get_enable_cadc_neuron_readout_acausal(), value);
+	}
+
 	ColumnCorrelationQuad::ColumnCorrelationSwitch correlation_switch_eq = correlation_switch;
 	ColumnCorrelationQuad::ColumnCorrelationSwitch correlation_switch_ne;
 
@@ -72,6 +84,16 @@ TEST(ColumnCorrelationQuad_ColumnCorrelationSwitch, CerealizeCoverage)
 	{
 		auto value = !obj1.get_enable_debug_acausal();
 		obj1.set_enable_debug_acausal(value);
+	}
+
+	{
+		auto value = !obj1.get_enable_cadc_neuron_readout_causal();
+		obj1.set_enable_cadc_neuron_readout_causal(value);
+	}
+
+	{
+		auto value = !obj1.get_enable_cadc_neuron_readout_acausal();
+		obj1.set_enable_cadc_neuron_readout_acausal(value);
 	}
 
 	std::ostringstream ostream;
@@ -116,14 +138,18 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 	ColumnCorrelationQuad::ColumnCorrelationSwitch correlation_switch;
 	correlation_switch.set_enable_internal_causal(true);
 	correlation_switch.set_enable_debug_acausal(true);
+	correlation_switch.set_enable_cadc_neuron_readout_acausal(true);
 	correlation_switch_block.set_switch(correlation_switch_coord, correlation_switch);
 
 	std::array<
 	    halco::hicann_dls::vx::OmnibusChipAddress, ColumnCorrelationQuad::config_size_in_words>
 	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'8080),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'80c0)}};
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'80c0),
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c0'8000),
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c0'8040)}};
 	std::array<fisch::vx::OmnibusChip, ColumnCorrelationQuad::config_size_in_words> ref_data = {
-	    {fisch::vx::OmnibusData(0x0040'0000), fisch::vx::OmnibusData(0x0080'0000)}};
+	    {fisch::vx::OmnibusData(0x0040'0000), fisch::vx::OmnibusData(0x0080'0000),
+	     fisch::vx::OmnibusData(0x0000'0000), fisch::vx::OmnibusData(0x0020'0000)}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusChipAddress> write_addresses;

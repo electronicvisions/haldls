@@ -22,6 +22,14 @@ constexpr uint32_t synram_synapse_bottom_base_address{synram_synacc_bottom_base_
                                                       0x000f'0000};
 constexpr uint32_t synram_synapse_top_base_address{synram_synacc_top_base_address + 0x000f'0000};
 
+constexpr uint32_t synram_synapse_2msb_bottom_base_address{synram_synacc_bottom_base_address +
+                                                           0x0001'0000};
+constexpr uint32_t synram_synapse_2msb_top_base_address{synram_synacc_top_base_address +
+                                                        0x0001'0000};
+
+constexpr uint32_t synram_synapse_6lsb_bottom_base_address{synram_synacc_bottom_base_address};
+constexpr uint32_t synram_synapse_6lsb_top_base_address{synram_synacc_top_base_address};
+
 constexpr uint32_t synram_causal_cadc_bottom_base_address{synram_synacc_bottom_base_address +
                                                           0x0008'0000};
 constexpr uint32_t synram_causal_cadc_top_base_address{synram_synacc_top_base_address +

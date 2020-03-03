@@ -40,18 +40,6 @@ TEST(ColumnCurrentQuad_ColumnCurrentSwitch, General)
 		ASSERT_EQ(current_switch.get_enable_debug_inhibitory(), value);
 	}
 
-	{
-		auto value = !current_switch.get_enable_cadc_neuron_readout_causal();
-		current_switch.set_enable_cadc_neuron_readout_causal(value);
-		ASSERT_EQ(current_switch.get_enable_cadc_neuron_readout_causal(), value);
-	}
-
-	{
-		auto value = !current_switch.get_enable_cadc_neuron_readout_acausal();
-		current_switch.set_enable_cadc_neuron_readout_acausal(value);
-		ASSERT_EQ(current_switch.get_enable_cadc_neuron_readout_acausal(), value);
-	}
-
 	ColumnCurrentQuad::ColumnCurrentSwitch current_switch_eq = current_switch;
 	ColumnCurrentQuad::ColumnCurrentSwitch current_switch_ne;
 
@@ -84,16 +72,6 @@ TEST(ColumnCurrentQuad_ColumnCurrentSwitch, CerealizeCoverage)
 	{
 		auto value = !obj1.get_enable_debug_inhibitory();
 		obj1.set_enable_debug_inhibitory(value);
-	}
-
-	{
-		auto value = !obj1.get_enable_cadc_neuron_readout_causal();
-		obj1.set_enable_cadc_neuron_readout_causal(value);
-	}
-
-	{
-		auto value = !obj1.get_enable_cadc_neuron_readout_acausal();
-		obj1.set_enable_cadc_neuron_readout_acausal(value);
 	}
 
 	std::ostringstream ostream;
@@ -141,8 +119,8 @@ TEST(ColumnCurrentQuad, EncodeDecode)
 	current_switch_block.set_switch(current_switch_coord, current_switch);
 
 	std::array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCurrentQuad::config_size_in_words>
-	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'8000),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'8040)}};
+	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02c1'8000),
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c1'8040)}};
 	std::array<fisch::vx::OmnibusChip, ColumnCurrentQuad::config_size_in_words> ref_data = {
 	    {fisch::vx::OmnibusData(0x0080'0000), fisch::vx::OmnibusData(0x0040'0000)}};
 
