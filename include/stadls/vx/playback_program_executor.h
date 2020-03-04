@@ -32,6 +32,8 @@ public:
 	/** Copy constructor not possible with IO connection. */
 	PlaybackProgramExecutor(PlaybackProgramExecutor const& other) = delete;
 
+	PlaybackProgramExecutor& operator=(PlaybackProgramExecutor&& other) SYMBOL_VISIBLE;
+
 	/**
 	 * Connect to hardware by environment FPGA IP detection.
 	 * @throws std::runtime_error On no hardware found

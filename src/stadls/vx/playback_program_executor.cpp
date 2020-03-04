@@ -25,6 +25,12 @@ PlaybackProgramExecutor::PlaybackProgramExecutor(PlaybackProgramExecutor&& other
     m_impl(std::move(other.m_impl))
 {}
 
+PlaybackProgramExecutor& PlaybackProgramExecutor::operator=(PlaybackProgramExecutor&& other)
+{
+	m_impl = std::move(other.m_impl);
+	return *this;
+}
+
 void PlaybackProgramExecutor::connect_hardware(ip_t const ip)
 {
 	if (!m_impl) {
