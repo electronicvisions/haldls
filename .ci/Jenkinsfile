@@ -1,4 +1,6 @@
 @Library("jenlib") _
+import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
+
 
 wafDefaultPipeline(projects: ["haldls"],
                    container: [app: "visionary-dls"],
@@ -8,3 +10,26 @@ wafDefaultPipeline(projects: ["haldls"],
                                        [partition: "cube", wafer: 62, "fpga-without-aout": 3]],
                    testTimeout: 240,
                    notificationChannel: "#dls-software")
+
+try {
+	stage("Module Deployment") {
+		if (env.GERRIT_EVENT_TYPE == "change-merged") {
+			if (currentBuild.currentResult == "SUCCESS") {
+				runOnSlave(label: "frontend") {
+					deployModule([name: "haldls", source: WORKSPACE])
+				}
+			} else {
+				echo("Deployment skipped: Unstable build.")
+			}
+		} else {
+			Utils.markStageSkippedForConditional(STAGE_NAME)
+		}
+	}
+} catch (Throwable t) {
+	notifyFailure(mattermostChannel: "#dls-software")
+	throw t
+}
+
+if (currentBuild.currentResult != "SUCCESS") {
+	notifyFailure(mattermostChannel: "#dls-software")
+}
