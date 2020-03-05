@@ -40,7 +40,8 @@ typedef hate::type_list<
     ReadoutSourceSelection,
     lola::vx::CADCSampleRow,
     lola::vx::SynapseMatrix,
-    lola::vx::SynapseRow>
+    lola::vx::SynapseRow,
+    MADCConfig>
     ReadableContainerList;
 
 typedef hate::type_list<
