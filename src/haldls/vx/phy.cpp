@@ -525,7 +525,9 @@ CommonPhyConfigChip::encode() const
 {
 	hate::bitset<halco::hicann_dls::vx::PhyConfigChipOnDLS::size> enable_mask;
 	for (auto phy : halco::common::iter_all<halco::hicann_dls::vx::PhyConfigChipOnDLS>()) {
-		enable_mask.set(phy.toEnum(), m_enable_phy[phy]);
+		// phy enables on chip are reversed compared to on FPGA
+		enable_mask.set(
+		    halco::hicann_dls::vx::PhyConfigChipOnDLS::max - phy.toEnum(), m_enable_phy[phy]);
 	}
 
 	return {fisch::vx::OmnibusChipOverJTAG(
