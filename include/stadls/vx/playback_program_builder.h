@@ -133,6 +133,22 @@ public:
 	void merge_back(fisch::vx::PlaybackProgramBuilder& other) SYMBOL_VISIBLE;
 
 	/**
+	 * Copy other PlaybackProgramBuilder to the end of this builder instance.
+	 * The copied-from builder is untouched during the process.
+	 * @throws std::runtime_error On other builder not being write only
+	 * @param other Builder to copy to this instance at the back
+	 */
+	void copy_back(PlaybackProgramBuilder const& other) SYMBOL_VISIBLE;
+
+	/**
+	 * Copy fisch PlaybackProgramBuilder to the end of this builder instance.
+	 * The copied-from builder is untouched during the process.
+	 * @throws std::runtime_error On other builder not being write only
+	 * @param other Builder to copy to this instance at the back
+	 */
+	void copy_back(fisch::vx::PlaybackProgramBuilder const& other) SYMBOL_VISIBLE;
+
+	/**
 	 * Close PlaybackProgram build process and return executable program.
 	 * @return Executable PlaybackProgram
 	 */

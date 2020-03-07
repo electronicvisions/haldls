@@ -255,6 +255,23 @@ void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder& other
 	m_builder_impl->merge_back(other);
 }
 
+void PlaybackProgramBuilder::copy_back(PlaybackProgramBuilder const& other)
+{
+	m_builder_impl->copy_back(*(other.m_builder_impl));
+	if (other.m_executable_restriction) {
+		if (!m_executable_restriction) {
+			m_executable_restriction = other.m_executable_restriction;
+		} else if (m_executable_restriction != other.m_executable_restriction) {
+			throw std::runtime_error("executor restrictions don't match.");
+		}
+	}
+}
+
+void PlaybackProgramBuilder::copy_back(fisch::vx::PlaybackProgramBuilder const& other)
+{
+	m_builder_impl->copy_back(other);
+}
+
 PlaybackProgram PlaybackProgramBuilder::done()
 {
 	return PlaybackProgram(m_builder_impl->done(), m_executable_restriction);
