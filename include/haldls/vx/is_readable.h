@@ -36,8 +36,8 @@ typedef hate::type_list<
     FPGADeviceDNA,
     EventRecordingConfig,
     ReferenceGeneratorConfig,
-    ReadoutMuxConfig,
-    ReadoutBufferConfigBlock,
+    PadMultiplexerConfig,
+    ReadoutSourceSelection,
     lola::vx::CADCSampleRow,
     lola::vx::SynapseMatrix,
     lola::vx::SynapseRow>

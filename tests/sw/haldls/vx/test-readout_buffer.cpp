@@ -14,9 +14,9 @@ using namespace halco::common;
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
 
-TEST(ReadoutBufferConfigBlock, General)
+TEST(ReadoutSourceSelection, General)
 {
-	ReadoutBufferConfigBlock::ReadoutBufferConfig config;
+	ReadoutSourceSelection::SourceMultiplexer config;
 
 	{
 		auto member = config.get_debug_plus();
@@ -94,19 +94,21 @@ TEST(ReadoutBufferConfigBlock, General)
 		EXPECT_EQ(config.get_neuron_even(), member);
 	}
 
-	{
-		auto member = config.get_enable_buffer();
-		member = !member;
-		config.set_enable_buffer(member);
-		EXPECT_EQ(config.get_enable_buffer(), member);
-	}
-
-	ReadoutBufferConfigBlock block_config;
-	for (auto coord : iter_all<ReadoutBufferConfigOnReadoutBufferConfigBlock>()) {
+	ReadoutSourceSelection block_config;
+	for (auto coord : iter_all<SourceMultiplexerOnReadoutSourceSelection>()) {
 		block_config.set_buffer(coord, config);
 	}
 
-	ReadoutBufferConfigBlock::ReadoutBufferConfig default_config;
+	{
+		auto member = block_config.get_enable_buffer_to_pad();
+		for (auto coord : iter_all<SourceMultiplexerOnReadoutSourceSelection>()) {
+			member[coord] = !member[coord];
+		}
+		block_config.set_enable_buffer_to_pad(member);
+		EXPECT_EQ(block_config.get_enable_buffer_to_pad(), member);
+	}
+
+	ReadoutSourceSelection::SourceMultiplexer default_config;
 
 	ASSERT_NE(config, default_config);
 	ASSERT_TRUE(config != default_config);
@@ -117,7 +119,7 @@ TEST(ReadoutBufferConfigBlock, General)
 	ASSERT_TRUE(config == default_config);
 	ASSERT_FALSE(config != default_config);
 
-	ReadoutBufferConfigBlock default_block_config;
+	ReadoutSourceSelection default_block_config;
 
 	ASSERT_NE(block_config, default_block_config);
 	ASSERT_TRUE(block_config != default_block_config);
@@ -129,13 +131,13 @@ TEST(ReadoutBufferConfigBlock, General)
 	ASSERT_FALSE(block_config != default_block_config);
 }
 
-TEST(ReadoutBufferConfigBlock, EncodeDecode)
+TEST(ReadoutSourceSelection, EncodeDecode)
 {
-	ReadoutBufferConfigBlock config;
+	ReadoutSourceSelection config;
 
-	auto coord = typename ReadoutBufferConfigBlock::coordinate_type();
+	auto coord = typename ReadoutSourceSelection::coordinate_type();
 
-	std::array<OmnibusChipOverJTAGAddress, ReadoutBufferConfigBlock::config_size_in_words>
+	std::array<OmnibusChipOverJTAGAddress, ReadoutSourceSelection::config_size_in_words>
 	    ref_addresses = {OmnibusChipOverJTAGAddress{0xc0000 + 12},
 	                     OmnibusChipOverJTAGAddress{0xc0000 + 13}};
 
@@ -152,8 +154,8 @@ TEST(ReadoutBufferConfigBlock, EncodeDecode)
 	EXPECT_EQ(default_data[1].get(), 0x0);
 
 	// Encode some connections
-	auto buffer_0 = config.get_buffer(ReadoutBufferConfigOnReadoutBufferConfigBlock(0));
-	auto buffer_1 = config.get_buffer(ReadoutBufferConfigOnReadoutBufferConfigBlock(1));
+	auto buffer_0 = config.get_buffer(SourceMultiplexerOnReadoutSourceSelection(0));
+	auto buffer_1 = config.get_buffer(SourceMultiplexerOnReadoutSourceSelection(1));
 
 	buffer_0.set_synin_debug_inhibitory(true);
 	buffer_0.set_cadc_debug_causal(true);
@@ -165,10 +167,14 @@ TEST(ReadoutBufferConfigBlock, EncodeDecode)
 
 	buffer_1.set_current_dac(true);
 	buffer_1.set_debug_plus(true);
-	buffer_1.set_enable_buffer(true);
 
-	config.set_buffer(ReadoutBufferConfigOnReadoutBufferConfigBlock(0), buffer_0);
-	config.set_buffer(ReadoutBufferConfigOnReadoutBufferConfigBlock(1), buffer_1);
+	config.set_buffer(SourceMultiplexerOnReadoutSourceSelection(0), buffer_0);
+	config.set_buffer(SourceMultiplexerOnReadoutSourceSelection(1), buffer_1);
+	{
+		auto member = config.get_enable_buffer_to_pad();
+		member[SourceMultiplexerOnReadoutSourceSelection(1)] = true;
+		config.set_enable_buffer_to_pad(member);
+	}
 
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
@@ -176,16 +182,16 @@ TEST(ReadoutBufferConfigBlock, EncodeDecode)
 	EXPECT_EQ(data[1].get(), 0x2005);
 
 	// Decode
-	ReadoutBufferConfigBlock decoded;
+	ReadoutSourceSelection decoded;
 	ASSERT_NE(config, decoded);
 	visit_preorder(decoded, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, decoded);
 }
 
-TEST(ReadoutBufferConfigBlock, CerealizeCoverage)
+TEST(ReadoutSourceSelection, CerealizeCoverage)
 {
-	ReadoutBufferConfigBlock c1, c2;
-	ReadoutBufferConfigBlock::ReadoutBufferConfig config;
+	ReadoutSourceSelection c1, c2;
+	ReadoutSourceSelection::SourceMultiplexer config;
 
 	{
 		auto member = config.get_debug_plus();
@@ -253,14 +259,16 @@ TEST(ReadoutBufferConfigBlock, CerealizeCoverage)
 		config.set_neuron_even(member);
 	}
 
-	{
-		auto member = config.get_enable_buffer();
-		member = !member;
-		config.set_enable_buffer(member);
+	for (auto coord : iter_all<SourceMultiplexerOnReadoutSourceSelection>()) {
+		c1.set_buffer(coord, config);
 	}
 
-	for (auto coord : iter_all<ReadoutBufferConfigOnReadoutBufferConfigBlock>()) {
-		c1.set_buffer(coord, config);
+	{
+		auto member = c1.get_enable_buffer_to_pad();
+		for (auto coord : iter_all<SourceMultiplexerOnReadoutSourceSelection>()) {
+			member[coord] = !member[coord];
+		}
+		c1.set_enable_buffer_to_pad(member);
 	}
 
 	std::ostringstream ostream;

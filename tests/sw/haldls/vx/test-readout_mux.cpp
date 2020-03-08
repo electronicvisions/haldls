@@ -14,9 +14,9 @@ using namespace halco::common;
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
 
-TEST(ReadoutMuxConfig, General)
+TEST(PadMultiplexerConfig, General)
 {
-	ReadoutMuxConfig config;
+	PadMultiplexerConfig config;
 
 	{
 		auto member = config.get_cadc_v_ramp_mux();
@@ -142,14 +142,14 @@ TEST(ReadoutMuxConfig, General)
 
 	{
 		auto member = config.get_buffer_to_pad();
-		for (auto coord : iter_all<ReadoutBufferConfigOnReadoutBufferConfigBlock>()) {
+		for (auto coord : iter_all<SourceMultiplexerOnReadoutSourceSelection>()) {
 			member[coord] = !member[coord];
 		}
 		config.set_buffer_to_pad(member);
 		EXPECT_EQ(config.get_buffer_to_pad(), member);
 	}
 
-	ReadoutMuxConfig default_config;
+	PadMultiplexerConfig default_config;
 
 	ASSERT_NE(config, default_config);
 	ASSERT_TRUE(config != default_config);
@@ -161,14 +161,15 @@ TEST(ReadoutMuxConfig, General)
 	ASSERT_FALSE(config != default_config);
 }
 
-TEST(ReadoutMuxConfig, EncodeDecode)
+TEST(PadMultiplexerConfig, EncodeDecode)
 {
-	ReadoutMuxConfig config;
+	PadMultiplexerConfig config;
 
-	auto coord = typename ReadoutMuxConfig::coordinate_type();
+	auto coord = typename PadMultiplexerConfig::coordinate_type();
 
-	std::array<OmnibusChipOverJTAGAddress, ReadoutMuxConfig::config_size_in_words> ref_addresses = {
-	    OmnibusChipOverJTAGAddress{0xc0000 + 14}, OmnibusChipOverJTAGAddress{0xc0000 + 15}};
+	std::array<OmnibusChipOverJTAGAddress, PadMultiplexerConfig::config_size_in_words>
+	    ref_addresses = {OmnibusChipOverJTAGAddress{0xc0000 + 14},
+	                     OmnibusChipOverJTAGAddress{0xc0000 + 15}};
 
 	{ // check if write addresses are correct
 		addresses_type write_addresses;
@@ -204,15 +205,15 @@ TEST(ReadoutMuxConfig, EncodeDecode)
 	EXPECT_EQ(data[1].get(), 0x14);
 
 	// Decode
-	ReadoutMuxConfig decoded;
+	PadMultiplexerConfig decoded;
 	ASSERT_NE(config, decoded);
 	visit_preorder(decoded, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_EQ(config, decoded);
 }
 
-TEST(ReadoutMuxConfig, CerealizeCoverage)
+TEST(PadMultiplexerConfig, CerealizeCoverage)
 {
-	ReadoutMuxConfig config, c2;
+	PadMultiplexerConfig config, c2;
 
 	{
 		auto member = config.get_cadc_v_ramp_mux();
@@ -322,7 +323,7 @@ TEST(ReadoutMuxConfig, CerealizeCoverage)
 
 	{
 		auto member = config.get_buffer_to_pad();
-		for (auto coord : iter_all<ReadoutBufferConfigOnReadoutBufferConfigBlock>()) {
+		for (auto coord : iter_all<SourceMultiplexerOnReadoutSourceSelection>()) {
 			member[coord] = !member[coord];
 		}
 		config.set_buffer_to_pad(member);

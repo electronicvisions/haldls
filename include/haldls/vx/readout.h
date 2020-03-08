@@ -30,28 +30,28 @@ namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
  * the two analog readout pads and different components of the chip.
  * There are two equal instances of this mux on the chip, for the two pads.
  */
-class GENPYBIND(visible) ReadoutMuxConfig
+class GENPYBIND(visible) PadMultiplexerConfig
 {
 public:
-	typedef halco::hicann_dls::vx::ReadoutMuxConfigOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::PadMultiplexerConfigOnDLS coordinate_type;
 
 	typedef std::true_type is_leaf_node;
 
 	/** Default constructor with all inputs disabled. */
-	ReadoutMuxConfig() SYMBOL_VISIBLE;
+	PadMultiplexerConfig() SYMBOL_VISIBLE;
 
 	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::CapMemBlockOnDLS>
 	    capmem_quadrant_type GENPYBIND(opaque(false));
 	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::HemisphereOnDLS> hemisphere_type
 	    GENPYBIND(opaque(false));
 	typedef halco::common::
-	    typed_array<bool, halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock>
+	    typed_array<bool, halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection>
 	        buffer_type GENPYBIND(opaque(false));
 
 	/** Select CADC v_ramp outputs per quadrant. */
 	GENPYBIND(getter_for(cadc_v_ramp_mux), return_value_policy(reference))
 	capmem_quadrant_type const& get_cadc_v_ramp_mux() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(cadc_v_ramp_mux), return_value_policy(reference))
+	GENPYBIND(setter_for(cadc_v_ramp_mux))
 	void set_cadc_v_ramp_mux(capmem_quadrant_type const& value) SYMBOL_VISIBLE;
 
 	/** Enable connection of cadc_v_ramp_mux to pad. */
@@ -63,7 +63,7 @@ public:
 	/** Select CapMem i_out outputs per quadrant. */
 	GENPYBIND(getter_for(capmem_i_out_mux), return_value_policy(reference))
 	capmem_quadrant_type const& get_capmem_i_out_mux() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(capmem_i_out_mux), return_value_policy(reference))
+	GENPYBIND(setter_for(capmem_i_out_mux))
 	void set_capmem_i_out_mux(capmem_quadrant_type const& value) SYMBOL_VISIBLE;
 
 	/** Enable connection of capmem_i_out_mux to intermediate mux.
@@ -85,7 +85,7 @@ public:
 	/** Select CapMem v_out outputs per quadrant. */
 	GENPYBIND(getter_for(capmem_v_out_mux), return_value_policy(reference))
 	capmem_quadrant_type const& get_capmem_v_out_mux() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(capmem_v_out_mux), return_value_policy(reference))
+	GENPYBIND(setter_for(capmem_v_out_mux))
 	void set_capmem_v_out_mux(capmem_quadrant_type const& value) SYMBOL_VISIBLE;
 
 	/** Enable connection of capmem_v_out_mux to intermediate mux.
@@ -99,7 +99,7 @@ public:
 	/** Select CapMem v_ref outputs per quadrant. */
 	GENPYBIND(getter_for(capmem_v_ref_mux), return_value_policy(reference))
 	capmem_quadrant_type const& get_capmem_v_ref_mux() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(capmem_v_ref_mux), return_value_policy(reference))
+	GENPYBIND(setter_for(capmem_v_ref_mux))
 	void set_capmem_v_ref_mux(capmem_quadrant_type const& value) SYMBOL_VISIBLE;
 
 	/** Enable connection of capmem_v_ref_mux to intermediate mux.
@@ -113,7 +113,7 @@ public:
 	/** Select neuron unbuffered membrane access i_stim per hemisphere. */
 	GENPYBIND(getter_for(neuron_i_stim_mux), return_value_policy(reference))
 	hemisphere_type const& get_neuron_i_stim_mux() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(neuron_i_stim_mux), return_value_policy(reference))
+	GENPYBIND(setter_for(neuron_i_stim_mux))
 	void set_neuron_i_stim_mux(hemisphere_type const& value) SYMBOL_VISIBLE;
 
 	/** Enable connection of neuron unbuffered membrane access neuron_i_stim_mux to pad. */
@@ -163,10 +163,11 @@ public:
 	void set_synapse_intermediate_mux_to_pad(bool value) SYMBOL_VISIBLE;
 
 	/** Enable connection of voltage readout buffers to pad.
-	 * The connections to the voltage readout muxes/buffers are handled in a separate container. */
+	 * The connections to the voltage readout muxes/buffers are handled in the
+	 * ReadoutSourceSelection container. */
 	GENPYBIND(getter_for(buffer_to_pad), return_value_policy(reference))
 	buffer_type const& get_buffer_to_pad() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(buffer_to_pad), return_value_policy(reference))
+	GENPYBIND(setter_for(buffer_to_pad))
 	void set_buffer_to_pad(buffer_type const& value) SYMBOL_VISIBLE;
 
 	/** Enable connection of debug lines to pad.
@@ -178,11 +179,11 @@ public:
 	GENPYBIND(setter_for(debug_to_pad))
 	void set_debug_to_pad(bool value) SYMBOL_VISIBLE;
 
-	bool operator==(ReadoutMuxConfig const& other) const SYMBOL_VISIBLE;
-	bool operator!=(ReadoutMuxConfig const& other) const SYMBOL_VISIBLE;
+	bool operator==(PadMultiplexerConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PadMultiplexerConfig const& other) const SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, ReadoutMuxConfig const& config)
+	friend std::ostream& operator<<(std::ostream& os, PadMultiplexerConfig const& config)
 	    SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
@@ -236,23 +237,23 @@ private:
 /**
  * Configuration container for the two mux and buffer blocks for voltage readout.
  * Allows selection of various signal sources on chip and drives the signals.
- * To reach the pads, the buffer_to_pad option in the ReadoutMuxConfig needs to be set.
+ * To reach the pads, the buffer_to_pad option in the PadMultiplexerConfig needs to be set.
  *
  * Some of the selectable voltages in this container can also be selected in the
- * ReadoutMuxConfig directly. Note that there the connection is direct, not buffered,
+ * PadMultiplexerConfig directly. Note that there the connection is direct, not buffered,
  * while here the signal is amplified. Do not enable both connections, as there
  * will be feedback otherwise!
  */
-class GENPYBIND(visible) ReadoutBufferConfigBlock
+class GENPYBIND(visible) ReadoutSourceSelection
 {
 public:
-	typedef halco::hicann_dls::vx::ReadoutBufferConfigBlockOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::ReadoutSourceSelectionOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	struct ReadoutBufferConfig
+	struct SourceMultiplexer
 	{
 		/** Default constructor with all inputs disabled. */
-		ReadoutBufferConfig() SYMBOL_VISIBLE;
+		SourceMultiplexer() SYMBOL_VISIBLE;
 
 		typedef halco::common::typed_array<bool, halco::hicann_dls::vx::HemisphereOnDLS>
 		    hemisphere_type GENPYBIND(opaque(false));
@@ -304,32 +305,26 @@ public:
 		/** Connect synapse driver debug voltage readout to mux. */
 		GENPYBIND(getter_for(synapse_driver_debug), return_value_policy(reference))
 		hemisphere_type const& get_synapse_driver_debug() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(synapse_driver_debug), return_value_policy(reference))
+		GENPYBIND(setter_for(synapse_driver_debug))
 		void set_synapse_driver_debug(hemisphere_type const& value) SYMBOL_VISIBLE;
 
 		/** Connect analog neuron readout for odd neurons (1, 3, ..., 255) to mux. */
 		GENPYBIND(getter_for(neuron_odd), return_value_policy(reference))
 		hemisphere_type const& get_neuron_odd() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(neuron_odd), return_value_policy(reference))
+		GENPYBIND(setter_for(neuron_odd))
 		void set_neuron_odd(hemisphere_type const& value) SYMBOL_VISIBLE;
 
 		/** Connect analog neuron readout for even neurons (0, 2, ..., 254) to mux. */
 		GENPYBIND(getter_for(neuron_even), return_value_policy(reference))
 		hemisphere_type const& get_neuron_even() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(neuron_even), return_value_policy(reference))
+		GENPYBIND(setter_for(neuron_even))
 		void set_neuron_even(hemisphere_type const& value) SYMBOL_VISIBLE;
 
-		/** Enable buffer after the mux. */
-		GENPYBIND(getter_for(enable_buffer))
-		bool get_enable_buffer() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(enable_buffer))
-		void set_enable_buffer(bool value) SYMBOL_VISIBLE;
-
-		bool operator==(ReadoutBufferConfig const& other) const SYMBOL_VISIBLE;
-		bool operator!=(ReadoutBufferConfig const& other) const SYMBOL_VISIBLE;
+		bool operator==(SourceMultiplexer const& other) const SYMBOL_VISIBLE;
+		bool operator!=(SourceMultiplexer const& other) const SYMBOL_VISIBLE;
 
 	private:
-		friend class ReadoutBufferConfigBlock;
+		friend class ReadoutSourceSelection;
 		friend class cereal::access;
 		template <class Archive>
 		void serialize(Archive& ar) SYMBOL_VISIBLE;
@@ -344,18 +339,28 @@ public:
 		hemisphere_type m_synapse_driver_debug;
 		hemisphere_type m_neuron_odd;
 		hemisphere_type m_neuron_even;
-		bool m_enable_buffer;
 	};
 
-	/** Default constructor with both buffers/muxes disabled. */
-	ReadoutBufferConfigBlock() SYMBOL_VISIBLE;
+	/** Default constructor with both buffers and muxes disabled. */
+	ReadoutSourceSelection() SYMBOL_VISIBLE;
 
-	ReadoutBufferConfig get_buffer(
-	    halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock const& buffer) const
+	SourceMultiplexer get_buffer(
+	    halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection const& buffer) const
 	    SYMBOL_VISIBLE;
 	void set_buffer(
-	    halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock const& buffer,
-	    ReadoutBufferConfig const& value) SYMBOL_VISIBLE;
+	    halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection const& buffer,
+	    SourceMultiplexer const& value) SYMBOL_VISIBLE;
+
+	typedef halco::common::
+	    typed_array<bool, halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection>
+	        source_multiplexer_type GENPYBIND(opaque(false));
+	/** Enable buffer after the muxes, connecting to the pads (c.f. PadMultiplexerConfig container).
+	 * The active mux, which can be connected to the MADC, is reached even without enabling this
+	 * buffer.*/
+	GENPYBIND(getter_for(enable_buffer_to_pad), return_value_policy(reference))
+	source_multiplexer_type const& get_enable_buffer_to_pad() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_buffer_to_pad))
+	void set_enable_buffer_to_pad(source_multiplexer_type const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 
@@ -370,11 +375,11 @@ public:
 	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, ReadoutBufferConfigBlock const& config)
+	friend std::ostream& operator<<(std::ostream& os, ReadoutSourceSelection const& config)
 	    SYMBOL_VISIBLE;
 
-	bool operator==(ReadoutBufferConfigBlock const& other) const SYMBOL_VISIBLE;
-	bool operator!=(ReadoutBufferConfigBlock const& other) const SYMBOL_VISIBLE;
+	bool operator==(ReadoutSourceSelection const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ReadoutSourceSelection const& other) const SYMBOL_VISIBLE;
 
 private:
 	friend class cereal::access;
@@ -382,25 +387,26 @@ private:
 	void serialize(Archive& ar);
 
 	halco::common::typed_array<
-	    ReadoutBufferConfig,
-	    halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock>
+	    SourceMultiplexer,
+	    halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection>
 	    m_buffers;
+	source_multiplexer_type m_enable_buffer_to_pad;
 };
 
 namespace detail {
 
 template <>
-struct BackendContainerTrait<ReadoutMuxConfig>
+struct BackendContainerTrait<PadMultiplexerConfig>
     : public BackendContainerBase<
-          ReadoutMuxConfig,
+          PadMultiplexerConfig,
           fisch::vx::OmnibusChip,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
-struct BackendContainerTrait<ReadoutBufferConfigBlock>
+struct BackendContainerTrait<ReadoutSourceSelection>
     : public BackendContainerBase<
-          ReadoutBufferConfigBlock,
+          ReadoutSourceSelection,
           fisch::vx::OmnibusChip,
           fisch::vx::OmnibusChipOverJTAG>
 {};

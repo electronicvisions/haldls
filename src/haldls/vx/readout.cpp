@@ -18,7 +18,7 @@ namespace haldls::vx {
 using halco::common::typed_array;
 using namespace halco::hicann_dls::vx;
 
-ReadoutMuxConfig::ReadoutMuxConfig() :
+PadMultiplexerConfig::PadMultiplexerConfig() :
     m_cadc_v_ramp_mux(),
     m_cadc_v_ramp_mux_to_pad(false),
     m_capmem_i_out_mux(),
@@ -39,187 +39,187 @@ ReadoutMuxConfig::ReadoutMuxConfig() :
     m_debug_to_pad(false)
 {}
 
-ReadoutMuxConfig::capmem_quadrant_type const& ReadoutMuxConfig::get_cadc_v_ramp_mux() const
+PadMultiplexerConfig::capmem_quadrant_type const& PadMultiplexerConfig::get_cadc_v_ramp_mux() const
 {
 	return m_cadc_v_ramp_mux;
 }
 
-void ReadoutMuxConfig::set_cadc_v_ramp_mux(capmem_quadrant_type const& value)
+void PadMultiplexerConfig::set_cadc_v_ramp_mux(capmem_quadrant_type const& value)
 {
 	m_cadc_v_ramp_mux = value;
 }
 
-bool ReadoutMuxConfig::get_cadc_v_ramp_mux_to_pad() const
+bool PadMultiplexerConfig::get_cadc_v_ramp_mux_to_pad() const
 {
 	return m_cadc_v_ramp_mux_to_pad;
 }
 
-void ReadoutMuxConfig::set_cadc_v_ramp_mux_to_pad(bool const value)
+void PadMultiplexerConfig::set_cadc_v_ramp_mux_to_pad(bool const value)
 {
 	m_cadc_v_ramp_mux_to_pad = value;
 }
 
-ReadoutMuxConfig::capmem_quadrant_type const& ReadoutMuxConfig::get_capmem_i_out_mux() const
+PadMultiplexerConfig::capmem_quadrant_type const& PadMultiplexerConfig::get_capmem_i_out_mux() const
 {
 	return m_capmem_i_out_mux;
 }
 
-void ReadoutMuxConfig::set_capmem_i_out_mux(capmem_quadrant_type const& value)
+void PadMultiplexerConfig::set_capmem_i_out_mux(capmem_quadrant_type const& value)
 {
 	m_capmem_i_out_mux = value;
 }
 
-bool ReadoutMuxConfig::get_capmem_i_out_mux_to_capmem_intermediate_mux() const
+bool PadMultiplexerConfig::get_capmem_i_out_mux_to_capmem_intermediate_mux() const
 {
 	return m_capmem_i_out_mux_to_inter;
 }
 
-void ReadoutMuxConfig::set_capmem_i_out_mux_to_capmem_intermediate_mux(bool const value)
+void PadMultiplexerConfig::set_capmem_i_out_mux_to_capmem_intermediate_mux(bool const value)
 {
 	m_capmem_i_out_mux_to_inter = value;
 }
 
-bool ReadoutMuxConfig::get_capmem_intermediate_mux_to_pad() const
+bool PadMultiplexerConfig::get_capmem_intermediate_mux_to_pad() const
 {
 	return m_capmem_inter_mux_to_pad;
 }
 
-void ReadoutMuxConfig::set_capmem_intermediate_mux_to_pad(bool const value)
+void PadMultiplexerConfig::set_capmem_intermediate_mux_to_pad(bool const value)
 {
 	m_capmem_inter_mux_to_pad = value;
 }
 
-ReadoutMuxConfig::capmem_quadrant_type const& ReadoutMuxConfig::get_capmem_v_out_mux() const
+PadMultiplexerConfig::capmem_quadrant_type const& PadMultiplexerConfig::get_capmem_v_out_mux() const
 {
 	return m_capmem_v_out_mux;
 }
 
-void ReadoutMuxConfig::set_capmem_v_out_mux(capmem_quadrant_type const& value)
+void PadMultiplexerConfig::set_capmem_v_out_mux(capmem_quadrant_type const& value)
 {
 	m_capmem_v_out_mux = value;
 }
 
-bool ReadoutMuxConfig::get_capmem_v_out_mux_to_capmem_intermediate_mux() const
+bool PadMultiplexerConfig::get_capmem_v_out_mux_to_capmem_intermediate_mux() const
 {
 	return m_capmem_v_out_mux_to_inter;
 }
 
-void ReadoutMuxConfig::set_capmem_v_out_mux_to_capmem_intermediate_mux(bool const value)
+void PadMultiplexerConfig::set_capmem_v_out_mux_to_capmem_intermediate_mux(bool const value)
 {
 	m_capmem_v_out_mux_to_inter = value;
 }
 
-ReadoutMuxConfig::capmem_quadrant_type const& ReadoutMuxConfig::get_capmem_v_ref_mux() const
+PadMultiplexerConfig::capmem_quadrant_type const& PadMultiplexerConfig::get_capmem_v_ref_mux() const
 {
 	return m_capmem_v_ref_mux;
 }
 
-void ReadoutMuxConfig::set_capmem_v_ref_mux(capmem_quadrant_type const& value)
+void PadMultiplexerConfig::set_capmem_v_ref_mux(capmem_quadrant_type const& value)
 {
 	m_capmem_v_ref_mux = value;
 }
 
-bool ReadoutMuxConfig::get_capmem_v_ref_mux_to_capmem_intermediate_mux() const
+bool PadMultiplexerConfig::get_capmem_v_ref_mux_to_capmem_intermediate_mux() const
 {
 	return m_capmem_v_ref_mux_to_inter;
 }
 
-void ReadoutMuxConfig::set_capmem_v_ref_mux_to_capmem_intermediate_mux(bool const value)
+void PadMultiplexerConfig::set_capmem_v_ref_mux_to_capmem_intermediate_mux(bool const value)
 {
 	m_capmem_v_ref_mux_to_inter = value;
 }
 
-ReadoutMuxConfig::hemisphere_type const& ReadoutMuxConfig::get_neuron_i_stim_mux() const
+PadMultiplexerConfig::hemisphere_type const& PadMultiplexerConfig::get_neuron_i_stim_mux() const
 {
 	return m_neuron_i_stim_mux;
 }
 
-void ReadoutMuxConfig::set_neuron_i_stim_mux(hemisphere_type const& value)
+void PadMultiplexerConfig::set_neuron_i_stim_mux(hemisphere_type const& value)
 {
 	m_neuron_i_stim_mux = value;
 }
 
-bool ReadoutMuxConfig::get_neuron_i_stim_mux_to_pad() const
+bool PadMultiplexerConfig::get_neuron_i_stim_mux_to_pad() const
 {
 	return m_neuron_i_stim_mux_to_pad;
 }
 
-void ReadoutMuxConfig::set_neuron_i_stim_mux_to_pad(bool const value)
+void PadMultiplexerConfig::set_neuron_i_stim_mux_to_pad(bool const value)
 {
 	m_neuron_i_stim_mux_to_pad = value;
 }
 
-bool ReadoutMuxConfig::get_cadc_debug_acausal_to_synapse_intermediate_mux() const
+bool PadMultiplexerConfig::get_cadc_debug_acausal_to_synapse_intermediate_mux() const
 {
 	return m_cadc_debug_acausal_to_inter;
 }
 
-void ReadoutMuxConfig::set_cadc_debug_acausal_to_synapse_intermediate_mux(bool const value)
+void PadMultiplexerConfig::set_cadc_debug_acausal_to_synapse_intermediate_mux(bool const value)
 {
 	m_cadc_debug_acausal_to_inter = value;
 }
 
-bool ReadoutMuxConfig::get_cadc_debug_causal_to_synapse_intermediate_mux() const
+bool PadMultiplexerConfig::get_cadc_debug_causal_to_synapse_intermediate_mux() const
 {
 	return m_cadc_debug_causal_to_inter;
 }
 
-void ReadoutMuxConfig::set_cadc_debug_causal_to_synapse_intermediate_mux(bool const value)
+void PadMultiplexerConfig::set_cadc_debug_causal_to_synapse_intermediate_mux(bool const value)
 {
 	m_cadc_debug_causal_to_inter = value;
 }
 
-bool ReadoutMuxConfig::get_synin_debug_inhibitory_to_synapse_intermediate_mux() const
+bool PadMultiplexerConfig::get_synin_debug_inhibitory_to_synapse_intermediate_mux() const
 {
 	return m_synin_debug_inhibitory_to_inter;
 }
 
-void ReadoutMuxConfig::set_synin_debug_inhibitory_to_synapse_intermediate_mux(bool const value)
+void PadMultiplexerConfig::set_synin_debug_inhibitory_to_synapse_intermediate_mux(bool const value)
 {
 	m_synin_debug_inhibitory_to_inter = value;
 }
 
-bool ReadoutMuxConfig::get_synin_debug_excitatory_to_synapse_intermediate_mux() const
+bool PadMultiplexerConfig::get_synin_debug_excitatory_to_synapse_intermediate_mux() const
 {
 	return m_synin_debug_excitatory_to_inter;
 }
 
-void ReadoutMuxConfig::set_synin_debug_excitatory_to_synapse_intermediate_mux(bool const value)
+void PadMultiplexerConfig::set_synin_debug_excitatory_to_synapse_intermediate_mux(bool const value)
 {
 	m_synin_debug_excitatory_to_inter = value;
 }
 
-bool ReadoutMuxConfig::get_synapse_intermediate_mux_to_pad() const
+bool PadMultiplexerConfig::get_synapse_intermediate_mux_to_pad() const
 {
 	return m_synapse_inter_mux_to_pad;
 }
 
-void ReadoutMuxConfig::set_synapse_intermediate_mux_to_pad(bool const value)
+void PadMultiplexerConfig::set_synapse_intermediate_mux_to_pad(bool const value)
 {
 	m_synapse_inter_mux_to_pad = value;
 }
 
-ReadoutMuxConfig::buffer_type const& ReadoutMuxConfig::get_buffer_to_pad() const
+PadMultiplexerConfig::buffer_type const& PadMultiplexerConfig::get_buffer_to_pad() const
 {
 	return m_buffer_to_pad;
 }
 
-void ReadoutMuxConfig::set_buffer_to_pad(buffer_type const& value)
+void PadMultiplexerConfig::set_buffer_to_pad(buffer_type const& value)
 {
 	m_buffer_to_pad = value;
 }
 
-bool ReadoutMuxConfig::get_debug_to_pad() const
+bool PadMultiplexerConfig::get_debug_to_pad() const
 {
 	return m_debug_to_pad;
 }
 
-void ReadoutMuxConfig::set_debug_to_pad(bool const value)
+void PadMultiplexerConfig::set_debug_to_pad(bool const value)
 {
 	m_debug_to_pad = value;
 }
 
-bool ReadoutMuxConfig::operator==(ReadoutMuxConfig const& other) const
+bool PadMultiplexerConfig::operator==(PadMultiplexerConfig const& other) const
 {
 	return (
 	    m_cadc_v_ramp_mux == other.m_cadc_v_ramp_mux &&
@@ -242,40 +242,43 @@ bool ReadoutMuxConfig::operator==(ReadoutMuxConfig const& other) const
 	    m_debug_to_pad == other.m_debug_to_pad);
 }
 
-bool ReadoutMuxConfig::operator!=(ReadoutMuxConfig const& other) const
+bool PadMultiplexerConfig::operator!=(PadMultiplexerConfig const& other) const
 {
 	return !(*this == other);
 }
 
-std::ostream& operator<<(std::ostream& os, ReadoutMuxConfig const& config)
+std::ostream& operator<<(std::ostream& os, PadMultiplexerConfig const& config)
 {
 	return print_words_for_each_backend(os, config);
 }
 
 template <typename AddressT>
-std::array<AddressT, ReadoutMuxConfig::config_size_in_words> ReadoutMuxConfig::addresses(
+std::array<AddressT, PadMultiplexerConfig::config_size_in_words> PadMultiplexerConfig::addresses(
     coordinate_type const& coord)
 {
 	return {
-	    AddressT(madc_base_address + 14 + coord.toEnum() * ReadoutMuxConfig::config_size_in_words),
-	    AddressT(madc_base_address + 15 + coord.toEnum() * ReadoutMuxConfig::config_size_in_words)};
+	    AddressT(
+	        madc_base_address + 14 + coord.toEnum() * PadMultiplexerConfig::config_size_in_words),
+	    AddressT(
+	        madc_base_address + 15 + coord.toEnum() * PadMultiplexerConfig::config_size_in_words)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, ReadoutMuxConfig::config_size_in_words>
-    ReadoutMuxConfig::addresses(coordinate_type const& coord);
-
 template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, ReadoutMuxConfig::config_size_in_words>
-    ReadoutMuxConfig::addresses(coordinate_type const& coord);
+    array<halco::hicann_dls::vx::OmnibusChipAddress, PadMultiplexerConfig::config_size_in_words>
+    PadMultiplexerConfig::addresses(coordinate_type const& coord);
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    PadMultiplexerConfig::config_size_in_words>
+PadMultiplexerConfig::addresses(coordinate_type const& coord);
 
 namespace {
 
-struct ReadoutMuxConfigBitfield
+struct PadMultiplexerConfigBitfield
 {
 	union
 	{
-		std::array<uint32_t, ReadoutMuxConfig::config_size_in_words> words;
+		std::array<uint32_t, PadMultiplexerConfig::config_size_in_words> words;
 
 		struct __attribute__((packed))
 		{
@@ -320,9 +323,10 @@ struct ReadoutMuxConfigBitfield
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
 	} u;
 
-	ReadoutMuxConfigBitfield() { u.words = {{0, 0}}; }
+	PadMultiplexerConfigBitfield() { u.words = {{0, 0}}; }
 
-	ReadoutMuxConfigBitfield(std::array<uint32_t, ReadoutMuxConfig::config_size_in_words> data)
+	PadMultiplexerConfigBitfield(
+	    std::array<uint32_t, PadMultiplexerConfig::config_size_in_words> data)
 	{
 		u.words[0] = data[0] & 0xffff;
 		u.words[1] = data[1] & 0xffff;
@@ -332,9 +336,9 @@ struct ReadoutMuxConfigBitfield
 } // anonymous namespace
 
 template <typename WordT>
-std::array<WordT, ReadoutMuxConfig::config_size_in_words> ReadoutMuxConfig::encode() const
+std::array<WordT, PadMultiplexerConfig::config_size_in_words> PadMultiplexerConfig::encode() const
 {
-	ReadoutMuxConfigBitfield bitfield;
+	PadMultiplexerConfigBitfield bitfield;
 
 	bitfield.u.m.cadc_v_ramp_out_mux_q3 =
 	    m_cadc_v_ramp_mux[halco::hicann_dls::vx::CapMemBlockOnDLS(3)];
@@ -384,31 +388,33 @@ std::array<WordT, ReadoutMuxConfig::config_size_in_words> ReadoutMuxConfig::enco
 	bitfield.u.m.synapse_mux_excitatory = m_synin_debug_excitatory_to_inter;
 	bitfield.u.m.synapse_mux_to_pad = m_synapse_inter_mux_to_pad;
 	bitfield.u.m.buffer_to_pad_1 =
-	    m_buffer_to_pad[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)];
+	    m_buffer_to_pad[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)];
 	bitfield.u.m.buffer_to_pad_0 =
-	    m_buffer_to_pad[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)];
+	    m_buffer_to_pad[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)];
 	bitfield.u.m.debug_to_pad = m_debug_to_pad;
 
-	std::array<WordT, ReadoutMuxConfig::config_size_in_words> data;
+	std::array<WordT, PadMultiplexerConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
 	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, ReadoutMuxConfig::config_size_in_words>
-ReadoutMuxConfig::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutMuxConfig::config_size_in_words>
-    ReadoutMuxConfig::encode() const;
+    std::array<fisch::vx::OmnibusChip, PadMultiplexerConfig::config_size_in_words>
+    PadMultiplexerConfig::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, PadMultiplexerConfig::config_size_in_words>
+    PadMultiplexerConfig::encode() const;
 
 template <typename WordT>
-void ReadoutMuxConfig::decode(std::array<WordT, ReadoutMuxConfig::config_size_in_words> const& data)
+void PadMultiplexerConfig::decode(
+    std::array<WordT, PadMultiplexerConfig::config_size_in_words> const& data)
 {
-	std::array<uint32_t, ReadoutMuxConfig::config_size_in_words> raw_data;
+	std::array<uint32_t, PadMultiplexerConfig::config_size_in_words> raw_data;
 	std::transform(
 	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
-	ReadoutMuxConfigBitfield bitfield(raw_data);
+	PadMultiplexerConfigBitfield bitfield(raw_data);
 
 	m_cadc_v_ramp_mux[halco::hicann_dls::vx::CapMemBlockOnDLS(3)] =
 	    bitfield.u.m.cadc_v_ramp_out_mux_q3;
@@ -457,22 +463,22 @@ void ReadoutMuxConfig::decode(std::array<WordT, ReadoutMuxConfig::config_size_in
 	m_synin_debug_inhibitory_to_inter = bitfield.u.m.synapse_mux_inhibitory;
 	m_synin_debug_excitatory_to_inter = bitfield.u.m.synapse_mux_excitatory;
 	m_synapse_inter_mux_to_pad = bitfield.u.m.synapse_mux_to_pad;
-	m_buffer_to_pad[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)] =
+	m_buffer_to_pad[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)] =
 	    bitfield.u.m.buffer_to_pad_1;
-	m_buffer_to_pad[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)] =
+	m_buffer_to_pad[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)] =
 	    bitfield.u.m.buffer_to_pad_0;
 	m_debug_to_pad = bitfield.u.m.debug_to_pad;
 }
 
-template SYMBOL_VISIBLE void ReadoutMuxConfig::decode(
-    std::array<fisch::vx::OmnibusChip, ReadoutMuxConfig::config_size_in_words> const& words);
+template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
+    std::array<fisch::vx::OmnibusChip, PadMultiplexerConfig::config_size_in_words> const& words);
 
-template SYMBOL_VISIBLE void ReadoutMuxConfig::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutMuxConfig::config_size_in_words> const&
+template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
+    std::array<fisch::vx::OmnibusChipOverJTAG, PadMultiplexerConfig::config_size_in_words> const&
         words);
 
 template <class Archive>
-void ReadoutMuxConfig::serialize(Archive& ar)
+void PadMultiplexerConfig::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_cadc_v_ramp_mux));
 	ar(CEREAL_NVP(m_cadc_v_ramp_mux_to_pad));
@@ -494,10 +500,10 @@ void ReadoutMuxConfig::serialize(Archive& ar)
 	ar(CEREAL_NVP(m_debug_to_pad));
 }
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutMuxConfig)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PadMultiplexerConfig)
 
 
-ReadoutBufferConfigBlock::ReadoutBufferConfig::ReadoutBufferConfig() :
+ReadoutSourceSelection::SourceMultiplexer::SourceMultiplexer() :
     m_debug_plus(false),
     m_debug_minus(false),
     m_current_dac(false),
@@ -507,147 +513,134 @@ ReadoutBufferConfigBlock::ReadoutBufferConfig::ReadoutBufferConfig() :
     m_cadc_debug_acausal(false),
     m_synapse_driver_debug(),
     m_neuron_odd(),
-    m_neuron_even(),
-    m_enable_buffer(false)
+    m_neuron_even()
 {}
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_debug_plus() const
+bool ReadoutSourceSelection::SourceMultiplexer::get_debug_plus() const
 {
 	return m_debug_plus;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_debug_plus(bool const value)
+void ReadoutSourceSelection::SourceMultiplexer::set_debug_plus(bool const value)
 {
 	m_debug_plus = value;
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_debug_minus() const
+bool ReadoutSourceSelection::SourceMultiplexer::get_debug_minus() const
 {
 	return m_debug_minus;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_debug_minus(bool const value)
+void ReadoutSourceSelection::SourceMultiplexer::set_debug_minus(bool const value)
 {
 	m_debug_minus = value;
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_current_dac() const
+bool ReadoutSourceSelection::SourceMultiplexer::get_current_dac() const
 {
 	return m_current_dac;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_current_dac(bool const value)
+void ReadoutSourceSelection::SourceMultiplexer::set_current_dac(bool const value)
 {
 	m_current_dac = value;
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_synin_debug_inhibitory() const
+bool ReadoutSourceSelection::SourceMultiplexer::get_synin_debug_inhibitory() const
 {
 	return m_synin_debug_inhibitory;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_synin_debug_inhibitory(bool const value)
+void ReadoutSourceSelection::SourceMultiplexer::set_synin_debug_inhibitory(bool const value)
 {
 	m_synin_debug_inhibitory = value;
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_synin_debug_excitatory() const
+bool ReadoutSourceSelection::SourceMultiplexer::get_synin_debug_excitatory() const
 {
 	return m_synin_debug_excitatory;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_synin_debug_excitatory(bool const value)
+void ReadoutSourceSelection::SourceMultiplexer::set_synin_debug_excitatory(bool const value)
 {
 	m_synin_debug_excitatory = value;
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_cadc_debug_causal() const
+bool ReadoutSourceSelection::SourceMultiplexer::get_cadc_debug_causal() const
 {
 	return m_cadc_debug_causal;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_cadc_debug_causal(bool const value)
+void ReadoutSourceSelection::SourceMultiplexer::set_cadc_debug_causal(bool const value)
 {
 	m_cadc_debug_causal = value;
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_cadc_debug_acausal() const
+bool ReadoutSourceSelection::SourceMultiplexer::get_cadc_debug_acausal() const
 {
 	return m_cadc_debug_acausal;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_cadc_debug_acausal(bool const value)
+void ReadoutSourceSelection::SourceMultiplexer::set_cadc_debug_acausal(bool const value)
 {
 	m_cadc_debug_acausal = value;
 }
 
-ReadoutBufferConfigBlock::ReadoutBufferConfig::hemisphere_type const&
-ReadoutBufferConfigBlock::ReadoutBufferConfig::get_synapse_driver_debug() const
+ReadoutSourceSelection::SourceMultiplexer::hemisphere_type const&
+ReadoutSourceSelection::SourceMultiplexer::get_synapse_driver_debug() const
 {
 	return m_synapse_driver_debug;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_synapse_driver_debug(
+void ReadoutSourceSelection::SourceMultiplexer::set_synapse_driver_debug(
     hemisphere_type const& value)
 {
 	m_synapse_driver_debug = value;
 }
 
-ReadoutBufferConfigBlock::ReadoutBufferConfig::hemisphere_type const&
-ReadoutBufferConfigBlock::ReadoutBufferConfig::get_neuron_odd() const
+ReadoutSourceSelection::SourceMultiplexer::hemisphere_type const&
+ReadoutSourceSelection::SourceMultiplexer::get_neuron_odd() const
 {
 	return m_neuron_odd;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_neuron_odd(hemisphere_type const& value)
+void ReadoutSourceSelection::SourceMultiplexer::set_neuron_odd(hemisphere_type const& value)
 {
 	m_neuron_odd = value;
 }
 
-ReadoutBufferConfigBlock::ReadoutBufferConfig::hemisphere_type const&
-ReadoutBufferConfigBlock::ReadoutBufferConfig::get_neuron_even() const
+ReadoutSourceSelection::SourceMultiplexer::hemisphere_type const&
+ReadoutSourceSelection::SourceMultiplexer::get_neuron_even() const
 {
 	return m_neuron_even;
 }
 
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_neuron_even(hemisphere_type const& value)
+void ReadoutSourceSelection::SourceMultiplexer::set_neuron_even(hemisphere_type const& value)
 {
 	m_neuron_even = value;
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::get_enable_buffer() const
-{
-	return m_enable_buffer;
-}
-
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::set_enable_buffer(bool const value)
-{
-	m_enable_buffer = value;
-}
-
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::operator==(
-    ReadoutBufferConfigBlock::ReadoutBufferConfig const& other) const
+bool ReadoutSourceSelection::SourceMultiplexer::operator==(
+    ReadoutSourceSelection::SourceMultiplexer const& other) const
 {
 	return (
-	    m_debug_plus == other.m_debug_plus &&
-	    m_debug_minus == other.m_debug_minus &&
+	    m_debug_plus == other.m_debug_plus && m_debug_minus == other.m_debug_minus &&
 	    m_synin_debug_inhibitory == other.m_synin_debug_inhibitory &&
 	    m_synin_debug_excitatory == other.m_synin_debug_excitatory &&
 	    m_cadc_debug_causal == other.m_cadc_debug_causal &&
 	    m_cadc_debug_acausal == other.m_cadc_debug_acausal &&
 	    m_synapse_driver_debug == other.m_synapse_driver_debug &&
-	    m_neuron_odd == other.m_neuron_odd && m_neuron_even == other.m_neuron_even &&
-	    m_enable_buffer == other.m_enable_buffer);
+	    m_neuron_odd == other.m_neuron_odd && m_neuron_even == other.m_neuron_even);
 }
 
-bool ReadoutBufferConfigBlock::ReadoutBufferConfig::operator!=(
-    ReadoutBufferConfigBlock::ReadoutBufferConfig const& other) const
+bool ReadoutSourceSelection::SourceMultiplexer::operator!=(
+    ReadoutSourceSelection::SourceMultiplexer const& other) const
 {
 	return !(*this == other);
 }
 
 template <class Archive>
-void ReadoutBufferConfigBlock::ReadoutBufferConfig::serialize(Archive& ar)
+void ReadoutSourceSelection::SourceMultiplexer::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_debug_plus));
 	ar(CEREAL_NVP(m_debug_minus));
@@ -659,65 +652,76 @@ void ReadoutBufferConfigBlock::ReadoutBufferConfig::serialize(Archive& ar)
 	ar(CEREAL_NVP(m_synapse_driver_debug));
 	ar(CEREAL_NVP(m_neuron_odd));
 	ar(CEREAL_NVP(m_neuron_even));
-	ar(CEREAL_NVP(m_enable_buffer));
 }
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutBufferConfigBlock::ReadoutBufferConfig)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection::SourceMultiplexer)
 
 
-ReadoutBufferConfigBlock::ReadoutBufferConfigBlock() : m_buffers() {}
+ReadoutSourceSelection::ReadoutSourceSelection() : m_buffers(), m_enable_buffer_to_pad() {}
 
-ReadoutBufferConfigBlock::ReadoutBufferConfig ReadoutBufferConfigBlock::get_buffer(
-    halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock const& buffer) const
+ReadoutSourceSelection::SourceMultiplexer ReadoutSourceSelection::get_buffer(
+    halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection const& buffer) const
 {
 	return m_buffers.at(buffer);
 }
 
-void ReadoutBufferConfigBlock::set_buffer(
-    halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock const& buffer,
-    ReadoutBufferConfigBlock::ReadoutBufferConfig const& value)
+void ReadoutSourceSelection::set_buffer(
+    halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection const& buffer,
+    ReadoutSourceSelection::SourceMultiplexer const& value)
 {
 	m_buffers.at(buffer) = value;
 }
 
-bool ReadoutBufferConfigBlock::operator==(ReadoutBufferConfigBlock const& other) const
+ReadoutSourceSelection::source_multiplexer_type const&
+ReadoutSourceSelection::get_enable_buffer_to_pad() const
 {
-	return m_buffers == other.m_buffers;
+	return m_enable_buffer_to_pad;
 }
 
-bool ReadoutBufferConfigBlock::operator!=(ReadoutBufferConfigBlock const& other) const
+void ReadoutSourceSelection::set_enable_buffer_to_pad(
+    ReadoutSourceSelection::source_multiplexer_type const& value)
+{
+	m_enable_buffer_to_pad = value;
+}
+
+bool ReadoutSourceSelection::operator==(ReadoutSourceSelection const& other) const
+{
+	return (m_buffers == other.m_buffers && m_enable_buffer_to_pad == other.m_enable_buffer_to_pad);
+}
+
+bool ReadoutSourceSelection::operator!=(ReadoutSourceSelection const& other) const
 {
 	return !(*this == other);
 }
 
-std::ostream& operator<<(std::ostream& os, ReadoutBufferConfigBlock const& config)
+std::ostream& operator<<(std::ostream& os, ReadoutSourceSelection const& config)
 {
 	return print_words_for_each_backend(os, config);
 }
 
 template <typename AddressT>
-std::array<AddressT, ReadoutBufferConfigBlock::config_size_in_words>
-ReadoutBufferConfigBlock::addresses(coordinate_type const& /* coord */)
+std::array<AddressT, ReadoutSourceSelection::config_size_in_words>
+ReadoutSourceSelection::addresses(coordinate_type const& /* coord */)
 {
 	return {AddressT(madc_base_address + 12), AddressT(madc_base_address + 13)};
 }
 
 template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, ReadoutBufferConfigBlock::config_size_in_words>
-    ReadoutBufferConfigBlock::addresses(coordinate_type const& coord);
+    array<halco::hicann_dls::vx::OmnibusChipAddress, ReadoutSourceSelection::config_size_in_words>
+    ReadoutSourceSelection::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    ReadoutBufferConfigBlock::config_size_in_words>
-ReadoutBufferConfigBlock::addresses(coordinate_type const& coord);
+    ReadoutSourceSelection::config_size_in_words>
+ReadoutSourceSelection::addresses(coordinate_type const& coord);
 
 namespace {
 
-struct ReadoutBufferConfigBlockBitfield
+struct ReadoutSourceSelectionBitfield
 {
 	union
 	{
-		std::array<uint32_t, ReadoutBufferConfigBlock::config_size_in_words> words;
+		std::array<uint32_t, ReadoutSourceSelection::config_size_in_words> words;
 
 		struct __attribute__((packed))
 		{
@@ -749,8 +753,8 @@ struct ReadoutBufferConfigBlockBitfield
 			uint32_t neuron_top_even_1      : 1;  // 10
 			uint32_t neuron_bottom_odd_1    : 1;  // 11
 			uint32_t neuron_bottom_even_1   : 1;  // 12
-			uint32_t enable_buffer_1        : 1;  // 13
-			uint32_t enable_buffer_0        : 1;  // 14
+			uint32_t enable_buffer_to_pad_1 : 1;  // 13
+			uint32_t enable_buffer_to_pad_0 : 1;  // 14
 			uint32_t /* unused */           : 17; // 15...31
 			// clang-format on
 		} m;
@@ -758,10 +762,10 @@ struct ReadoutBufferConfigBlockBitfield
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
 	} u;
 
-	ReadoutBufferConfigBlockBitfield() { u.words = {{0, 0}}; }
+	ReadoutSourceSelectionBitfield() { u.words = {{0, 0}}; }
 
-	ReadoutBufferConfigBlockBitfield(
-	    std::array<uint32_t, ReadoutBufferConfigBlock::config_size_in_words> data)
+	ReadoutSourceSelectionBitfield(
+	    std::array<uint32_t, ReadoutSourceSelection::config_size_in_words> data)
 	{
 		u.words[0] = data[0] & 0b0001111111111111;
 		u.words[1] = data[1] & 0b0111111111111111;
@@ -771,99 +775,95 @@ struct ReadoutBufferConfigBlockBitfield
 } // anonymous namespace
 
 template <typename WordT>
-std::array<WordT, ReadoutBufferConfigBlock::config_size_in_words> ReadoutBufferConfigBlock::encode()
+std::array<WordT, ReadoutSourceSelection::config_size_in_words> ReadoutSourceSelection::encode()
     const
 {
-	ReadoutBufferConfigBlockBitfield bitfield;
+	ReadoutSourceSelectionBitfield bitfield;
 
 	bitfield.u.m.debug_plus_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	        .m_debug_plus;
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)].m_debug_plus;
 	bitfield.u.m.debug_minus_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_debug_minus;
 	bitfield.u.m.idac_i_out_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_current_dac;
 	bitfield.u.m.synin_debug_inh_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_synin_debug_inhibitory;
 	bitfield.u.m.synin_debug_exc_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_synin_debug_excitatory;
 	bitfield.u.m.cadc_test_causal_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_cadc_debug_causal;
 	bitfield.u.m.cadc_test_acausal_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_cadc_debug_acausal;
 	bitfield.u.m.syndrv_debug_top_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_synapse_driver_debug[halco::hicann_dls::vx::HemisphereOnDLS(0)];
 	bitfield.u.m.syndrv_debug_bottom_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_synapse_driver_debug[halco::hicann_dls::vx::HemisphereOnDLS(1)];
 	bitfield.u.m.neuron_top_odd_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_neuron_odd[halco::hicann_dls::vx::HemisphereOnDLS(0)];
 	bitfield.u.m.neuron_top_even_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(0)];
 	bitfield.u.m.neuron_bottom_odd_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_neuron_odd[halco::hicann_dls::vx::HemisphereOnDLS(1)];
 	bitfield.u.m.neuron_bottom_even_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	        .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(1)];
 
 	bitfield.u.m.debug_plus_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	        .m_debug_plus;
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)].m_debug_plus;
 	bitfield.u.m.debug_minus_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_debug_minus;
 	bitfield.u.m.idac_i_out_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_current_dac;
 	bitfield.u.m.synin_debug_inh_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_synin_debug_inhibitory;
 	bitfield.u.m.synin_debug_exc_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_synin_debug_excitatory;
 	bitfield.u.m.cadc_test_causal_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_cadc_debug_causal;
 	bitfield.u.m.cadc_test_acausal_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_cadc_debug_acausal;
 	bitfield.u.m.syndrv_debug_top_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_synapse_driver_debug[halco::hicann_dls::vx::HemisphereOnDLS(0)];
 	bitfield.u.m.syndrv_debug_bottom_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_synapse_driver_debug[halco::hicann_dls::vx::HemisphereOnDLS(1)];
 	bitfield.u.m.neuron_top_odd_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_neuron_odd[halco::hicann_dls::vx::HemisphereOnDLS(0)];
 	bitfield.u.m.neuron_top_even_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(0)];
 	bitfield.u.m.neuron_bottom_odd_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_neuron_odd[halco::hicann_dls::vx::HemisphereOnDLS(1)];
 	bitfield.u.m.neuron_bottom_even_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	    m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	        .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(1)];
 
-	bitfield.u.m.enable_buffer_0 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	        .m_enable_buffer;
-	bitfield.u.m.enable_buffer_1 =
-	    m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	        .m_enable_buffer;
+	bitfield.u.m.enable_buffer_to_pad_0 =
+	    m_enable_buffer_to_pad[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)];
+	bitfield.u.m.enable_buffer_to_pad_1 =
+	    m_enable_buffer_to_pad[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)];
 
-	std::array<WordT, ReadoutBufferConfigBlock::config_size_in_words> data;
+	std::array<WordT, ReadoutSourceSelection::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
 	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
@@ -871,102 +871,101 @@ std::array<WordT, ReadoutBufferConfigBlock::config_size_in_words> ReadoutBufferC
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, ReadoutBufferConfigBlock::config_size_in_words>
-    ReadoutBufferConfigBlock::encode() const;
+    std::array<fisch::vx::OmnibusChip, ReadoutSourceSelection::config_size_in_words>
+    ReadoutSourceSelection::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutBufferConfigBlock::config_size_in_words>
-    ReadoutBufferConfigBlock::encode() const;
+    std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutSourceSelection::config_size_in_words>
+    ReadoutSourceSelection::encode() const;
 
 template <typename WordT>
-void ReadoutBufferConfigBlock::decode(
-    std::array<WordT, ReadoutBufferConfigBlock::config_size_in_words> const& data)
+void ReadoutSourceSelection::decode(
+    std::array<WordT, ReadoutSourceSelection::config_size_in_words> const& data)
 {
-	std::array<uint32_t, ReadoutBufferConfigBlock::config_size_in_words> raw_data;
+	std::array<uint32_t, ReadoutSourceSelection::config_size_in_words> raw_data;
 	std::transform(
 	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
-	ReadoutBufferConfigBlockBitfield bitfield(raw_data);
+	ReadoutSourceSelectionBitfield bitfield(raw_data);
 
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	    .m_debug_plus = bitfield.u.m.debug_plus_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	    .m_debug_minus = bitfield.u.m.debug_minus_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	    .m_current_dac = bitfield.u.m.idac_i_out_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)].m_debug_plus =
+	    bitfield.u.m.debug_plus_0;
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)].m_debug_minus =
+	    bitfield.u.m.debug_minus_0;
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)].m_current_dac =
+	    bitfield.u.m.idac_i_out_0;
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_synin_debug_inhibitory = bitfield.u.m.synin_debug_inh_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_synin_debug_excitatory = bitfield.u.m.synin_debug_exc_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_cadc_debug_causal = bitfield.u.m.cadc_test_causal_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_cadc_debug_acausal = bitfield.u.m.cadc_test_acausal_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_synapse_driver_debug[halco::hicann_dls::vx::HemisphereOnDLS(0)] =
 	    bitfield.u.m.syndrv_debug_top_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_synapse_driver_debug[halco::hicann_dls::vx::HemisphereOnDLS(1)] =
 	    bitfield.u.m.syndrv_debug_bottom_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_neuron_odd[halco::hicann_dls::vx::HemisphereOnDLS(0)] = bitfield.u.m.neuron_top_odd_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(0)] = bitfield.u.m.neuron_top_even_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_neuron_odd[halco::hicann_dls::vx::HemisphereOnDLS(1)] = bitfield.u.m.neuron_bottom_odd_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)]
 	    .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(1)] =
 	    bitfield.u.m.neuron_bottom_even_0;
 
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	    .m_debug_plus = bitfield.u.m.debug_plus_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	    .m_debug_minus = bitfield.u.m.debug_minus_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	    .m_current_dac = bitfield.u.m.idac_i_out_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)].m_debug_plus =
+	    bitfield.u.m.debug_plus_1;
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)].m_debug_minus =
+	    bitfield.u.m.debug_minus_1;
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)].m_current_dac =
+	    bitfield.u.m.idac_i_out_1;
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_synin_debug_inhibitory = bitfield.u.m.synin_debug_inh_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_synin_debug_excitatory = bitfield.u.m.synin_debug_exc_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_cadc_debug_causal = bitfield.u.m.cadc_test_causal_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_cadc_debug_acausal = bitfield.u.m.cadc_test_acausal_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_synapse_driver_debug[halco::hicann_dls::vx::HemisphereOnDLS(0)] =
 	    bitfield.u.m.syndrv_debug_top_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_synapse_driver_debug[halco::hicann_dls::vx::HemisphereOnDLS(1)] =
 	    bitfield.u.m.syndrv_debug_bottom_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_neuron_odd[halco::hicann_dls::vx::HemisphereOnDLS(0)] = bitfield.u.m.neuron_top_odd_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(0)] = bitfield.u.m.neuron_top_even_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_neuron_odd[halco::hicann_dls::vx::HemisphereOnDLS(1)] = bitfield.u.m.neuron_bottom_odd_1;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
+	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)]
 	    .m_neuron_even[halco::hicann_dls::vx::HemisphereOnDLS(1)] =
 	    bitfield.u.m.neuron_bottom_even_1;
 
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(0)]
-	    .m_enable_buffer = bitfield.u.m.enable_buffer_0;
-	m_buffers[halco::hicann_dls::vx::ReadoutBufferConfigOnReadoutBufferConfigBlock(1)]
-	    .m_enable_buffer = bitfield.u.m.enable_buffer_1;
+	m_enable_buffer_to_pad[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)] =
+	    bitfield.u.m.enable_buffer_to_pad_0;
+	m_enable_buffer_to_pad[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(1)] =
+	    bitfield.u.m.enable_buffer_to_pad_1;
 }
 
-template SYMBOL_VISIBLE void ReadoutBufferConfigBlock::decode(
-    std::array<fisch::vx::OmnibusChip, ReadoutBufferConfigBlock::config_size_in_words> const&
+template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
+    std::array<fisch::vx::OmnibusChip, ReadoutSourceSelection::config_size_in_words> const& words);
+
+template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
+    std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutSourceSelection::config_size_in_words> const&
         words);
 
-template SYMBOL_VISIBLE void ReadoutBufferConfigBlock::decode(
-    std::array<
-        fisch::vx::OmnibusChipOverJTAG,
-        ReadoutBufferConfigBlock::config_size_in_words> const& words);
-
 template <class Archive>
-void ReadoutBufferConfigBlock::serialize(Archive& ar)
+void ReadoutSourceSelection::serialize(Archive& ar)
 {
 	ar(CEREAL_NVP(m_buffers));
+	ar(CEREAL_NVP(m_enable_buffer_to_pad));
 }
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutBufferConfigBlock)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection)
 
 } // namespace haldls::vx
