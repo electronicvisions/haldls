@@ -16,7 +16,9 @@ try {
 		if (env.GERRIT_EVENT_TYPE == "change-merged") {
 			if (currentBuild.currentResult == "SUCCESS") {
 				runOnSlave(label: "frontend") {
-					deployModule([name: "haldls", source: WORKSPACE])
+					inSingularity(app: "visionary-dls") {
+						deployModule([name: "haldls", source: WORKSPACE])
+					}
 				}
 			} else {
 				echo("Deployment skipped: Unstable build.")
