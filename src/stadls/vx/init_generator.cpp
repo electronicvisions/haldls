@@ -161,7 +161,8 @@ ExperimentInit::ExperimentInit() :
     detail::InitGenerator(),
     common_neuron_backend_config(),
     column_correlation_quad_config(),
-    column_current_quad_config()
+    column_current_quad_config(),
+    capmem_config()
 {
 	enable_capmem = true;
 	for (auto const coord :
@@ -191,6 +192,11 @@ PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
 	// Set column current quad config
 	for (auto coord : iter_all<ColumnCurrentQuadOnDLS>()) {
 		builder.write(coord, column_current_quad_config[coord]);
+	}
+
+	// Set capmem config for all blocks
+	for (auto coord : iter_all<CapMemBlockOnDLS>()) {
+		builder.write(coord, capmem_config[coord]);
 	}
 
 	return {std::move(builder), res};

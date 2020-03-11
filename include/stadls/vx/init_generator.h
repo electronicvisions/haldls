@@ -175,6 +175,13 @@ public:
 	        column_current_quad_type GENPYBIND(opaque(false));
 	column_current_quad_type column_current_quad_config;
 
+	/** Set initial CapMem config.
+	 * By default, a value of zero is written to all cells. */
+	typedef halco::common::
+	    typed_array<haldls::vx::CapMemBlock, halco::hicann_dls::vx::CapMemBlockOnDLS>
+	        capmem_block_type GENPYBIND(opaque(false));
+	capmem_block_type capmem_config;
+
 private:
 	friend auto stadls::vx::generate<ExperimentInit>(ExperimentInit const&);
 
