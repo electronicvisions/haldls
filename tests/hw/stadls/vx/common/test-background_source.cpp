@@ -60,10 +60,6 @@ void test_background_spike_source_regular(
 	auto executor = generate_playback_program_test_executor();
 	executor.run(program);
 
-	// no MADC samples
-	auto madc_samples = program.get_madc_samples();
-	EXPECT_TRUE(madc_samples.empty());
-
 	auto spikes = program.get_spikes();
 
 	typed_array<size_t, BackgroundSpikeSourceOnDLS> expected_labels_count;
