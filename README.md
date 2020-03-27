@@ -16,36 +16,63 @@ This repository contains
 * STADLS -- code for experiment control and experiment encapsulation
 
 ## How to build
-### Outside of visionary environment
-* Prepare a fresh workspace: `mkdir workspace && cd workspace`
-* Fetch a current copy of the waf build tool:
-  `git clone https://github.com/electronicvisions/waf -b symwaf2ic symwaf2ic && cd symwaf2ic && make && cd .. && ln -s symwaf2ic/waf`
-* Clone the necessary repos
-  `./waf setup --repo-db-url=https://github.com/electronicvisions/projects --project=haldls` (`--clone-depth=1` to skip history)
-* To build:
-  `singularity exec --app visionary-dls /path/to/container ./waf configure build --test-execnone`
-  Singularity containers can be found [here](https://brainscales-r.kip.uni-heidelberg.de/containers/).
-* To install into `workspace/{bin,lib}`:
-  `singularity exec --app visionary-dls /containers/stable/latest ./waf install --test-execnone`
-* To run (software) tests:
-  `singularity exec --app visionary-dls /containers/stable/latest ./waf install --test-execall`
-* To load the current local directory in path environment variables:
-  `export SINGULARITYENV_PREPEND_PATH=$PWD/bin:$SINGULARITYENV_PREPEND_PATH` and
-  `export SINGULARITYENV_LD_LIBRARY_PATH=$PWD/bin:$SINGULARITYENV_LD_LIBRARY_PATH` for library and binary access
+### Build- and runtime dependencies
+All build- and runtime dependencies are encapsulated in a [Singularity Container](https://sylabs.io/docs/).
+If you want to build this project outside the Electronic Vision(s) cluster, please start by downloading the most recent version from [here](https://openproject.bioai.eu/containers/).
 
-### On hel
-* On hel, see `cat /etc/motd` for latest instructions
-* prepare a fresh workspace: `mkdir workspace && cd workspace`
-* Load the most recent waf module: `module load waf`
-* Clone the necessary repos: `waf setup --project haldls`
-* To build:
-  `srun -p compile -c8 singularity exec --app visionary-dls /containers/stable/latest waf configure build --test-execnone`
-* To install into `workspace/{bin,lib}`:
-  `srun -p compile -c8 singularity exec --app visionary-dls /containers/stable/latest waf install --test-execnone`
-* To run (software) tests:
-  `srun -p short -c8 singularity exec --app visionary-dls /containers/stable/latest waf install --test-execall`
-* To set environment variables allowing for library and binary access (c.f. `export` commands above):
-  `module load localdir`
+For all following steps, we assume that the most recent Singularity container is located at `/containers/stable/latest` – you are free to choose any other path.
+
+### Github-based build
+To build this project from public resources, adhere to the following guide:
+
+```shell
+# 1) Most of the following steps will be executed within a singularity container
+#    To keep the steps clutter-free, we start by defining an alias
+shopt -s expand_aliases
+alias c="singularity exec --app visionary-dls /containers/stable/latest"
+
+# 2) Prepare a fresh workspace and change directory into it
+mkdir workspace && cd workspace
+
+# 3) Fetch a current copy of the symwaf2ic build tool
+git clone https://github.com/electronicvisions/waf -b symwaf2ic symwaf2ic
+
+# 4) Build symwaf2ic
+c make -C symwaf2ic
+ln -s symwaf2ic/waf
+
+# 5) Setup your workspace and clone all dependencies (--clone-depth=1 to skip history)
+c ./waf setup --repo-db-url=https://github.com/electronicvisions/projects --project=haldls
+
+# 6) Build the project
+#    Adjust -j1 to your own needs, beware that high parallelism will lead to high memory consumption!
+c ./waf configure
+c ./waf build -j1
+
+# 7) Install the project to ./bin and ./lib
+c ./waf install
+
+# 8) If you run programs outside waf, you'll need to add ./lib and ./bin to your path specifications
+export SINGULARITYENV_PREPEND_PATH=`pwd`/bin:$SINGULARITYENV_PREPEND_PATH
+export SINGULARITYENV_LD_LIBRARY_PATH=`pwd`/lib:$SINGULARITYENV_LD_LIBRARY_PATH
+export PYTHONPATH=`pwd`/lib:$PYTHONPATH
+
+# 9) You can now run any program, e.g. plain unit tests
+c ./bin/stadls_swtest_vx
+```
+
+### On the Electronic Vision(s) Cluster
+
+* Work on the frontend machine, `helvetica`. You should have received instructions how to connect to it.
+* Follow [aforementioned instructions](#github-based-build) with the following simplifications
+  * Replace **steps 3) and 4)** by `module load waf`
+  * Make sure to run **step 6)** within a respective slurm allocation: Prefix `srun -p compile -c8`; depending on your shell, you might need to roll out the `c`-alias.
+  * Replace **step 8)** by `module load localdir`.
+
+### Build from internal sources
+
+If you have access to the internal *Gerrit* server, you may drop the `--repo-db-url`-specification in **step 5)** of [aforementioned instructions](#github-based-build).
+
 
 ## How to add a new container (HICANN-X)
 
