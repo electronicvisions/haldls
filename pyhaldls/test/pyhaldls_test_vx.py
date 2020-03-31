@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import pickle
 import unittest
 import pyhaldls_vx as hal
 
@@ -21,6 +22,12 @@ class TestPyhaldlsVX(unittest.TestCase):
         cell.value = cell.DisableRefresh()
         self.assertEqual(cell.value, cell.DisableRefresh())
         self.assertEqual(cell.value, cell.DisableRefresh(1023))
+
+    def test_pickle(self):
+        for container in hal.containers:
+            obj = container()
+            dump = pickle.dumps(obj)
+            self.assertEqual(obj, pickle.loads(dump))
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 /* This header file contains additional code related to python bindings */
+#include <vector>
 #include <pybind11/pybind11.h>
 
 #include "lola/vx/genpybind.h"
@@ -12,13 +13,34 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyhaldls_vx");
 })
 
+#include "haldls/vx/pickle.h"
+#include "lola/vx/cerealization.h"
 #include "lola/vx/lola.h"
 
+
 namespace lola::vx::detail {
+
+#define PLAYBACK_CONTAINER(Name, Type) #Name,
+#define LAST_PLAYBACK_CONTAINER(Name, Type) #Name
+static std::vector<std::string> const container_names = {
+#include "lola/vx/container.def"
+};
+
+#define PLAYBACK_CONTAINER(Name, Type) Type,
+#define LAST_PLAYBACK_CONTAINER(Name, Type) Type
+typedef hate::type_list<
+#include "lola/vx/container.def"
+    >
+    container_types;
+
 py::list get_containers_list(py::module& m);
+
 } // namespace lola::vx::detail
 
 GENPYBIND_MANUAL({
+	::haldls::vx::AddPickle<::lola::vx::detail::container_types>::apply(
+	    parent, ::lola::vx::detail::container_names);
+
 	parent.attr("containers") = [&parent]() {
 		return lola::vx::detail::get_containers_list(parent);
 	}();

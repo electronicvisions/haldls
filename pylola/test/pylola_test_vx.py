@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import pickle
 import os
 import unittest
 import pylola_vx as lola
@@ -94,6 +95,12 @@ class TestPylolaVX(unittest.TestCase):
             halco.PPUMemoryWordOnPPU(113), halco.PPUMemoryWordOnPPU(113))
         self.assertEqual(symbols["a"], lola.PPUProgram.Symbol(
             lola.PPUProgram.Symbol.Type.object, symbol_a_position))
+
+    def test_pickle(self):
+        for container in lola.containers:
+            obj = container()
+            dump = pickle.dumps(obj)
+            self.assertEqual(obj, pickle.loads(dump))
 
 
 if __name__ == "__main__":

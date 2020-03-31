@@ -3,6 +3,10 @@
 #include <boost/hana.hpp>
 #include <cereal/cereal.hpp>
 
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "halco/common/cerealization_typed_heap_array.h"
+
 namespace cereal {
 
 template <typename Archive, typename T>
