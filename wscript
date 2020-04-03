@@ -94,7 +94,6 @@ def configure(cfg):
 
 
 def build(bld):
-    bld.env.DLSv2_HARDWARE_AVAILABLE = "dls" == os.environ.get("SLURM_JOB_PARTITION")
     bld.env.DLSvx_HARDWARE_AVAILABLE = "cube" == os.environ.get("SLURM_JOB_PARTITION")
     bld.env.DLSvx_SIM_AVAILABLE = "FLANGE_SIMULATION_RCF_PORT" in os.environ
 
@@ -296,7 +295,7 @@ def build(bld):
         use=['haldls_v2', 'stadls_v2', 'logger_obj', 'GTEST', 'DL4TOOLS'],
         install_path='${PREFIX}/bin',
         test_timeout=120,
-        skip_run=not bld.env.DLSv2_HARDWARE_AVAILABLE
+        skip_run=True
         )
 
     bld(target = 'quiggeldy_hwtest_v2',
