@@ -35,21 +35,10 @@ def configure(cfg):
         )
 
 def build(bld):
-    bld.env.DLSv2_HARDWARE_AVAILABLE = "dls" == os.environ.get("SLURM_JOB_PARTITION")
     bld.env.DLSvx_HARDWARE_AVAILABLE = "cube" == os.environ.get("SLURM_JOB_PARTITION")
 
     if not bld.env.with_pybind:
         bld.fatal('building pyhaldls requires pybind')
-
-    bld(
-        target='pystadls_v2',
-        source='../include/stadls/v2/io.h',
-        genpybind_tags='stadls_v2',
-        features='genpybind cxx cxxshlib pyext',
-        use=['stadls_v2', 'PYBIND11HALDLS', 'pylogging'],
-        install_path='${PREFIX}/lib',
-        linkflags='-Wl,-z,defs',
-    )
 
     bld(
         target='pystadls_vx',
@@ -62,17 +51,6 @@ def build(bld):
     )
 
     bld(
-        name='pystadls_test_v2',
-        tests='test/pystadls_test_v2.py',
-        features='use pytest pylint pycodestyle',
-        use=['pyhalco_hicann_dls_v2', 'pystadls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_timeout=120
-    )
-
-    bld(
         name='pystadls_pbgenerator_vx',
         tests='test/pystadls_pbgenerator_vx.py',
         features='use pytest pylint pycodestyle',
@@ -80,18 +58,6 @@ def build(bld):
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_timeout=120
-    )
-
-    bld(
-        name='pystadls_hwtest_v2',
-        tests='test/pystadls_hwtest_v2.py',
-        features='use pytest pylint pycodestyle',
-        use=['pyhalco_hicann_dls_v2', 'pystadls_v2', 'pyhaldls_v2', 'pyhalco_common_files'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        skip_run=not bld.env.DLSv2_HARDWARE_AVAILABLE,
         test_timeout=120
     )
 

@@ -52,16 +52,6 @@ def build(bld):
     )
 
     bld(
-        target='pylola_v2',
-        source='../include/lola/v2/lola.h',
-        genpybind_tags='lola_v2',
-        features='genpybind cxx cxxshlib pyext',
-        use=['lola_v2', 'pyhalco_common_files', 'pyhalco_hicann_dls_v2', 'pyhaldls_v2', 'PYBIND11LOLA'],
-        install_path='${PREFIX}/lib',
-        linkflags='-Wl,-z,defs'
-    )
-
-    bld(
         name='pylola_test_vx',
         tests=bld.path.ant_glob('test/*_vx.py'),
         features='use pytest pylint pycodestyle',

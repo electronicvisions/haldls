@@ -28,21 +28,6 @@ def configure(cfg):
 
 
 def build(bld):
-    bld(name='dlens_v2',
-        features='py pylint pycodestyle',
-        source = bld.path.ant_glob('dlens_v2/**/*.py'),
-        relative_trick=True,
-        use = ['pyhaldls_v2',
-               'pystadls_v2',
-               'pyhalco_hicann_dls_v2',
-               'pylola_v2'
-        ],
-        install_path = '${PREFIX}/lib',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_timeout=120
-    )
-
     bld(name='dlens_vx',
         features='py pylint pycodestyle',
         source = bld.path.ant_glob('dlens_vx/**/*.py'),
@@ -53,16 +38,6 @@ def build(bld):
                'pyhalco_hicann_dls_vx'
         ],
         install_path = '${PREFIX}/lib',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_timeout=120
-    )
-
-    bld(name='dlens_swtest_v2',
-        tests='tests/dlens_swtest_v2.py',
-        features='use pytest pylint pycodestyle',
-        use=['dlens_v2'],
-        install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
         test_timeout=120
@@ -90,11 +65,6 @@ def build(bld):
     )
 
     # --- Deprecated aliases --- #
-    bld(name='run_ppu_program_v2_py',
-        features='use',
-        use=['dlens_v2'],
-        )
-
     bld(name='run_ppu_program_vx_py',
         features='use',
         use=['dlens_vx'],
