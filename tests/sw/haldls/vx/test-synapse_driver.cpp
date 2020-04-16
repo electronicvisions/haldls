@@ -131,7 +131,7 @@ TEST(SynapseDriverConfig, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_EQ(data[1].get() & 0b00001111, 7);        // recovery
+	ASSERT_EQ(data[1].get() & 0b00001111, 14);       // recovery (bits reversed)
 	ASSERT_TRUE(data[0].get() & 0b0000000100000000); // en_receiver
 	ASSERT_TRUE(data[1].get() & 0b0000000000100000); // en_exc_top
 	ASSERT_TRUE(data[2].get() & 0b0000000000000010); // en_readout

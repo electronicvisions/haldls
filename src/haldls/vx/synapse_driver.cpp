@@ -252,6 +252,18 @@ template SYMBOL_VISIBLE
         coordinate_type const& coord);
 
 
+namespace {
+
+SynapseDriverConfig::Recovery::value_type reverse_4_bit_value(
+    SynapseDriverConfig::Recovery::value_type b)
+{
+	b = ((b & 0xC) >> 2) | ((b & 0x3) << 2);
+	b = ((b & 0xA) >> 1) | ((b & 0x5) << 1);
+	return b;
+}
+
+} // anonymous namespace
+
 SynapseDriverConfig::SynapseDriverConfigBitfield SynapseDriverConfig::to_bitfield() const
 {
 	SynapseDriverConfigBitfield bitfield;
@@ -260,7 +272,7 @@ SynapseDriverConfig::SynapseDriverConfigBitfield SynapseDriverConfig::to_bitfiel
 	bitfield.u.m.en_address_out = m_en_address_out;
 	bitfield.u.m.utilization = m_utilization;
 	bitfield.u.m.offset = m_offset;
-	bitfield.u.m.recovery = m_recovery;
+	bitfield.u.m.recovery = reverse_4_bit_value(m_recovery);
 	bitfield.u.m.en_exc_bottom = (m_row_mode_bottom == RowMode::excitatory) ||
 	                             (m_row_mode_bottom == RowMode::excitatory_and_inhibitory);
 	bitfield.u.m.en_exc_top = (m_row_mode_top == RowMode::excitatory) ||
@@ -286,7 +298,7 @@ void SynapseDriverConfig::from_bitfield(SynapseDriverConfig::SynapseDriverConfig
 	m_en_address_out = bitfield.u.m.en_address_out;
 	m_utilization = Utilization(bitfield.u.m.utilization);
 	m_offset = Offset(bitfield.u.m.offset);
-	m_recovery = Recovery(bitfield.u.m.recovery);
+	m_recovery = Recovery(reverse_4_bit_value(bitfield.u.m.recovery));
 	m_row_mode_bottom =
 	    bitfield.u.m.en_exc_bottom
 	        ? (bitfield.u.m.en_inh_bottom ? RowMode::excitatory_and_inhibitory
