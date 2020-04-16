@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import unittest
 from dlens_vx import halco, hal, sta, lola
 
