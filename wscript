@@ -58,12 +58,6 @@ def configure(cfg):
         '-fvisibility-inlines-hidden',
     ]
 
-    cfg.check_boost(lib='program_options system',
-            uselib_store='BOOST4TOOLS')
-
-    cfg.check_cxx(lib="dl", mandatory=True, uselib_store="DL4TOOLS")
-    cfg.check_cxx(lib="pthread", uselib_store="PTHREAD")
-
     cfg.check(lib='elf', header='libelf.h', uselib_store='ELF')
 
     if cfg.env.build_with_haldls_python_bindings:
@@ -87,22 +81,8 @@ def build(bld):
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
 
     bld(
-        target = 'lola_inc',
-        export_includes = 'include',
-    )
-
-    bld(
         target = 'haldls_inc',
         export_includes = 'include',
-    )
-
-    bld.shlib(
-        target = 'dls_common',
-        source = bld.path.ant_glob('src/common/*.cpp') + bld.path.ant_glob('src/exception/*.cpp'),
-        install_path = '${PREFIX}/lib',
-        use = ['haldls_inc', 'hate_inc'],
-        cxxflgas = ['-Werror'],
-        uselib = 'HALDLS_LIBRARIES',
     )
 
     bld(
@@ -110,7 +90,7 @@ def build(bld):
         source = bld.path.ant_glob('src/haldls/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
         features = 'cxx cxxshlib pyembed',
-        use = ['dls_common', 'uni', 'halco_hicann_dls_vx_inc', 'halco_hicann_dls_vx', 'fisch_vx'],
+        use = ['haldls_inc', 'halco_hicann_dls_vx', 'fisch_vx'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
@@ -119,7 +99,7 @@ def build(bld):
         source = bld.path.ant_glob('src/stadls/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
         features = 'cxx cxxshlib pyembed',
-        use = ['dls_common', 'haldls_vx', 'lola_vx'],
+        use = ['haldls_vx', 'lola_vx'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
@@ -130,14 +110,6 @@ def build(bld):
         install_path = '${PREFIX}/lib',
         use = ['haldls_vx', 'ELF'],
         uselib = 'LOLA_LIBRARIES',
-    )
-
-    bld(
-        target = 'dls_swtest_common',
-        features = 'gtest cxx cxxprogram',
-        source = bld.path.ant_glob('tests/sw/common/test-*.cpp'),
-        use = ['dls_common', 'GTEST'],
-        install_path = '${PREFIX}/bin',
     )
 
     bld(
