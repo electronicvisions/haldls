@@ -18,76 +18,52 @@ using namespace halco::common;
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
 
-TEST(SynapseQuad_Synapse, General)
-{
-	SynapseQuad::Synapse synapse;
-
-	EXPECT_ANY_THROW(SynapseQuad::Synapse::Weight(64));
-	EXPECT_NO_THROW(SynapseQuad::Synapse::Weight(63));
-	EXPECT_ANY_THROW(SynapseQuad::Synapse::Address(64));
-	EXPECT_NO_THROW(SynapseQuad::Synapse::Address(63));
-
-	synapse.set_weight(SynapseQuad::Synapse::Weight(63));
-	ASSERT_EQ(synapse.get_weight(), SynapseQuad::Synapse::Weight(63));
-
-	synapse.set_address(SynapseQuad::Synapse::Address(63));
-	ASSERT_EQ(synapse.get_address(), SynapseQuad::Synapse::Address(63));
-
-	synapse.set_time_calib(SynapseQuad::Synapse::TimeCalib(0x2));
-	ASSERT_EQ(synapse.get_time_calib(), SynapseQuad::Synapse::TimeCalib(0x2));
-
-	synapse.set_amp_calib(SynapseQuad::Synapse::AmpCalib(0x2));
-	ASSERT_EQ(synapse.get_amp_calib(), SynapseQuad::Synapse::AmpCalib(0x2));
-
-	SynapseQuad::Synapse synapse_eq = synapse;
-	SynapseQuad::Synapse synapse_ne(synapse);
-	synapse_ne.set_address(SynapseQuad::Synapse::Address(58));
-
-	ASSERT_EQ(synapse, synapse_eq);
-	ASSERT_EQ(synapse == synapse_ne, false);
-
-	ASSERT_NE(synapse, synapse_ne);
-	ASSERT_EQ(synapse != synapse_eq, false);
-}
-
-TEST(SynapseQuad_Synapse, CerealizeCoverage)
-{
-	SynapseQuad::Synapse obj1, obj2;
-	obj1.set_weight(draw_ranged_non_default_value<SynapseQuad::Synapse::Weight>(obj1.get_weight()));
-	obj1.set_address(
-	    draw_ranged_non_default_value<SynapseQuad::Synapse::Address>(obj1.get_address()));
-	obj1.set_time_calib(
-	    draw_ranged_non_default_value<SynapseQuad::Synapse::TimeCalib>(obj1.get_time_calib()));
-	obj1.set_amp_calib(
-	    draw_ranged_non_default_value<SynapseQuad::Synapse::AmpCalib>(obj1.get_amp_calib()));
-
-	std::ostringstream ostream;
-	{
-		cereal::JSONOutputArchive oa(ostream);
-		oa(obj1);
-	}
-
-	std::istringstream istream(ostream.str());
-	{
-		cereal::JSONInputArchive ia(istream);
-		ia(obj2);
-	}
-	ASSERT_EQ(obj1, obj2);
-}
-
 TEST(SynapseQuad, General)
 {
 	SynapseQuad block;
-	SynapseQuad::Synapse synapse;
-	synapse.set_weight(SynapseQuad::Synapse::Weight(1));
-	synapse.set_address(SynapseQuad::Synapse::Address(1));
 
-	block.set_synapse(EntryOnQuad(3), synapse);
-	ASSERT_EQ(block.get_synapse(EntryOnQuad(3)), synapse);
+	EXPECT_ANY_THROW(SynapseQuad::Weight(64));
+	EXPECT_ANY_THROW(SynapseQuad::Label(64));
+	EXPECT_ANY_THROW(SynapseQuad::TimeCalib(4));
+	EXPECT_ANY_THROW(SynapseQuad::AmpCalib(4));
+	{
+		auto weights = block.get_weights();
+		for (auto& weight : weights) {
+			weight = draw_ranged_non_default_value<SynapseQuad::Weight>(0);
+		}
+		block.set_weights(weights);
+		EXPECT_EQ(block.get_weights(), weights);
+	}
+	{
+		auto labels = block.get_labels();
+		for (auto& address : labels) {
+			address = draw_ranged_non_default_value<SynapseQuad::Label>(0);
+		}
+		block.set_labels(labels);
+		EXPECT_EQ(block.get_labels(), labels);
+	}
+	{
+		auto time_calibs = block.get_time_calibs();
+		for (auto& time_calib : time_calibs) {
+			time_calib = draw_ranged_non_default_value<SynapseQuad::TimeCalib>(0);
+		}
+		block.set_time_calibs(time_calibs);
+		EXPECT_EQ(block.get_time_calibs(), time_calibs);
+	}
+	{
+		auto amp_calibs = block.get_amp_calibs();
+		for (auto& amp_calib : amp_calibs) {
+			amp_calib = draw_ranged_non_default_value<SynapseQuad::AmpCalib>(0);
+		}
+		block.set_amp_calibs(amp_calibs);
+		EXPECT_EQ(block.get_amp_calibs(), amp_calibs);
+	}
 
 	SynapseQuad block_eq = block;
 	SynapseQuad block_ne(block);
-	block_ne.set_synapse(EntryOnQuad(2), synapse);
+	auto weights = block_ne.get_weights();
+	weights.at(EntryOnQuad(0)) = SynapseQuad::Weight(0);
+	block_ne.set_weights(weights);
 
 	ASSERT_EQ(block, block_eq);
 	ASSERT_FALSE(block == block_ne);
@@ -101,12 +77,26 @@ TEST(SynapseQuad, EncodeDecode)
 	EntryOnQuad synapse_coord(2);
 	SynapseQuadOnDLS block_coord(SynapseQuadOnSynram(X(3), Y(1)), SynramOnDLS::top);
 	SynapseQuad synapse_block;
-	SynapseQuad::Synapse synapse;
-	synapse.set_weight(SynapseQuad::Synapse::Weight(61));
-	synapse.set_address(SynapseQuad::Synapse::Address(63));
-	synapse.set_time_calib(SynapseQuad::Synapse::TimeCalib(0x2));
-	synapse.set_amp_calib(SynapseQuad::Synapse::AmpCalib(0x1));
-	synapse_block.set_synapse(synapse_coord, synapse);
+	{
+		auto weights = synapse_block.get_weights();
+		weights.at(synapse_coord) = SynapseQuad::Weight(61);
+		synapse_block.set_weights(weights);
+	}
+	{
+		auto labels = synapse_block.get_labels();
+		labels.at(synapse_coord) = SynapseQuad::Label(63);
+		synapse_block.set_labels(labels);
+	}
+	{
+		auto time_calibs = synapse_block.get_time_calibs();
+		time_calibs.at(synapse_coord) = SynapseQuad::TimeCalib(2);
+		synapse_block.set_time_calibs(time_calibs);
+	}
+	{
+		auto amp_calibs = synapse_block.get_amp_calibs();
+		amp_calibs.at(synapse_coord) = SynapseQuad::AmpCalib(1);
+		synapse_block.set_amp_calibs(amp_calibs);
+	}
 
 	std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseQuad::config_size_in_words>
 	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'0080),
@@ -149,17 +139,33 @@ TEST(SynapseQuad, EncodeDecode)
 TEST(SynapseQuad, CerealizeCoverage)
 {
 	SynapseQuad obj1, obj2;
-	for (auto syn : iter_all<halco::hicann_dls::vx::EntryOnQuad>()) {
-		SynapseQuad::Synapse synapse;
-		synapse.set_weight(
-		    draw_ranged_non_default_value<SynapseQuad::Synapse::Weight>(synapse.get_weight()));
-		synapse.set_address(
-		    draw_ranged_non_default_value<SynapseQuad::Synapse::Address>(synapse.get_address()));
-		synapse.set_time_calib(draw_ranged_non_default_value<SynapseQuad::Synapse::TimeCalib>(
-		    synapse.get_time_calib()));
-		synapse.set_amp_calib(
-		    draw_ranged_non_default_value<SynapseQuad::Synapse::AmpCalib>(synapse.get_amp_calib()));
-		obj1.set_synapse(syn, synapse);
+	{
+		auto weights = obj1.get_weights();
+		for (auto& weight : weights) {
+			weight = draw_ranged_non_default_value<SynapseQuad::Weight>(0);
+		}
+		obj1.set_weights(weights);
+	}
+	{
+		auto labels = obj1.get_labels();
+		for (auto& address : labels) {
+			address = draw_ranged_non_default_value<SynapseQuad::Label>(0);
+		}
+		obj1.set_labels(labels);
+	}
+	{
+		auto time_calibs = obj1.get_time_calibs();
+		for (auto& time_calib : time_calibs) {
+			time_calib = draw_ranged_non_default_value<SynapseQuad::TimeCalib>(0);
+		}
+		obj1.set_time_calibs(time_calibs);
+	}
+	{
+		auto amp_calibs = obj1.get_amp_calibs();
+		for (auto& amp_calib : amp_calibs) {
+			amp_calib = draw_ranged_non_default_value<SynapseQuad::AmpCalib>(0);
+		}
+		obj1.set_amp_calibs(amp_calibs);
 	}
 
 	std::ostringstream ostream;

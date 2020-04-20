@@ -31,11 +31,11 @@ TEST(SynapseRow, General)
 	}
 
 	{
-		auto value = config.addresses;
+		auto value = config.labels;
 		value[SynapseOnSynapseRow(24)] =
-		    draw_ranged_non_default_value<SynapseRow::Address>(value[SynapseOnSynapseRow(24)]);
-		config.addresses = value;
-		EXPECT_EQ(config.addresses, value);
+		    draw_ranged_non_default_value<SynapseRow::Label>(value[SynapseOnSynapseRow(24)]);
+		config.labels = value;
+		EXPECT_EQ(config.labels, value);
 	}
 
 	{
@@ -70,8 +70,8 @@ TEST(SynapseRow, CerealizeCoverage)
 	SynapseRow obj1, obj2;
 	obj1.weights[SynapseOnSynapseRow(23)] =
 	    draw_ranged_non_default_value<SynapseRow::Weight>(obj1.weights[SynapseOnSynapseRow(23)]);
-	obj1.addresses[SynapseOnSynapseRow(24)] =
-	    draw_ranged_non_default_value<SynapseRow::Address>(obj1.addresses[SynapseOnSynapseRow(24)]);
+	obj1.labels[SynapseOnSynapseRow(24)] =
+	    draw_ranged_non_default_value<SynapseRow::Label>(obj1.labels[SynapseOnSynapseRow(24)]);
 	obj1.time_calibs[SynapseOnSynapseRow(25)] =
 	    draw_ranged_non_default_value<SynapseRow::TimeCalib>(
 	        obj1.time_calibs[SynapseOnSynapseRow(25)]);

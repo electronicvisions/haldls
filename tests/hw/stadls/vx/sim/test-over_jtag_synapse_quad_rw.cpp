@@ -33,19 +33,22 @@ TEST(SynapseQuad, WROverJTAG)
 	PlaybackProgramBuilder read_builder;
 	for (auto const quad : iter_sparse<SynapseQuadOnDLS>(max_words_per_reduced_test)) {
 		SynapseQuad config;
+		auto weights = config.get_weights();
+		auto labels = config.get_labels();
+		auto time_calibs = config.get_time_calibs();
+		auto amp_calibs = config.get_amp_calibs();
 		for (auto syn : iter_all<EntryOnQuad>()) {
-			auto synapse = config.get_synapse(syn);
-			synapse.set_weight(draw_ranged_non_default_value<decltype(synapse.get_weight())>(
-			    synapse.get_weight()));
-			synapse.set_address(draw_ranged_non_default_value<decltype(synapse.get_address())>(
-			    synapse.get_address()));
-			synapse.set_time_calib(
-			    draw_ranged_non_default_value<decltype(synapse.get_time_calib())>(
-			        synapse.get_time_calib()));
-			synapse.set_amp_calib(draw_ranged_non_default_value<decltype(synapse.get_amp_calib())>(
-			    synapse.get_amp_calib()));
-			config.set_synapse(syn, synapse);
+			weights.at(syn) = draw_ranged_non_default_value<SynapseQuad::Weight>(weights.at(syn));
+			labels.at(syn) = draw_ranged_non_default_value<SynapseQuad::Label>(labels.at(syn));
+			time_calibs.at(syn) =
+			    draw_ranged_non_default_value<SynapseQuad::TimeCalib>(time_calibs.at(syn));
+			amp_calibs.at(syn) =
+			    draw_ranged_non_default_value<SynapseQuad::AmpCalib>(amp_calibs.at(syn));
 		}
+		config.set_weights(weights);
+		config.set_labels(labels);
+		config.set_time_calibs(time_calibs);
+		config.set_amp_calibs(amp_calibs);
 		quads.insert(std::make_pair(quad, config));
 		builder.write(quad, quads.at(quad), Backend::OmnibusChipOverJTAG);
 		quad_tickets.emplace(

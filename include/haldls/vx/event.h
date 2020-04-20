@@ -53,10 +53,10 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 	void set_neuron_backend_address_out(NeuronBackendConfig::AddressOut value) SYMBOL_VISIBLE;
 
 	/** Configurable synapse address, bits 0-5. */
-	GENPYBIND(getter_for(synapse_address))
-	SynapseQuad::Synapse::Address get_synapse_address() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(synapse_address))
-	void set_synapse_address(SynapseQuad::Synapse::Address value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(synapse_label))
+	SynapseQuad::Label get_synapse_label() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(synapse_label))
+	void set_synapse_label(SynapseQuad::Label value) SYMBOL_VISIBLE;
 };
 
 typedef fisch::vx::MADCSampleFromChip MADCSampleFromChip GENPYBIND(opaque(false));

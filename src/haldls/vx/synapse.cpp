@@ -197,88 +197,541 @@ void CommonSynramConfig::serialize(Archive& ar, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonSynramConfig)
 
 
-SynapseQuad::Synapse::Synapse() : m_weight(0), m_address(0), m_time_calib(0), m_amp_calib(0) {}
+SynapseWeightQuad::SynapseWeightQuad() : m_values() {}
 
-SynapseQuad::Synapse::Weight SynapseQuad::Synapse::get_weight() const
+SynapseWeightQuad::values_type const& SynapseWeightQuad::get_values() const
 {
-	return m_weight;
+	return m_values;
 }
 
-void SynapseQuad::Synapse::set_weight(SynapseQuad::Synapse::Weight const& value)
+void SynapseWeightQuad::set_values(values_type const& value)
 {
-	m_weight = value;
+	m_values = value;
 }
 
-SynapseQuad::Synapse::Address SynapseQuad::Synapse::get_address() const
+bool SynapseWeightQuad::operator==(SynapseWeightQuad const& other) const
 {
-	return m_address;
+	return m_values == other.m_values;
 }
 
-void SynapseQuad::Synapse::set_address(SynapseQuad::Synapse::Address const& value)
-{
-	m_address = value;
-}
-
-SynapseQuad::Synapse::TimeCalib SynapseQuad::Synapse::get_time_calib() const
-{
-	return m_time_calib;
-}
-
-void SynapseQuad::Synapse::set_time_calib(SynapseQuad::Synapse::TimeCalib const& value)
-{
-	m_time_calib = value;
-}
-
-SynapseQuad::Synapse::AmpCalib SynapseQuad::Synapse::get_amp_calib() const
-{
-	return m_amp_calib;
-}
-
-void SynapseQuad::Synapse::set_amp_calib(SynapseQuad::Synapse::AmpCalib const& value)
-{
-	m_amp_calib = value;
-}
-
-bool SynapseQuad::Synapse::operator==(SynapseQuad::Synapse const& other) const
-{
-	return m_weight == other.get_weight() && m_address == other.get_address() &&
-	       m_time_calib == other.get_time_calib() && m_amp_calib == other.get_amp_calib();
-}
-
-bool SynapseQuad::Synapse::operator!=(SynapseQuad::Synapse const& other) const
+bool SynapseWeightQuad::operator!=(SynapseWeightQuad const& other) const
 {
 	return !(*this == other);
 }
 
+template <typename AddressT>
+std::array<AddressT, SynapseWeightQuad::config_size_in_words> SynapseWeightQuad::addresses(
+    SynapseWeightQuad::coordinate_type const& block)
+{
+	using namespace halco::hicann_dls::vx;
+	uint32_t base;
+	if (block.toSynramOnDLS() == SynramOnDLS::bottom) {
+		base = synram_synapse_weight_bottom_base_address;
+	} else {
+		base = synram_synapse_weight_top_base_address;
+	}
+	uint32_t const address_offset =
+	    (block.y() * SynapseQuadColumnOnDLS::size * config_size_in_words) +
+	    detail::to_synram_quad_address_offset(block.x());
+	return {AddressT(base + address_offset)};
+}
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseWeightQuad::config_size_in_words>
+    SynapseWeightQuad::addresses(coordinate_type const& coord);
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SynapseWeightQuad::config_size_in_words>
+SynapseWeightQuad::addresses(coordinate_type const& coord);
+
+namespace {
+
+struct SynapseWeightQuadBitfield
+{
+	union
+	{
+		std::array<uint32_t, SynapseWeightQuad::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t value_0 : 6;
+			uint32_t         : 2;
+
+			uint32_t value_1 : 6;
+			uint32_t         : 2;
+
+			uint32_t value_2 : 6;
+			uint32_t         : 2;
+
+			uint32_t value_3 : 6;
+			uint32_t         : 2;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	SynapseWeightQuadBitfield()
+	{
+		u.raw = {{0}};
+	}
+	SynapseWeightQuadBitfield(
+	    std::array<uint32_t, SynapseWeightQuad::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+// synapse ram cells are permuted connected to the DAC
+uint32_t weight_permutation(uint32_t const& weight)
+{
+	std::bitset<6> before(weight);
+	std::bitset<6> after;
+	after[5] = before[5];
+	after[4] = before[0];
+	after[3] = before[1];
+	after[2] = before[2];
+	after[1] = before[3];
+	after[0] = before[4];
+	return after.to_ulong();
+}
+
+} // namespace
+
+template <typename WordT>
+std::array<WordT, SynapseWeightQuad::config_size_in_words> SynapseWeightQuad::encode() const
+{
+	using namespace halco::hicann_dls::vx;
+	SynapseWeightQuadBitfield bitfield;
+
+	bitfield.u.m.value_0 = weight_permutation(m_values.at(EntryOnQuad(0)));
+	bitfield.u.m.value_1 = weight_permutation(m_values.at(EntryOnQuad(1)));
+	bitfield.u.m.value_2 = weight_permutation(m_values.at(EntryOnQuad(2)));
+	bitfield.u.m.value_3 = weight_permutation(m_values.at(EntryOnQuad(3)));
+
+	std::array<WordT, config_size_in_words> data;
+	std::transform(
+	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
+	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	return data;
+}
+
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, SynapseWeightQuad::config_size_in_words>
+SynapseWeightQuad::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseWeightQuad::config_size_in_words>
+    SynapseWeightQuad::encode() const;
+
+template <typename WordT>
+void SynapseWeightQuad::decode(
+    std::array<WordT, SynapseWeightQuad::config_size_in_words> const& data)
+{
+	using namespace halco::hicann_dls::vx;
+	std::array<uint32_t, config_size_in_words> raw_data;
+	std::transform(
+	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+
+	SynapseWeightQuadBitfield bitfield(raw_data);
+
+	m_values.at(EntryOnQuad(0)) = Value(weight_permutation(bitfield.u.m.value_0));
+	m_values.at(EntryOnQuad(1)) = Value(weight_permutation(bitfield.u.m.value_1));
+	m_values.at(EntryOnQuad(2)) = Value(weight_permutation(bitfield.u.m.value_2));
+	m_values.at(EntryOnQuad(3)) = Value(weight_permutation(bitfield.u.m.value_3));
+}
+
+template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
+    std::array<fisch::vx::OmnibusChip, SynapseWeightQuad::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
+    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseWeightQuad::config_size_in_words> const&
+        data);
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseWeightQuad)
+
 template <class Archive>
-void SynapseQuad::Synapse::serialize(Archive& ar, std::uint32_t const)
+void SynapseWeightQuad::serialize(Archive& ar, std::uint32_t const)
 {
-	ar(CEREAL_NVP(m_weight));
-	ar(CEREAL_NVP(m_address));
-	ar(CEREAL_NVP(m_time_calib));
-	ar(CEREAL_NVP(m_amp_calib));
+	ar(CEREAL_NVP(m_values));
 }
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseQuad::Synapse)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseWeightQuad)
 
 
-SynapseQuad::SynapseQuad() : m_synapses() {}
+SynapseLabelQuad::SynapseLabelQuad() : m_values() {}
 
-SynapseQuad::Synapse SynapseQuad::get_synapse(
-    halco::hicann_dls::vx::EntryOnQuad const& synapse) const
+SynapseLabelQuad::values_type const& SynapseLabelQuad::get_values() const
 {
-	return m_synapses.at(synapse);
+	return m_values;
 }
 
-void SynapseQuad::set_synapse(
-    halco::hicann_dls::vx::EntryOnQuad const& synapse, SynapseQuad::Synapse const& value)
+void SynapseLabelQuad::set_values(values_type const& value)
 {
-	m_synapses.at(synapse) = value;
+	m_values = value;
+}
+
+bool SynapseLabelQuad::operator==(SynapseLabelQuad const& other) const
+{
+	return m_values == other.m_values;
+}
+
+bool SynapseLabelQuad::operator!=(SynapseLabelQuad const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename AddressT>
+std::array<AddressT, SynapseLabelQuad::config_size_in_words> SynapseLabelQuad::addresses(
+    SynapseLabelQuad::coordinate_type const& block)
+{
+	using namespace halco::hicann_dls::vx;
+	uint32_t base;
+	if (block.toSynramOnDLS() == SynramOnDLS::bottom) {
+		base = synram_synapse_label_bottom_base_address;
+	} else {
+		base = synram_synapse_label_top_base_address;
+	}
+	uint32_t const address_offset =
+	    (block.y() * SynapseQuadColumnOnDLS::size * config_size_in_words) +
+	    detail::to_synram_quad_address_offset(block.x());
+	return {AddressT(base + address_offset)};
+}
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseLabelQuad::config_size_in_words>
+    SynapseLabelQuad::addresses(coordinate_type const& coord);
+
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, SynapseLabelQuad::config_size_in_words>
+    SynapseLabelQuad::addresses(coordinate_type const& coord);
+
+namespace {
+
+struct SynapseLabelQuadBitfield
+{
+	union
+	{
+		std::array<uint32_t, SynapseLabelQuad::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t value_0 : 6;
+			uint32_t         : 2;
+
+			uint32_t value_1 : 6;
+			uint32_t         : 2;
+
+			uint32_t value_2 : 6;
+			uint32_t         : 2;
+
+			uint32_t value_3 : 6;
+			uint32_t         : 2;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	SynapseLabelQuadBitfield()
+	{
+		u.raw = {{0}};
+	}
+	SynapseLabelQuadBitfield(
+	    std::array<uint32_t, SynapseLabelQuad::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+template <typename WordT>
+std::array<WordT, SynapseLabelQuad::config_size_in_words> SynapseLabelQuad::encode() const
+{
+	using namespace halco::hicann_dls::vx;
+	SynapseLabelQuadBitfield bitfield;
+
+	bitfield.u.m.value_0 = m_values.at(EntryOnQuad(0));
+	bitfield.u.m.value_1 = m_values.at(EntryOnQuad(1));
+	bitfield.u.m.value_2 = m_values.at(EntryOnQuad(2));
+	bitfield.u.m.value_3 = m_values.at(EntryOnQuad(3));
+
+	std::array<WordT, config_size_in_words> data;
+	std::transform(
+	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
+	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	return data;
+}
+
+template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, SynapseLabelQuad::config_size_in_words>
+SynapseLabelQuad::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseLabelQuad::config_size_in_words>
+    SynapseLabelQuad::encode() const;
+
+template <typename WordT>
+void SynapseLabelQuad::decode(std::array<WordT, SynapseLabelQuad::config_size_in_words> const& data)
+{
+	using namespace halco::hicann_dls::vx;
+	std::array<uint32_t, config_size_in_words> raw_data;
+	std::transform(
+	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+
+	SynapseLabelQuadBitfield bitfield(raw_data);
+
+	m_values.at(EntryOnQuad(0)) = Value(bitfield.u.m.value_0);
+	m_values.at(EntryOnQuad(1)) = Value(bitfield.u.m.value_1);
+	m_values.at(EntryOnQuad(2)) = Value(bitfield.u.m.value_2);
+	m_values.at(EntryOnQuad(3)) = Value(bitfield.u.m.value_3);
+}
+
+template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
+    std::array<fisch::vx::OmnibusChip, SynapseLabelQuad::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
+    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseLabelQuad::config_size_in_words> const& data);
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseLabelQuad)
+
+template <class Archive>
+void SynapseLabelQuad::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_values));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseLabelQuad)
+
+
+SynapseCorrelationCalibQuad::SynapseCorrelationCalibQuad() : m_time_calibs(), m_amp_calibs() {}
+
+SynapseCorrelationCalibQuad::time_calibs_type const& SynapseCorrelationCalibQuad::get_time_calibs()
+    const
+{
+	return m_time_calibs;
+}
+
+void SynapseCorrelationCalibQuad::set_time_calibs(time_calibs_type const& value)
+{
+	m_time_calibs = value;
+}
+
+SynapseCorrelationCalibQuad::amp_calibs_type const& SynapseCorrelationCalibQuad::get_amp_calibs()
+    const
+{
+	return m_amp_calibs;
+}
+
+void SynapseCorrelationCalibQuad::set_amp_calibs(amp_calibs_type const& value)
+{
+	m_amp_calibs = value;
+}
+
+bool SynapseCorrelationCalibQuad::operator==(SynapseCorrelationCalibQuad const& other) const
+{
+	return m_time_calibs == other.m_time_calibs && m_amp_calibs == other.m_amp_calibs;
+}
+
+bool SynapseCorrelationCalibQuad::operator!=(SynapseCorrelationCalibQuad const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename AddressT>
+std::array<AddressT, SynapseCorrelationCalibQuad::config_size_in_words>
+SynapseCorrelationCalibQuad::addresses(SynapseCorrelationCalibQuad::coordinate_type const& block)
+{
+	using namespace halco::hicann_dls::vx;
+	uint32_t base_even;
+	uint32_t base_odd;
+	if (block.toSynramOnDLS() == SynramOnDLS::bottom) {
+		base_even = synram_synapse_even_2msb_bottom_base_address;
+		base_odd = synram_synapse_odd_2msb_bottom_base_address;
+	} else {
+		base_even = synram_synapse_even_2msb_top_base_address;
+		base_odd = synram_synapse_odd_2msb_top_base_address;
+	}
+	uint32_t const address_offset = (block.y() * SynapseQuadColumnOnDLS::size) +
+	                                detail::to_synram_quad_address_offset(block.x());
+	return {AddressT(base_even + address_offset), AddressT(base_odd + address_offset)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipAddress,
+    SynapseCorrelationCalibQuad::config_size_in_words>
+SynapseCorrelationCalibQuad::addresses(coordinate_type const& coord);
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    SynapseCorrelationCalibQuad::config_size_in_words>
+SynapseCorrelationCalibQuad::addresses(coordinate_type const& coord);
+
+namespace {
+
+struct SynapseCorrelationCalibQuadBitfield
+{
+	union
+	{
+		std::array<uint32_t, SynapseCorrelationCalibQuad::config_size_in_words> raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t time_calib_0     : 2;
+			uint32_t                  : 6;
+
+			uint32_t time_calib_1     : 2;
+			uint32_t                  : 6;
+
+			uint32_t time_calib_2     : 2;
+			uint32_t                  : 6;
+
+			uint32_t time_calib_3     : 2;
+			uint32_t                  : 6;
+
+			uint32_t amp_calib_0      : 2;
+			uint32_t                  : 6;
+
+			uint32_t amp_calib_1      : 2;
+			uint32_t                  : 6;
+
+			uint32_t amp_calib_2      : 2;
+			uint32_t                  : 6;
+
+			uint32_t amp_calib_3      : 2;
+			uint32_t                  : 6;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	SynapseCorrelationCalibQuadBitfield()
+	{
+		u.raw = {{0}};
+	}
+	SynapseCorrelationCalibQuadBitfield(
+	    std::array<uint32_t, SynapseCorrelationCalibQuad::config_size_in_words> const& data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+template <typename WordT>
+std::array<WordT, SynapseCorrelationCalibQuad::config_size_in_words>
+SynapseCorrelationCalibQuad::encode() const
+{
+	using namespace halco::hicann_dls::vx;
+	SynapseCorrelationCalibQuadBitfield bitfield;
+
+#define SYNAPSE_ENCODE(index)                                                                      \
+	{                                                                                              \
+		bitfield.u.m.time_calib_##index = m_time_calibs.at(EntryOnQuad(index));                    \
+		bitfield.u.m.amp_calib_##index = m_amp_calibs.at(EntryOnQuad(index));                      \
+	}
+
+	SYNAPSE_ENCODE(0)
+	SYNAPSE_ENCODE(1)
+	SYNAPSE_ENCODE(2)
+	SYNAPSE_ENCODE(3)
+#undef SYNAPSE_ENCODE
+
+	std::array<WordT, config_size_in_words> data;
+	std::transform(
+	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
+	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	return data;
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChip, SynapseCorrelationCalibQuad::config_size_in_words>
+    SynapseCorrelationCalibQuad::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseCorrelationCalibQuad::config_size_in_words>
+    SynapseCorrelationCalibQuad::encode() const;
+
+template <typename WordT>
+void SynapseCorrelationCalibQuad::decode(
+    std::array<WordT, SynapseCorrelationCalibQuad::config_size_in_words> const& data)
+{
+	using namespace halco::hicann_dls::vx;
+	std::array<uint32_t, config_size_in_words> raw_data;
+	std::transform(
+	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+
+	SynapseCorrelationCalibQuadBitfield bitfield(raw_data);
+
+#define SYNAPSE_DECODE(index)                                                                      \
+	{                                                                                              \
+		m_time_calibs.at(EntryOnQuad(index)) = TimeCalib(bitfield.u.m.time_calib_##index);         \
+		m_amp_calibs.at(EntryOnQuad(index)) = AmpCalib(bitfield.u.m.amp_calib_##index);            \
+	}
+
+	SYNAPSE_DECODE(0)
+	SYNAPSE_DECODE(1)
+	SYNAPSE_DECODE(2)
+	SYNAPSE_DECODE(3)
+#undef SYNAPSE_DECODE
+}
+
+template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
+    std::array<fisch::vx::OmnibusChip, SynapseCorrelationCalibQuad::config_size_in_words> const&
+        data);
+template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
+    std::array<
+        fisch::vx::OmnibusChipOverJTAG,
+        SynapseCorrelationCalibQuad::config_size_in_words> const& data);
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseCorrelationCalibQuad)
+
+template <class Archive>
+void SynapseCorrelationCalibQuad::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_time_calibs));
+	ar(CEREAL_NVP(m_amp_calibs));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseCorrelationCalibQuad)
+
+
+SynapseQuad::SynapseQuad() : m_weights(), m_labels(), m_time_calibs(), m_amp_calibs() {}
+
+SynapseQuad::weights_type const& SynapseQuad::get_weights() const
+{
+	return m_weights;
+}
+
+void SynapseQuad::set_weights(weights_type const& value)
+{
+	m_weights = value;
+}
+
+SynapseQuad::labels_type const& SynapseQuad::get_labels() const
+{
+	return m_labels;
+}
+
+void SynapseQuad::set_labels(labels_type const& value)
+{
+	m_labels = value;
+}
+
+SynapseQuad::time_calibs_type const& SynapseQuad::get_time_calibs() const
+{
+	return m_time_calibs;
+}
+
+void SynapseQuad::set_time_calibs(time_calibs_type const& value)
+{
+	m_time_calibs = value;
+}
+
+SynapseQuad::amp_calibs_type const& SynapseQuad::get_amp_calibs() const
+{
+	return m_amp_calibs;
+}
+
+void SynapseQuad::set_amp_calibs(amp_calibs_type const& value)
+{
+	m_amp_calibs = value;
 }
 
 bool SynapseQuad::operator==(SynapseQuad const& other) const
 {
-	return m_synapses == other.m_synapses;
+	return m_weights == other.m_weights && m_labels == other.m_labels &&
+	       m_time_calibs == other.m_time_calibs && m_amp_calibs == other.m_amp_calibs;
 }
 
 bool SynapseQuad::operator!=(SynapseQuad const& other) const
@@ -333,16 +786,16 @@ struct SynapseQuadBitfield
 			uint32_t weight_3         : 6;
 			uint32_t time_calib_3     : 2;
 
-			uint32_t address_0        : 6;
+			uint32_t label_0        : 6;
 			uint32_t amp_calib_0      : 2;
 
-			uint32_t address_1        : 6;
+			uint32_t label_1        : 6;
 			uint32_t amp_calib_1      : 2;
 
-			uint32_t address_2        : 6;
+			uint32_t label_2        : 6;
 			uint32_t amp_calib_2      : 2;
 
-			uint32_t address_3        : 6;
+			uint32_t label_3        : 6;
 			uint32_t amp_calib_3      : 2;
 
 		} m;
@@ -357,20 +810,6 @@ struct SynapseQuadBitfield
 	}
 };
 
-// synapse ram cells are permuted connected to the DAC
-uint32_t weight_permutation(uint32_t const& weight)
-{
-	std::bitset<6> before(weight);
-	std::bitset<6> after;
-	after[5] = before[5];
-	after[4] = before[0];
-	after[3] = before[1];
-	after[2] = before[2];
-	after[1] = before[3];
-	after[0] = before[4];
-	return after.to_ulong();
-}
-
 } // namespace
 
 template <typename WordT>
@@ -381,11 +820,11 @@ std::array<WordT, SynapseQuad::config_size_in_words> SynapseQuad::encode() const
 
 #define SYNAPSE_ENCODE(index)                                                                      \
 	{                                                                                              \
-		SynapseQuad::Synapse const& config = m_synapses.at(EntryOnQuad(index));                    \
-		bitfield.u.m.time_calib_##index = config.m_time_calib;                                     \
-		bitfield.u.m.weight_##index = weight_permutation(config.m_weight);                         \
-		bitfield.u.m.amp_calib_##index = config.m_amp_calib;                                       \
-		bitfield.u.m.address_##index = config.m_address;                                           \
+		EntryOnQuad const entry(index);                                                            \
+		bitfield.u.m.time_calib_##index = m_time_calibs.at(entry);                                 \
+		bitfield.u.m.weight_##index = weight_permutation(m_weights.at(entry));                     \
+		bitfield.u.m.amp_calib_##index = m_amp_calibs.at(entry);                                   \
+		bitfield.u.m.label_##index = m_labels.at(entry);                                           \
 	}
 
 	SYNAPSE_ENCODE(0)
@@ -419,13 +858,11 @@ void SynapseQuad::decode(std::array<WordT, SynapseQuad::config_size_in_words> co
 
 #define SYNAPSE_DECODE(index)                                                                      \
 	{                                                                                              \
-		SynapseQuad::Synapse config;                                                               \
-		config.set_time_calib(SynapseQuad::Synapse::TimeCalib(bitfield.u.m.time_calib_##index));   \
-		config.set_weight(                                                                         \
-		    SynapseQuad::Synapse::Weight(weight_permutation(bitfield.u.m.weight_##index)));        \
-		config.set_amp_calib(SynapseQuad::Synapse::AmpCalib(bitfield.u.m.amp_calib_##index));      \
-		config.set_address(SynapseQuad::Synapse::Address(bitfield.u.m.address_##index));           \
-		m_synapses.at(EntryOnQuad(index)) = config;                                                \
+		EntryOnQuad const entry(index);                                                            \
+		m_time_calibs.at(entry) = TimeCalib(bitfield.u.m.time_calib_##index);                      \
+		m_weights.at(entry) = Weight(weight_permutation(bitfield.u.m.weight_##index));             \
+		m_amp_calibs.at(entry) = AmpCalib(bitfield.u.m.amp_calib_##index);                         \
+		m_labels.at(entry) = Label(bitfield.u.m.label_##index);                                    \
 	}
 
 	SYNAPSE_DECODE(0)
@@ -445,7 +882,10 @@ HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseQuad)
 template <class Archive>
 void SynapseQuad::serialize(Archive& ar, std::uint32_t const)
 {
-	ar(CEREAL_NVP(m_synapses));
+	ar(CEREAL_NVP(m_weights));
+	ar(CEREAL_NVP(m_labels));
+	ar(CEREAL_NVP(m_time_calibs));
+	ar(CEREAL_NVP(m_amp_calibs));
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseQuad)
@@ -1354,7 +1794,9 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CorrelationReset)
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::CommonSynramConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SynapseQuad::Synapse, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SynapseWeightQuad, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SynapseLabelQuad, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SynapseCorrelationCalibQuad, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SynapseQuad, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ColumnCorrelationQuad, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ColumnCorrelationQuad::ColumnCorrelationSwitch, 0)

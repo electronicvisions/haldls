@@ -30,19 +30,19 @@ class TestPylolaVX(unittest.TestCase):
         row.weights.from_numpy(np_weights)
         self.assertEqual(row.weights[16], 4)
 
-        row.addresses[14] = 28
-        self.assertEqual(row.addresses[14], 28)
-        np_addresses = row.addresses.to_numpy()
-        self.assertEqual(np_addresses[14], 28)
-        self.assertEqual(np_addresses.shape,
+        row.labels[14] = 28
+        self.assertEqual(row.labels[14], 28)
+        np_labels = row.labels.to_numpy()
+        self.assertEqual(np_labels[14], 28)
+        self.assertEqual(np_labels.shape,
                          (halco.SynapseOnSynapseRow.size,))
-        np_addresses[16] = 64
+        np_labels[16] = 64
         with self.assertRaisesRegex((RuntimeError, OverflowError),
                                     r"range overflow: (\d+) > max\((\d+)\)"):
-            row.addresses.from_numpy(np_addresses)
-        np_addresses[16] = 4
-        row.addresses.from_numpy(np_addresses)
-        self.assertEqual(row.addresses[16], 4)
+            row.labels.from_numpy(np_labels)
+        np_labels[16] = 4
+        row.labels.from_numpy(np_labels)
+        self.assertEqual(row.labels[16], 4)
 
         row.time_calibs[15] = 2
         self.assertEqual(row.time_calibs[15], 2)

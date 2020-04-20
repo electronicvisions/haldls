@@ -23,7 +23,13 @@ class OmnibusChipOverJTAG;
 
 namespace lola::vx {
 class SynapseMatrix;
+class SynapseWeightMatrix;
+class SynapseLabelMatrix;
+class SynapseCorrelationCalibMatrix;
 class SynapseRow;
+class SynapseWeightRow;
+class SynapseLabelRow;
+class SynapseCorrelationCalibRow;
 } // namespace lola::vx
 
 namespace haldls {
@@ -127,105 +133,217 @@ private:
 };
 
 
+class GENPYBIND(visible) SynapseWeightQuad : public DifferentialWriteTrait
+{
+public:
+	typedef halco::hicann_dls::vx::SynapseWeightQuadOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 63, 0>
+	{
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	SynapseWeightQuad() SYMBOL_VISIBLE;
+
+	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> values_type
+	    GENPYBIND(opaque);
+
+	GENPYBIND(getter_for(values), return_value_policy(reference))
+	values_type const& get_values() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(values))
+	void set_values(values_type const& value) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	template <typename AddressT>
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& block)
+	    GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
+
+	bool operator==(SynapseWeightQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SynapseWeightQuad const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SynapseWeightQuad const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	// used for direct member access without function calls
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseWeightRow>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseWeightMatrix>;
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t version);
+
+	values_type m_values;
+};
+
+
+class GENPYBIND(visible) SynapseLabelQuad : public DifferentialWriteTrait
+{
+public:
+	typedef halco::hicann_dls::vx::SynapseLabelQuadOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 63, 0>
+	{
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	SynapseLabelQuad() SYMBOL_VISIBLE;
+
+	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> values_type
+	    GENPYBIND(opaque);
+
+	GENPYBIND(getter_for(values), return_value_policy(reference))
+	values_type const& get_values() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(values))
+	void set_values(values_type const& value) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	template <typename AddressT>
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& block)
+	    GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
+
+	bool operator==(SynapseLabelQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SynapseLabelQuad const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SynapseLabelQuad const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	// used for direct member access without function calls
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseLabelRow>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseLabelMatrix>;
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t version);
+
+	values_type m_values;
+};
+
+
+class GENPYBIND(visible) SynapseCorrelationCalibQuad : public DifferentialWriteTrait
+{
+public:
+	typedef halco::hicann_dls::vx::SynapseCorrelationCalibQuadOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	// The more bits set, the shorter the time constant
+	struct GENPYBIND(inline_base("*")) TimeCalib
+	    : public halco::common::detail::RantWrapper<TimeCalib, uint_fast16_t, 3, 0>
+	{
+		constexpr explicit TimeCalib(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	// The more bits set, the lower the amplitude
+	struct GENPYBIND(inline_base("*")) AmpCalib
+	    : public halco::common::detail::RantWrapper<AmpCalib, uint_fast16_t, 3, 0>
+	{
+		constexpr explicit AmpCalib(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	SynapseCorrelationCalibQuad() SYMBOL_VISIBLE;
+
+	typedef halco::common::typed_array<TimeCalib, halco::hicann_dls::vx::EntryOnQuad>
+	    time_calibs_type GENPYBIND(opaque);
+	typedef halco::common::typed_array<AmpCalib, halco::hicann_dls::vx::EntryOnQuad> amp_calibs_type
+	    GENPYBIND(opaque);
+
+	GENPYBIND(getter_for(time_calibs), return_value_policy(reference))
+	time_calibs_type const& get_time_calibs() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(time_calibs))
+	void set_time_calibs(time_calibs_type const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(amp_calibs), return_value_policy(reference))
+	amp_calibs_type const& get_amp_calibs() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(amp_calibs))
+	void set_amp_calibs(amp_calibs_type const& value) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
+	template <typename AddressT>
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& block)
+	    GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
+
+	bool operator==(SynapseCorrelationCalibQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SynapseCorrelationCalibQuad const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibQuad const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	// used for direct member access without function calls
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseCorrelationCalibRow>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseCorrelationCalibMatrix>;
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t version);
+
+	time_calibs_type m_time_calibs;
+	amp_calibs_type m_amp_calibs;
+};
+
+
 class GENPYBIND(visible) SynapseQuad : public DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseQuadOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	/**
-	 * Single synapse containing a 6 bit weight and address.
-	 * For each synapse, individual calibration bits can control the STDP time constant
-	 * and amplitude and may be used to compensate the synapse-to-synapse variations of
-	 * the correlation measurements.
-	 * @note The calibration bits change both the causal and anticausal branch at
-	 *       once. In other words: causal and anticausal branches cannot be controlled
-	 *       individually.
-	 * @see <a href="http://www.kip.uni-heidelberg.de/Veroeffentlichungen/details.php?id=3380">
-	 *      Bachelor's Thesis by Timo Wunderlich</a> for measurements.
-	 * TODO: Still valid since CADC changed?
-	 */
-	struct Synapse
-	{
-		struct GENPYBIND(inline_base("*")) Weight
-		    : public halco::common::detail::RantWrapper<Weight, uint_fast16_t, 63, 0>
-		{
-			constexpr explicit Weight(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-			    rant_t(val)
-			{}
-		};
+	typedef SynapseWeightQuad::Value Weight GENPYBIND(visible);
+	typedef SynapseLabelQuad::Value Label GENPYBIND(visible);
+	typedef SynapseCorrelationCalibQuad::TimeCalib TimeCalib GENPYBIND(visible);
+	typedef SynapseCorrelationCalibQuad::AmpCalib AmpCalib GENPYBIND(visible);
 
-		struct GENPYBIND(inline_base("*")) Address
-		    : public halco::common::detail::RantWrapper<Address, uint_fast16_t, 63, 0>
-		{
-			constexpr explicit Address(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-			    rant_t(val)
-			{}
-		};
-
-		// The more bits set, the shorter the time constant
-		struct GENPYBIND(inline_base("*")) TimeCalib
-		    : public halco::common::detail::RantWrapper<TimeCalib, uint_fast16_t, 3, 0>
-		{
-			constexpr explicit TimeCalib(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-			    rant_t(val)
-			{}
-		};
-
-		// The more bits set, the lower the amplitude
-		struct GENPYBIND(inline_base("*")) AmpCalib
-		    : public halco::common::detail::RantWrapper<AmpCalib, uint_fast16_t, 3, 0>
-		{
-			constexpr explicit AmpCalib(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-			    rant_t(val)
-			{}
-		};
-
-		Synapse() SYMBOL_VISIBLE;
-
-		GENPYBIND(getter_for(weight))
-		Weight get_weight() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(weight))
-		void set_weight(Weight const& value) SYMBOL_VISIBLE;
-
-		GENPYBIND(getter_for(address))
-		Address get_address() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(address))
-		void set_address(Address const& value) SYMBOL_VISIBLE;
-
-		GENPYBIND(getter_for(time_calib))
-		TimeCalib get_time_calib() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(time_calib))
-		void set_time_calib(TimeCalib const& value) SYMBOL_VISIBLE;
-
-		GENPYBIND(getter_for(amp_calib))
-		AmpCalib get_amp_calib() const SYMBOL_VISIBLE;
-		GENPYBIND(setter_for(amp_calib))
-		void set_amp_calib(AmpCalib const& value) SYMBOL_VISIBLE;
-
-		bool operator==(Synapse const& other) const SYMBOL_VISIBLE;
-		bool operator!=(Synapse const& other) const SYMBOL_VISIBLE;
-
-	private:
-		friend class cereal::access;
-		template <class Archive>
-		void serialize(Archive& ar, std::uint32_t const version);
-		// used for direct member access without function calls
-		friend class SynapseQuad;
-		friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseMatrix>;
-		friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseRow>;
-
-		Weight m_weight;
-		Address m_address;
-		TimeCalib m_time_calib;
-		AmpCalib m_amp_calib;
-	};
+	typedef SynapseWeightQuad::values_type weights_type GENPYBIND(visible);
+	typedef SynapseLabelQuad::values_type labels_type GENPYBIND(visible);
+	typedef SynapseCorrelationCalibQuad::time_calibs_type time_calibs_type GENPYBIND(visible);
+	typedef SynapseCorrelationCalibQuad::amp_calibs_type amp_calibs_type GENPYBIND(visible);
 
 	SynapseQuad() SYMBOL_VISIBLE;
 
-	Synapse get_synapse(halco::hicann_dls::vx::EntryOnQuad const& synapse) const SYMBOL_VISIBLE;
-	void set_synapse(halco::hicann_dls::vx::EntryOnQuad const& synapse, Synapse const& value)
-	    SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(weights), return_value_policy(reference))
+	weights_type const& get_weights() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(weights))
+	void set_weights(weights_type const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(labels), return_value_policy(reference))
+	labels_type const& get_labels() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(labels))
+	void set_labels(labels_type const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(time_calibs), return_value_policy(reference))
+	time_calibs_type const& get_time_calibs() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(time_calibs))
+	void set_time_calibs(time_calibs_type const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(amp_calibs), return_value_policy(reference))
+	amp_calibs_type const& get_amp_calibs() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(amp_calibs))
+	void set_amp_calibs(amp_calibs_type const& value) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	template <typename AddressT>
@@ -250,7 +368,10 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseMatrix>;
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseRow>;
 
-	halco::common::typed_array<Synapse, halco::hicann_dls::vx::EntryOnQuad> m_synapses;
+	weights_type m_weights;
+	labels_type m_labels;
+	time_calibs_type m_time_calibs;
+	amp_calibs_type m_amp_calibs;
 };
 
 
@@ -672,6 +793,30 @@ struct BackendContainerTrait<CommonSynramConfig>
 {};
 
 template <>
+struct BackendContainerTrait<SynapseWeightQuad>
+    : public BackendContainerBase<
+          SynapseWeightQuad,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct BackendContainerTrait<SynapseLabelQuad>
+    : public BackendContainerBase<
+          SynapseLabelQuad,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct BackendContainerTrait<SynapseCorrelationCalibQuad>
+    : public BackendContainerBase<
+          SynapseCorrelationCalibQuad,
+          fisch::vx::OmnibusChip,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
+
+template <>
 struct BackendContainerTrait<SynapseQuad>
     : public BackendContainerBase<
           SynapseQuad,
@@ -721,5 +866,9 @@ namespace std {
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CommonSynramConfig::PCConf)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CommonSynramConfig::WConf)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CommonSynramConfig::WaitCtrClear)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SynapseWeightQuad::Value)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SynapseLabelQuad::Value)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SynapseCorrelationCalibQuad::TimeCalib)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SynapseCorrelationCalibQuad::AmpCalib)
 
 } // namespace std

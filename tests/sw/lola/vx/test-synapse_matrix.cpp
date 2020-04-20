@@ -33,12 +33,12 @@ TEST(SynapseMatrix, General)
 	}
 
 	{
-		auto value = config.addresses;
+		auto value = config.labels;
 		value[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)] =
-		    draw_ranged_non_default_value<SynapseMatrix::Address>(
+		    draw_ranged_non_default_value<SynapseMatrix::Label>(
 		        value[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)]);
-		config.addresses = value;
-		EXPECT_EQ(config.addresses, value);
+		config.labels = value;
+		EXPECT_EQ(config.labels, value);
 	}
 
 	{
@@ -81,9 +81,9 @@ TEST(SynapseMatrix, CerealizeCoverage)
 	obj1.weights[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)] =
 	    draw_ranged_non_default_value<SynapseMatrix::Weight>(
 	        obj1.weights[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)]);
-	obj1.addresses[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)] =
-	    draw_ranged_non_default_value<SynapseMatrix::Address>(
-	        obj1.addresses[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)]);
+	obj1.labels[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)] =
+	    draw_ranged_non_default_value<SynapseMatrix::Label>(
+	        obj1.labels[SynapseRowOnSynram(13)][SynapseOnSynapseRow(24)]);
 	obj1.time_calibs[SynapseRowOnSynram(14)][SynapseOnSynapseRow(25)] =
 	    draw_ranged_non_default_value<SynapseMatrix::TimeCalib>(
 	        obj1.time_calibs[SynapseRowOnSynram(14)][SynapseOnSynapseRow(25)]);
@@ -107,7 +107,7 @@ TEST(SynapseMatrix, CerealizeCoverage)
 
 TEST(SynapseMatrix, EncodeDecode)
 {
-	typedef std::vector<halco::hicann_dls::vx::OmnibusChipAddress> addresses_type;
+	typedef std::vector<halco::hicann_dls::vx::OmnibusChipAddress> labels_type;
 	typedef std::vector<fisch::vx::OmnibusChip> words_type;
 
 	SynapseMatrix config;
@@ -116,7 +116,7 @@ TEST(SynapseMatrix, EncodeDecode)
 	SynramOnDLS coord;
 
 	std::array<
-	    typename addresses_type::value_type,
+	    typename labels_type::value_type,
 	    SynapseQuad::config_size_in_words * SynapseQuadColumnOnDLS::size * SynapseRowOnSynram::size>
 	    ref_addresses;
 	std::array<
@@ -127,9 +127,9 @@ TEST(SynapseMatrix, EncodeDecode)
 		auto syn = SynapseQuadOnDLS(c, coord);
 
 		SynapseQuad quad;
-		ref_addresses[c.toEnum() * 2] = quad.addresses<typename addresses_type::value_type>(syn)[0];
+		ref_addresses[c.toEnum() * 2] = quad.addresses<typename labels_type::value_type>(syn)[0];
 		ref_addresses[c.toEnum() * 2 + 1] =
-		    quad.addresses<typename addresses_type::value_type>(syn)[1];
+		    quad.addresses<typename labels_type::value_type>(syn)[1];
 		ref_data[c.toEnum() * 2] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0));
 		ref_data[c.toEnum() * 2 + 1] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0));
 	}
@@ -137,14 +137,14 @@ TEST(SynapseMatrix, EncodeDecode)
 	    fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0x3f00'0000ul));
 
 	{
-		addresses_type write_addresses;
-		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		labels_type write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<labels_type>{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	{
-		addresses_type read_addresses;
-		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		labels_type read_addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<labels_type>{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 

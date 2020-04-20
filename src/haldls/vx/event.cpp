@@ -52,12 +52,12 @@ void SpikeLabel::set_neuron_backend_address_out(NeuronBackendConfig::AddressOut 
 	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0xff) | (this->value() & 0xff00)));
 }
 
-SynapseQuad::Synapse::Address SpikeLabel::get_synapse_address() const
+SynapseQuad::Label SpikeLabel::get_synapse_label() const
 {
-	return SynapseQuad::Synapse::Address(value() & 0x3f);
+	return SynapseQuad::Label(value() & 0x3f);
 }
 
-void SpikeLabel::set_synapse_address(SynapseQuad::Synapse::Address const value)
+void SpikeLabel::set_synapse_label(SynapseQuad::Label const value)
 {
 	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0x3f) | (this->value() & 0xffc0)));
 }

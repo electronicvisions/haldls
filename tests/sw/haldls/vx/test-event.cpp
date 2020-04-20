@@ -41,9 +41,9 @@ TEST(SpikeLabel, General)
 	}
 
 	{
-		SynapseQuad::Synapse::Address const value(23);
-		config.set_synapse_address(value);
-		EXPECT_EQ(config.get_synapse_address(), value);
+		SynapseQuad::Label const value(23);
+		config.set_synapse_label(value);
+		EXPECT_EQ(config.get_synapse_label(), value);
 	}
 
 	EXPECT_NE(config, other_config);
