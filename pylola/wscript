@@ -45,7 +45,7 @@ def build(bld):
         target='pylola_vx',
         source='../include/lola/vx/lola.h',
         genpybind_tags='lola_vx',
-        features='genpybind cxx cxxshlib pyext',
+        features='genpybind cxx cxxshlib pyext pyembed',
         use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'PYBIND11LOLA'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs'

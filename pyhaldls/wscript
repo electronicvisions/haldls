@@ -44,7 +44,7 @@ def build(bld):
         target='pyhaldls_vx',
         source='../include/haldls/vx/haldls.h',
         genpybind_tags='haldls_vx',
-        features='genpybind cxx cxxshlib pyext',
+        features='genpybind cxx cxxshlib pyext pyembed',
         use=['haldls_vx', 'PYBIND11HALDLS', 'pyfisch_vx'],
         install_path='${PREFIX}/lib',
         # Avoid warning; 1 OoM less and I see warnings (ECM)
