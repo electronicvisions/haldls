@@ -13,7 +13,7 @@ import pyfisch_vx as fisch
 class HwTestPystadlsVx(unittest.TestCase):
     @classmethod
     def test_board_led_chain(cls):
-        all_leds = [led for led in iter_all(halco.LEDOnBoard)]
+        all_leds = list(iter_all(halco.LEDOnBoard))
 
         builder = stadls.PlaybackProgramBuilder()
 
