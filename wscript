@@ -163,6 +163,8 @@ def build(bld):
             'src/haldls/vx/synapse_driver.cpp',
             f'src/haldls/vx/v{hx_version}/synapse_driver.cpp',
             'src/haldls/vx/systime.cpp',
+            'src/haldls/vx/neuron.cpp',
+            f'src/haldls/vx/v{hx_version}/neuron.cpp',
         ]
 
         if hx_version == 1:

@@ -1,9 +1,12 @@
 #pragma once
 #include "halco/hicann-dls/vx/v1/coordinates.h"
 #include "halco/hicann-dls/vx/v1/neuron.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
+
+#ifndef __ppu
+#include "haldls/cerealization.h"
+#endif
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -34,8 +37,10 @@ class GENPYBIND(visible) NeuronConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::v1::NeuronConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	/** Source of readout output. */
 	enum class ReadoutSource : uint_fast8_t
@@ -389,5 +394,7 @@ struct BackendContainerTrait<v1::NeuronResetQuad>
 
 } // namespace haldls::vx::detail
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v1::NeuronConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v1::NeuronResetQuad)
+#endif

@@ -2,12 +2,15 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -348,6 +351,7 @@ std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& conf
 	return (os << ss.str());
 }
 
+#ifndef __ppu__
 template <class Archive>
 void CommonNeuronBackendConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -366,6 +370,7 @@ void CommonNeuronBackendConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronBackendConfig)
+#endif
 
 
 NeuronReset::NeuronReset() {}
@@ -452,11 +457,13 @@ bool NeuronReset::operator!=(NeuronReset const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void NeuronReset::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
+#endif
 
 
 BlockPostPulse::BlockPostPulse() {}
@@ -544,11 +551,13 @@ bool BlockPostPulse::operator!=(BlockPostPulse const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void BlockPostPulse::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(BlockPostPulse)
+#endif
 
 
 SpikeCounterRead::SpikeCounterRead() : m_count(), m_overflow(false) {}
@@ -666,6 +675,7 @@ bool SpikeCounterRead::operator!=(SpikeCounterRead const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void SpikeCounterRead::serialize(Archive& ar, std::uint32_t const)
 {
@@ -674,6 +684,7 @@ void SpikeCounterRead::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterRead)
+#endif
 
 
 SpikeCounterReset::SpikeCounterReset() {}
@@ -767,11 +778,13 @@ bool SpikeCounterReset::operator!=(SpikeCounterReset const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void SpikeCounterReset::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterReset)
+#endif
 
 
 bool NeuronSRAMTimingConfig::operator==(NeuronSRAMTimingConfig const& other) const
@@ -807,6 +820,7 @@ template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronSRAMTimingConfig::config_size_in_words>
     NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 
+#ifndef __ppu__
 template <class Archive>
 void NeuronSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -814,6 +828,7 @@ void NeuronSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronSRAMTimingConfig)
+#endif
 
 
 bool NeuronBackendSRAMTimingConfig::operator==(NeuronBackendSRAMTimingConfig const& other) const
@@ -850,6 +865,7 @@ template SYMBOL_VISIBLE std::array<
     NeuronBackendSRAMTimingConfig::config_size_in_words>
 NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 
+#ifndef __ppu__
 template <class Archive>
 void NeuronBackendSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -857,10 +873,12 @@ void NeuronBackendSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendSRAMTimingConfig)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::NeuronSRAMTimingConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::NeuronBackendSRAMTimingConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CommonNeuronBackendConfig, 0)
@@ -868,3 +886,4 @@ CEREAL_CLASS_VERSION(haldls::vx::NeuronReset, 0)
 CEREAL_CLASS_VERSION(haldls::vx::BlockPostPulse, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SpikeCounterRead, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SpikeCounterReset, 0)
+#endif

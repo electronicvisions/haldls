@@ -5,12 +5,15 @@
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/neuron.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+
+#ifndef __ppu__
+#include "haldls/cerealization.h"
 #include "hxcomm/vx/target.h"
+#endif
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -195,7 +198,9 @@ private:
 	WaitFireNeuron m_wait_fire_neuron;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronBackendConfig)
+#endif
 
 /**
  * Address of the spikes sent out by a neuron.
@@ -227,8 +232,10 @@ class NeuronBackendConfig : public DifferentialWriteTrait
 public:
 	typedef typename Coordinates::NeuronBackendConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	typedef NeuronBackendAddressOut AddressOut GENPYBIND(visible);
 
@@ -515,7 +522,9 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
+#endif
 
 namespace detail {
 
@@ -571,7 +580,9 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(BlockPostPulse)
+#endif
 
 namespace detail {
 
@@ -654,7 +665,9 @@ private:
 	bool m_overflow;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterRead)
+#endif
 
 namespace detail {
 
@@ -708,7 +721,9 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
+#ifndef __ppu
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterReset)
+#endif
 
 namespace detail {
 
@@ -728,8 +743,10 @@ class GENPYBIND(visible) NeuronSRAMTimingConfig : public detail::SRAMTimingConfi
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronSRAMTimingConfigOnDLS coordinate_type;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	bool operator==(NeuronSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(NeuronSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
@@ -748,7 +765,9 @@ private:
 	void serialize(Archive& ar, std::uint32_t);
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronSRAMTimingConfig)
+#endif
 
 namespace detail {
 
@@ -768,8 +787,10 @@ class GENPYBIND(visible) NeuronBackendSRAMTimingConfig : public detail::SRAMTimi
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronBackendSRAMTimingConfigOnDLS coordinate_type;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation, hxcomm::vx::Target::hardware};
+#endif
 
 	bool operator==(NeuronBackendSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(NeuronBackendSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
@@ -788,7 +809,9 @@ private:
 	void serialize(Archive& ar, std::uint32_t);
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendSRAMTimingConfig)
+#endif
 
 namespace detail {
 

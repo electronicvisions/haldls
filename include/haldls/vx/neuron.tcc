@@ -2,12 +2,15 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+#endif
 
 namespace haldls::vx {
 
@@ -122,21 +125,21 @@ void NeuronBackendConfig<Coordinates>::set_enable_bayesian_1(bool const val)
 }
 
 template <typename Coordinates>
-NeuronBackendConfig<Coordinates>::AddressOut NeuronBackendConfig<Coordinates>::get_address_out()
-    const
+typename NeuronBackendConfig<Coordinates>::AddressOut
+NeuronBackendConfig<Coordinates>::get_address_out() const
 {
 	return m_address_out;
 }
 
 template <typename Coordinates>
-NeuronBackendConfig<Coordinates>::ResetHoldoff NeuronBackendConfig<Coordinates>::get_reset_holdoff()
-    const
+typename NeuronBackendConfig<Coordinates>::ResetHoldoff
+NeuronBackendConfig<Coordinates>::get_reset_holdoff() const
 {
 	return m_reset_holdoff;
 }
 
 template <typename Coordinates>
-NeuronBackendConfig<Coordinates>::RefractoryTime
+typename NeuronBackendConfig<Coordinates>::RefractoryTime
 NeuronBackendConfig<Coordinates>::get_refractory_time() const
 {
 	return m_refractory_time;
@@ -149,7 +152,7 @@ bool NeuronBackendConfig<Coordinates>::get_post_overwrite() const
 }
 
 template <typename Coordinates>
-NeuronBackendConfig<Coordinates>::InputClock
+typename NeuronBackendConfig<Coordinates>::InputClock
 NeuronBackendConfig<Coordinates>::get_select_input_clock() const
 {
 	return m_select_input_clock;
@@ -385,6 +388,7 @@ bool NeuronBackendConfig<Coordinates>::operator!=(NeuronBackendConfig const& oth
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <typename Coordinates>
 template <class Archive>
 void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t const)
@@ -405,8 +409,9 @@ void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t cons
 	ar(CEREAL_NVP(m_en_0_baesian));
 	ar(CEREAL_NVP(m_en_1_baesian));
 }
+#endif
 
-#define NEURON_BACKEND_CONFIG_UNROLL(Coordinates)                                                  \
+#define NEURON_BACKEND_CONFIG_UNROLL_PPU(Coordinates)                                              \
 	template class NeuronBackendConfig<Coordinates>;                                               \
                                                                                                    \
 	template std::array<                                                                           \
@@ -441,8 +446,12 @@ void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t cons
 	    halco::hicann_dls::vx::OmnibusAddress,                                                     \
 	    NeuronBackendConfig<Coordinates>::config_size_in_words>                                    \
 	NeuronBackendConfig<Coordinates>::addresses<halco::hicann_dls::vx::OmnibusAddress>(            \
-	    coordinate_type const& cell);                                                              \
-                                                                                                   \
+	    coordinate_type const& cell);
+
+#ifndef __ppu__
+#define NEURON_BACKEND_CONFIG_UNROLL(Coordinates)                                                  \
+	NEURON_BACKEND_CONFIG_UNROLL_PPU(Coordinates)                                                  \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendConfig<Coordinates>)
+#endif
 
 } // namespace haldls::vx

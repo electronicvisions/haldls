@@ -2,14 +2,21 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/neuron.tcc"
 #include "haldls/vx/omnibus_constants.h"
 
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.tcc"
+#endif
+
 namespace haldls::vx {
+#ifndef __ppu__
 NEURON_BACKEND_CONFIG_UNROLL(halco::hicann_dls::vx::v3::Coordinates)
+#else
+NEURON_BACKEND_CONFIG_UNROLL_PPU(halco::hicann_dls::vx::v3::Coordinates)
+#endif
 } // namespace haldls::vx
 
 namespace haldls::vx::v3 {
@@ -622,7 +629,11 @@ std::ostream& operator<<(std::ostream& os, NeuronConfig::ReadoutSource const& co
 			break;
 		}
 		default: {
+#ifndef __ppu__
 			throw std::logic_error("Unknown ReadoutSource.");
+#else
+			exit(1);
+#endif
 		}
 	}
 	return os;
@@ -718,6 +729,7 @@ bool NeuronConfig::operator!=(NeuronConfig const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void NeuronConfig::serialize(Archive& ar, std::uint32_t const version)
 {
@@ -766,6 +778,7 @@ void NeuronConfig::serialize(Archive& ar, std::uint32_t const version)
 	ar(CEREAL_NVP(m_en_leak_mul));
 	ar(CEREAL_NVP(m_en_pause));
 }
+#endif
 
 NeuronResetQuad::NeuronResetQuad() {}
 
@@ -862,8 +875,10 @@ void NeuronResetQuad::serialize(Archive&, std::uint32_t const)
 
 } // namespace haldls::vx::v3
 
+#ifndef __ppu__
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::NeuronConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::NeuronResetQuad)
 CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronBackendConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronConfig, 2)
 CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronResetQuad, 0)
+#endif
