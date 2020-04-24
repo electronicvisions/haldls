@@ -5,19 +5,22 @@
 #include <iomanip>
 #include <numeric>
 #include <utility>
-#include <cereal/types/variant.hpp>
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_heap_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 #include "hate/math.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_heap_array.h"
+#include "haldls/cerealization.h"
+#include <cereal/types/variant.hpp>
+#endif
 
 namespace haldls {
 namespace vx {
@@ -89,14 +92,16 @@ bool CapMemCell<Coordinates>::operator!=(CapMemCell<Coordinates> const& other) c
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <typename Coordinates>
 template <class Archive>
 void CapMemCell<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
+#endif
 
-#define CAPMEM_CELL_UNROLL(Coordinates)                                                            \
+#define CAPMEM_CELL_UNROLL_PPU(Coordinates)                                                        \
 	template class CapMemCell<Coordinates>;                                                        \
                                                                                                    \
 	std::ostream& operator<<(std::ostream& os, CapMemCell<Coordinates>::value_type const& value)   \
@@ -135,9 +140,13 @@ void CapMemCell<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 	CapMemCell<Coordinates>::decode<fisch::vx::word_access_type::Omnibus>(                         \
 	    std::array<                                                                                \
 	        fisch::vx::word_access_type::Omnibus,                                                  \
-	        CapMemCell<Coordinates>::config_size_in_words> const& data);                           \
-                                                                                                   \
+	        CapMemCell<Coordinates>::config_size_in_words> const& data);
+
+#ifndef __ppu__
+#define CAPMEM_CELL_UNROLL(Coordinates)                                                            \
+	CAPMEM_CELL_UNROLL_PPU(Coordinates)                                                            \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemCell<Coordinates>)
+#endif
 
 template <typename Coordinates>
 CapMemBlock<Coordinates>::CapMemBlock()
@@ -178,12 +187,14 @@ bool CapMemBlock<Coordinates>::operator!=(CapMemBlock<Coordinates> const& other)
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <typename Coordinates>
 template <class Archive>
 void CapMemBlock<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_capmem_cells));
 }
+#endif
 
 template <typename Coordinates>
 std::ostream& operator<<(std::ostream& os, CapMemBlock<Coordinates> const& block)
@@ -192,9 +203,13 @@ std::ostream& operator<<(std::ostream& os, CapMemBlock<Coordinates> const& block
 	return os;
 }
 
+#define CAPMEM_BLOCK_UNROLL_PPU(Coordinates) template class CapMemBlock<Coordinates>;
+
+#ifndef __ppu__
 #define CAPMEM_BLOCK_UNROLL(Coordinates)                                                           \
-	template class CapMemBlock<Coordinates>;                                                       \
+	CAPMEM_BLOCK_UNROLL_PPU(Coordinates)                                                           \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemBlock<Coordinates>)
+#endif
 
 template <typename Coordinates>
 CapMemBlockConfig<Coordinates>::CapMemBlockConfig() :
@@ -691,6 +706,7 @@ void CapMemBlockConfig<Coordinates>::decode(
 	m_pause_counter = PauseCounter(bitfield.u.m.pause_counter);
 }
 
+#ifndef __ppu__
 template <typename Coordinates>
 template <class Archive>
 void CapMemBlockConfig<Coordinates>::serialize(Archive& ar, std::uint32_t const)
@@ -717,6 +733,7 @@ void CapMemBlockConfig<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_boost_a));
 	ar(CEREAL_NVP(m_boost_b));
 }
+#endif
 
 std::ostream& operator<<(std::ostream& os, CapMemBlockConfigVRefSelect const& config)
 {
@@ -734,7 +751,11 @@ std::ostream& operator<<(std::ostream& os, CapMemBlockConfigVRefSelect const& co
 			break;
 		}
 		default: {
+#ifndef __ppu__
 			throw std::logic_error("Unknown v_ref_select.");
+#else
+			exit(1);
+#endif
 		}
 	}
 	return os;
@@ -756,13 +777,17 @@ std::ostream& operator<<(std::ostream& os, CapMemBlockConfigIOutSelect const& co
 			break;
 		}
 		default: {
+#ifndef __ppu__
 			throw std::logic_error("Unknown i_out_select.");
+#else
+			exit(1);
+#endif
 		}
 	}
 	return os;
 }
 
-#define CAPMEM_BLOCK_CONFIG_UNROLL(Coordinates)                                                    \
+#define CAPMEM_BLOCK_CONFIG_UNROLL_PPU(Coordinates)                                                \
 	template class CapMemBlockConfig<Coordinates>;                                                 \
 	template SYMBOL_VISIBLE std::array<                                                            \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \
@@ -789,14 +814,20 @@ std::ostream& operator<<(std::ostream& os, CapMemBlockConfigIOutSelect const& co
 	template SYMBOL_VISIBLE void CapMemBlockConfig<Coordinates>::decode(                           \
 	    std::array<                                                                                \
 	        fisch::vx::word_access_type::Omnibus,                                                  \
-	        CapMemBlockConfig<Coordinates>::config_size_in_words> const& data);                    \
-                                                                                                   \
+	        CapMemBlockConfig<Coordinates>::config_size_in_words> const& data);
+
+#ifndef __ppu
+#define CAPMEM_BLOCK_CONFIG_UNROLL(Coordinates)                                                    \
+	CAPMEM_BLOCK_CONFIG_UNROLL_PPU(Coordinates)                                                    \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemBlockConfig<Coordinates>)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 #define CAPMEM_CEREAL_VERSION(Coordinates)                                                         \
 	CEREAL_CLASS_VERSION(haldls::vx::CapMemCell<Coordinates>, 0)                                   \
 	CEREAL_CLASS_VERSION(haldls::vx::CapMemBlock<Coordinates>, 0)                                  \
 	CEREAL_CLASS_VERSION(haldls::vx::CapMemBlockConfig<Coordinates>, 0)
+#endif

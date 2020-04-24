@@ -4,28 +4,41 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "halco/common/cerealization_typed_heap_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/v2/coordinates.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 #include "hate/math.h"
 
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "halco/common/cerealization_typed_heap_array.h"
+#include "haldls/cerealization.tcc"
+#endif
+
 namespace haldls::vx {
 
+#ifndef __ppu__
 CAPMEM_CELL_UNROLL(halco::hicann_dls::vx::v2::Coordinates)
 CAPMEM_BLOCK_UNROLL(halco::hicann_dls::vx::v2::Coordinates)
 CAPMEM_BLOCK_CONFIG_UNROLL(halco::hicann_dls::vx::v2::Coordinates)
+#endif
+
+#ifdef __ppu__
+CAPMEM_CELL_UNROLL_PPU(halco::hicann_dls::vx::v2::Coordinates)
+CAPMEM_BLOCK_UNROLL_PPU(halco::hicann_dls::vx::v2::Coordinates)
+CAPMEM_BLOCK_CONFIG_UNROLL_PPU(halco::hicann_dls::vx::v2::Coordinates)
+#endif
 
 } // namespace haldls::vx
 
+#ifndef __ppu__
 CAPMEM_CEREAL_VERSION(halco::hicann_dls::vx::v2::Coordinates)
+#endif
 
 namespace haldls::vx::v2 {
 
@@ -351,6 +364,7 @@ template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::word_ac
         fisch::vx::word_access_type::Omnibus,
         ReferenceGeneratorConfig::config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void ReferenceGeneratorConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -365,8 +379,11 @@ void ReferenceGeneratorConfig::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_resistor_control));
 	ar(CEREAL_NVP(m_enable_reset));
 }
+#endif
 
 } // namespace haldls::vx::v2
 
+#ifndef __ppu__
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::ReferenceGeneratorConfig)
 CEREAL_CLASS_VERSION(haldls::vx::v2::ReferenceGeneratorConfig, 0)
+#endif

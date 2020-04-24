@@ -15,7 +15,10 @@
 #include "haldls/vx/traits.h"
 #include "hate/join.h"
 #include "hate/visibility.h"
+
+#ifndef __ppu__
 #include "hxcomm/vx/target.h"
+#endif
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -172,8 +175,10 @@ class SYMBOL_VISIBLE CapMemBlockConfig : public DifferentialWriteTrait
 public:
 	typedef typename Coordinates::CapMemBlockConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::hardware};
+#endif
 
 	struct GENPYBIND(inline_base("*")) OutAmpBias
 	    : public halco::common::detail::RantWrapper<OutAmpBias, uint_fast16_t, 15, 0>

@@ -155,6 +155,7 @@ def build(bld):
             'src/haldls/vx/readout.cpp',
             f'src/haldls/vx/v{hx_version}/correlation.cpp',
             'src/haldls/vx/ppu.cpp',
+            f'src/haldls/vx/v{hx_version}/capmem.cpp',
         ]
 
         bld(
