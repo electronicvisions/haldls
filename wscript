@@ -154,6 +154,7 @@ def build(bld):
             'src/haldls/vx/madc.cpp',
             'src/haldls/vx/readout.cpp',
             f'src/haldls/vx/v{hx_version}/correlation.cpp',
+            'src/haldls/vx/ppu.cpp',
         ]
 
         bld(

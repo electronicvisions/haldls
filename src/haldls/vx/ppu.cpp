@@ -4,21 +4,27 @@
 #include <fstream>
 #include <iomanip>
 #include <utility>
-#include <netinet/in.h>
-
-#include <cereal/types/array.hpp>
-#include <cereal/types/vector.hpp>
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_heap_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/indent.h"
 #include "hate/math.h"
 
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_heap_array.h"
+#include "haldls/cerealization.tcc"
+#include <cereal/types/array.hpp>
+#include <cereal/types/vector.hpp>
+#include <netinet/in.h>
+#else
+unsigned long ntohl(unsigned long const value)
+{
+	return value;
+}
+#endif
 
 namespace haldls {
 namespace vx {
@@ -109,6 +115,7 @@ template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::word_access_type::
     std::array<fisch::vx::word_access_type::Omnibus, PPUMemoryWord::config_size_in_words> const&
         data);
 
+#ifndef __ppu__
 template <class Archive>
 void PPUMemoryWord::serialize(Archive& ar, std::uint32_t const)
 {
@@ -116,6 +123,7 @@ void PPUMemoryWord::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryWord)
+#endif
 
 PPUMemoryBlock::PPUMemoryBlock(size_type const size) : m_words(size.value()) {}
 
@@ -130,7 +138,11 @@ void PPUMemoryBlock::set_words(words_type const& words)
 		std::stringstream ss;
 		ss << "given vector size(" << words.size() << ") does not match container size(" << size()
 		   << ")";
+#ifndef __ppu__
 		throw std::range_error(ss.str());
+#else
+		exit(1);
+#endif
 	}
 	m_words = words;
 }
@@ -140,7 +152,11 @@ PPUMemoryWord& PPUMemoryBlock::at(size_t index)
 	if (index >= size()) {
 		std::stringstream ss;
 		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+#ifndef __ppu__
 		throw std::out_of_range(ss.str());
+#else
+		exit(1);
+#endif
 	}
 	return m_words.at(index);
 }
@@ -150,7 +166,11 @@ PPUMemoryWord const& PPUMemoryBlock::at(size_t index) const
 	if (index >= size()) {
 		std::stringstream ss;
 		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+#ifndef __ppu__
 		throw std::out_of_range(ss.str());
+#else
+		exit(1);
+#endif
 	}
 	return m_words.at(index);
 }
@@ -171,7 +191,11 @@ PPUMemoryBlock PPUMemoryBlock::get_subblock(size_t begin, size_type length) cons
 		std::stringstream ss;
 		ss << "subblock from index " << begin << " of size " << length
 		   << " larger than block size of " << size();
+#ifndef __ppu__
 		throw std::out_of_range(ss.str());
+#else
+		exit(1);
+#endif
 	}
 	PPUMemoryBlock subblock(length);
 	for (size_t i = 0; i < length; ++i) {
@@ -186,7 +210,11 @@ void PPUMemoryBlock::set_subblock(size_t begin, PPUMemoryBlock const& subblock)
 		std::stringstream ss;
 		ss << "subblock from index " << begin << " of size " << subblock.size()
 		   << " larger than block size of " << size();
+#ifndef __ppu__
 		throw std::out_of_range(ss.str());
+#else
+		exit(1);
+#endif
 	}
 	for (size_t i = 0; i < subblock.size(); ++i) {
 		m_words.at(i + begin) = subblock.m_words.at(i);
@@ -231,12 +259,6 @@ std::string PPUMemoryBlock::to_string() const
 	return ss.str();
 }
 
-template <class Archive>
-void PPUMemoryBlock::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_words));
-}
-
 std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 {
 	os << "PPUMemoryBlock(\n";
@@ -271,7 +293,15 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 	return os;
 }
 
+#ifndef __ppu__
+template <class Archive>
+void PPUMemoryBlock::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_words));
+}
+
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryBlock)
+#endif
 
 PPUMemory::PPUMemory(words_type const& words) : m_words(words) {}
 
@@ -317,7 +347,11 @@ void PPUMemory::set_block(
 	auto const start = block_coord.toMin().value();
 	auto const end = block_coord.toMax().value();
 	if (not(block.size() == size)) {
+#ifndef __ppu__
 		throw std::out_of_range("Mismatch of coordinate size and block size.");
+#else
+		exit(1);
+#endif
 	}
 	auto start_it = std::next(std::begin(m_words), start);
 	auto end_it = std::next(std::begin(m_words), end);
@@ -326,6 +360,7 @@ void PPUMemory::set_block(
 	}
 }
 
+#ifndef __ppu__
 void PPUMemory::load_from_file(std::string const& filename)
 {
 	m_words.fill(PPUMemoryWord(PPUMemoryWord::Value(0)));
@@ -371,6 +406,7 @@ void PPUMemory::load_from_file(std::string const& filename)
 
 	std::copy(ppu_memory_words.cbegin(), ppu_memory_words.cend(), m_words.begin());
 }
+#endif
 
 bool PPUMemory::operator==(PPUMemory const& other) const
 {
@@ -422,6 +458,7 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 	return os;
 }
 
+#ifndef __ppu__
 template <class Archive>
 void PPUMemory::serialize(Archive& ar, std::uint32_t const)
 {
@@ -429,6 +466,7 @@ void PPUMemory::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemory)
+#endif
 
 PPUControlRegister::PPUControlRegister() :
     m_cache_controller_enable(false),
@@ -593,6 +631,7 @@ template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::word_access_t
         fisch::vx::word_access_type::Omnibus,
         PPUControlRegister::config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void PPUControlRegister::serialize(Archive& ar, std::uint32_t const)
 {
@@ -603,6 +642,7 @@ void PPUControlRegister::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUControlRegister)
+#endif
 
 PPUStatusRegister::PPUStatusRegister() : m_sleep(false) {}
 
@@ -704,6 +744,7 @@ template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::word_access_ty
         fisch::vx::word_access_type::Omnibus,
         PPUStatusRegister::read_config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void PPUStatusRegister::serialize(Archive& ar, std::uint32_t const)
 {
@@ -711,12 +752,15 @@ void PPUStatusRegister::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUStatusRegister)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::PPUMemoryWord, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PPUMemoryBlock, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PPUMemory, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PPUControlRegister, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PPUStatusRegister, 0)
+#endif
