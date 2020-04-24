@@ -2,12 +2,14 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
 
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.h"
+#endif
 
 namespace haldls::vx {
 
@@ -39,12 +41,14 @@ bool CADCChannelConfig<Coordinates>::operator!=(CADCChannelConfig const& other) 
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <typename Coordinates>
 template <typename Archive>
 void CADCChannelConfig<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_offset));
 }
+#endif
 
 namespace {
 
@@ -110,8 +114,12 @@ void CADCChannelConfig<Coordinates>::decode(
 	m_offset = Offset(static_cast<int32_t>(bitfield.u.m.offset) - 128);
 }
 
+#define CADC_CHANNEL_CONFIG_UNROLL_PPU(Coordinates) template class CADCChannelConfig<Coordinates>;
+
+#ifndef __ppu__
 #define CADC_CHANNEL_CONFIG_UNROLL(Coordinates)                                                    \
-	template class CADCChannelConfig<Coordinates>;                                                 \
+	CADC_CHANNEL_CONFIG_UNROLL_PPU(Coordinates)                                                    \
+                                                                                                   \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCChannelConfig<Coordinates>)                          \
                                                                                                    \
 	template std::array<                                                                           \
@@ -140,5 +148,6 @@ void CADCChannelConfig<Coordinates>::decode(
 	    std::array<                                                                                \
 	        fisch::vx::word_access_type::Omnibus,                                                  \
 	        CADCChannelConfig<Coordinates>::config_size_in_words> const& data);
+#endif
 
 } // namespace haldls::vx

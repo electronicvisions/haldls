@@ -2,10 +2,13 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls::vx::v2 {
 
@@ -395,7 +398,11 @@ std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& m
 		case SynapseDriverConfig::RowMode::excitatory_and_inhibitory:
 			return os << "excitatory_and_inhibitory";
 		default:
+#ifndef __ppu__
 			throw std::logic_error("Ostream operator of specified RowMode not implemented");
+#else
+			exit(1);
+#endif
 	}
 }
 
@@ -455,6 +462,7 @@ bool SynapseDriverConfig::operator!=(SynapseDriverConfig const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void SynapseDriverConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -476,8 +484,11 @@ void SynapseDriverConfig::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_en_charge_sharing));
 	ar(CEREAL_NVP(m_en_recovery));
 }
+#endif
 
 } // namespace haldls::vx::v2
 
+#ifndef __ppu__
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::SynapseDriverConfig)
 CEREAL_CLASS_VERSION(haldls::vx::v2::SynapseDriverConfig, 1)
+#endif

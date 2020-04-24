@@ -3,10 +3,13 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "fisch/vx/word_access/type/systime.h"
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -116,6 +119,7 @@ template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::word_access_type
     std::array<fisch::vx::word_access_type::Omnibus, SystimeSyncBase::config_size_in_words> const&
         data);
 
+#ifndef __ppu__
 template <class Archive>
 void SystimeSyncBase::serialize(Archive& ar, std::uint32_t const)
 {
@@ -184,9 +188,12 @@ void SystimeSync::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeSync)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::SystimeSyncBase, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SystimeSync, 0)
+#endif

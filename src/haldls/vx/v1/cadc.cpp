@@ -4,17 +4,27 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/v1/address_transformation.h"
 #include "haldls/vx/v1/omnibus_constants.h"
 #include "hate/join.h"
 
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls::vx {
+
+#ifndef __ppu__
 CADC_CHANNEL_CONFIG_UNROLL(halco::hicann_dls::vx::v1::Coordinates)
+#endif
+
+#ifdef __ppu__
+CADC_CHANNEL_CONFIG_UNROLL_PPU(halco::hicann_dls::vx::v1::Coordinates)
+#endif
+
 } // namespace haldls::vx
 
 namespace haldls::vx::v1 {
@@ -42,11 +52,13 @@ bool CADCSampleQuad::operator!=(CADCSampleQuad const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <typename Archive>
 void CADCSampleQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_samples));
 }
+#endif
 
 namespace {
 
@@ -141,6 +153,8 @@ void CADCSampleQuad::decode(std::array<
 
 } // namespace haldls::vx::v1
 
+#ifndef __ppu__
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v1::CADCSampleQuad)
 CEREAL_CLASS_VERSION(haldls::vx::v1::CADCChannelConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::v1::CADCSampleQuad, 0)
+#endif

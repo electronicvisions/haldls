@@ -2,13 +2,15 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -56,6 +58,7 @@ bool CADCConfig::operator!=(CADCConfig const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <typename Archive>
 void CADCConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -65,6 +68,7 @@ void CADCConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCConfig)
+#endif
 
 namespace {
 
@@ -184,6 +188,7 @@ template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusAddress, CADCOffsetSRAMTimingConfig::config_size_in_words>
     CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 
+#ifndef __ppu__
 template <typename Archive>
 void CADCOffsetSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -191,9 +196,12 @@ void CADCOffsetSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCOffsetSRAMTimingConfig)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::CADCConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CADCOffsetSRAMTimingConfig, 0)
+#endif

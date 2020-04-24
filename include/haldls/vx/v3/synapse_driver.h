@@ -1,8 +1,11 @@
 #pragma once
 #include "halco/hicann-dls/vx/v3/synapse_driver.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/synapse_driver.h"
+
+#ifndef __ppu__
+#include "haldls/cerealization.h"
+#endif
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -18,8 +21,10 @@ class GENPYBIND(visible) SynapseDriverConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::SynapseDriverOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation, hxcomm::vx::Target::hardware};
+#endif
 
 	struct GENPYBIND(inline_base("*")) Utilization
 	    : public halco::common::detail::RantWrapper<Utilization, uint_fast8_t, 15, 0>
@@ -281,4 +286,6 @@ struct BackendContainerTrait<v3::SynapseDriverConfig>
 
 } // namespace haldls::vx::detail
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::SynapseDriverConfig)
+#endif

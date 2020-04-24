@@ -6,7 +6,10 @@
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+
+#ifndef __ppu__
 #include "hxcomm/vx/target.h"
+#endif
 
 namespace fisch::vx {
 class Omnibus;
@@ -151,8 +154,10 @@ class SYMBOL_VISIBLE CADCChannelConfig
 public:
 	typedef std::true_type is_leaf_node;
 	typedef typename Coordinates::CADCChannelConfigOnDLS coordinate_type;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::hardware};
+#endif
 
 	/**
 	 * Offset value to add to measurement.

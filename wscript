@@ -158,6 +158,11 @@ def build(bld):
             f'src/haldls/vx/v{hx_version}/capmem.cpp',
             'src/haldls/vx/synapse.cpp',
             f'src/haldls/vx/v{hx_version}/synapse.cpp',
+            'src/haldls/vx/cadc.cpp',
+            f'src/haldls/vx/v{hx_version}/cadc.cpp',
+            'src/haldls/vx/synapse_driver.cpp',
+            f'src/haldls/vx/v{hx_version}/synapse_driver.cpp',
+            'src/haldls/vx/systime.cpp',
         ]
 
         if hx_version == 1:

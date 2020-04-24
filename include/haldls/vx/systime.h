@@ -3,11 +3,14 @@
 #include <iosfwd>
 
 #include "halco/hicann-dls/vx/timing.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+
+#ifndef __ppu__
+#include "haldls/cerealization.h"
+#endif
 
 namespace fisch::vx {
 class Omnibus;
@@ -66,7 +69,9 @@ private:
 	Value m_value;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SystimeSyncBase)
+#endif
 
 namespace detail {
 
@@ -81,6 +86,7 @@ struct BackendContainerTrait<SystimeSyncBase>
 } // namespace detail
 
 
+#ifndef __ppu__
 /**
  * Container for syncronization of chip and FPGA systime.
  * After syncronization the FPGA will annotate responses with systime information by sending
@@ -147,6 +153,7 @@ struct BackendContainerTrait<SystimeSync>
 {};
 
 } // namespace detail
+#endif
 
 } // namespace vx
 } // namespace haldls
