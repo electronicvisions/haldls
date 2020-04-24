@@ -4,6 +4,7 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 
@@ -116,14 +117,17 @@ struct CommonSynramConfigBitfield
 		std::array<uint32_t, CommonSynramConfig::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t pc_conf_west       :  4;
-			uint32_t pc_conf_east       :  4;
-			uint32_t                    : 24;
-			uint32_t w_conf_west        :  8;
-			uint32_t w_conf_east        :  8;
-			uint32_t                    : 16;
-			uint32_t wait_ctr_clear     :  3;
-			uint32_t                    : 29;
+#define BITFIELD \
+			(uint32_t pc_conf_west       :  4;) \
+			(uint32_t pc_conf_east       :  4;) \
+			(uint32_t                    : 24;) \
+			(uint32_t w_conf_west        :  8;) \
+			(uint32_t w_conf_east        :  8;) \
+			(uint32_t                    : 16;) \
+			(uint32_t wait_ctr_clear     :  3;) \
+			(uint32_t                    : 29;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -341,22 +345,25 @@ struct SynapseBiasSelectionBitfield
 
 		// clang-format off
 		struct {
-			uint32_t int_output_q1 : 1;
-			uint32_t int_store_q1  : 1;
-			uint32_t int_ramp_q1   : 1;
-			uint32_t int_dac_q1    : 1;
-			uint32_t int_output_q0 : 1;
-			uint32_t int_store_q0  : 1;
-			uint32_t int_ramp_q0   : 1;
-			uint32_t int_dac_q0    : 1;
-			uint32_t int_output_q3 : 1;
-			uint32_t int_store_q3  : 1;
-			uint32_t int_ramp_q3   : 1;
-			uint32_t int_dac_q3    : 1;
-			uint32_t int_output_q2 : 1;
-			uint32_t int_store_q2  : 1;
-			uint32_t int_ramp_q2   : 1;
-			uint32_t int_dac_q2    : 1;
+#define BITFIELD \
+			(uint32_t int_output_q1 : 1;) \
+			(uint32_t int_store_q1  : 1;) \
+			(uint32_t int_ramp_q1   : 1;) \
+			(uint32_t int_dac_q1    : 1;) \
+			(uint32_t int_output_q0 : 1;) \
+			(uint32_t int_store_q0  : 1;) \
+			(uint32_t int_ramp_q0   : 1;) \
+			(uint32_t int_dac_q0    : 1;) \
+			(uint32_t int_output_q3 : 1;) \
+			(uint32_t int_store_q3  : 1;) \
+			(uint32_t int_ramp_q3   : 1;) \
+			(uint32_t int_dac_q3    : 1;) \
+			(uint32_t int_output_q2 : 1;) \
+			(uint32_t int_store_q2  : 1;) \
+			(uint32_t int_ramp_q2   : 1;) \
+			(uint32_t int_dac_q2    : 1;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 

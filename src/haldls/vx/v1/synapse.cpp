@@ -4,6 +4,7 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/v1/address_transformation.h"
 #include "haldls/vx/v1/omnibus_constants.h"
 #include "hate/indent.h"
@@ -74,17 +75,20 @@ struct SynapseWeightQuadBitfield
 		std::array<uint32_t, SynapseWeightQuad::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t value_0 : 6;
-			uint32_t         : 2;
-
-			uint32_t value_1 : 6;
-			uint32_t         : 2;
-
-			uint32_t value_2 : 6;
-			uint32_t         : 2;
-
-			uint32_t value_3 : 6;
-			uint32_t         : 2;
+#define BITFIELD \
+			(uint32_t value_0 : 6;) \
+			(uint32_t         : 2;) \
+			                        \
+			(uint32_t value_1 : 6;) \
+			(uint32_t         : 2;) \
+			                        \
+			(uint32_t value_2 : 6;) \
+			(uint32_t         : 2;) \
+			                        \
+			(uint32_t value_3 : 6;) \
+			(uint32_t         : 2;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -237,17 +241,20 @@ struct SynapseLabelQuadBitfield
 		std::array<uint32_t, SynapseLabelQuad::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t value_0 : 6;
-			uint32_t         : 2;
-
-			uint32_t value_1 : 6;
-			uint32_t         : 2;
-
-			uint32_t value_2 : 6;
-			uint32_t         : 2;
-
-			uint32_t value_3 : 6;
-			uint32_t         : 2;
+#define BITFIELD \
+			(uint32_t value_0 : 6;) \
+			(uint32_t         : 2;) \
+			                        \
+			(uint32_t value_1 : 6;) \
+			(uint32_t         : 2;) \
+			                        \
+			(uint32_t value_2 : 6;) \
+			(uint32_t         : 2;) \
+			                        \
+			(uint32_t value_3 : 6;) \
+			(uint32_t         : 2;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -400,29 +407,32 @@ struct SynapseCorrelationCalibQuadBitfield
 		std::array<uint32_t, SynapseCorrelationCalibQuad::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t time_calib_0     : 2;
-			uint32_t                  : 6;
-
-			uint32_t time_calib_1     : 2;
-			uint32_t                  : 6;
-
-			uint32_t time_calib_2     : 2;
-			uint32_t                  : 6;
-
-			uint32_t time_calib_3     : 2;
-			uint32_t                  : 6;
-
-			uint32_t amp_calib_0      : 2;
-			uint32_t                  : 6;
-
-			uint32_t amp_calib_1      : 2;
-			uint32_t                  : 6;
-
-			uint32_t amp_calib_2      : 2;
-			uint32_t                  : 6;
-
-			uint32_t amp_calib_3      : 2;
-			uint32_t                  : 6;
+#define BITFIELD \
+			(uint32_t time_calib_0 : 2;) \
+			(uint32_t              : 6;) \
+			                             \
+			(uint32_t time_calib_1 : 2;) \
+			(uint32_t              : 6;) \
+			                             \
+			(uint32_t time_calib_2 : 2;) \
+			(uint32_t              : 6;) \
+			                             \
+			(uint32_t time_calib_3 : 2;) \
+			(uint32_t              : 6;) \
+			                             \
+			(uint32_t amp_calib_0  : 2;) \
+			(uint32_t              : 6;) \
+			                             \
+			(uint32_t amp_calib_1  : 2;) \
+			(uint32_t              : 6;) \
+			                             \
+			(uint32_t amp_calib_2  : 2;) \
+			(uint32_t              : 6;) \
+			                             \
+			(uint32_t amp_calib_3  : 2;) \
+			(uint32_t              : 6;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -613,30 +623,32 @@ struct SynapseQuadBitfield
 		std::array<uint32_t, SynapseQuad::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t weight_0         : 6;
-			uint32_t time_calib_0     : 2;
-
-			uint32_t weight_1         : 6;
-			uint32_t time_calib_1     : 2;
-
-			uint32_t weight_2         : 6;
-			uint32_t time_calib_2     : 2;
-
-			uint32_t weight_3         : 6;
-			uint32_t time_calib_3     : 2;
-
-			uint32_t label_0        : 6;
-			uint32_t amp_calib_0      : 2;
-
-			uint32_t label_1        : 6;
-			uint32_t amp_calib_1      : 2;
-
-			uint32_t label_2        : 6;
-			uint32_t amp_calib_2      : 2;
-
-			uint32_t label_3        : 6;
-			uint32_t amp_calib_3      : 2;
-
+#define BITFIELD \
+			(uint32_t weight_0         : 6;) \
+			(uint32_t time_calib_0     : 2;) \
+			                                 \
+			(uint32_t weight_1         : 6;) \
+			(uint32_t time_calib_1     : 2;) \
+			                                 \
+			(uint32_t weight_2         : 6;) \
+			(uint32_t time_calib_2     : 2;) \
+			                                 \
+			(uint32_t weight_3         : 6;) \
+			(uint32_t time_calib_3     : 2;) \
+			                                 \
+			(uint32_t label_0          : 6;) \
+			(uint32_t amp_calib_0      : 2;) \
+			                                 \
+			(uint32_t label_1          : 6;) \
+			(uint32_t amp_calib_1      : 2;) \
+			                                 \
+			(uint32_t label_2          : 6;) \
+			(uint32_t amp_calib_2      : 2;) \
+			                                 \
+			(uint32_t label_3          : 6;) \
+			(uint32_t amp_calib_3      : 2;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -962,69 +974,72 @@ struct ColumnCorrelationQuadBitfield
 		std::array<uint32_t, ColumnCorrelationQuad::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t                             : 6;
-			uint32_t enable_internal_causal_0    : 1;
-			uint32_t enable_internal_acausal_0   : 1;
-
-			uint32_t                             : 6;
-			uint32_t enable_internal_causal_1    : 1;
-			uint32_t enable_internal_acausal_1   : 1;
-
-			uint32_t                             : 6;
-			uint32_t enable_internal_causal_2    : 1;
-			uint32_t enable_internal_acausal_2   : 1;
-
-			uint32_t                             : 6;
-			uint32_t enable_internal_causal_3    : 1;
-			uint32_t enable_internal_acausal_3   : 1;
-
-			uint32_t                             : 6;
-			uint32_t enable_debug_causal_0       : 1;
-			uint32_t enable_debug_acausal_0      : 1;
-
-			uint32_t                             : 6;
-			uint32_t enable_debug_causal_1       : 1;
-			uint32_t enable_debug_acausal_1      : 1;
-
-			uint32_t                             : 6;
-			uint32_t enable_debug_causal_2       : 1;
-			uint32_t enable_debug_acausal_2      : 1;
-
-			uint32_t                             : 6;
-			uint32_t enable_debug_causal_3       : 1;
-			uint32_t enable_debug_acausal_3      : 1;
-
-			uint32_t                                      : 5;
-			uint32_t enable_cadc_neuron_readout_causal_0  : 1;
-			uint32_t                                      : 2;
-
-			uint32_t                                      : 5;
-			uint32_t enable_cadc_neuron_readout_causal_1  : 1;
-			uint32_t                                      : 2;
-
-			uint32_t                                      : 5;
-			uint32_t enable_cadc_neuron_readout_causal_2  : 1;
-			uint32_t                                      : 2;
-
-			uint32_t                                      : 5;
-			uint32_t enable_cadc_neuron_readout_causal_3  : 1;
-			uint32_t                                      : 2;
-
-			uint32_t                                      : 5;
-			uint32_t enable_cadc_neuron_readout_acausal_0 : 1;
-			uint32_t                                      : 2;
-
-			uint32_t                                      : 5;
-			uint32_t enable_cadc_neuron_readout_acausal_1 : 1;
-			uint32_t                                      : 2;
-
-			uint32_t                                      : 5;
-			uint32_t enable_cadc_neuron_readout_acausal_2 : 1;
-			uint32_t                                      : 2;
-
-			uint32_t                                      : 5;
-			uint32_t enable_cadc_neuron_readout_acausal_3 : 1;
-			uint32_t                                      : 2;
+#define BITFIELD \
+			(uint32_t                                      : 6;) \
+			(uint32_t enable_internal_causal_0             : 1;) \
+			(uint32_t enable_internal_acausal_0            : 1;) \
+			                                                     \
+			(uint32_t                                      : 6;) \
+			(uint32_t enable_internal_causal_1             : 1;) \
+			(uint32_t enable_internal_acausal_1            : 1;) \
+			                                                     \
+			(uint32_t                                      : 6;) \
+			(uint32_t enable_internal_causal_2             : 1;) \
+			(uint32_t enable_internal_acausal_2            : 1;) \
+			                                                     \
+			(uint32_t                                      : 6;) \
+			(uint32_t enable_internal_causal_3             : 1;) \
+			(uint32_t enable_internal_acausal_3            : 1;) \
+			                                                     \
+			(uint32_t                                      : 6;) \
+			(uint32_t enable_debug_causal_0                : 1;) \
+			(uint32_t enable_debug_acausal_0               : 1;) \
+			                                                     \
+			(uint32_t                                      : 6;) \
+			(uint32_t enable_debug_causal_1                : 1;) \
+			(uint32_t enable_debug_acausal_1               : 1;) \
+			                                                     \
+			(uint32_t                                      : 6;) \
+			(uint32_t enable_debug_causal_2                : 1;) \
+			(uint32_t enable_debug_acausal_2               : 1;) \
+			                                                     \
+			(uint32_t                                      : 6;) \
+			(uint32_t enable_debug_causal_3                : 1;) \
+			(uint32_t enable_debug_acausal_3               : 1;) \
+			                                                     \
+			(uint32_t                                      : 5;) \
+			(uint32_t enable_cadc_neuron_readout_causal_0  : 1;) \
+			(uint32_t                                      : 2;) \
+			                                                     \
+			(uint32_t                                      : 5;) \
+			(uint32_t enable_cadc_neuron_readout_causal_1  : 1;) \
+			(uint32_t                                      : 2;) \
+			                                                     \
+			(uint32_t                                      : 5;) \
+			(uint32_t enable_cadc_neuron_readout_causal_2  : 1;) \
+			(uint32_t                                      : 2;) \
+			                                                     \
+			(uint32_t                                      : 5;) \
+			(uint32_t enable_cadc_neuron_readout_causal_3  : 1;) \
+			(uint32_t                                      : 2;) \
+			                                                     \
+			(uint32_t                                      : 5;) \
+			(uint32_t enable_cadc_neuron_readout_acausal_0 : 1;) \
+			(uint32_t                                      : 2;) \
+			                                                     \
+			(uint32_t                                      : 5;) \
+			(uint32_t enable_cadc_neuron_readout_acausal_1 : 1;) \
+			(uint32_t                                      : 2;) \
+			                                                     \
+			(uint32_t                                      : 5;) \
+			(uint32_t enable_cadc_neuron_readout_acausal_2 : 1;) \
+			(uint32_t                                      : 2;) \
+			                                                     \
+			(uint32_t                                      : 5;) \
+			(uint32_t enable_cadc_neuron_readout_acausal_3 : 1;) \
+			(uint32_t                                      : 2;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -1265,37 +1280,40 @@ struct ColumnCurrentQuadBitfield
 		std::array<uint32_t, ColumnCurrentQuad::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t enable_synaptic_current_excitatory_0 : 1;
-			uint32_t enable_synaptic_current_inhibitory_0 : 1;
-			uint32_t                                      : 6;
-
-			uint32_t enable_synaptic_current_excitatory_1 : 1;
-			uint32_t enable_synaptic_current_inhibitory_1 : 1;
-			uint32_t                                      : 6;
-
-			uint32_t enable_synaptic_current_excitatory_2 : 1;
-			uint32_t enable_synaptic_current_inhibitory_2 : 1;
-			uint32_t                                      : 6;
-
-			uint32_t enable_synaptic_current_excitatory_3 : 1;
-			uint32_t enable_synaptic_current_inhibitory_3 : 1;
-			uint32_t                                      : 6;
-
-			uint32_t enable_debug_excitatory_0            : 1;
-			uint32_t enable_debug_inhibitory_0            : 1;
-			uint32_t                                      : 6;
-
-			uint32_t enable_debug_excitatory_1            : 1;
-			uint32_t enable_debug_inhibitory_1            : 1;
-			uint32_t                                      : 6;
-
-			uint32_t enable_debug_excitatory_2            : 1;
-			uint32_t enable_debug_inhibitory_2            : 1;
-			uint32_t                                      : 6;
-
-			uint32_t enable_debug_excitatory_3            : 1;
-			uint32_t enable_debug_inhibitory_3            : 1;
-			uint32_t                                      : 6;
+#define BITFIELD \
+			(uint32_t enable_synaptic_current_excitatory_0 : 1;) \
+			(uint32_t enable_synaptic_current_inhibitory_0 : 1;) \
+			(uint32_t                                      : 6;) \
+			                                                     \
+			(uint32_t enable_synaptic_current_excitatory_1 : 1;) \
+			(uint32_t enable_synaptic_current_inhibitory_1 : 1;) \
+			(uint32_t                                      : 6;) \
+			                                                     \
+			(uint32_t enable_synaptic_current_excitatory_2 : 1;) \
+			(uint32_t enable_synaptic_current_inhibitory_2 : 1;) \
+			(uint32_t                                      : 6;) \
+			                                                     \
+			(uint32_t enable_synaptic_current_excitatory_3 : 1;) \
+			(uint32_t enable_synaptic_current_inhibitory_3 : 1;) \
+			(uint32_t                                      : 6;) \
+			                                                     \
+			(uint32_t enable_debug_excitatory_0            : 1;) \
+			(uint32_t enable_debug_inhibitory_0            : 1;) \
+			(uint32_t                                      : 6;) \
+			                                                     \
+			(uint32_t enable_debug_excitatory_1            : 1;) \
+			(uint32_t enable_debug_inhibitory_1            : 1;) \
+			(uint32_t                                      : 6;) \
+			                                                     \
+			(uint32_t enable_debug_excitatory_2            : 1;) \
+			(uint32_t enable_debug_inhibitory_2            : 1;) \
+			(uint32_t                                      : 6;) \
+			                                                     \
+			(uint32_t enable_debug_excitatory_3            : 1;) \
+			(uint32_t enable_debug_inhibitory_3            : 1;) \
+			(uint32_t                                      : 6;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

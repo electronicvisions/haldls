@@ -3,6 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 
@@ -165,22 +166,25 @@ struct CommonNeuronBackendConfigBitfield
 		std::array<uint32_t, CommonNeuronBackendConfig::config_size_in_words> words;
 		// clang-format off
 		struct __attribute__((packed)) {
-			                                                                     // bits ; word
-			uint32_t en_event_regs                                        :  1;  // 0    ; 0
-			uint32_t force_reset                                          :  1;  // 1    ; 0
-			uint32_t en_clocks                                            :  1;  // 2    ; 0
-			uint32_t                                                      :  1;  // 3    ; 0
-			uint32_t clock_scale_slow                                     :  4;  // 4-7  ; 0
-			uint32_t clock_scale_fast                                     :  4;  // 8-11 ; 0
-			uint32_t sample_pos_edge                                      :  4;  // 12-15; 0
-			uint32_t clock_scale_adapt_pulse                              :  4;  // 16-19; 0
-			uint32_t clock_scale_post_pulse                               :  4;  // 20-23; 0
-			uint32_t                                                      :  8;  // 24-31; 0
-
-			uint32_t wait_global_post_pulse                               :  8;  // 0-7  ; 1
-			uint32_t wait_spike_counter_reset                             :  8;  // 8-15 ; 1
-			uint32_t wait_spike_counter_read                              :  8;  // 16-23; 1
-			uint32_t wait_fire_neuron                                     :  8;  // 23-31; 1
+			                                        /* bits  ; word */
+#define BITFIELD \
+			(uint32_t en_event_regs            : 1; /* 0     ; 0    */ ) \
+			(uint32_t force_reset              : 1; /* 1     ; 0    */ ) \
+			(uint32_t en_clocks                : 1; /* 2     ; 0    */ ) \
+			(uint32_t                          : 1; /* 3     ; 0    */ ) \
+			(uint32_t clock_scale_slow         : 4; /* 4-7   ; 0    */ ) \
+			(uint32_t clock_scale_fast         : 4; /* 8-11  ; 0    */ ) \
+			(uint32_t sample_pos_edge          : 4; /* 12-15 ; 0    */ ) \
+			(uint32_t clock_scale_adapt_pulse  : 4; /* 16-19 ; 0    */ ) \
+			(uint32_t clock_scale_post_pulse   : 4; /* 20-23 ; 0    */ ) \
+			(uint32_t                          : 8; /* 24-31 ; 0    */ ) \
+			                                                             \
+			(uint32_t wait_global_post_pulse   : 8; /* 0-7   ; 1    */ ) \
+			(uint32_t wait_spike_counter_reset : 8; /* 8-15  ; 1    */ ) \
+			(uint32_t wait_spike_counter_read  : 8; /* 16-23 ; 1    */ ) \
+			(uint32_t wait_fire_neuron         : 8; /* 23-31 ; 1    */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");

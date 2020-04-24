@@ -9,6 +9,7 @@
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/v1/coordinates.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 #include "hate/math.h"
@@ -210,18 +211,23 @@ struct ReferenceGeneratorConfigBitfield
 		struct __attribute__((packed))
 		{
 			// clang-format off
-			uint32_t cm_i_amplifier      : 6;  // 0...5  in madc_base + 18
-			uint32_t cm_i_offset         : 6;  // 6...11
-			uint32_t en_internal_ref     : 1;  // 12
-			uint32_t en_out_internal_ref : 1;  // 13
-			uint32_t en_pad_ref          : 1;  // 14
-			uint32_t en_reset            : 1;  // 15
-			uint32_t                     : 16; // 16...31
-			uint32_t cm_i_slope          : 6;  // 0...5  in madc_base + 19
-			uint32_t reference_control   : 6;  // 6...11
-			uint32_t                     : 20; // 12...31
-			uint32_t resistor_control    : 6;  // 0...5  in madc_base + 20
-			uint32_t                     : 26; // 6...31
+#define BITFIELD \
+			(uint32_t cm_i_amplifier      :  6; /* 0...5  in madc_base + 18 */ ) \
+			(uint32_t cm_i_offset         :  6; /* 6...11                   */ ) \
+			(uint32_t en_internal_ref     :  1; /* 12                       */ ) \
+			(uint32_t en_out_internal_ref :  1; /* 13                       */ ) \
+			(uint32_t en_pad_ref          :  1; /* 14                       */ ) \
+			(uint32_t en_reset            :  1; /* 15                       */ ) \
+			(uint32_t                     : 16; /* 16...31                  */ ) \
+			                                                                     \
+			(uint32_t cm_i_slope          :  6; /* 0...5  in madc_base + 19 */ ) \
+			(uint32_t reference_control   :  6; /* 6...11                   */ ) \
+			(uint32_t                     : 20; /* 12...31                  */ ) \
+			                                                                     \
+			(uint32_t resistor_control    :  6; /* 0...5  in madc_base + 20 */ ) \
+			(uint32_t                     : 26; /* 6...31                   */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 			// clang-format on
 		} m;
 

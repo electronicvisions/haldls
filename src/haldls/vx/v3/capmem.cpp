@@ -9,6 +9,7 @@
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/v3/coordinates.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 #include "hate/math.h"
@@ -222,35 +223,46 @@ struct ReferenceGeneratorConfigBitfield
 		struct __attribute__((packed))
 		{
 			// clang-format off
-			uint32_t                     : 12; // 0...11
-			uint32_t en_internal_ref     : 1;  // 12  in madc_base + 18
-			uint32_t en_out_internal_ref : 1;  // 13
-			uint32_t en_pad_ref          : 1;  // 14
-			uint32_t en_reset            : 1;  // 15
-			uint32_t                     : 16; // 16...31
-			uint32_t                     : 6;  // 0...5  in madc_base + 19
-			uint32_t reference_control   : 6;  // 6...11
-			uint32_t                     : 20; // 12...31
-			uint32_t resistor_control    : 6;  // 0...5  in madc_base + 20
-			uint32_t                     : 26; // 6...31
-			uint32_t cm_i_amplifier_0    : 6;  // 0...5  in madc_base + 21
-			uint32_t cm_i_amplifier_1    : 6;  // 6...11
-			uint32_t                     : 20; // 12...31
-			uint32_t cm_i_amplifier_2    : 6;  // 0...5  in madc_base + 22
-			uint32_t cm_i_amplifier_3    : 6;  // 6...11
-			uint32_t                     : 20; // 12...31
-			uint32_t cm_i_offset_0       : 6;  // 0...5  in madc_base + 23
-			uint32_t cm_i_offset_1       : 6;  // 6...11
-			uint32_t                     : 20; // 12...31
-			uint32_t cm_i_offset_2       : 6;  // 0...5  in madc_base + 24
-			uint32_t cm_i_offset_3       : 6;  // 6...11
-			uint32_t                     : 20; // 12...31
-			uint32_t cm_i_slope_0        : 6;  // 0...5  in madc_base + 25
-			uint32_t cm_i_slope_1        : 6;  // 6...11
-			uint32_t                     : 20; // 12...31
-			uint32_t cm_i_slope_2        : 6;  // 0...5  in madc_base + 26
-			uint32_t cm_i_slope_3        : 6;  // 6...11
-			uint32_t                     : 20; // 12...31
+#define BITFIELD \
+			(uint32_t                     : 12; /* 0...11                   */ ) \
+			(uint32_t en_internal_ref     :  1; /* 12  in madc_base + 18    */ ) \
+			(uint32_t en_out_internal_ref :  1; /* 13                       */ ) \
+			(uint32_t en_pad_ref          :  1; /* 14                       */ ) \
+			(uint32_t en_reset            :  1; /* 15                       */ ) \
+			(uint32_t                     : 16; /* 16...31                  */ ) \
+			                                                                     \
+			(uint32_t                     :  6; /* 0...5  in madc_base + 19 */ ) \
+			(uint32_t reference_control   :  6; /* 6...11                   */ ) \
+			(uint32_t                     : 20; /* 12...31                  */ ) \
+			                                                                     \
+			(uint32_t resistor_control    :  6; /* 0...5  in madc_base + 20 */ ) \
+			(uint32_t                     : 26; /* 6...31                   */ ) \
+			                                                                     \
+			(uint32_t cm_i_amplifier_0    :  6; /* 0...5  in madc_base + 21 */ ) \
+			(uint32_t cm_i_amplifier_1    :  6; /* 6...11                   */ ) \
+			(uint32_t                     : 20; /* 12...31                  */ ) \
+			                                                                     \
+			(uint32_t cm_i_amplifier_2    :  6; /* 0...5  in madc_base + 22 */ ) \
+			(uint32_t cm_i_amplifier_3    :  6; /* 6...11                   */ ) \
+			(uint32_t                     : 20; /* 12...31                  */ ) \
+			                                                                     \
+			(uint32_t cm_i_offset_0       :  6; /* 0...5  in madc_base + 23 */ ) \
+			(uint32_t cm_i_offset_1       :  6; /* 6...11                   */ ) \
+			(uint32_t                     : 20; /* 12...31                  */ ) \
+			                                                                     \
+			(uint32_t cm_i_offset_2       :  6; /* 0...5  in madc_base + 24 */ ) \
+			(uint32_t cm_i_offset_3       :  6; /* 6...11                   */ ) \
+			(uint32_t                     : 20; /* 12...31                  */ ) \
+			                                                                     \
+			(uint32_t cm_i_slope_0        :  6; /* 0...5  in madc_base + 25 */ ) \
+			(uint32_t cm_i_slope_1        :  6; /* 6...11                   */ ) \
+			(uint32_t                     : 20; /* 12...31                  */ ) \
+			                                                                     \
+			(uint32_t cm_i_slope_2        :  6; /* 0...5  in madc_base + 26 */ ) \
+			(uint32_t cm_i_slope_3        :  6; /* 6...11                   */ ) \
+			(uint32_t                     : 20; /* 12...31                  */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 			// clang-format on
 		} m;
 

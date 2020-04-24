@@ -3,6 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 
 #ifndef __ppu__
@@ -145,15 +146,18 @@ struct BackgroundSpikeSourceBitfield
 		std::array<uint32_t, BackgroundSpikeSource::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t enable        :  1;
-			uint32_t enable_random :  1;
-			uint32_t /* unused */  : 14;
-			uint32_t period        : 16;
-			uint32_t seed          : 32;
-			uint32_t mask          :  8;
-			uint32_t rate          :  8;
-			uint32_t neuron_label  : 14;
-			uint32_t /* unused */  :  2;
+#define BITFIELD \
+			(uint32_t enable        :  1;) \
+			(uint32_t enable_random :  1;) \
+			(uint32_t /* unused */  : 14;) \
+			(uint32_t period        : 16;) \
+			(uint32_t seed          : 32;) \
+			(uint32_t mask          :  8;) \
+			(uint32_t rate          :  8;) \
+			(uint32_t neuron_label  : 14;) \
+			(uint32_t /* unused */  :  2;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

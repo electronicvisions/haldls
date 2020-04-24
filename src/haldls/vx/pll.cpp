@@ -3,6 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/traits.h"
 #include "hate/indent.h"
@@ -292,15 +293,18 @@ struct ADPLLLowerBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t loop_filter_int  : 5;
-			uint32_t loop_filter_prop : 5;
-			uint32_t loop_div_n       : 5;
-			uint32_t core_div_m0      : 5;
-			uint32_t core_div_m1      : 5;
-			uint32_t pre_div_p0       : 2;
-			uint32_t pre_div_p1       : 2;
-			uint32_t pre_div_p2       : 2;
-			uint32_t /*unused*/       : 1;
+#define BITFIELD \
+			(uint32_t loop_filter_int  : 5;) \
+			(uint32_t loop_filter_prop : 5;) \
+			(uint32_t loop_div_n       : 5;) \
+			(uint32_t core_div_m0      : 5;) \
+			(uint32_t core_div_m1      : 5;) \
+			(uint32_t pre_div_p0       : 2;) \
+			(uint32_t pre_div_p1       : 2;) \
+			(uint32_t pre_div_p2       : 2;) \
+			(uint32_t /*unused*/       : 1;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -318,17 +322,20 @@ struct ADPLLUpperBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t tune                 : 12;
-			uint32_t dco_power_switch     :  6;
-			uint32_t open_lock            :  1;
-			uint32_t enforce_lock         :  1;
-			uint32_t pfd_select           :  1;
-			uint32_t lock_window          :  1;
-			uint32_t filter_shift         :  2;
-			uint32_t disable_output_clock :  1;
-			uint32_t /*unused*/           :  5;
-			uint32_t enable               :  1;
-			uint32_t use_external_config  :  1;
+#define BITFIELD \
+			(uint32_t tune                 : 12;) \
+			(uint32_t dco_power_switch     :  6;) \
+			(uint32_t open_lock            :  1;) \
+			(uint32_t enforce_lock         :  1;) \
+			(uint32_t pfd_select           :  1;) \
+			(uint32_t lock_window          :  1;) \
+			(uint32_t filter_shift         :  2;) \
+			(uint32_t disable_output_clock :  1;) \
+			(uint32_t /*unused*/           :  5;) \
+			(uint32_t enable               :  1;) \
+			(uint32_t use_external_config  :  1;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -636,26 +643,29 @@ struct PLLClockOutputBlockBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t enable_output_0       : 1;
-			uint32_t enable_bypass_0       : 1;
-			uint32_t select_adpll_0        : 1;
-			uint32_t select_output_adpll_0 : 2;
-			uint32_t unused_0              : 3;
-			uint32_t enable_output_1       : 1;
-			uint32_t enable_bypass_1       : 1;
-			uint32_t select_adpll_1        : 1;
-			uint32_t select_output_adpll_1 : 2;
-			uint32_t unused_1              : 3;
-			uint32_t enable_output_2       : 1;
-			uint32_t enable_bypass_2       : 1;
-			uint32_t select_adpll_2        : 1;
-			uint32_t select_output_adpll_2 : 2;
-			uint32_t unused_2              : 3;
-			uint32_t enable_output_3       : 1;
-			uint32_t enable_bypass_3       : 1;
-			uint32_t select_adpll_3        : 1;
-			uint32_t select_output_adpll_3 : 2;
-			uint32_t unused_3              : 3;
+#define BITFIELD \
+			(uint32_t enable_output_0       : 1;) \
+			(uint32_t enable_bypass_0       : 1;) \
+			(uint32_t select_adpll_0        : 1;) \
+			(uint32_t select_output_adpll_0 : 2;) \
+			(uint32_t unused_0              : 3;) \
+			(uint32_t enable_output_1       : 1;) \
+			(uint32_t enable_bypass_1       : 1;) \
+			(uint32_t select_adpll_1        : 1;) \
+			(uint32_t select_output_adpll_1 : 2;) \
+			(uint32_t unused_1              : 3;) \
+			(uint32_t enable_output_2       : 1;) \
+			(uint32_t enable_bypass_2       : 1;) \
+			(uint32_t select_adpll_2        : 1;) \
+			(uint32_t select_output_adpll_2 : 2;) \
+			(uint32_t unused_2              : 3;) \
+			(uint32_t enable_output_3       : 1;) \
+			(uint32_t enable_bypass_3       : 1;) \
+			(uint32_t select_adpll_3        : 1;) \
+			(uint32_t select_output_adpll_3 : 2;) \
+			(uint32_t unused_3              : 3;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -906,12 +916,15 @@ struct PLLSelfTestBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t clock_enable    : 1;
-			uint32_t pre_scaler_p    : 4;
-			uint32_t select_source   : 2;
-			uint32_t /*unused*/      : 1;
-			uint32_t check_range     : 4;
-			uint32_t check_value     : 20;
+#define BITFIELD \
+			(uint32_t clock_enable    :  1;) \
+			(uint32_t pre_scaler_p    :  4;) \
+			(uint32_t select_source   :  2;) \
+			(uint32_t /*unused*/      :  1;) \
+			(uint32_t check_range     :  4;) \
+			(uint32_t check_value     : 20;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -1047,10 +1060,13 @@ struct PLLSelfTestStatusBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t counter_value : 20;
-			uint32_t finished      : 1;
-			uint32_t success       : 1;
-			uint32_t /*unused*/    : 10;
+#define BITFIELD \
+			(uint32_t counter_value : 20;) \
+			(uint32_t finished      :  1;) \
+			(uint32_t success       :  1;) \
+			(uint32_t /*unused*/    : 10;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

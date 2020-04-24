@@ -3,6 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 
 #ifndef __ppu__
@@ -38,32 +39,37 @@ struct SynapseDriverConfig::SynapseDriverConfigBitfield
 	{
 		std::array<uint32_t, SynapseDriverConfig::config_size_in_words> words;
 		// clang-format off
-        struct __attribute__((packed)) {
-			uint32_t utilization                                          :  4;  // 3-0   ; 0
-			uint32_t offset                                               :  4;  // 7-4   ; 0
-			uint32_t en_hagen                                             :  1;  // 8     ; 0
-			uint32_t row_address_compare_mask                             :  5;  // 9     ; 0
-			uint32_t en_address_out                                       :  1;  // 14    ; 0
-			uint32_t en_receiver                                          :  1;  // 15    ; 0
-			uint32_t                                                      : 16;  // 31-16 ; 0
-			uint32_t recovery                                             :  4;  // 3-0   ; 1
-			uint32_t en_exc_bottom                                        :  1;  // 4     ; 1
-			uint32_t en_exc_top                                           :  1;  // 5     ; 1
-			uint32_t en_inh_bottom                                        :  1;  // 6     ; 1
-			uint32_t en_inh_top                                           :  1;  // 7     ; 1
-			uint32_t hagen_dac_offset                                     :  6;  // 13-8  ; 1
-			uint32_t                                                      :  2;  // 15-14 ; 1
-			uint32_t                                                      : 16;  // 31-16 ; 1
-			uint32_t select_target_voltages                               :  1;  // 0     ; 2
-			uint32_t en_readout                                           :  1;  // 1     ; 2
-			uint32_t en_renewing                                          :  1;  // 2     ; 2
-			uint32_t en_hagen_modulation                                  :  1;  // 3     ; 2
-			uint32_t en_stp                                               :  1;  // 4     ; 2
-			uint32_t                                                      :  1;  // 5     ; 2
-			uint32_t en_charge_sharing                                    :  1;  // 6     ; 2
-			uint32_t en_recovery                                          :  1;  // 7     ; 2
-			uint32_t                                                      : 24;  // 31-8  ; 2
-        } m;
+		struct __attribute__((packed)) {
+#define BITFIELD \
+			(uint32_t utilization              :  4; /* 3-0   ; 0 */ ) \
+			(uint32_t offset                   :  4; /* 7-4   ; 0 */ ) \
+			(uint32_t en_hagen                 :  1; /* 8     ; 0 */ ) \
+			(uint32_t row_address_compare_mask :  5; /* 9     ; 0 */ ) \
+			(uint32_t en_address_out           :  1; /* 14    ; 0 */ ) \
+			(uint32_t en_receiver              :  1; /* 15    ; 0 */ ) \
+			(uint32_t                          : 16; /* 31-16 ; 0 */ ) \
+			                                                           \
+			(uint32_t recovery                 :  4; /* 3-0   ; 1 */ ) \
+			(uint32_t en_exc_bottom            :  1; /* 4     ; 1 */ ) \
+			(uint32_t en_exc_top               :  1; /* 5     ; 1 */ ) \
+			(uint32_t en_inh_bottom            :  1; /* 6     ; 1 */ ) \
+			(uint32_t en_inh_top               :  1; /* 7     ; 1 */ ) \
+			(uint32_t hagen_dac_offset         :  6; /* 13-8  ; 1 */ ) \
+			(uint32_t                          :  2; /* 15-14 ; 1 */ ) \
+			(uint32_t                          : 16; /* 31-16 ; 1 */ ) \
+			                                                           \
+			(uint32_t select_target_voltages   :  1; /* 0     ; 2 */ ) \
+			(uint32_t en_readout               :  1; /* 1     ; 2 */ ) \
+			(uint32_t en_renewing              :  1; /* 2     ; 2 */ ) \
+			(uint32_t en_hagen_modulation      :  1; /* 3     ; 2 */ ) \
+			(uint32_t en_stp                   :  1; /* 4     ; 2 */ ) \
+			(uint32_t                          :  1; /* 5     ; 2 */ ) \
+			(uint32_t en_charge_sharing        :  1; /* 6     ; 2 */ ) \
+			(uint32_t en_recovery              :  1; /* 7     ; 2 */ ) \
+			(uint32_t                          : 24; /* 31-8  ; 2 */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
+		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");
 	} u;

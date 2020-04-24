@@ -3,6 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/indent.h"
 #include "hate/join.h"
@@ -321,40 +322,44 @@ struct PadMultiplexerConfigBitfield
 		struct __attribute__((packed))
 		{
 			// clang-format off
-			uint32_t cadc_v_ramp_out_mux_q3      : 1;  // 0  in base + {14, 16}
-			uint32_t cadc_v_ramp_out_mux_q2      : 1;  // 1
-			uint32_t cadc_v_ramp_out_mux_q1      : 1;  // 2
-			uint32_t cadc_v_ramp_out_mux_q0      : 1;  // 3
-			uint32_t cadc_v_ramp_mux_to_pad      : 1;  // 4
-			uint32_t capmem_i_out_mux_q3         : 1;  // 5
-			uint32_t capmem_i_out_mux_q2         : 1;  // 6
-			uint32_t capmem_i_out_mux_q1         : 1;  // 7
-			uint32_t capmem_i_out_mux_q0         : 1;  // 8
-			uint32_t capmem_i_out_mux_to_inter   : 1;  // 9
-			uint32_t capmem_inter_mux_to_pad     : 1;  // 10
-			uint32_t capmem_v_out_mux_q3         : 1;  // 11
-			uint32_t capmem_v_out_mux_q2         : 1;  // 12
-			uint32_t capmem_v_out_mux_q1         : 1;  // 13
-			uint32_t capmem_v_out_mux_q0         : 1;  // 14
-			uint32_t capmem_v_out_mux_to_inter   : 1;  // 15
-			uint32_t /* unused */                : 16; // 16...31
-			uint32_t capmem_v_ref_mux_q3         : 1;  // 0  in base + {15, 17}
-			uint32_t capmem_v_ref_mux_q2         : 1;  // 1
-			uint32_t capmem_v_ref_mux_q1         : 1;  // 2
-			uint32_t capmem_v_ref_mux_q0         : 1;  // 3
-			uint32_t capmem_v_ref_mux_to_inter   : 1;  // 4
-			uint32_t neuron_i_stim_mux_top       : 1;  // 5
-			uint32_t neuron_i_stim_mux_bottom    : 1;  // 6
-			uint32_t synapse_mux_causal          : 1;  // 7
-			uint32_t synapse_mux_acausal         : 1;  // 8
-			uint32_t synapse_mux_inhibitory      : 1;  // 9
-			uint32_t synapse_mux_excitatory      : 1;  // 10
-			uint32_t synapse_mux_to_pad          : 1;  // 11
-			uint32_t buffer_to_pad_1             : 1;  // 12
-			uint32_t buffer_to_pad_0             : 1;  // 13
-			uint32_t debug_to_pad                : 1;  // 14
-			uint32_t neuron_i_stim_mux_to_pad    : 1;  // 15
-			uint32_t /* unused */                : 16; // 16...31
+#define BITFIELD \
+			(uint32_t cadc_v_ramp_out_mux_q3    :  1; /* 0  in base + {14, 16} */ ) \
+			(uint32_t cadc_v_ramp_out_mux_q2    :  1; /* 1                     */ ) \
+			(uint32_t cadc_v_ramp_out_mux_q1    :  1; /* 2                     */ ) \
+			(uint32_t cadc_v_ramp_out_mux_q0    :  1; /* 3                     */ ) \
+			(uint32_t cadc_v_ramp_mux_to_pad    :  1; /* 4                     */ ) \
+			(uint32_t capmem_i_out_mux_q3       :  1; /* 5                     */ ) \
+			(uint32_t capmem_i_out_mux_q2       :  1; /* 6                     */ ) \
+			(uint32_t capmem_i_out_mux_q1       :  1; /* 7                     */ ) \
+			(uint32_t capmem_i_out_mux_q0       :  1; /* 8                     */ ) \
+			(uint32_t capmem_i_out_mux_to_inter :  1; /* 9                     */ ) \
+			(uint32_t capmem_inter_mux_to_pad   :  1; /* 10                    */ ) \
+			(uint32_t capmem_v_out_mux_q3       :  1; /* 11                    */ ) \
+			(uint32_t capmem_v_out_mux_q2       :  1; /* 12                    */ ) \
+			(uint32_t capmem_v_out_mux_q1       :  1; /* 13                    */ ) \
+			(uint32_t capmem_v_out_mux_q0       :  1; /* 14                    */ ) \
+			(uint32_t capmem_v_out_mux_to_inter :  1; /* 15                    */ ) \
+			(uint32_t /* unused */              : 16; /* 16...31               */ ) \
+			                                                                        \
+			(uint32_t capmem_v_ref_mux_q3       :  1; /* 0  in base + {15, 17} */ ) \
+			(uint32_t capmem_v_ref_mux_q2       :  1; /* 1                     */ ) \
+			(uint32_t capmem_v_ref_mux_q1       :  1; /* 2                     */ ) \
+			(uint32_t capmem_v_ref_mux_q0       :  1; /* 3                     */ ) \
+			(uint32_t capmem_v_ref_mux_to_inter :  1; /* 4                     */ ) \
+			(uint32_t neuron_i_stim_mux_top     :  1; /* 5                     */ ) \
+			(uint32_t neuron_i_stim_mux_bottom  :  1; /* 6                     */ ) \
+			(uint32_t synapse_mux_causal        :  1; /* 7                     */ ) \
+			(uint32_t synapse_mux_acausal       :  1; /* 8                     */ ) \
+			(uint32_t synapse_mux_inhibitory    :  1; /* 9                     */ ) \
+			(uint32_t synapse_mux_excitatory    :  1; /* 10                    */ ) \
+			(uint32_t synapse_mux_to_pad        :  1; /* 11                    */ ) \
+			(uint32_t buffer_to_pad_1           :  1; /* 12                    */ ) \
+			(uint32_t buffer_to_pad_0           :  1; /* 13                    */ ) \
+			(uint32_t debug_to_pad              :  1; /* 14                    */ ) \
+			(uint32_t neuron_i_stim_mux_to_pad  :  1; /* 15                    */ ) \
+			(uint32_t /* unused */              : 16; /* 16...31               */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 			// clang-format on
 		} m;
 
@@ -802,36 +807,40 @@ struct ReadoutSourceSelectionBitfield
 		struct __attribute__((packed))
 		{
 			// clang-format off
-			uint32_t debug_plus_0           : 1;  // 0  in base + 12
-			uint32_t debug_minus_0          : 1;  // 1
-			uint32_t idac_i_out_0           : 1;  // 2
-			uint32_t synin_debug_inh_0      : 1;  // 3
-			uint32_t synin_debug_exc_0      : 1;  // 4
-			uint32_t cadc_test_causal_0     : 1;  // 5
-			uint32_t cadc_test_acausal_0    : 1;  // 6
-			uint32_t syndrv_debug_top_0     : 1;  // 7
-			uint32_t syndrv_debug_bottom_0  : 1;  // 8
-			uint32_t neuron_top_odd_0       : 1;  // 9
-			uint32_t neuron_top_even_0      : 1;  // 10
-			uint32_t neuron_bottom_odd_0    : 1;  // 11
-			uint32_t neuron_bottom_even_0   : 1;  // 12
-			uint32_t /* unused */           : 19; // 13...31
-			uint32_t debug_plus_1           : 1;  // 0  in base + 13
-			uint32_t debug_minus_1          : 1;  // 1
-			uint32_t idac_i_out_1           : 1;  // 2
-			uint32_t synin_debug_inh_1      : 1;  // 3
-			uint32_t synin_debug_exc_1      : 1;  // 4
-			uint32_t cadc_test_causal_1     : 1;  // 5
-			uint32_t cadc_test_acausal_1    : 1;  // 6
-			uint32_t syndrv_debug_top_1     : 1;  // 7
-			uint32_t syndrv_debug_bottom_1  : 1;  // 8
-			uint32_t neuron_top_odd_1       : 1;  // 9
-			uint32_t neuron_top_even_1      : 1;  // 10
-			uint32_t neuron_bottom_odd_1    : 1;  // 11
-			uint32_t neuron_bottom_even_1   : 1;  // 12
-			uint32_t enable_buffer_to_pad_1 : 1;  // 13
-			uint32_t enable_buffer_to_pad_0 : 1;  // 14
-			uint32_t /* unused */           : 17; // 15...31
+#define BITFIELD \
+			(uint32_t debug_plus_0           :  1; /* 0  in base + 12 */ ) \
+			(uint32_t debug_minus_0          :  1; /* 1               */ ) \
+			(uint32_t idac_i_out_0           :  1; /* 2               */ ) \
+			(uint32_t synin_debug_inh_0      :  1; /* 3               */ ) \
+			(uint32_t synin_debug_exc_0      :  1; /* 4               */ ) \
+			(uint32_t cadc_test_causal_0     :  1; /* 5               */ ) \
+			(uint32_t cadc_test_acausal_0    :  1; /* 6               */ ) \
+			(uint32_t syndrv_debug_top_0     :  1; /* 7               */ ) \
+			(uint32_t syndrv_debug_bottom_0  :  1; /* 8               */ ) \
+			(uint32_t neuron_top_odd_0       :  1; /* 9               */ ) \
+			(uint32_t neuron_top_even_0      :  1; /* 10              */ ) \
+			(uint32_t neuron_bottom_odd_0    :  1; /* 11              */ ) \
+			(uint32_t neuron_bottom_even_0   :  1; /* 12              */ ) \
+			(uint32_t /* unused */           : 19; /* 13...31         */ ) \
+			                                                               \
+			(uint32_t debug_plus_1           :  1; /* 0  in base + 13 */ ) \
+			(uint32_t debug_minus_1          :  1; /* 1               */ ) \
+			(uint32_t idac_i_out_1           :  1; /* 2               */ ) \
+			(uint32_t synin_debug_inh_1      :  1; /* 3               */ ) \
+			(uint32_t synin_debug_exc_1      :  1; /* 4               */ ) \
+			(uint32_t cadc_test_causal_1     :  1; /* 5               */ ) \
+			(uint32_t cadc_test_acausal_1    :  1; /* 6               */ ) \
+			(uint32_t syndrv_debug_top_1     :  1; /* 7               */ ) \
+			(uint32_t syndrv_debug_bottom_1  :  1; /* 8               */ ) \
+			(uint32_t neuron_top_odd_1       :  1; /* 9               */ ) \
+			(uint32_t neuron_top_even_1      :  1; /* 10              */ ) \
+			(uint32_t neuron_bottom_odd_1    :  1; /* 11              */ ) \
+			(uint32_t neuron_bottom_even_1   :  1; /* 12              */ ) \
+			(uint32_t enable_buffer_to_pad_1 :  1; /* 13              */ ) \
+			(uint32_t enable_buffer_to_pad_0 :  1; /* 14              */ ) \
+			(uint32_t /* unused */           : 17; /* 15...31         */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 			// clang-format on
 		} m;
 

@@ -3,6 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/constants.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
@@ -142,14 +143,17 @@ struct MADCControlBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t wake_up                           :  1;  //       0
-			uint32_t start_recording                   :  1;  //       1
-			uint32_t stop_recording                    :  1;  //       2
-			uint32_t enable_power_down_after_sampling  :  1;  //       3
-			uint32_t enable_continuous_sampling        :  1;  //       4
-			uint32_t enable_pre_amplifier              :  1;  //       5
-			uint32_t enable_iconv_amplifier            :  1;  //       6
-			uint32_t                                   : 25;  // 31 -  7
+#define BITFIELD \
+			(uint32_t wake_up                           :  1; /*       0 */ ) \
+			(uint32_t start_recording                   :  1; /*       1 */ ) \
+			(uint32_t stop_recording                    :  1; /*       2 */ ) \
+			(uint32_t enable_power_down_after_sampling  :  1; /*       3 */ ) \
+			(uint32_t enable_continuous_sampling        :  1; /*       4 */ ) \
+			(uint32_t enable_pre_amplifier              :  1; /*       5 */ ) \
+			(uint32_t enable_iconv_amplifier            :  1; /*       6 */ ) \
+			(uint32_t                                   : 25; /* 31 -  7 */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "Sizes of union types should match.");
@@ -650,79 +654,82 @@ struct MADCConfigBitfield
 		std::array<uint32_t, MADCConfig::config_size_in_words> words;
 		// clang-format off
 		struct __attribute__((packed)) {
-			// word 0
-			uint32_t                                        :  3;  //  2 -  0
-			uint32_t active_mux_initially_selected_input    :  1;  //       3
-			uint32_t active_mux_input_select_length         :  4;  //  7 -  4
-			uint32_t sample_duration_adjust                 :  3;  // 10 -  8
-			uint32_t enable_sar_reset_on_fall               :  1;  //      11
-			uint32_t sar_reset_wait                         :  2;  // 13 - 12
-			uint32_t sar_reset_length                       :  2;  // 15 - 14
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 1
-			uint32_t powerup_wait_value                     : 10;  //  9 -  0
-			uint32_t                                        :  2;  // 11 - 10
-			uint32_t conversion_cycles_offset               :  4;  // 15 - 12
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 2
-			uint32_t calibration_wait_value                 : 10;  //       0
-			uint32_t                                        :  5;  // 14 - 10
-			uint32_t enable_calibration                     :  1;  //      15
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 3
-			uint32_t number_of_samples                      : 16;  // 15 -  0
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 4
-			uint32_t preamp_sampling_window_start           :  5;  //  4 -  0
-			uint32_t preamp_sampling_window_end             :  5;  //  9 -  5
-			uint32_t                                        :  6;  // 15 - 10
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 5
-			uint32_t iconv_sampling_window_start            :  5;  //  4 -  0
-			uint32_t iconv_sampling_window_end              :  5;  //  9 -  5
-			uint32_t                                        :  6;  // 15 - 10
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 6
-			uint32_t sample_on_positive_edge                :  1;  //       0
-			uint32_t enable_dummy_data                      :  1;  //       1
-			uint32_t                                        : 14;  // 15 -  2
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 7
-			uint32_t connect_preamp_to_madc                 :  1;  //       0
-			uint32_t connect_pads_to_madc                   :  1;  //       1
-			uint32_t connect_preamp_to_pads                 :  1;  //       2
-			uint32_t preamp_gain_capacitor_size             :  5;  //       3
-			uint32_t                                        :  8;  // 15 -  8
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 8
-			uint32_t enable_madc_clock_scaling              :  1;  //       0
-			uint32_t madc_clock_scale_value                 : 12;  //       1
-			uint32_t                                        :  3;  // 15 - 13
-			uint32_t                                        : 16;  // 31 - 16
-
-			// word 9
-			uint32_t enable_active_mux_amplifiers           :  1;  //       0
-			uint32_t enable_pseudo_differential_reference_n :  1;  //       1
-			uint32_t enable_pseudo_differential_reference_s :  1;  //       2
-			uint32_t signal_selection_connect_iconv         :  1;  //       3
-			uint32_t signal_selection_connect_active_mux    :  1;  //       4
-			uint32_t signal_selection_connect_debug         :  1;  //       5
-			uint32_t signal_selection_connect_preamp        :  1;  //       6
-			uint32_t enable_iconv_amplifier                 :  1;  //       7
-			uint32_t connect_iconv_neuron_n                 :  1;  //       8
-			uint32_t connect_iconv_neuron_s                 :  1;  //       9
-			uint32_t connect_iconv_synapse_i                :  1;  //      10
-			uint32_t connect_iconv_synapse_x                :  1;  //      11
-			uint32_t                                        :  4;  // 15 - 12
-			uint32_t                                        : 16;  // 31 - 16
+#define BITFIELD \
+			/* word 0 */                                                           \
+			(uint32_t                                        :  3; /*  2 -  0 */ ) \
+			(uint32_t active_mux_initially_selected_input    :  1; /*       3 */ ) \
+			(uint32_t active_mux_input_select_length         :  4; /*  7 -  4 */ ) \
+			(uint32_t sample_duration_adjust                 :  3; /* 10 -  8 */ ) \
+			(uint32_t enable_sar_reset_on_fall               :  1; /*      11 */ ) \
+			(uint32_t sar_reset_wait                         :  2; /* 13 - 12 */ ) \
+			(uint32_t sar_reset_length                       :  2; /* 15 - 14 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 1 */                                                           \
+			(uint32_t powerup_wait_value                     : 10; /*  9 -  0 */ ) \
+			(uint32_t                                        :  2; /* 11 - 10 */ ) \
+			(uint32_t conversion_cycles_offset               :  4; /* 15 - 12 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 2 */                                                           \
+			(uint32_t calibration_wait_value                 : 10; /*       0 */ ) \
+			(uint32_t                                        :  5; /* 14 - 10 */ ) \
+			(uint32_t enable_calibration                     :  1; /*      15 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 3 */                                                           \
+			(uint32_t number_of_samples                      : 16; /* 15 -  0 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 4 */                                                           \
+			(uint32_t preamp_sampling_window_start           :  5; /*  4 -  0 */ ) \
+			(uint32_t preamp_sampling_window_end             :  5; /*  9 -  5 */ ) \
+			(uint32_t                                        :  6; /* 15 - 10 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 5 */                                                           \
+			(uint32_t iconv_sampling_window_start            :  5; /*  4 -  0 */ ) \
+			(uint32_t iconv_sampling_window_end              :  5; /*  9 -  5 */ ) \
+			(uint32_t                                        :  6; /* 15 - 10 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 6 */                                                           \
+			(uint32_t sample_on_positive_edge                :  1; /*       0 */ ) \
+			(uint32_t enable_dummy_data                      :  1; /*       1 */ ) \
+			(uint32_t                                        : 14; /* 15 -  2 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 7 */                                                           \
+			(uint32_t connect_preamp_to_madc                 :  1; /*       0 */ ) \
+			(uint32_t connect_pads_to_madc                   :  1; /*       1 */ ) \
+			(uint32_t connect_preamp_to_pads                 :  1; /*       2 */ ) \
+			(uint32_t preamp_gain_capacitor_size             :  5; /*       3 */ ) \
+			(uint32_t                                        :  8; /* 15 -  8 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 8 */                                                           \
+			(uint32_t enable_madc_clock_scaling              :  1; /*       0 */ ) \
+			(uint32_t madc_clock_scale_value                 : 12; /*       1 */ ) \
+			(uint32_t                                        :  3; /* 15 - 13 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ ) \
+			                                                                       \
+			/* word 9 */                                                           \
+			(uint32_t enable_active_mux_amplifiers           :  1; /*       0 */ ) \
+			(uint32_t enable_pseudo_differential_reference_n :  1; /*       1 */ ) \
+			(uint32_t enable_pseudo_differential_reference_s :  1; /*       2 */ ) \
+			(uint32_t signal_selection_connect_iconv         :  1; /*       3 */ ) \
+			(uint32_t signal_selection_connect_active_mux    :  1; /*       4 */ ) \
+			(uint32_t signal_selection_connect_debug         :  1; /*       5 */ ) \
+			(uint32_t signal_selection_connect_preamp        :  1; /*       6 */ ) \
+			(uint32_t enable_iconv_amplifier                 :  1; /*       7 */ ) \
+			(uint32_t connect_iconv_neuron_n                 :  1; /*       8 */ ) \
+			(uint32_t connect_iconv_neuron_s                 :  1; /*       9 */ ) \
+			(uint32_t connect_iconv_synapse_i                :  1; /*      10 */ ) \
+			(uint32_t connect_iconv_synapse_x                :  1; /*      11 */ ) \
+			(uint32_t                                        :  4; /* 15 - 12 */ ) \
+			(uint32_t                                        : 16; /* 31 - 16 */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");

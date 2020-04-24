@@ -11,6 +11,7 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 #include "hate/math.h"
@@ -550,42 +551,45 @@ struct CapMemBlockConfigBitfield
 		array_type raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t hotbit_capmem_row          : 24;
-			uint32_t /* unused */               : 8;
-
-			uint32_t capmem_column              : 32;
-
-			uint32_t debug_v_ref_select         :  2;
-			uint32_t /* unused */               : 30;
-
-			uint32_t v_global_bias              :  4;
-			uint32_t debug_level_shifter_bias   :  4;
-			uint32_t debug_source_follower_bias :  4;
-			uint32_t debug_out_amp_bias         :  4;
-			uint32_t                            : 16;
-
-			uint32_t current_cell_res           :  6;
-			uint32_t /* unused */               : 26;
-
-			uint32_t debug_i_out_select         :  2;
-			uint32_t /* unused */               : 30;
-
-			uint32_t sub_counter                : 16;
-			uint32_t enable_capmem              :  1;
-			uint32_t enable_boost               :  1;
-			uint32_t enable_autoboost           :  1;
-			uint32_t                            :  1;
-			uint32_t prescale_ramp              :  4;
-			uint32_t prescale_pause             :  4;
-			uint32_t boost_factor               :  4;
-
-			uint32_t pulse_b                    : 16;
-			uint32_t pulse_a                    : 16;
-
-			uint32_t boost_b                    : 16;
-			uint32_t boost_a                    : 16;
-
-			uint32_t pause_counter              : 32;
+#define BITFIELD \
+			(uint32_t hotbit_capmem_row          : 24;) \
+			(uint32_t /* unused */               :  8;) \
+			                                            \
+			(uint32_t capmem_column              : 32;) \
+			                                            \
+			(uint32_t debug_v_ref_select         :  2;) \
+			(uint32_t /* unused */               : 30;) \
+			                                            \
+			(uint32_t v_global_bias              :  4;) \
+			(uint32_t debug_level_shifter_bias   :  4;) \
+			(uint32_t debug_source_follower_bias :  4;) \
+			(uint32_t debug_out_amp_bias         :  4;) \
+			(uint32_t                            : 16;) \
+			                                            \
+			(uint32_t current_cell_res           :  6;) \
+			(uint32_t /* unused */               : 26;) \
+			                                            \
+			(uint32_t debug_i_out_select         :  2;) \
+			(uint32_t /* unused */               : 30;) \
+			                                            \
+			(uint32_t sub_counter                : 16;) \
+			(uint32_t enable_capmem              :  1;) \
+			(uint32_t enable_boost               :  1;) \
+			(uint32_t enable_autoboost           :  1;) \
+			(uint32_t                            :  1;) \
+			(uint32_t prescale_ramp              :  4;) \
+			(uint32_t prescale_pause             :  4;) \
+			(uint32_t boost_factor               :  4;) \
+			                                            \
+			(uint32_t pulse_b                    : 16;) \
+			(uint32_t pulse_a                    : 16;) \
+			                                            \
+			(uint32_t boost_b                    : 16;) \
+			(uint32_t boost_a                    : 16;) \
+			                                            \
+			(uint32_t pause_counter              : 32;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

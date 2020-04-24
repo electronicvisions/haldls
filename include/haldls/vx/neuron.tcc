@@ -3,6 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 
@@ -228,32 +229,35 @@ struct NeuronBackendConfigBitfield
 		std::array<uint32_t, NeuronBackendConfig<Coordinates>::config_size_in_words> words;
 		// clang-format off
 		struct __attribute__((packed)) {
-			                                                                     // bits ; word
-			uint32_t address_out_msbs                                     :  6;  // 0-5  ; 0
-			uint32_t reset_holdoff_1                                      :  2;  // 6-7  ; 0
-			uint32_t                                                      : 24;  // 8-31 ; 0
-
-			uint32_t refractory_time_1                                    :  4;  // 0-3  ; 1
-			uint32_t address_out_lsbs                                     :  2;  // 4-5  ; 1
-			uint32_t reset_holdoff_2                                      :  2;  // 6-7  ; 1
-			uint32_t                                                      : 24;  // 8-31 ; 1
-
-			uint32_t post_overwrite                                       :  1;  // 0    ; 2
-			uint32_t select_input_clock                                   :  1;  // 1    ; 2
-			uint32_t refractory_time_2                                    :  4;  // 2-5  ; 2
-			uint32_t en_adapt_pulse                                       :  1;  // 6    ; 2
-			uint32_t en_baesian_extension                                 :  1;  // 7    ; 2
-			uint32_t                                                      : 24;  // 8-31 ; 2
-
-			uint32_t en_neuron_slave                                      :  1;  // 0    ; 3
-			uint32_t connect_fire_bottom                                  :  1;  // 1    ; 3
-			uint32_t connect_fire_from_right                              :  1;  // 2    ; 3
-			uint32_t connect_fire_to_right                                :  1;  // 3    ; 3
-			uint32_t en_spike_out                                         :  1;  // 4    ; 3
-			uint32_t en_neuron_master                                     :  1;  // 5    ; 3
-			uint32_t en_0_baesian                                         :  1;  // 6    ; 3
-			uint32_t en_1_baesian                                         :  1;  // 7    ; 3
-			uint32_t                                                      : 24;  // 8-31 ; 3
+			                                        /* bits ; word */
+#define BITFIELD \
+			(uint32_t address_out_msbs        :  6; /* 0-5  ; 0    */ ) \
+			(uint32_t reset_holdoff_1         :  2; /* 6-7  ; 0    */ ) \
+			(uint32_t                         : 24; /* 8-31 ; 0    */ ) \
+			                                                            \
+			(uint32_t refractory_time_1       :  4; /* 0-3  ; 1    */ ) \
+			(uint32_t address_out_lsbs        :  2; /* 4-5  ; 1    */ ) \
+			(uint32_t reset_holdoff_2         :  2; /* 6-7  ; 1    */ ) \
+			(uint32_t                         : 24; /* 8-31 ; 1    */ ) \
+			                                                            \
+			(uint32_t post_overwrite          :  1; /* 0    ; 2    */ ) \
+			(uint32_t select_input_clock      :  1; /* 1    ; 2    */ ) \
+			(uint32_t refractory_time_2       :  4; /* 2-5  ; 2    */ ) \
+			(uint32_t en_adapt_pulse          :  1; /* 6    ; 2    */ ) \
+			(uint32_t en_baesian_extension    :  1; /* 7    ; 2    */ ) \
+			(uint32_t                         : 24; /* 8-31 ; 2    */ ) \
+			                                                            \
+			(uint32_t en_neuron_slave         :  1; /* 0    ; 3    */ ) \
+			(uint32_t connect_fire_bottom     :  1; /* 1    ; 3    */ ) \
+			(uint32_t connect_fire_from_right :  1; /* 2    ; 3    */ ) \
+			(uint32_t connect_fire_to_right   :  1; /* 3    ; 3    */ ) \
+			(uint32_t en_spike_out            :  1; /* 4    ; 3    */ ) \
+			(uint32_t en_neuron_master        :  1; /* 5    ; 3    */ ) \
+			(uint32_t en_0_baesian            :  1; /* 6    ; 3    */ ) \
+			(uint32_t en_1_baesian            :  1; /* 7    ; 3    */ ) \
+			(uint32_t                         : 24; /* 8-31 ; 3    */ )
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");

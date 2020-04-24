@@ -5,6 +5,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 
@@ -69,10 +70,13 @@ struct CADCSampleQuadBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t sample_0 : 8;
-			uint32_t sample_1 : 8;
-			uint32_t sample_2 : 8;
-			uint32_t sample_3 : 8;
+#define BITFIELD \
+			(uint32_t sample_0 : 8;) \
+			(uint32_t sample_1 : 8;) \
+			(uint32_t sample_2 : 8;) \
+			(uint32_t sample_3 : 8;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

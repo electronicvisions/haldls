@@ -5,6 +5,7 @@
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/bitset.h"
 #include "hate/join.h"
@@ -288,24 +289,27 @@ struct PhyConfigBaseBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t enable_bit_slip                          :  1;
-			uint32_t manual_delay                             :  4;
-			uint32_t enable_delay_cell_measurement            :  1;
-			uint32_t enable_initialization_master_mode        :  1;
-			uint32_t enable_manual_tx_data_valid_for_init     :  1;
-			uint32_t enable_force_lvds_power_up               :  1;
-			uint32_t enable_force_start                       :  1;
-			uint32_t enable_manual_training_mode              :  1;
-			uint32_t enable_ber_loopback                      :  1;
-			uint32_t vbias                                    :  3;
-			uint32_t debug_outputs                            :  1;
-			uint32_t /* unused */                             :  1;
-			uint32_t enable_transmission_without_idle_pattern :  1;
-			uint32_t enable_clock_pre_alignment               :  1;
-			uint32_t enable_des_recal                         :  1;
-			uint32_t enable_loopback_en                       :  1;
-			uint32_t enable_auto_init                         :  1;
-			uint32_t /* unused */                             : 10;
+#define BITFIELD \
+			(uint32_t enable_bit_slip                          :  1;) \
+			(uint32_t manual_delay                             :  4;) \
+			(uint32_t enable_delay_cell_measurement            :  1;) \
+			(uint32_t enable_initialization_master_mode        :  1;) \
+			(uint32_t enable_manual_tx_data_valid_for_init     :  1;) \
+			(uint32_t enable_force_lvds_power_up               :  1;) \
+			(uint32_t enable_force_start                       :  1;) \
+			(uint32_t enable_manual_training_mode              :  1;) \
+			(uint32_t enable_ber_loopback                      :  1;) \
+			(uint32_t vbias                                    :  3;) \
+			(uint32_t debug_outputs                            :  1;) \
+			(uint32_t /* unused */                             :  1;) \
+			(uint32_t enable_transmission_without_idle_pattern :  1;) \
+			(uint32_t enable_clock_pre_alignment               :  1;) \
+			(uint32_t enable_des_recal                         :  1;) \
+			(uint32_t enable_loopback_en                       :  1;) \
+			(uint32_t enable_auto_init                         :  1;) \
+			(uint32_t /* unused */                             : 10;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
