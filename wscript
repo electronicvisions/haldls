@@ -177,7 +177,7 @@ def build(bld):
             source = ppu_build_source,
             install_path = '${PREFIX}/lib/ppu',
             features = 'cxx cxxstlib',
-            use = ['haldls_inc', f'halco_hicann_dls_ppu_vx_v{hx_version}', 'fisch_inc', 'hate_inc'],
+            use = ['haldls_inc', f'halco_hicann_dls_ppu_vx_v{hx_version}', 'fisch_ppu_vx', 'hate_inc'],
             uselib = 'HALDLS_LIBRARIES',
             env = bld.all_envs[f'nux_vx_v{hx_version}'],
             linkflags = '-Wl,-z,defs',
@@ -224,6 +224,17 @@ def build(bld):
                    + bld.path.ant_glob(f'tests/sw/haldls/vx/v{hx_version}/test-*.cpp'),
             use = [f'haldls_vx_v{hx_version}', 'haldls_test_common_inc', 'GTEST'],
             install_path = '${PREFIX}/bin',
+        )
+
+        bld(
+            target = f'stadls_hwtest_ppu_vx_v{hx_version}',
+            features = 'cxx cxxprogram',
+            source = [
+                'tests/hw/stadls/vx/common/test-systime_sync_base_ppu.cpp',
+            ],
+            use = [f'nux_inc_vx_v{hx_version}', f'haldls_ppu_vx_v{hx_version}', 'haldls_test_common_inc', f'nux_vx_v{hx_version}', f'nux_runtime_vx_v{hx_version}'],
+            install_path = '${PREFIX}/bin/ppu/tests',
+            env = bld.all_envs[f'nux_vx_v{hx_version}'],
         )
 
         bld(

@@ -4,12 +4,14 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "fisch/vx/word_access/type/systime.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/bitfield.h"
 #include "haldls/vx/omnibus_constants.h"
 
 #ifndef __ppu__
 #include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.tcc"
 #endif
+
 
 namespace haldls {
 namespace vx {
@@ -58,9 +60,12 @@ struct SystimeSyncBaseBitfield
 		uint64_t raw;
 		// clang-format off
 		struct {
-			uint64_t low : 32;
-			uint64_t high : 11;
-			uint64_t /* unused */ : 21;
+#define BITFIELD \
+			(uint32_t low : 32;) \
+			(uint32_t high : 11;) \
+			(uint32_t : 21;)
+			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
+#undef BITFIELD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
