@@ -18,6 +18,7 @@ def depends(ctx):
     ctx('hate')
     ctx('fisch')
     ctx('ztl')
+    ctx("libnux")
 
     if getattr(ctx.options, 'with_haldls_python_bindings', True):
         ctx('halco', 'pyhalco')
@@ -127,10 +128,14 @@ def build(bld):
         target = 'haldls_test_common_inc',
         export_includes = 'tests/common',
     )
-    
+
     reduced_jobs = max(bld.jobs // 2, 1)
     bld.env['stadls_semaphore'] = TaskSemaphore(reduced_jobs)
-    
+
+    ppu_build_source = [
+        'src/haldls/vx/padi.cpp',
+    ]
+
     for hx_version in [1, 2, 3]:
         bld(
             target = f'haldls_vx_v{hx_version}',
@@ -141,6 +146,17 @@ def build(bld):
             features = 'cxx cxxshlib',
             use = ['haldls_inc', f'halco_hicann_dls_vx_v{hx_version}', 'fisch_vx'],
             uselib = 'HALDLS_LIBRARIES',
+        )
+
+        bld(
+            target = f'haldls_ppu_vx_v{hx_version}',
+            source = ppu_build_source,
+            install_path = '${PREFIX}/lib/ppu',
+            features = 'cxx cxxstlib',
+            use = ['haldls_inc', f'halco_hicann_dls_ppu_vx_v{hx_version}', 'fisch_inc', 'hate_inc'],
+            uselib = 'HALDLS_LIBRARIES',
+            env = bld.all_envs[f'nux_vx_v{hx_version}'],
+            linkflags = '-Wl,-z,defs',
         )
 
         bld(

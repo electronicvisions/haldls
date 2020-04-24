@@ -106,6 +106,7 @@ try {
 		conditionalTimeout(enable: !isTriggeredByGerrit(), time: 110, unit: "MINUTES") {
 			withCcache() {
 				wafDefaultPipeline(container: [app: "dls-core"],
+				                   moduleOptions: [modules: ["ppu-toolchain"]],
 				                   projects: ["haldls"],
 				                   configureInstallOptions: "--build-profile=ci",
 				                   notificationChannel: "#jenkins-trashbin")

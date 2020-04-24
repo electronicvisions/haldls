@@ -2,12 +2,15 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -187,6 +190,7 @@ bool PADIEvent::operator!=(PADIEvent const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void PADIEvent::serialize(Archive& ar, std::uint32_t const)
 {
@@ -196,6 +200,7 @@ void PADIEvent::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PADIEvent)
+#endif
 
 
 CommonPADIBusConfig::CommonPADIBusConfig() :
@@ -404,6 +409,7 @@ bool CommonPADIBusConfig::operator!=(CommonPADIBusConfig const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void CommonPADIBusConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -413,7 +419,7 @@ void CommonPADIBusConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonPADIBusConfig)
-
+#endif
 
 CommonSTPConfig::CommonSTPConfig() : m_enable_recovery_clock(false), m_recovery_clock_speed() {}
 
@@ -551,6 +557,7 @@ bool CommonSTPConfig::operator!=(CommonSTPConfig const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void CommonSTPConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -559,10 +566,13 @@ void CommonSTPConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonSTPConfig)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::PADIEvent, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CommonPADIBusConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CommonSTPConfig, 0)
+#endif

@@ -9,7 +9,10 @@
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+
+#ifndef __ppu__
 #include "hxcomm/vx/target.h"
+#endif
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -160,8 +163,10 @@ class GENPYBIND(visible) CommonPADIBusConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::CommonPADIBusConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::hardware};
+#endif
 
 	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::PADIBusOnPADIBusBlock>
 	    enable_spl1_type GENPYBIND(opaque(false), expose_as(_enable_spl1_type));
