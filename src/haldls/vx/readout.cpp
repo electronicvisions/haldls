@@ -2,13 +2,16 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/indent.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls::vx {
 
@@ -515,6 +518,7 @@ template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         PadMultiplexerConfig::config_size_in_words> const& words);
 
+#ifndef __ppu__
 template <class Archive>
 void PadMultiplexerConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -539,6 +543,7 @@ void PadMultiplexerConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PadMultiplexerConfig)
+#endif
 
 
 ReadoutSourceSelection::SourceMultiplexer::SourceMultiplexer() :
@@ -677,6 +682,7 @@ bool ReadoutSourceSelection::SourceMultiplexer::operator!=(
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void ReadoutSourceSelection::SourceMultiplexer::serialize(Archive& ar, std::uint32_t const)
 {
@@ -693,6 +699,7 @@ void ReadoutSourceSelection::SourceMultiplexer::serialize(Archive& ar, std::uint
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection::SourceMultiplexer)
+#endif
 
 
 ReadoutSourceSelection::ReadoutSourceSelection() : m_buffers(), m_enable_buffer_to_pad() {}
@@ -1031,6 +1038,7 @@ template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         ReadoutSourceSelection::config_size_in_words> const& words);
 
+#ifndef __ppu__
 template <class Archive>
 void ReadoutSourceSelection::serialize(Archive& ar, std::uint32_t const)
 {
@@ -1039,9 +1047,12 @@ void ReadoutSourceSelection::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection)
+#endif
 
 } // namespace haldls::vx
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::PadMultiplexerConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ReadoutSourceSelection::SourceMultiplexer, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ReadoutSourceSelection, 0)
+#endif

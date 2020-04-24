@@ -132,10 +132,6 @@ def build(bld):
     reduced_jobs = max(bld.jobs // 2, 1)
     bld.env['stadls_semaphore'] = TaskSemaphore(reduced_jobs)
 
-    ppu_build_source = [
-        'src/haldls/vx/padi.cpp',
-    ]
-
     for hx_version in [1, 2, 3]:
         bld(
             target = f'haldls_vx_v{hx_version}',
@@ -147,6 +143,18 @@ def build(bld):
             use = ['haldls_inc', f'halco_hicann_dls_vx_v{hx_version}', 'fisch_vx'],
             uselib = 'HALDLS_LIBRARIES',
         )
+
+        ppu_build_source = [
+            'src/haldls/vx/padi.cpp',
+            'src/haldls/vx/padi.cpp',
+            'src/haldls/vx/pll.cpp',
+            'src/haldls/vx/phy.cpp',
+            'src/haldls/vx/background.cpp',
+            'src/haldls/vx/routing_crossbar.cpp',
+            'src/haldls/vx/madc.cpp',
+            'src/haldls/vx/readout.cpp',
+            f'src/haldls/vx/v{hx_version}/correlation.cpp',
+        ]
 
         bld(
             target = f'haldls_ppu_vx_v{hx_version}',

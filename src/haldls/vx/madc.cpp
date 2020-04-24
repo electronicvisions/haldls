@@ -2,13 +2,16 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/constants.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -230,6 +233,7 @@ bool MADCControl::operator!=(MADCControl const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void MADCControl::serialize(Archive& ar, std::uint32_t const)
 {
@@ -243,6 +247,7 @@ void MADCControl::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(MADCControl)
+#endif
 
 
 MADCConfig::MADCConfig() :
@@ -952,6 +957,7 @@ bool MADCConfig::operator!=(MADCConfig const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void MADCConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -990,9 +996,12 @@ void MADCConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(MADCConfig)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::MADCControl, 0)
 CEREAL_CLASS_VERSION(haldls::vx::MADCConfig, 0)
+#endif

@@ -1,11 +1,14 @@
 #pragma once
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/correlation.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+
+#ifndef __ppu__
+#include "haldls/cerealization.h"
+#endif
 
 namespace fisch::vx::word_access_type {
 class Omnibus;
@@ -151,4 +154,6 @@ struct BackendContainerTrait<v1::CommonCorrelationConfig>
 
 } // namespace haldls::vx::detail
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v1::CommonCorrelationConfig)
+#endif

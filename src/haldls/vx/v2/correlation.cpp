@@ -2,11 +2,14 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
+#include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/vx/omnibus_constants.h"
+
+#ifndef __ppu__
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
-#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
-#include "haldls/vx/omnibus_constants.h"
+#endif
 
 namespace haldls::vx::v2 {
 
@@ -84,6 +87,7 @@ bool CommonCorrelationConfig::operator!=(CommonCorrelationConfig const& other) c
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <typename Archive>
 void CommonCorrelationConfig::serialize(Archive& ar, std::uint32_t const version)
 {
@@ -101,6 +105,7 @@ void CommonCorrelationConfig::serialize(Archive& ar, std::uint32_t const version
 		ar(CEREAL_NVP(m_cadc_v_offset_assignment));
 	}
 }
+#endif
 
 namespace {
 
@@ -257,4 +262,6 @@ template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
 
 } // namespace haldls::vx::v2
 
+#ifndef __ppu__
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::CommonCorrelationConfig)
+#endif

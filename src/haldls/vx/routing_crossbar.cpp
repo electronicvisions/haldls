@@ -2,14 +2,17 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/bitset.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -161,6 +164,7 @@ template SYMBOL_VISIBLE void CrossbarOutputConfig::decode<fisch::vx::word_access
         fisch::vx::word_access_type::Omnibus,
         CrossbarOutputConfig::config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void CrossbarOutputConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -169,6 +173,7 @@ void CrossbarOutputConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarOutputConfig)
+#endif
 
 
 CrossbarInputDropCounter::CrossbarInputDropCounter() : m_value() {}
@@ -270,6 +275,7 @@ CrossbarInputDropCounter::decode<fisch::vx::word_access_type::OmnibusChipOverJTA
 template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::word_access_type::Omnibus>(
     std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void CrossbarInputDropCounter::serialize(Archive& ar, std::uint32_t const)
 {
@@ -277,6 +283,7 @@ void CrossbarInputDropCounter::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarInputDropCounter)
+#endif
 
 
 CrossbarOutputEventCounter::CrossbarOutputEventCounter() : m_value() {}
@@ -382,6 +389,7 @@ CrossbarOutputEventCounter::decode<fisch::vx::word_access_type::Omnibus>(
         fisch::vx::word_access_type::Omnibus,
         CrossbarOutputEventCounter::read_config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void CrossbarOutputEventCounter::serialize(Archive& ar, std::uint32_t const)
 {
@@ -389,6 +397,7 @@ void CrossbarOutputEventCounter::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarOutputEventCounter)
+#endif
 
 
 CrossbarNode::CrossbarNode() : m_mask(), m_target(), m_enable_drop_counter() {}
@@ -528,6 +537,7 @@ template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::word_access_type::O
     std::array<fisch::vx::word_access_type::Omnibus, CrossbarNode::config_size_in_words> const&
         data);
 
+#ifndef __ppu__
 template <class Archive>
 void CrossbarNode::serialize(Archive& ar, std::uint32_t const)
 {
@@ -537,11 +547,14 @@ void CrossbarNode::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarNode)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::CrossbarOutputConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CrossbarInputDropCounter, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CrossbarOutputEventCounter, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CrossbarNode, 0)
+#endif

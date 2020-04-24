@@ -2,10 +2,13 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -220,6 +223,7 @@ template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::word_acces
         fisch::vx::word_access_type::Omnibus,
         BackgroundSpikeSource::config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void BackgroundSpikeSource::serialize(Archive& ar, std::uint32_t const)
 {
@@ -233,8 +237,11 @@ void BackgroundSpikeSource::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(BackgroundSpikeSource)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::BackgroundSpikeSource, 0)
+#endif

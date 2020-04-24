@@ -1,15 +1,18 @@
 #include "haldls/vx/pll.h"
 
 #include "fisch/vx/word_access/type/jtag.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/traits.h"
 #include "hate/indent.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -227,7 +230,11 @@ double ADPLL::calculate_output_frequency(
 		case Output::core_1:
 			return frequency_dco / (m_pre_div_p1 * m_core_div_m1);
 		default:
+#ifndef __ppu__
 			throw std::runtime_error("Unsupported ADPLL output was chosen.");
+#else
+			exit(1);
+#endif
 	}
 }
 
@@ -434,6 +441,7 @@ template SYMBOL_VISIBLE void ADPLL::decode(
 template SYMBOL_VISIBLE void ADPLL::decode(
     std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <typename Archive>
 void ADPLL::serialize(Archive& ar, std::uint32_t const)
 {
@@ -458,6 +466,7 @@ void ADPLL::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ADPLL)
+#endif
 
 
 PLLClockOutputBlock::ClockOutput::ClockOutput() :
@@ -536,7 +545,11 @@ std::ostream& operator<<(std::ostream& os, ADPLL::Output const& config)
 			break;
 		}
 		default: {
+#ifndef __ppu__
 			throw std::logic_error("Unknown ADPLLOutput.");
+#else
+			exit(1);
+#endif
 		}
 	}
 	return os;
@@ -558,6 +571,7 @@ std::ostream& operator<<(std::ostream& os, PLLClockOutputBlock const& config)
 	return os;
 }
 
+#ifndef __ppu__
 template <typename Archive>
 void PLLClockOutputBlock::ClockOutput::serialize(Archive& ar, std::uint32_t const)
 {
@@ -568,6 +582,7 @@ void PLLClockOutputBlock::ClockOutput::serialize(Archive& ar, std::uint32_t cons
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLClockOutputBlock::ClockOutput)
+#endif
 
 PLLClockOutputBlock::PLLClockOutputBlock() : m_output()
 {
@@ -791,6 +806,7 @@ template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         config_size_in_words> const& /*data*/);
 
+#ifndef __ppu__
 template <typename Archive>
 void PLLClockOutputBlock::serialize(Archive& ar, std::uint32_t const)
 {
@@ -798,6 +814,7 @@ void PLLClockOutputBlock::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLClockOutputBlock)
+#endif
 
 
 PLLSelfTest::PLLSelfTest() :
@@ -971,6 +988,7 @@ template SYMBOL_VISIBLE void PLLSelfTest::decode(std::array<
                                                  fisch::vx::word_access_type::OmnibusChipOverJTAG,
                                                  config_size_in_words> const& /*data*/);
 
+#ifndef __ppu__
 template <typename Archive>
 void PLLSelfTest::serialize(Archive& ar, std::uint32_t const)
 {
@@ -982,6 +1000,7 @@ void PLLSelfTest::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTest)
+#endif
 
 
 PLLSelfTestStatus::PLLSelfTestStatus() : m_success(false), m_counter_value() {}
@@ -1099,6 +1118,7 @@ template SYMBOL_VISIBLE void PLLSelfTestStatus::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         read_config_size_in_words> const& /*data*/);
 
+#ifndef __ppu__
 template <typename Archive>
 void PLLSelfTestStatus::serialize(Archive& ar, std::uint32_t const)
 {
@@ -1108,12 +1128,15 @@ void PLLSelfTestStatus::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTestStatus)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::ADPLL, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PLLClockOutputBlock::ClockOutput, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PLLClockOutputBlock, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PLLSelfTest, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PLLSelfTestStatus, 0)
+#endif

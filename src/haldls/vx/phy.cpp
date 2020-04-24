@@ -2,15 +2,18 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/bitset.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls {
 namespace vx {
@@ -220,6 +223,7 @@ bool PhyConfigBase::operator!=(PhyConfigBase const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <typename Archive>
 void PhyConfigBase::cerealize_impl(Archive& ar)
 {
@@ -240,6 +244,7 @@ void PhyConfigBase::cerealize_impl(Archive& ar)
 	ar(CEREAL_NVP(m_enable_loopback_en));
 	ar(CEREAL_NVP(m_enable_auto_init));
 }
+#endif
 
 std::ostream& operator<<(std::ostream& os, PhyConfigBase const& config)
 {
@@ -405,6 +410,7 @@ void PhyConfigFPGA::decode(
 	unpack(data[0]);
 }
 
+#ifndef __ppu__
 template <typename Archive>
 void PhyConfigFPGA::serialize(Archive& ar, std::uint32_t const)
 {
@@ -412,6 +418,7 @@ void PhyConfigFPGA::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PhyConfigFPGA)
+#endif
 
 
 PhyConfigChip::PhyConfigChip() : PhyConfigBase()
@@ -459,6 +466,7 @@ void PhyConfigChip::decode(std::array<
                            PhyConfigChip::read_config_size_in_words> const& /*data*/)
 {}
 
+#ifndef __ppu__
 template <typename Archive>
 void PhyConfigChip::serialize(Archive& ar, std::uint32_t const)
 {
@@ -466,7 +474,7 @@ void PhyConfigChip::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PhyConfigChip)
-
+#endif
 
 CommonPhyConfigFPGA::CommonPhyConfigFPGA() : m_enable_phy()
 {
@@ -531,6 +539,7 @@ void CommonPhyConfigFPGA::decode(std::array<
 	}
 }
 
+#ifndef __ppu__
 template <typename Archive>
 void CommonPhyConfigFPGA::serialize(Archive& ar, std::uint32_t const)
 {
@@ -538,6 +547,7 @@ void CommonPhyConfigFPGA::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigFPGA)
+#endif
 
 
 CommonPhyConfigChip::CommonPhyConfigChip() : m_enable_phy()
@@ -612,6 +622,7 @@ void CommonPhyConfigChip::decode(std::array<
 	}
 }
 
+#ifndef __ppu__
 template <typename Archive>
 void CommonPhyConfigChip::serialize(Archive& ar, std::uint32_t const)
 {
@@ -619,8 +630,9 @@ void CommonPhyConfigChip::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigChip)
+#endif
 
-
+#ifndef __ppu__
 PhyStatus::PhyStatus() :
     m_crc_error_count(),
     m_online_time(),
@@ -746,12 +758,15 @@ void PhyStatus::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PhyStatus)
+#endif
 
 } // namespace vx
 } // namespace haldls
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::PhyConfigFPGA, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PhyConfigChip, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CommonPhyConfigFPGA, 0)
 CEREAL_CLASS_VERSION(haldls::vx::CommonPhyConfigChip, 0)
 CEREAL_CLASS_VERSION(haldls::vx::PhyStatus, 0)
+#endif

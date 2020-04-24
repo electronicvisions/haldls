@@ -11,7 +11,10 @@
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+
+#ifndef __ppu__
 #include "hxcomm/vx/target.h"
+#endif
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -34,8 +37,10 @@ class GENPYBIND(visible) BackgroundSpikeSource
 public:
 	typedef halco::hicann_dls::vx::BackgroundSpikeSourceOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::hardware, hxcomm::vx::Target::simulation};
+#endif
 
 	/**
 	 * Inter-spike interval for regular and inter-bin interval for Poisson spike generation.

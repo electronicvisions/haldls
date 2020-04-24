@@ -3,12 +3,15 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/correlation.h"
 #include "halco/hicann-dls/vx/v2/capmem.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+
+#ifndef __ppu__
+#include "haldls/cerealization.h"
 #include <cereal/cereal.hpp>
+#endif
 
 namespace fisch::vx::word_access_type {
 class Omnibus;
@@ -172,5 +175,7 @@ struct BackendContainerTrait<v2::CommonCorrelationConfig>
 
 } // namespace haldls::vx::detail
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::v2::CommonCorrelationConfig, 1)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::CommonCorrelationConfig)
+#endif
