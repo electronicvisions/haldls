@@ -2,14 +2,17 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/v2/omnibus_constants.h"
 #include "hate/indent.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls::vx::v2 {
 
@@ -167,11 +170,13 @@ std::ostream& operator<<(std::ostream& os, SynapseWeightQuad const& config)
 	return os;
 }
 
+#ifndef __ppu__
 template <class Archive>
 void SynapseWeightQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_values));
 }
+#endif
 
 
 SynapseLabelQuad::SynapseLabelQuad() : m_values() {}
@@ -312,11 +317,13 @@ std::ostream& operator<<(std::ostream& os, SynapseLabelQuad const& config)
 	return os;
 }
 
+#ifndef __ppu__
 template <class Archive>
 void SynapseLabelQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_values));
 }
+#endif
 
 
 SynapseCorrelationCalibQuad::SynapseCorrelationCalibQuad() : m_time_calibs(), m_amp_calibs() {}
@@ -504,12 +511,14 @@ std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibQuad const& co
 	return os;
 }
 
+#ifndef __ppu__
 template <class Archive>
 void SynapseCorrelationCalibQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_time_calibs));
 	ar(CEREAL_NVP(m_amp_calibs));
 }
+#endif
 
 
 SynapseQuad::SynapseQuad() : m_weights(), m_labels(), m_time_calibs(), m_amp_calibs() {}
@@ -717,6 +726,7 @@ std::ostream& operator<<(std::ostream& os, SynapseQuad const& config)
 	return os;
 }
 
+#ifndef __ppu__
 template <class Archive>
 void SynapseQuad::serialize(Archive& ar, std::uint32_t const)
 {
@@ -725,6 +735,7 @@ void SynapseQuad::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_time_calibs));
 	ar(CEREAL_NVP(m_amp_calibs));
 }
+#endif
 
 
 ColumnCorrelationQuad::ColumnCorrelationSwitch::ColumnCorrelationSwitch() :
@@ -815,6 +826,7 @@ bool ColumnCorrelationQuad::ColumnCorrelationSwitch::operator!=(
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void ColumnCorrelationQuad::ColumnCorrelationSwitch::serialize(Archive& ar, std::uint32_t const)
 {
@@ -825,6 +837,7 @@ void ColumnCorrelationQuad::ColumnCorrelationSwitch::serialize(Archive& ar, std:
 	ar(CEREAL_NVP(m_enable_cadc_neuron_readout_causal));
 	ar(CEREAL_NVP(m_enable_cadc_neuron_readout_acausal));
 }
+#endif
 
 
 ColumnCorrelationQuad::ColumnCorrelationQuad() : m_switches() {}
@@ -1098,11 +1111,13 @@ template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         ColumnCorrelationQuad::config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void ColumnCorrelationQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_switches));
 }
+#endif
 
 
 ColumnCurrentQuad::ColumnCurrentSwitch::ColumnCurrentSwitch() :
@@ -1169,6 +1184,7 @@ bool ColumnCurrentQuad::ColumnCurrentSwitch::operator!=(
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 template <class Archive>
 void ColumnCurrentQuad::ColumnCurrentSwitch::serialize(Archive& ar, std::uint32_t const)
 {
@@ -1177,6 +1193,7 @@ void ColumnCurrentQuad::ColumnCurrentSwitch::serialize(Archive& ar, std::uint32_
 	ar(CEREAL_NVP(m_enable_debug_excitatory));
 	ar(CEREAL_NVP(m_enable_debug_inhibitory));
 }
+#endif
 
 
 ColumnCurrentQuad::ColumnCurrentQuad() : m_switches() {}
@@ -1356,11 +1373,13 @@ template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         ColumnCurrentQuad::config_size_in_words> const& data);
 
+#ifndef __ppu__
 template <class Archive>
 void ColumnCurrentQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_switches));
 }
+#endif
 
 
 CorrelationReset::CorrelationReset() {}
@@ -1459,6 +1478,7 @@ void CorrelationReset::serialize(Archive&, std::uint32_t const)
 
 } // namespace haldls::vx::v2
 
+#ifndef __ppu__
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::SynapseWeightQuad)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::SynapseLabelQuad)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::SynapseCorrelationCalibQuad)
@@ -1479,3 +1499,4 @@ CEREAL_CLASS_VERSION(haldls::vx::v2::ColumnCorrelationQuad::ColumnCorrelationSwi
 CEREAL_CLASS_VERSION(haldls::vx::v2::ColumnCurrentQuad::ColumnCurrentSwitch, 0)
 CEREAL_CLASS_VERSION(haldls::vx::v2::ColumnCurrentQuad, 0)
 CEREAL_CLASS_VERSION(haldls::vx::v2::CorrelationReset, 0)
+#endif

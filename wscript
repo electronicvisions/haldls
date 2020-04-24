@@ -156,7 +156,14 @@ def build(bld):
             f'src/haldls/vx/v{hx_version}/correlation.cpp',
             'src/haldls/vx/ppu.cpp',
             f'src/haldls/vx/v{hx_version}/capmem.cpp',
+            'src/haldls/vx/synapse.cpp',
+            f'src/haldls/vx/v{hx_version}/synapse.cpp',
         ]
+
+        if hx_version == 1:
+            ppu_build_source += [
+                f'src/haldls/vx/v{hx_version}/address_transformation.cpp',
+            ]
 
         bld(
             target = f'haldls_ppu_vx_v{hx_version}',

@@ -2,13 +2,16 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
+
+#ifndef __ppu__
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "haldls/cerealization.tcc"
+#endif
 
 namespace haldls::vx {
 
@@ -193,6 +196,7 @@ std::ostream& operator<<(std::ostream& os, CommonSynramConfig const& config)
 	return os;
 }
 
+#ifndef __ppu__
 template <class Archive>
 void CommonSynramConfig::serialize(Archive& ar, std::uint32_t const)
 {
@@ -204,6 +208,7 @@ void CommonSynramConfig::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonSynramConfig)
+#endif
 
 
 SynapseBiasSelection::SynapseBiasSelection() :
@@ -416,6 +421,7 @@ template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         SynapseBiasSelection::read_config_size_in_words> const& words);
 
+#ifndef __ppu__
 template <class Archive>
 void SynapseBiasSelection::serialize(Archive& ar, std::uint32_t const)
 {
@@ -426,8 +432,11 @@ void SynapseBiasSelection::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseBiasSelection)
+#endif
 
 } // namespace haldls::vx
 
+#ifndef __ppu__
 CEREAL_CLASS_VERSION(haldls::vx::CommonSynramConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SynapseBiasSelection, 0)
+#endif
