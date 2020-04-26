@@ -134,7 +134,7 @@ struct to_ticket_variant;
 template <typename... BackendContainer>
 struct to_ticket_variant<hate::type_list<BackendContainer...>>
 {
-	typedef boost::variant<fisch::vx::ContainerVectorTicket<BackendContainer>...> type;
+	typedef boost::variant<fisch::vx::ContainerTicket<BackendContainer>...> type;
 };
 
 } // namespace detail
