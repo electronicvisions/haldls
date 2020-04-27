@@ -23,7 +23,7 @@ class TestPylolaVX(unittest.TestCase):
         self.assertEqual(np_weights.shape,
                          (halco.SynapseOnSynapseRow.size,))
         np_weights[16] = 64
-        with self.assertRaisesRegex(RuntimeError,
+        with self.assertRaisesRegex((RuntimeError, OverflowError),
                                     r"range overflow: (\d+) > max\((\d+)\)"):
             row.weights.from_numpy(np_weights)
         np_weights[16] = 4
@@ -37,7 +37,7 @@ class TestPylolaVX(unittest.TestCase):
         self.assertEqual(np_addresses.shape,
                          (halco.SynapseOnSynapseRow.size,))
         np_addresses[16] = 64
-        with self.assertRaisesRegex(RuntimeError,
+        with self.assertRaisesRegex((RuntimeError, OverflowError),
                                     r"range overflow: (\d+) > max\((\d+)\)"):
             row.addresses.from_numpy(np_addresses)
         np_addresses[16] = 4
@@ -51,7 +51,7 @@ class TestPylolaVX(unittest.TestCase):
         self.assertEqual(np_time_calibs.shape,
                          (halco.SynapseOnSynapseRow.size,))
         np_time_calibs[16] = 4
-        with self.assertRaisesRegex(RuntimeError,
+        with self.assertRaisesRegex((RuntimeError, OverflowError),
                                     r"range overflow: (\d+) > max\((\d+)\)"):
             row.time_calibs.from_numpy(np_time_calibs)
         np_time_calibs[16] = 3
@@ -65,7 +65,7 @@ class TestPylolaVX(unittest.TestCase):
         self.assertEqual(np_amp_calibs.shape,
                          (halco.SynapseOnSynapseRow.size,))
         np_amp_calibs[16] = 4
-        with self.assertRaisesRegex(RuntimeError,
+        with self.assertRaisesRegex((RuntimeError, OverflowError),
                                     r"range overflow: (\d+) > max\((\d+)\)"):
             row.amp_calibs.from_numpy(np_amp_calibs)
         np_amp_calibs[16] = 3
