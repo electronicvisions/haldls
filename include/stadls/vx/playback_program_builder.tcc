@@ -15,6 +15,7 @@
 #include "hate/type_traits.h"
 #include "stadls/visitors.h"
 #include "stadls/vx/addresses.h"
+#include "stadls/vx/encode.h"
 #include "stadls/vx/supports_empty.h"
 
 namespace stadls::vx::detail {
@@ -212,14 +213,8 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToCon
 	    maybe_array_write_addresses.begin(), maybe_array_write_addresses.end());
 
 	typedef std::vector<backend_container_type> words_type;
-	words_type words;
-	if constexpr (supports_empty_coordinate_v<T>) {
-		haldls::vx::visit_preorder(
-		    config, hate::Empty<typename T::coordinate_type>{},
-		    stadls::EncodeVisitor<words_type>{words});
-	} else {
-		haldls::vx::visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{words});
-	}
+	auto const words =
+	    get_encode<backend_container_type, T, typename T::coordinate_type>(config, coord);
 
 	if (words.size() != write_addresses.size()) {
 		throw std::logic_error("number of addresses and words do not match");
@@ -235,15 +230,8 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToCon
 
 	if (config_reference) {
 		if constexpr (std::is_base_of<haldls::vx::DifferentialWriteTrait, T>::value) {
-			words_type reference_words;
-			if constexpr (supports_empty_coordinate_v<T>) {
-				haldls::vx::visit_preorder(
-				    *config_reference, hate::Empty<typename T::coordinate_type>{},
-				    stadls::EncodeVisitor<words_type>{reference_words});
-			} else {
-				haldls::vx::visit_preorder(
-				    *config_reference, coord, stadls::EncodeVisitor<words_type>{reference_words});
-			}
+			auto const reference_words =
+			    get_encode<backend_container_type, T, typename T::coordinate_type>(config, coord);
 			if (reference_words.size() != words.size()) {
 				throw std::logic_error("number of words of container and reference do not match");
 			}

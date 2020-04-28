@@ -1,5 +1,7 @@
 #include "stadls/vx/v2/playback_program.h"
 
+#define CHIP_REVISION 2
+
 #include "stadls/vx/playback_program.tcc"
 
 #include "haldls/vx/v2/container.h"
