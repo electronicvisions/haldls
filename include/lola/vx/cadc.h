@@ -489,8 +489,270 @@ struct BackendContainerTrait<lola::vx::CHIP_REVISION_STR::CADCReadoutChain>
 template <>
 struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::CADCReadoutChain>
 {
+	template <typename VisitorT>
+	static void call(
+	    hate::Empty<lola::vx::CHIP_REVISION_STR::CADCReadoutChain> const& config,
+	    lola::vx::CHIP_REVISION_STR::CADCReadoutChain::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		hate::Empty<haldls::vx::CADCConfig> cadc_config;
+		auto const cadc_coord = coord.toCADCConfigOnDLS();
+		visit_preorder(cadc_config, cadc_coord, visitor);
+
+		for (auto const block : iter_all<CapMemBlockOnHemisphere>()) {
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> cell_v_offset;
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> cell_i_slope;
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> cell_i_bias_comp;
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> cell_i_bias_vreset_buf;
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> cell_v_bias_buf;
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> cell_i_bias_ramp;
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> cell_i_bias_store;
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> cell_i_bias_corout;
+
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemBlockOnDLS capmem_block(
+			    block.toEnum() +
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemBlockOnHemisphere::size *
+			        coord.toEnum());
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS cell_v_offset_coord(
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnCapMemBlock::
+			        cadc_v_ramp_offset,
+			    capmem_block);
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS cell_i_slope_coord(
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnCapMemBlock::
+			        cadc_i_ramp_slope,
+			    capmem_block);
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS cell_i_bias_comp_coord(
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnCapMemBlock::cadc_i_bias_comp,
+			    capmem_block);
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS cell_i_bias_vreset_buf_coord(
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnCapMemBlock::
+			        cadc_i_bias_vreset_buf,
+			    capmem_block);
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS cell_v_bias_buf_coord(
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnCapMemBlock::
+			        cadc_v_bias_ramp_buf,
+			    capmem_block);
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS cell_i_bias_ramp_coord(
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnCapMemBlock::syn_i_bias_ramp,
+			    capmem_block);
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS cell_i_bias_store_coord(
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnCapMemBlock::syn_i_bias_store,
+			    capmem_block);
+			halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS cell_i_bias_corout_coord(
+			    halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnCapMemBlock::
+			        syn_i_bias_corout,
+			    capmem_block);
+			visit_preorder(cell_v_offset, cell_v_offset_coord, visitor);
+			visit_preorder(cell_i_slope, cell_i_slope_coord, visitor);
+			visit_preorder(cell_i_bias_comp, cell_i_bias_comp_coord, visitor);
+			visit_preorder(cell_i_bias_vreset_buf, cell_i_bias_vreset_buf_coord, visitor);
+			visit_preorder(cell_v_bias_buf, cell_v_bias_buf_coord, visitor);
+			visit_preorder(cell_i_bias_ramp, cell_i_bias_ramp_coord, visitor);
+			visit_preorder(cell_i_bias_store, cell_i_bias_store_coord, visitor);
+			visit_preorder(cell_i_bias_corout, cell_i_bias_corout_coord, visitor);
+		}
+
+		for (auto const column : iter_all<CADCChannelColumnOnSynram>()) {
+			hate::Empty<haldls::vx::CADCChannelConfig> channel_config;
+
+			CADCChannelConfigOnDLS channel_coord(
+			    CADCChannelConfigOnSynram(column, CADCChannelType::causal), coord.toSynramOnDLS());
+			visit_preorder(channel_config, channel_coord, visitor);
+		}
+
+		for (auto const column : iter_all<CADCChannelColumnOnSynram>()) {
+			hate::Empty<haldls::vx::CADCChannelConfig> channel_config;
+
+			CADCChannelConfigOnDLS channel_coord(
+			    CADCChannelConfigOnSynram(column, CADCChannelType::acausal), coord.toSynramOnDLS());
+			visit_preorder(channel_config, channel_coord, visitor);
+		}
+
+		hate::Empty<lola::vx::ColumnCorrelationRow> column_correlation_row;
+		auto const column_correlation_row_coord = coord.toColumnCorrelationRowOnDLS();
+		visit_preorder(column_correlation_row, column_correlation_row_coord, visitor);
+
+		hate::Empty<haldls::vx::CHIP_REVISION_STR::CommonCorrelationConfig> correlation_config;
+		auto const correlation_coord = coord.toCommonCorrelationConfigOnDLS();
+		visit_preorder(correlation_config, correlation_coord, visitor);
+	}
+
+
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    ContainerT& config,
+	    hate::Empty<lola::vx::CHIP_REVISION_STR::CADCReadoutChain::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		haldls::vx::CADCConfig cadc_config;
+		cadc_config.set_enable(config.ramp.enable);
+		cadc_config.set_reset_wait(config.ramp.reset_wait);
+		cadc_config.set_dead_time(config.ramp.dead_time);
+		hate::Empty<halco::hicann_dls::vx::CADCConfigOnDLS> const cadc_coord;
+		visit_preorder(cadc_config, cadc_coord, visitor);
+
+		if constexpr (!std::is_same<
+		                  ContainerT, lola::vx::CHIP_REVISION_STR::CADCReadoutChain const>::value) {
+			config.ramp.enable = cadc_config.get_enable();
+			config.ramp.reset_wait = cadc_config.get_reset_wait();
+			config.ramp.dead_time = cadc_config.get_dead_time();
+		}
+
+		for (auto const block : iter_all<CapMemBlockOnHemisphere>()) {
+			haldls::vx::CHIP_REVISION_STR::CapMemCell cell_v_offset(config.ramp.v_offset[block]);
+			haldls::vx::CHIP_REVISION_STR::CapMemCell cell_i_slope(config.ramp.i_slope[block]);
+			haldls::vx::CHIP_REVISION_STR::CapMemCell cell_i_bias_comp(
+			    config.ramp.i_bias_comparator[block]);
+			haldls::vx::CHIP_REVISION_STR::CapMemCell cell_i_bias_vreset_buf(
+			    config.ramp.i_bias_vreset_buffer[block]);
+			haldls::vx::CHIP_REVISION_STR::CapMemCell cell_v_bias_buf(
+			    config.ramp.v_bias_buffer[block]);
+			haldls::vx::CHIP_REVISION_STR::CapMemCell cell_i_bias_ramp(
+			    config.correlation.i_bias_ramp[block]);
+			haldls::vx::CHIP_REVISION_STR::CapMemCell cell_i_bias_store(
+			    config.correlation.i_bias_store[block]);
+			haldls::vx::CHIP_REVISION_STR::CapMemCell cell_i_bias_corout(
+			    config.correlation.i_bias_corout[block]);
+
+			hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS>
+			    cell_v_offset_coord;
+			hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS>
+			    cell_i_slope_coord;
+			hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS>
+			    cell_i_bias_comp_coord;
+			hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS>
+			    cell_i_bias_vreset_buf_coord;
+			hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS>
+			    cell_v_bias_buf_coord;
+			hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS>
+			    cell_i_bias_ramp_coord;
+			hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS>
+			    cell_i_bias_store_coord;
+			hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemCellOnDLS>
+			    cell_i_bias_corout_coord;
+			visit_preorder(cell_v_offset, cell_v_offset_coord, visitor);
+			visit_preorder(cell_i_slope, cell_i_slope_coord, visitor);
+			visit_preorder(cell_i_bias_comp, cell_i_bias_comp_coord, visitor);
+			visit_preorder(cell_i_bias_vreset_buf, cell_i_bias_vreset_buf_coord, visitor);
+			visit_preorder(cell_v_bias_buf, cell_v_bias_buf_coord, visitor);
+			visit_preorder(cell_i_bias_ramp, cell_i_bias_ramp_coord, visitor);
+			visit_preorder(cell_i_bias_store, cell_i_bias_store_coord, visitor);
+			visit_preorder(cell_i_bias_corout, cell_i_bias_corout_coord, visitor);
+
+			if constexpr (!std::is_same<
+			                  ContainerT,
+			                  lola::vx::CHIP_REVISION_STR::CADCReadoutChain const>::value) {
+				config.ramp.v_offset[block] = cell_v_offset.get_value();
+				config.ramp.i_slope[block] = cell_i_slope.get_value();
+				config.ramp.i_bias_comparator[block] = cell_i_bias_comp.get_value();
+				config.ramp.i_bias_vreset_buffer[block] = cell_i_bias_vreset_buf.get_value();
+				config.ramp.v_bias_buffer[block] = cell_v_bias_buf.get_value();
+				config.correlation.i_bias_ramp[block] = cell_i_bias_ramp.get_value();
+				config.correlation.i_bias_store[block] = cell_i_bias_store.get_value();
+				config.correlation.i_bias_corout[block] = cell_i_bias_corout.get_value();
+			}
+		}
+
+		for (auto const column : iter_all<CADCChannelColumnOnSynram>()) {
+			haldls::vx::CADCChannelConfig channel_config;
+			channel_config.set_offset(config.channels_causal[column].offset);
+
+			hate::Empty<CADCChannelConfigOnDLS> channel_coord;
+			visit_preorder(channel_config, channel_coord, visitor);
+
+			if constexpr (!std::is_same<
+			                  ContainerT,
+			                  lola::vx::CHIP_REVISION_STR::CADCReadoutChain const>::value) {
+				config.channels_causal[column].offset = channel_config.get_offset();
+			}
+		}
+
+		for (auto const column : iter_all<CADCChannelColumnOnSynram>()) {
+			haldls::vx::CADCChannelConfig channel_config;
+			channel_config.set_offset(config.channels_acausal[column].offset);
+
+			hate::Empty<CADCChannelConfigOnDLS> channel_coord;
+			visit_preorder(channel_config, channel_coord, visitor);
+
+			if constexpr (!std::is_same<
+			                  ContainerT,
+			                  lola::vx::CHIP_REVISION_STR::CADCReadoutChain const>::value) {
+				config.channels_acausal[column].offset = channel_config.get_offset();
+			}
+		}
+
+		lola::vx::ColumnCorrelationRow column_correlation_row;
+		for (auto const synapse : iter_all<SynapseOnSynapseRow>()) {
+			auto const column = synapse.toCADCChannelColumnOnSynram();
+
+			auto& sw = column_correlation_row.values[synapse];
+			sw.set_enable_internal_causal(
+			    config.channels_causal[column].enable_connect_correlation);
+			sw.set_enable_internal_acausal(
+			    config.channels_acausal[column].enable_connect_correlation);
+			sw.set_enable_debug_causal(config.channels_causal[column].enable_connect_debug);
+			sw.set_enable_debug_acausal(config.channels_acausal[column].enable_connect_debug);
+			sw.set_enable_cadc_neuron_readout_causal(
+			    config.channels_causal[column].enable_connect_neuron);
+			sw.set_enable_cadc_neuron_readout_acausal(
+			    config.channels_acausal[column].enable_connect_neuron);
+		}
+
+		hate::Empty<halco::hicann_dls::vx::CHIP_REVISION_STR::ColumnCorrelationRowOnDLS> const
+		    column_correlation_row_coord;
+		visit_preorder(column_correlation_row, column_correlation_row_coord, visitor);
+
+		if constexpr (!std::is_same<
+		                  ContainerT, lola::vx::CHIP_REVISION_STR::CADCReadoutChain const>::value) {
+			for (auto const synapse : iter_all<SynapseOnSynapseRow>()) {
+				auto const column = synapse.toCADCChannelColumnOnSynram();
+
+				auto const& sw = column_correlation_row.values[synapse];
+				config.channels_causal[column].enable_connect_correlation =
+				    sw.get_enable_internal_causal();
+				config.channels_acausal[column].enable_connect_correlation =
+				    sw.get_enable_internal_acausal();
+				config.channels_causal[column].enable_connect_debug = sw.get_enable_debug_causal();
+				config.channels_acausal[column].enable_connect_debug =
+				    sw.get_enable_debug_acausal();
+				config.channels_causal[column].enable_connect_neuron =
+				    sw.get_enable_cadc_neuron_readout_causal();
+				config.channels_acausal[column].enable_connect_neuron =
+				    sw.get_enable_cadc_neuron_readout_acausal();
+			}
+		}
+
+		haldls::vx::CHIP_REVISION_STR::CommonCorrelationConfig correlation_config;
+		correlation_config.set_sense_delay(config.correlation.sense_delay);
+		correlation_config.set_reset_duration(config.correlation.reset_duration);
+		correlation_config.set_reset_fall_time(config.correlation.reset_fall_time);
+		correlation_config.set_reset_mode(config.correlation.reset_mode);
+		correlation_config.set_cadc_v_offset_assignment(config.ramp.v_offset_assignment);
+		hate::Empty<halco::hicann_dls::vx::CommonCorrelationConfigOnDLS> const correlation_coord;
+		visit_preorder(correlation_config, correlation_coord, visitor);
+
+		if constexpr (!std::is_same<
+		                  ContainerT, lola::vx::CHIP_REVISION_STR::CADCReadoutChain const>::value) {
+			config.correlation.sense_delay = correlation_config.get_sense_delay();
+			config.correlation.reset_duration = correlation_config.get_reset_duration();
+			config.correlation.reset_fall_time = correlation_config.get_reset_fall_time();
+			config.correlation.reset_mode = correlation_config.get_reset_mode();
+			config.ramp.v_offset_assignment = correlation_config.get_cadc_v_offset_assignment();
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    lola::vx::CHIP_REVISION_STR::CADCReadoutChain::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -681,12 +943,12 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::CADCSampleRow>
 {
 	template <typename ContainerT, typename VisitorT>
 	static void call(
-	    ContainerT& config,
+	    hate::Empty<ContainerT> config,
 	    lola::vx::CHIP_REVISION_STR::CADCSampleRow::coordinate_type const& coord,
 	    VisitorT&& visitor)
 	{
 		using halco::common::iter_all;
-		using namespace halco::hicann_dls::vx;
+		using namespace halco::hicann_dls::vx::CHIP_REVISION_STR;
 
 		visitor(coord, config);
 
@@ -694,6 +956,112 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::CADCSampleRow>
 		if constexpr (!std::is_same<
 		                  ContainerT, lola::vx::CHIP_REVISION_STR::CADCSampleRow const>::value) {
 			// trigger ADC sampling by reading one quad of causal channels
+			// The values are broken and discarded, see Issue #3637
+			hate::Empty<CADCSampleQuad> quad_config_trigger;
+			CADCSampleQuadOnDLS quad_coord_trigger(
+			    CADCSampleQuadOnSynram(
+			        SynapseQuadOnSynram(
+			            SynapseQuadColumnOnDLS(SynapseQuadColumnOnDLS::min),
+			            coord.toSynapseRowOnSynram()),
+			        CADCChannelType::causal, CADCReadoutType::trigger_read),
+			    coord.toSynramOnDLS());
+			visit_preorder(quad_config_trigger, quad_coord_trigger, visitor);
+
+			// buffered read of remaining causal channel quads:
+			// This reads back the results that were acquired during the last
+			// triggered measurement, which was just done above.
+			for (size_t i = SynapseQuadColumnOnDLS::min + 1; i <= SynapseQuadColumnOnDLS::max;
+			     ++i) {
+				auto quad_column = SynapseQuadColumnOnDLS(i);
+				CADCSampleQuadOnDLS quad_coord(
+				    CADCSampleQuadOnSynram(
+				        SynapseQuadOnSynram(quad_column, coord.toSynapseRowOnSynram()),
+				        CADCChannelType::causal, CADCReadoutType::buffered),
+				    coord.toSynramOnDLS());
+				hate::Empty<CADCSampleQuad> quad_config;
+				visit_preorder(quad_config, quad_coord, visitor);
+			}
+			// buffered read of acausal channel quads
+			for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
+				CADCSampleQuadOnDLS quad_coord(
+				    CADCSampleQuadOnSynram(
+				        SynapseQuadOnSynram(quad_column, coord.toSynapseRowOnSynram()),
+				        CADCChannelType::acausal, CADCReadoutType::buffered),
+				    coord.toSynramOnDLS());
+				hate::Empty<CADCSampleQuad> quad_config;
+				visit_preorder(quad_config, quad_coord, visitor);
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<lola::vx::CHIP_REVISION_STR::CADCSampleRow::coordinate_type> coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::CHIP_REVISION_STR;
+
+		visitor(coord, config);
+
+		// only do something on read
+		if constexpr (!std::is_same<
+		                  ContainerT, lola::vx::CHIP_REVISION_STR::CADCSampleRow const>::value) {
+			// trigger ADC sampling by reading one quad of causal channels
+			// The values are broken and discarded, see Issue #3637
+			CADCSampleQuad quad_config_trigger;
+			hate::Empty<CADCSampleQuadOnDLS> quad_coord;
+			visit_preorder(quad_config_trigger, quad_coord, visitor);
+
+			// Use results of triggered read: write into result array
+			for (auto const entry : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow syn_on_row(entry, SynapseQuadColumnOnDLS(0));
+				config.causal[syn_on_row] = quad_config_trigger.get_sample(entry);
+			}
+			// buffered read of remaining causal channel quads:
+			// This reads back the results that were acquired during the last
+			// triggered measurement, which was just done above.
+			for (size_t i = SynapseQuadColumnOnDLS::min + 1; i <= SynapseQuadColumnOnDLS::max;
+			     ++i) {
+				auto quad_column = SynapseQuadColumnOnDLS(i);
+				hate::Empty<CADCSampleQuadOnDLS> quad_coord;
+				CADCSampleQuad quad_config;
+				visit_preorder(quad_config, quad_coord, visitor);
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow syn_on_row(syn, quad_column);
+					config.causal[syn_on_row] = quad_config.get_sample(syn);
+				}
+			}
+			// buffered read of acausal channel quads
+			for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
+				hate::Empty<CADCSampleQuadOnDLS> quad_coord;
+				CADCSampleQuad quad_config;
+				visit_preorder(quad_config, quad_coord, visitor);
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow syn_on_row(syn, quad_column);
+					config.acausal[syn_on_row] = quad_config.get_sample(syn);
+				}
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
+	    ContainerT& config,
+	    lola::vx::CHIP_REVISION_STR::CADCSampleRow::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::CHIP_REVISION_STR;
+
+		visitor(coord, config);
+
+		// only do something on read
+		if constexpr (!std::is_same<
+		                  ContainerT, lola::vx::CHIP_REVISION_STR::CADCSampleRow const>::value) {
+			// trigger ADC sampling by reading one quad of causal channels
+			// The values are broken and discarded, see Issue #3637
 			CADCSampleQuad quad_config_trigger;
 			CADCSampleQuadOnDLS quad_coord_trigger(
 			    CADCSampleQuadOnSynram(
@@ -709,14 +1077,12 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::CADCSampleRow>
 				SynapseOnSynapseRow syn_on_row(entry, SynapseQuadColumnOnDLS(0));
 				config.causal[syn_on_row] = quad_config_trigger.get_sample(entry);
 			}
-
 			// buffered read of remaining causal channel quads:
 			// This reads back the results that were acquired during the last
 			// triggered measurement, which was just done above.
 			for (size_t i = SynapseQuadColumnOnDLS::min + 1; i <= SynapseQuadColumnOnDLS::max;
 			     ++i) {
 				auto quad_column = SynapseQuadColumnOnDLS(i);
-
 				CADCSampleQuadOnDLS quad_coord(
 				    CADCSampleQuadOnSynram(
 				        SynapseQuadOnSynram(quad_column, coord.toSynapseRowOnSynram()),
@@ -729,7 +1095,6 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::CADCSampleRow>
 					config.causal[syn_on_row] = quad_config.get_sample(syn);
 				}
 			}
-
 			// buffered read of acausal channel quads
 			for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
 				CADCSampleQuadOnDLS quad_coord(
@@ -753,6 +1118,113 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::CADCSamples>
 {
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> const& config,
+	    lola::vx::CHIP_REVISION_STR::CADCSamples::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		auto const trigger = [&](auto const& loc) {
+			hate::Empty<CADCSampleQuad> quad_config_trigger;
+			CADCSampleQuadOnDLS quad_coord_trigger_top(
+			    CADCSampleQuadOnSynram(
+			        SynapseQuadOnSynram(
+			            SynapseQuadColumnOnDLS(SynapseQuadColumnOnDLS::min), SynapseRowOnSynram()),
+			        CADCChannelType::causal, CADCReadoutType::trigger_read),
+			    loc);
+			visit_preorder(quad_config_trigger, quad_coord_trigger_top, visitor);
+		};
+
+		// trigger ADC sampling in top synram by reading one quad of causal channels
+		// immediately trigger ADC sampling in bottom synram as well
+		trigger(SynramOnDLS::top);
+		trigger(SynramOnDLS::bottom);
+
+		auto const buffered = [&](auto const& type, auto const& loc) {
+			for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
+				// Skip causal quad 0 (handled above as triggered read)
+				if (type == CADCChannelType::causal && quad_column == SynapseQuadColumnOnDLS::min)
+					continue;
+
+				CADCSampleQuadOnDLS quad_coord(
+				    CADCSampleQuadOnSynram(
+				        SynapseQuadOnSynram(quad_column, SynapseRowOnSynram()), type,
+				        CADCReadoutType::buffered),
+				    loc);
+				hate::Empty<CADCSampleQuad> quad_config;
+				visit_preorder(quad_config, quad_coord, visitor);
+			}
+		};
+
+		// buffered reads of remaining quads
+		buffered(CADCChannelType::causal, SynramOnDLS::top);
+		buffered(CADCChannelType::acausal, SynramOnDLS::top);
+		buffered(CADCChannelType::causal, SynramOnDLS::bottom);
+		buffered(CADCChannelType::acausal, SynramOnDLS::bottom);
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<lola::vx::CHIP_REVISION_STR::CADCSamples::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		auto const trigger = [&](auto& values, auto const& loc) {
+			CADCSampleQuad quad_config_trigger;
+			hate::Empty<CADCSampleQuadOnDLS> quad_coord_trigger_top;
+			visit_preorder(quad_config_trigger, quad_coord_trigger_top, visitor);
+
+			if constexpr (!std::is_same_v<
+			                  ContainerT, lola::vx::CHIP_REVISION_STR::CADCSamples const>) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow syn_on_row(
+					    syn, SynapseQuadColumnOnDLS(SynapseQuadColumnOnDLS::min));
+					values[loc][syn_on_row] = quad_config_trigger.get_sample(syn);
+				}
+			}
+		};
+
+		// trigger ADC sampling in top synram by reading one quad of causal channels
+		// immediately trigger ADC sampling in bottom synram as well
+		trigger(config.causal, SynramOnDLS::top);
+		trigger(config.causal, SynramOnDLS::bottom);
+
+		auto const buffered = [&](auto& values, auto const& type, auto const& loc) {
+			for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
+				// Skip causal quad 0 (handled above as triggered read)
+				if (type == CADCChannelType::causal && quad_column == SynapseQuadColumnOnDLS::min)
+					continue;
+
+				hate::Empty<CADCSampleQuadOnDLS> quad_coord;
+				CADCSampleQuad quad_config;
+				visit_preorder(quad_config, quad_coord, visitor);
+				if constexpr (!std::is_same_v<
+				                  ContainerT, lola::vx::CHIP_REVISION_STR::CADCSamples const>) {
+					for (auto const syn : iter_all<EntryOnQuad>()) {
+						SynapseOnSynapseRow syn_on_row(syn, quad_column);
+						values[loc][syn_on_row] = quad_config.get_sample(syn);
+					}
+				}
+			}
+		};
+
+		// buffered reads of remaining quads
+		buffered(config.causal, CADCChannelType::causal, SynramOnDLS::top);
+		buffered(config.acausal, CADCChannelType::acausal, SynramOnDLS::top);
+		buffered(config.causal, CADCChannelType::causal, SynramOnDLS::bottom);
+		buffered(config.acausal, CADCChannelType::acausal, SynramOnDLS::bottom);
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    lola::vx::CHIP_REVISION_STR::CADCSamples::coordinate_type const& coord,
 	    VisitorT&& visitor)

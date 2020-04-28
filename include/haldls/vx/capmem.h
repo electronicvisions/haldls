@@ -13,6 +13,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
+#include "hate/empty.h"
 #include "hate/join.h"
 #include "hate/visibility.h"
 
@@ -551,6 +552,45 @@ struct VisitPreorderImpl<CapMemBlock<Coordinates>>
 			visit_preorder(
 			    config.m_capmem_cells[cell], typename Coordinates::CapMemCellOnDLS(cell, coord),
 			    visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename ContainerT::coordinate_type> coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const cell : iter_all<typename Coordinates::CapMemCellOnCapMemBlock>()) {
+			// No std::forward for visitor argument, as we want to pass a reference to the
+			// nested visitor in any case, even if it was passed as an rvalue to this function.
+			hate::Empty<typename Coordinates::CapMemCellOnDLS> cell_coord;
+			visit_preorder(config.m_capmem_cells[cell], cell_coord, visitor);
+		}
+	}
+
+	template <typename VisitorT>
+	static void call(
+	    hate::Empty<CapMemBlock<Coordinates>> config,
+	    typename CapMemBlock<Coordinates>::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const cell : iter_all<typename Coordinates::CapMemCellOnCapMemBlock>()) {
+			// No std::forward for visitor argument, as we want to pass a reference to the
+			// nested visitor in any case, even if it was passed as an rvalue to this function.
+			hate::Empty<CapMemCell<Coordinates>> cell_config;
+			visit_preorder(
+			    cell_config, typename Coordinates::CapMemCellOnDLS(cell, coord), visitor);
 		}
 	}
 };

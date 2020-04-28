@@ -7,6 +7,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/coordinate_to_container.h"
 #include "stadls/visitors.h"
+#include "stadls/vx/supports_empty.h"
 #include <cereal/types/memory.hpp>
 #include <cereal/types/unordered_set.hpp>
 
@@ -39,9 +40,15 @@ T PlaybackProgram::ContainerTicket<T>::get() const
 		            fisch::vx::container_cast);
 		    auto config =
 		        haldls::vx::detail::coordinate_to_container<decltype(m_coord), T>(m_coord);
-		    haldls::vx::visit_preorder(
-		        config, m_coord,
-		        stadls::DecodeVisitor<decltype(data_values)>{std::move(data_values)});
+		    if constexpr (supports_empty_coordinate_v<T>) {
+			    haldls::vx::visit_preorder(
+			        config, hate::Empty<typename T::coordinate_type>{},
+			        stadls::DecodeVisitor<decltype(data_values)>{std::move(data_values)});
+		    } else {
+			    haldls::vx::visit_preorder(
+			        config, m_coord,
+			        stadls::DecodeVisitor<decltype(data_values)>{std::move(data_values)});
+		    }
 		    return config;
 	    },
 	    m_ticket_impl);

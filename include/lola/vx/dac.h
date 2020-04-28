@@ -6,6 +6,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/spi.h"
 #include "haldls/vx/traits.h"
+#include "hate/empty.h"
 #include "hate/visibility.h"
 #include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
@@ -120,7 +121,7 @@ template <>
 struct VisitPreorderImpl<lola::vx::DACChannelBlock>
 {
 	template <typename ContainerT, typename VisitorT>
-	static void call(
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    lola::vx::DACChannelBlock::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -135,13 +136,48 @@ struct VisitPreorderImpl<lola::vx::DACChannelBlock>
 			visit_preorder(channel, ch, visitor);
 		}
 	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    hate::Empty<ContainerT> const& config,
+	    lola::vx::DACChannelBlock::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto ch : iter_all<DACChannelOnBoard>()) {
+			hate::Empty<DACChannel> channel;
+			visit_preorder(channel, ch, visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<lola::vx::DACChannelBlock::coordinate_type> coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto ch : iter_all<DACChannelOnBoard>()) {
+			DACChannel channel(config.value[ch]);
+			hate::Empty<DACChannelOnBoard> empty_ch;
+			visit_preorder(channel, empty_ch, visitor);
+		}
+	}
 };
 
 template <>
 struct VisitPreorderImpl<lola::vx::DACControlBlock>
 {
 	template <typename ContainerT, typename VisitorT>
-	static void call(
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    lola::vx::DACControlBlock::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -157,6 +193,44 @@ struct VisitPreorderImpl<lola::vx::DACControlBlock>
 				control.set_enable_channel(ch, config.enable[DACChannelOnBoard(ch, dac)]);
 			}
 			visit_preorder(control, dac, visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    hate::Empty<ContainerT> const& config,
+	    lola::vx::DACControlBlock::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto dac : iter_all<DACOnBoard>()) {
+			hate::Empty<DACControl> control;
+			visit_preorder(control, dac, visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<lola::vx::DACControlBlock::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto dac : iter_all<DACOnBoard>()) {
+			DACControl control;
+			for (auto ch : iter_all<DACChannelOnDAC>()) {
+				control.set_enable_channel(ch, config.enable[DACChannelOnBoard(ch, dac)]);
+			}
+			hate::Empty<DACOnBoard> empty_dac;
+			visit_preorder(control, empty_dac, visitor);
 		}
 	}
 };

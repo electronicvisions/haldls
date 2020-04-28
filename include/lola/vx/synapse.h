@@ -421,6 +421,55 @@ struct VisitPreorderImpl<lola::vx::ColumnCorrelationRow>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			hate::Empty<haldls::vx::ColumnCorrelationQuad> quad_config;
+			visit_preorder(
+			    quad_config,
+			    ColumnCorrelationQuadOnDLS(
+			        quad.toColumnCorrelationQuadOnSynram(), coord.toSynramOnDLS()),
+			    visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			haldls::vx::ColumnCorrelationQuad quad_config;
+			for (auto const syn : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				quad_config.m_switches[syn] = config.values[syn_on_row];
+			}
+			hate::Empty<ColumnCorrelationQuadOnDLS> quad_coord;
+			visit_preorder(quad_config, quad_coord, visitor);
+			// only on alteration
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					config.values[syn_on_row] = quad_config.m_switches[syn];
+				}
+			}
+		}
+	}
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -468,6 +517,54 @@ struct VisitPreorderImpl<lola::vx::ColumnCurrentRow>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			hate::Empty<haldls::vx::ColumnCurrentQuad> quad_config;
+			visit_preorder(
+			    quad_config,
+			    ColumnCurrentQuadOnDLS(quad.toColumnCurrentQuadOnSynram(), coord.toSynramOnDLS()),
+			    visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			haldls::vx::ColumnCurrentQuad quad_config;
+			for (auto const syn : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				quad_config.m_switches[syn] = config.values[syn_on_row];
+			}
+			hate::Empty<ColumnCurrentQuadOnDLS> quad_coord;
+			visit_preorder(quad_config, quad_coord, visitor);
+			// only on alteration
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					config.values[syn_on_row] = quad_config.m_switches[syn];
+				}
+			}
+		}
+	}
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -514,6 +611,55 @@ struct VisitPreorderImpl<lola::vx::SynapseWeightRow>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			hate::Empty<haldls::vx::SynapseWeightQuad> quad_config;
+			visit_preorder(
+			    quad_config,
+			    SynapseWeightQuadOnDLS(
+			        SynapseQuadOnSynram(quad, coord.toSynapseRowOnSynram()), coord.toSynramOnDLS()),
+			    visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			haldls::vx::SynapseWeightQuad quad_config;
+			for (auto const syn : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				quad_config.m_values[syn] = config.values[syn_on_row];
+			}
+			hate::Empty<SynapseWeightQuadOnDLS> quad_coord;
+			visit_preorder(quad_config, quad_coord, visitor);
+			// only on alteration
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					config.values[syn_on_row] = quad_config.m_values[syn];
+				}
+			}
+		}
+	}
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -561,6 +707,56 @@ struct VisitPreorderImpl<lola::vx::SynapseLabelRow>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			hate::Empty<haldls::vx::SynapseLabelQuad> quad_config;
+			visit_preorder(
+			    quad_config,
+			    SynapseLabelQuadOnDLS(
+			        SynapseQuadOnSynram(quad, coord.toSynapseRowOnSynram()), coord.toSynramOnDLS()),
+			    visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			haldls::vx::SynapseLabelQuad quad_config;
+			for (auto const syn : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				quad_config.m_values[syn] = config.values[syn_on_row];
+			}
+			hate::Empty<SynapseLabelQuadOnDLS> quad_coord;
+			visit_preorder(quad_config, quad_coord, visitor);
+			// only on alteration
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					config.values[syn_on_row] = quad_config.m_values[syn];
+				}
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -608,6 +804,58 @@ struct VisitPreorderImpl<lola::vx::SynapseCorrelationCalibRow>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			hate::Empty<haldls::vx::SynapseCorrelationCalibQuad> quad_config;
+			visit_preorder(
+			    quad_config,
+			    SynapseCorrelationCalibQuadOnDLS(
+			        SynapseQuadOnSynram(quad, coord.toSynapseRowOnSynram()), coord.toSynramOnDLS()),
+			    visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			haldls::vx::SynapseCorrelationCalibQuad quad_config;
+			for (auto const syn : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				quad_config.m_time_calibs[syn] = config.time_calibs[syn_on_row];
+				quad_config.m_amp_calibs[syn] = config.amp_calibs[syn_on_row];
+			}
+			hate::Empty<SynapseCorrelationCalibQuadOnDLS> quad_coord;
+			visit_preorder(quad_config, quad_coord, visitor);
+			// only on alteration
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					config.time_calibs[syn_on_row] = quad_config.m_time_calibs[syn];
+					config.amp_calibs[syn_on_row] = quad_config.m_amp_calibs[syn];
+				}
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -656,7 +904,7 @@ struct VisitPreorderImpl<lola::vx::SynapseRow>
 	typedef lola::vx::SynapseRow container_type;
 
 	template <typename ContainerT, typename VisitorT>
-	static void call(
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -692,6 +940,61 @@ struct VisitPreorderImpl<lola::vx::SynapseRow>
 			}
 		}
 	}
+
+	template <typename VisitorT>
+	static void call(
+	    hate::Empty<lola::vx::SynapseRow> config,
+	    lola::vx::SynapseRow::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			hate::Empty<haldls::vx::SynapseQuad> quad_config;
+			visit_preorder(
+			    quad_config,
+			    SynapseQuadOnDLS(
+			        SynapseQuadOnSynram(quad, coord.toSynapseRowOnSynram()), coord.toSynramOnDLS()),
+			    visitor);
+		}
+	}
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<lola::vx::SynapseRow::coordinate_type> coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			haldls::vx::SynapseQuad quad_config;
+			for (auto const syn : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				quad_config.m_weights[syn] = config.weights[syn_on_row];
+				quad_config.m_labels[syn] = config.labels[syn_on_row];
+				quad_config.m_time_calibs[syn] = config.time_calibs[syn_on_row];
+				quad_config.m_amp_calibs[syn] = config.amp_calibs[syn_on_row];
+			}
+			hate::Empty<SynapseQuadOnDLS> quad_coord;
+			visit_preorder(quad_config, quad_coord, visitor);
+			// only on alteration
+			if constexpr (!std::is_same<ContainerT, lola::vx::SynapseRow const>::value) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					config.weights[syn_on_row] = quad_config.m_weights[syn];
+					config.labels[syn_on_row] = quad_config.m_labels[syn];
+					config.time_calibs[syn_on_row] = quad_config.m_time_calibs[syn];
+					config.amp_calibs[syn_on_row] = quad_config.m_amp_calibs[syn];
+				}
+			}
+		}
+	}
 };
 
 
@@ -710,6 +1013,59 @@ struct VisitPreorderImpl<lola::vx::SynapseWeightMatrix>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const row : iter_all<SynapseRowOnSynram>()) {
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				hate::Empty<haldls::vx::SynapseWeightQuad> quad_config;
+				visit_preorder(
+				    quad_config,
+				    SynapseWeightQuadOnDLS(SynapseQuadOnSynram(quad, row), coord.toSynramOnDLS()),
+				    visitor);
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const row : iter_all<SynapseRowOnSynram>()) {
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				haldls::vx::SynapseWeightQuad quad_config;
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					quad_config.m_values[syn] = config.values[row][syn_on_row];
+				}
+				hate::Empty<SynapseWeightQuadOnDLS> quad_coord;
+				visit_preorder(quad_config, quad_coord, visitor);
+				// only on alteration
+				if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+					for (auto const syn : iter_all<EntryOnQuad>()) {
+						SynapseOnSynapseRow const syn_on_row(syn, quad);
+						config.values[row][syn_on_row] = quad_config.m_values[syn];
+					}
+				}
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -757,6 +1113,59 @@ struct VisitPreorderImpl<lola::vx::SynapseLabelMatrix>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const row : iter_all<SynapseRowOnSynram>()) {
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				hate::Empty<haldls::vx::SynapseLabelQuad> quad_config;
+				visit_preorder(
+				    quad_config,
+				    SynapseLabelQuadOnDLS(SynapseQuadOnSynram(quad, row), coord.toSynramOnDLS()),
+				    visitor);
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const row : iter_all<SynapseRowOnSynram>()) {
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				haldls::vx::SynapseLabelQuad quad_config;
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					quad_config.m_values[syn] = config.values[row][syn_on_row];
+				}
+				hate::Empty<SynapseLabelQuadOnDLS> quad_coord;
+				visit_preorder(quad_config, quad_coord, visitor);
+				// only on alteration
+				if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+					for (auto const syn : iter_all<EntryOnQuad>()) {
+						SynapseOnSynapseRow const syn_on_row(syn, quad);
+						config.values[row][syn_on_row] = quad_config.m_values[syn];
+					}
+				}
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -804,6 +1213,62 @@ struct VisitPreorderImpl<lola::vx::SynapseCorrelationCalibMatrix>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const row : iter_all<SynapseRowOnSynram>()) {
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				hate::Empty<haldls::vx::SynapseCorrelationCalibQuad> quad_config;
+				visit_preorder(
+				    quad_config,
+				    SynapseCorrelationCalibQuadOnDLS(
+				        SynapseQuadOnSynram(quad, row), coord.toSynramOnDLS()),
+				    visitor);
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const row : iter_all<SynapseRowOnSynram>()) {
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				haldls::vx::SynapseCorrelationCalibQuad quad_config;
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					quad_config.m_time_calibs[syn] = config.time_calibs[row][syn_on_row];
+					quad_config.m_amp_calibs[syn] = config.amp_calibs[row][syn_on_row];
+				}
+				hate::Empty<SynapseCorrelationCalibQuadOnDLS> quad_coord;
+				visit_preorder(quad_config, quad_coord, visitor);
+				// only on alteration
+				if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+					for (auto const syn : iter_all<EntryOnQuad>()) {
+						SynapseOnSynapseRow const syn_on_row(syn, quad);
+						config.time_calibs[row][syn_on_row] = quad_config.m_time_calibs[syn];
+						config.amp_calibs[row][syn_on_row] = quad_config.m_amp_calibs[syn];
+					}
+				}
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -854,6 +1319,62 @@ struct VisitPreorderImpl<lola::vx::SynapseMatrix>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> const& config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const row : iter_all<SynapseRowOnSynram>()) {
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				hate::Empty<haldls::vx::SynapseQuad> quad_config;
+				visit_preorder(
+				    quad_config, SynapseQuadOnDLS(SynapseQuadOnSynram(quad, row), coord), visitor);
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const row : iter_all<SynapseRowOnSynram>()) {
+			for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+				haldls::vx::SynapseQuad quad_config;
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					quad_config.m_weights.at(syn) = config.weights[row][syn_on_row];
+					quad_config.m_labels.at(syn) = config.labels[row][syn_on_row];
+					quad_config.m_time_calibs.at(syn) = config.time_calibs[row][syn_on_row];
+					quad_config.m_amp_calibs.at(syn) = config.amp_calibs[row][syn_on_row];
+				}
+				visit_preorder(quad_config, hate::Empty<SynapseQuadOnDLS>{}, visitor);
+				// only on alteration
+				if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+					for (auto const syn : iter_all<EntryOnQuad>()) {
+						SynapseOnSynapseRow const syn_on_row(syn, quad);
+						config.weights[row][syn_on_row] = quad_config.m_weights.at(syn);
+						config.labels[row][syn_on_row] = quad_config.m_labels.at(syn);
+						config.time_calibs[row][syn_on_row] = quad_config.m_time_calibs.at(syn);
+						config.amp_calibs[row][syn_on_row] = quad_config.m_amp_calibs.at(syn);
+					}
+				}
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -902,7 +1423,7 @@ template <>
 struct VisitPreorderImpl<lola::vx::CorrelationResetRow>
 {
 	template <typename ContainerT, typename VisitorT>
-	static void call(
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    lola::vx::CorrelationResetRow::coordinate_type const& coord,
 	    VisitorT&& visitor)
@@ -917,6 +1438,44 @@ struct VisitPreorderImpl<lola::vx::CorrelationResetRow>
 			SynapseQuadOnSynram const quad_on_synram(quad, coord.toSynapseRowOnSynram());
 			CorrelationResetOnDLS const reset_coord(quad_on_synram, coord.toSynramOnDLS());
 
+			visit_preorder(reset_container, reset_coord, visitor);
+		}
+	}
+
+	template <typename VisitorT>
+	static void call(
+	    hate::Empty<lola::vx::CorrelationResetRow> config,
+	    lola::vx::CorrelationResetRow::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+		hate::Empty<CorrelationReset> reset_container;
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			SynapseQuadOnSynram const quad_on_synram(quad, coord.toSynapseRowOnSynram());
+			CorrelationResetOnDLS const reset_coord(quad_on_synram, coord.toSynramOnDLS());
+
+			visit_preorder(reset_container, reset_coord, visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<lola::vx::CorrelationResetRow::coordinate_type> coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+		CorrelationReset reset_container;
+
+		for ([[maybe_unused]] auto const& _ : iter_all<SynapseQuadColumnOnDLS>()) {
+			hate::Empty<CorrelationResetOnDLS> const reset_coord;
 			visit_preorder(reset_container, reset_coord, visitor);
 		}
 	}

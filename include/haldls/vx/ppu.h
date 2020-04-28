@@ -11,6 +11,7 @@
 #include "haldls/vx/coordinate_to_container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
+#include "hate/empty.h"
 #include "hate/visibility.h"
 
 namespace fisch::vx {
@@ -308,11 +309,10 @@ template <>
 struct VisitPreorderImpl<PPUMemoryBlock>
 {
 	template <typename ContainerT, typename VisitorT>
-	static void call(
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config, PPUMemoryBlock::coordinate_type const& coord, VisitorT&& visitor)
 	{
 		using namespace halco::hicann_dls::vx;
-		auto const ppu_coord = coord.toPPUOnDLS();
 
 		if (coord.toPPUMemoryBlockOnPPU().toPPUMemoryBlockSize() != config.size()) {
 			std::stringstream ss;
@@ -324,7 +324,41 @@ struct VisitPreorderImpl<PPUMemoryBlock>
 
 		for (size_t counter = 0; counter < config.size(); counter++) {
 			auto word_coord = PPUMemoryWordOnDLS(
-			    PPUMemoryWordOnPPU(coord.toPPUMemoryBlockOnPPU().toMin() + counter), ppu_coord);
+			    PPUMemoryWordOnPPU(coord.toPPUMemoryBlockOnPPU().toMin() + counter),
+			    coord.toPPUOnDLS());
+			visit_preorder(config.m_words.at(counter), word_coord, visitor);
+		}
+	}
+
+	template <typename VisitorT>
+	static void call(
+	    hate::Empty<PPUMemoryBlock> const& config,
+	    PPUMemoryBlock::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using namespace halco::hicann_dls::vx;
+		visitor(coord, config);
+
+		for (size_t counter = 0; counter < coord.toPPUMemoryBlockSize(); counter++) {
+			auto word_coord = PPUMemoryWordOnDLS(
+			    PPUMemoryWordOnPPU(coord.toPPUMemoryBlockOnPPU().toMin() + counter),
+			    coord.toPPUOnDLS());
+			hate::Empty<PPUMemoryWord> word_config;
+			visit_preorder(word_config, word_coord, visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<PPUMemoryBlock::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using namespace halco::hicann_dls::vx;
+		visitor(coord, config);
+
+		for (size_t counter = 0; counter < config.size(); counter++) {
+			hate::Empty<PPUMemoryWordOnDLS> word_coord;
 			visit_preorder(config.m_words.at(counter), word_coord, visitor);
 		}
 	}
@@ -334,7 +368,7 @@ template <>
 struct VisitPreorderImpl<PPUMemory>
 {
 	template <typename ContainerT, typename VisitorT>
-	static void call(
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config, PPUMemory::coordinate_type const& coord, VisitorT&& visitor)
 	{
 		using halco::common::iter_all;
@@ -347,6 +381,44 @@ struct VisitPreorderImpl<PPUMemory>
 			// nested visitor in any case, even if it was passed as an rvalue to this function.
 			visit_preorder(
 			    config.m_words[word], PPUMemoryWordOnDLS(word, coord.toPPUOnDLS()), visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<PPUMemory::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const word : iter_all<PPUMemoryWordOnPPU>()) {
+			// No std::forward for visitor argument, as we want to pass a reference to the
+			// nested visitor in any case, even if it was passed as an rvalue to this function.
+			hate::Empty<PPUMemoryWordOnDLS> word_coord;
+			visit_preorder(config.m_words[word], word_coord, visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    hate::Empty<ContainerT> const& config,
+	    PPUMemory::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx;
+
+		visitor(coord, config);
+
+		for (auto const word : iter_all<PPUMemoryWordOnPPU>()) {
+			// No std::forward for visitor argument, as we want to pass a reference to the
+			// nested visitor in any case, even if it was passed as an rvalue to this function.
+			hate::Empty<PPUMemoryWord> word_config;
+			visit_preorder(word_config, PPUMemoryWordOnDLS(word, coord.toPPUOnDLS()), visitor);
 		}
 	}
 };

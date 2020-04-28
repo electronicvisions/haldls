@@ -14,6 +14,7 @@
 #include "haldls/vx/traits.h"
 #include "hate/type_traits.h"
 #include "stadls/visitors.h"
+#include "stadls/vx/supports_empty.h"
 
 namespace stadls::vx::detail {
 
@@ -204,12 +205,24 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToCon
 	    fisch::vx::container_cast(std::declval<backend_container_type>())) fisch_container_type;
 	typedef std::vector<typename fisch_container_type::coordinate_type> addresses_type;
 	addresses_type write_addresses;
-	haldls::vx::visit_preorder(
-	    config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+	if constexpr (supports_empty_container_v<T>) {
+		hate::Empty<T> empty_config;
+		haldls::vx::visit_preorder(
+		    empty_config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+	} else {
+		haldls::vx::visit_preorder(
+		    config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+	}
 
 	typedef std::vector<backend_container_type> words_type;
 	words_type words;
-	haldls::vx::visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{words});
+	if constexpr (supports_empty_coordinate_v<T>) {
+		haldls::vx::visit_preorder(
+		    config, hate::Empty<typename T::coordinate_type>{},
+		    stadls::EncodeVisitor<words_type>{words});
+	} else {
+		haldls::vx::visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{words});
+	}
 
 	if (words.size() != write_addresses.size()) {
 		throw std::logic_error("number of addresses and words do not match");
@@ -226,8 +239,14 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToCon
 	if (config_reference) {
 		if constexpr (std::is_base_of<haldls::vx::DifferentialWriteTrait, T>::value) {
 			words_type reference_words;
-			haldls::vx::visit_preorder(
-			    *config_reference, coord, stadls::EncodeVisitor<words_type>{reference_words});
+			if constexpr (supports_empty_coordinate_v<T>) {
+				haldls::vx::visit_preorder(
+				    *config_reference, hate::Empty<typename T::coordinate_type>{},
+				    stadls::EncodeVisitor<words_type>{reference_words});
+			} else {
+				haldls::vx::visit_preorder(
+				    *config_reference, coord, stadls::EncodeVisitor<words_type>{reference_words});
+			}
 			if (reference_words.size() != words.size()) {
 				throw std::logic_error("number of words of container and reference do not match");
 			}
@@ -415,10 +434,12 @@ PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToContaine
 		        std::declval<backend_container_type>())) fisch_container_type;
 		    typedef std::vector<typename fisch_container_type::coordinate_type> addresses_type;
 		    addresses_type read_addresses;
-		    {
-			    auto config =
-			        haldls::vx::detail::coordinate_to_container<typename T::coordinate_type, T>(
-			            coord);
+		    if constexpr (supports_empty_container_v<T>) {
+			    hate::Empty<T> config;
+			    haldls::vx::visit_preorder(
+			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		    } else {
+			    T config = coordinate_to_container<typename T::coordinate_type, T>(coord);
 			    haldls::vx::visit_preorder(
 			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 		    }

@@ -98,6 +98,52 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::SynapseBlock>
 
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> const& config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::CHIP_REVISION_STR;
+
+		visitor(coord, config);
+
+		hate::Empty<lola::vx::CHIP_REVISION_STR::SynapseMatrix> synapse_matrix;
+		visit_preorder(synapse_matrix, coord.toSynramOnDLS(), visitor);
+
+		for (auto block : iter_all<CapMemBlockOnHemisphere>()) {
+			CapMemBlockOnDLS block_on_dls(
+			    CapMemBlockOnDLS(block.toEnum() + CapMemBlockOnHemisphere::size * coord.toEnum()));
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> i_bias_dac;
+			visit_preorder(
+			    i_bias_dac, CapMemCellOnDLS(CapMemCellOnCapMemBlock::syn_i_bias_dac, block_on_dls),
+			    visitor);
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    hate::Empty<typename container_type::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::CHIP_REVISION_STR;
+
+		visitor(coord, config);
+
+		visit_preorder(config.matrix, hate::Empty<SynramOnDLS>{}, visitor);
+
+		for (auto block : iter_all<CapMemBlockOnHemisphere>()) {
+			haldls::vx::CHIP_REVISION_STR::CapMemCell i_bias_dac(config.i_bias_dac[block]);
+			visit_preorder(i_bias_dac, hate::Empty<CapMemCellOnDLS>{}, visitor);
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				config.i_bias_dac[block] = i_bias_dac.get_value();
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    typename container_type::coordinate_type const& coord,
 	    VisitorT&& visitor)

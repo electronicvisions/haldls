@@ -1,5 +1,6 @@
 #pragma once
 
+#include "hate/empty.h"
 #include <type_traits>
 #include <utility>
 
@@ -20,10 +21,11 @@ struct VisitPreorderImpl
 	    "visit_preorder needs to be specialized for non-leaf-node container");
 
 	/// @tparam ContainerU Type of the container, should be equal to \c ContainerT up to a
-	///         const-specifier.
-	template <typename ContainerU, typename VisitorT>
-	static void call(
-	    ContainerU& config, typename ContainerT::coordinate_type const& coord, VisitorT&& visitor)
+	///         const-specifier or hate::Empty<ContainerT>.
+	/// @tparam CoordinateU Type of the container, should be equal to \c ContainerT up to a
+	///         const-specifier or hate::Empty<CoordinateT>.
+	template <typename ContainerU, typename CoordinateU, typename VisitorT>
+	static void call(ContainerU& config, CoordinateU const& coord, VisitorT&& visitor)
 	{
 		visitor(coord, config);
 	}
@@ -37,9 +39,11 @@ template <class ContainerT, class CoordinateT, class VisitorT>
 void visit_preorder(ContainerT& config, CoordinateT const& coord, VisitorT&& visitor)
 {
 	static_assert(
-	    std::is_same<typename ContainerT::coordinate_type, CoordinateT>::value,
+	    std::is_same_v<
+	        typename hate::remove_empty_t<ContainerT>::coordinate_type,
+	        hate::remove_empty_t<CoordinateT>>,
 	    "coordinate type does not match container type");
-	detail::VisitPreorderImpl<typename std::remove_cv<ContainerT>::type>::call(
+	detail::VisitPreorderImpl<std::remove_cv_t<hate::remove_empty_t<ContainerT>>>::call(
 	    config, coord, std::forward<VisitorT>(visitor));
 }
 

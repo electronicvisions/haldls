@@ -35,6 +35,23 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::LogicalNeuron>
 {
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    hate::Empty<ContainerT> const& config,
+	    lola::vx::CHIP_REVISION_STR::LogicalNeuron::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		visitor(coord, config);
+
+		auto placed_compartments = coord.get_placed_compartments();
+		for (auto const& [compartment_on_ln, atomic_neurons_on_dls] : placed_compartments) {
+			for (size_t i = 0; i < atomic_neurons_on_dls.size(); ++i) {
+				hate::Empty<lola::vx::CHIP_REVISION_STR::AtomicNeuron> atomic_neuron;
+				visit_preorder(atomic_neuron, atomic_neurons_on_dls.at(i), visitor);
+			}
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    lola::vx::CHIP_REVISION_STR::LogicalNeuron::coordinate_type const& coord,
 	    VisitorT&& visitor)

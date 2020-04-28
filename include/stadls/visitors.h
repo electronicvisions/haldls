@@ -6,6 +6,10 @@
 #include <stdexcept>
 #include <utility>
 
+#include "haldls/has_local_data.h"
+#include "haldls/is_leaf_node.h"
+#include "hate/empty.h"
+
 namespace stadls {
 
 /// \brief Extract addresses for reading from hardware for the visited containers.
@@ -22,43 +26,48 @@ struct ReadAddressVisitor
 	T& addresses;
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-		-> decltype(container.addresses(coord), void())
+	void operator()(CoordinateT const& coord, ContainerT&)
 	{
-		auto const read_addresses = container.addresses(coord);
+		static_assert(
+		    !hate::is_empty_v<CoordinateT>,
+		    "ReadAddressVisitor needs non-empty coordinate instance");
+		if constexpr (
+		    haldls::HasLocalData<hate::remove_empty_t<ContainerT>>::value ||
+		    haldls::IsLeafNode<hate::remove_empty_t<ContainerT>>::value) {
+			impl<CoordinateT, hate::remove_empty_t<std::remove_cv_t<ContainerT>>>(coord);
+		}
+	}
+
+private:
+	template <typename CoordinateT, typename ContainerT>
+	auto impl(CoordinateT const& coord) -> decltype(ContainerT::addresses(coord), void())
+	{
+		auto const read_addresses = ContainerT::addresses(coord);
 		addresses.insert(addresses.end(), read_addresses.begin(), read_addresses.end());
 	}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-		-> decltype(container.read_addresses(coord), void())
+	auto impl(CoordinateT const& coord) -> decltype(ContainerT::read_addresses(coord), void())
 	{
-		auto const read_addresses = container.read_addresses(coord);
+		auto const read_addresses = ContainerT::read_addresses(coord);
 		addresses.insert(addresses.end(), read_addresses.begin(), read_addresses.end());
 	}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-	    -> decltype(container.template addresses<typename T::value_type>(coord), void())
+	auto impl(CoordinateT const& coord)
+	    -> decltype(ContainerT::template addresses<typename T::value_type>(coord), void())
 	{
-		auto const read_addresses = container.template addresses<typename T::value_type>(coord);
+		auto const read_addresses = ContainerT::template addresses<typename T::value_type>(coord);
 		addresses.insert(addresses.end(), read_addresses.begin(), read_addresses.end());
 	}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-	    -> decltype(container.template read_addresses<typename T::value_type>(coord), void())
+	auto impl(CoordinateT const& coord)
+	    -> decltype(ContainerT::template read_addresses<typename T::value_type>(coord), void())
 	{
 		auto const read_addresses =
-		    container.template read_addresses<typename T::value_type>(coord);
+		    ContainerT::template read_addresses<typename T::value_type>(coord);
 		addresses.insert(addresses.end(), read_addresses.begin(), read_addresses.end());
-	}
-
-	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const&, ContainerT const&) ->
-		typename std::enable_if<!ContainerT::has_local_data::value>::type
-	{
-		/* do nothing */
 	}
 };
 
@@ -76,43 +85,48 @@ struct WriteAddressVisitor
 	T& addresses;
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-		-> decltype(container.addresses(coord), void())
+	void operator()(CoordinateT const& coord, ContainerT&)
 	{
-		auto const write_addresses = container.addresses(coord);
+		static_assert(
+		    !hate::is_empty_v<CoordinateT>,
+		    "WriteAddressVisitor needs non-empty coordinate instance");
+		if constexpr (
+		    haldls::HasLocalData<hate::remove_empty_t<ContainerT>>::value ||
+		    haldls::IsLeafNode<hate::remove_empty_t<ContainerT>>::value) {
+			impl<CoordinateT, hate::remove_empty_t<std::remove_cv_t<ContainerT>>>(coord);
+		}
+	}
+
+private:
+	template <typename CoordinateT, typename ContainerT>
+	auto impl(CoordinateT const& coord) -> decltype(ContainerT::addresses(coord), void())
+	{
+		auto const write_addresses = ContainerT::addresses(coord);
 		addresses.insert(addresses.end(), write_addresses.begin(), write_addresses.end());
 	}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-		-> decltype(container.write_addresses(coord), void())
+	auto impl(CoordinateT const& coord) -> decltype(ContainerT::write_addresses(coord), void())
 	{
-		auto const write_addresses = container.write_addresses(coord);
+		auto const write_addresses = ContainerT::write_addresses(coord);
 		addresses.insert(addresses.end(), write_addresses.begin(), write_addresses.end());
 	}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-	    -> decltype(container.template addresses<typename T::value_type>(coord), void())
+	auto impl(CoordinateT const& coord)
+	    -> decltype(ContainerT::template addresses<typename T::value_type>(coord), void())
 	{
-		auto const write_addresses = container.template addresses<typename T::value_type>(coord);
+		auto const write_addresses = ContainerT::template addresses<typename T::value_type>(coord);
 		addresses.insert(addresses.end(), write_addresses.begin(), write_addresses.end());
 	}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-	    -> decltype(container.template write_addresses<typename T::value_type>(coord), void())
+	auto impl(CoordinateT const& coord)
+	    -> decltype(ContainerT::template write_addresses<typename T::value_type>(coord), void())
 	{
 		auto const write_addresses =
-		    container.template write_addresses<typename T::value_type>(coord);
+		    ContainerT::template write_addresses<typename T::value_type>(coord);
 		addresses.insert(addresses.end(), write_addresses.begin(), write_addresses.end());
-	}
-
-	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const&, ContainerT const&) ->
-		typename std::enable_if<!ContainerT::has_local_data::value>::type
-	{
-		/* do nothing */
 	}
 };
 
@@ -138,34 +152,33 @@ public:
 	DecodeVisitor(T data) : m_data(std::move(data)), m_it(m_data.cbegin()) {}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT& container)
-		-> decltype(&ContainerT::decode, void())
+	void operator()(CoordinateT const& coordinate, ContainerT& config)
 	{
-		decode(coord, container, &ContainerT::decode);
-	}
-
-	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT& container)
-	    -> decltype(&ContainerT::template decode<value_type>, void())
-	{
-		decode(coord, container, &ContainerT::template decode<value_type>);
-	}
-
-	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const&, ContainerT const&) ->
-		typename std::enable_if<!ContainerT::has_local_data::value>::type
-	{
-		/* do nothing */
+		static_assert(
+		    !hate::is_empty_v<ContainerT>, "DecodeVisitor needs non-empty container instance");
+		impl(coordinate, config);
 	}
 
 private:
-	template <typename CoordinateT, typename ContainerT, typename DecodeContainerT, size_t N>
-	void decode(
-	    CoordinateT const& coord,
-	    ContainerT& container,
-	    void (DecodeContainerT::*decode)(CoordinateT const&, std::array<value_type, N> const&))
+	template <typename CoordinateT, typename ContainerT>
+	auto impl(CoordinateT const& coordinate, ContainerT& container)
+	    -> decltype(&ContainerT::decode, void())
 	{
-		(container.*decode)(coord, slice<N>());
+		decode(coordinate, container, &ContainerT::decode);
+	}
+
+	template <typename CoordinateT, typename ContainerT>
+	auto impl(CoordinateT const& coordinate, ContainerT& container)
+	    -> decltype(&ContainerT::template decode<value_type>, void())
+	{
+		decode(coordinate, container, &ContainerT::template decode<value_type>);
+	}
+
+	template <typename CoordinateT, typename ContainerT>
+	auto impl(CoordinateT const&, ContainerT const&) ->
+	    typename std::enable_if<!ContainerT::has_local_data::value>::type
+	{
+		/* do nothing */
 	}
 
 	template <typename CoordinateT, typename ContainerT, typename DecodeContainerT, size_t N>
@@ -175,6 +188,15 @@ private:
 	    void (DecodeContainerT::*decode)(std::array<value_type, N> const&))
 	{
 		(container.*decode)(slice<N>());
+	}
+
+	template <typename CoordinateT, typename ContainerT, typename DecodeContainerT, size_t N>
+	void decode(
+	    CoordinateT const& coordinate,
+	    ContainerT& container,
+	    void (DecodeContainerT::*decode)(CoordinateT const&, std::array<value_type, N> const&))
+	{
+		(container.*decode)(coordinate, slice<N>());
 	}
 
 	template <size_t N>
@@ -217,65 +239,52 @@ public:
 	EncodeVisitor(T& data) : m_data(data) {}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
-		-> decltype(&ContainerT::encode, void())
+	void operator()(CoordinateT const& coordinate, ContainerT& config)
 	{
-		encode(coord, container, &ContainerT::encode);
+		static_assert(
+		    !hate::is_empty_v<ContainerT>, "EncodeVisitor needs non-empty container instance");
+		impl(coordinate, config);
+	}
+
+private:
+	template <typename CoordinateT, typename ContainerT>
+	auto impl(CoordinateT const& coordinate, ContainerT const& container)
+	    -> decltype(&ContainerT::encode, void())
+	{
+		encode(coordinate, container, &ContainerT::encode);
 	}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const& coord, ContainerT const& container)
+	auto impl(CoordinateT const& coordinate, ContainerT const& container)
 	    -> decltype(&ContainerT::template encode<value_type>, void())
 	{
-		encode(coord, container, &ContainerT::template encode<value_type>);
+		encode(coordinate, container, &ContainerT::template encode<value_type>);
 	}
 
 	template <typename CoordinateT, typename ContainerT>
-	auto operator()(CoordinateT const&, ContainerT const&) ->
-		typename std::enable_if<!ContainerT::has_local_data::value>::type
+	auto impl(CoordinateT const&, ContainerT const&) ->
+	    typename std::enable_if<!ContainerT::has_local_data::value>::type
 	{
 		/* do nothing */
 	}
 
-private:
-	template <typename CoordinateT, typename ContainerT, size_t N>
-	void encode(
-		CoordinateT const& coord,
-		ContainerT const& container,
-		std::array<value_type, N> (ContainerT::*encode)(CoordinateT const&) const)
-	{
-		auto const words = (container.*encode)(coord);
-		m_data.insert(m_data.end(), words.begin(), words.end());
-	}
-
-	template <typename CoordinateT, typename ContainerT, size_t N>
-	void encode(
-		CoordinateT const&,
-		ContainerT const& container,
-		std::array<value_type, N> (ContainerT::*encode)() const)
-	{
-		auto const words = (container.*encode)();
-		m_data.insert(m_data.end(), words.begin(), words.end());
-	}
-
-	template <typename CoordinateT, typename ContainerT>
-	void encode(
-	    CoordinateT const& coord,
-	    ContainerT const& container,
-	    decltype(container.template encode<value_type>(coord)) (ContainerT::*encode)(
-	        CoordinateT const&) const)
-	{
-		auto const words = (container.*encode)(coord);
-		m_data.insert(m_data.end(), words.begin(), words.end());
-	}
-
-	template <typename CoordinateT, typename ContainerT>
+	template <typename CoordinateT, typename ContainerT, typename EncodeContainerT, size_t N>
 	void encode(
 	    CoordinateT const&,
 	    ContainerT const& container,
-	    decltype(container.template encode<value_type>()) (ContainerT::*encode)() const)
+	    std::array<value_type, N> (EncodeContainerT::*encode)() const)
 	{
 		auto const words = (container.*encode)();
+		m_data.insert(m_data.end(), words.begin(), words.end());
+	}
+
+	template <typename CoordinateT, typename ContainerT, typename EncodeContainerT, size_t N>
+	void encode(
+	    CoordinateT const& coordinate,
+	    ContainerT const& container,
+	    std::array<value_type, N> (EncodeContainerT::*encode)(CoordinateT const&) const)
+	{
+		auto const words = (container.*encode)(coordinate);
 		m_data.insert(m_data.end(), words.begin(), words.end());
 	}
 };

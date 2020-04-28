@@ -202,6 +202,7 @@ class GENPYBIND(visible) ExternalPPUMemoryByte
 public:
 	typedef halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA coordinate_type;
 	typedef std::true_type is_leaf_node;
+	typedef std::false_type supports_empty_coordinate;
 
 	struct GENPYBIND(inline_base("*")) Value
 	    : public halco::common::detail::BaseType<Value, uint8_t>

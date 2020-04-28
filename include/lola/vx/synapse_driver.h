@@ -120,8 +120,164 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::SynapseDriverBlock>
 {
 	typedef lola::vx::CHIP_REVISION_STR::SynapseDriverBlock container_type;
 
+	template <typename VisitorT>
+	static void call(
+	    hate::Empty<container_type> const& config,
+	    lola::vx::CHIP_REVISION_STR::SynapseDriverBlock::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::CHIP_REVISION_STR;
+
+		visitor(coord, config);
+
+		for (auto const on_block : iter_all<SynapseDriverOnSynapseDriverBlock>()) {
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::SynapseDriverConfig> synapse_driver_config;
+			visit_preorder(synapse_driver_config, SynapseDriverOnDLS(on_block, coord), visitor);
+		}
+
+		hate::Empty<haldls::vx::CHIP_REVISION_STR::CommonPADIBusConfig> common_padi_bus_config;
+		visit_preorder(common_padi_bus_config, coord.toCommonPADIBusConfigOnDLS(), visitor);
+		hate::Empty<haldls::vx::CHIP_REVISION_STR::CommonSTPConfig> common_stp_config;
+		visit_preorder(common_stp_config, coord.toCommonSTPConfigOnDLS(), visitor);
+
+		for (auto block : iter_all<CapMemBlockOnHemisphere>()) {
+			CapMemBlockOnDLS block_on_dls(
+			    CapMemBlockOnDLS(block.toEnum() + CapMemBlockOnHemisphere::size * coord.toEnum()));
+
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> stp_v_charge_0;
+			visit_preorder(
+			    stp_v_charge_0,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::stp_v_charge_0, block_on_dls), visitor);
+
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> stp_v_charge_1;
+			visit_preorder(
+			    stp_v_charge_1,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::stp_v_charge_1, block_on_dls), visitor);
+
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> stp_v_recover_0;
+			visit_preorder(
+			    stp_v_recover_0,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::stp_v_recover_0, block_on_dls), visitor);
+
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> stp_v_recover_1;
+			visit_preorder(
+			    stp_v_recover_1,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::stp_v_recover_1, block_on_dls), visitor);
+
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> stp_i_bias_comparator;
+			visit_preorder(
+			    stp_i_bias_comparator,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::stp_i_bias_comparator, block_on_dls),
+			    visitor);
+
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> stp_i_ramp;
+			visit_preorder(
+			    stp_i_ramp, CapMemCellOnDLS(CapMemCellOnCapMemBlock::stp_i_ramp, block_on_dls),
+			    visitor);
+
+			hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> stp_i_calib;
+			visit_preorder(
+			    stp_i_calib, CapMemCellOnDLS(CapMemCellOnCapMemBlock::stp_i_calib, block_on_dls),
+			    visitor);
+		}
+
+		hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> stp_i_bias_readout;
+		visit_preorder(
+		    stp_i_bias_readout,
+		    ((coord == SynapseDriverBlockOnDLS::top) ? CapMemCellOnDLS::stp_ibias_readout_top
+		                                             : CapMemCellOnDLS::stp_ibias_readout_bottom),
+		    visitor);
+
+		hate::Empty<haldls::vx::CHIP_REVISION_STR::CapMemCell> hagen_i_bias_dac;
+		visit_preorder(
+		    hagen_i_bias_dac,
+		    ((coord == SynapseDriverBlockOnDLS::top) ? CapMemCellOnDLS::hagen_ibias_dac_top
+		                                             : CapMemCellOnDLS::hagen_ibias_dac_bottom),
+		    visitor);
+	}
+
 	template <typename ContainerT, typename VisitorT>
 	static void call(
+	    ContainerT& config,
+	    hate::Empty<lola::vx::CHIP_REVISION_STR::SynapseDriverBlock::coordinate_type> const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::CHIP_REVISION_STR;
+
+		visitor(coord, config);
+
+		for (auto const on_block : iter_all<SynapseDriverOnSynapseDriverBlock>()) {
+			visit_preorder(
+			    config.synapse_drivers[on_block], hate::Empty<SynapseDriverOnDLS>{}, visitor);
+		}
+
+		visit_preorder(config.padi_bus, hate::Empty<CommonPADIBusConfigOnDLS>{}, visitor);
+		visit_preorder(config.stp, hate::Empty<CommonSTPConfigOnDLS>{}, visitor);
+
+		for (auto block : iter_all<CapMemBlockOnHemisphere>()) {
+			haldls::vx::CHIP_REVISION_STR::CapMemCell stp_v_charge_0(config.stp_v_charge_0[block]);
+			visit_preorder(stp_v_charge_0, hate::Empty<CapMemCellOnDLS>{}, visitor);
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				config.stp_v_charge_0[block] = stp_v_charge_0.get_value();
+			}
+
+			haldls::vx::CHIP_REVISION_STR::CapMemCell stp_v_charge_1(config.stp_v_charge_1[block]);
+			visit_preorder(stp_v_charge_1, hate::Empty<CapMemCellOnDLS>{}, visitor);
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				config.stp_v_charge_1[block] = stp_v_charge_1.get_value();
+			}
+
+			haldls::vx::CHIP_REVISION_STR::CapMemCell stp_v_recover_0(
+			    config.stp_v_recover_0[block]);
+			visit_preorder(stp_v_recover_0, hate::Empty<CapMemCellOnDLS>{}, visitor);
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				config.stp_v_recover_0[block] = stp_v_recover_0.get_value();
+			}
+
+			haldls::vx::CHIP_REVISION_STR::CapMemCell stp_v_recover_1(
+			    config.stp_v_recover_1[block]);
+			visit_preorder(stp_v_recover_1, hate::Empty<CapMemCellOnDLS>{}, visitor);
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				config.stp_v_recover_1[block] = stp_v_recover_1.get_value();
+			}
+
+			haldls::vx::CHIP_REVISION_STR::CapMemCell stp_i_bias_comparator(
+			    config.stp_i_bias_comparator[block]);
+			visit_preorder(stp_i_bias_comparator, hate::Empty<CapMemCellOnDLS>{}, visitor);
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				config.stp_i_bias_comparator[block] = stp_i_bias_comparator.get_value();
+			}
+
+			haldls::vx::CHIP_REVISION_STR::CapMemCell stp_i_ramp(config.stp_i_ramp[block]);
+			visit_preorder(stp_i_ramp, hate::Empty<CapMemCellOnDLS>{}, visitor);
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				config.stp_i_ramp[block] = stp_i_ramp.get_value();
+			}
+
+			haldls::vx::CHIP_REVISION_STR::CapMemCell stp_i_calib(config.stp_i_calib[block]);
+			visit_preorder(stp_i_calib, hate::Empty<CapMemCellOnDLS>{}, visitor);
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				config.stp_i_calib[block] = stp_i_calib.get_value();
+			}
+		}
+
+		haldls::vx::CHIP_REVISION_STR::CapMemCell stp_i_bias_readout(config.stp_i_bias_readout);
+		visit_preorder(stp_i_bias_readout, hate::Empty<CapMemCellOnDLS>{}, visitor);
+		if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+			config.stp_i_bias_readout = stp_i_bias_readout.get_value();
+		}
+
+		haldls::vx::CHIP_REVISION_STR::CapMemCell hagen_i_bias_dac(config.hagen_i_bias_dac);
+		visit_preorder(hagen_i_bias_dac, hate::Empty<CapMemCellOnDLS>{}, visitor);
+		if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+			config.hagen_i_bias_dac = hagen_i_bias_dac.get_value();
+		}
+	}
+
+	template <typename ContainerT, typename VisitorT>
+	static std::enable_if_t<!hate::is_empty_v<ContainerT>> call(
 	    ContainerT& config,
 	    lola::vx::CHIP_REVISION_STR::SynapseDriverBlock::coordinate_type const& coord,
 	    VisitorT&& visitor)
