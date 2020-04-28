@@ -6,6 +6,7 @@
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/ppu.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/coordinate_to_container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
@@ -346,6 +347,12 @@ struct BackendContainerTrait<PPUControlRegister>
           fisch::vx::OmnibusChip,
           fisch::vx::OmnibusChipOverJTAG>
 {};
+
+template <>
+inline PPUMemoryBlock coordinate_to_container(PPUMemoryBlock::coordinate_type const& coord)
+{
+	return PPUMemoryBlock(coord.toPPUMemoryBlockSize());
+}
 
 } // namespace detail
 

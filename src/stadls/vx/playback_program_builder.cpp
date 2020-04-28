@@ -194,13 +194,9 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 		    typedef std::vector<typename backend_container_type::coordinate_type> addresses_type;
 		    addresses_type read_addresses;
 		    {
-			    T config;
-
-			    if constexpr (std::is_same<T, haldls::vx::PPUMemoryBlock>::value) {
-				    // FIXME (Issue #3327): PPUMemoryBlock needs special size on construction
-				    config = haldls::vx::PPUMemoryBlock(coord.toPPUMemoryBlockSize());
-			    }
-
+			    auto config =
+			        haldls::vx::detail::coordinate_to_container<typename T::coordinate_type, T>(
+			            coord);
 			    haldls::vx::visit_preorder(
 			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 		    }

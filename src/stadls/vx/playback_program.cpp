@@ -4,6 +4,7 @@
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/container.h"
+#include "haldls/vx/coordinate_to_container.h"
 #include "lola/vx/container.h"
 #include "stadls/visitors.h"
 
@@ -29,13 +30,8 @@ T PlaybackProgram::ContainerTicket<T>::get() const
 			        "container data not available yet (out of bounds of available results data)");
 
 		    auto data = ticket_impl.get();
-		    T config;
-
-		    if constexpr (std::is_same<T, haldls::vx::PPUMemoryBlock>::value) {
-			    // FIXME (Issue #3327): PPUMemoryBlock needs special size on construction
-			    config = haldls::vx::PPUMemoryBlock(m_coord.toPPUMemoryBlockSize());
-		    }
-
+		    auto config =
+		        haldls::vx::detail::coordinate_to_container<decltype(m_coord), T>(m_coord);
 		    haldls::vx::visit_preorder(
 		        config, m_coord, stadls::DecodeVisitor<decltype(data)>{std::move(data)});
 		    return config;
