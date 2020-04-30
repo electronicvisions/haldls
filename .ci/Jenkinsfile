@@ -1,28 +1,35 @@
 @Library("jenlib") _
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 
+Map<String, Object> pipelineOptions = [
+		projects           : ["haldls"],
+		testOptions        : "--test-execall -j1",
+		testSlurmResource  : [[partition: "cube", wafer: 62, "fpga-without-aout": 3]],
+		testTimeout        : 240,
+		notificationChannel: "#dls-software"
+]
 
-wafDefaultPipeline(projects: ["haldls"],
-                   container: [app: "visionary-dls"],
-                   postPipelineCleanup: false,
-                   testOptions: "--test-execall -j1",
-                   testSlurmResource: [[partition: "cube", wafer: 62, "fpga-without-aout": 3]],
-                   testTimeout: 240,
-                   notificationChannel: "#dls-software")
+wafDefaultPipeline([container: [app: "dls-core"]] << pipelineOptions)
 
 try {
 	stage("Module Deployment") {
 		if (env.GERRIT_EVENT_TYPE == "change-merged") {
+			// Build in 'dls' app for deployment
+			cleanWs()
+			wafDefaultPipeline([container: [app: "dls"]] << pipelineOptions)
+
 			if (currentBuild.currentResult == "SUCCESS") {
 				runOnSlave(label: "frontend") {
-					inSingularity(app: "visionary-dls") {
+					inSingularity(app: "dls") {
 						deployModule([name: "haldls", source: WORKSPACE])
 					}
 				}
 			} else {
 				echo("Deployment skipped: Unstable build.")
+				Utils.markStageSkippedForConditional(STAGE_NAME)
 			}
 		} else {
+			echo("Deployment skipped: Not a merge event.")
 			Utils.markStageSkippedForConditional(STAGE_NAME)
 		}
 	}
