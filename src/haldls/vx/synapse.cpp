@@ -582,23 +582,29 @@ std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelat
 {
 	using namespace halco::hicann_dls::vx;
 	uint32_t raw_base;
-	uint32_t lsb_base;
+	uint32_t lsb_weight_base;
+	uint32_t lsb_label_base;
 	if (block.toSynramOnDLS() == SynramOnDLS::bottom) {
 		raw_base = synram_synapse_bottom_base_address;
-		lsb_base = synram_synapse_6lsb_bottom_base_address;
+		lsb_weight_base = synram_synapse_weight_bottom_base_address;
+		lsb_label_base = synram_synapse_label_bottom_base_address;
 	} else {
 		raw_base = synram_synapse_top_base_address;
-		lsb_base = synram_synapse_6lsb_top_base_address;
+		lsb_weight_base = synram_synapse_weight_top_base_address;
+		lsb_label_base = synram_synapse_label_top_base_address;
 	}
 	auto const address_0 =
 	    raw_base + detail::to_synram_quad_address_offset(block.toSynapseQuadColumnOnDLS()) +
 	    SynapseQuadOnSynram::size * SynapseQuad::config_size_in_words +
 	    ColumnCurrentQuadOnSynram::size * ColumnCurrentQuad::config_size_in_words;
-	auto const address_1 = lsb_base +
+	auto const address_1 = lsb_weight_base +
 	                       detail::to_synram_quad_address_offset(block.toSynapseQuadColumnOnDLS()) +
-	                       SynapseQuadOnSynram::size * SynapseQuad::config_size_in_words;
+	                       SynapseQuadOnSynram::size;
+	auto const address_2 = lsb_label_base +
+	                       detail::to_synram_quad_address_offset(block.toSynapseQuadColumnOnDLS()) +
+	                       SynapseQuadOnSynram::size;
 	return {{AddressT(address_0), AddressT((address_0) + ColumnCorrelationQuadOnSynram::size),
-	         AddressT(address_1), AddressT(address_1 + ColumnCorrelationQuadOnSynram::size)}};
+	         AddressT(address_1), AddressT(address_2)}};
 }
 
 template SYMBOL_VISIBLE std::
@@ -884,16 +890,18 @@ std::array<AddressT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad:
     coordinate_type const& block)
 {
 	using namespace halco::hicann_dls::vx;
-	uint32_t base;
+	uint32_t base_even;
+	uint32_t base_odd;
 	if (block.toSynramOnDLS() == SynramOnDLS::bottom) {
-		base = synram_synapse_2msb_bottom_base_address;
+		base_even = synram_synapse_even_2msb_bottom_base_address;
+		base_odd = synram_synapse_odd_2msb_bottom_base_address;
 	} else {
-		base = synram_synapse_2msb_top_base_address;
+		base_even = synram_synapse_even_2msb_top_base_address;
+		base_odd = synram_synapse_odd_2msb_top_base_address;
 	}
-	auto const address = base +
-	                     detail::to_synram_quad_address_offset(block.toSynapseQuadColumnOnDLS()) +
-	                     SynapseQuadOnSynram::size * SynapseQuad::config_size_in_words;
-	return {{AddressT(address), AddressT((address) + ColumnCurrentQuadOnSynram::size)}};
+	auto const offset = detail::to_synram_quad_address_offset(block.toSynapseQuadColumnOnDLS()) +
+	                    SynapseQuadOnSynram::size;
+	return {{AddressT(base_even + offset), AddressT(base_odd + offset)}};
 }
 
 template SYMBOL_VISIBLE
@@ -914,37 +922,37 @@ struct ColumnCurrentQuadBitfield
 		std::array<uint32_t, ColumnCurrentQuad::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t                                      : 6;
 			uint32_t enable_synaptic_current_excitatory_0 : 1;
 			uint32_t enable_synaptic_current_inhibitory_0 : 1;
-
 			uint32_t                                      : 6;
+
 			uint32_t enable_synaptic_current_excitatory_1 : 1;
 			uint32_t enable_synaptic_current_inhibitory_1 : 1;
-
 			uint32_t                                      : 6;
+
 			uint32_t enable_synaptic_current_excitatory_2 : 1;
 			uint32_t enable_synaptic_current_inhibitory_2 : 1;
-
 			uint32_t                                      : 6;
+
 			uint32_t enable_synaptic_current_excitatory_3 : 1;
 			uint32_t enable_synaptic_current_inhibitory_3 : 1;
-
 			uint32_t                                      : 6;
+
 			uint32_t enable_debug_excitatory_0            : 1;
 			uint32_t enable_debug_inhibitory_0            : 1;
-
 			uint32_t                                      : 6;
+
 			uint32_t enable_debug_excitatory_1            : 1;
 			uint32_t enable_debug_inhibitory_1            : 1;
-
 			uint32_t                                      : 6;
+
 			uint32_t enable_debug_excitatory_2            : 1;
 			uint32_t enable_debug_inhibitory_2            : 1;
-
 			uint32_t                                      : 6;
+
 			uint32_t enable_debug_excitatory_3            : 1;
 			uint32_t enable_debug_inhibitory_3            : 1;
+			uint32_t                                      : 6;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

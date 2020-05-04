@@ -119,10 +119,10 @@ TEST(ColumnCurrentQuad, EncodeDecode)
 	current_switch_block.set_switch(current_switch_coord, current_switch);
 
 	std::array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCurrentQuad::config_size_in_words>
-	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02c1'8000),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c1'8040)}};
+	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02c1'4000),
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c2'4000)}};
 	std::array<fisch::vx::OmnibusChip, ColumnCurrentQuad::config_size_in_words> ref_data = {
-	    {fisch::vx::OmnibusData(0x0080'0000), fisch::vx::OmnibusData(0x0040'0000)}};
+	    {fisch::vx::OmnibusData(0x0002'0000), fisch::vx::OmnibusData(0x0001'0000)}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusChipAddress> write_addresses;

@@ -145,8 +145,8 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 	    halco::hicann_dls::vx::OmnibusChipAddress, ColumnCorrelationQuad::config_size_in_words>
 	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'8080),
 	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'80c0),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c0'8000),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c0'8040)}};
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c0'4000),
+	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c4'4000)}};
 	std::array<fisch::vx::OmnibusChip, ColumnCorrelationQuad::config_size_in_words> ref_data = {
 	    {fisch::vx::OmnibusData(0x0040'0000), fisch::vx::OmnibusData(0x0080'0000),
 	     fisch::vx::OmnibusData(0x0000'0000), fisch::vx::OmnibusData(0x0020'0000)}};
