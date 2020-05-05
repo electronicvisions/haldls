@@ -15,7 +15,11 @@ try {
 	stage("Module Deployment") {
 		if (env.GERRIT_EVENT_TYPE == "change-merged") {
 			// Build in 'dls' app for deployment
-			cleanWs()
+
+			runOnSlave(label: "frontend") {
+				cleanWs()
+			}
+
 			wafDefaultPipeline([container: [app: "dls"]] << pipelineOptions)
 
 			if (currentBuild.currentResult == "SUCCESS") {
