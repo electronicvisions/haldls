@@ -1,8 +1,11 @@
 #include "haldls/vx/fpga.h"
 
+#include <iomanip>
+
 #include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "halco/hicann-dls/vx/quad.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
@@ -188,8 +191,80 @@ void EventRecordingConfig::serialize(Archive& ar, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventRecordingConfig)
 
+
+ExternalPPUMemoryByte::ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value const value) :
+    m_value(value)
+{}
+
+ExternalPPUMemoryByte::Value ExternalPPUMemoryByte::get_value() const
+{
+	return m_value;
+}
+
+void ExternalPPUMemoryByte::set_value(ExternalPPUMemoryByte::Value const& value)
+{
+	m_value = value;
+}
+
+bool ExternalPPUMemoryByte::operator==(ExternalPPUMemoryByte const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool ExternalPPUMemoryByte::operator!=(ExternalPPUMemoryByte const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryByte const& config)
+{
+	using namespace hate::math;
+	auto const w = static_cast<uintmax_t>(config.m_value);
+	std::stringstream out;
+	out << "ExternalPPUMemoryByte(";
+	out << std::showbase << std::internal << std::setfill('0') << std::hex
+	    << std::setw(round_up_integer_division(num_bits(ExternalPPUMemoryByte::Value::max), 4))
+	    << w;
+	os << out.str() << ")";
+	return os;
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, ExternalPPUMemoryByte::config_size_in_words>
+ExternalPPUMemoryByte::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    external_ppu_memory_base_address + (coord.toEnum() / sizeof(uint32_t)))};
+}
+
+std::array<fisch::vx::Omnibus, ExternalPPUMemoryByte::config_size_in_words>
+ExternalPPUMemoryByte::encode(coordinate_type const& coord) const
+{
+	auto const byte_in_word = coord.toEnum() % sizeof(uint32_t);
+	uint32_t const raw_value = static_cast<uint32_t>(m_value) << (byte_in_word * CHAR_BIT);
+	fisch::vx::Omnibus::ByteEnables byte_enables{};
+	byte_enables[byte_in_word] = true;
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(raw_value), byte_enables)};
+}
+
+void ExternalPPUMemoryByte::decode(
+    coordinate_type const& coord,
+    std::array<fisch::vx::Omnibus, ExternalPPUMemoryByte::config_size_in_words> const& data)
+{
+	auto const byte_in_word = coord.toEnum() % sizeof(uint32_t);
+	m_value = Value((data[0].get() >> (byte_in_word * CHAR_BIT)) & 0xff);
+}
+
+template <typename Archive>
+void ExternalPPUMemoryByte::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryByte)
+
 } // namespace vx
 } // namespace haldls
 
 CEREAL_CLASS_VERSION(haldls::vx::FPGADeviceDNA, 0)
 CEREAL_CLASS_VERSION(haldls::vx::EventRecordingConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryByte, 0)
