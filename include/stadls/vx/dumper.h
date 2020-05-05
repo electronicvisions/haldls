@@ -1,6 +1,8 @@
 #pragma once
 #include "halco/hicann-dls/vx/barrier.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/barrier.h"
+#include "haldls/vx/block.h"
 #include "haldls/vx/timer.h"
 #include "hate/visibility.h"
 #include "stadls/vx/playback_program.h"
@@ -58,6 +60,15 @@ public:
 	 */
 	void block_until(
 	    halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier barrier);
+
+	/**
+	 * Add instruction to block execution until specified barrier is completed.
+	 * @param coord PollingOmnibusBlock synchronization coordinate for which to block
+	 * @param barrier PollingOmnibusBlock synchronization value for to block execution
+	 */
+	void block_until(
+	    halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA const& coord,
+	    haldls::vx::PollingOmnibusBlock barrier);
 
 	/**
 	 * Add write instruction for container.

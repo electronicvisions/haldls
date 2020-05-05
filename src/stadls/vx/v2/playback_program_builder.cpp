@@ -50,7 +50,9 @@ PlaybackProgramBuilder convert_to_builder(PlaybackProgramBuilderDumper&& dumper)
 
 PlaybackProgramBuilder convert_to_builder(Dumper::done_type const& cocos)
 {
-	typedef hate::type_list<haldls::vx::Timer::Value, haldls::vx::Barrier> block_types;
+	typedef hate::type_list<
+	    haldls::vx::Timer::Value, haldls::vx::Barrier, haldls::vx::PollingOmnibusBlock>
+	    block_types;
 	PlaybackProgramBuilder builder;
 	for (auto const& coco : cocos.values) {
 		std::visit(

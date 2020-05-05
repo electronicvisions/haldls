@@ -34,7 +34,9 @@ struct GENPYBIND(visible) DumperDone
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/v1/container.def"
 	    std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>,
-	    std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>>
+	    std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>,
+	    std::
+	        pair<halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, haldls::vx::PollingOmnibusBlock>>
 	    coco_type;
 	typedef std::vector<coco_type> values_type;
 

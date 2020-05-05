@@ -22,6 +22,14 @@ void Dumper<DoneType>::block_until(
 }
 
 template <typename DoneType>
+void Dumper<DoneType>::block_until(
+    halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA const& coord,
+    haldls::vx::PollingOmnibusBlock barrier)
+{
+	m_dumpit.values.push_back(std::make_pair(coord, barrier));
+}
+
+template <typename DoneType>
 template <typename ContainerT>
 void Dumper<DoneType>::write(typename ContainerT::coordinate_type const& coord, ContainerT const& config)
 {

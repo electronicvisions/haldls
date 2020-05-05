@@ -93,10 +93,19 @@ public:
 
 	/**
 	 * Add instruction to block execution until specified barrier is completed.
-	 * @param coord Barrierhronisation coordinate for which to block
-	 * @param sync Barrierhronisation value for to block execution
+	 * @param coord Barrier coordinate for which to block
+	 * @param sync Barrier value for which to block execution
 	 */
 	void block_until(halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier sync);
+
+	/*
+	 * Add instruction to block execution until configured Omnibus address has (not) defined value.
+	 * @param coord Coordinate for which to block
+	 * @param sync PollingOmnibusBlock value for which to block execution
+	 */
+	void block_until(
+	    halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA const& coord,
+	    haldls::vx::PollingOmnibusBlock sync);
 
 	/**
 	 * Add instructions to write given container to given location.

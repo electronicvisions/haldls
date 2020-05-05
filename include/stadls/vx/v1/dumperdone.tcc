@@ -43,7 +43,12 @@ void DumperDone::serialize(Archive& ar, std::uint32_t const)
 	     &serialize_coco<
 	         Archive, typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>},
 	    {hate::full_name<std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>>(),
-	     &serialize_coco<Archive, halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>}};
+	     &serialize_coco<Archive, halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>},
+	    {hate::full_name<std::pair<
+	         halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, haldls::vx::PollingOmnibusBlock>>(),
+	     &serialize_coco<
+	         Archive, halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA,
+	         haldls::vx::PollingOmnibusBlock>}};
 
 	size_t size = values.size();
 	ar(CEREAL_NVP(size));

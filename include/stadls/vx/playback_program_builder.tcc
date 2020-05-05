@@ -145,6 +145,22 @@ void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContain
 	}
 }
 
+template <
+    typename BuilderStorage,
+    typename DoneType,
+    template <typename>
+    class CoordinateToContainer>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContainer>::block_until(
+    typename halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA const& coord,
+    haldls::vx::PollingOmnibusBlock const barrier)
+{
+	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
+		m_builder_impl->write(coord, barrier.encode());
+	} else {
+		m_builder_impl->block_until(coord, barrier);
+	}
+}
+
 namespace detail {
 
 template <typename T>

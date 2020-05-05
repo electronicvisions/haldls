@@ -115,6 +115,9 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 				},
 				[&](std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier> const& coco_pair) {
 					builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
+				},
+				[&](std::pair<halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, haldls::vx::PollingOmnibusBlock> const& coco_pair) {
+					builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
 				}
 			}, item
 		);
@@ -160,6 +163,9 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 					real_builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
 				},
 				[&](std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier> const& coco_pair) {
+					real_builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
+				},
+				[&](std::pair<halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, haldls::vx::PollingOmnibusBlock> const& coco_pair) {
 					real_builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
 				}
 			}, item

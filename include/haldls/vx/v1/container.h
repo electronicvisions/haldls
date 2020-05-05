@@ -2,6 +2,7 @@
 
 #include "haldls/vx/v1/arq.h"
 #include "haldls/vx/v1/background.h"
+#include "haldls/vx/v1/block.h"
 #include "haldls/vx/v1/cadc.h"
 #include "haldls/vx/v1/capmem.h"
 #include "haldls/vx/v1/correlation.h"
