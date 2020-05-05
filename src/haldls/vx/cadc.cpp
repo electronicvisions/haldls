@@ -59,7 +59,7 @@ bool CADCConfig::operator!=(CADCConfig const& other) const
 }
 
 template <typename Archive>
-void CADCConfig::serialize(Archive& ar)
+void CADCConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable));
 	ar(CEREAL_NVP(m_reset_wait));
@@ -164,7 +164,7 @@ bool CADCChannelConfig::operator!=(CADCChannelConfig const& other) const
 }
 
 template <typename Archive>
-void CADCChannelConfig::serialize(Archive& ar)
+void CADCChannelConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_offset));
 }
@@ -272,7 +272,7 @@ bool CADCSampleQuad::operator!=(CADCSampleQuad const& other) const
 }
 
 template <typename Archive>
-void CADCSampleQuad::serialize(Archive& ar)
+void CADCSampleQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_samples));
 }
@@ -364,3 +364,7 @@ void CADCSampleQuad::decode(
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::CADCSampleQuad, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CADCChannelConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CADCConfig, 0)

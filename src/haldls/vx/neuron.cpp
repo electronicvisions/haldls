@@ -346,7 +346,7 @@ std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& conf
 }
 
 template <class Archive>
-void CommonNeuronBackendConfig::serialize(Archive& ar)
+void CommonNeuronBackendConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_en_event_regs));
 	ar(CEREAL_NVP(m_force_reset));
@@ -742,7 +742,7 @@ std::ostream& operator<<(std::ostream& os, NeuronBackendConfig const& config)
 }
 
 template <class Archive>
-void NeuronBackendConfig::serialize(Archive& ar)
+void NeuronBackendConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_address_out));
 	ar(CEREAL_NVP(m_reset_holdoff));
@@ -1384,7 +1384,7 @@ bool NeuronConfig::operator!=(NeuronConfig const& other) const
 }
 
 template <class Archive>
-void NeuronConfig::serialize(Archive& ar)
+void NeuronConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_en_comp_cond_div));
 	ar(CEREAL_NVP(m_en_comp_cond_mul));
@@ -1508,7 +1508,7 @@ bool NeuronReset::operator!=(NeuronReset const& other) const
 }
 
 template <class Archive>
-void NeuronReset::serialize(Archive&)
+void NeuronReset::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
@@ -1599,7 +1599,7 @@ bool NeuronResetQuad::operator!=(NeuronResetQuad const& other) const
 }
 
 template <class Archive>
-void NeuronResetQuad::serialize(Archive&)
+void NeuronResetQuad::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronResetQuad)
@@ -1686,7 +1686,7 @@ bool BlockPostPulse::operator!=(BlockPostPulse const& other) const
 }
 
 template <class Archive>
-void BlockPostPulse::serialize(Archive&)
+void BlockPostPulse::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(BlockPostPulse)
@@ -1807,7 +1807,7 @@ bool SpikeCounterRead::operator!=(SpikeCounterRead const& other) const
 }
 
 template <class Archive>
-void SpikeCounterRead::serialize(Archive& ar)
+void SpikeCounterRead::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_count));
 	ar(CEREAL_NVP(m_overflow));
@@ -1903,10 +1903,19 @@ bool SpikeCounterReset::operator!=(SpikeCounterReset const& other) const
 }
 
 template <class Archive>
-void SpikeCounterReset::serialize(Archive&)
+void SpikeCounterReset::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterReset)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::NeuronConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::NeuronBackendConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CommonNeuronBackendConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::NeuronReset, 0)
+CEREAL_CLASS_VERSION(haldls::vx::NeuronResetQuad, 0)
+CEREAL_CLASS_VERSION(haldls::vx::BlockPostPulse, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SpikeCounterRead, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SpikeCounterReset, 0)

@@ -117,7 +117,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	PCConf m_pc_conf_west;
 	PCConf m_pc_conf_east;
@@ -209,7 +209,7 @@ public:
 	private:
 		friend class cereal::access;
 		template <class Archive>
-		void serialize(Archive& ar);
+		void serialize(Archive& ar, std::uint32_t const version);
 		// used for direct member access without function calls
 		friend class SynapseQuad;
 		friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseMatrix>;
@@ -245,7 +245,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 	// used for direct member access without function calls
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseMatrix>;
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseRow>;
@@ -367,7 +367,7 @@ public:
 	private:
 		friend class cereal::access;
 		template <class Archive>
-		void serialize(Archive& ar) SYMBOL_VISIBLE;
+		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 		bool m_enable_internal_causal;
 		bool m_enable_internal_acausal;
@@ -401,7 +401,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	halco::common::typed_array<ColumnCorrelationSwitch, halco::hicann_dls::vx::EntryOnQuad>
 	    m_switches;
@@ -512,7 +512,7 @@ public:
 	private:
 		friend class cereal::access;
 		template <class Archive>
-		void serialize(Archive& ar) SYMBOL_VISIBLE;
+		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 		bool m_enable_synaptic_current_excitatory;
 		bool m_enable_synaptic_current_inhibitory;
@@ -544,7 +544,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	halco::common::typed_array<ColumnCurrentSwitch, halco::hicann_dls::vx::EntryOnQuad> m_switches;
 };
@@ -613,7 +613,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bias_selection_type m_int_dac_bias;
 	bias_selection_type m_int_ramp_bias;
@@ -658,7 +658,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
 namespace detail {

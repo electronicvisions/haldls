@@ -241,7 +241,7 @@ void ShiftRegister::decode(
 {}
 
 template <typename Archive>
-void ShiftRegister::serialize(Archive& ar)
+void ShiftRegister::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_mux_1));
 	ar(CEREAL_NVP(m_mux_2));
@@ -297,7 +297,7 @@ void DACChannel::decode(
 {}
 
 template <typename Archive>
-void DACChannel::serialize(Archive& ar)
+void DACChannel::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -361,7 +361,7 @@ void DACControl::decode(
 {}
 
 template <typename Archive>
-void DACControl::serialize(Archive& ar)
+void DACControl::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_channel));
 }
@@ -370,3 +370,6 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(DACControl)
 
 } // namespace vx
 } // namespace haldls
+CEREAL_CLASS_VERSION(haldls::vx::ShiftRegister, 0)
+CEREAL_CLASS_VERSION(haldls::vx::DACChannel, 0)
+CEREAL_CLASS_VERSION(haldls::vx::DACControl, 0)

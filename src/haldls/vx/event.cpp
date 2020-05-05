@@ -121,7 +121,7 @@ void SpikeLabel::set_synapse_address(SynapseQuad::Synapse::Address const value)
 	}                                                                                              \
                                                                                                    \
 	template <typename Archive>                                                                    \
-	void SpikePack##Num##ToChip::serialize(Archive& ar)                                            \
+	void SpikePack##Num##ToChip::serialize(Archive& ar, std::uint32_t const)                       \
 	{                                                                                              \
 		ar(CEREAL_NVP(m_impl));                                                                    \
 	}                                                                                              \
@@ -205,7 +205,7 @@ std::ostream& operator<<(std::ostream& os, SpikeFromChip const& spike)
 }
 
 template <typename Archive>
-void SpikeFromChip::serialize(Archive& ar)
+void SpikeFromChip::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_label));
 	ar(CEREAL_NVP(m_fpga_time));
@@ -215,3 +215,8 @@ void SpikeFromChip::serialize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeFromChip)
 
 } // namespace haldls::vx
+
+CEREAL_CLASS_VERSION(haldls::vx::SpikePack1ToChip, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SpikePack2ToChip, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SpikePack3ToChip, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SpikeFromChip, 0)

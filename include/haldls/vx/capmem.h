@@ -105,7 +105,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	value_type m_value;
 };
@@ -134,7 +134,7 @@ private:
 	friend detail::VisitPreorderImpl<CapMemBlock>;
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<CapMemCell, halco::hicann_dls::vx::CapMemCellOnCapMemBlock>
 	    m_capmem_cells;
@@ -388,7 +388,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	bool m_enable_capmem;
 	bool m_debug_readout_enable;
@@ -543,7 +543,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable_internal_reference;
 	bool m_enable_reference_output;

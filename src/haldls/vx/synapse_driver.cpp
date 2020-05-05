@@ -421,7 +421,7 @@ bool SynapseDriverConfig::operator!=(SynapseDriverConfig const& other) const
 }
 
 template <class Archive>
-void SynapseDriverConfig::serialize(Archive& ar)
+void SynapseDriverConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_en_receiver));
 	ar(CEREAL_NVP(m_row_address_compare_mask));
@@ -444,3 +444,5 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseDriverConfig)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::SynapseDriverConfig, 0)

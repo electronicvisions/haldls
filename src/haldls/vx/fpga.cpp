@@ -92,7 +92,7 @@ void FPGADeviceDNA::decode(
 }
 
 template <class Archive>
-void FPGADeviceDNA::serialize(Archive& ar)
+void FPGADeviceDNA::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -180,7 +180,7 @@ std::array<fisch::vx::OmnibusFPGA, EventRecordingConfig::write_config_size_in_wo
 }
 
 template <class Archive>
-void EventRecordingConfig::serialize(Archive& ar)
+void EventRecordingConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_event_recording));
 }
@@ -189,3 +189,6 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventRecordingConfig)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::FPGADeviceDNA, 0)
+CEREAL_CLASS_VERSION(haldls::vx::EventRecordingConfig, 0)

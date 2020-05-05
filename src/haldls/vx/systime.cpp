@@ -115,7 +115,7 @@ template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, SystimeSyncBase::config_size_in_words> const& data);
 
 template <class Archive>
-void SystimeSyncBase::serialize(Archive& ar)
+void SystimeSyncBase::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -173,7 +173,7 @@ void SystimeSync::decode(
 {}
 
 template <class Archive>
-void SystimeSync::serialize(Archive& ar)
+void SystimeSync::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_do_sync));
 }
@@ -182,3 +182,6 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeSync)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::SystimeSyncBase, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SystimeSync, 0)

@@ -43,7 +43,7 @@ void JTAGClockScaler::decode(
 {}
 
 template <class Archive>
-void JTAGClockScaler::serialize(Archive& ar)
+void JTAGClockScaler::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -81,7 +81,7 @@ void ResetJTAGTap::decode(
 {}
 
 template <class Archive>
-void ResetJTAGTap::serialize(Archive&)
+void ResetJTAGTap::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ResetJTAGTap)
@@ -130,7 +130,7 @@ void JTAGIdCode::decode(
 }
 
 template <class Archive>
-void JTAGIdCode::serialize(Archive& ar)
+void JTAGIdCode::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -138,3 +138,7 @@ void JTAGIdCode::serialize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(JTAGIdCode)
 
 } // namespace haldls::vx
+
+CEREAL_CLASS_VERSION(haldls::vx::JTAGClockScaler, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ResetJTAGTap, 0)
+CEREAL_CLASS_VERSION(haldls::vx::JTAGIdCode, 0)

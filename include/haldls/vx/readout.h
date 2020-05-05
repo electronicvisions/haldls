@@ -202,7 +202,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	// CADC
 	capmem_quadrant_type m_cadc_v_ramp_mux;
@@ -327,7 +327,7 @@ public:
 		friend class ReadoutSourceSelection;
 		friend class cereal::access;
 		template <class Archive>
-		void serialize(Archive& ar) SYMBOL_VISIBLE;
+		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 		bool m_debug_plus;
 		bool m_debug_minus;
@@ -384,7 +384,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	halco::common::typed_array<
 	    SourceMultiplexer,

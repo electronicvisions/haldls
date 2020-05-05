@@ -120,7 +120,7 @@ bool CapMemCell::operator!=(CapMemCell const& other) const
 }
 
 template <class Archive>
-void CapMemCell::serialize(Archive& ar)
+void CapMemCell::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -166,7 +166,7 @@ bool CapMemBlock::operator!=(CapMemBlock const& other) const
 }
 
 template <class Archive>
-void CapMemBlock::serialize(Archive& ar)
+void CapMemBlock::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_capmem_cells));
 }
@@ -621,7 +621,7 @@ template SYMBOL_VISIBLE void CapMemBlockConfig::decode(
     std::array<fisch::vx::OmnibusChip, CapMemBlockConfig::config_size_in_words> const& data);
 
 template <class Archive>
-void CapMemBlockConfig::serialize(Archive& ar)
+void CapMemBlockConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_capmem));
 	ar(CEREAL_NVP(m_debug_readout_enable));
@@ -907,7 +907,7 @@ template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::Omnibus
     std::array<fisch::vx::OmnibusChip, ReferenceGeneratorConfig::config_size_in_words> const& data);
 
 template <class Archive>
-void ReferenceGeneratorConfig::serialize(Archive& ar)
+void ReferenceGeneratorConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_capmem_amplifier));
 	ar(CEREAL_NVP(m_enable_internal_reference));
@@ -925,3 +925,8 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReferenceGeneratorConfig)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::CapMemCell, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CapMemBlock, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CapMemBlockConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ReferenceGeneratorConfig, 0)

@@ -224,7 +224,7 @@ bool MADCControl::operator!=(MADCControl const& other) const
 }
 
 template <class Archive>
-void MADCControl::serialize(Archive& ar)
+void MADCControl::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_iconv_amplifier));
 	ar(CEREAL_NVP(m_enable_pre_amplifier));
@@ -239,3 +239,5 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(MADCControl)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::MADCControl, 0)

@@ -104,7 +104,7 @@ template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, PPUMemoryWord::config_size_in_words> const& data);
 
 template <class Archive>
-void PPUMemoryWord::serialize(Archive& ar)
+void PPUMemoryWord::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -226,7 +226,7 @@ std::string PPUMemoryBlock::to_string() const
 }
 
 template <class Archive>
-void PPUMemoryBlock::serialize(Archive& ar)
+void PPUMemoryBlock::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_words));
 }
@@ -405,7 +405,7 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 }
 
 template <class Archive>
-void PPUMemory::serialize(Archive& ar)
+void PPUMemory::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_words));
 }
@@ -560,7 +560,7 @@ template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, PPUControlRegister::config_size_in_words> const& data);
 
 template <class Archive>
-void PPUControlRegister::serialize(Archive& ar)
+void PPUControlRegister::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_cache_controller_enable));
 	ar(CEREAL_NVP(m_inhibit_reset));
@@ -659,7 +659,7 @@ template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, PPUStatusRegister::read_config_size_in_words> const& data);
 
 template <class Archive>
-void PPUStatusRegister::serialize(Archive& ar)
+void PPUStatusRegister::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_sleep));
 }
@@ -668,3 +668,9 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUStatusRegister)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::PPUMemoryWord, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PPUMemoryBlock, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PPUMemory, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PPUControlRegister, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PPUStatusRegister, 0)

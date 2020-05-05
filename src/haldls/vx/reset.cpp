@@ -41,7 +41,7 @@ void ResetChip::decode(
 {}
 
 template <class Archive>
-void ResetChip::serialize(Archive& ar)
+void ResetChip::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -49,3 +49,5 @@ void ResetChip::serialize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ResetChip)
 
 } // namespace haldls::vx
+
+CEREAL_CLASS_VERSION(haldls::vx::ResetChip, 0)

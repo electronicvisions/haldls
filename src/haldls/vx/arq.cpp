@@ -107,7 +107,7 @@ bool HicannARQStatus::operator!=(HicannARQStatus const& other) const
 }
 
 template <class Archive>
-void HicannARQStatus::serialize(Archive& ar)
+void HicannARQStatus::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_read_count));
 	ar(CEREAL_NVP(m_write_count));
@@ -119,3 +119,5 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(HicannARQStatus)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::HicannARQStatus, 0)

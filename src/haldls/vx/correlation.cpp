@@ -71,7 +71,7 @@ bool CommonCorrelationConfig::operator!=(CommonCorrelationConfig const& other) c
 }
 
 template <typename Archive>
-void CommonCorrelationConfig::serialize(Archive& ar)
+void CommonCorrelationConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_sense_delay));
 	ar(CEREAL_NVP(m_reset_duration));
@@ -183,3 +183,5 @@ template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::CommonCorrelationConfig, 0)

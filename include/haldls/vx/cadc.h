@@ -119,7 +119,7 @@ public:
 protected:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable;
 	ResetWait m_reset_wait;
@@ -195,7 +195,7 @@ public:
 protected:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Offset m_offset;
 };
@@ -269,7 +269,7 @@ public:
 protected:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> m_samples;
 };

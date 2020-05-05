@@ -474,7 +474,7 @@ template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
         words);
 
 template <class Archive>
-void PadMultiplexerConfig::serialize(Archive& ar)
+void PadMultiplexerConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_cadc_v_ramp_mux));
 	ar(CEREAL_NVP(m_cadc_v_ramp_mux_to_pad));
@@ -636,7 +636,7 @@ bool ReadoutSourceSelection::SourceMultiplexer::operator!=(
 }
 
 template <class Archive>
-void ReadoutSourceSelection::SourceMultiplexer::serialize(Archive& ar)
+void ReadoutSourceSelection::SourceMultiplexer::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_debug_plus));
 	ar(CEREAL_NVP(m_debug_minus));
@@ -956,7 +956,7 @@ template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
         words);
 
 template <class Archive>
-void ReadoutSourceSelection::serialize(Archive& ar)
+void ReadoutSourceSelection::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_buffers));
 	ar(CEREAL_NVP(m_enable_buffer_to_pad));
@@ -965,3 +965,7 @@ void ReadoutSourceSelection::serialize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection)
 
 } // namespace haldls::vx
+
+CEREAL_CLASS_VERSION(haldls::vx::PadMultiplexerConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ReadoutSourceSelection::SourceMultiplexer, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ReadoutSourceSelection, 0)

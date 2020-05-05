@@ -153,7 +153,7 @@ template SYMBOL_VISIBLE void CrossbarOutputConfig::decode<fisch::vx::OmnibusChip
     std::array<fisch::vx::OmnibusChip, CrossbarOutputConfig::config_size_in_words> const& data);
 
 template <class Archive>
-void CrossbarOutputConfig::serialize(Archive& ar)
+void CrossbarOutputConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_slow));
 	ar(CEREAL_NVP(m_enable_event_counter));
@@ -258,7 +258,7 @@ template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::Omnibus
     std::array<fisch::vx::OmnibusChip, read_config_size_in_words> const& data);
 
 template <class Archive>
-void CrossbarInputDropCounter::serialize(Archive& ar)
+void CrossbarInputDropCounter::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -365,7 +365,7 @@ template SYMBOL_VISIBLE void CrossbarOutputEventCounter::decode<fisch::vx::Omnib
         data);
 
 template <class Archive>
-void CrossbarOutputEventCounter::serialize(Archive& ar)
+void CrossbarOutputEventCounter::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -498,7 +498,7 @@ template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::OmnibusChip>(
     std::array<fisch::vx::OmnibusChip, CrossbarNode::config_size_in_words> const& data);
 
 template <class Archive>
-void CrossbarNode::serialize(Archive& ar)
+void CrossbarNode::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_mask));
 	ar(CEREAL_NVP(m_target));
@@ -509,3 +509,8 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CrossbarNode)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::CrossbarOutputConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CrossbarInputDropCounter, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CrossbarOutputEventCounter, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CrossbarNode, 0)

@@ -367,7 +367,7 @@ void PhyConfigFPGA::decode(
 }
 
 template <typename Archive>
-void PhyConfigFPGA::serialize(Archive& ar)
+void PhyConfigFPGA::serialize(Archive& ar, std::uint32_t const)
 {
 	cerealize_impl(ar);
 }
@@ -410,7 +410,7 @@ void PhyConfigChip::decode(
 {}
 
 template <typename Archive>
-void PhyConfigChip::serialize(Archive& ar)
+void PhyConfigChip::serialize(Archive& ar, std::uint32_t const)
 {
 	cerealize_impl(ar);
 }
@@ -475,7 +475,7 @@ void CommonPhyConfigFPGA::decode(
 }
 
 template <typename Archive>
-void CommonPhyConfigFPGA::serialize(Archive& ar)
+void CommonPhyConfigFPGA::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_phy));
 }
@@ -540,7 +540,7 @@ void CommonPhyConfigChip::decode(std::array<
 {}
 
 template <typename Archive>
-void CommonPhyConfigChip::serialize(Archive& ar)
+void CommonPhyConfigChip::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_phy));
 }
@@ -663,7 +663,7 @@ void PhyStatus::decode(
 }
 
 template <typename Archive>
-void PhyStatus::serialize(Archive& ar)
+void PhyStatus::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_crc_error_count));
 	ar(CEREAL_NVP(m_online_time));
@@ -676,3 +676,9 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PhyStatus)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::PhyConfigFPGA, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PhyConfigChip, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CommonPhyConfigFPGA, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CommonPhyConfigChip, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PhyStatus, 0)

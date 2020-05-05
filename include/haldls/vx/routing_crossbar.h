@@ -78,7 +78,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::CrossbarOutputOnDLS>
 	    m_enable_event_counter;
@@ -164,7 +164,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
@@ -247,7 +247,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
@@ -334,7 +334,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	neuron_label_type m_mask;
 	neuron_label_type m_target;

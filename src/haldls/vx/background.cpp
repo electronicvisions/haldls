@@ -214,7 +214,7 @@ template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::OmnibusChi
     std::array<fisch::vx::OmnibusChip, BackgroundSpikeSource::config_size_in_words> const& data);
 
 template <class Archive>
-void BackgroundSpikeSource::serialize(Archive& ar)
+void BackgroundSpikeSource::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable));
 	ar(CEREAL_NVP(m_enable_random));
@@ -229,3 +229,5 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(BackgroundSpikeSource)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::BackgroundSpikeSource, 0)

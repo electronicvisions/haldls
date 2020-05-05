@@ -41,7 +41,7 @@ std::array<fisch::vx::Timer, Timer::config_size_in_words> Timer::encode() const
 void Timer::decode(std::array<fisch::vx::Timer, Timer::config_size_in_words> const& /*data*/) {}
 
 template <class Archive>
-void Timer::serialize(Archive& ar)
+void Timer::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
 }
@@ -49,3 +49,5 @@ void Timer::serialize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(Timer)
 
 } // namespace haldls::vx
+
+CEREAL_CLASS_VERSION(haldls::vx::Timer, 0)

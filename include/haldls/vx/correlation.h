@@ -124,7 +124,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	SenseDelay m_sense_delay;
 	ResetDuration m_reset_duration;

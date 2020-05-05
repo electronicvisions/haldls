@@ -245,7 +245,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	AnalogReadoutMux1Input m_mux_1;
 	AnalogReadoutMux2Input m_mux_2;
@@ -325,7 +325,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
@@ -385,7 +385,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::DACChannelOnDAC> m_enable_channel;
 };

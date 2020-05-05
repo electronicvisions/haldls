@@ -401,7 +401,7 @@ template SYMBOL_VISIBLE void ADPLL::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& data);
 
 template <typename Archive>
-void ADPLL::serialize(Archive& ar)
+void ADPLL::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_loop_filter_int));
 	ar(CEREAL_NVP(m_loop_filter_prop));
@@ -490,7 +490,7 @@ bool PLLClockOutputBlock::ClockOutput::operator!=(ClockOutput const& other) cons
 HALDLS_VX_DEFAULT_OSTREAM_OP(PLLClockOutputBlock)
 
 template <typename Archive>
-void PLLClockOutputBlock::ClockOutput::serialize(Archive& ar)
+void PLLClockOutputBlock::ClockOutput::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_output));
 	ar(CEREAL_NVP(m_enable_bypass));
@@ -726,7 +726,7 @@ template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
 
 template <typename Archive>
-void PLLClockOutputBlock::serialize(Archive& ar)
+void PLLClockOutputBlock::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_output));
 }
@@ -903,7 +903,7 @@ template SYMBOL_VISIBLE void PLLSelfTest::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
 
 template <typename Archive>
-void PLLSelfTest::serialize(Archive& ar)
+void PLLSelfTest::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_clock_enable));
 	ar(CEREAL_NVP(m_pre_scaler_p));
@@ -1022,7 +1022,7 @@ template SYMBOL_VISIBLE void PLLSelfTestStatus::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, read_config_size_in_words> const& /*data*/);
 
 template <typename Archive>
-void PLLSelfTestStatus::serialize(Archive& ar)
+void PLLSelfTestStatus::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_success));
 	ar(CEREAL_NVP(m_finished));
@@ -1033,3 +1033,9 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTestStatus)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::ADPLL, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PLLClockOutputBlock::ClockOutput, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PLLClockOutputBlock, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PLLSelfTest, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PLLSelfTestStatus, 0)

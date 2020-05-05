@@ -344,7 +344,7 @@ private:
 	friend class cereal::access;
 
 	template <typename Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 };
 
 } // namespace lola::vx

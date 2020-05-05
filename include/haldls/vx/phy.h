@@ -193,7 +193,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
 namespace detail {
@@ -236,7 +236,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
 namespace detail {
@@ -284,7 +284,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::PhyConfigFPGAOnDLS> m_enable_phy;
 };
@@ -334,7 +334,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::PhyConfigChipOnDLS> m_enable_phy;
 };
@@ -457,7 +457,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	CRCErrorCount m_crc_error_count;
 	OnlineTime m_online_time;

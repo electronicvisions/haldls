@@ -100,7 +100,7 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable_iconv_amplifier;
 	bool m_enable_pre_amplifier;

@@ -184,7 +184,7 @@ template SYMBOL_VISIBLE void CommonSynramConfig::decode(
 HALDLS_VX_DEFAULT_OSTREAM_OP(CommonSynramConfig)
 
 template <class Archive>
-void CommonSynramConfig::serialize(Archive& ar)
+void CommonSynramConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_pc_conf_west));
 	ar(CEREAL_NVP(m_pc_conf_east));
@@ -250,7 +250,7 @@ bool SynapseQuad::Synapse::operator!=(SynapseQuad::Synapse const& other) const
 }
 
 template <class Archive>
-void SynapseQuad::Synapse::serialize(Archive& ar)
+void SynapseQuad::Synapse::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_weight));
 	ar(CEREAL_NVP(m_address));
@@ -442,7 +442,7 @@ template SYMBOL_VISIBLE void SynapseQuad::decode(
 HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseQuad)
 
 template <class Archive>
-void SynapseQuad::serialize(Archive& ar)
+void SynapseQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_synapses));
 }
@@ -539,7 +539,7 @@ bool ColumnCorrelationQuad::ColumnCorrelationSwitch::operator!=(
 }
 
 template <class Archive>
-void ColumnCorrelationQuad::ColumnCorrelationSwitch::serialize(Archive& ar)
+void ColumnCorrelationQuad::ColumnCorrelationSwitch::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_internal_causal));
 	ar(CEREAL_NVP(m_enable_internal_acausal));
@@ -777,7 +777,7 @@ template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
         data);
 
 template <class Archive>
-void ColumnCorrelationQuad::serialize(Archive& ar)
+void ColumnCorrelationQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_switches));
 }
@@ -850,7 +850,7 @@ bool ColumnCurrentQuad::ColumnCurrentSwitch::operator!=(
 }
 
 template <class Archive>
-void ColumnCurrentQuad::ColumnCurrentSwitch::serialize(Archive& ar)
+void ColumnCurrentQuad::ColumnCurrentSwitch::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_synaptic_current_excitatory));
 	ar(CEREAL_NVP(m_enable_synaptic_current_inhibitory));
@@ -1034,7 +1034,7 @@ template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
         data);
 
 template <class Archive>
-void ColumnCurrentQuad::serialize(Archive& ar)
+void ColumnCurrentQuad::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_switches));
 }
@@ -1249,7 +1249,7 @@ template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
         SynapseBiasSelection::read_config_size_in_words> const& words);
 
 template <class Archive>
-void SynapseBiasSelection::serialize(Archive& ar)
+void SynapseBiasSelection::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_int_dac_bias));
 	ar(CEREAL_NVP(m_int_ramp_bias));
@@ -1345,9 +1345,19 @@ bool CorrelationReset::operator!=(CorrelationReset const& other) const
 }
 
 template <class Archive>
-void CorrelationReset::serialize(Archive&)
+void CorrelationReset::serialize(Archive&, std::uint32_t const)
 {}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CorrelationReset)
 
 } // namespace haldls::vx
+
+CEREAL_CLASS_VERSION(haldls::vx::CommonSynramConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SynapseQuad::Synapse, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SynapseQuad, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ColumnCorrelationQuad, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ColumnCorrelationQuad::ColumnCorrelationSwitch, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ColumnCurrentQuad::ColumnCurrentSwitch, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ColumnCurrentQuad, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SynapseBiasSelection, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CorrelationReset, 0)

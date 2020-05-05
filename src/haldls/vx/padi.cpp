@@ -190,7 +190,7 @@ bool PADIEvent::operator!=(PADIEvent const& other) const
 }
 
 template <class Archive>
-void PADIEvent::serialize(Archive& ar)
+void PADIEvent::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_fire_bus));
 	ar(CEREAL_NVP(m_event_address));
@@ -406,7 +406,7 @@ bool CommonPADIBusConfig::operator!=(CommonPADIBusConfig const& other) const
 }
 
 template <class Archive>
-void CommonPADIBusConfig::serialize(Archive& ar)
+void CommonPADIBusConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_spl1));
 	ar(CEREAL_NVP(m_enable_extended_timing));
@@ -554,7 +554,7 @@ bool CommonSTPConfig::operator!=(CommonSTPConfig const& other) const
 }
 
 template <class Archive>
-void CommonSTPConfig::serialize(Archive& ar)
+void CommonSTPConfig::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable_recovery_clock));
 	ar(CEREAL_NVP(m_recovery_clock_speed));
@@ -564,3 +564,7 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonSTPConfig)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::PADIEvent, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CommonPADIBusConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::CommonSTPConfig, 0)

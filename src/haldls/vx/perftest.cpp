@@ -51,7 +51,7 @@ void PerfTest::decode(
 }
 
 template <class Archive>
-void PerfTest::serialize(Archive& ar)
+void PerfTest::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_enable));
 }
@@ -148,7 +148,7 @@ void PerfTestStatus::decode(
 }
 
 template <class Archive>
-void PerfTestStatus::serialize(Archive& ar)
+void PerfTestStatus::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_sent));
 	ar(CEREAL_NVP(m_received));
@@ -159,3 +159,6 @@ void PerfTestStatus::serialize(Archive& ar)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PerfTestStatus)
 
 } // namespace haldls::vx
+
+CEREAL_CLASS_VERSION(haldls::vx::PerfTest, 0)
+CEREAL_CLASS_VERSION(haldls::vx::PerfTestStatus, 0)

@@ -113,7 +113,7 @@ typedef fisch::vx::MADCSampleFromChipEvent MADCSampleFromChipEvent GENPYBIND(opa
 	private:                                                                                       \
 		friend class cereal::access;                                                               \
 		template <class Archive>                                                                   \
-		void serialize(Archive& ar) SYMBOL_VISIBLE;                                                \
+		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;                   \
                                                                                                    \
 		labels_type m_impl;                                                                        \
 	};                                                                                             \
@@ -219,7 +219,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	SpikeLabel m_label;
 	FPGATime m_fpga_time;

@@ -90,7 +90,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	Value m_value;
 };
@@ -134,7 +134,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 };
 
 namespace detail {
@@ -194,7 +194,7 @@ public:
 private:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar);
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	Value m_value;
 };
