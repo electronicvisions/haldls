@@ -29,6 +29,14 @@ class TestPyhaldlsVX(unittest.TestCase):
             dump = pickle.dumps(obj)
             self.assertEqual(obj, pickle.loads(dump))
 
+    def test_to_json(self):
+        for cont in hal.containers:
+            container = cont()
+            container2 = cont()
+            ser = hal.to_json(container)
+            hal.from_json(container, ser)
+            self.assertEqual(container, container2)
+
 
 if __name__ == "__main__":
     unittest.main()

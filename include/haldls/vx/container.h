@@ -23,3 +23,25 @@
 #include "haldls/vx/synapse_driver.h"
 #include "haldls/vx/systime.h"
 #include "haldls/vx/timer.h"
+
+#include "haldls/vx/genpybind.h"
+#include "hate/visibility.h"
+
+namespace haldls {
+namespace vx GENPYBIND_TAG_HALDLS_VX {
+
+template <typename T>
+std::string to_json(T const&) GENPYBIND(visible);
+
+template <typename T>
+void from_json(T&, std::string const&) GENPYBIND(visible);
+
+// clang-format off
+#define PLAYBACK_CONTAINER(Name, Type) \
+extern template std::string to_json<Type>(Type const&); \
+extern template void from_json(Type&, std::string const&);
+// clang-format on
+#include "haldls/vx/container.def"
+
+} // namespace vx
+} // namespace haldls
