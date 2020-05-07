@@ -100,8 +100,8 @@ public:
 	GENPYBIND(setter_for(dead_time))
 	void set_dead_time(DeadTime value) SYMBOL_VISIBLE;
 
-	bool operator==(CADCConfig const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
-	bool operator!=(CADCConfig const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
+	bool operator==(CADCConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CADCConfig const& other) const SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, CADCConfig const& config) SYMBOL_VISIBLE;
@@ -175,8 +175,8 @@ public:
 	GENPYBIND(setter_for(offset))
 	void set_offset(Offset value) SYMBOL_VISIBLE;
 
-	bool operator==(CADCChannelConfig const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
-	bool operator!=(CADCChannelConfig const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
+	bool operator==(CADCChannelConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CADCChannelConfig const& other) const SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, CADCChannelConfig const& config)
@@ -249,8 +249,8 @@ public:
 	 */
 	void set_sample(halco::hicann_dls::vx::EntryOnQuad const& coord, Value value) SYMBOL_VISIBLE;
 
-	bool operator==(CADCSampleQuad const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
-	bool operator!=(CADCSampleQuad const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
+	bool operator==(CADCSampleQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CADCSampleQuad const& other) const SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, CADCSampleQuad const& config) SYMBOL_VISIBLE;

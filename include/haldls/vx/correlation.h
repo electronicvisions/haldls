@@ -104,8 +104,8 @@ public:
 	GENPYBIND(setter_for(reset_mode))
 	void set_reset_mode(bool value) SYMBOL_VISIBLE;
 
-	bool operator==(CommonCorrelationConfig const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
-	bool operator!=(CommonCorrelationConfig const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
+	bool operator==(CommonCorrelationConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CommonCorrelationConfig const& other) const SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, CommonCorrelationConfig const& config)

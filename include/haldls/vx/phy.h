@@ -129,8 +129,8 @@ public:
 	GENPYBIND(setter_for(enable_auto_init))
 	void set_enable_auto_init(bool value) SYMBOL_VISIBLE;
 
-	bool operator==(PhyConfigBase const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
-	bool operator!=(PhyConfigBase const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
+	bool operator==(PhyConfigBase const& other) const SYMBOL_VISIBLE;
+	bool operator!=(PhyConfigBase const& other) const SYMBOL_VISIBLE;
 
 protected:
 	PhyConfigBase() SYMBOL_VISIBLE;
