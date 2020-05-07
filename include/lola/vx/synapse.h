@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/hana/adapt_struct.hpp>
+#include "halco/common/iter_all.h"
 #include "halco/common/typed_heap_array.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/synapse.h"

@@ -3,6 +3,7 @@
 #include <ostream>
 
 #include "halco/common/geometry.h"
+#include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/neuron.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
