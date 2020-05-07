@@ -41,11 +41,18 @@ def build(bld):
         bld.fatal('building pyhaldls requires pybind')
 
     bld(
+        features='cxx pyembed',
+        target='pyhaldls_vx_obj',
+        source='../src/haldls/vx/pyhaldls.cpp',
+        use='haldls_vx',
+    )
+
+    bld(
         target='pyhaldls_vx',
-        source='../include/haldls/vx/haldls.h',
+        source='../include/haldls/vx/pyhaldls.h',
         genpybind_tags='haldls_vx',
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['haldls_vx', 'PYBIND11HALDLS', 'pyfisch_vx'],
+        use=['haldls_vx', 'PYBIND11HALDLS', 'pyfisch_vx', 'pyhaldls_vx_obj'],
         install_path='${PREFIX}/lib',
         # Avoid warning; 1 OoM less and I see warnings (ECM)
         cxxflags='--param=max-vartrack-size=100000000',

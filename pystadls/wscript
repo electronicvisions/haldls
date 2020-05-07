@@ -41,11 +41,18 @@ def build(bld):
         bld.fatal('building pyhaldls requires pybind')
 
     bld(
+        features='cxx pyembed',
+        target='pystadls_vx_obj',
+        source='../src/stadls/vx/pystadls.cpp',
+        use='stadls_vx',
+    )
+
+    bld(
         target='pystadls_vx',
-        source='../include/stadls/vx/stadls.h',
+        source='../include/stadls/vx/pystadls.h',
         genpybind_tags='stadls_vx',
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['stadls_vx', 'PYBIND11HALDLS', 'pylogging', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx'],
+        use=['stadls_vx', 'PYBIND11HALDLS', 'pylogging', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'pystadls_vx_obj'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
     )

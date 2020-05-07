@@ -42,11 +42,18 @@ def build(bld):
         bld.fatal('building pylola requires pybind')
 
     bld(
+        features='cxx pyembed',
+        target='pylola_vx_obj',
+        source='../src/lola/vx/pylola.cpp',
+        use='lola_vx',
+    )
+
+    bld(
         target='pylola_vx',
-        source='../include/lola/vx/lola.h',
+        source='../include/lola/vx/pylola.h',
         genpybind_tags='lola_vx',
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'PYBIND11LOLA'],
+        use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'PYBIND11LOLA', 'pylola_vx_obj'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs'
     )
