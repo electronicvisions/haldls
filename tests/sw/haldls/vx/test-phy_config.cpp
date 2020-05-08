@@ -396,13 +396,17 @@ TEST(CommonPhyConfigChip, General)
 TEST(CommonPhyConfigChip, EncodeDecode)
 {
 	CommonPhyConfigChip config;
+	config.set_enable_phy(PhyConfigChipOnDLS(0), false);
+	config.set_enable_phy(PhyConfigChipOnDLS(1), false);
+	config.set_enable_phy(PhyConfigChipOnDLS(2), false);
+	config.set_enable_phy(PhyConfigChipOnDLS(3), false);
 
 	CommonPhyConfigChipOnDLS coord;
 
 	std::array<OmnibusChipOverJTAGAddress, CommonPhyConfigChip::config_size_in_words>
 	    ref_addresses = {OmnibusChipOverJTAGAddress(0x00040000)};
 	std::array<fisch::vx::OmnibusChipOverJTAG, CommonPhyConfigChip::config_size_in_words> ref_data =
-	    {fisch::vx::OmnibusData(0xff)};
+	    {fisch::vx::OmnibusData(0x0f)};
 
 	{ // write addresses
 		std::vector<OmnibusChipOverJTAGAddress> write_addresses;
@@ -412,10 +416,23 @@ TEST(CommonPhyConfigChip, EncodeDecode)
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
+	{ // read addresses
+		std::vector<OmnibusChipOverJTAGAddress> read_addresses;
+		visit_preorder(
+		    config, coord,
+		    stadls::ReadAddressVisitor<std::vector<OmnibusChipOverJTAGAddress>>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
 	std::vector<fisch::vx::OmnibusChipOverJTAG> data;
 	visit_preorder(
 	    config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	CommonPhyConfigChip config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<decltype(data)>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
 }
 
 TEST(CommonPhyConfigChip, CerealizeCoverage)

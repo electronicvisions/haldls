@@ -534,10 +534,19 @@ CommonPhyConfigChip::encode() const
 	    fisch::vx::OmnibusData(static_cast<fisch::vx::OmnibusData::value_type>(enable_mask)))};
 }
 
-void CommonPhyConfigChip::decode(std::array<
-                                 fisch::vx::OmnibusChipOverJTAG,
-                                 CommonPhyConfigChip::config_size_in_words> const& /*data*/)
-{}
+void CommonPhyConfigChip::decode(
+    std::array<fisch::vx::OmnibusChipOverJTAG, CommonPhyConfigChip::config_size_in_words> const&
+        data)
+{
+	hate::bitset<halco::hicann_dls::vx::PhyConfigChipOnDLS::size> enable_mask(
+	    data[0].get().value());
+
+	for (auto phy : halco::common::iter_all<halco::hicann_dls::vx::PhyConfigChipOnDLS>()) {
+		// phy enables on chip are reversed compared to on FPGA
+		m_enable_phy[phy] =
+		    enable_mask.test(halco::hicann_dls::vx::PhyConfigChipOnDLS::max - phy.toEnum());
+	}
+}
 
 template <typename Archive>
 void CommonPhyConfigChip::serialize(Archive& ar, std::uint32_t const)
