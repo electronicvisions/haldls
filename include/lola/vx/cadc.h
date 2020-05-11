@@ -25,7 +25,7 @@ public:
 
 	typedef haldls::vx::CADCSampleQuad::Value Value GENPYBIND(visible);
 
-	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::SynapseOnSynapseRow>
+	typedef halco::common::typed_heap_array<Value, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _samples_type GENPYBIND(opaque);
 
 	/** Default constructor. */

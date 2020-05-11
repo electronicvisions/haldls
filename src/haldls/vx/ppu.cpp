@@ -12,7 +12,7 @@
 #include "fisch/vx/jtag.h"
 #include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
+#include "halco/common/cerealization_typed_heap_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
@@ -276,13 +276,13 @@ void PPUMemory::set_words(words_type const& words)
 
 PPUMemoryWord::Value PPUMemory::get_word(halco::hicann_dls::vx::PPUMemoryWordOnPPU const& pos) const
 {
-	return m_words.at(pos.value()).get_value();
+	return m_words.at(pos).get_value();
 }
 
 void PPUMemory::set_word(
     halco::hicann_dls::vx::PPUMemoryWordOnPPU const& pos, PPUMemoryWord::Value const& value)
 {
-	m_words.at(pos.value()) = PPUMemoryWord(value);
+	m_words.at(pos) = PPUMemoryWord(value);
 }
 
 PPUMemoryBlock PPUMemory::get_block(
@@ -384,14 +384,16 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 		std::stringstream halfwords;
 		halfwords << std::hex << std::internal << std::setfill('0');
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			auto const word = static_cast<PPUMemoryWord::raw_type>(words[i + j].get_value());
+			auto const word = static_cast<PPUMemoryWord::raw_type>(
+			    words[halco::hicann_dls::vx::PPUMemoryWordOnPPU(i + j)].get_value());
 			halfwords << std::setw(4) << (word >> 16) << " " << std::setw(4) << (word & 0xffff)
 			          << " ";
 		}
 		// print as ascii
 		std::stringstream ascii;
 		for (unsigned int j = 0; ((j < words_per_line) && (i + j < words.size())); j++) {
-			auto const word = ntohl(static_cast<PPUMemoryWord::raw_type>(words[i + j].get_value()));
+			auto const word = ntohl(static_cast<PPUMemoryWord::raw_type>(
+			    words[halco::hicann_dls::vx::PPUMemoryWordOnPPU(i + j)].get_value()));
 			char const* chars = reinterpret_cast<char const*>(&word);
 			for (int k = 0; k < 4; k++) {
 				ascii << (isprint(chars[k]) ? chars[k] : '.');

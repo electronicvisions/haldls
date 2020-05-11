@@ -4,6 +4,7 @@
 
 #include "halco/common/geometry.h"
 #include "halco/common/iter_all.h"
+#include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/ppu.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/coordinate_to_container.h"
@@ -125,7 +126,9 @@ public:
 	typedef halco::hicann_dls::vx::PPUMemoryOnDLS coordinate_type;
 	typedef std::false_type has_local_data;
 
-	typedef std::array<PPUMemoryWord, halco::hicann_dls::vx::PPUMemoryWordOnPPU::size> words_type;
+	typedef halco::common::
+	    typed_heap_array<PPUMemoryWord, halco::hicann_dls::vx::PPUMemoryWordOnPPU>
+	        words_type GENPYBIND(opaque);
 
 	explicit PPUMemory(words_type const& words = words_type()) SYMBOL_VISIBLE;
 

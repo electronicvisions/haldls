@@ -353,7 +353,7 @@ TEST(PPUMemory, EncodeDecode)
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
 		ref_addresses[ii] = static_cast<OmnibusChipOverJTAGAddress>(0x02800000 + ii);
 		ref_data[ii] = OmnibusChipOverJTAG(static_cast<OmnibusData>(50 + ii));
-		memory[ii].set_value(PPUMemoryWord::Value(ref_data[ii].get()));
+		memory[PPUMemoryWordOnPPU(ii)].set_value(PPUMemoryWord::Value(ref_data[ii].get()));
 	}
 
 	config.set_words(memory);

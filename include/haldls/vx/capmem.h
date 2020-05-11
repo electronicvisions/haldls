@@ -8,7 +8,7 @@
 
 #include "halco/common/geometry.h"
 #include "halco/common/iter_all.h"
-#include "halco/common/typed_array.h"
+#include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/capmem.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
@@ -137,7 +137,7 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
-	halco::common::typed_array<CapMemCell, halco::hicann_dls::vx::CapMemCellOnCapMemBlock>
+	halco::common::typed_heap_array<CapMemCell, halco::hicann_dls::vx::CapMemCellOnCapMemBlock>
 	    m_capmem_cells;
 };
 
