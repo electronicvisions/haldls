@@ -1,4 +1,5 @@
 #pragma once
+#include <limits>
 #include <random>
 
 #include "fisch/vx/container.h"
@@ -7,6 +8,7 @@
 #include "halco/hicann-dls/vx/ppu.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/jtag.h"
 #include "haldls/vx/traits.h"
 #include "stadls/visitors.h"
 
@@ -159,6 +161,23 @@ template <>
 void decode_ones(haldls::vx::CapMemBlockConfig& /* config */)
 {
 	throw std::runtime_error("CapMemBlockConfig can't be initialized with all ones");
+}
+
+template <>
+void decode_random(std::mt19937& gen, haldls::vx::JTAGIdCode& config)
+{
+	// Draw a random word, to be transformed into a valid JTAG ID
+	std::uniform_int_distribution<fisch::vx::JTAGIdCode::Value::value_type> random_word(
+	    std::numeric_limits<fisch::vx::JTAGIdCode::Value::value_type>::min(),
+	    std::numeric_limits<fisch::vx::JTAGIdCode::Value::value_type>::max());
+
+	// Ensure marker-bit is set to 1, thereby form a valid JTAG ID
+	auto random_jtag_id_word = random_word(gen) | 1u;
+
+	std::array<fisch::vx::JTAGIdCode, haldls::vx::JTAGIdCode::read_config_size_in_words> data{
+	    fisch::vx::JTAGIdCode::Value(random_jtag_id_word)};
+
+	config.decode(data);
 }
 
 } // namespace stadls::vx

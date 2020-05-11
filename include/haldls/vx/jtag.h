@@ -156,12 +156,39 @@ public:
 	typedef halco::hicann_dls::vx::JTAGIdCodeOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	/** JTAG IDCODE value type. */
-	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::BaseType<Value, uint32_t>
+	/**
+	 * Hardware revision number, starting from 0.
+	 */
+	struct GENPYBIND(inline_base("*")) Version
+	    // Parameter is specified to be 4bit in JTAG spec.
+	    : public halco::common::detail::RantWrapper<Version, uint_fast8_t, 15, 0>
 	{
-		constexpr explicit Value(value_type const value = 0) GENPYBIND(implicit_conversion) :
-		    base_t(value)
+		constexpr explicit Version(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
+		{}
+	};
+
+	/**
+	 * Device identification number.
+	 */
+	struct GENPYBIND(inline_base("*")) PartNumber
+	    // Parameter is specified to be 16bit in JTAG spec.
+	    : public halco::common::detail::RantWrapper<PartNumber, uint_fast16_t, 65535, 0>
+	{
+		constexpr explicit PartNumber(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
+		{}
+	};
+
+	/**
+	 *  JEDEC Manufacturer ID code, Heidelberg University has '0x057'.
+	 */
+	struct GENPYBIND(inline_base("*")) ManufacturerId
+	    // Parameter is specified to be 11bit in JTAG spec.
+	    : public halco::common::detail::RantWrapper<ManufacturerId, uint_fast16_t, 2047, 0>
+	{
+		constexpr explicit ManufacturerId(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
 		{}
 	};
 
@@ -169,10 +196,40 @@ public:
 	JTAGIdCode() SYMBOL_VISIBLE;
 
 	/**
-	 * Get JTAG IDCODE.
-	 * @return Value
+	 * Get hardware revision number, starting from 0.
 	 */
-	Value get() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(version))
+	Version get_version() const SYMBOL_VISIBLE;
+
+	/**
+	 * Get device identification number.
+	 */
+	GENPYBIND(getter_for(part_number))
+	PartNumber get_part_number() const SYMBOL_VISIBLE;
+
+	/**
+	 * Get JEDEC Manufacturer ID code, Heidelberg University has '0x057'.
+	 */
+	GENPYBIND(getter_for(manufacturer_id))
+	ManufacturerId get_manufacturer_id() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set hardware revision number, starting from 0.
+	 */
+	GENPYBIND(setter_for(version))
+	void set_version(Version value) SYMBOL_VISIBLE;
+
+	/**
+	 * Set device identification number.
+	 */
+	GENPYBIND(setter_for(part_number))
+	void set_part_number(PartNumber value) SYMBOL_VISIBLE;
+
+	/**
+	 * Set JEDEC Manufacturer ID code, Heidelberg University has '0x057'.
+	 */
+	GENPYBIND(setter_for(manufacturer_id))
+	void set_manufacturer_id(ManufacturerId value) SYMBOL_VISIBLE;
 
 	bool operator==(JTAGIdCode const& other) const SYMBOL_VISIBLE;
 	bool operator!=(JTAGIdCode const& other) const SYMBOL_VISIBLE;
@@ -196,7 +253,9 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
-	Value m_value;
+	Version m_version;
+	PartNumber m_part_number;
+	ManufacturerId m_manufacturer_id;
 };
 
 namespace detail {

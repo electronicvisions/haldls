@@ -87,16 +87,43 @@ void ResetJTAGTap::serialize(Archive&, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ResetJTAGTap)
 
 
-JTAGIdCode::JTAGIdCode() : m_value() {}
+JTAGIdCode::JTAGIdCode() : m_version(), m_part_number(), m_manufacturer_id() {}
 
-JTAGIdCode::Value JTAGIdCode::get() const
+JTAGIdCode::Version JTAGIdCode::get_version() const
 {
-	return m_value;
+	return m_version;
+}
+
+JTAGIdCode::PartNumber JTAGIdCode::get_part_number() const
+{
+	return m_part_number;
+}
+
+JTAGIdCode::ManufacturerId JTAGIdCode::get_manufacturer_id() const
+{
+	return m_manufacturer_id;
+}
+
+void JTAGIdCode::set_version(JTAGIdCode::Version const value)
+{
+	m_version = value;
+}
+
+void JTAGIdCode::set_part_number(JTAGIdCode::PartNumber const value)
+{
+	m_part_number = value;
+}
+
+void JTAGIdCode::set_manufacturer_id(JTAGIdCode::ManufacturerId const value)
+{
+	m_manufacturer_id = value;
 }
 
 bool JTAGIdCode::operator==(JTAGIdCode const& other) const
 {
-	return m_value == other.m_value;
+	return (
+	    m_version == other.m_version && m_part_number == other.m_part_number &&
+	    m_manufacturer_id == other.m_manufacturer_id);
 }
 
 bool JTAGIdCode::operator!=(JTAGIdCode const& other) const
@@ -123,16 +150,57 @@ std::array<fisch::vx::JTAGIdCode, JTAGIdCode::write_config_size_in_words> JTAGId
 	return {};
 }
 
+namespace {
+
+struct JTAGIdCodeBitfield
+{
+	union
+	{
+		fisch::vx::JTAGIdCode::Value::value_type word;
+		struct __attribute__((packed))
+		{
+			fisch::vx::JTAGIdCode::Value::value_type marker : 1;
+			fisch::vx::JTAGIdCode::Value::value_type manufacturer_id : 11;
+			fisch::vx::JTAGIdCode::Value::value_type part_number : 16;
+			fisch::vx::JTAGIdCode::Value::value_type version : 4;
+		} m;
+		static_assert(sizeof(word) == sizeof(m), "Sizes of union types should match.");
+	} u;
+
+	JTAGIdCodeBitfield()
+	{
+		u.word = fisch::vx::JTAGIdCode::Value(0);
+	};
+
+	explicit JTAGIdCodeBitfield(fisch::vx::JTAGIdCode::Value data)
+	{
+		u.word = data;
+	}
+};
+
+} // anonymous namespace
+
 void JTAGIdCode::decode(
     std::array<fisch::vx::JTAGIdCode, JTAGIdCode::read_config_size_in_words> const& data)
 {
-	m_value = Value(data[0].get());
+	JTAGIdCodeBitfield bitfield(data[0].get());
+
+	if (!bitfield.u.m.marker) {
+		throw std::runtime_error("JTAG ID marker has been decoded as 0b0. This is an invalid "
+		                         "response according to the JTAG specification.");
+	}
+
+	m_version = Version(bitfield.u.m.version);
+	m_part_number = PartNumber(bitfield.u.m.part_number);
+	m_manufacturer_id = ManufacturerId(bitfield.u.m.manufacturer_id);
 }
 
 template <class Archive>
 void JTAGIdCode::serialize(Archive& ar, std::uint32_t const)
 {
-	ar(CEREAL_NVP(m_value));
+	ar(CEREAL_NVP(m_version));
+	ar(CEREAL_NVP(m_part_number));
+	ar(CEREAL_NVP(m_manufacturer_id));
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(JTAGIdCode)
@@ -141,4 +209,4 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(JTAGIdCode)
 
 CEREAL_CLASS_VERSION(haldls::vx::JTAGClockScaler, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ResetJTAGTap, 0)
-CEREAL_CLASS_VERSION(haldls::vx::JTAGIdCode, 0)
+CEREAL_CLASS_VERSION(haldls::vx::JTAGIdCode, 1)
