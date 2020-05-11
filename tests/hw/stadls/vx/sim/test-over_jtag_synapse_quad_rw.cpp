@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/pll.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/synapse.h"
-#include "haldls/vx/timer.h"
 #include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/run.h"
@@ -57,8 +57,7 @@ TEST(SynapseQuad, WROverJTAG)
 	}
 	builder.merge_back(read_builder);
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
+	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();

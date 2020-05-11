@@ -20,9 +20,6 @@ void test_background_spike_source_regular(
 	auto sequence = DigitalInit();
 	auto [builder, _] = generate(sequence);
 
-	// reset time to wait for defined period
-	builder.write(TimerOnDLS(), Timer());
-
 	size_t expected_count =
 	    running_period * 2 /* f(FPGA) = 0.5 * f(BackgroundSpikeSource) */ / period;
 
@@ -45,8 +42,11 @@ void test_background_spike_source_regular(
 		builder.write(source_coord, source_config);
 	}
 
+	// reset time to wait for defined period
+	builder.write(TimerOnDLS(), Timer());
+
 	// wait until enabled period is due
-	builder.wait_until(TimerOnDLS(), running_period);
+	builder.block_until(TimerOnDLS(), running_period);
 
 	// disable background spike sources
 	for (auto source_coord : iter_all<BackgroundSpikeSourceOnDLS>()) {
@@ -54,8 +54,11 @@ void test_background_spike_source_regular(
 		builder.write(source_coord, source_config);
 	}
 
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
+	// ensure all events are propagated up
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
+	builder.block_until(TimerOnDLS(), haldls::vx::Timer::Value(10000));
+
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();

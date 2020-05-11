@@ -36,7 +36,28 @@ PlaybackProgramBuilder::~PlaybackProgramBuilder() {}
 void PlaybackProgramBuilder::wait_until(
     typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value const time)
 {
-	m_builder_impl->wait_until(coord, time);
+	static bool first = true;
+	if (first) {
+		std::cerr << "wait_until(halco.TimerOnDLS(), value) is deprecated, use "
+		             "block_until(halco.TimerOnDLS(), value) instead."
+		          << std::endl;
+		first = false;
+	}
+	block_until(coord, time);
+}
+
+void PlaybackProgramBuilder::block_until(
+    typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value const time)
+{
+	m_builder_impl->write(
+	    halco::hicann_dls::vx::WaitUntilOnFPGA(coord.toEnum()),
+	    fisch::vx::WaitUntil(fisch::vx::WaitUntil::Value(time)));
+}
+
+void PlaybackProgramBuilder::block_until(
+    typename halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier const sync)
+{
+	m_builder_impl->write(coord, sync.encode());
 }
 
 template <typename T, size_t SupportedBackendIndex>

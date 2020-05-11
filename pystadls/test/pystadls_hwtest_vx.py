@@ -21,7 +21,7 @@ class HwTestPystadlsVx(unittest.TestCase):
         # reset chip
         builder.write(halco.ResetChipOnDLS(), haldls.ResetChip(True))
         builder.write(halco.TimerOnDLS(), haldls.Timer())
-        builder.wait_until(halco.TimerOnDLS(), 10)
+        builder.block_until(halco.TimerOnDLS(), 10)
         builder.write(halco.ResetChipOnDLS(), haldls.ResetChip(False))
 
         # write shiftreg container
@@ -31,8 +31,8 @@ class HwTestPystadlsVx(unittest.TestCase):
             builder.write(halco.TimerOnDLS(), haldls.Timer())
             shiftreg.set_enable_led(led, True)
             builder.write(halco.ShiftRegisterOnBoard(), shiftreg)
-            builder.wait_until(halco.TimerOnDLS(),
-                               int(fisch.fpga_clock_cycles_per_us * 1e6 / 8))
+            builder.block_until(halco.TimerOnDLS(),
+                                int(fisch.fpga_clock_cycles_per_us * 1e6 / 8))
             shiftreg.set_enable_led(led, False)
         builder.write(halco.ShiftRegisterOnBoard(), shiftreg)
 
@@ -65,11 +65,11 @@ class HwTestPystadlsVx(unittest.TestCase):
                 spike = spike_type(labels)
                 builder.write(spike_type_coord(), spike)
                 builder.write(halco.TimerOnDLS(), haldls.Timer())
-                builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(10))
+                builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(10))
                 to_fpga_spike_labels.extend(labels)
 
         builder.write(halco.TimerOnDLS(), haldls.Timer())
-        builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(1000))
+        builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(1000))
         program = builder.done()
 
         with hxcomm.ManagedConnection() as conn:
@@ -129,7 +129,7 @@ class HwTestPystadlsVx(unittest.TestCase):
         initial_wait = 100  # us
         builder.write(halco.TimerOnDLS(), haldls.Timer())
         builder.write(halco.SystimeSyncOnFPGA(), haldls.SystimeSync())
-        builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(
+        builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(
             initial_wait * int(haldls.Timer.Value.fpga_clock_cycles_per_us)))
 
         # trigger MADC sampling, power MADC down once done
@@ -139,7 +139,7 @@ class HwTestPystadlsVx(unittest.TestCase):
         builder.write(halco.MADCControlOnDLS(), madc_control)
 
         # wait for samples
-        builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(
+        builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(
             (initial_wait + 500)
             * int(haldls.Timer.Value.fpga_clock_cycles_per_us)))
 

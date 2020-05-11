@@ -28,21 +28,18 @@ TEST(HicannARQStatus, OmnibusReadCount)
 	auto [builder, _] = generate(sequence);
 
 	// wait to make sure, whole Omnibus access over Highspeed completed
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 
 	auto ticket_ref = builder.read(HicannARQStatusOnFPGA());
 
 	builder.read(SystimeSyncBaseOnDLS(), Backend::OmnibusChip);
 
 	// wait to make sure, whole Omnibus access over Highspeed completed
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 
 	auto ticket = builder.read(HicannARQStatusOnFPGA());
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();
@@ -79,13 +76,11 @@ TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 	builder.write(SystimeSyncBaseOnDLS(), SystimeSyncBase(), Backend::OmnibusChip);
 
 	// wait to make sure, whole Omnibus access over Highspeed completed
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 
 	auto ticket = builder.read(HicannARQStatusOnFPGA());
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();

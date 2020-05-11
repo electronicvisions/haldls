@@ -26,15 +26,15 @@ protected:
 	{
 		builder.write(ResetChipOnDLS(), ResetChip(true));
 		builder.write(TimerOnDLS(), Timer());
-		builder.wait_until(TimerOnDLS(), Timer::Value(10));
+		builder.block_until(TimerOnDLS(), Timer::Value(10));
 		builder.write(ResetChipOnDLS(), ResetChip(false));
-		builder.wait_until(TimerOnDLS(), Timer::Value(100));
+		builder.block_until(TimerOnDLS(), Timer::Value(100));
 
 		builder.write(JTAGClockScalerOnDLS(), JTAGClockScaler(JTAGClockScaler::Value(3)));
 		builder.write(ResetJTAGTapOnDLS(), ResetJTAGTap());
 
 		// wait until ASIC omnibus is up (22 us)
-		builder.wait_until(TimerOnDLS(), Timer::Value(22 * 125));
+		builder.block_until(TimerOnDLS(), Timer::Value(22 * 125));
 		builder.write(TimerOnDLS(), Timer());
 	}
 
@@ -65,10 +65,10 @@ protected:
 		builder.write(coord, adpll_config, Backend::OmnibusChipOverJTAG);
 		builder.write(TimerOnDLS(), Timer());
 		// wait for omnibus clock to come up again
-		builder.wait_until(TimerOnDLS(), Timer::Value(30 * 125));
+		builder.block_until(TimerOnDLS(), Timer::Value(30 * 125));
 		ticket = builder.read(coord, Backend::OmnibusChipOverJTAG);
 
-		builder.wait_until(TimerOnDLS(), Timer::Value(10000));
+		builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 
 		program = builder.done();
 	}
@@ -110,7 +110,7 @@ TEST_F(PLLTest, WriteReadPLLClockOutputBlockOmnibusEquality)
 	builder.write(coord, config, Backend::OmnibusChipOverJTAG);
 	auto ticket = builder.read(coord, Backend::OmnibusChipOverJTAG);
 
-	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
+	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 
 	auto program = builder.done();
 	test_run_program(program);
@@ -131,7 +131,7 @@ TEST_F(PLLTest, WriteReadPLLSelfTestOmnibusEquality)
 	builder.write(coord, config, Backend::OmnibusChipOverJTAG);
 	auto ticket = builder.read(coord, Backend::OmnibusChipOverJTAG);
 
-	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
+	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 
 	auto program = builder.done();
 	test_run_program(program);
@@ -166,13 +166,14 @@ TEST_F(PLLTest, PLLSelfTest)
 
 	builder.write(coord, config, Backend::OmnibusChipOverJTAG);
 
+	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
+	// wait needed for asynchronous self test to complete
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
+	builder.block_until(TimerOnDLS(), Timer::Value(10000));
 
 	auto ticket = builder.read(PLLSelfTestStatusOnDLS(), Backend::OmnibusChipOverJTAG);
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
+	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 
 	auto program = builder.done();
 	test_run_program(program);

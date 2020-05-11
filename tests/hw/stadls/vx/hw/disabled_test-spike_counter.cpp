@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/neuron.h"
-#include "haldls/vx/timer.h"
 #include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
@@ -101,8 +101,7 @@ TEST(NeuronBackend, ResetCounterTest)
 		cnt_value_reset.push_back(builder.read(nrn_read));
 	}
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();

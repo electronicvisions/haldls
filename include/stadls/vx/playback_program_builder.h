@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "halco/hicann-dls/vx/barrier.h"
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/container.h"
 #include "hate/visibility.h"
@@ -45,12 +47,30 @@ public:
 
 	/**
 	 * Add instruction to block execution until specified timer has reached specified value.
+	 * @deprecated In favor of block_until
 	 * @param coord Timer coordinate for which to wait
 	 * @param time Timer value until which to block execution
 	 */
 	void wait_until(
 	    typename haldls::vx::Timer::coordinate_type const& coord,
 	    haldls::vx::Timer::Value time) SYMBOL_VISIBLE;
+
+	/**
+	 * Add instruction to block execution until specified timer has reached specified value.
+	 * @param coord Timer coordinate for which to block
+	 * @param time Timer value until which to block execution
+	 */
+	void block_until(
+	    typename haldls::vx::Timer::coordinate_type const& coord,
+	    haldls::vx::Timer::Value time) SYMBOL_VISIBLE;
+
+	/**
+	 * Add instruction to block execution until specified barrier is completed.
+	 * @param coord Barrierhronisation coordinate for which to block
+	 * @param sync Barrierhronisation value for to block execution
+	 */
+	void block_until(halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier sync)
+	    SYMBOL_VISIBLE;
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	/**                                                                                            \

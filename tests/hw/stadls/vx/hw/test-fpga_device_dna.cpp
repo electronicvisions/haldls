@@ -2,7 +2,7 @@
 
 #include "haldls/vx/fpga.h"
 
-#include "haldls/vx/timer.h"
+#include "haldls/vx/barrier.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
 #include "stadls/vx/run.h"
@@ -19,8 +19,7 @@ TEST(FPGADeviceDNA, Read)
 
 	auto ticket = builder.read(FPGADeviceDNAOnFPGA());
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(100));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
 	EXPECT_FALSE(ticket.valid());

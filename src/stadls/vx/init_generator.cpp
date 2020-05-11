@@ -63,15 +63,15 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 
 		// Wait until DAC config is set
 		builder.write(TimerOnDLS(), Timer());
-		builder.wait_until(TimerOnDLS(), xboard_dac_settling_duration);
+		builder.block_until(TimerOnDLS(), xboard_dac_settling_duration);
 	}
 
 	// Reset chip
 	builder.write(ResetChipOnDLS(), ResetChip(true));
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), chip_reset_high_duration);
+	builder.block_until(TimerOnDLS(), chip_reset_high_duration);
 	builder.write(ResetChipOnDLS(), ResetChip(false));
-	builder.wait_until(TimerOnDLS(), chip_reset_low_duration);
+	builder.block_until(TimerOnDLS(), chip_reset_low_duration);
 
 	// Reset JTAG TAP
 	builder.write(JTAGClockScalerOnDLS(), jtag_clock_scaler);
@@ -95,23 +95,20 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 		}
 
 		// Wait until PLL and Omnibus is up
-		builder.wait_until(TimerOnDLS(), pll_and_omnibus_settling_duration);
+		builder.block_until(TimerOnDLS(), pll_and_omnibus_settling_duration);
 
 		builder.write(CommonPhyConfigFPGAOnDLS(), highspeed_link.common_phy_config_fpga);
 		builder.write(CommonPhyConfigChipOnDLS(), highspeed_link.common_phy_config_chip);
 
-		// Wait until Highspeed is up
-		builder.write(TimerOnDLS(), Timer());
-		builder.wait_until(TimerOnDLS(), highspeed_initialization_duration);
-
 		if (highspeed_link.enable_systime) {
 			builder.write(
 			    SystimeSyncBaseOnDLS(), highspeed_link.systime_sync_base, Backend::OmnibusChip);
+			// Block until omnibus is idle -> HS-Link is up
+			builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 			builder.write(SystimeSyncOnFPGA(), SystimeSync());
 
-			// Wait until systime sync is complete
-			builder.write(TimerOnDLS(), Timer());
-			builder.wait_until(TimerOnDLS(), systime_sync_duration);
+			// Block until systime sync is complete
+			builder.block_until(BarrierOnFPGA(), Barrier::systime);
 		}
 	}
 
@@ -128,8 +125,10 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 		ReferenceGeneratorConfig config_with_reset = reference_generator_config;
 		config_with_reset.set_enable_reset(true);
 		builder.write(ReferenceGeneratorConfigOnDLS(), config_with_reset);
+		// Block until omnibus is idle
+		builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 		builder.write(TimerOnDLS(), Timer());
-		builder.wait_until(TimerOnDLS(), reference_generator_reset_duration);
+		builder.block_until(TimerOnDLS(), reference_generator_reset_duration);
 		builder.write(ReferenceGeneratorConfigOnDLS(), reference_generator_config);
 
 		// Set all CapMem cells to value zero
@@ -177,6 +176,9 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 		    coord, neuron_backend_sram_timing_config[coord],
 		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
 	}
+
+	// Block until omnibus or JTAG is idle
+	builder.block_until(BarrierOnFPGA(), enable_highspeed_link ? Barrier::omnibus : Barrier::jtag);
 
 	return {std::move(builder), Result{}};
 }

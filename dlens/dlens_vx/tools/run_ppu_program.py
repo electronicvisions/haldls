@@ -4,7 +4,7 @@ import argparse
 from dlens_vx import halco
 from dlens_vx.sta import PlaybackProgramBuilder, DigitalInit, \
     generate, run
-from dlens_vx.hal import PPUControlRegister, Timer, PPUMemoryBlock
+from dlens_vx.hal import PPUControlRegister, Timer, PPUMemoryBlock, Barrier
 from dlens_vx.lola import PPUElfFile
 from dlens_vx.hxcomm import ConnectionHandle, ManagedConnection
 
@@ -87,8 +87,7 @@ def stop_program(connection: ConnectionHandle,
         mailbox_handle = None
 
     # Wait for all read responses to arrive
-    builder.write(halco.TimerOnDLS(), Timer(0))
-    builder.wait_until(halco.TimerOnDLS(), 1000)
+    builder.block_until(halco.BarrierOnFPGA(), Barrier.omnibus)
 
     # Run builder
     run(connection, builder.done())
@@ -124,7 +123,8 @@ def wait_until_ppu_finished(connection: ConnectionHandle,
     poll_builder = PlaybackProgramBuilder()
     status_handle = poll_builder.read(ppu.toPPUStatusRegisterOnDLS())
     poll_builder.write(halco.TimerOnDLS(), Timer(0))
-    poll_builder.wait_until(halco.TimerOnDLS(), per_poll_wait)
+    poll_builder.block_until(halco.TimerOnDLS(), per_poll_wait)
+    poll_builder.block_until(halco.BarrierOnFPGA(), Barrier.omnibus)
     poll_program = poll_builder.done()
 
     run(connection, poll_program)

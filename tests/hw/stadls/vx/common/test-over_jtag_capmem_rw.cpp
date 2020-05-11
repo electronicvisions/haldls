@@ -43,8 +43,7 @@ TEST(CapMemCell, WROverJTAG)
 	}
 	builder.merge_back(read_builder);
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
+	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();

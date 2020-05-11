@@ -41,8 +41,7 @@ TEST(CapMemCell, WROverHighspeed)
 	}
 	builder.merge_back(read_builder);
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(40000));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();

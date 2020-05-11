@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/spi.h"
@@ -25,16 +26,16 @@ TEST(ShiftRegister, ToggleLEDs)
 
 	builder.write(ResetChipOnDLS(), ResetChip(true));
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10));
+	builder.block_until(TimerOnDLS(), Timer::Value(10));
 	builder.write(ResetChipOnDLS(), ResetChip(false));
-	builder.wait_until(TimerOnDLS(), Timer::Value(100));
+	builder.block_until(TimerOnDLS(), Timer::Value(100));
 
 	// disable LEDs
 	builder.write(ShiftRegisterOnBoard(), ShiftRegister());
 
 	// wait 1s
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(125 * 1000 * 1000));
+	builder.block_until(TimerOnDLS(), Timer::Value(125 * 1000 * 1000));
 
 	// enable LEDs
 	ShiftRegister shift_register;
@@ -45,13 +46,12 @@ TEST(ShiftRegister, ToggleLEDs)
 
 	// wait 1s
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(125 * 1000 * 1000));
+	builder.block_until(TimerOnDLS(), Timer::Value(125 * 1000 * 1000));
 
 	// disable LEDs
 	builder.write(ShiftRegisterOnBoard(), ShiftRegister());
 
-	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();

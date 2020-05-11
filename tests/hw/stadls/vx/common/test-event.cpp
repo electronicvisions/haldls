@@ -32,12 +32,12 @@ using namespace stadls::vx;
 			SpikePack##Num##ToChip spike(labels);                                                  \
 			builder.write(SpikePack##Num##ToChipOnDLS(), spike);                                   \
 			builder.write(TimerOnDLS(), Timer());                                                  \
-			builder.wait_until(TimerOnDLS(), Timer::Value(10));                                    \
+			builder.block_until(TimerOnDLS(), Timer::Value(10));                                   \
 			to_fpga_spike_labels.push_back(label);                                                 \
 		}                                                                                          \
                                                                                                    \
 		builder.write(TimerOnDLS(), Timer());                                                      \
-		builder.wait_until(TimerOnDLS(), Timer::Value(1000));                                      \
+		builder.block_until(TimerOnDLS(), Timer::Value(1000));                                     \
 		auto program = builder.done();                                                             \
                                                                                                    \
 		auto connection = generate_test_connection();                                              \

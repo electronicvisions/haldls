@@ -3,6 +3,7 @@
 
 #include "fisch/vx/constants.h"
 #include "halco/hicann-dls/vx/coordinates.h"
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/timer.h"
@@ -106,9 +107,9 @@ int main(int argc, char* argv[])
 	// Chip reset
 	builder.write(ResetChipOnDLS(), ResetChip(true));
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(10));
+	builder.block_until(TimerOnDLS(), Timer::Value(10));
 	builder.write(ResetChipOnDLS(), ResetChip(false));
-	builder.wait_until(TimerOnDLS(), Timer::Value(100));
+	builder.block_until(TimerOnDLS(), Timer::Value(100));
 
 	// JTAG init
 	builder.write(JTAGClockScalerOnDLS(), JTAGClockScaler(JTAGClockScaler::Value(3)));
@@ -125,7 +126,7 @@ int main(int argc, char* argv[])
 	    halco::hicann_dls::vx::PLLClockOutputBlockOnDLS(), config, Backend::JTAGPLLRegister);
 
 	// Wait for PLL and Omnibus to come up
-	builder.wait_until(TimerOnDLS(), Timer::Value(100 * fisch::vx::fpga_clock_cycles_per_us));
+	builder.block_until(TimerOnDLS(), Timer::Value(100 * fisch::vx::fpga_clock_cycles_per_us));
 	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 	if (not use_jtag) {
 		// Configure all FPGA-side Phys
@@ -146,7 +147,7 @@ int main(int argc, char* argv[])
 
 		// wait until highspeed is up (omnibus clock lock + phy config write over JTAG)
 		builder.write(TimerOnDLS(), Timer());
-		builder.wait_until(TimerOnDLS(), Timer::Value(80 * fisch::vx::fpga_clock_cycles_per_us));
+		builder.block_until(TimerOnDLS(), Timer::Value(80 * fisch::vx::fpga_clock_cycles_per_us));
 	}
 
 	auto ppu_memory_program = helpers::load_PPUMemoryBlock_from_file(program_filename);
@@ -183,7 +184,8 @@ int main(int argc, char* argv[])
 	builder.write(ppu_control_register_coord, ppu_control_register, backend);
 
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(wait));
+	builder.block_until(TimerOnDLS(), Timer::Value(wait));
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 
 	LOG4CXX_INFO(logger, "Emitting read commands.");
 	auto ppu_memory_ticket = builder.read(ppu_memory_coord, backend);

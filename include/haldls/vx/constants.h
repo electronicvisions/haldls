@@ -5,9 +5,6 @@ namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
 inline static const GENPYBIND(visible) Timer::Value pll_and_omnibus_settling_duration =
     Timer::Value(Timer::Value::fpga_clock_cycles_per_us * 100);
-inline static const GENPYBIND(visible) Timer::Value highspeed_initialization_duration =
-    Timer::Value(Timer::Value::fpga_clock_cycles_per_us * 80);
-inline static const GENPYBIND(visible) Timer::Value systime_sync_duration = Timer::Value(1000);
 // TODO: This value is empirically safe, but might be too long, measure this value, see Issue #3406
 inline static const GENPYBIND(visible) Timer::Value xboard_dac_settling_duration =
     Timer::Value(Timer::Value::fpga_clock_cycles_per_us * 1000);
