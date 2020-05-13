@@ -8,6 +8,7 @@
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include "hxcomm/vx/target.h"
 
 namespace cereal {
 class access;
@@ -160,6 +161,8 @@ class GENPYBIND(visible) CommonPADIBusConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::CommonPADIBusConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::hardware};
 
 	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::PADIBusOnPADIBusBlock>
 	    enable_spl1_type GENPYBIND(opaque(false), expose_as(_enable_spl1_type));

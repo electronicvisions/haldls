@@ -11,13 +11,13 @@
 namespace stadls::vx {
 
 PlaybackProgram::PlaybackProgram() :
-    m_program_impl(std::make_shared<fisch::vx::PlaybackProgram>()), m_executable_restriction()
+    m_program_impl(std::make_shared<fisch::vx::PlaybackProgram>()), m_unsupported_targets()
 {}
 
 PlaybackProgram::PlaybackProgram(
     std::shared_ptr<fisch::vx::PlaybackProgram> const& program_impl,
-    std::optional<ExecutorBackend> const executable_restriction) :
-    m_program_impl(program_impl), m_executable_restriction(executable_restriction)
+    std::unordered_set<hxcomm::vx::Target> const unsupported_targets) :
+    m_program_impl(program_impl), m_unsupported_targets(unsupported_targets)
 {}
 
 template <typename T>
@@ -100,9 +100,9 @@ PlaybackProgram::get_madc_samples_pack_counts() const
 	return m_program_impl->get_madc_samples_pack_counts();
 }
 
-std::optional<ExecutorBackend> PlaybackProgram::get_executable_restriction() const
+std::unordered_set<hxcomm::vx::Target> const& PlaybackProgram::get_unsupported_targets() const
 {
-	return m_executable_restriction;
+	return m_unsupported_targets;
 }
 
 std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)

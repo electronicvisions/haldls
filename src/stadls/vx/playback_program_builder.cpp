@@ -4,30 +4,26 @@
 #include "fisch/vx/playback_program_builder.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/is_readable.h"
+#include "hate/type_traits.h"
 #include "stadls/visitors.h"
 #include "stadls/vx/playback_program.h"
 
 namespace stadls::vx {
 
-PlaybackProgramBuilder::PlaybackProgramBuilder(
-    std::optional<ExecutorBackend> const executable_restriction) :
-    m_builder_impl(std::make_unique<fisch::vx::PlaybackProgramBuilder>()),
-    m_executable_restriction(executable_restriction)
+PlaybackProgramBuilder::PlaybackProgramBuilder() :
+    m_builder_impl(std::make_unique<fisch::vx::PlaybackProgramBuilder>()), m_unsupported_targets()
 {}
 
 PlaybackProgramBuilder::PlaybackProgramBuilder(PlaybackProgramBuilder&& other) :
     m_builder_impl(std::move(other.m_builder_impl)),
-    m_executable_restriction(other.m_executable_restriction)
-{
-	other.m_executable_restriction = std::nullopt;
-}
+    m_unsupported_targets(std::move(other.m_unsupported_targets))
+{}
 
 PlaybackProgramBuilder& PlaybackProgramBuilder::operator=(PlaybackProgramBuilder&& other)
 {
 	m_builder_impl = std::move(other.m_builder_impl);
-	m_executable_restriction = other.m_executable_restriction;
+	m_unsupported_targets = std::move(other.m_unsupported_targets);
 	other.m_builder_impl = std::move(std::make_unique<fisch::vx::PlaybackProgramBuilder>());
-	other.m_executable_restriction = std::nullopt;
 	return *this;
 }
 
@@ -60,6 +56,24 @@ void PlaybackProgramBuilder::block_until(
 	m_builder_impl->write(coord, sync.encode());
 }
 
+namespace detail {
+
+template <typename T>
+using unsupported_write_targets_checker = decltype(T::unsupported_write_targets);
+
+template <typename T>
+using unsupported_read_targets_checker = decltype(T::unsupported_read_targets);
+
+template <typename T>
+constexpr static auto has_unsupported_write_targets =
+    hate::is_detected_v<unsupported_write_targets_checker, T>;
+
+template <typename T>
+constexpr static auto has_unsupported_read_targets =
+    hate::is_detected_v<unsupported_read_targets_checker, T>;
+
+} // namespace detail
+
 template <typename T, size_t SupportedBackendIndex>
 void PlaybackProgramBuilder::write_table_entry(
     PlaybackProgramBuilder& builder,
@@ -83,6 +97,10 @@ void PlaybackProgramBuilder::write_table_entry(
 
 	if (words.size() != write_addresses.size()) {
 		throw std::logic_error("number of addresses and words do not match");
+	}
+
+	if constexpr (detail::has_unsupported_write_targets<T>) {
+		builder.m_unsupported_targets.insert(T::unsupported_write_targets);
 	}
 
 	if (words.size() == 0) {
@@ -200,25 +218,9 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 		        SupportedBackendIndex,
 		        typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 		        backend_container_type;
-		    if constexpr (
-		        !is_hardware_readable<T, backend_container_type>() &&
-		        !is_simulation_readable<T, backend_container_type>()) {
-			    throw std::runtime_error("Container not readable.");
-		    }
-		    if (!builder.m_executable_restriction) {
-			    if constexpr (!is_simulation_readable<T, backend_container_type>()) {
-				    builder.m_executable_restriction = ExecutorBackend::hardware;
-			    } else if constexpr (!is_hardware_readable<T, backend_container_type>()) {
-				    builder.m_executable_restriction = ExecutorBackend::simulation;
-			    }
-		    } else {
-			    if ((!is_simulation_readable<T, backend_container_type>() &&
-			         (builder.m_executable_restriction == ExecutorBackend::simulation)) ||
-			        (!is_hardware_readable<T, backend_container_type>() &&
-			         (builder.m_executable_restriction == ExecutorBackend::hardware))) {
-				    throw std::runtime_error(
-				        "Container not readable for current executor backend restriction.");
-			    }
+
+		    if constexpr (detail::has_unsupported_read_targets<T>) {
+			    builder.m_unsupported_targets.insert(T::unsupported_read_targets);
 		    }
 
 		    typedef std::vector<typename backend_container_type::coordinate_type> addresses_type;
@@ -230,6 +232,11 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 			    haldls::vx::visit_preorder(
 			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
 		    }
+
+		    if (read_addresses.size() == 0) {
+			    throw std::runtime_error("Container not readable.");
+		    }
+
 		    auto ticket_impl = builder.m_builder_impl->read(read_addresses);
 		    return PlaybackProgram::ContainerTicket<T>(coord, ticket_impl);
 	    }...};
@@ -272,13 +279,7 @@ void PlaybackProgramBuilder::merge_back(PlaybackProgramBuilder& other)
 void PlaybackProgramBuilder::merge_back(PlaybackProgramBuilder&& other)
 {
 	m_builder_impl->merge_back(*(other.m_builder_impl));
-	if (other.m_executable_restriction) {
-		if (!m_executable_restriction) {
-			m_executable_restriction = other.m_executable_restriction;
-		} else if (m_executable_restriction != other.m_executable_restriction) {
-			throw std::runtime_error("executor restrictions don't match.");
-		}
-	}
+	m_unsupported_targets.merge(other.m_unsupported_targets);
 }
 
 void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder&& other)
@@ -294,13 +295,8 @@ void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder& other
 void PlaybackProgramBuilder::copy_back(PlaybackProgramBuilder const& other)
 {
 	m_builder_impl->copy_back(*(other.m_builder_impl));
-	if (other.m_executable_restriction) {
-		if (!m_executable_restriction) {
-			m_executable_restriction = other.m_executable_restriction;
-		} else if (m_executable_restriction != other.m_executable_restriction) {
-			throw std::runtime_error("executor restrictions don't match.");
-		}
-	}
+	m_unsupported_targets.insert(
+	    other.m_unsupported_targets.begin(), other.m_unsupported_targets.end());
 }
 
 void PlaybackProgramBuilder::copy_back(fisch::vx::PlaybackProgramBuilder const& other)
@@ -310,7 +306,9 @@ void PlaybackProgramBuilder::copy_back(fisch::vx::PlaybackProgramBuilder const& 
 
 PlaybackProgram PlaybackProgramBuilder::done()
 {
-	return PlaybackProgram(m_builder_impl->done(), m_executable_restriction);
+	auto const program = PlaybackProgram(m_builder_impl->done(), m_unsupported_targets);
+	m_unsupported_targets.clear();
+	return program;
 }
 
 std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder)

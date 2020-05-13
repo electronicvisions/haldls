@@ -9,6 +9,7 @@
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include "hxcomm/vx/target.h"
 
 namespace cereal {
 class access;
@@ -48,7 +49,8 @@ public:
 	};
 
 	/**
-	 * Duration of the pulse triggering global post pulses for all neurons connected to that backend block.
+	 * Duration of the pulse triggering global post pulses for all neurons connected to that backend
+	 * block.
 	 */
 	struct GENPYBIND(inline_base("*")) WaitGlobalPostPulse
 	    : public halco::common::detail::RantWrapper<WaitGlobalPostPulse, uint_fast16_t, 255, 0>
@@ -72,7 +74,8 @@ public:
 	};
 
 	/**
-	 * Wait time for letting the neuron backend circuits drive the counter content to the controller logic.
+	 * Wait time for letting the neuron backend circuits drive the counter content to the controller
+	 * logic.
 	 */
 	struct GENPYBIND(inline_base("*")) WaitSpikeCounterRead
 	    : public halco::common::detail::RantWrapper<WaitSpikeCounterRead, uint_fast16_t, 255, 0>
@@ -207,6 +210,8 @@ class GENPYBIND(visible) NeuronBackendConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::NeuronBackendConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
 
 	/**
 	 * Address of the spikes sent out by a neuron.
@@ -410,6 +415,8 @@ class GENPYBIND(visible) NeuronConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::NeuronConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
 
 	/** Source of readout output. */
 	enum class ReadoutSource : uint_fast8_t

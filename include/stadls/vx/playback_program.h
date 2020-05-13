@@ -9,7 +9,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/event.h"
 #include "hate/visibility.h"
-#include "stadls/vx/executor_backend.h"
+#include "hxcomm/vx/target.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/run_time_info.h"
 #ifdef __GENPYBIND__
@@ -145,13 +145,11 @@ public:
 	madc_sample_pack_counts_type const& get_madc_samples_pack_counts() const SYMBOL_VISIBLE;
 
 	/**
-	 * Get executable restriction.
-	 * Get optional indicating no restriction, if empty or executor on which execution is possible
-	 * if not empty.
-	 * @return Optional ExecutorBackend restriction value
+	 * Get set of unsupported targets.
+	 * @return Set of target restictions
 	 */
-	GENPYBIND(getter_for(executable_restriction))
-	std::optional<ExecutorBackend> get_executable_restriction() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(unsupported_targets))
+	std::unordered_set<hxcomm::vx::Target> const& get_unsupported_targets() const SYMBOL_VISIBLE;
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
@@ -242,15 +240,15 @@ private:
 	 * Construct PlaybackProgram from implementation.
 	 * Used in PlaybackProgramBuilder
 	 * @param program_impl Implementation playback program
-	 * @param executable_restriction Build-imposed restrictions on executor
+	 * @param unsupported_targets Build-imposed restrictions on targets
 	 */
 	PlaybackProgram(
 	    std::shared_ptr<fisch::vx::PlaybackProgram> const& program_impl,
-	    std::optional<ExecutorBackend> executable_restriction) SYMBOL_VISIBLE;
+	    std::unordered_set<hxcomm::vx::Target> unsupported_targets) SYMBOL_VISIBLE;
 
 	std::shared_ptr<fisch::vx::PlaybackProgram> m_program_impl;
 
-	std::optional<ExecutorBackend> m_executable_restriction;
+	std::unordered_set<hxcomm::vx::Target> m_unsupported_targets;
 };
 
 } // namespace stadls::vx

@@ -2,34 +2,31 @@
 #include "hxcomm/common/connection_variant.h"
 #include "hxcomm/common/visit_connection.h"
 
-#include "hxcomm/vx/connection_parameter.h"
-
 #include "fisch/vx/run.h"
 #include "stadls/vx/playback_program.h"
+
+#include <vector>
 
 namespace stadls::vx {
 
 template <typename Connection>
 RunTimeInfo run(Connection& connection, PlaybackProgram& program)
 {
-	if constexpr (hxcomm::ConnectionIsPlain<Connection>::value) {
-		auto const executable_restriction = program.get_executable_restriction();
-		if (executable_restriction) {
-			if (((*executable_restriction == ExecutorBackend::simulation) &&
-			     std::is_same_v<
-			         Connection, hxcomm::ARQConnection<hxcomm::vx::ConnectionParameter>>) ||
-			    ((*executable_restriction == ExecutorBackend::hardware) &&
-			     std::is_same_v<
-			         Connection, hxcomm::SimConnection<hxcomm::vx::ConnectionParameter>>) ) {
-				throw std::runtime_error(
-				    "Trying to execute program with non-matching executable restriction.");
-			}
+	auto const run_impl = [&program](auto& conn) {
+		std::vector<hxcomm::vx::Target> remaining;
+
+		auto supported = conn.supported_targets;
+		auto const& unsupported = program.get_unsupported_targets();
+		std::set_difference(
+		    supported.begin(), supported.end(), unsupported.begin(), unsupported.end(),
+		    std::back_inserter(remaining));
+		if (remaining.empty()) {
+			throw std::runtime_error("Trying to execute program on unsupported target.");
 		}
-		return stadls::vx::run(connection, program.m_program_impl);
-	} else {
-		return hxcomm::visit_connection(
-		    [&program](auto& conn) { return run(conn, program); }, connection);
-	}
+
+		return stadls::vx::run(conn, program.m_program_impl);
+	};
+	return hxcomm::visit_connection(run_impl, connection);
 }
 
 template <typename Connection>

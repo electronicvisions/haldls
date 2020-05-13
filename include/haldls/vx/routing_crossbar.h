@@ -10,6 +10,7 @@
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+#include "hxcomm/vx/target.h"
 
 namespace cereal {
 class access;
@@ -28,6 +29,8 @@ class GENPYBIND(visible) CrossbarOutputConfig
 public:
 	typedef halco::hicann_dls::vx::CrossbarOutputConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::hardware};
 
 	/** Default constructor. */
 	CrossbarOutputConfig() SYMBOL_VISIBLE;
@@ -273,6 +276,8 @@ class GENPYBIND(visible) CrossbarNode
 public:
 	typedef halco::hicann_dls::vx::CrossbarNodeOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::hardware};
 
 	typedef halco::hicann_dls::vx::NeuronLabel neuron_label_type;
 

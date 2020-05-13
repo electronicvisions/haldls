@@ -8,6 +8,7 @@
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include "hxcomm/vx/target.h"
 
 namespace cereal {
 class access;
@@ -26,6 +27,8 @@ class GENPYBIND(visible) SynapseDriverConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::SynapseDriverOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
 
 	struct GENPYBIND(inline_base("*")) Utilization
 	    : public halco::common::detail::RantWrapper<Utilization, uint_fast8_t, 15, 0>
@@ -216,7 +219,8 @@ public:
 	    GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, SynapseDriverConfig const& config) SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, SynapseDriverConfig const& config)
+	    SYMBOL_VISIBLE;
 
 private:
 	friend class cereal::access;

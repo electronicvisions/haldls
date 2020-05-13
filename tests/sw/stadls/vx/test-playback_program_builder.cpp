@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "hxcomm/vx/target.h"
 #include "stadls/vx/playback_program_builder.h"
 
 #include "fisch/vx/playback_program_builder.h"
@@ -45,31 +46,18 @@ TEST(PlaybackProgramBuilder, NoDifferentialWriteAllowed)
 	EXPECT_THROW(builder.write(PADIEventOnDLS(), PADIEvent(), PADIEvent()), std::logic_error);
 }
 
-TEST(PlaybackProgramBuilder, ExecutableRestriction)
+TEST(PlaybackProgramBuilder, UnsupportedTargets)
 {
 	PlaybackProgramBuilder builder;
 	auto const program_unrestricted = builder.done();
-	EXPECT_FALSE(program_unrestricted.get_executable_restriction());
+	EXPECT_TRUE(program_unrestricted.get_unsupported_targets().empty());
 
 	builder.read(CrossbarNodeOnDLS());
 	auto const program_simulation_restricted = builder.done();
-	EXPECT_TRUE(program_simulation_restricted.get_executable_restriction());
+	EXPECT_FALSE(program_simulation_restricted.get_unsupported_targets().empty());
 	EXPECT_EQ(
-	    *(program_simulation_restricted.get_executable_restriction()), ExecutorBackend::simulation);
-
-	{
-		PlaybackProgramBuilder builder(ExecutorBackend::hardware);
-		auto const program = builder.done();
-		EXPECT_TRUE(program.get_executable_restriction());
-		EXPECT_EQ(*(program.get_executable_restriction()), ExecutorBackend::hardware);
-	}
-
-	{
-		PlaybackProgramBuilder builder(ExecutorBackend::simulation);
-		auto const program = builder.done();
-		EXPECT_TRUE(program.get_executable_restriction());
-		EXPECT_EQ(*(program.get_executable_restriction()), ExecutorBackend::simulation);
-	}
+	    program_simulation_restricted.get_unsupported_targets(),
+	    std::unordered_set{hxcomm::vx::Target::hardware});
 }
 
 TEST(PlaybackProgramBuilder, MergeBackAPI)

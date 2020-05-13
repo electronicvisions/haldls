@@ -14,6 +14,7 @@
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include "hxcomm/vx/target.h"
 
 namespace cereal {
 class access;
@@ -146,6 +147,8 @@ class GENPYBIND(visible) CapMemBlockConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::CapMemBlockConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::hardware};
 
 	struct GENPYBIND(inline_base("*")) OutAmpBias
 	    : public halco::common::detail::RantWrapper<OutAmpBias, uint_fast16_t, 15, 0>

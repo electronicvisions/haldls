@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "halco/hicann-dls/vx/barrier.h"
@@ -12,11 +13,11 @@
 #include "haldls/vx/container.h"
 #include "hate/visibility.h"
 #include "lola/vx/container.h"
-#include "stadls/vx/executor_backend.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
 // needed for python wrapping
 #include "fisch/vx/playback_program_builder.h"
+#include "hxcomm/vx/target.h"
 
 namespace fisch::vx {
 class PlaybackProgramBuilder;
@@ -33,12 +34,8 @@ class PlaybackProgram;
 class GENPYBIND(visible) PlaybackProgramBuilder
 {
 public:
-	/**
-	 * Construct builder.
-	 * @param executable_restriction Restrict execution to given executor type.
-	 */
-	PlaybackProgramBuilder(std::optional<ExecutorBackend> executable_restriction = std::nullopt)
-	    SYMBOL_VISIBLE;
+	/** Construct builder. */
+	PlaybackProgramBuilder() SYMBOL_VISIBLE;
 
 	PlaybackProgramBuilder(PlaybackProgramBuilder&& other) SYMBOL_VISIBLE;
 	PlaybackProgramBuilder& operator=(PlaybackProgramBuilder&& other) SYMBOL_VISIBLE;
@@ -223,7 +220,7 @@ private:
 
 	std::unique_ptr<fisch::vx::PlaybackProgramBuilder> m_builder_impl;
 
-	std::optional<ExecutorBackend> m_executable_restriction;
+	std::unordered_set<hxcomm::vx::Target> m_unsupported_targets;
 };
 
 } // namespace vx
