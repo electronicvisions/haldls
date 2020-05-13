@@ -33,4 +33,4 @@ struct IsWriteable<
     : std::true_type
 {};
 
-} // namespace haldls::vx
+} // namespace haldls::vx::detail

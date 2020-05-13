@@ -2,22 +2,22 @@
 
 #include "hate/variant.h"
 #include "hxcomm/vx/target.h"
-#include "stadls/vx/dumper.h"
+#include "stadls/vx/v1/dumper.h"
 
 #include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.h"
 #include "lola/vx/cerealization.h"
 
-#include "stadls/vx/playback_program_builder.h"
+#include "stadls/vx/v1/playback_program_builder.h"
 
 #include "fisch/vx/playback_program_builder.h"
-#include "haldls/vx/barrier.h"
-#include "haldls/vx/capmem.h"
-#include "haldls/vx/padi.h"
-#include "haldls/vx/timer.h"
+#include "haldls/vx/v1/barrier.h"
+#include "haldls/vx/v1/capmem.h"
+#include "haldls/vx/v1/padi.h"
+#include "haldls/vx/v1/timer.h"
 
-using namespace stadls::vx;
-using namespace haldls::vx;
+using namespace stadls::vx::v1;
+using namespace haldls::vx::v1;
 using namespace halco::hicann_dls::vx;
 
 TEST(PlaybackProgramBuilder, WriteAddsInstructions)

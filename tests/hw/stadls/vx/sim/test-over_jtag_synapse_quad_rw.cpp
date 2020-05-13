@@ -1,21 +1,22 @@
 #include <gtest/gtest.h>
 
-#include "haldls/vx/barrier.h"
-#include "haldls/vx/jtag.h"
-#include "haldls/vx/pll.h"
-#include "haldls/vx/reset.h"
-#include "haldls/vx/synapse.h"
-#include "stadls/vx/init_generator.h"
-#include "stadls/vx/playback_program.h"
-#include "stadls/vx/run.h"
+#include "haldls/vx/v1/barrier.h"
+#include "haldls/vx/v1/jtag.h"
+#include "haldls/vx/v1/pll.h"
+#include "haldls/vx/v1/reset.h"
+#include "haldls/vx/v1/synapse.h"
+#include "haldls/vx/v1/traits.h"
+#include "stadls/vx/v1/init_generator.h"
+#include "stadls/vx/v1/playback_program.h"
+#include "stadls/vx/v1/run.h"
 
 #include "connection.h"
 #include "test-helper.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
-using namespace haldls::vx;
-using namespace stadls::vx;
+using namespace haldls::vx::v1;
+using namespace stadls::vx::v1;
 
 extern std::optional<size_t> const max_words_per_reduced_test;
 

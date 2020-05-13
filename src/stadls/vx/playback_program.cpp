@@ -3,9 +3,7 @@
 #include "fisch/vx/container.h"
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
-#include "haldls/vx/container.h"
 #include "haldls/vx/coordinate_to_container.h"
-#include "lola/vx/container.h"
 #include "stadls/visitors.h"
 
 namespace stadls::vx {
@@ -59,18 +57,6 @@ typename PlaybackProgram::fpga_time_type PlaybackProgram::ContainerTicket<T>::ge
 	    [this](auto&& ticket_impl) -> fpga_time_type { return ticket_impl.fpga_time(); },
 	    m_ticket_impl);
 }
-
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template SYMBOL_VISIBLE Type PlaybackProgram::ContainerTicket<Type>::get() const;              \
-	template SYMBOL_VISIBLE bool PlaybackProgram::ContainerTicket<Type>::valid() const;            \
-	template SYMBOL_VISIBLE typename Type::coordinate_type                                         \
-	PlaybackProgram::ContainerTicket<Type>::get_coordinate() const;                                \
-	template SYMBOL_VISIBLE typename PlaybackProgram::fpga_time_type                               \
-	PlaybackProgram::ContainerTicket<Type>::get_fpga_time() const;
-#pragma push_macro("PLAYBACK_CONTAINER")
-#include "haldls/vx/container.def"
-#pragma pop_macro("PLAYBACK_CONTAINER")
-#include "lola/vx/container.def"
 
 typename PlaybackProgram::spikes_type PlaybackProgram::get_spikes() const
 {
@@ -137,3 +123,16 @@ bool PlaybackProgram::operator!=(PlaybackProgram const& other) const
 }
 
 } // namespace stadls::vx
+
+
+// TODO: improve separation of version-specific code paths #3671
+
+#include "haldls/vx/v1/container.h"
+#include "lola/vx/v1/container.h"
+
+#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
+	template class SYMBOL_VISIBLE stadls::vx::PlaybackProgram::ContainerTicket<Type>;
+#pragma push_macro("PLAYBACK_CONTAINER")
+#include "haldls/vx/v1/container.def"
+#pragma pop_macro("PLAYBACK_CONTAINER")
+#include "lola/vx/v1/container.def"

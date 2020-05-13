@@ -4,24 +4,26 @@
 
 #include "fisch/vx/constants.h"
 #include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/vx/barrier.h"
-#include "haldls/vx/jtag.h"
-#include "haldls/vx/ppu.h"
-#include "haldls/vx/timer.h"
+#include "haldls/vx/v1/barrier.h"
+#include "haldls/vx/v1/jtag.h"
+#include "haldls/vx/v1/ppu.h"
+#include "haldls/vx/v1/timer.h"
+#include "haldls/vx/v1/traits.h"
 #include "hxcomm/common/connect_to_remote_parameter_defs.h"
 #include "hxcomm/vx/arqconnection.h"
 #include "hxcomm/vx/simconnection.h"
 #include "logging_ctrl.h"
-#include "stadls/vx/playback_program.h"
-#include "stadls/vx/playback_program_builder.h"
-#include "stadls/vx/run.h"
+#include "stadls/vx/v1/playback_program.h"
+#include "stadls/vx/v1/playback_program_builder.h"
+#include "stadls/vx/v1/run.h"
 
 #include "helpers.hpp"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
-using namespace haldls::vx;
-using namespace stadls::vx;
+// TODO: switch to vx/v1
+using namespace haldls::vx::v1;
+using namespace stadls::vx::v1;
 namespace po = boost::program_options;
 
 PPUMemoryWordOnPPU const stack_begin(3071);

@@ -1,18 +1,20 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "lola/vx/dac.h"
+#include "lola/vx/v1/dac.h"
 
 #include "fisch/vx/spi.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/spi.h"
+#include "haldls/vx/v1/common.h"
+#include "haldls/vx/v1/spi.h"
 #include "lola/vx/cerealization.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace lola::vx;
-using namespace haldls::vx;
+using namespace lola::vx::v1;
+using namespace haldls::vx::v1;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 

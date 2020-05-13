@@ -1,15 +1,15 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "haldls/vx/perftest.h"
+#include "haldls/vx/v1/perftest.h"
 
 #include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/common.h"
+#include "haldls/vx/v1/common.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace haldls::vx;
+using namespace haldls::vx::v1;
 using namespace halco::hicann_dls::vx;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;

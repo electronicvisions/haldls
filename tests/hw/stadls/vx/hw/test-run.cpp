@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 #include "halco/hicann-dls/vx/routing_crossbar.h"
-#include "stadls/vx/playback_program.h"
-#include "stadls/vx/playback_program_builder.h"
-#include "stadls/vx/run.h"
+#include "stadls/vx/v1/playback_program.h"
+#include "stadls/vx/v1/playback_program_builder.h"
+#include "stadls/vx/v1/run.h"
 
 #include "connection.h"
 
-using namespace stadls::vx;
+using namespace stadls::vx::v1;
 
 TEST(Run, ExecutableRestriction)
 {

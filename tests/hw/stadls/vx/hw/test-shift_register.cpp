@@ -1,20 +1,20 @@
 #include <gtest/gtest.h>
 
-#include "haldls/vx/barrier.h"
-#include "haldls/vx/jtag.h"
-#include "haldls/vx/reset.h"
-#include "haldls/vx/spi.h"
-#include "haldls/vx/timer.h"
-#include "stadls/vx/playback_program.h"
-#include "stadls/vx/playback_program_builder.h"
-#include "stadls/vx/run.h"
+#include "haldls/vx/v1/barrier.h"
+#include "haldls/vx/v1/jtag.h"
+#include "haldls/vx/v1/reset.h"
+#include "haldls/vx/v1/spi.h"
+#include "haldls/vx/v1/timer.h"
+#include "stadls/vx/v1/playback_program.h"
+#include "stadls/vx/v1/playback_program_builder.h"
+#include "stadls/vx/v1/run.h"
 
 #include "connection.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
-using namespace haldls::vx;
-using namespace stadls::vx;
+using namespace haldls::vx::v1;
+using namespace stadls::vx::v1;
 
 /**
  * This is a local-board-only test relying on visual verification, that all six addressable LEDs

@@ -4,12 +4,12 @@
 #include "fisch/vx/jtag.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/common.h"
-#include "haldls/vx/pll.h"
+#include "haldls/vx/v1/common.h"
+#include "haldls/vx/v1/pll.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace haldls::vx;
+using namespace haldls::vx::v1;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 

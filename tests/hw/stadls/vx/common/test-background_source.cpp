@@ -1,18 +1,18 @@
 #include <gtest/gtest.h>
 
-#include "haldls/vx/background.h"
-#include "haldls/vx/barrier.h"
-#include "stadls/vx/init_generator.h"
-#include "stadls/vx/playback_program_builder.h"
-#include "stadls/vx/run.h"
+#include "haldls/vx/v1/background.h"
+#include "haldls/vx/v1/barrier.h"
+#include "stadls/vx/v1/init_generator.h"
+#include "stadls/vx/v1/playback_program_builder.h"
+#include "stadls/vx/v1/run.h"
 
 #include "connection.h"
 #include "test-helper.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
-using namespace haldls::vx;
-using namespace stadls::vx;
+using namespace haldls::vx::v1;
+using namespace stadls::vx::v1;
 
 void test_background_spike_source_regular(
     BackgroundSpikeSource::Period period, Timer::Value running_period, size_t spike_count_deviation)

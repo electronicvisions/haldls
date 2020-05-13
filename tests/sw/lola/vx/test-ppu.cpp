@@ -5,11 +5,11 @@
 
 #include <cereal/archives/json.hpp>
 #include "halco/common/cerealization_geometry.h"
-#include "haldls/vx/ppu.h"
+#include "haldls/vx/v1/ppu.h"
 #include "lola/vx/cerealization.h"
-#include "lola/vx/ppu.h"
+#include "lola/vx/v1/ppu.h"
 
-using namespace lola::vx;
+using namespace lola::vx::v1;
 using namespace halco::hicann_dls::vx;
 
 static std::string const test_ppu_program = TEST_PPU_PROGRAM;

@@ -2,9 +2,12 @@
 
 #include "halco/hicann-dls/vx/event.h"
 #include "haldls/cerealization.h"
-#include "haldls/vx/event.h"
+#include "haldls/vx/v1/event.h"
+#include "haldls/vx/v1/neuron.h"
+#include "haldls/vx/v1/padi.h"
+#include "haldls/vx/v1/synapse.h"
 
-using namespace haldls::vx;
+using namespace haldls::vx::v1;
 using namespace halco::hicann_dls::vx;
 
 TEST(SpikeLabel, General)

@@ -10,4 +10,4 @@ struct IsWriteReadable
 	constexpr static bool value = IsReadable<T>::value && IsWriteable<T>::value;
 };
 
-} // namespace haldls::vx
+} // namespace haldls::vx::detail

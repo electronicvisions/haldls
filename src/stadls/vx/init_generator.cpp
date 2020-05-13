@@ -2,18 +2,20 @@
 
 #include "stadls/vx/init_generator.h"
 
+#include "halco/common/typed_array.h"
+#include "halco/hicann-dls/vx/coordinates.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/constants.h"
 #include "haldls/vx/reset.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/timer.h"
-#include "stadls/vx/playback_program_builder.h"
 
 namespace stadls::vx {
 
 namespace detail {
 
-InitGenerator::InitGenerator() :
+template <typename BuilderType>
+InitGenerator<BuilderType>::InitGenerator() :
     shift_register(),
     dac_control_block(),
     dac_channel_block(lola::vx::DACChannelBlock::default_ldo_2),
@@ -34,7 +36,8 @@ InitGenerator::InitGenerator() :
     capmem_block_config()
 {}
 
-InitGenerator::HighspeedLink::HighspeedLink() :
+template <typename BuilderType>
+InitGenerator<BuilderType>::HighspeedLink::HighspeedLink() :
     common_phy_config_fpga(),
     common_phy_config_chip(),
     phy_configs_fpga(),
@@ -43,13 +46,15 @@ InitGenerator::HighspeedLink::HighspeedLink() :
     enable_systime(true)
 {}
 
-PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
+template <typename BuilderType>
+PlaybackGeneratorReturn<BuilderType, typename InitGenerator<BuilderType>::Result>
+InitGenerator<BuilderType>::generate() const
 {
 	using namespace haldls::vx;
 	using namespace halco::hicann_dls::vx;
 	using namespace halco::common;
 
-	PlaybackProgramBuilder builder;
+	InitGenerator::Builder builder;
 
 	if (enable_xboard) {
 		// Set shift register values
@@ -183,7 +188,8 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 	return {std::move(builder), Result{}};
 }
 
-std::ostream& operator<<(std::ostream& os, InitGenerator const&)
+template <typename BuilderType>
+std::ostream& operator<<(std::ostream& os, InitGenerator<BuilderType> const&)
 {
 	return os;
 }
@@ -191,27 +197,31 @@ std::ostream& operator<<(std::ostream& os, InitGenerator const&)
 } // namespace detail
 
 
-ExperimentInit::ExperimentInit() :
-    detail::InitGenerator(),
+template <typename BuilderType>
+ExperimentInit<BuilderType>::ExperimentInit() :
+    detail::InitGenerator<BuilderType>(),
     common_neuron_backend_config(),
     column_correlation_quad_config(),
     column_current_quad_config(),
     capmem_config()
 {
-	enable_capmem = true;
+	this->enable_capmem = true;
 	for (auto const coord :
 	     halco::common::iter_all<halco::hicann_dls::vx::CommonNeuronBackendConfigOnDLS>()) {
 		common_neuron_backend_config[coord].set_enable_clocks(true);
 	}
 }
 
-PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
+template <typename BuilderType>
+PlaybackGeneratorReturn<BuilderType, typename ExperimentInit<BuilderType>::Result>
+ExperimentInit<BuilderType>::generate() const
 {
 	using namespace haldls::vx;
 	using namespace halco::hicann_dls::vx;
 	using namespace halco::common;
 
-	auto [builder, res] = stadls::vx::generate(*static_cast<InitGenerator const*>(this));
+	auto [builder, res] =
+	    stadls::vx::generate(*static_cast<detail::InitGenerator<BuilderType> const*>(this));
 
 	// Write common neuron backend config
 	for (auto coord : iter_all<CommonNeuronBackendConfigOnDLS>()) {
@@ -236,7 +246,20 @@ PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
 	return {std::move(builder), res};
 }
 
-
-DigitalInit::DigitalInit() : detail::InitGenerator() {}
+template <typename BuilderType>
+DigitalInit<BuilderType>::DigitalInit() : detail::InitGenerator<BuilderType>()
+{}
 
 } // namespace stadls::vx
+
+#include "stadls/vx/v1/init_generator.h"
+
+template class stadls::vx::detail::InitGenerator<stadls::vx::v1::PlaybackProgramBuilder>;
+template class stadls::vx::ExperimentInit<stadls::vx::v1::PlaybackProgramBuilder>;
+template class stadls::vx::DigitalInit<stadls::vx::v1::PlaybackProgramBuilder>;
+
+template std::ostream& stadls::vx::detail::operator<<(
+    std::ostream&,
+    stadls::vx::detail::InitGenerator<stadls::vx::detail::PlaybackProgramBuilderAdapter<
+        fisch::vx::PlaybackProgramBuilder,
+        stadls::vx::PlaybackProgram> > const&);

@@ -1,21 +1,22 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/omnibus.h"
-#include "haldls/vx/arq.h"
-#include "haldls/vx/barrier.h"
-#include "haldls/vx/systime.h"
-#include "stadls/vx/init_generator.h"
-#include "stadls/vx/playback_program.h"
-#include "stadls/vx/playback_program_builder.h"
-#include "stadls/vx/run.h"
+#include "haldls/vx/v1/arq.h"
+#include "haldls/vx/v1/barrier.h"
+#include "haldls/vx/v1/systime.h"
+#include "haldls/vx/v1/traits.h"
+#include "stadls/vx/v1/init_generator.h"
+#include "stadls/vx/v1/playback_program.h"
+#include "stadls/vx/v1/playback_program_builder.h"
+#include "stadls/vx/v1/run.h"
 
 #include "connection.h"
 #include "test-helper.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
-using namespace haldls::vx;
-using namespace stadls::vx;
+using namespace haldls::vx::v1;
+using namespace stadls::vx::v1;
 
 /**
  * Enable Highspeed omnibus connection, read a container of known length and compare to ARQ status

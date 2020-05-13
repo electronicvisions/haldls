@@ -1,8 +1,8 @@
 #pragma once
 #include "fisch/vx/traits.h"
-#include "haldls/vx/container.h"
+#include "haldls/vx/v1/container.h"
 #include "hate/type_list.h"
-#include "lola/vx/container.h"
+#include "lola/vx/v1/container.h"
 
 namespace haldls::vx::detail {
 
@@ -24,17 +24,17 @@ struct IsReadable<
 };
 
 typedef hate::type_list<
-    PPUMemoryBlock,
-    CapMemBlock,
-    lola::vx::CADCSampleRow,
-    lola::vx::SynapseRow,
-    lola::vx::SynapseWeightRow,
-    lola::vx::SynapseLabelRow,
-    lola::vx::SynapseCorrelationCalibRow,
-    lola::vx::SynapseMatrix,
-    lola::vx::SynapseWeightMatrix,
-    lola::vx::SynapseLabelMatrix,
-    lola::vx::SynapseCorrelationCalibMatrix>
+    v1::PPUMemoryBlock,
+    v1::CapMemBlock,
+    lola::vx::v1::CADCSampleRow,
+    lola::vx::v1::SynapseRow,
+    lola::vx::v1::SynapseWeightRow,
+    lola::vx::v1::SynapseLabelRow,
+    lola::vx::v1::SynapseCorrelationCalibRow,
+    lola::vx::v1::SynapseMatrix,
+    lola::vx::v1::SynapseWeightMatrix,
+    lola::vx::v1::SynapseLabelMatrix,
+    lola::vx::v1::SynapseCorrelationCalibMatrix>
     NonLeafNodeReadableContainerList;
 
 // manually add all non-leaf node containers which are readable

@@ -4,14 +4,15 @@
 
 #include "halco/common/iter_sparse.h"
 #include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/vx/barrier.h"
-#include "haldls/vx/container.h"
 #include "haldls/vx/is_writereadable.h"
-#include "haldls/vx/traits.h"
+#include "haldls/vx/v1/barrier.h"
+#include "haldls/vx/v1/container.h"
+#include "haldls/vx/v1/traits.h"
 #include "hxcomm/vx/connection_from_env.h"
 #include "stadls/vx/decode.h"
-#include "stadls/vx/init_generator.h"
-#include "stadls/vx/run.h"
+#include "stadls/vx/v1/init_generator.h"
+#include "stadls/vx/v1/playback_program.h"
+#include "stadls/vx/v1/run.h"
 
 #ifdef SIMULATION_TEST
 constexpr static bool is_simulation = true;
@@ -19,8 +20,8 @@ constexpr static bool is_simulation = true;
 constexpr static bool is_simulation = false;
 #endif
 
-using namespace haldls::vx;
-using namespace stadls::vx;
+using namespace haldls::vx::v1;
+using namespace stadls::vx::v1;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
@@ -33,7 +34,7 @@ static std::mt19937 random_generator(std::random_device{}());
 #define LAST_PLAYBACK_CONTAINER(Name, Type) Type
 #define PLAYBACK_CONTAINER(Name, Type) Type,
 typedef hate::type_list<
-#include "haldls/vx/container.def"
+#include "haldls/vx/v1/container.def"
     >
     ContainerList;
 

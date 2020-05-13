@@ -2,15 +2,15 @@
 #include "halco/hicann-dls/vx/barrier.h"
 #include "halco/hicann-dls/vx/neuron.h"
 #include "halco/hicann-dls/vx/routing_crossbar.h"
-#include "haldls/vx/barrier.h"
-#include "stadls/vx/init_generator.h"
-#include "stadls/vx/playback_program.h"
-#include "stadls/vx/playback_program_builder.h"
-#include "stadls/vx/run.h"
+#include "haldls/vx/v1/barrier.h"
+#include "stadls/vx/v1/init_generator.h"
+#include "stadls/vx/v1/playback_program.h"
+#include "stadls/vx/v1/playback_program_builder.h"
+#include "stadls/vx/v1/run.h"
 
 #include "connection.h"
 
-using namespace stadls::vx;
+using namespace stadls::vx::v1;
 
 TEST(Run, ExecutableRestriction)
 {

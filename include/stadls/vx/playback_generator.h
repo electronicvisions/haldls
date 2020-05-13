@@ -1,9 +1,9 @@
 #pragma once
+#include <pybind11/pybind11.h>
 #include "hate/nil.h"
 #include "hate/type_traits.h"
 #include "hate/visibility.h"
 #include "stadls/vx/genpybind.h"
-#include "stadls/vx/playback_program_builder.h"
 
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
@@ -12,10 +12,10 @@ namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
  * Allows named access to generated PlaybackProgramBuilder and to be specified Result value.
  * @tparam Result Result data structure, e.g. read-ticket data
  */
-template <typename Result>
+template <typename Builder, typename Result>
 struct PlaybackGeneratorReturn
 {
-	PlaybackProgramBuilder builder;
+	Builder builder;
 	Result result;
 };
 
@@ -32,9 +32,9 @@ auto generate(Seq const& seq)
 	static_assert(
 	    std::is_same<
 	        decltype(std::declval<Seq>().generate()),
-	        PlaybackGeneratorReturn<typename Seq::Result>>::value,
+	        PlaybackGeneratorReturn<typename Seq::Builder, typename Seq::Result>>::value,
 	    "Derived class lacks generate() function returning "
-	    "PlaybackGeneratorReturn<Seq::Result>");
+	    "PlaybackGeneratorReturn<Seq::Builder, Seq::Result>");
 
 	return seq.generate();
 }
@@ -67,28 +67,5 @@ pybind11::tuple py_generate_impl(T const& seq)
 }
 
 } // namespace detail
-
-GENPYBIND_MANUAL({
-	struct PyPlaybackGenerator : public ::stadls::vx::PlaybackGenerator
-	{
-		using ::stadls::vx::PlaybackGenerator::PlaybackGenerator;
-
-		virtual pybind11::tuple generate() const override
-		{
-			PYBIND11_OVERLOAD_PURE(pybind11::tuple, ::stadls::vx::PlaybackGenerator, generate, );
-		}
-	};
-
-	// clang-format off
-	parent->py::template class_<::stadls::vx::PlaybackGenerator, PyPlaybackGenerator>(
-	        parent, "PlaybackGenerator")
-	    .def(parent->py::template init<>())
-	    .def("generate", &::stadls::vx::PlaybackGenerator::generate);
-	// clang-format on
-
-	parent.def(
-	    "generate", [](::stadls::vx::PlaybackGenerator const& self) { return self.generate(); },
-	    pybind11::return_value_policy::move);
-})
 
 } // namespace stadls::vx

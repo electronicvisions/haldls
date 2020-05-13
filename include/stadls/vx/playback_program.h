@@ -12,10 +12,6 @@
 #include "hxcomm/vx/target.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/run_time_info.h"
-#ifdef __GENPYBIND__
-#include "haldls/vx/container.h"
-#include "lola/vx/container.h"
-#endif
 
 #include <pybind11/numpy.h>
 #include <pybind11/stl_bind.h>
@@ -88,7 +84,7 @@ public:
 		    typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 		    ticket_impl_type;
 
-		template <typename>
+		template <typename, typename>
 		friend class detail::PlaybackProgramBuilderAdapterImpl;
 
 		ContainerTicket(coordinate_type const& coord, ticket_impl_type const& ticket_impl) :
@@ -99,19 +95,6 @@ public:
 		ticket_impl_type m_ticket_impl;
 	}; // ContainerTicket
 
-#ifdef __GENPYBIND__
-// Explicit instantiation of template class for all valid playback container types.
-#define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	typedef PlaybackProgram::ContainerTicket<Type> ContainerTicket_##Name GENPYBIND(opaque);
-#include "haldls/vx/container.def"
-#endif // __GENPYBIND__
-
-#ifdef __GENPYBIND__
-// Explicit instantiation of template class for all valid playback container types.
-#define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	typedef PlaybackProgram::ContainerTicket<Type> ContainerTicket_##Name GENPYBIND(opaque);
-#include "lola/vx/container.def"
-#endif // __GENPYBIND__
 
 	/** Default constructor. */
 	PlaybackProgram() SYMBOL_VISIBLE;

@@ -1,9 +1,9 @@
 #include <sstream>
 #include <gtest/gtest.h>
 
-#include "haldls/vx/container.h"
+#include "haldls/vx/v1/container.h"
 
-using namespace haldls::vx;
+using namespace haldls::vx::v1;
 
 TEST(HaldlsContainerTests, HasOstreamOperator)
 {
@@ -13,5 +13,5 @@ TEST(HaldlsContainerTests, HasOstreamOperator)
 		Type obj;                                                                                  \
 		ss << obj;                                                                                 \
 	}
-#include "haldls/vx/container.def"
+#include "haldls/vx/v1/container.def"
 }

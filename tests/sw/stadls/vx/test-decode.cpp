@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/traits.h"
-#include "haldls/vx/container.h"
 #include "haldls/vx/is_readable.h"
-#include "lola/vx/container.h"
+#include "haldls/vx/v1/container.h"
+#include "lola/vx/v1/container.h"
 #include "stadls/vx/decode.h"
 
 typedef hate::
@@ -52,6 +52,6 @@ typedef hate::type_list<
 		}                                                                                          \
 	}
 #pragma push_macro("PLAYBACK_CONTAINER")
-#include "haldls/vx/container.def"
+#include "haldls/vx/v1/container.def"
 #pragma pop_macro("PLAYBACK_CONTAINER")
-#include "lola/vx/container.def"
+#include "lola/vx/v1/container.def"

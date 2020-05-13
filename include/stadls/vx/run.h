@@ -80,12 +80,6 @@ struct RunUnrollPyBind11Helper<std::variant<T, Ts...>>
 
 } // namespace detail
 
-GENPYBIND_MANUAL({
-	[[maybe_unused]] ::stadls::vx::detail::RunUnrollPyBind11Helper<
-	    std::remove_cvref_t<::pyhxcomm::vx::ConnectionHandle>>
-	    helper(parent);
-})
-
 } // namespace stadls::vx
 #endif
 

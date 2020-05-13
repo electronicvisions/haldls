@@ -6,68 +6,18 @@
 
 #include "halco/hicann-dls/vx/barrier.h"
 #include "haldls/vx/barrier.h"
-#include "haldls/vx/container.h"
+#include "haldls/vx/timer.h"
 #include "hate/visibility.h"
-#include "lola/vx/container.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
 
-// clang-format off
-#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
-#include "haldls/cerealization.h"
-#include "haldls/vx/pickle.h"
-namespace py = pybind11;
-#endif
+namespace stadls::vx::detail {
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+template <typename>
+class Dumper;
 
-struct GENPYBIND(visible) DumperDone
-{
-	/**
-	 * Variant over all coordinate/container pairs
-	 */
-	typedef std::variant<
-#define PLAYBACK_CONTAINER(Name, Type) std::pair<typename Type::coordinate_type, Type>,
-#pragma push_macro("PLAYBACK_CONTAINER")
-#include "haldls/vx/container.def"
-#pragma pop_macro("PLAYBACK_CONTAINER")
-#include "lola/vx/container.def"
-	    std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>,
-	    std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier> >
-	    coco_type;
-	typedef std::vector<coco_type> values_type;
-
-	DumperDone() = default;
-
-	values_type values{};
-
-	bool operator==(DumperDone const& other) const SYMBOL_VISIBLE;
-	bool operator!=(DumperDone const& other) const SYMBOL_VISIBLE;
-
-	// clang-format off
-	GENPYBIND_MANUAL({
-		parent.def("__len__", [](GENPYBIND_PARENT_TYPE const& v) { return v.values.size(); })
-			.def("tolist", [](GENPYBIND_PARENT_TYPE const& v) {
-				py::list ret;
-				for (auto const& vv : v.values) {
-					py::object item;
-					std::visit(
-						[&item](auto const& vvv) {
-							item = py::make_tuple(std::get<0>(vvv), std::get<1>(vvv));
-						},
-						vv);
-					ret.append(item);
-				}
-				return ret;
-				});
-	})
-	// clang-format on
-
-private:
-	friend class cereal::access;
-	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
-};
+template <typename T>
+std::ostream& operator<<(std::ostream& os, Dumper<T> const& builder) SYMBOL_VISIBLE;
 
 /** Dumper implements an interface derived from fisch::vx::PlaybackProgramBuilder.
  * However, it does work on haldls container/halco coordinate pairs instead of
@@ -75,10 +25,11 @@ private:
  * writes are collected into a std container holding coordinate/container
  * pairs. The std container is returned by done().
  */
+template <typename DoneType>
 class Dumper
 {
 public:
-	typedef DumperDone done_type;
+	typedef DoneType done_type;
 
 	/** Default constructor. */
 	Dumper() = default;
@@ -138,7 +89,8 @@ public:
 	 * Print coordinate/container pairs added until now.
 	 * @return Altered ostream
 	 */
-	friend std::ostream& operator<<(std::ostream& os, Dumper const& builder);
+	template <typename T>
+	friend std::ostream& operator<<(std::ostream& os, Dumper<T> const& builder);
 
 	/**
 	 * Merge other Dumper to the end of this instance.
@@ -176,19 +128,6 @@ private:
 	done_type m_dumpit;
 };
 
-GENPYBIND_MANUAL({
-	haldls::vx::AddPickle<hate::type_list<stadls::vx::DumperDone>>::apply(parent, {"DumperDone"});
+} // namespace stadls::vx::detail
 
-	::haldls::vx::WrapToFromFunctions<stadls::vx::DumperDone>::apply(parent);
-})
-
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	extern template void Dumper::write<Type>(typename Type::coordinate_type const&, Type const&);  \
-	extern template PlaybackProgram::ContainerTicket<Type> Dumper::read(                           \
-	    typename Type::coordinate_type const&);
-#pragma push_macro("PLAYBACK_CONTAINER")
-#include "haldls/vx/container.def"
-#pragma pop_macro("PLAYBACK_CONTAINER")
-#include "lola/vx/container.def"
-
-} // namespace stadls::vx
+#include "stadls/vx/dumper.tcc"

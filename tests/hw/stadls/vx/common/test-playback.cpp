@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
 #include "connection.h"
-#include "stadls/vx/playback_program.h"
-#include "stadls/vx/run.h"
+#include "stadls/vx/v1/playback_program.h"
+#include "stadls/vx/v1/run.h"
 
-using namespace stadls::vx;
+using namespace stadls::vx::v1;
 
 
 TEST(PlaybackProgram, DefaultConstructor)

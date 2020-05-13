@@ -29,13 +29,13 @@ def configure(cfg):
 
 
 def build(bld):
-    bld(name='dlens_vx',
+    bld(name='dlens_vx_v1',
         features='py pylint pycodestyle',
-        source = bld.path.ant_glob('dlens_vx/**/*.py'),
+        source = bld.path.ant_glob('dlens_vx_v1/**/*.py'),
         relative_trick=True,
-        use = ['pyhaldls_vx',
-               'pystadls_vx',
-               'pylola_vx',
+        use = ['pyhaldls_vx_v1',
+               'pystadls_vx_v1',
+               'pylola_vx_v1',
                'pyhalco_hicann_dls_vx',
                'pyhxcomm_vx'
         ],
@@ -45,20 +45,20 @@ def build(bld):
         test_timeout=120
     )
 
-    bld(name='dlens_swtest_vx',
-        tests='tests/dlens_swtest_vx.py',
+    bld(name='dlens_swtest_vx_v1',
+        tests='tests/dlens_swtest_vx_v1.py',
         features='use pytest pylint pycodestyle',
-        use=['dlens_vx'],
+        use=['dlens_vx_v1'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
         test_timeout=120
     )
 
-    bld(name='dlens_hwtest_vx',
-        tests='tests/dlens_hwtest_vx.py',
+    bld(name='dlens_hwtest_vx_v1',
+        tests='tests/dlens_hwtest_vx_v1.py',
         features='use pytest pylint pycodestyle',
-        use=['dlens_vx'],
+        use=['dlens_vx_v1'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
@@ -66,8 +66,8 @@ def build(bld):
         test_timeout=120
     )
 
-    bld(name='dlens_health_check_vx',
-        tests='tests/dlens_health_check_vx.py',
+    bld(name='dlens_health_check_vx_v1',
+        tests='tests/dlens_health_check_vx_v1.py',
         features='use pytest pylint pycodestyle',
         use=['dlens_vx'],
         install_path='${PREFIX}/bin',
@@ -78,9 +78,9 @@ def build(bld):
     )
 
     # --- Deprecated aliases --- #
-    bld(name='run_ppu_program_vx_py',
+    bld(name='run_ppu_program_vx_v1_py',
         features='use',
-        use=['dlens_vx'],
+        use=['dlens_vx_v1'],
         )
 
     bld.add_post_fun(summary)

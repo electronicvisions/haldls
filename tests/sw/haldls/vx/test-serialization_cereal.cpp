@@ -1,17 +1,17 @@
 #include <gtest/gtest.h>
 
 #include "haldls/cerealization.h"
-#include "haldls/vx/jtag.h"
-#include "haldls/vx/perftest.h"
-#include "haldls/vx/ppu.h"
-#include "haldls/vx/reset.h"
-#include "haldls/vx/spi.h"
-#include "haldls/vx/timer.h"
+#include "haldls/vx/v1/jtag.h"
+#include "haldls/vx/v1/perftest.h"
+#include "haldls/vx/v1/ppu.h"
+#include "haldls/vx/v1/reset.h"
+#include "haldls/vx/v1/spi.h"
+#include "haldls/vx/v1/timer.h"
 
 #include <cereal/archives/json.hpp>
 #include <cereal/cereal.hpp>
 
-using namespace haldls::vx;
+using namespace haldls::vx::v1;
 
 template <class T>
 class CommonSerializationTests : public ::testing::Test

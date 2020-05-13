@@ -1,19 +1,19 @@
 #include <gtest/gtest.h>
 
-#include "haldls/vx/event.h"
-#include "haldls/vx/systime.h"
-#include "haldls/vx/timer.h"
-#include "stadls/vx/init_generator.h"
-#include "stadls/vx/playback_program_builder.h"
-#include "stadls/vx/run.h"
+#include "haldls/vx/v1/event.h"
+#include "haldls/vx/v1/systime.h"
+#include "haldls/vx/v1/timer.h"
+#include "stadls/vx/v1/init_generator.h"
+#include "stadls/vx/v1/playback_program_builder.h"
+#include "stadls/vx/v1/run.h"
 
 #include "connection.h"
 #include "test-helper.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
-using namespace haldls::vx;
-using namespace stadls::vx;
+using namespace haldls::vx::v1;
+using namespace stadls::vx::v1;
 
 // disabled due to Issue #3578
 #define TEST_SPIKE(Num)                                                                            \

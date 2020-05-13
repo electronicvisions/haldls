@@ -4,13 +4,6 @@
 #include <memory>
 #include <unordered_set>
 
-// clang-format off
-#pragma GCC visibility push(default)
-// TODO: task #3624 "reduce visibility in class templates"
-#include "haldls/vx/container.h"
-#include "lola/vx/container.h"
-#pragma GCC visibility pop
-// clang-format on
 #include "halco/hicann-dls/vx/barrier.h"
 #include "haldls/vx/barrier.h"
 #include "haldls/vx/common.h"
@@ -31,11 +24,20 @@
 #endif
 // clang-format on
 
+// FIXME: vx/v1
+#include "haldls/vx/v1/container.h"
+#include "lola/vx/v1/container.h"
+
 namespace fisch::vx {
 class PlaybackProgramBuilder;
 } // namespace fisch::vx
 
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+
+namespace v1 {
+class DumperDone;
+using Dumper = class stadls::vx::detail::Dumper<stadls::vx::v1::DumperDone>;
+} // namespace v1
 
 namespace detail {
 
@@ -48,6 +50,44 @@ class PlaybackProgramBuilderAdapter;
 template <typename T, typename U>
 std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilderAdapter<T, U> const& builder)
     SYMBOL_VISIBLE;
+
+
+// FIXME: version-specific lookup
+/**
+ * List of container types used to resolve a container type from a coordinate type.
+ */
+typedef hate::type_list<
+#define PLAYBACK_CONTAINER(Name, Type) Type,
+#include "haldls/vx/v1/container.def"
+#define LAST_PLAYBACK_CONTAINER(Name, Type) Type
+#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
+#include "lola/vx/v1/container.def"
+    >
+    container_list;
+
+/**
+ * List of coordinate types sorted the same way as the container list.
+ */
+typedef hate::type_list<
+#define PLAYBACK_CONTAINER(Name, Type) typename Type::coordinate_type,
+#include "haldls/vx/v1/container.def"
+#define LAST_PLAYBACK_CONTAINER(Name, Type) typename Type::coordinate_type
+#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
+#include "lola/vx/v1/container.def"
+    >
+    coordinate_list;
+
+/**
+ * Given a coordinate type, resolves the corresponding unique container type.
+ * @tparam CoordinateT Coordinate type to resolve container type for
+ */
+template <typename CoordinateT>
+struct coordinate_type_to_container_type
+{
+	typedef typename hate::index_type_list_by_integer<
+	    hate::index_type_list_by_type<CoordinateT, coordinate_list>::value,
+	    container_list>::type type;
+};
 
 /**
  * Sequential PlaybackProgram builder.
@@ -63,6 +103,8 @@ public:
 	PlaybackProgramBuilderAdapter& operator=(PlaybackProgramBuilderAdapter&& other);
 	PlaybackProgramBuilderAdapter(PlaybackProgramBuilderAdapter const&) = delete;
 	~PlaybackProgramBuilderAdapter();
+
+	typedef BuilderStorage Builder;
 
 	/**
 	 * Add instruction to block execution until specified timer has reached specified value.
@@ -88,71 +130,83 @@ public:
 	 */
 	void block_until(halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier sync);
 
-#define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	/**                                                                                            \
-	 * Add instructions to write given container to given location.                                \
-	 * @param coord Coordinate value selecting location                                            \
-	 * @param config Container configuration data                                                  \
-	 * @param backend Backend selection                                                            \
-	 */                                                                                            \
-	void write(                                                                                    \
-	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    haldls::vx::Backend backend);                                                              \
-                                                                                                   \
-	/**                                                                                            \
-	 * Add instructions to write given container to given location.                                \
-	 * The container's default backend is used.                                                    \
-	 * @param coord Coordinate value selecting location                                            \
-	 * @param config Container configuration data                                                  \
-	 * @note This function without backend parameter is needed due to python wrapping not being    \
-	 * able to handle templated default arguments.                                                 \
-	 */                                                                                            \
-	void write(typename Type::coordinate_type const& coord, Type const& config);                   \
-                                                                                                   \
-	/**                                                                                            \
-	 * Add instructions to write given container to given location.                                \
-	 * @param coord Coordinate value selecting location                                            \
-	 * @param config Container configuration data                                                  \
-	 * @param config_reference Reference configuration for differential write                      \
-	 * @param backend Backend selection                                                            \
-	 */                                                                                            \
-	void write(                                                                                    \
-	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    Type const& config_reference, haldls::vx::Backend backend);                                \
-                                                                                                   \
-	/**                                                                                            \
-	 * Add instructions to write given container to given location.                                \
-	 * The container's default backend is used.                                                    \
-	 * @param coord Coordinate value selecting location                                            \
-	 * @param config Container configuration data                                                  \
-	 * @param config_reference Reference configuration for differential write                      \
-	 * @note This function without backend parameter is needed due to python wrapping not being    \
-	 * able to handle templated default arguments.                                                 \
-	 */                                                                                            \
-	void write(                                                                                    \
-	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    Type const& config_reference);                                                             \
-                                                                                                   \
-	/**                                                                                            \
-	 * Add instructions to read container data from given location.                                \
-	 * @param coord Coordinate value selecting location                                            \
-	 * @param backend Backend selection                                                            \
-	 */                                                                                            \
-	PlaybackProgram::ContainerTicket<Type> read(                                                   \
-	    typename Type::coordinate_type const& coord, haldls::vx::Backend backend);                 \
-                                                                                                   \
-	/**                                                                                            \
-	 * Add instructions to read container data from given location.                                \
-	 * The container's default backend is used.                                                    \
-	 * @param coord Coordinate value selecting location                                            \
-	 * @note This function without backend parameter is needed due to python wrapping not being    \
-	 * able to handle templated default arguments.                                                 \
-	 */                                                                                            \
-	PlaybackProgram::ContainerTicket<Type> read(typename Type::coordinate_type const& coord);
-#pragma push_macro("PLAYBACK_CONTAINER")
-#include "haldls/vx/container.def"
-#pragma pop_macro("PLAYBACK_CONTAINER")
-#include "lola/vx/container.def"
+	/**
+	 * Add instructions to write given container to given location.
+	 * @param coord Coordinate value selecting location
+	 * @param config Container configuration data
+	 * @param backend Backend selection
+	 */
+	template <typename Type>
+	void write(
+	    typename Type::coordinate_type const& coord,
+	    Type const& config,
+	    haldls::vx::Backend backend);
+
+	/**
+	 * Add instructions to write given container to given location.
+	 * The container's default backend is used.
+	 * @param coord Coordinate value selecting location
+	 * @param config Container configuration data
+	 * @note This function without backend parameter is needed due to python wrapping not being
+	 * able to handle templated default arguments.
+	 */
+	template <typename Type>
+	void write(typename Type::coordinate_type const& coord, Type const& config);
+
+	/**
+	 * Add instructions to write given container to given location.
+	 * @param coord Coordinate value selecting location
+	 * @param config Container configuration data
+	 * @param config_reference Reference configuration for differential write
+	 * @param backend Backend selection
+	 */
+	template <typename Type>
+	void write(
+	    typename Type::coordinate_type const& coord,
+	    Type const& config,
+	    Type const& config_reference,
+	    haldls::vx::Backend backend);
+
+	/**
+	 * Add instructions to write given container to given location.
+	 * The container's default backend is used.
+	 * @param coord Coordinate value selecting location
+	 * @param config Container configuration data
+	 * @param config_reference Reference configuration for differential write
+	 * @note This function without backend parameter is needed due to python wrapping not being
+	 * able to handle templated default arguments.
+	 */
+	template <typename Type>
+	void write(
+	    typename Type::coordinate_type const& coord,
+	    Type const& config,
+	    Type const& config_reference);
+
+	/**
+	 * Add instructions to read container data from given location.
+	 * @param coord Coordinate value selecting location
+	 * @param backend Backend selection
+	 */
+	// FIXME: provide chip-version specific => generalize return type and
+	// coordinate here, then partial specialize for chip version
+	template <typename CoordinateType>
+	PlaybackProgram::ContainerTicket<
+	    typename coordinate_type_to_container_type<CoordinateType>::type>
+	read(CoordinateType const& coord, haldls::vx::Backend backend);
+
+	/**
+	 * Add instructions to read container data from given location.
+	 * The container's default backend is used.
+	 * @param coord Coordinate value selecting location
+	 * @note This function without backend parameter is needed due to python wrapping not being
+	 * able to handle templated default arguments.
+	 */
+	// FIXME: provide chip-version specific => generalize return type and
+	// coordinate here, then partial specialize for chip version
+	template <typename CoordinateType>
+	PlaybackProgram::ContainerTicket<
+	    typename coordinate_type_to_container_type<CoordinateType>::type>
+	read(CoordinateType const& coord);
 
 	/**
 	 * Merge other PlaybackProgramBuilderAdapter to the end of this builder instance.
@@ -212,9 +266,8 @@ public:
 		parent.def("__repr__", [](GENPYBIND_PARENT_TYPE const& p) {
 			std::stringstream ss;
 			if constexpr (std::is_same_v<
-			                  std::decay_t<decltype(p)>,
-			                  ::stadls::vx::detail::PlaybackProgramBuilderAdapter<
-			                      ::stadls::vx::Dumper, ::stadls::vx::Dumper::done_type>>) {
+			                  typename std::decay<decltype(p)>::type::Builder,
+			                  ::stadls::vx::v1::Dumper>) {
 				ss << "PlaybackProgramBuilderDumper()";
 			} else {
 				ss << "PlaybackProgramBuilder(to FPGA size: " << p.size_to_fpga()
@@ -260,55 +313,8 @@ private:
 	std::unordered_set<hxcomm::vx::Target> m_unsupported_targets;
 };
 
-extern template SYMBOL_VISIBLE std::ostream& operator<<(
-    std::ostream&,
-    PlaybackProgramBuilderAdapter<
-        fisch::vx::PlaybackProgramBuilder,
-        stadls::vx::PlaybackProgram> const&);
-
-extern template SYMBOL_VISIBLE std::ostream& operator<<(
-    std::ostream&,
-    PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type> const&);
-
 } // namespace detail
 
-typedef detail::PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder, PlaybackProgram>
-    PlaybackProgramBuilder GENPYBIND(opaque);
-typedef detail::PlaybackProgramBuilderAdapter<Dumper, Dumper::done_type>
-    PlaybackProgramBuilderDumper GENPYBIND(opaque);
-
-extern template class SYMBOL_VISIBLE stadls::vx::detail::
-    PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder, stadls::vx::PlaybackProgram>;
-extern template class SYMBOL_VISIBLE stadls::vx::detail::
-    PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type>;
-
-/**
- * Convert a PlaybackProgramBuilderDumper to a PlaybackProgramBuilder.
- * The dumper is emptied during the process.
- * @param dumper Dumper to convert
- */
-PlaybackProgramBuilder GENPYBIND(visible)
-    convert_to_builder(PlaybackProgramBuilderDumper& dumper) SYMBOL_VISIBLE;
-
-/**
- * Convert a PlaybackProgramBuilderDumper to a PlaybackProgramBuilder (rvalue reference overload).
- * The dumper is emptied during the process.
- * @param dumper Dumper to convert
- */
-PlaybackProgramBuilder convert_to_builder(PlaybackProgramBuilderDumper&& dumper) SYMBOL_VISIBLE;
-
-/**
- * Convert a sequence of coordinate container pairs to a PlaybackProgramBuilder.
- * @param cocos Coordinate-Container pair sequence
- */
-PlaybackProgramBuilder GENPYBIND(visible)
-    convert_to_builder(Dumper::done_type const& cocos) SYMBOL_VISIBLE;
-
-GENPYBIND_MANUAL({
-	haldls::vx::AddPickle<hate::type_list<stadls::vx::PlaybackProgramBuilderDumper>>::apply(
-	    parent, {"PlaybackProgramBuilderDumper"});
-
-	::haldls::vx::WrapToFromFunctions<stadls::vx::PlaybackProgramBuilderDumper>::apply(parent);
-})
-
 } // namespace stadls::vx
+
+#include "stadls/vx/playback_program_builder.tcc"

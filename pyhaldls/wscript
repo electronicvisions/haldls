@@ -33,17 +33,17 @@ def build(bld):
 
     bld(
         features='cxx pyembed',
-        target='pyhaldls_vx_obj',
-        source='../src/haldls/vx/pyhaldls.cpp',
-        use='haldls_vx',
+        target='pyhaldls_vx_v1_obj',
+        source='../src/haldls/vx/v1/pyhaldls.cpp',
+        use='haldls_vx_v1',
     )
 
     bld(
-        target='pyhaldls_vx',
-        source='../include/haldls/vx/pyhaldls.h',
-        genpybind_tags='haldls_vx',
+        target='pyhaldls_vx_v1',
+        source='../include/haldls/vx/v1/pyhaldls.h',
+        genpybind_tags=['haldls_vx', 'haldls_vx_v1'],
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['haldls_vx', 'pyfisch_vx', 'pyhaldls_vx_obj'],
+        use=['haldls_vx_v1', 'pyfisch_vx', 'pyhaldls_vx_v1_obj'],
         install_path='${PREFIX}/lib',
         # Avoid warning; 1 OoM less and I see warnings (ECM)
         cxxflags='--param=max-vartrack-size=100000000',
@@ -51,10 +51,10 @@ def build(bld):
     )
 
     bld(
-        name='pyhaldls_test_vx',
-        tests='test/pyhaldls_test_vx.py',
+        name='pyhaldls_test_vx_v1',
+        tests='test/pyhaldls_test_vx_v1.py',
         features='use pytest pylint pycodestyle',
-        use=['pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'pyhalco_common_files'],
+        use=['pyhalco_hicann_dls_vx', 'pyhaldls_vx_v1', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),

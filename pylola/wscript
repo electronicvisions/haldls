@@ -34,26 +34,26 @@ def build(bld):
 
     bld(
         features='cxx pyembed',
-        target='pylola_vx_obj',
-        source='../src/lola/vx/pylola.cpp',
-        use='lola_vx',
+        target='pylola_vx_v1_obj',
+        source='../src/lola/vx/v1/pylola.cpp',
+        use='lola_vx_v1',
     )
 
     bld(
-        target='pylola_vx',
-        source='../include/lola/vx/pylola.h',
-        genpybind_tags='lola_vx',
+        target='pylola_vx_v1',
+        source='../include/lola/vx/v1/pylola.h',
+        genpybind_tags=['lola_vx', 'lola_vx_v1'],
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'pylola_vx_obj'],
+        use=['lola_vx_v1', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx_v1', 'pylola_vx_v1_obj'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs'
     )
 
     bld(
-        name='pylola_test_vx',
-        tests=bld.path.ant_glob('test/*_vx.py'),
+        name='pylola_test_vx_v1',
+        tests=bld.path.ant_glob('test/*_vx_v1.py'),
         features='use pytest pylint pycodestyle',
-        use=['pylola_vx'],
+        use=['pylola_vx_v1'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),

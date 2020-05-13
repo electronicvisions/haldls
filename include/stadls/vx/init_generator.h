@@ -7,16 +7,25 @@
 #include "haldls/vx/pll.h"
 #include "haldls/vx/spi.h"
 #include "haldls/vx/synapse.h"
+#include "haldls/vx/systime.h"
 #include "hate/nil.h"
 #include "hate/visibility.h"
+#include "lola/vx/dac.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls::vx /* no genpybind tag */ {
 
 namespace detail {
+
+template <typename>
+class InitGenerator;
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, InitGenerator<T> const& builder) SYMBOL_VISIBLE;
+
 /**
  * Generator for an initialization of the xBoard and the chip up to
  * allowing access to all digital settings and systime annotation of response data.
@@ -24,11 +33,15 @@ namespace detail {
  * If desired, the CapMem is enabled along with its reference generator and
  * the selection of internal synapse bias currents (defaults to false).
  */
-class GENPYBIND(expose_as(_InitGenerator)) InitGenerator
+template <typename BuilderType>
+class InitGenerator
 {
 public:
 	/** Default constructor. */
 	InitGenerator() SYMBOL_VISIBLE;
+
+	/** Builder typedef (e.g. for usage in generators). */
+	typedef BuilderType Builder;
 
 	/** Shift register on xBoard config. */
 	haldls::vx::ShiftRegister shift_register;
@@ -153,15 +166,16 @@ public:
 
 	typedef hate::Nil Result;
 
+	template <typename T>
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, InitGenerator const& sequence) SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, InitGenerator<T> const& sequence);
 
 protected:
 	/**
 	 * Generate PlaybackProgramBuilder.
 	 * @return PlaybackGeneratorReturn instance with sequence embodied and specified Result value
 	 */
-	PlaybackGeneratorReturn<Result> generate() const SYMBOL_VISIBLE;
+	PlaybackGeneratorReturn<BuilderType, Result> generate() const SYMBOL_VISIBLE;
 
 private:
 	friend auto stadls::vx::generate<InitGenerator>(InitGenerator const&);
@@ -169,6 +183,21 @@ private:
 
 } // namespace detail
 
+} // namespace stadls::vx::detail
+
+// clang-format off
+// TODO: otherwise => "error: ambiguous template instantiation for
+//                     'struct halco::common::detail::limits<halco::hicann_dls::vx::ColumnCorrelationQuadOnDLS, void>'"
+// clang-format on
+namespace halco::common {
+template struct halco::common::typed_array<
+    haldls::vx::ColumnCorrelationQuad,
+    halco::hicann_dls::vx::ColumnCorrelationQuadOnDLS>;
+template struct halco::common::
+    typed_array<haldls::vx::ColumnCurrentQuad, halco::hicann_dls::vx::ColumnCurrentQuadOnDLS>;
+} // namespace halco::common
+
+namespace stadls::vx /* no genpybind tag */ {
 
 /**
  * Generator for initialization required for typical experiments.
@@ -176,11 +205,15 @@ private:
  * further initializes the CapMem in a working state and selects internal bias currents for
  * synapses.
  */
-class ExperimentInit : public detail::InitGenerator
+template <typename BuilderType>
+class ExperimentInit : public detail::InitGenerator<BuilderType>
 {
 public:
 	/** Default constructor. */
 	ExperimentInit() SYMBOL_VISIBLE;
+
+	/** Builder typedef (e.g. for usage in generators). */
+	typedef BuilderType Builder;
 
 	/** Set common neuron backend with clocks enabled.
 	 * If clocks are disabled, it may behave strangely. */
@@ -210,6 +243,8 @@ public:
 	        capmem_block_type GENPYBIND(opaque(false));
 	capmem_block_type capmem_config;
 
+	typedef typename detail::InitGenerator<BuilderType>::Result Result;
+
 private:
 	friend auto stadls::vx::generate<ExperimentInit>(ExperimentInit const&);
 
@@ -217,7 +252,7 @@ private:
 	 * Generate PlaybackProgramBuilder.
 	 * @return PlaybackGeneratorReturn instance with sequence embodied and specified Result value
 	 */
-	PlaybackGeneratorReturn<Result> generate() const SYMBOL_VISIBLE;
+	PlaybackGeneratorReturn<BuilderType, Result> generate() const SYMBOL_VISIBLE;
 };
 
 
@@ -226,7 +261,8 @@ private:
  *
  * Uses the default InitGenerator() to establish digital communication to the chip.
  */
-class DigitalInit : public detail::InitGenerator
+template <typename BuilderType>
+class DigitalInit : public detail::InitGenerator<BuilderType>
 {
 public:
 	/** Default constructor. */
@@ -235,47 +271,5 @@ public:
 private:
 	friend auto stadls::vx::generate<DigitalInit>(DigitalInit const&);
 };
-
-namespace detail {
-
-struct GENPYBIND(expose_as(ExperimentInit), inline_base("*ExperimentInit*")) PyExperimentInit
-    : public ExperimentInit
-    , public PlaybackGenerator
-{
-	virtual pybind11::tuple generate() const override
-	{
-		return detail::py_generate_impl(static_cast<ExperimentInit>(*this));
-	}
-};
-
-struct GENPYBIND(expose_as(DigitalInit), inline_base("*DigitalInit*")) PyDigitalInit
-    : public DigitalInit
-    , public PlaybackGenerator
-{
-	virtual pybind11::tuple generate() const override
-	{
-		return detail::py_generate_impl(static_cast<DigitalInit>(*this));
-	}
-};
-
-} // namespace detail
-
-GENPYBIND_MANUAL({
-	parent.def(
-	    "generate",
-	    [](::stadls::vx::ExperimentInit const& seq) {
-		    return ::stadls::vx::detail::py_generate_impl(seq);
-	    },
-	    pybind11::return_value_policy::move);
-})
-
-GENPYBIND_MANUAL({
-	parent.def(
-	    "generate",
-	    [](::stadls::vx::DigitalInit const& seq) {
-		    return ::stadls::vx::detail::py_generate_impl(seq);
-	    },
-	    pybind11::return_value_policy::move);
-})
 
 } // namespace stadls::vx

@@ -5,12 +5,12 @@
 #include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/phy.h"
+#include "haldls/vx/v1/omnibus_constants.h"
+#include "haldls/vx/v1/phy.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace haldls::vx;
+using namespace haldls::vx::v1;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 

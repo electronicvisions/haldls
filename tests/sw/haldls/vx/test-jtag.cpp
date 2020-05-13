@@ -2,10 +2,10 @@
 #include <gtest/gtest.h>
 
 #include "halco/hicann-dls/vx/jtag.h"
-#include "haldls/vx/jtag.h"
+#include "haldls/vx/v1/jtag.h"
 #include "test-helper.h"
 
-using namespace haldls::vx;
+using namespace haldls::vx::v1;
 using namespace halco::hicann_dls::vx;
 
 
