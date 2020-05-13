@@ -1,5 +1,4 @@
 #pragma once
-
 #include <cstdint>
 #include <memory>
 #include <optional>
@@ -20,11 +19,14 @@
 #include <pybind11/numpy.h>
 #include <pybind11/stl_bind.h>
 
-namespace stadls {
-namespace vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
-class PlaybackProgramExecutor;
 class PlaybackProgramBuilder;
+
+class PlaybackProgram;
+
+template <typename Connection>
+void run(Connection&, PlaybackProgram&);
 
 /**
  * Sequential stream of executable instructions for the executor and result-container for event
@@ -81,8 +83,7 @@ public:
 		friend PlaybackProgramBuilder;
 
 		ContainerTicket(coordinate_type const& coord, ticket_impl_type const& ticket_impl) :
-		    m_coord(coord),
-		    m_ticket_impl(ticket_impl)
+		    m_coord(coord), m_ticket_impl(ticket_impl)
 		{}
 
 		coordinate_type m_coord;
@@ -172,7 +173,8 @@ public:
 	 */
 
 	GENPYBIND_MANUAL({
-		PYBIND11_NUMPY_DTYPE(haldls::vx::SpikeFromChip::SpikeFromChipDType, label, fpga_time, chip_time);
+		PYBIND11_NUMPY_DTYPE(
+		    haldls::vx::SpikeFromChip::SpikeFromChipDType, label, fpga_time, chip_time);
 
 		// expose spikes_type with pybinds11 STL vector thingy
 		pybind11::bind_vector<stadls::vx::PlaybackProgram::spikes_type>(parent, "spikes_type");
@@ -186,12 +188,14 @@ public:
 			 */
 			typedef ::stadls::vx::PlaybackProgram::spikes_type _values_type;
 			attr.attr("to_numpy") = parent->py::cpp_function(
-				[](_values_type const& self) {
-					pybind11::array_t<haldls::vx::SpikeFromChip::SpikeFromChipDType> ret(
-						{self.size()}, reinterpret_cast<haldls::vx::SpikeFromChip::SpikeFromChipDType const*>(self.data()));
-					return ret;
-				},
-				ism);
+			    [](_values_type const& self) {
+				    pybind11::array_t<haldls::vx::SpikeFromChip::SpikeFromChipDType> ret(
+				        {self.size()},
+				        reinterpret_cast<haldls::vx::SpikeFromChip::SpikeFromChipDType const*>(
+				            self.data()));
+				    return ret;
+			    },
+			    ism);
 		}
 	})
 
@@ -229,7 +233,9 @@ public:
 
 private:
 	friend PlaybackProgramBuilder;
-	friend PlaybackProgramExecutor;
+
+	template <typename Connection>
+	friend void run(Connection&, PlaybackProgram&);
 
 	/**
 	 * Construct PlaybackProgram from implementation.
@@ -246,8 +252,7 @@ private:
 	std::optional<ExecutorBackend> m_executable_restriction;
 };
 
-} // namespace vx
-} // namespace stadls
+} // namespace stadls::vx
 
 // disable pybind11's automatic conversion to python types via its `list_caster`
 PYBIND11_MAKE_OPAQUE(stadls::vx::PlaybackProgram::spikes_type)

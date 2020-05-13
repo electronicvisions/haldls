@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "executor.h"
+#include "connection.h"
 #include "stadls/vx/playback_program.h"
+#include "stadls/vx/run.h"
 
 using namespace stadls::vx;
 
@@ -10,6 +11,6 @@ TEST(PlaybackProgram, DefaultConstructor)
 {
 	PlaybackProgram program;
 
-	auto executor = generate_playback_program_test_executor();
-	executor.run(program);
+	auto connection = generate_test_connection();
+	run(connection, program);
 }

@@ -2,10 +2,11 @@ import ctypes
 import argparse
 
 from dlens_vx import halco
-from dlens_vx.sta import PlaybackProgramBuilder, PlaybackProgramExecutor, \
-    AutoConnection, DigitalInit, generate
+from dlens_vx.sta import PlaybackProgramBuilder, DigitalInit, \
+    generate, run
 from dlens_vx.hal import PPUControlRegister, Timer, PPUMemoryBlock
 from dlens_vx.lola import PPUElfFile
+from dlens_vx.hxcomm import ConnectionHandle, ManagedConnection
 
 _DEFAULT_PPU = halco.PPUOnDLS(0)
 
@@ -14,14 +15,14 @@ class PPUTimeoutError(Exception):
     pass
 
 
-def load_and_start_program(executor: PlaybackProgramExecutor,
+def load_and_start_program(connection: ConnectionHandle,
                            binary_path: str,
                            ppu: halco.PPUOnDLS = _DEFAULT_PPU) -> None:
     """
     Load a PPU program and trigger its execution.
 
-    :param executor: Connected executor to be used for loading and starting the
-                     program.
+    :param connection: Connected conection to be used for loading and starting
+                       the program.
     :param binary_path: Path to the unstripped (*.bin) program to be loaded
     :param ppu: PPU the program is started on.
     """
@@ -56,17 +57,17 @@ def load_and_start_program(executor: PlaybackProgramExecutor,
 
     # Set PPU to run state, start execution
     builder.write(ppu.toPPUControlRegisterOnDLS(), ppu_control_reg_run)
-    executor.run(builder.done())
+    run(connection, builder.done())
 
 
-def stop_program(executor: PlaybackProgramExecutor,
+def stop_program(connection: ConnectionHandle,
                  print_mailbox: bool = True,
                  ppu: halco.PPUOnDLS = _DEFAULT_PPU) -> int:
     """
     Stop the PPU and evaluate the exit code. Optionally, read back the mailbox
     and print it.
 
-    :param executor: Connected executor to be used for stopping the program.
+    :param connection: Connection to be used for stopping the program.
     :param print_mailbox: Read back and print the mailbox as string to stdout.
     :param ppu: PPU the program is stopped on.
     :return Exit code of the program
@@ -90,7 +91,7 @@ def stop_program(executor: PlaybackProgramExecutor,
     builder.wait_until(halco.TimerOnDLS(), 1000)
 
     # Run builder
-    executor.run(builder.done())
+    run(connection, builder.done())
 
     # Print Mailbox
     if print_mailbox:
@@ -100,15 +101,15 @@ def stop_program(executor: PlaybackProgramExecutor,
     return ctypes.c_int32(int(return_handle.get().value)).value
 
 
-def wait_until_ppu_finished(executor: PlaybackProgramExecutor,
+def wait_until_ppu_finished(connection: ConnectionHandle,
                             timeout: int = None,
                             ppu: halco.PPUOnDLS = _DEFAULT_PPU) -> None:
     """
     Poll the PPU status register until program has finished. An optional
     timeout may be specified.
 
-    :param executor: Connected executor to be used for polling the ppu status
-                     register
+    :param connection: Connection to be used for polling the ppu status
+                       register
     :param timeout: Timeout for the PPU program execution. Any number of
                     FPGA cycles may be given, which correspond to the
                     number of cycles the FPGA is actively waiting.
@@ -126,10 +127,10 @@ def wait_until_ppu_finished(executor: PlaybackProgramExecutor,
     poll_builder.wait_until(halco.TimerOnDLS(), per_poll_wait)
     poll_program = poll_builder.done()
 
-    executor.run(poll_program)
+    run(connection, poll_program)
     num_polls = 1
     while status_handle.get().sleep is not True:
-        executor.run(poll_program)
+        run(connection, poll_program)
 
         if timeout is not None and num_polls > max_num_polls:
             raise PPUTimeoutError("PPU execution did not finish in time.")
@@ -150,15 +151,15 @@ if __name__ == "__main__":
                         help="PPU ID used for program execution.")
     args = parser.parse_args()
 
-    with AutoConnection() as connection:
+    with ManagedConnection() as conn:
         init_builder, _ = generate(DigitalInit())
-        connection.run(init_builder.done())
+        run(conn, init_builder.done())
 
-        load_and_start_program(connection, args.program,
+        load_and_start_program(conn, args.program,
                                halco.PPUOnDLS(args.ppu_id))
-        wait_until_ppu_finished(connection, args.wait,
+        wait_until_ppu_finished(conn, args.wait,
                                 halco.PPUOnDLS(args.ppu_id))
-        exit_code = stop_program(connection, ppu=halco.PPUOnDLS(args.ppu_id))
+        exit_code = stop_program(conn, ppu=halco.PPUOnDLS(args.ppu_id))
 
     if exit_code != 0:
         raise RuntimeError(f"PPU Program exited with exit code {exit_code}")

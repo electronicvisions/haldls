@@ -8,6 +8,7 @@ import pyhalco_hicann_dls_vx as halco
 import pyhaldls_vx as haldls
 import pystadls_vx as stadls
 import pyfisch_vx as fisch
+import pyhxcomm_vx as hxcomm
 
 
 class HwTestPystadlsVx(unittest.TestCase):
@@ -39,9 +40,8 @@ class HwTestPystadlsVx(unittest.TestCase):
         program = builder.done()
 
         # execute playback program
-        executor = stadls.PlaybackProgramExecutor()
-        executor.connect()
-        executor.run(program)
+        with hxcomm.ManagedConnection() as conn:
+            stadls.run(conn, program)
 
     # pylint: disable=R0914
     def test_event(self):
@@ -71,9 +71,8 @@ class HwTestPystadlsVx(unittest.TestCase):
         builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(1000))
         program = builder.done()
 
-        executor = stadls.PlaybackProgramExecutor()
-        executor.connect()
-        executor.run(program)
+        with hxcomm.ManagedConnection() as conn:
+            stadls.run(conn, program)
 
         spikes = program.spikes
 
@@ -111,13 +110,8 @@ class HwTestPystadlsVx(unittest.TestCase):
         through the madc_samples.to_numpy() interface.
         """
 
-        executor = stadls.PlaybackProgramExecutor()
-        executor.connect()
-
         builder, _ = stadls.DigitalInit().generate()
-        executor.run(builder.done())
 
-        builder = stadls.PlaybackProgramBuilder()
         madc_config = haldls.MADCConfig()
         madc_config.number_of_samples = 10000
         madc_config.enable_dummy_data = True
@@ -150,8 +144,8 @@ class HwTestPystadlsVx(unittest.TestCase):
 
         # run program
         program = builder.done()
-        executor.run(program)
-        executor.disconnect()
+        with hxcomm.ManagedConnection() as conn:
+            stadls.run(conn, program)
 
         # inspect MADC samples
         samples = program.madc_samples.to_numpy()

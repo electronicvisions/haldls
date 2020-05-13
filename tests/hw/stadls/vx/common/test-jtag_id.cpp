@@ -3,8 +3,9 @@
 #include "halco/hicann-dls/vx/jtag.h"
 #include "haldls/vx/timer.h"
 #include "stadls/vx/init_generator.h"
+#include "stadls/vx/run.h"
 
-#include "executor.h"
+#include "connection.h"
 
 using namespace stadls::vx;
 using namespace haldls::vx;
@@ -26,8 +27,8 @@ TEST(JTAGIdCode, ReadJTAGId)
 	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
 	auto program = builder.done();
 
-	auto executor = generate_playback_program_test_executor();
-	executor.run(program);
+	auto connection = generate_test_connection();
+	run(connection, program);
 
 	ASSERT_TRUE(jtag_id_ticket.valid());
 	auto jtag_id = jtag_id_ticket.get();

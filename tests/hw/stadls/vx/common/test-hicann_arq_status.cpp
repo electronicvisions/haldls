@@ -7,8 +7,9 @@
 #include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
+#include "stadls/vx/run.h"
 
-#include "executor.h"
+#include "connection.h"
 #include "test-helper.h"
 
 using namespace halco::common;
@@ -44,8 +45,8 @@ TEST(HicannARQStatus, OmnibusReadCount)
 	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
 	auto program = builder.done();
 
-	auto executor = generate_playback_program_test_executor();
-	executor.run(program);
+	auto connection = generate_test_connection();
+	run(connection, program);
 
 	EXPECT_TRUE(ticket_ref.valid());
 	EXPECT_TRUE(ticket.valid());
@@ -87,8 +88,8 @@ TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
 	auto program = builder.done();
 
-	auto executor = generate_playback_program_test_executor();
-	executor.run(program);
+	auto connection = generate_test_connection();
+	run(connection, program);
 
 	EXPECT_TRUE(ticket.valid());
 	auto status = ticket.get();

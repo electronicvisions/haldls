@@ -9,6 +9,7 @@ def depends(ctx):
     ctx('haldls', 'pyhaldls')
     ctx('haldls', 'pystadls')
     ctx('halco', 'pyhalco')
+    ctx('hxcomm', 'pyhxcomm')
     ctx('code-format')
 
 
@@ -35,7 +36,8 @@ def build(bld):
         use = ['pyhaldls_vx',
                'pystadls_vx',
                'pylola_vx',
-               'pyhalco_hicann_dls_vx'
+               'pyhalco_hicann_dls_vx',
+               'pyhxcomm_vx'
         ],
         install_path = '${PREFIX}/lib',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),

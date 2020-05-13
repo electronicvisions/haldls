@@ -5,8 +5,9 @@
 #include "haldls/vx/timer.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
+#include "stadls/vx/run.h"
 
-#include "executor.h"
+#include "connection.h"
 
 using namespace haldls::vx;
 using namespace stadls::vx;
@@ -24,8 +25,8 @@ TEST(FPGADeviceDNA, Read)
 
 	EXPECT_FALSE(ticket.valid());
 
-	auto executor = generate_playback_program_test_executor();
-	executor.run(program);
+	auto connection = generate_test_connection();
+	run(connection, program);
 
 	EXPECT_TRUE(ticket.valid());
 	EXPECT_NO_THROW(ticket.get());

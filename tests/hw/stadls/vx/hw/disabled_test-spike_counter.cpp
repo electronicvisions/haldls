@@ -5,8 +5,9 @@
 #include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
+#include "stadls/vx/run.h"
 
-#include "executor.h"
+#include "connection.h"
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx;
@@ -104,8 +105,8 @@ TEST(NeuronBackend, ResetCounterTest)
 	builder.wait_until(TimerOnDLS(), Timer::Value(10000));
 	auto program = builder.done();
 
-	auto executor = generate_playback_program_test_executor();
-	executor.run(program);
+	auto connection = generate_test_connection();
+	run(connection, program);
 
 	for (auto cnt_value : cnt_value_read) {
 		EXPECT_EQ(cnt_value.get().get_count(), SpikeCounterRead::Count(3));

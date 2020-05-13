@@ -7,8 +7,9 @@
 #include "haldls/vx/timer.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
+#include "stadls/vx/run.h"
 
-#include "executor.h"
+#include "connection.h"
 
 #include "test-helper.h"
 
@@ -63,8 +64,8 @@ TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)
 		EXPECT_FALSE(ticket.valid());
 	}
 
-	auto executor = generate_playback_program_test_executor();
-	executor.run(program);
+	auto connection = generate_test_connection();
+	run(connection, program);
 
 	for (auto const ticket : tickets) {
 		EXPECT_TRUE(ticket.valid());

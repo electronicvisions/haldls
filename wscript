@@ -144,12 +144,12 @@ def build(bld):
 
     bld(
         target = 'stadls_hwtest_vx_inc',
-        export_includes = 'tests/hw/stadls/vx/executor_hw/',
+        export_includes = 'tests/hw/stadls/vx/connection_hw/',
     )
 
     bld(
         target = 'stadls_simtest_vx_inc',
-        export_includes = 'tests/hw/stadls/vx/executor_sim/',
+        export_includes = 'tests/hw/stadls/vx/connection_sim/',
     )
 
     bld(

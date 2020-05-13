@@ -6,10 +6,13 @@
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/ppu.h"
 #include "haldls/vx/timer.h"
+#include "hxcomm/common/connect_to_remote_parameter_defs.h"
+#include "hxcomm/vx/arqconnection.h"
+#include "hxcomm/vx/simconnection.h"
 #include "logging_ctrl.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
-#include "stadls/vx/playback_program_executor.h"
+#include "stadls/vx/run.h"
 
 #include "helpers.hpp"
 
@@ -26,8 +29,8 @@ PPUMemoryWordOnPPU const return_code(3071);
 
 PPUMemoryBlockOnPPU const mailbox_coord_on_ppu(mailbox_begin, mailbox_end);
 
-using ip_t = PlaybackProgramExecutor::ip_t;
-using port_t = PlaybackProgramExecutor::port_t;
+using ip_t = hxcomm::ip_t;
+using port_t = hxcomm::port_t;
 
 int main(int argc, char* argv[])
 {
@@ -191,17 +194,14 @@ int main(int argc, char* argv[])
 	// run ppu program
 	LOG4CXX_INFO(logger, "Creating program.");
 	auto program = builder.done();
-	auto executor = stadls::vx::PlaybackProgramExecutor();
 	if ((sim_ip == "0.0.0.0") and (sim_port == 0)) {
 		LOG4CXX_INFO(logger, "Running built program on hardware.");
-		executor.connect_hardware(fpga_ip);
-		executor.run(program);
-		executor.disconnect();
+		auto connection = hxcomm::vx::ARQConnection(fpga_ip);
+		run(connection, program);
 	} else {
 		LOG4CXX_INFO(logger, "Running built program on simulation.");
-		executor.connect_simulator(sim_ip, sim_port);
-		executor.run(program);
-		executor.disconnect();
+		auto connection = hxcomm::vx::SimConnection(sim_ip, sim_port);
+		run(connection, program);
 	}
 
 	// get results

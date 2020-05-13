@@ -52,7 +52,8 @@ def build(bld):
         source='../include/stadls/vx/pystadls.h',
         genpybind_tags='stadls_vx',
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['stadls_vx', 'PYBIND11HALDLS', 'pylogging', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'pystadls_vx_obj'],
+        use=['stadls_vx', 'PYBIND11HALDLS', 'pylogging', 'pyhalco_hicann_dls_vx',
+             'pyhaldls_vx', 'pystadls_vx_obj', 'pyhxcomm_vx'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
     )
@@ -72,7 +73,7 @@ def build(bld):
         name='pystadls_hwtest_vx',
         tests='test/pystadls_hwtest_vx.py',
         features='use pytest pylint pycodestyle',
-        use=['pyhalco_hicann_dls_vx', 'pystadls_vx', 'pyhaldls_vx', 'pyhalco_common_files'],
+        use=['pyhalco_hicann_dls_vx', 'pystadls_vx', 'pyhaldls_vx', 'pyhalco_common_files', 'pyhxcomm_vx'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),

@@ -6,13 +6,11 @@
 // logger include directory structure omits prefix
 #include "logging_ctrl.h"
 
-#include "executor.h"
+#include "connection.h"
 
-stadls::vx::PlaybackProgramExecutor generate_playback_program_test_executor()
+TestConnection generate_test_connection()
 {
-	stadls::vx::PlaybackProgramExecutor executor;
-	executor.connect();
-	return executor;
+	return TestConnection();
 }
 
 #if REDUCED_TESTS
