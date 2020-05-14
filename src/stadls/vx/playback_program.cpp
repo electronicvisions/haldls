@@ -80,9 +80,12 @@ typename PlaybackProgram::spikes_type PlaybackProgram::get_spikes() const
 	return spikes;
 }
 
-typename PlaybackProgram::madc_samples_type const& PlaybackProgram::get_madc_samples() const
+typename PlaybackProgram::madc_samples_type PlaybackProgram::get_madc_samples() const
 {
-	return m_program_impl->get_madc_samples();
+	madc_samples_type samples;
+	auto const& samples_impl = m_program_impl->get_madc_samples();
+	std::copy(samples_impl.begin(), samples_impl.end(), std::back_inserter(samples));
+	return samples;
 }
 
 typename PlaybackProgram::spike_pack_counts_type const& PlaybackProgram::get_spikes_pack_counts()

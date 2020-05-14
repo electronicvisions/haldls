@@ -107,7 +107,7 @@ public:
 	PlaybackProgram() SYMBOL_VISIBLE;
 
 	typedef std::vector<haldls::vx::SpikeFromChip> spikes_type;
-	typedef std::vector<haldls::vx::MADCSampleFromChipEvent> madc_samples_type;
+	typedef std::vector<haldls::vx::MADCSampleFromChip> madc_samples_type;
 
 	typedef fisch::vx::PlaybackProgram::spike_pack_counts_type spike_pack_counts_type
 	    GENPYBIND(visible);
@@ -126,7 +126,7 @@ public:
 	 * @return Vector of sample events
 	 */
 	GENPYBIND(getter_for(madc_samples))
-	madc_samples_type const& get_madc_samples() const SYMBOL_VISIBLE;
+	madc_samples_type get_madc_samples() const SYMBOL_VISIBLE;
 
 	/**
 	 * Get number of occurences of spike packing from chip.
@@ -189,6 +189,38 @@ public:
 		}
 	})
 
+	/**
+	 * Get MADC samples as 2D matrix, i.e. numpy array(s).
+	 *
+	 * @note We expose the data as a flat numpy DTYPE with the same data layout
+	 *       as the underlying MADCSampleFromChipDType type.
+	 */
+
+	GENPYBIND_MANUAL({
+		PYBIND11_NUMPY_DTYPE(
+		    haldls::vx::MADCSampleFromChip::MADCSampleFromChipDType, value, fpga_time, chip_time);
+
+		// expose madc_samples_type with pybinds11 STL vector thingy
+		pybind11::bind_vector<stadls::vx::PlaybackProgram::madc_samples_type>(
+		    parent, "madc_samples_type");
+		{
+			typedef ::stadls::vx::PlaybackProgram::madc_samples_type _values_type;
+			auto attr = parent.attr("madc_samples_type");
+			auto ism = parent->py::is_method(attr);
+
+			auto const to_numpy = [](_values_type const& self) {
+				pybind11::array_t<haldls::vx::MADCSampleFromChip::MADCSampleFromChipDType> ret(
+				    {self.size()},
+				    reinterpret_cast<
+				        haldls::vx::MADCSampleFromChip::MADCSampleFromChipDType const*>(
+				        self.data()));
+				return ret;
+			};
+
+			attr.attr("to_numpy") = parent->py::cpp_function(to_numpy, ism);
+		}
+	})
+
 private:
 	friend PlaybackProgramBuilder;
 	friend PlaybackProgramExecutor;
@@ -213,3 +245,4 @@ private:
 
 // disable pybind11's automatic conversion to python types via its `list_caster`
 PYBIND11_MAKE_OPAQUE(stadls::vx::PlaybackProgram::spikes_type)
+PYBIND11_MAKE_OPAQUE(stadls::vx::PlaybackProgram::madc_samples_type)

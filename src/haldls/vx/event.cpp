@@ -214,6 +214,78 @@ void SpikeFromChip::serialize(Archive& ar, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeFromChip)
 
+
+MADCSampleFromChip::MADCSampleFromChip() : m_value(), m_fpga_time(), m_chip_time() {}
+
+MADCSampleFromChip::MADCSampleFromChip(
+    Value const& value, FPGATime const& fpga_time, ChipTime const& chip_time) :
+    m_value(value), m_fpga_time(fpga_time), m_chip_time(chip_time)
+{}
+
+MADCSampleFromChip::MADCSampleFromChip(fisch::vx::MADCSampleFromChipEvent const& data) :
+    m_value(data.get_sample().get_value()),
+    m_fpga_time(data.get_fpga_time()),
+    m_chip_time(data.get_sample().get_chip_time())
+{}
+
+MADCSampleFromChip::Value MADCSampleFromChip::get_value() const
+{
+	return m_value;
+}
+
+void MADCSampleFromChip::set_value(MADCSampleFromChip::Value const value)
+{
+	m_value = value;
+}
+
+FPGATime MADCSampleFromChip::get_fpga_time() const
+{
+	return m_fpga_time;
+}
+
+void MADCSampleFromChip::set_fpga_time(FPGATime const value)
+{
+	m_fpga_time = value;
+}
+
+ChipTime MADCSampleFromChip::get_chip_time() const
+{
+	return m_chip_time;
+}
+
+void MADCSampleFromChip::set_chip_time(ChipTime const value)
+{
+	m_chip_time = value;
+}
+
+bool MADCSampleFromChip::operator==(MADCSampleFromChip const& other) const
+{
+	return m_value == other.m_value && m_fpga_time == other.m_fpga_time &&
+	       m_chip_time == other.m_chip_time;
+}
+
+bool MADCSampleFromChip::operator!=(MADCSampleFromChip const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, MADCSampleFromChip const& sample)
+{
+	return (
+	    os << "MADCSampleFromChip(" << sample.m_value << ", " << sample.m_fpga_time << ", "
+	       << sample.m_chip_time << ")");
+}
+
+template <typename Archive>
+void MADCSampleFromChip::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+	ar(CEREAL_NVP(m_fpga_time));
+	ar(CEREAL_NVP(m_chip_time));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(MADCSampleFromChip)
+
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::SpikePack1ToChip, 0)

@@ -59,9 +59,6 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 	void set_synapse_label(SynapseQuad::Label value) SYMBOL_VISIBLE;
 };
 
-typedef fisch::vx::MADCSampleFromChip MADCSampleFromChip GENPYBIND(opaque(false));
-typedef fisch::vx::MADCSampleFromChipEvent MADCSampleFromChipEvent GENPYBIND(opaque(false));
-
 #define SpikePackToChip(Num)                                                                       \
 	class GENPYBIND(visible) SpikePack##Num##ToChip                                                \
 	{                                                                                              \
@@ -154,7 +151,7 @@ public:
 	SpikeFromChip() SYMBOL_VISIBLE;
 
 	/**
-	 * Construct spike from chip via a label, FPGa and chip time information.
+	 * Construct spike from chip via a label, FPGA and chip time information.
 	 * @param label SpikeLabel to use
 	 * @param fpga_time FPGATime to use
 	 * @param chip_time ChipTime to use
@@ -246,6 +243,140 @@ struct SpikeFromChipChecker {
 	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, label)     == offsetof(SpikeFromChip, m_label));
 	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, fpga_time) == offsetof(SpikeFromChip, m_fpga_time));
 	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, chip_time) == offsetof(SpikeFromChip, m_chip_time));
+};
+
+} // namespace detail
+
+
+namespace detail {
+struct MADCSampleFromChipChecker;
+}
+
+/**
+ * MADCSample from chip.
+ * It is comprised of the sample value, FPGA and chip time annotation.
+ */
+class GENPYBIND(visible) MADCSampleFromChip
+{
+public:
+	/** Sample value. */
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::RantWrapper<Value, uintmax_t, 0x3fff, 0>
+	{
+		constexpr explicit Value(uintmax_t const val = 0) : rant_t(val) {}
+	};
+
+	/** Default constructor. */
+	MADCSampleFromChip() SYMBOL_VISIBLE;
+
+	/**
+	 * Construct MADC sample from chip via a value, FPGA and chip time information.
+	 * @param value sample value to use
+	 * @param fpga_time FPGATime to use
+	 * @param chip_time ChipTime to use
+	 */
+	MADCSampleFromChip(Value const& value, FPGATime const& fpga_time, ChipTime const& chip_time)
+	    SYMBOL_VISIBLE;
+
+	/**
+	 * Construct an MADC sample from the data representation.
+	 * @param data Data to use
+	 */
+	MADCSampleFromChip(fisch::vx::MADCSampleFromChipEvent const& data) SYMBOL_VISIBLE;
+
+	/**
+	 * Get sample value.
+	 * @return Value value
+	 */
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set sample value.
+	 * @param value Value sample value to set
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(Value value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get FPGA time.
+	 * @return FPGATime value
+	 */
+	GENPYBIND(getter_for(fpga_time))
+	FPGATime get_fpga_time() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set FPGA time.
+	 * @param value FPGATime value to set
+	 */
+	GENPYBIND(setter_for(fpga_time))
+	void set_fpga_time(FPGATime value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get chip time.
+	 * @return ChipTime value
+	 */
+	GENPYBIND(getter_for(chip_time))
+	ChipTime get_chip_time() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set chip time.
+	 * @param value ChipTime value to set
+	 */
+	GENPYBIND(setter_for(chip_time))
+	void set_chip_time(ChipTime value) SYMBOL_VISIBLE;
+
+	bool operator==(MADCSampleFromChip const& other) const SYMBOL_VISIBLE;
+	bool operator!=(MADCSampleFromChip const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, MADCSampleFromChip const& sample)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version);
+
+	Value m_value;
+	FPGATime m_fpga_time;
+	ChipTime m_chip_time;
+
+public:
+	friend struct detail::MADCSampleFromChipChecker;
+	// packing of structs and pods seems different
+	struct __attribute__((packed)) GENPYBIND(hidden) MADCSampleFromChipDType
+	{
+		uintmax_t value;
+		uint64_t fpga_time;
+		uint64_t chip_time;
+	};
+};
+
+namespace detail {
+
+struct MADCSampleFromChipChecker
+{
+	static_assert(
+	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::value) ==
+	    sizeof(MADCSampleFromChip::m_value));
+	static_assert(
+	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::fpga_time) ==
+	    sizeof(MADCSampleFromChip::m_fpga_time));
+	static_assert(
+	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::chip_time) ==
+	    sizeof(MADCSampleFromChip::m_chip_time));
+	static_assert(
+	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType) == sizeof(MADCSampleFromChip));
+	static_assert(
+	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, value) ==
+	    offsetof(MADCSampleFromChip, m_value));
+	static_assert(
+	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, fpga_time) ==
+	    offsetof(MADCSampleFromChip, m_fpga_time));
+	static_assert(
+	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, chip_time) ==
+	    offsetof(MADCSampleFromChip, m_chip_time));
 };
 
 } // namespace detail
