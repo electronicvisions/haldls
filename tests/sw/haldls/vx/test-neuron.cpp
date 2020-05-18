@@ -41,8 +41,8 @@ TEST(CommonNeuronBackendConfig, General)
 	config.set_clock_scale_fast(clock);
 	ASSERT_EQ(config.get_clock_scale_fast(), clock);
 
-	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(0), false);
-	ASSERT_EQ(config.get_sample_positive_edge(EventOutputOnNeuronBackendBlock(0)), false);
+	config.set_sample_positive_edge(NeuronEventOutputOnNeuronBackendBlock(0), false);
+	ASSERT_EQ(config.get_sample_positive_edge(NeuronEventOutputOnNeuronBackendBlock(0)), false);
 
 	clock = draw_ranged_non_default_value<CommonNeuronBackendConfig::ClockScale>();
 	config.set_clock_scale_adaptation_pulse(clock);
@@ -86,7 +86,7 @@ TEST(CommonNeuronBackendConfig, EncodeDecode)
 	config.set_enable_clocks(true);
 	config.set_clock_scale_slow(CommonNeuronBackendConfig::ClockScale(3));
 	config.set_clock_scale_fast(CommonNeuronBackendConfig::ClockScale(7));
-	config.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(1), false);
+	config.set_sample_positive_edge(NeuronEventOutputOnNeuronBackendBlock(1), false);
 	config.set_clock_scale_adaptation_pulse(CommonNeuronBackendConfig::ClockScale(4));
 	config.set_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale(8));
 	config.set_wait_global_post_pulse(CommonNeuronBackendConfig::WaitGlobalPostPulse(186));
@@ -151,7 +151,7 @@ TEST(CommonNeuronBackendConfig, CerealizeCoverage)
 	c1.set_enable_clocks(true);
 	c1.set_clock_scale_fast(CommonNeuronBackendConfig::ClockScale(7));
 	c1.set_clock_scale_slow(CommonNeuronBackendConfig::ClockScale(7));
-	c1.set_sample_positive_edge(EventOutputOnNeuronBackendBlock(0), true);
+	c1.set_sample_positive_edge(NeuronEventOutputOnNeuronBackendBlock(0), true);
 	c1.set_clock_scale_adaptation_pulse(CommonNeuronBackendConfig::ClockScale(10));
 	c1.set_clock_scale_post_pulse(CommonNeuronBackendConfig::ClockScale(10));
 	c1.set_wait_global_post_pulse(CommonNeuronBackendConfig::WaitGlobalPostPulse(186));

@@ -122,9 +122,10 @@ public:
 	void set_clock_scale_fast(ClockScale const val) SYMBOL_VISIBLE;
 
 	bool get_sample_positive_edge(
-	    halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock coord) const SYMBOL_VISIBLE;
+	    halco::hicann_dls::vx::NeuronEventOutputOnNeuronBackendBlock coord) const SYMBOL_VISIBLE;
 	void set_sample_positive_edge(
-	    halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock coord, bool val) SYMBOL_VISIBLE;
+	    halco::hicann_dls::vx::NeuronEventOutputOnNeuronBackendBlock coord,
+	    bool val) SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(clock_scale_adaptation_pulse))
 	ClockScale get_clock_scale_adaptation_pulse() const SYMBOL_VISIBLE;
@@ -183,7 +184,7 @@ private:
 	bool m_en_clocks;
 	ClockScale m_clock_scale_slow;
 	ClockScale m_clock_scale_fast;
-	halco::common::typed_array<bool, halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock>
+	halco::common::typed_array<bool, halco::hicann_dls::vx::NeuronEventOutputOnNeuronBackendBlock>
 	    m_sample_pos_edge;
 	ClockScale m_clock_scale_adapt_pulse;
 	ClockScale m_clock_scale_post_pulse;

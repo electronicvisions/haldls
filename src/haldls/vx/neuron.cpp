@@ -58,7 +58,7 @@ void CommonNeuronBackendConfig::set_clock_scale_fast(ClockScale const val)
 }
 
 void CommonNeuronBackendConfig::set_sample_positive_edge(
-    halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock const coord, bool const val)
+    halco::hicann_dls::vx::NeuronEventOutputOnNeuronBackendBlock const coord, bool const val)
 {
 	m_sample_pos_edge[coord] = val;
 }
@@ -119,7 +119,7 @@ CommonNeuronBackendConfig::ClockScale CommonNeuronBackendConfig::get_clock_scale
 }
 
 bool CommonNeuronBackendConfig::get_sample_positive_edge(
-    halco::hicann_dls::vx::EventOutputOnNeuronBackendBlock const coord) const
+    halco::hicann_dls::vx::NeuronEventOutputOnNeuronBackendBlock const coord) const
 {
 	return m_sample_pos_edge[coord];
 }
@@ -236,10 +236,10 @@ CommonNeuronBackendConfig::encode() const
 	bitfield.u.m.clock_scale_slow = static_cast<uint32_t>(m_clock_scale_slow);
 	bitfield.u.m.clock_scale_fast = static_cast<uint32_t>(m_clock_scale_fast);
 	bitfield.u.m.sample_pos_edge = static_cast<uint32_t>(
-	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(0)] |
-	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(1)] << 1 |
-	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(2)] << 2 |
-	    m_sample_pos_edge[EventOutputOnNeuronBackendBlock(3)] << 3);
+	    m_sample_pos_edge[NeuronEventOutputOnNeuronBackendBlock(0)] |
+	    m_sample_pos_edge[NeuronEventOutputOnNeuronBackendBlock(1)] << 1 |
+	    m_sample_pos_edge[NeuronEventOutputOnNeuronBackendBlock(2)] << 2 |
+	    m_sample_pos_edge[NeuronEventOutputOnNeuronBackendBlock(3)] << 3);
 	bitfield.u.m.clock_scale_adapt_pulse = static_cast<uint32_t>(m_clock_scale_adapt_pulse);
 	bitfield.u.m.clock_scale_post_pulse = static_cast<uint32_t>(m_clock_scale_post_pulse);
 	bitfield.u.m.wait_global_post_pulse = static_cast<uint32_t>(m_wait_global_post_pulse);
@@ -275,10 +275,14 @@ void CommonNeuronBackendConfig::decode(
 	m_en_clocks = bitfield.u.m.en_clocks;
 	m_clock_scale_slow = CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_slow);
 	m_clock_scale_fast = CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_fast);
-	m_sample_pos_edge[EventOutputOnNeuronBackendBlock(0)] = bitfield.u.m.sample_pos_edge & 0b1;
-	m_sample_pos_edge[EventOutputOnNeuronBackendBlock(1)] = bitfield.u.m.sample_pos_edge & 0b10;
-	m_sample_pos_edge[EventOutputOnNeuronBackendBlock(2)] = bitfield.u.m.sample_pos_edge & 0b100;
-	m_sample_pos_edge[EventOutputOnNeuronBackendBlock(3)] = bitfield.u.m.sample_pos_edge & 0b1000;
+	m_sample_pos_edge[NeuronEventOutputOnNeuronBackendBlock(0)] =
+	    bitfield.u.m.sample_pos_edge & 0b1;
+	m_sample_pos_edge[NeuronEventOutputOnNeuronBackendBlock(1)] =
+	    bitfield.u.m.sample_pos_edge & 0b10;
+	m_sample_pos_edge[NeuronEventOutputOnNeuronBackendBlock(2)] =
+	    bitfield.u.m.sample_pos_edge & 0b100;
+	m_sample_pos_edge[NeuronEventOutputOnNeuronBackendBlock(3)] =
+	    bitfield.u.m.sample_pos_edge & 0b1000;
 	m_clock_scale_adapt_pulse =
 	    CommonNeuronBackendConfig::ClockScale(bitfield.u.m.clock_scale_adapt_pulse);
 	m_clock_scale_post_pulse =
