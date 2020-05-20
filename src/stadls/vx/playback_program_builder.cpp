@@ -236,6 +236,11 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 
 void PlaybackProgramBuilder::merge_back(PlaybackProgramBuilder& other)
 {
+	merge_back(std::forward<PlaybackProgramBuilder>(other));
+}
+
+void PlaybackProgramBuilder::merge_back(PlaybackProgramBuilder&& other)
+{
 	m_builder_impl->merge_back(*(other.m_builder_impl));
 	if (other.m_executable_restriction) {
 		if (!m_executable_restriction) {
@@ -246,9 +251,14 @@ void PlaybackProgramBuilder::merge_back(PlaybackProgramBuilder& other)
 	}
 }
 
-void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder& other)
+void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder&& other)
 {
 	m_builder_impl->merge_back(other);
+}
+
+void PlaybackProgramBuilder::merge_back(fisch::vx::PlaybackProgramBuilder& other)
+{
+	merge_back(std::forward<fisch::vx::PlaybackProgramBuilder>(other));
 }
 
 void PlaybackProgramBuilder::copy_back(PlaybackProgramBuilder const& other)

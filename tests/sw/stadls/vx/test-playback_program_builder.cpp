@@ -2,6 +2,7 @@
 
 #include "stadls/vx/playback_program_builder.h"
 
+#include "fisch/vx/playback_program_builder.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/padi.h"
 
@@ -68,5 +69,26 @@ TEST(PlaybackProgramBuilder, ExecutableRestriction)
 		auto const program = builder.done();
 		EXPECT_TRUE(program.get_executable_restriction());
 		EXPECT_EQ(*(program.get_executable_restriction()), ExecutorBackend::simulation);
+	}
+}
+
+TEST(PlaybackProgramBuilder, MergeBackAPI)
+{
+	PlaybackProgramBuilder builder;
+	{
+		PlaybackProgramBuilder other;
+		builder.merge_back(other);
+	}
+	{
+		// rvalue overload
+		builder.merge_back(PlaybackProgramBuilder());
+	}
+	{
+		fisch::vx::PlaybackProgramBuilder other;
+		builder.merge_back(other);
+	}
+	{
+		// rvalue overload
+		builder.merge_back(fisch::vx::PlaybackProgramBuilder());
 	}
 }
