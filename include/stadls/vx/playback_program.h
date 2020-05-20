@@ -155,6 +155,12 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
 	    SYMBOL_VISIBLE;
 
+	/**
+	 * Get whether program is empty, i.e. does not feature any commands to be sent.
+	 * @return Boolean value
+	 */
+	bool empty() const SYMBOL_VISIBLE;
+
 	bool operator==(PlaybackProgram const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PlaybackProgram const& other) const SYMBOL_VISIBLE;
 

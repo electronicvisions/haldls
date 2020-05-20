@@ -111,6 +111,11 @@ std::ostream& operator<<(std::ostream& os, PlaybackProgram const& program)
 	return os;
 }
 
+bool PlaybackProgram::empty() const
+{
+	return m_program_impl->empty();
+}
+
 bool PlaybackProgram::operator==(PlaybackProgram const& other) const
 {
 	return *m_program_impl == *(other.m_program_impl);
