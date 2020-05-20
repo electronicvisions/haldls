@@ -304,16 +304,16 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Readout const& config)
 	   << ", enable_amplifier: " << config.enable_amplifier
 	   << ", enable_unbuffered_access: " << config.enable_unbuffered_access << ", source: ";
 	switch (config.source) {
-		case haldls::vx::NeuronConfig::ReadoutSource::membrane:
+		case haldls::vx::v1::NeuronConfig::ReadoutSource::membrane:
 			ss << "membrane";
 			break;
-		case haldls::vx::NeuronConfig::ReadoutSource::exc_synin:
+		case haldls::vx::v1::NeuronConfig::ReadoutSource::exc_synin:
 			ss << "exc_synin";
 			break;
-		case haldls::vx::NeuronConfig::ReadoutSource::inh_synin:
+		case haldls::vx::v1::NeuronConfig::ReadoutSource::inh_synin:
 			ss << "inh_synin";
 			break;
-		case haldls::vx::NeuronConfig::ReadoutSource::adaptation:
+		case haldls::vx::v1::NeuronConfig::ReadoutSource::adaptation:
 			ss << "adaptation";
 			break;
 		default:

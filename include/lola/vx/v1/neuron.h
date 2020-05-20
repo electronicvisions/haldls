@@ -214,7 +214,8 @@ public:
 
 	struct GENPYBIND(visible) MembraneCapacitance
 	{
-		typedef haldls::vx::NeuronConfig::MembraneCapacitorSize CapacitorSize GENPYBIND(visible);
+		typedef haldls::vx::v1::NeuronConfig::MembraneCapacitorSize CapacitorSize
+		    GENPYBIND(visible);
 
 		MembraneCapacitance() SYMBOL_VISIBLE;
 
@@ -290,7 +291,7 @@ public:
 
 	struct GENPYBIND(visible) Exponential
 	{
-		typedef haldls::vx::NeuronConfig::ExponentialTermStrength Strength GENPYBIND(visible);
+		typedef haldls::vx::v1::NeuronConfig::ExponentialTermStrength Strength GENPYBIND(visible);
 
 		/** Enable exponential term. */
 		bool enable;
@@ -360,7 +361,7 @@ public:
 
 	struct GENPYBIND(visible) Readout
 	{
-		typedef haldls::vx::NeuronConfig::ReadoutSource Source GENPYBIND(visible);
+		typedef haldls::vx::v1::NeuronConfig::ReadoutSource Source GENPYBIND(visible);
 
 		/**
 		 * Connect the readout amplifier's output to the shared readout lines.
