@@ -32,31 +32,30 @@ public:
 	/** Default constructor. */
 	CrossbarOutputConfig() SYMBOL_VISIBLE;
 
-	/**
-	 * Get enable value for event counter of specified output.
-	 * @param coord Output coordinate
-	 * @return Boolean value
-	 */
-	GENPYBIND(getter_for(enable_event_counter))
-	bool get_enable_event_counter(halco::hicann_dls::vx::CrossbarOutputOnDLS const& coord) const
-	    SYMBOL_VISIBLE;
+	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::CrossbarOutputOnDLS>
+	    enable_event_counter_type GENPYBIND(opaque);
+	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::CrossbarL2OutputOnDLS>
+	    enable_slow_type GENPYBIND(opaque);
 
 	/**
-	 * Set enable value for event counter of specified output.
-	 * @param coord Output coordinate
-	 * @param value Boolean value
+	 * Get enable value for event counters.
+	 * @return Boolean values
+	 */
+	GENPYBIND(getter_for(enable_event_counter), return_value_policy(reference))
+	enable_event_counter_type const& get_enable_event_counter() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable value for event counters.
+	 * @param value Boolean values
 	 */
 	GENPYBIND(setter_for(enable_event_counter))
-	void set_enable_event_counter(
-	    halco::hicann_dls::vx::CrossbarOutputOnDLS const& coord, bool value) SYMBOL_VISIBLE;
+	void set_enable_event_counter(enable_event_counter_type const& value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(enable_slow))
-	bool get_enable_slow(halco::hicann_dls::vx::CrossbarL2OutputOnDLS const& coord) const
-	    SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(enable_slow), return_value_policy(reference))
+	enable_slow_type const& get_enable_slow() const SYMBOL_VISIBLE;
 
 	GENPYBIND(setter_for(enable_slow))
-	void set_enable_slow(halco::hicann_dls::vx::CrossbarL2OutputOnDLS const& coord, bool value)
-	    SYMBOL_VISIBLE;
+	void set_enable_slow(enable_slow_type const& value) SYMBOL_VISIBLE;
 
 	bool operator==(CrossbarOutputConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CrossbarOutputConfig const& other) const SYMBOL_VISIBLE;
@@ -80,9 +79,8 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
-	halco::common::typed_array<bool, halco::hicann_dls::vx::CrossbarOutputOnDLS>
-	    m_enable_event_counter;
-	halco::common::typed_array<bool, halco::hicann_dls::vx::CrossbarL2OutputOnDLS> m_enable_slow;
+	enable_event_counter_type m_enable_event_counter;
+	enable_slow_type m_enable_slow;
 };
 
 namespace detail {

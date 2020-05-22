@@ -23,6 +23,13 @@ class TestPyhaldlsVX(unittest.TestCase):
         self.assertEqual(cell.value, cell.DisableRefresh())
         self.assertEqual(cell.value, cell.DisableRefresh(1023))
 
+    def test_crossbar_output_config(self):
+        config = hal.CrossbarOutputConfig()
+        config.enable_event_counter[3] = True  # pylint: disable=unsupported-assignment-operation
+        config.enable_slow[2] = True  # pylint: disable=unsupported-assignment-operation
+        self.assertEqual(config.enable_event_counter[3], True)  # pylint: disable=unsubscriptable-object
+        self.assertEqual(config.enable_slow[2], True)  # pylint: disable=unsubscriptable-object
+
     def test_pickle(self):
         for container in hal.containers:
             obj = container()

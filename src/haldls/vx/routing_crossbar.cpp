@@ -16,28 +16,25 @@ namespace vx {
 
 CrossbarOutputConfig::CrossbarOutputConfig() : m_enable_event_counter(), m_enable_slow() {}
 
-bool CrossbarOutputConfig::get_enable_event_counter(
-    halco::hicann_dls::vx::CrossbarOutputOnDLS const& coord) const
+CrossbarOutputConfig::enable_event_counter_type const&
+CrossbarOutputConfig::get_enable_event_counter() const
 {
-	return m_enable_event_counter[coord];
+	return m_enable_event_counter;
 }
 
-void CrossbarOutputConfig::set_enable_event_counter(
-    halco::hicann_dls::vx::CrossbarOutputOnDLS const& coord, bool const value)
+void CrossbarOutputConfig::set_enable_event_counter(enable_event_counter_type const& value)
 {
-	m_enable_event_counter[coord] = value;
+	m_enable_event_counter = value;
 }
 
-bool CrossbarOutputConfig::get_enable_slow(
-    halco::hicann_dls::vx::CrossbarL2OutputOnDLS const& coord) const
+CrossbarOutputConfig::enable_slow_type const& CrossbarOutputConfig::get_enable_slow() const
 {
-	return m_enable_slow[coord];
+	return m_enable_slow;
 }
 
-void CrossbarOutputConfig::set_enable_slow(
-    halco::hicann_dls::vx::CrossbarL2OutputOnDLS const& coord, bool const value)
+void CrossbarOutputConfig::set_enable_slow(enable_slow_type const& value)
 {
-	m_enable_slow[coord] = value;
+	m_enable_slow = value;
 }
 
 bool CrossbarOutputConfig::operator==(CrossbarOutputConfig const& other) const

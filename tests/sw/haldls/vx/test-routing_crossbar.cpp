@@ -20,16 +20,22 @@ TEST(CrossbarOutputConfig, General)
 	CrossbarOutputConfig config;
 
 	// test getter/setter
-	for (auto l2out : iter_all<CrossbarL2OutputOnDLS>()) {
-		bool value = !config.get_enable_slow(l2out);
-		config.set_enable_slow(l2out, value);
-		EXPECT_EQ(config.get_enable_slow(l2out), value);
+	{
+		auto value = config.get_enable_slow();
+		for (auto l2out : iter_all<CrossbarL2OutputOnDLS>()) {
+			value[l2out] = !value[l2out];
+		}
+		config.set_enable_slow(value);
+		EXPECT_EQ(config.get_enable_slow(), value);
 	}
 
-	for (auto out : iter_all<CrossbarOutputOnDLS>()) {
-		bool value = !config.get_enable_event_counter(out);
-		config.set_enable_event_counter(out, value);
-		EXPECT_EQ(config.get_enable_event_counter(out), value);
+	{
+		auto value = config.get_enable_event_counter();
+		for (auto out : iter_all<CrossbarOutputOnDLS>()) {
+			value[out] = !value[out];
+		}
+		config.set_enable_event_counter(value);
+		EXPECT_EQ(config.get_enable_event_counter(), value);
 	}
 
 	CrossbarOutputConfig config_eq = config;
@@ -46,14 +52,22 @@ TEST(CrossbarOutputConfig, General)
 TEST(CrossbarOutputConfig, CerealizeCoverage)
 {
 	CrossbarOutputConfig c1, c2;
-	for (auto l2out : iter_all<CrossbarL2OutputOnDLS>()) {
-		bool value = !c1.get_enable_slow(l2out);
-		c1.set_enable_slow(l2out, value);
+	{
+		auto value = c1.get_enable_slow();
+		for (auto l2out : iter_all<CrossbarL2OutputOnDLS>()) {
+			value[l2out] = !value[l2out];
+		}
+		c1.set_enable_slow(value);
+		EXPECT_EQ(c1.get_enable_slow(), value);
 	}
 
-	for (auto out : iter_all<CrossbarOutputOnDLS>()) {
-		bool value = !c1.get_enable_event_counter(out);
-		c1.set_enable_event_counter(out, value);
+	{
+		auto value = c1.get_enable_event_counter();
+		for (auto out : iter_all<CrossbarOutputOnDLS>()) {
+			value[out] = !value[out];
+		}
+		c1.set_enable_event_counter(value);
+		EXPECT_EQ(c1.get_enable_event_counter(), value);
 	}
 
 	std::ostringstream ostream;
@@ -72,8 +86,16 @@ TEST(CrossbarOutputConfig, CerealizeCoverage)
 TEST(CrossbarOutputConfig, EncodeDecode)
 {
 	CrossbarOutputConfig config;
-	config.set_enable_event_counter(CrossbarOutputOnDLS(7), true);
-	config.set_enable_slow(CrossbarL2OutputOnDLS(2), true);
+	{
+		auto v = config.get_enable_event_counter();
+		v[CrossbarOutputOnDLS(7)] = true;
+		config.set_enable_event_counter(v);
+	}
+	{
+		auto v = config.get_enable_slow();
+		v[CrossbarL2OutputOnDLS(2)] = true;
+		config.set_enable_slow(v);
+	}
 
 	CrossbarOutputConfigOnDLS coord;
 
