@@ -39,6 +39,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 	PlaybackProgramBuilder(PlaybackProgramBuilder&& other) SYMBOL_VISIBLE;
+	PlaybackProgramBuilder& operator=(PlaybackProgramBuilder&& other) SYMBOL_VISIBLE;
 	PlaybackProgramBuilder(PlaybackProgramBuilder const&) = delete;
 	~PlaybackProgramBuilder() SYMBOL_VISIBLE;
 

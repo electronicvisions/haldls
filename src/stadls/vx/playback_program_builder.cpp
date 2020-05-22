@@ -22,6 +22,15 @@ PlaybackProgramBuilder::PlaybackProgramBuilder(PlaybackProgramBuilder&& other) :
 	other.m_executable_restriction = std::nullopt;
 }
 
+PlaybackProgramBuilder& PlaybackProgramBuilder::operator=(PlaybackProgramBuilder&& other)
+{
+	m_builder_impl = std::move(other.m_builder_impl);
+	m_executable_restriction = other.m_executable_restriction;
+	other.m_builder_impl = std::move(std::make_unique<fisch::vx::PlaybackProgramBuilder>());
+	other.m_executable_restriction = std::nullopt;
+	return *this;
+}
+
 PlaybackProgramBuilder::~PlaybackProgramBuilder() {}
 
 void PlaybackProgramBuilder::wait_until(
