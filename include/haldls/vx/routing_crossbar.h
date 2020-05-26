@@ -316,6 +316,8 @@ public:
 	bool operator==(CrossbarNode const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CrossbarNode const& other) const SYMBOL_VISIBLE;
 
+	static const SYMBOL_VISIBLE CrossbarNode drop_all;
+
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
 	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron)

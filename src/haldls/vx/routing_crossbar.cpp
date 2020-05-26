@@ -418,6 +418,13 @@ std::ostream& operator<<(std::ostream& os, CrossbarNode const& config)
 	return print_words_for_each_backend(os, config);
 }
 
+CrossbarNode const CrossbarNode::drop_all = []() {
+	CrossbarNode ret;
+	ret.set_mask(neuron_label_type(0));
+	ret.set_target(neuron_label_type(1));
+	return ret;
+}();
+
 template <typename AddressT>
 std::array<AddressT, CrossbarNode::config_size_in_words> CrossbarNode::addresses(
     coordinate_type const& coord)
