@@ -76,9 +76,11 @@ class HwTestPystadlsVx(unittest.TestCase):
         executor.run(program)
 
         spikes = program.spikes
+
+        # assert 98 % of sent spikes are received again
         total_spikes_sent = sum(numpy.array(spike_pack_types)[:, 0]) \
             * num_spikes
-        self.assertEqual(len(spikes), total_spikes_sent)
+        self.assertGreater(len(spikes), total_spikes_sent * 0.98)
 
         spikes = program.spikes.to_numpy()
         self.assertEqual(spikes.shape, (total_spikes_sent,))
@@ -95,11 +97,9 @@ class HwTestPystadlsVx(unittest.TestCase):
         ])
         self.assertEqual(spikes.dtype, dtype_tmp,
                          "Expect spikes.dtype to be {}".format(str(dtype_tmp)))
-        self.assertEqual(spikes.size, total_spikes_sent,
-                         "Expected {} received spikes".format(
-                             total_spikes_sent))
-        self.assertTrue((numpy.array([x.value() for x in to_fpga_spike_labels]
-                                     ) == spikes[:]["label"]).all())
+        self.assertGreater(spikes.size, total_spikes_sent * 0.98,
+                           "Expected at least {} received spikes".format(
+                               total_spikes_sent * 0.98))
 
 
 if __name__ == "__main__":
