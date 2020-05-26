@@ -101,6 +101,86 @@ class HwTestPystadlsVx(unittest.TestCase):
                            "Expected at least {} received spikes".format(
                                total_spikes_sent * 0.98))
 
+    def test_madc_samples(self):
+        """
+        Observe an MADC test pattern and assert it is accessible
+        through the madc_samples.to_numpy() interface.
+        """
+
+        executor = stadls.PlaybackProgramExecutor()
+        executor.connect()
+
+        builder, _ = stadls.DigitalInit().generate()
+        executor.run(builder.done())
+
+        builder = stadls.PlaybackProgramBuilder()
+        madc_config = haldls.MADCConfig()
+        madc_config.number_of_samples = 10000
+        madc_config.enable_dummy_data = True
+        builder.write(halco.MADCConfigOnDLS(), madc_config)
+
+        # wake up MADC
+        madc_control = haldls.MADCControl()
+        madc_control.enable_power_down_after_sampling = False
+        madc_control.start_recording = False
+        madc_control.wake_up = True
+        builder.write(halco.MADCControlOnDLS(), madc_control)
+
+        # initial wait, systime sync
+        initial_wait = 100  # us
+        builder.write(halco.TimerOnDLS(), haldls.Timer())
+        builder.write(halco.SystimeSyncOnFPGA(), haldls.SystimeSync())
+        builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(
+            initial_wait * int(haldls.Timer.Value.fpga_clock_cycles_per_us)))
+
+        # trigger MADC sampling, power MADC down once done
+        madc_control.wake_up = False
+        madc_control.start_recording = True
+        madc_control.enable_power_down_after_sampling = True
+        builder.write(halco.MADCControlOnDLS(), madc_control)
+
+        # wait for samples
+        builder.wait_until(halco.TimerOnDLS(), haldls.Timer.Value(
+            (initial_wait + 500)
+            * int(haldls.Timer.Value.fpga_clock_cycles_per_us)))
+
+        # run program
+        program = builder.done()
+        executor.run(program)
+        executor.disconnect()
+
+        # inspect MADC samples
+        samples = program.madc_samples.to_numpy()
+
+        # drop incorrectly received samples (value 0, issue 3545)
+        # then sort by chip time
+        samples = samples[samples["value"] != 0]
+        samples = numpy.sort(samples, order=["chip_time", "fpga_time"])
+
+        self.assertEqual(samples.ndim, 1)
+        self.assertGreater(
+            len(samples), int(madc_config.number_of_samples) * 0.98,
+            "Too few MADC samples recorded.")
+
+        expected_dtype = numpy.dtype([
+            ('value', numpy.uint64),
+            ('fpga_time', numpy.uint64),
+            ('chip_time', numpy.uint64)
+        ])
+        self.assertEqual(
+            samples.dtype, expected_dtype,
+            "Expected samples.dtype to be {}".format(str(expected_dtype)))
+
+        # assert sawtooth test pattern is visible in samples
+        diff = numpy.diff(samples["value"].astype(numpy.int))
+        self.assertAlmostEqual(
+            numpy.mean(diff[diff > 0]), 1, places=1,
+            msg="MADC sample values don't increase by 1"
+            + "on average in sawtooth pattern.")
+        self.assertLess(
+            numpy.mean(diff[diff < 0]), -1000,
+            "MADC samples don't show proper falling edge in sawtooth pattern.")
+
 
 if __name__ == "__main__":
     unittest.main()
