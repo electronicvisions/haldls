@@ -3,7 +3,6 @@
 #include <cereal/types/array.hpp>
 
 #include "halco/common/cerealization_geometry.h"
-#include "hate/join.h"
 #include "haldls/cerealization.h"
 
 namespace haldls::vx {
@@ -50,6 +49,18 @@ NeuronBackendConfig::AddressOut SpikeLabel::get_neuron_backend_address_out() con
 void SpikeLabel::set_neuron_backend_address_out(NeuronBackendConfig::AddressOut const value)
 {
 	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0xff) | (this->value() & 0xff00)));
+}
+
+PADIEvent::RowSelectAddress SpikeLabel::get_row_select_address() const
+{
+	return PADIEvent::RowSelectAddress((value() & (static_cast<uint16_t>(0b11111) << 6)) >> 6);
+}
+
+void SpikeLabel::set_row_select_address(PADIEvent::RowSelectAddress const value)
+{
+	operator=(SpikeLabel(
+	    (static_cast<uint16_t>(value) << 6) |
+	    (this->value() & ~(static_cast<uint16_t>(0b11111) << 6))));
 }
 
 SynapseQuad::Label SpikeLabel::get_synapse_label() const

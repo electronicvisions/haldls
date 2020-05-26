@@ -41,6 +41,12 @@ TEST(SpikeLabel, General)
 	}
 
 	{
+		PADIEvent::RowSelectAddress const value(23);
+		config.set_row_select_address(value);
+		EXPECT_EQ(config.get_row_select_address(), value);
+	}
+
+	{
 		SynapseQuad::Label const value(23);
 		config.set_synapse_label(value);
 		EXPECT_EQ(config.get_synapse_label(), value);

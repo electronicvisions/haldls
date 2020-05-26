@@ -4,6 +4,7 @@
 #include "halco/hicann-dls/vx/event.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
+#include "haldls/vx/padi.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
@@ -51,6 +52,12 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 	NeuronBackendConfig::AddressOut get_neuron_backend_address_out() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(neuron_backend_address_out))
 	void set_neuron_backend_address_out(NeuronBackendConfig::AddressOut value) SYMBOL_VISIBLE;
+
+	/** Configurable row select address on PADIBus, bits 6-10. */
+	GENPYBIND(getter_for(row_select_address))
+	PADIEvent::RowSelectAddress get_row_select_address() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(row_select_address))
+	void set_row_select_address(PADIEvent::RowSelectAddress) SYMBOL_VISIBLE;
 
 	/** Configurable synapse address, bits 0-5. */
 	GENPYBIND(getter_for(synapse_label))
