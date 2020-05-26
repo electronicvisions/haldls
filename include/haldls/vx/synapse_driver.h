@@ -244,6 +244,8 @@ private:
 	bool m_en_recovery;
 };
 
+std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& mode) SYMBOL_VISIBLE;
+
 namespace detail {
 
 template <>
