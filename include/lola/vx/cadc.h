@@ -40,60 +40,6 @@ public:
 	bool operator==(CADCSampleRow const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CADCSampleRow const& other) const SYMBOL_VISIBLE;
 
-	GENPYBIND_MANUAL({
-		auto to_numpy_template = [parent](auto const& self) {
-			auto ret = pybind11::array_t<typename std::remove_reference<
-			    typename std::remove_cv<decltype(self)>::type>::type::value_type::value_type>(
-			    ::halco::hicann_dls::vx::SynapseOnSynapseRow::size);
-			auto access = ret.mutable_unchecked();
-			size_t index = 0;
-			for (auto coord :
-			     ::halco::common::iter_all<::halco::hicann_dls::vx::SynapseOnSynapseRow>()) {
-				access[index] = self[coord];
-				index++;
-			}
-			return ret;
-		};
-
-		auto from_numpy_template = [parent](
-		                               auto& self,
-		                               pybind11::array_t<typename std::remove_reference<decltype(
-		                                   self)>::type::value_type::value_type> array) {
-			if (array.ndim() != 1) {
-				throw std::runtime_error(
-				    "Number of dimensions to assign to typed_array must be one.");
-			}
-			if (array.size() != ::halco::hicann_dls::vx::SynapseOnSynapseRow::size) {
-				throw std::runtime_error("Input shape does not match.");
-			}
-			auto access = array.mutable_unchecked();
-			size_t index = 0;
-			for (auto coord :
-			     ::halco::common::iter_all<::halco::hicann_dls::vx::SynapseOnSynapseRow>()) {
-				self[coord] =
-				    typename std::remove_reference<decltype(self)>::type::value_type(access[index]);
-				index++;
-			}
-		};
-
-		{
-			auto attr = parent.attr("_samples_type");
-			auto ism = parent->py::is_method(attr);
-
-			typedef ::lola::vx::CADCSampleRow::_samples_type _values_type;
-			attr.attr("to_numpy") = parent->py::cpp_function(
-			    [to_numpy_template](_values_type const& self) { return to_numpy_template(self); },
-			    ism);
-			attr.attr("from_numpy") = parent->py::cpp_function(
-			    [from_numpy_template](
-			        _values_type& self,
-			        pybind11::array_t<_values_type::value_type::value_type> array) {
-				    from_numpy_template(self, array);
-			    },
-			    ism);
-		}
-	})
-
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, CADCSampleRow const& row) SYMBOL_VISIBLE;
 
