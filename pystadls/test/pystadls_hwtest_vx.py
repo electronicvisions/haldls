@@ -83,10 +83,14 @@ class HwTestPystadlsVx(unittest.TestCase):
         self.assertGreater(len(spikes), total_spikes_sent * 0.98)
 
         spikes = program.spikes.to_numpy()
-        self.assertEqual(spikes.shape, (total_spikes_sent,))
-        for spike in spikes:
-            # otherwise it will raise
-            to_fpga_spike_labels.index(haldls.SpikeLabel((spike["label"])))
+        self.assertGreater(spikes.shape[0], total_spikes_sent * 0.98)
+
+        # count incorrectly received spikes (unknown label)
+        incorrect_spikes = numpy.sum(
+            [haldls.SpikeLabel(spike["label"])
+             not in to_fpga_spike_labels for spike in spikes])
+        self.assertLess(incorrect_spikes, 100,
+                        "Too many random spikes were received.")
 
         self.assertEqual(spikes.ndim, 1,
                          "Expected numpy-wrapped spikes to be 1D")
