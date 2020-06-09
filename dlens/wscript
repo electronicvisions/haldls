@@ -66,6 +66,17 @@ def build(bld):
         test_timeout=120
     )
 
+    bld(name='dlens_health_check_vx',
+        tests='tests/dlens_health_check_vx.py',
+        features='use pytest pylint pycodestyle',
+        use=['dlens_vx'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
+        test_timeout=30
+    )
+
     # --- Deprecated aliases --- #
     bld(name='run_ppu_program_vx_py',
         features='use',

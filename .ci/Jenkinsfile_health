@@ -1,0 +1,134 @@
+@Library("jenlib") _
+import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
+
+try {
+	// TODO: this should come from hwdb (Issue #3571)
+	List<String> setups = ["62"]
+	if (!isTriggeredByGerrit()) {
+		setups += ["63", "65", "68", "69", "70", "72", "73", "74", "75"]
+	}
+
+	Map<String, Closure> parallelTests = [:]
+	Map<String, Boolean> success = [:]
+
+	for (String setup : setups) {
+		String setup_local = setup
+		parallelTests[setup_local] = {
+			try {
+				// no timeout for Gerrit-triggered jobs
+				conditionalTimeout(enable: !isTriggeredByGerrit(), time: 5, unit: "MINUTES") {
+					onSlurmResource(partition: "cube", wafer: setup_local, "fpga-without-aout": 3) {
+						try {
+							timeout(time: 30, unit: "SECONDS") {
+								success[setup_local] = runInSingularity("python bin/dlens_health_check_vx.py")
+							}
+						} catch (FlowInterruptedException ignored) {
+							success[setup_local] = false
+						}
+					}
+				}
+			} catch (FlowInterruptedException ignored) {
+				echo "Wafer ${setup_local} not free for 5 minutes, aborting."
+			}
+		}
+	}
+
+	try {
+		// no timeout for Gerrit-triggered jobs
+		// enforce finished job in less than an hour in order to only have one running at a time
+		conditionalTimeout(enable: !isTriggeredByGerrit(), time: 50, unit: "MINUTES") {
+			wafDefaultPipeline(container: [app: "dls-core"],
+			                   projects : ["haldls"],
+			                   notificationChannel : "#dls-software")
+
+			runOnSlave(label: "frontend") {
+				stage("Execute checks") {
+					withModules(modules: ["localdir"]) {
+						parallel parallelTests
+					}
+				}
+
+				stage("Deploy result") {
+					String result = compileHtml(setups, success)
+					currentBuild.description = result
+					setJobDescription(result)
+				}
+			}
+
+			if (success.any { key, value -> value != true }) {
+				echo "Not all tested setups are OK, setting build state to UNSTABLE."
+				setBuildState("UNSTABLE")
+			}
+		}
+	} catch (FlowInterruptedException ignored) {
+		echo "Aborting unfinished run."
+	}
+} catch (Throwable t) {
+	notifyFailure(mattermostChannel: "#dls-software")
+	throw t
+}
+
+/**
+ * Run an arbitrary shell command within the default singularity container.
+ *
+ * This function re-implements jenlib's 'inSingularity', which cannot be used
+ * within parallel stages due to issue #3257
+ * @param command Command to be run within singularity
+ * @return Boolean success value
+ */
+Boolean runInSingularity(String command) {
+	String containerPath = getDefaultContainerPath()
+	String app = "dls-core"
+	return jesh(script: "singularity exec --app=${app} ${containerPath} ${command}", returnStatus: true) == 0
+}
+
+/**
+ * Compile html-based table of check results.
+ * @param setups List of setup names
+ * @param success Map of setup check success values
+ * @return String containing compiled html document
+ */
+String compileHtml(List<String> setups, Map<String, Boolean> success) {
+	// Manual building of styles instead of using css classes since they are considered unsafe
+	// and ignored.
+	String entry_style = "border-color:black;" +
+	                     "border-style:solid;" +
+	                     "border-width:1px;" +
+	                     "font-family:Arial, sans-serif;" +
+	                     "font-size:14px;" +
+	                     "font-weight:normal;" +
+	                     "overflow:hidden;" +
+	                     "padding:10px 5px;" +
+	                     "word-break:normal;"
+	String content = ""
+	for (String setup : setups) {
+		content += "<tr>\n"
+		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${setup}</td>"
+		if (success.containsKey(setup)) {
+			if (success[setup]) {
+				content += "<td style=\"${entry_style}background-color:#32cb00;" +
+				           "text-align:left;vertical-align:top\">OK</td>"
+			} else {
+				content += "<td style=\"${entry_style}background-color:#fe0000;" +
+				           "text-align:left;vertical-align:top\">broken</td>"
+			}
+		} else {
+			content += "<td style=\"${entry_style}background-color:#f8ff00;text-align:left;" +
+			           "vertical-align:top\">not tested</td>"
+		}
+		content += "</tr>"
+	}
+
+	String result = """
+<table style="border-collapse:collapse;border-spacing:0;">
+<thead>
+<tr>
+<th style="${entry_style}text-align:center">Setup</th>
+<th style="${entry_style}text-align:center">State</th>
+</tr>
+</thead>
+${content}
+</table>
+"""
+	return result
+}
