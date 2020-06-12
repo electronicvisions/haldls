@@ -25,7 +25,7 @@ try {
 			if (currentBuild.currentResult == "SUCCESS") {
 				runOnSlave(label: "frontend") {
 					inSingularity(app: "dls") {
-						deployModule([name: "haldls", source: "bin/ lib/ include/ doc/ repos_log.txt"])
+						deployModule([name: "haldls", source: "bin/ lib/ doc/ repos_log.txt"])
 					}
 				}
 			} else {
