@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stadls/vx/genpybind.h"
+#include "stadls/vx/run_time_info.h"
 
 namespace fisch::vx {
 
@@ -16,9 +17,10 @@ namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
  * @tparam Connection Connection type to be used for running the program
  * @param connection Connection instance to be used for running the program
  * @param program PlaybackProgram to run
+ * @return Run time information
  */
 template <typename Connection>
-void run(Connection& connection, PlaybackProgram& program);
+RunTimeInfo run(Connection& connection, PlaybackProgram& program);
 
 /**
  * Transfer and execute the given playback program and fetch results.
@@ -26,9 +28,10 @@ void run(Connection& connection, PlaybackProgram& program);
  * @tparam Connection Connection type to be used for running the program
  * @param connection Connection instance to be used for running the program
  * @param program PlaybackProgram to run
+ * @return Run time information
  */
 template <typename Connection>
-void run(Connection& connection, PlaybackProgram&& program);
+RunTimeInfo run(Connection& connection, PlaybackProgram&& program);
 
 /**
  * Transfer and execute the given fisch playback program and fetch results.
@@ -36,9 +39,10 @@ void run(Connection& connection, PlaybackProgram&& program);
  * @tparam Connection Connection type to be used for running the program
  * @param connection Connection instance to be used for running the program
  * @param program PlaybackProgram to run
+ * @return Run time information
  */
 template <typename Connection>
-void run(Connection& connection, std::shared_ptr<fisch::vx::PlaybackProgram> const& program);
+RunTimeInfo run(Connection& connection, std::shared_ptr<fisch::vx::PlaybackProgram> const& program);
 
 } // namespace stadls::vx
 

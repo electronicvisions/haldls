@@ -11,6 +11,7 @@
 #include "hate/visibility.h"
 #include "stadls/vx/executor_backend.h"
 #include "stadls/vx/genpybind.h"
+#include "stadls/vx/run_time_info.h"
 #ifdef __GENPYBIND__
 #include "haldls/vx/container.h"
 #include "lola/vx/container.h"
@@ -26,7 +27,7 @@ class PlaybackProgramBuilder;
 class PlaybackProgram;
 
 template <typename Connection>
-void run(Connection&, PlaybackProgram&);
+RunTimeInfo run(Connection&, PlaybackProgram&);
 
 /**
  * Sequential stream of executable instructions for the executor and result-container for event
@@ -235,7 +236,7 @@ private:
 	friend PlaybackProgramBuilder;
 
 	template <typename Connection>
-	friend void run(Connection&, PlaybackProgram&);
+	friend RunTimeInfo run(Connection&, PlaybackProgram&);
 
 	/**
 	 * Construct PlaybackProgram from implementation.
