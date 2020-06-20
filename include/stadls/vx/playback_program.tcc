@@ -23,10 +23,6 @@ T PlaybackProgram::ContainerTicket<T>::get() const
 {
 	return boost::apply_visitor(
 	    [this](auto&& ticket_impl) -> T {
-		    if (!ticket_impl.valid())
-			    throw std::runtime_error(
-			        "container data not available yet (out of bounds of available results data)");
-
 		    auto data = ticket_impl.get();
 		    auto config =
 		        haldls::vx::detail::coordinate_to_container<decltype(m_coord), T>(m_coord);
