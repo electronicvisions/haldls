@@ -54,8 +54,8 @@ public:
 
 	typedef haldls::vx::v1::CADCSampleQuad::Value Value GENPYBIND(visible);
 
-	typedef halco::common::typed_array<
-	    halco::common::typed_heap_array<Value, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>,
+	typedef halco::common::typed_heap_array<
+	    halco::common::typed_array<Value, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>,
 	    halco::hicann_dls::vx::v1::SynramOnDLS>
 	    _samples_type GENPYBIND(opaque);
 

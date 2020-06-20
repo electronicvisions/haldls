@@ -1,5 +1,6 @@
 #pragma once
 #include "halco/common/iter_all.h"
+#include "halco/common/typed_array.h"
 #include "halco/common/typed_heap_array.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
@@ -164,12 +165,15 @@ public:
 	typedef halco::hicann_dls::vx::v1::SynapseWeightMatrixOnDLS coordinate_type;
 
 	template <typename T>
-	using matrix_type = halco::common::typed_heap_array<
-	    halco::common::typed_heap_array<T, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>,
-	    halco::hicann_dls::vx::v1::SynapseRowOnSynram>;
+	using row_type = halco::common::typed_array<T, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>;
+
+	template <typename T>
+	using matrix_type =
+	    halco::common::typed_heap_array<row_type<T>, halco::hicann_dls::vx::v1::SynapseRowOnSynram>;
 
 	typedef haldls::vx::v1::SynapseWeightQuad::Value Value GENPYBIND(visible);
 
+	typedef row_type<Value> _row_type GENPYBIND(opaque(false));
 	typedef matrix_type<Value> _values_type GENPYBIND(opaque(false));
 
 	/** Default constructor. */
@@ -197,12 +201,15 @@ public:
 	typedef halco::hicann_dls::vx::v1::SynapseLabelMatrixOnDLS coordinate_type;
 
 	template <typename T>
-	using matrix_type = halco::common::typed_heap_array<
-	    halco::common::typed_heap_array<T, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>,
-	    halco::hicann_dls::vx::v1::SynapseRowOnSynram>;
+	using row_type = halco::common::typed_array<T, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>;
+
+	template <typename T>
+	using matrix_type =
+	    halco::common::typed_heap_array<row_type<T>, halco::hicann_dls::vx::v1::SynapseRowOnSynram>;
 
 	typedef haldls::vx::v1::SynapseLabelQuad::Value Value GENPYBIND(visible);
 
+	typedef row_type<Value> _row_type GENPYBIND(opaque(false));
 	typedef matrix_type<Value> _values_type GENPYBIND(opaque(false));
 
 	/** Default constructor. */
@@ -229,13 +236,17 @@ public:
 	typedef halco::hicann_dls::vx::v1::SynapseCorrelationCalibMatrixOnDLS coordinate_type;
 
 	template <typename T>
-	using matrix_type = halco::common::typed_heap_array<
-	    halco::common::typed_heap_array<T, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>,
-	    halco::hicann_dls::vx::v1::SynapseRowOnSynram>;
+	using row_type = halco::common::typed_array<T, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>;
+
+	template <typename T>
+	using matrix_type =
+	    halco::common::typed_heap_array<row_type<T>, halco::hicann_dls::vx::v1::SynapseRowOnSynram>;
 
 	typedef haldls::vx::v1::SynapseCorrelationCalibQuad::TimeCalib TimeCalib GENPYBIND(visible);
 	typedef haldls::vx::v1::SynapseCorrelationCalibQuad::AmpCalib AmpCalib GENPYBIND(visible);
 
+	typedef row_type<TimeCalib> _time_calibs_row_type GENPYBIND(opaque(false));
+	typedef row_type<AmpCalib> _amp_calibs_row_type GENPYBIND(opaque(false));
 	typedef matrix_type<TimeCalib> _time_calibs_type GENPYBIND(opaque(false));
 	typedef matrix_type<AmpCalib> _amp_calibs_type GENPYBIND(opaque(false));
 
@@ -268,14 +279,21 @@ public:
 	typedef halco::hicann_dls::vx::v1::SynramOnDLS coordinate_type;
 
 	template <typename T>
-	using matrix_type = halco::common::typed_heap_array<
-	    halco::common::typed_heap_array<T, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>,
-	    halco::hicann_dls::vx::v1::SynapseRowOnSynram>;
+	using row_type = halco::common::typed_array<T, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>;
+
+	template <typename T>
+	using matrix_type =
+	    halco::common::typed_heap_array<row_type<T>, halco::hicann_dls::vx::v1::SynapseRowOnSynram>;
 
 	typedef haldls::vx::v1::SynapseQuad::Weight Weight GENPYBIND(visible);
 	typedef haldls::vx::v1::SynapseQuad::Label Label GENPYBIND(visible);
 	typedef haldls::vx::v1::SynapseQuad::TimeCalib TimeCalib GENPYBIND(visible);
 	typedef haldls::vx::v1::SynapseQuad::AmpCalib AmpCalib GENPYBIND(visible);
+
+	typedef row_type<Weight> _weights_row_type GENPYBIND(opaque);
+	typedef row_type<Label> _labels_row_type GENPYBIND(opaque);
+	typedef row_type<TimeCalib> _time_calibs_row_type GENPYBIND(opaque);
+	typedef row_type<AmpCalib> _amp_calibs_row_type GENPYBIND(opaque);
 
 	typedef matrix_type<Weight> _weights_type GENPYBIND(opaque);
 	typedef matrix_type<Label> _labels_type GENPYBIND(opaque);
