@@ -57,10 +57,10 @@ struct CADCSampleQuadBitfield
 		haldls::vx::detail::raw_omnibus_type raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			haldls::vx::detail::raw_omnibus_type sample_3 : 8;
-			haldls::vx::detail::raw_omnibus_type sample_2 : 8;
-			haldls::vx::detail::raw_omnibus_type sample_1 : 8;
 			haldls::vx::detail::raw_omnibus_type sample_0 : 8;
+			haldls::vx::detail::raw_omnibus_type sample_1 : 8;
+			haldls::vx::detail::raw_omnibus_type sample_2 : 8;
+			haldls::vx::detail::raw_omnibus_type sample_3 : 8;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -110,30 +110,14 @@ std::array<fisch::vx::Omnibus, CADCSampleQuad::write_config_size_in_words> CADCS
 	return {};
 }
 
-namespace {
-
-uint8_t reverse_byte(uint8_t b)
-{
-	b = ((b & 0xF0) >> 4) | ((b & 0x0F) << 4);
-	b = ((b & 0xCC) >> 2) | ((b & 0x33) << 2);
-	b = ((b & 0xAA) >> 1) | ((b & 0x55) << 1);
-	return b;
-}
-
-} // namespace
-
 void CADCSampleQuad::decode(
     std::array<fisch::vx::Omnibus, CADCSampleQuad::read_config_size_in_words> const& data)
 {
 	CADCSampleQuadBitfield bitfield(data[0].get());
-	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(0)) =
-	    Value(reverse_byte(bitfield.u.m.sample_0));
-	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(1)) =
-	    Value(reverse_byte(bitfield.u.m.sample_1));
-	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(2)) =
-	    Value(reverse_byte(bitfield.u.m.sample_2));
-	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(3)) =
-	    Value(reverse_byte(bitfield.u.m.sample_3));
+	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(0)) = Value(bitfield.u.m.sample_0);
+	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(1)) = Value(bitfield.u.m.sample_1);
+	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(2)) = Value(bitfield.u.m.sample_2);
+	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(3)) = Value(bitfield.u.m.sample_3);
 }
 
 } // namespace haldls::vx::v2

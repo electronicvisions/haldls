@@ -133,6 +133,6 @@ TEST(CADCSampleRow, EncodeDecode)
 
 	visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(ref_data)});
 
-	ASSERT_EQ(config.causal[SynapseOnSynapseRow(80)], CADCSampleRow::Value(0xf0));
-	ASSERT_EQ(config.acausal[SynapseOnSynapseRow(96)], CADCSampleRow::Value(0x8));
+	ASSERT_EQ(config.causal[SynapseOnSynapseRow(86)], CADCSampleRow::Value(0xf));
+	ASSERT_EQ(config.acausal[SynapseOnSynapseRow(102)], CADCSampleRow::Value(0x10));
 }
