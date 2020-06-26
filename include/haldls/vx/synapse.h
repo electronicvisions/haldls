@@ -140,7 +140,7 @@ public:
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 63, 0>
+	    : public halco::common::detail::RantWrapper<Value, uint8_t, 63, 0>
 	{
 		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -192,7 +192,7 @@ public:
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 63, 0>
+	    : public halco::common::detail::RantWrapper<Value, uint8_t, 63, 0>
 	{
 		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -245,7 +245,7 @@ public:
 
 	// The more bits set, the shorter the time constant
 	struct GENPYBIND(inline_base("*")) TimeCalib
-	    : public halco::common::detail::RantWrapper<TimeCalib, uint_fast16_t, 3, 0>
+	    : public halco::common::detail::RantWrapper<TimeCalib, uint8_t, 3, 0>
 	{
 		constexpr explicit TimeCalib(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -254,7 +254,7 @@ public:
 
 	// The more bits set, the lower the amplitude
 	struct GENPYBIND(inline_base("*")) AmpCalib
-	    : public halco::common::detail::RantWrapper<AmpCalib, uint_fast16_t, 3, 0>
+	    : public halco::common::detail::RantWrapper<AmpCalib, uint8_t, 3, 0>
 	{
 		constexpr explicit AmpCalib(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
