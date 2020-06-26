@@ -44,6 +44,7 @@ class HwTestPystadlsVx(unittest.TestCase):
             stadls.run(conn, program)
 
     # pylint: disable=R0914
+    @unittest.skip("Issue #3578")
     def test_event(self):
         # ported from C++ test-event
         sequence = stadls.DigitalInit()

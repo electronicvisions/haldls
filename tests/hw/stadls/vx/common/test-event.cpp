@@ -15,8 +15,9 @@ using namespace halco::hicann_dls::vx;
 using namespace haldls::vx;
 using namespace stadls::vx;
 
+// disabled due to Issue #3578
 #define TEST_SPIKE(Num)                                                                            \
-	TEST(SpikePack##Num##ToChip, Loopback)                                                         \
+	TEST(SpikePack##Num##ToChip, DISABLED_Loopback)                                                \
 	{                                                                                              \
 		auto sequence = DigitalInit();                                                             \
 		auto [builder, _] = generate(sequence);                                                    \
