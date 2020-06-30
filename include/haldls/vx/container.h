@@ -10,6 +10,7 @@
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/madc.h"
 #include "haldls/vx/neuron.h"
+#include "haldls/vx/null_payload_readable.h"
 #include "haldls/vx/padi.h"
 #include "haldls/vx/perftest.h"
 #include "haldls/vx/phy.h"
