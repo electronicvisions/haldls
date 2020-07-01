@@ -7,8 +7,8 @@ The research is funded by Heidelberg University, the State of
 Baden-Württemberg, the European Union Sixth Framework Programme no.
 15879 (FACETS), the Seventh Framework Programme under grant agreements
 no 604102 (HBP), 269921 (BrainScaleS), 243914 (Brain-i-Nets), the
-Horizon 2020 Framework Programme under grant agreement 720270 (HBP) as
-well as from the Manfred Stärk Foundation.
+Horizon 2020 Framework Programme under grant agreement 720270, 785907, 945539
+(HBP) as well as from the Manfred Stärk Foundation.
 
 This repository contains
 
