@@ -23,6 +23,7 @@
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
 class PlaybackProgramBuilder;
+class PlaybackProgramBuilderImpl;
 
 class PlaybackProgram;
 
@@ -81,7 +82,7 @@ public:
 		    typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 		    ticket_impl_type;
 
-		friend PlaybackProgramBuilder;
+		friend PlaybackProgramBuilderImpl;
 
 		ContainerTicket(coordinate_type const& coord, ticket_impl_type const& ticket_impl) :
 		    m_coord(coord), m_ticket_impl(ticket_impl)
@@ -232,6 +233,7 @@ public:
 
 private:
 	friend PlaybackProgramBuilder;
+	friend PlaybackProgramBuilderImpl;
 
 	template <typename Connection>
 	friend RunTimeInfo run(Connection&, PlaybackProgram&);

@@ -222,26 +222,7 @@ public:
 	bool is_write_only() const SYMBOL_VISIBLE;
 
 private:
-	template <typename T, size_t SupportedBackendIndex>
-	static void write_table_entry(
-	    PlaybackProgramBuilder& builder,
-	    typename T::coordinate_type const& coord,
-	    T const& config,
-	    std::optional<T> const& config_reference);
-
-	template <class T, size_t... SupportedBackendIndex>
-	void write_table_generator(
-	    typename T::coordinate_type const& coord,
-	    T const& config,
-	    size_t backend_index,
-	    std::optional<T> const& config_reference,
-	    std::index_sequence<SupportedBackendIndex...>);
-
-	template <class T, size_t... SupportedBackendIndex>
-	PlaybackProgram::ContainerTicket<T> read_table_generator(
-	    typename T::coordinate_type const& coord,
-	    size_t backend_index,
-	    std::index_sequence<SupportedBackendIndex...>) SYMBOL_VISIBLE;
+	friend class PlaybackProgramBuilderImpl;
 
 	std::unique_ptr<fisch::vx::PlaybackProgramBuilder> m_builder_impl;
 

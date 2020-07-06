@@ -10,6 +10,33 @@
 
 namespace stadls::vx {
 
+class PlaybackProgramBuilderImpl
+{
+public:
+	template <typename T, size_t SupportedBackendIndex>
+	static void write_table_entry(
+	    PlaybackProgramBuilder& builder,
+	    typename T::coordinate_type const& coord,
+	    T const& config,
+	    std::optional<T> const& config_reference);
+
+	template <class T, size_t... SupportedBackendIndex>
+	static void write_table_generator(
+	    PlaybackProgramBuilder& builder,
+	    typename T::coordinate_type const& coord,
+	    T const& config,
+	    size_t backend_index,
+	    std::optional<T> const& config_reference,
+	    std::index_sequence<SupportedBackendIndex...>);
+
+	template <class T, size_t... SupportedBackendIndex>
+	static PlaybackProgram::ContainerTicket<T> read_table_generator(
+	    PlaybackProgramBuilder& builder,
+	    typename T::coordinate_type const& coord,
+	    size_t backend_index,
+	    std::index_sequence<SupportedBackendIndex...>);
+};
+
 PlaybackProgramBuilder::PlaybackProgramBuilder() :
     m_builder_impl(std::make_unique<fisch::vx::PlaybackProgramBuilder>()), m_unsupported_targets()
 {}
@@ -75,7 +102,7 @@ constexpr static auto has_unsupported_read_targets =
 } // namespace detail
 
 template <typename T, size_t SupportedBackendIndex>
-void PlaybackProgramBuilder::write_table_entry(
+void PlaybackProgramBuilderImpl::write_table_entry(
     PlaybackProgramBuilder& builder,
     typename T::coordinate_type const& coord,
     T const& config,
@@ -133,7 +160,8 @@ void PlaybackProgramBuilder::write_table_entry(
 }
 
 template <typename T, size_t... SupportedBackendIndex>
-void PlaybackProgramBuilder::write_table_generator(
+void PlaybackProgramBuilderImpl::write_table_generator(
+    PlaybackProgramBuilder& builder,
     typename T::coordinate_type const& coord,
     T const& config,
     size_t const backend_index,
@@ -145,9 +173,9 @@ void PlaybackProgramBuilder::write_table_generator(
 	        PlaybackProgramBuilder&, typename T::coordinate_type const&, T const&,
 	        std::optional<T> const&),
 	    sizeof...(SupportedBackendIndex)>
-	    write_table{write_table_entry<T, SupportedBackendIndex>...};
+	    write_table{PlaybackProgramBuilderImpl::write_table_entry<T, SupportedBackendIndex>...};
 
-	write_table.at(backend_index)(*this, coord, config, config_reference);
+	write_table.at(backend_index)(builder, coord, config, config_reference);
 }
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
@@ -161,8 +189,8 @@ void PlaybackProgramBuilder::write_table_generator(
 		size_t const backend_index = static_cast<size_t>(                                          \
 		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
 		        static_cast<size_t>(backend)));                                                    \
-		write_table_generator<Type>(                                                               \
-		    coord, config, backend_index, config_reference,                                        \
+		PlaybackProgramBuilderImpl::write_table_generator<Type>(                                   \
+		    *this, coord, config, backend_index, config_reference,                                 \
 		    std::make_index_sequence<                                                              \
 		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
 		            Type>::container_list>::value>());                                             \
@@ -185,8 +213,8 @@ void PlaybackProgramBuilder::write_table_generator(
 		size_t const backend_index = static_cast<size_t>(                                          \
 		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
 		        static_cast<size_t>(backend)));                                                    \
-		write_table_generator<Type>(                                                               \
-		    coord, config, backend_index, std::nullopt,                                            \
+		PlaybackProgramBuilderImpl::write_table_generator<Type>(                                   \
+		    *this, coord, config, backend_index, std::nullopt,                                     \
 		    std::make_index_sequence<                                                              \
 		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
 		            Type>::container_list>::value>());                                             \
@@ -202,7 +230,8 @@ void PlaybackProgramBuilder::write_table_generator(
 #include "lola/vx/container.def"
 
 template <class T, size_t... SupportedBackendIndex>
-PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator(
+PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilderImpl::read_table_generator(
+    PlaybackProgramBuilder& builder,
     typename T::coordinate_type const& coord,
     size_t backend_index,
     std::index_sequence<SupportedBackendIndex...>)
@@ -241,7 +270,7 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 		    return PlaybackProgram::ContainerTicket<T>(coord, ticket_impl);
 	    }...};
 
-	return read_table.at(backend_index)(*this, coord);
+	return read_table.at(backend_index)(builder, coord);
 }
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
@@ -255,8 +284,8 @@ PlaybackProgram::ContainerTicket<T> PlaybackProgramBuilder::read_table_generator
 		size_t const backend_index = static_cast<size_t>(                                          \
 		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
 		        static_cast<size_t>(backend)));                                                    \
-		return read_table_generator<Type>(                                                         \
-		    coord, backend_index,                                                                  \
+		return PlaybackProgramBuilderImpl::read_table_generator<Type>(                             \
+		    *this, coord, backend_index,                                                           \
 		    std::make_index_sequence<                                                              \
 		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
 		            Type>::container_list>::value>());                                             \
