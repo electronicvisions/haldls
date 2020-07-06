@@ -23,24 +23,34 @@ namespace fisch::vx {
 class PlaybackProgramBuilder;
 } // namespace fisch::vx
 
-namespace stadls {
-namespace vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
-class PlaybackProgram;
+namespace detail {
+
+template <typename>
+class PlaybackProgramBuilderAdapterImpl;
+
+template <typename>
+class PlaybackProgramBuilderAdapter;
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilderAdapter<T> const& builder)
+    SYMBOL_VISIBLE;
 
 /**
  * Sequential PlaybackProgram builder.
  */
-class GENPYBIND(visible) PlaybackProgramBuilder
+template <typename BuilderStorage>
+class SYMBOL_VISIBLE PlaybackProgramBuilderAdapter
 {
 public:
 	/** Construct builder. */
-	PlaybackProgramBuilder() SYMBOL_VISIBLE;
+	PlaybackProgramBuilderAdapter();
 
-	PlaybackProgramBuilder(PlaybackProgramBuilder&& other) SYMBOL_VISIBLE;
-	PlaybackProgramBuilder& operator=(PlaybackProgramBuilder&& other) SYMBOL_VISIBLE;
-	PlaybackProgramBuilder(PlaybackProgramBuilder const&) = delete;
-	~PlaybackProgramBuilder() SYMBOL_VISIBLE;
+	PlaybackProgramBuilderAdapter(PlaybackProgramBuilderAdapter&& other);
+	PlaybackProgramBuilderAdapter& operator=(PlaybackProgramBuilderAdapter&& other);
+	PlaybackProgramBuilderAdapter(PlaybackProgramBuilderAdapter const&) = delete;
+	~PlaybackProgramBuilderAdapter();
 
 	/**
 	 * Add instruction to block execution until specified timer has reached specified value.
@@ -49,8 +59,7 @@ public:
 	 * @param time Timer value until which to block execution
 	 */
 	void wait_until(
-	    typename haldls::vx::Timer::coordinate_type const& coord,
-	    haldls::vx::Timer::Value time) SYMBOL_VISIBLE;
+	    typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value time);
 
 	/**
 	 * Add instruction to block execution until specified timer has reached specified value.
@@ -58,16 +67,14 @@ public:
 	 * @param time Timer value until which to block execution
 	 */
 	void block_until(
-	    typename haldls::vx::Timer::coordinate_type const& coord,
-	    haldls::vx::Timer::Value time) SYMBOL_VISIBLE;
+	    typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value time);
 
 	/**
 	 * Add instruction to block execution until specified barrier is completed.
 	 * @param coord Barrierhronisation coordinate for which to block
 	 * @param sync Barrierhronisation value for to block execution
 	 */
-	void block_until(halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier sync)
-	    SYMBOL_VISIBLE;
+	void block_until(halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier sync);
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	/**                                                                                            \
@@ -78,7 +85,7 @@ public:
 	 */                                                                                            \
 	void write(                                                                                    \
 	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    haldls::vx::Backend backend) SYMBOL_VISIBLE;                                               \
+	    haldls::vx::Backend backend);                                                              \
                                                                                                    \
 	/**                                                                                            \
 	 * Add instructions to write given container to given location.                                \
@@ -88,7 +95,7 @@ public:
 	 * @note This function without backend parameter is needed due to python wrapping not being    \
 	 * able to handle templated default arguments.                                                 \
 	 */                                                                                            \
-	void write(typename Type::coordinate_type const& coord, Type const& config) SYMBOL_VISIBLE;    \
+	void write(typename Type::coordinate_type const& coord, Type const& config);                   \
                                                                                                    \
 	/**                                                                                            \
 	 * Add instructions to write given container to given location.                                \
@@ -99,7 +106,7 @@ public:
 	 */                                                                                            \
 	void write(                                                                                    \
 	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    Type const& config_reference, haldls::vx::Backend backend) SYMBOL_VISIBLE;                 \
+	    Type const& config_reference, haldls::vx::Backend backend);                                \
                                                                                                    \
 	/**                                                                                            \
 	 * Add instructions to write given container to given location.                                \
@@ -112,7 +119,7 @@ public:
 	 */                                                                                            \
 	void write(                                                                                    \
 	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    Type const& config_reference) SYMBOL_VISIBLE;                                              \
+	    Type const& config_reference);                                                             \
                                                                                                    \
 	/**                                                                                            \
 	 * Add instructions to read container data from given location.                                \
@@ -120,7 +127,7 @@ public:
 	 * @param backend Backend selection                                                            \
 	 */                                                                                            \
 	PlaybackProgram::ContainerTicket<Type> read(                                                   \
-	    typename Type::coordinate_type const& coord, haldls::vx::Backend backend) SYMBOL_VISIBLE;  \
+	    typename Type::coordinate_type const& coord, haldls::vx::Backend backend);                 \
                                                                                                    \
 	/**                                                                                            \
 	 * Add instructions to read container data from given location.                                \
@@ -129,65 +136,65 @@ public:
 	 * @note This function without backend parameter is needed due to python wrapping not being    \
 	 * able to handle templated default arguments.                                                 \
 	 */                                                                                            \
-	PlaybackProgram::ContainerTicket<Type> read(typename Type::coordinate_type const& coord)       \
-	    SYMBOL_VISIBLE;
+	PlaybackProgram::ContainerTicket<Type> read(typename Type::coordinate_type const& coord);
 #pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/container.def"
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/container.def"
 
 	/**
-	 * Merge other PlaybackProgramBuilder to the end of this builder instance.
+	 * Merge other PlaybackProgramBuilderAdapter to the end of this builder instance.
 	 * The moved-from builder is emptied during the process.
 	 * @param other Builder to move to this instance at the back
 	 */
-	void merge_back(PlaybackProgramBuilder& other) SYMBOL_VISIBLE;
+	void merge_back(PlaybackProgramBuilderAdapter& other);
 
 	/**
-	 * Merge other PlaybackProgramBuilder to the end of this builder instance.
+	 * Merge other PlaybackProgramBuilderAdapter to the end of this builder instance.
 	 * The moved-from builder is emptied during the process.
 	 * @param other Builder to move to this instance at the back
 	 */
-	void merge_back(PlaybackProgramBuilder&& other) GENPYBIND(hidden) SYMBOL_VISIBLE;
+	void merge_back(PlaybackProgramBuilderAdapter&& other) GENPYBIND(hidden);
 
 	/**
-	 * Merge fisch PlaybackProgramBuilder to the end of this builder instance.
-	 * The moved-from builder is emptied during the process.
-	 * @param other Builder to move to this instance at the back
+	 * Merge BuilderStorage to the end of this builder instance.
+	 * The moved-from storage is emptied during the process.
+	 * @param other BuilderStorage to move to this instance at the back
 	 */
-	void merge_back(fisch::vx::PlaybackProgramBuilder& other) SYMBOL_VISIBLE;
+	void merge_back(BuilderStorage& other);
 
 	/**
-	 * Merge fisch PlaybackProgramBuilder to the end of this builder instance.
-	 * The moved-from builder is emptied during the process.
-	 * @param other Builder to move to this instance at the back
+	 * Merge BuilderStorage to the end of this builder instance.
+	 * The moved-from storage is emptied during the process.
+	 * @param other BuilderStorage to move to this instance at the back
 	 */
-	void merge_back(fisch::vx::PlaybackProgramBuilder&& other) GENPYBIND(hidden) SYMBOL_VISIBLE;
+	void merge_back(BuilderStorage&& other) GENPYBIND(hidden);
 
 	/**
-	 * Copy other PlaybackProgramBuilder to the end of this builder instance.
+	 * Copy other PlaybackProgramBuilderAdapter to the end of this builder instance.
 	 * The copied-from builder is untouched during the process.
 	 * @throws std::runtime_error On other builder not being write only
 	 * @param other Builder to copy to this instance at the back
 	 */
-	void copy_back(PlaybackProgramBuilder const& other) SYMBOL_VISIBLE;
+	void copy_back(PlaybackProgramBuilderAdapter const& other);
 
 	/**
-	 * Copy fisch PlaybackProgramBuilder to the end of this builder instance.
-	 * The copied-from builder is untouched during the process.
+	 * Copy BuilderStorage to the end of this builder instance.
+	 * The copied-from storage is untouched during the process.
 	 * @throws std::runtime_error On other builder not being write only
-	 * @param other Builder to copy to this instance at the back
+	 * @param other BuilderStorage to copy to this instance at the back
 	 */
-	void copy_back(fisch::vx::PlaybackProgramBuilder const& other) SYMBOL_VISIBLE;
+	void copy_back(BuilderStorage const& other);
 
 	/**
 	 * Close PlaybackProgram build process and return executable program.
 	 * @return Executable PlaybackProgram
 	 */
-	PlaybackProgram done() SYMBOL_VISIBLE;
+	PlaybackProgram done();
 
-	friend std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder)
-	    SYMBOL_VISIBLE;
+	template <typename T>
+	friend std::ostream& operator<<(
+	    std::ostream& os, PlaybackProgramBuilderAdapter<T> const& builder);
 
 	GENPYBIND_MANUAL({
 		parent.def("__repr__", [](GENPYBIND_PARENT_TYPE const& p) {
@@ -207,27 +214,39 @@ public:
 	 * Get whether builder is empty, i.e. no instructions are embodied.
 	 * @return Boolean value
 	 */
-	bool empty() const SYMBOL_VISIBLE;
+	bool empty() const;
 
 	/**
 	 * Get number of UT messages to FPGA.
 	 * @return Size
 	 */
-	size_t size_to_fpga() const SYMBOL_VISIBLE;
+	size_t size_to_fpga() const;
 
 	/**
 	 * Get whether builder only stores write instructions.
 	 * @return Boolean value
 	 */
-	bool is_write_only() const SYMBOL_VISIBLE;
+	bool is_write_only() const;
 
 private:
-	friend class PlaybackProgramBuilderImpl;
+	using Impl = detail::PlaybackProgramBuilderAdapterImpl<BuilderStorage>;
+	friend Impl;
 
-	std::unique_ptr<fisch::vx::PlaybackProgramBuilder> m_builder_impl;
+	std::unique_ptr<BuilderStorage> m_builder_impl;
 
 	std::unordered_set<hxcomm::vx::Target> m_unsupported_targets;
 };
 
-} // namespace vx
-} // namespace stadls
+extern template SYMBOL_VISIBLE std::ostream& operator<<(
+    std::ostream& os,
+    PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder> const& builder);
+
+} // namespace detail
+
+typedef detail::PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder>
+    PlaybackProgramBuilder GENPYBIND(opaque);
+
+} // namespace stadls::vx
+
+extern template class SYMBOL_VISIBLE
+    stadls::vx::detail::PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder>;
