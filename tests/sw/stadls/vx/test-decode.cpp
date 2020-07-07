@@ -6,15 +6,23 @@
 #include "lola/vx/container.h"
 #include "stadls/vx/decode.h"
 
-typedef hate::type_list<lola::vx::AtomicNeuron, haldls::vx::NullPayloadReadable> NarrowingTypes;
+typedef hate::
+    type_list<lola::vx::AtomicNeuron, haldls::vx::NullPayloadReadable, haldls::vx::INA219Status>
+        NotRandomizableTypes;
 
-typedef hate::type_list<haldls::vx::CommonPhyConfigChip, haldls::vx::CommonPhyConfigFPGA>
-    DefaultOnedTypes;
+typedef hate::type_list<
+    lola::vx::AtomicNeuron,
+    haldls::vx::NullPayloadReadable,
+    haldls::vx::CommonPhyConfigChip,
+    haldls::vx::CommonPhyConfigFPGA,
+    haldls::vx::CapMemBlockConfig,
+    haldls::vx::INA219Status>
+    NotOneableTypes;
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	TEST(Name, IsRandomizable)                                                                     \
 	{                                                                                              \
-		if constexpr (!hate::is_in_type_list<Type, NarrowingTypes>::value) {                       \
+		if constexpr (!hate::is_in_type_list<Type, NotRandomizableTypes>::value) {                 \
 			std::mt19937 rng(1234);                                                                \
 			Type config;                                                                           \
 			stadls::vx::decode_random<Type>(rng, config);                                          \
@@ -29,7 +37,7 @@ typedef hate::type_list<haldls::vx::CommonPhyConfigChip, haldls::vx::CommonPhyCo
                                                                                                    \
 	TEST(Name, IsOneable)                                                                          \
 	{                                                                                              \
-		if constexpr (!hate::is_in_type_list<Type, NarrowingTypes>::value) {                       \
+		if constexpr (!hate::is_in_type_list<Type, NotOneableTypes>::value) {                      \
 			Type config;                                                                           \
 			if constexpr (!std::is_same<Type, haldls::vx::CapMemBlockConfig>::value) {             \
 				stadls::vx::decode_ones<Type>(config);                                             \
@@ -38,9 +46,7 @@ typedef hate::type_list<haldls::vx::CommonPhyConfigChip, haldls::vx::CommonPhyCo
 				        word_type;                                                                 \
 				if (haldls::vx::detail::IsReadable<Type>::value &&                                 \
 				    fisch::vx::IsReadable<word_type>::value) {                                     \
-					if constexpr (!hate::is_in_type_list<Type, DefaultOnedTypes>::value) {         \
-						EXPECT_NE(config, Type());                                                 \
-					}                                                                              \
+					EXPECT_NE(config, Type());                                                     \
 				}                                                                                  \
 			}                                                                                      \
 		}                                                                                          \

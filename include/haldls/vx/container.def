@@ -6,6 +6,8 @@
 #define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
 #endif
 
+PLAYBACK_CONTAINER(INA219Config, haldls::vx::INA219Config)
+PLAYBACK_CONTAINER(INA219Status, haldls::vx::INA219Status)
 PLAYBACK_CONTAINER(NullPayloadReadable, haldls::vx::NullPayloadReadable)
 PLAYBACK_CONTAINER(CADCOffsetSRAMTimingConfig, haldls::vx::CADCOffsetSRAMTimingConfig)
 PLAYBACK_CONTAINER(SynapseDriverSRAMTimingConfig, haldls::vx::SynapseDriverSRAMTimingConfig)
