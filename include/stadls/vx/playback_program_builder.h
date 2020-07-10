@@ -186,15 +186,40 @@ public:
 	 */
 	PlaybackProgram done() SYMBOL_VISIBLE;
 
-	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilder const& builder)
 	    SYMBOL_VISIBLE;
+
+	GENPYBIND_MANUAL({
+		parent.def("__repr__", [](GENPYBIND_PARENT_TYPE const& p) {
+			std::stringstream ss;
+			ss << "PlaybackProgramBuilder(to FPGA size: " << p.size_to_fpga()
+			   << ", is write only: " << p.is_write_only() << ")";
+			return ss.str();
+		});
+		parent.def("__str__", [](GENPYBIND_PARENT_TYPE const& p) {
+			std::stringstream ss;
+			ss << p;
+			return ss.str();
+		});
+	})
 
 	/**
 	 * Get whether builder is empty, i.e. no instructions are embodied.
 	 * @return Boolean value
 	 */
 	bool empty() const SYMBOL_VISIBLE;
+
+	/**
+	 * Get number of UT messages to FPGA.
+	 * @return Size
+	 */
+	size_t size_to_fpga() const SYMBOL_VISIBLE;
+
+	/**
+	 * Get whether builder only stores write instructions.
+	 * @return Boolean value
+	 */
+	bool is_write_only() const SYMBOL_VISIBLE;
 
 private:
 	template <typename T, size_t SupportedBackendIndex>

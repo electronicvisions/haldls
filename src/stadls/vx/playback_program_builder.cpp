@@ -322,4 +322,14 @@ bool PlaybackProgramBuilder::empty() const
 	return m_builder_impl->empty();
 }
 
+size_t PlaybackProgramBuilder::size_to_fpga() const
+{
+	return m_builder_impl->size_to_fpga();
+}
+
+bool PlaybackProgramBuilder::is_write_only() const
+{
+	return m_builder_impl->is_write_only();
+}
+
 } // namespace stadls::vx
