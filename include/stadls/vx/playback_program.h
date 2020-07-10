@@ -24,9 +24,9 @@ namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
 namespace detail {
 
-template <typename>
+template <typename, typename>
 class PlaybackProgramBuilderAdapter;
-template <typename>
+template <typename, typename>
 class PlaybackProgramBuilderAdapterImpl;
 
 } // namespace detail
@@ -239,10 +239,11 @@ public:
 	})
 
 private:
-	template <typename>
-	friend class detail::PlaybackProgramBuilderAdapter;
-	template <typename>
-	friend class detail::PlaybackProgramBuilderAdapterImpl;
+	template <typename, typename>
+	friend class stadls::vx::detail::PlaybackProgramBuilderAdapter;
+
+	template <typename, typename>
+	friend class stadls::vx::detail::PlaybackProgramBuilderAdapterImpl;
 
 	template <typename Connection>
 	friend RunTimeInfo run(Connection&, PlaybackProgram&);

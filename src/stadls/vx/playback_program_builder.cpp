@@ -1,30 +1,31 @@
 #include "stadls/vx/playback_program_builder.h"
 
 #include <optional>
+
 #include "fisch/vx/playback_program_builder.h"
 #include "haldls/vx/common.h"
-#include "haldls/vx/container.h"
 #include "haldls/vx/is_readable.h"
 #include "hate/type_traits.h"
 #include "stadls/visitors.h"
+#include "stadls/vx/dumper.h"
 #include "stadls/vx/playback_program.h"
 
 namespace stadls::vx::detail {
 
-template <typename BuilderStorage>
+template <typename BuilderStorage, typename DoneType>
 class PlaybackProgramBuilderAdapterImpl
 {
 public:
 	template <typename T, size_t SupportedBackendIndex>
 	static void write_table_entry(
-	    PlaybackProgramBuilderAdapter<BuilderStorage>& builder,
+	    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& builder,
 	    typename T::coordinate_type const& coord,
 	    T const& config,
 	    std::optional<T> const& config_reference);
 
 	template <class T, size_t... SupportedBackendIndex>
 	static void write_table_generator(
-	    PlaybackProgramBuilderAdapter<BuilderStorage>& builder,
+	    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& builder,
 	    typename T::coordinate_type const& coord,
 	    T const& config,
 	    size_t backend_index,
@@ -33,28 +34,28 @@ public:
 
 	template <class T, size_t... SupportedBackendIndex>
 	static PlaybackProgram::ContainerTicket<T> read_table_generator(
-	    PlaybackProgramBuilderAdapter<BuilderStorage>& builder,
+	    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& builder,
 	    typename T::coordinate_type const& coord,
 	    size_t backend_index,
 	    std::index_sequence<SupportedBackendIndex...>);
 };
 
-template <typename BuilderStorage>
-PlaybackProgramBuilderAdapter<BuilderStorage>::PlaybackProgramBuilderAdapter() :
+template <typename BuilderStorage, typename DoneType>
+PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::PlaybackProgramBuilderAdapter() :
     m_builder_impl(std::make_unique<BuilderStorage>()), m_unsupported_targets()
 {}
 
-template <typename BuilderStorage>
-PlaybackProgramBuilderAdapter<BuilderStorage>::PlaybackProgramBuilderAdapter(
-    PlaybackProgramBuilderAdapter<BuilderStorage>&& other) :
+template <typename BuilderStorage, typename DoneType>
+PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::PlaybackProgramBuilderAdapter(
+    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>&& other) :
     m_builder_impl(std::move(other.m_builder_impl)),
     m_unsupported_targets(std::move(other.m_unsupported_targets))
 {}
 
-template <typename BuilderStorage>
-PlaybackProgramBuilderAdapter<BuilderStorage>&
-PlaybackProgramBuilderAdapter<BuilderStorage>::operator=(
-    PlaybackProgramBuilderAdapter<BuilderStorage>&& other)
+template <typename BuilderStorage, typename DoneType>
+PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>&
+PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::operator=(
+    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>&& other)
 {
 	m_builder_impl = std::move(other.m_builder_impl);
 	m_unsupported_targets = std::move(other.m_unsupported_targets);
@@ -62,12 +63,12 @@ PlaybackProgramBuilderAdapter<BuilderStorage>::operator=(
 	return *this;
 }
 
-template <typename BuilderStorage>
-PlaybackProgramBuilderAdapter<BuilderStorage>::~PlaybackProgramBuilderAdapter()
+template <typename BuilderStorage, typename DoneType>
+PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::~PlaybackProgramBuilderAdapter()
 {}
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::wait_until(
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::wait_until(
     typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value const time)
 {
 	static bool first = true;
@@ -80,20 +81,32 @@ void PlaybackProgramBuilderAdapter<BuilderStorage>::wait_until(
 	block_until(coord, time);
 }
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::block_until(
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::block_until(
     typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value const time)
 {
-	m_builder_impl->write(
-	    halco::hicann_dls::vx::WaitUntilOnFPGA(coord.toEnum()),
-	    fisch::vx::WaitUntil(fisch::vx::WaitUntil::Value(time)));
+	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
+		m_builder_impl->write(
+		    halco::hicann_dls::vx::WaitUntilOnFPGA(coord.toEnum()),
+		    fisch::vx::WaitUntil(fisch::vx::WaitUntil::Value(time)));
+	} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {
+		m_builder_impl->block_until(coord, time);
+	} else {
+		throw std::logic_error("Unknown specialization");
+	}
 }
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::block_until(
-    typename halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier const sync)
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::block_until(
+    typename halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier const barrier)
 {
-	m_builder_impl->write(coord, sync.encode());
+	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
+		m_builder_impl->write(coord, barrier.encode());
+	} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {
+		m_builder_impl->block_until(coord, barrier);
+	} else {
+		throw std::logic_error("Unknown specialization");
+	}
 }
 
 namespace detail {
@@ -114,10 +127,10 @@ constexpr static auto has_unsupported_read_targets =
 
 } // namespace detail
 
-template <typename BuilderStorage>
+template <typename BuilderStorage, typename DoneType>
 template <typename T, size_t SupportedBackendIndex>
-void PlaybackProgramBuilderAdapterImpl<BuilderStorage>::write_table_entry(
-    PlaybackProgramBuilderAdapter<BuilderStorage>& builder,
+void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType>::write_table_entry(
+    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& builder,
     typename T::coordinate_type const& coord,
     T const& config,
     std::optional<T> const& config_reference)
@@ -173,10 +186,10 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage>::write_table_entry(
 	}
 }
 
-template <typename BuilderStorage>
+template <typename BuilderStorage, typename DoneType>
 template <class T, size_t... SupportedBackendIndex>
-void PlaybackProgramBuilderAdapterImpl<BuilderStorage>::write_table_generator(
-    PlaybackProgramBuilderAdapter<BuilderStorage>& builder,
+void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType>::write_table_generator(
+    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& builder,
     typename T::coordinate_type const& coord,
     T const& config,
     size_t const backend_index,
@@ -185,59 +198,78 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage>::write_table_generator(
 {
 	std::array<
 	    void (*)(
-	        PlaybackProgramBuilderAdapter<BuilderStorage>&, typename T::coordinate_type const&,
-	        T const&, std::optional<T> const&),
+	        PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>&,
+	        typename T::coordinate_type const&, T const&, std::optional<T> const&),
 	    sizeof...(SupportedBackendIndex)>
 	    write_table{write_table_entry<T, SupportedBackendIndex>...};
 	write_table.at(backend_index)(builder, coord, config, config_reference);
 }
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	template <typename BuilderStorage>                                                             \
-	void PlaybackProgramBuilderAdapter<BuilderStorage>::write(                                     \
-	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    Type const& config_reference, haldls::vx::Backend backend)                                 \
+	template <typename BuilderStorage, typename DoneType>                                          \
+	void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::write(                           \
+	    [[maybe_unused]] typename Type::coordinate_type const& coord,                              \
+	    [[maybe_unused]] Type const& config, [[maybe_unused]] Type const& config_reference,        \
+	    [[maybe_unused]] haldls::vx::Backend backend)                                              \
 	{                                                                                              \
-		if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                    \
-			throw std::runtime_error("Backend not supported for container type.");                 \
+		if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {         \
+			if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                \
+				throw std::runtime_error("Backend not supported for container type.");             \
+			}                                                                                      \
+			size_t const backend_index = static_cast<size_t>(                                      \
+			    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(    \
+			        static_cast<size_t>(backend)));                                                \
+			Impl::template write_table_generator<Type>(                                            \
+			    *this, coord, config, backend_index, config_reference,                             \
+			    std::make_index_sequence<                                                          \
+			        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<       \
+			            Type>::container_list>::value>());                                         \
+		} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {                             \
+			throw std::runtime_error("Unsupported differential write to dumper backend.");         \
+		} else {                                                                                   \
+			throw std::logic_error("Unknown specialization");                                      \
 		}                                                                                          \
-		size_t const backend_index = static_cast<size_t>(                                          \
-		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
-		        static_cast<size_t>(backend)));                                                    \
-		Impl::template write_table_generator<Type>(                                                \
-		    *this, coord, config, backend_index, config_reference,                                 \
-		    std::make_index_sequence<                                                              \
-		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
-		            Type>::container_list>::value>());                                             \
 	}                                                                                              \
-	template <typename BuilderStorage>                                                             \
-	void PlaybackProgramBuilderAdapter<BuilderStorage>::write(                                     \
-	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    Type const& config_reference)                                                              \
+	template <typename BuilderStorage, typename DoneType>                                          \
+	void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::write(                           \
+	    [[maybe_unused]] typename Type::coordinate_type const& coord,                              \
+	    [[maybe_unused]] Type const& config, [[maybe_unused]] Type const& config_reference)        \
 	{                                                                                              \
-		this->write(                                                                               \
-		    coord, config, config_reference,                                                       \
-		    haldls::vx::detail::BackendContainerTrait<Type>::default_backend);                     \
-	}                                                                                              \
-	template <typename BuilderStorage>                                                             \
-	void PlaybackProgramBuilderAdapter<BuilderStorage>::write(                                     \
-	    typename Type::coordinate_type const& coord, Type const& config,                           \
-	    haldls::vx::Backend backend)                                                               \
-	{                                                                                              \
-		if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                    \
-			throw std::runtime_error("Backend not supported for container type.");                 \
+		if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {         \
+			this->write(                                                                           \
+			    coord, config, config_reference,                                                   \
+			    haldls::vx::detail::BackendContainerTrait<Type>::default_backend);                 \
+		} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {                             \
+			throw std::runtime_error("Unsupported differential write to dumper backend.");         \
+		} else {                                                                                   \
+			throw std::logic_error("Unknown specialization");                                      \
 		}                                                                                          \
-		size_t const backend_index = static_cast<size_t>(                                          \
-		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
-		        static_cast<size_t>(backend)));                                                    \
-		Impl::template write_table_generator<Type>(                                                \
-		    *this, coord, config, backend_index, std::nullopt,                                     \
-		    std::make_index_sequence<                                                              \
-		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
-		            Type>::container_list>::value>());                                             \
 	}                                                                                              \
-	template <typename BuilderStorage>                                                             \
-	void PlaybackProgramBuilderAdapter<BuilderStorage>::write(                                     \
+	template <typename BuilderStorage, typename DoneType>                                          \
+	void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::write(                           \
+	    [[maybe_unused]] typename Type::coordinate_type const& coord,                              \
+	    [[maybe_unused]] Type const& config, [[maybe_unused]] haldls::vx::Backend backend)         \
+	{                                                                                              \
+		if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {         \
+			if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                \
+				throw std::runtime_error("Backend not supported for container type.");             \
+			}                                                                                      \
+			size_t const backend_index = static_cast<size_t>(                                      \
+			    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(    \
+			        static_cast<size_t>(backend)));                                                \
+			Impl::template write_table_generator<Type>(                                            \
+			    *this, coord, config, backend_index, std::nullopt,                                 \
+			    std::make_index_sequence<                                                          \
+			        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<       \
+			            Type>::container_list>::value>());                                         \
+		} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {                             \
+			m_builder_impl->write(coord, config);                                                  \
+		} else {                                                                                   \
+			throw std::logic_error("Unknown specialization");                                      \
+		}                                                                                          \
+	}                                                                                              \
+	template <typename BuilderStorage, typename DoneType>                                          \
+	void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::write(                           \
 	    typename Type::coordinate_type const& coord, Type const& config)                           \
 	{                                                                                              \
 		write(coord, config, haldls::vx::detail::BackendContainerTrait<Type>::default_backend);    \
@@ -247,11 +279,11 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage>::write_table_generator(
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/container.def"
 
-template <typename BuilderStorage>
+template <typename BuilderStorage, typename DoneType>
 template <class T, size_t... SupportedBackendIndex>
 PlaybackProgram::ContainerTicket<T>
-PlaybackProgramBuilderAdapterImpl<BuilderStorage>::read_table_generator(
-    PlaybackProgramBuilderAdapter<BuilderStorage>& builder,
+PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType>::read_table_generator(
+    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& builder,
     typename T::coordinate_type const& coord,
     size_t const backend_index,
     std::index_sequence<SupportedBackendIndex...>)
@@ -259,9 +291,10 @@ PlaybackProgramBuilderAdapterImpl<BuilderStorage>::read_table_generator(
 	using namespace haldls::vx::detail;
 	std::array<
 	    PlaybackProgram::ContainerTicket<T> (*)(
-	        PlaybackProgramBuilderAdapter<BuilderStorage>&, typename T::coordinate_type const&),
+	        PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>&,
+	        typename T::coordinate_type const&),
 	    sizeof...(SupportedBackendIndex)>
-	    read_table{[](PlaybackProgramBuilderAdapter<BuilderStorage>& builder,
+	    read_table{[](PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& builder,
 	                  typename T::coordinate_type const& coord)
 	                   -> PlaybackProgram::ContainerTicket<T> {
 		    typedef typename hate::index_type_list_by_integer<
@@ -295,25 +328,34 @@ PlaybackProgramBuilderAdapterImpl<BuilderStorage>::read_table_generator(
 }
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	template <typename BuilderStorage>                                                             \
-	PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilderAdapter<BuilderStorage>::read(    \
-	    typename Type::coordinate_type const& coord, haldls::vx::Backend backend)                  \
+	template <typename BuilderStorage, typename DoneType>                                          \
+	PlaybackProgram::ContainerTicket<Type>                                                         \
+	PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::read(                                 \
+	    [[maybe_unused]] typename Type::coordinate_type const& coord,                              \
+	    [[maybe_unused]] haldls::vx::Backend backend)                                              \
 	{                                                                                              \
-		if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                    \
-			throw std::runtime_error("Backend not supported for container type.");                 \
-		}                                                                                          \
+		if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {         \
+			if (!haldls::vx::detail::BackendContainerTrait<Type>::valid(backend)) {                \
+				throw std::runtime_error("Backend not supported for container type.");             \
+			}                                                                                      \
                                                                                                    \
-		size_t const backend_index = static_cast<size_t>(                                          \
-		    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(        \
-		        static_cast<size_t>(backend)));                                                    \
-		return Impl::template read_table_generator<Type>(                                          \
-		    *this, coord, backend_index,                                                           \
-		    std::make_index_sequence<                                                              \
-		        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<           \
-		            Type>::container_list>::value>());                                             \
+			size_t const backend_index = static_cast<size_t>(                                      \
+			    haldls::vx::detail::BackendContainerTrait<Type>::backend_index_lookup_table.at(    \
+			        static_cast<size_t>(backend)));                                                \
+			return Impl::template read_table_generator<Type>(                                      \
+			    *this, coord, backend_index,                                                       \
+			    std::make_index_sequence<                                                          \
+			        hate::type_list_size<typename haldls::vx::detail::BackendContainerTrait<       \
+			            Type>::container_list>::value>());                                         \
+		} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {                             \
+			return m_builder_impl->template read<Type>(coord);                                     \
+		} else {                                                                                   \
+			throw std::logic_error("Unknown specialization");                                      \
+		}                                                                                          \
 	}                                                                                              \
-	template <typename BuilderStorage>                                                             \
-	PlaybackProgram::ContainerTicket<Type> PlaybackProgramBuilderAdapter<BuilderStorage>::read(    \
+	template <typename BuilderStorage, typename DoneType>                                          \
+	PlaybackProgram::ContainerTicket<Type>                                                         \
+	PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::read(                                 \
 	    typename Type::coordinate_type const& coord)                                               \
 	{                                                                                              \
 		return this->read(                                                                         \
@@ -324,86 +366,115 @@ PlaybackProgramBuilderAdapterImpl<BuilderStorage>::read_table_generator(
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/container.def"
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::merge_back(
-    PlaybackProgramBuilderAdapter<BuilderStorage>& other)
+
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::merge_back(
+    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& other)
 {
-	merge_back(std::forward<PlaybackProgramBuilderAdapter<BuilderStorage>>(other));
+	merge_back(std::forward<PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>>(other));
 }
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::merge_back(
-    PlaybackProgramBuilderAdapter<BuilderStorage>&& other)
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::merge_back(
+    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>&& other)
 {
 	m_builder_impl->merge_back(*(other.m_builder_impl));
 	m_unsupported_targets.merge(other.m_unsupported_targets);
 }
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::merge_back(BuilderStorage&& other)
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::merge_back(BuilderStorage&& other)
 {
 	m_builder_impl->merge_back(other);
 }
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::merge_back(BuilderStorage& other)
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::merge_back(BuilderStorage& other)
 {
 	merge_back(std::forward<BuilderStorage>(other));
 }
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::copy_back(
-    PlaybackProgramBuilderAdapter<BuilderStorage> const& other)
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::copy_back(
+    PlaybackProgramBuilderAdapter<BuilderStorage, DoneType> const& other)
 {
 	m_builder_impl->copy_back(*(other.m_builder_impl));
 	m_unsupported_targets.insert(
 	    other.m_unsupported_targets.begin(), other.m_unsupported_targets.end());
 }
 
-template <typename BuilderStorage>
-void PlaybackProgramBuilderAdapter<BuilderStorage>::copy_back(BuilderStorage const& other)
+template <typename BuilderStorage, typename DoneType>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::copy_back(BuilderStorage const& other)
 {
 	m_builder_impl->copy_back(other);
 }
 
-template <typename BuilderStorage>
-PlaybackProgram PlaybackProgramBuilderAdapter<BuilderStorage>::done()
+template <typename BuilderStorage, typename DoneType>
+DoneType PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::done()
 {
-	auto const program = PlaybackProgram(m_builder_impl->done(), m_unsupported_targets);
-	m_unsupported_targets.clear();
-	return program;
+	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
+		auto const program = PlaybackProgram(m_builder_impl->done(), m_unsupported_targets);
+		m_unsupported_targets.clear();
+		return program;
+	} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {
+		return m_builder_impl->done();
+	} else {
+		throw std::logic_error("Unknown specialization");
+	}
 }
 
-template <typename BuilderStorage>
+template <typename BuilderStorage, typename DoneType>
 std::ostream& operator<<(
-    std::ostream& os, PlaybackProgramBuilderAdapter<BuilderStorage> const& builder)
+    std::ostream& os, PlaybackProgramBuilderAdapter<BuilderStorage, DoneType> const& builder)
 {
 	os << *(builder.m_builder_impl);
 	return os;
 }
 
-template <typename BuilderStorage>
-bool PlaybackProgramBuilderAdapter<BuilderStorage>::empty() const
+template <typename BuilderStorage, typename DoneType>
+bool PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::empty() const
 {
 	return m_builder_impl->empty();
 }
 
-template <typename BuilderStorage>
-size_t PlaybackProgramBuilderAdapter<BuilderStorage>::size_to_fpga() const
+template <typename BuilderStorage, typename DoneType>
+size_t PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::size_to_fpga() const
 {
-	return m_builder_impl->size_to_fpga();
+	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
+		return m_builder_impl->size_to_fpga();
+	} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {
+		throw std::runtime_error("Dumper does not support size_to_fpga().");
+	} else {
+		throw std::logic_error("Unknown specialization");
+	}
 }
 
-template <typename BuilderStorage>
-bool PlaybackProgramBuilderAdapter<BuilderStorage>::is_write_only() const
+template <typename BuilderStorage, typename DoneType>
+bool PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::is_write_only() const
 {
-	return m_builder_impl->is_write_only();
+	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
+		return m_builder_impl->is_write_only();
+	} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {
+		/* we don't support reads in the Dumper backend */
+		return true;
+	} else {
+		throw std::logic_error("Unknown specialization");
+	}
 }
 
-template class PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder>;
+template class PlaybackProgramBuilderAdapter<
+    fisch::vx::PlaybackProgramBuilder,
+    stadls::vx::PlaybackProgram>;
+template class PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type>;
 
 template std::ostream& operator<<(
-    std::ostream& os,
-    PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder> const& builder);
+    std::ostream&,
+    PlaybackProgramBuilderAdapter<
+        fisch::vx::PlaybackProgramBuilder,
+        stadls::vx::PlaybackProgram> const&);
+
+template std::ostream& operator<<(
+    std::ostream&,
+    PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type> const&);
 
 } // namespace stadls::vx::detail

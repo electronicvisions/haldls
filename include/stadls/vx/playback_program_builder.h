@@ -1,23 +1,31 @@
 #pragma once
 
-#include <cstdint>
+#include <iosfwd>
 #include <memory>
-#include <optional>
-#include <string>
 #include <unordered_set>
-#include <vector>
 
+// clang-format off
+#pragma GCC visibility push(default)
+// TODO: task #3624 "reduce visibility in class templates"
+#include "haldls/vx/container.h"
+#include "lola/vx/container.h"
+#pragma GCC visibility pop
+// clang-format on
 #include "halco/hicann-dls/vx/barrier.h"
 #include "haldls/vx/barrier.h"
 #include "haldls/vx/common.h"
-#include "haldls/vx/container.h"
 #include "hate/visibility.h"
-#include "lola/vx/container.h"
+#include "hxcomm/vx/target.h"
+#include "stadls/vx/dumper.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
+
+// clang-format off
+#ifdef __GENPYBIND_GENERATED__
 // needed for python wrapping
 #include "fisch/vx/playback_program_builder.h"
-#include "hxcomm/vx/target.h"
+#endif
+// clang-format on
 
 namespace fisch::vx {
 class PlaybackProgramBuilder;
@@ -27,20 +35,20 @@ namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
 namespace detail {
 
-template <typename>
+template <typename, typename>
 class PlaybackProgramBuilderAdapterImpl;
 
-template <typename>
+template <typename, typename>
 class PlaybackProgramBuilderAdapter;
 
-template <typename T>
-std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilderAdapter<T> const& builder)
+template <typename T, typename U>
+std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilderAdapter<T, U> const& builder)
     SYMBOL_VISIBLE;
 
 /**
  * Sequential PlaybackProgram builder.
  */
-template <typename BuilderStorage>
+template <typename BuilderStorage, typename DoneType>
 class SYMBOL_VISIBLE PlaybackProgramBuilderAdapter
 {
 public:
@@ -190,11 +198,11 @@ public:
 	 * Close PlaybackProgram build process and return executable program.
 	 * @return Executable PlaybackProgram
 	 */
-	PlaybackProgram done();
+	DoneType done();
 
-	template <typename T>
+	template <typename T, typename U>
 	friend std::ostream& operator<<(
-	    std::ostream& os, PlaybackProgramBuilderAdapter<T> const& builder);
+	    std::ostream& os, PlaybackProgramBuilderAdapter<T, U> const& builder);
 
 	GENPYBIND_MANUAL({
 		parent.def("__repr__", [](GENPYBIND_PARENT_TYPE const& p) {
@@ -229,7 +237,7 @@ public:
 	bool is_write_only() const;
 
 private:
-	using Impl = detail::PlaybackProgramBuilderAdapterImpl<BuilderStorage>;
+	using Impl = detail::PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType>;
 	friend Impl;
 
 	std::unique_ptr<BuilderStorage> m_builder_impl;
@@ -238,15 +246,25 @@ private:
 };
 
 extern template SYMBOL_VISIBLE std::ostream& operator<<(
-    std::ostream& os,
-    PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder> const& builder);
+    std::ostream&,
+    PlaybackProgramBuilderAdapter<
+        fisch::vx::PlaybackProgramBuilder,
+        stadls::vx::PlaybackProgram> const&);
+
+extern template SYMBOL_VISIBLE std::ostream& operator<<(
+    std::ostream&,
+    PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type> const&);
 
 } // namespace detail
 
-typedef detail::PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder>
+typedef detail::PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder, PlaybackProgram>
     PlaybackProgramBuilder GENPYBIND(opaque);
+typedef detail::PlaybackProgramBuilderAdapter<Dumper, Dumper::done_type>
+    PlaybackProgramBuilderDumper GENPYBIND(opaque);
 
 } // namespace stadls::vx
 
-extern template class SYMBOL_VISIBLE
-    stadls::vx::detail::PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder>;
+extern template class SYMBOL_VISIBLE stadls::vx::detail::
+    PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder, stadls::vx::PlaybackProgram>;
+extern template class SYMBOL_VISIBLE stadls::vx::detail::
+    PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type>;
