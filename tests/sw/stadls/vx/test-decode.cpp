@@ -5,7 +5,7 @@
 #include "lola/vx/container.h"
 #include "stadls/vx/decode.h"
 
-typedef hate::type_list<lola::vx::AtomicNeuron> NarrowingTypes;
+typedef hate::type_list<lola::vx::AtomicNeuron, haldls::vx::NullPayloadReadable> NarrowingTypes;
 
 typedef hate::type_list<haldls::vx::CommonPhyConfigChip, haldls::vx::CommonPhyConfigFPGA>
     DefaultOnedTypes;

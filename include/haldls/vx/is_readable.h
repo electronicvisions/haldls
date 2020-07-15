@@ -7,6 +7,7 @@
 namespace haldls::vx::detail {
 
 typedef hate::type_list<
+    NullPayloadReadable,
     NeuronSRAMTimingConfig,
     CADCOffsetSRAMTimingConfig,
     ADPLL,
