@@ -1,41 +1,36 @@
 @Library("jenlib") _
-import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
-
-Map<String, Object> pipelineOptions = [
-		projects           : ["haldls"],
-		testOptions        : "--test-execall -j1",
-		testSlurmResource  : [[partition: "cube", wafer: 62, "fpga-without-aout": 3]],
-		preTestHook: { configureHxCubeBitfile() },
-		testTimeout        : 240,
-		notificationChannel: "#dls-software"
-]
-
-wafDefaultPipeline([container: [app: "dls-core"]] << pipelineOptions)
 
 try {
-	stage("Module Deployment") {
-		if (env.GERRIT_EVENT_TYPE == "change-merged") {
-			// Build in 'dls' app for deployment
 
-			runOnSlave(label: "frontend") {
-				cleanWs()
+	Map<String, Object> commonPipelineOptions = [
+		projects           : ["haldls"],
+		testTimeout        : 240,
+		notificationChannel: "#dls-software"
+	]
+
+	Map<String, Object> pipelineDeploymentOptions = [
+		container          : [app: "dls"]
+	] << commonPipelineOptions
+
+	// Additional options for hardware testing in "no deployment" case
+	Map<String, Object> pipelineNoDeploymentOptions = [
+		container          : [app: "dls-core"],
+		testOptions        : "--test-execall -j1",
+		testSlurmResource  : [[partition: "cube", wafer: 62, "fpga-without-aout": 3]],
+		preTestHook        : { configureHxCubeBitfile() },
+	] << commonPipelineOptions
+
+	boolean deploy = env.GERRIT_EVENT_TYPE == "change-merged"
+
+	Map<String, Object> pipelineOptions = deploy ? pipelineDeploymentOptions : pipelineNoDeploymentOptions
+
+	wafDefaultPipeline(pipelineOptions)
+
+	conditionalStage(name: "Module Deployment", skip: !deploy) {
+		runOnSlave(label: "frontend") {
+			inSingularity(app: "dls") {
+				deployModule([name: "haldls", source: "bin/ lib/ doc/ repos_log.txt"])
 			}
-
-			wafDefaultPipeline([container: [app: "dls"]] << pipelineOptions)
-
-			if (currentBuild.currentResult == "SUCCESS") {
-				runOnSlave(label: "frontend") {
-					inSingularity(app: "dls") {
-						deployModule([name: "haldls", source: "bin/ lib/ doc/ repos_log.txt"])
-					}
-				}
-			} else {
-				echo("Deployment skipped: Unstable build.")
-				Utils.markStageSkippedForConditional(STAGE_NAME)
-			}
-		} else {
-			echo("Deployment skipped: Not a merge event.")
-			Utils.markStageSkippedForConditional(STAGE_NAME)
 		}
 	}
 } catch (Throwable t) {
