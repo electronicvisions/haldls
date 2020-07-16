@@ -1007,6 +1007,8 @@ void ColumnCorrelationQuad::set_switch(
 	m_switches.at(correlation_switch) = value;
 }
 
+HALDLS_VX_DEFAULT_OSTREAM_OP(ColumnCurrentQuad)
+
 bool ColumnCorrelationQuad::operator==(ColumnCorrelationQuad const& other) const
 {
 	return m_switches == other.m_switches;
@@ -1016,6 +1018,8 @@ bool ColumnCorrelationQuad::operator!=(ColumnCorrelationQuad const& other) const
 {
 	return !(*this == other);
 }
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(ColumnCorrelationQuad)
 
 template <typename AddressT>
 std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelationQuad::addresses(

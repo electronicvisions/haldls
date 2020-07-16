@@ -388,6 +388,9 @@ public:
 	bool operator==(CapMemBlockConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CapMemBlockConfig const& other) const SYMBOL_VISIBLE;
 
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream&, CapMemBlockConfig const&) SYMBOL_VISIBLE;
+
 private:
 	friend class cereal::access;
 	template <class Archive>

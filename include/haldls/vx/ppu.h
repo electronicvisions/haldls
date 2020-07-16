@@ -201,6 +201,9 @@ public:
 	GENPYBIND(setter_for(force_clock_off))
 	void set_force_clock_off(bool const value) SYMBOL_VISIBLE;
 
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream&, PPUControlRegister const&) SYMBOL_VISIBLE;
+
 	bool operator==(PPUControlRegister const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUControlRegister const& other) const SYMBOL_VISIBLE;
 
@@ -236,6 +239,9 @@ public:
 	// Read only property
 	GENPYBIND(getter_for(sleep))
 	bool get_sleep() const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream&, PPUStatusRegister const&) SYMBOL_VISIBLE;
 
 	bool operator==(PPUStatusRegister const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PPUStatusRegister const& other) const SYMBOL_VISIBLE;

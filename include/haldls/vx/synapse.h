@@ -519,6 +519,9 @@ public:
 	bool operator==(ColumnCorrelationQuad const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ColumnCorrelationQuad const& other) const SYMBOL_VISIBLE;
 
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream&, ColumnCorrelationQuad const&) SYMBOL_VISIBLE;
+
 private:
 	friend class cereal::access;
 	template <class Archive>
@@ -649,6 +652,10 @@ public:
 	void set_switch(
 	    halco::hicann_dls::vx::EntryOnQuad const& current_switch,
 	    ColumnCurrentSwitch const& value) SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ColumnCurrentQuad const& config)
+	    SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 2;
 	template <typename AddressT>

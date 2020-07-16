@@ -459,6 +459,9 @@ void PPUControlRegister::set_force_clock_off(bool const value)
 	m_force_clock_off = value;
 }
 
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(PPUControlRegister)
+
 bool PPUControlRegister::operator==(PPUControlRegister const& other) const
 {
 	return m_cache_controller_enable == other.get_cache_controller_enable() &&
@@ -576,6 +579,8 @@ bool PPUStatusRegister::get_sleep() const
 {
 	return m_sleep;
 }
+
+HALDLS_VX_DEFAULT_OSTREAM_OP(PPUStatusRegister)
 
 bool PPUStatusRegister::operator==(PPUStatusRegister const& other) const
 {

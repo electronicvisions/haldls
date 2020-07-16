@@ -444,6 +444,8 @@ bool CapMemBlockConfig::operator!=(CapMemBlockConfig const& other) const
 	return !(*this == other);
 }
 
+HALDLS_VX_DEFAULT_OSTREAM_OP(CapMemBlockConfig)
+
 namespace {
 
 struct CapMemBlockConfigBitfield
