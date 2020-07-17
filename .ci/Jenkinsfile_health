@@ -39,7 +39,7 @@ try {
 		conditionalTimeout(enable: !isTriggeredByGerrit(), time: 50, unit: "MINUTES") {
 			wafDefaultPipeline(container: [app: "dls-core"],
 			                   projects : ["haldls"],
-			                   notificationChannel : "#dls-software")
+			                   notificationChannel : "#jenkins-trashbin")
 
 			runOnSlave(label: "frontend") {
 				stage("Execute checks") {
