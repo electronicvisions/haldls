@@ -56,12 +56,11 @@ try {
 			}
 
 			if (success.any { key, value -> value != true }) {
-				echo "Not all tested setups are OK, setting build state to UNSTABLE."
-				setBuildState("UNSTABLE")
+				setBuildState(state: "UNSTABLE", reason: "Not all tested setups are OK.")
 			}
 		}
 	} catch (FlowInterruptedException ignored) {
-		echo "Aborting unfinished run."
+		setBuildState(state: "ABORTED", reason: "Overall pipeline execution time too long, aborted.")
 	}
 } catch (Throwable t) {
 	notifyFailure(mattermostChannel: "#dls-software")
