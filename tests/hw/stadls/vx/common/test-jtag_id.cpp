@@ -24,7 +24,7 @@ TEST(JTAGIdCode, ReadJTAGId)
 
 	// Wait for read
 	builder.write(TimerOnDLS(), Timer());
-	builder.wait_until(TimerOnDLS(), Timer::Value(1000));
+	builder.block_until(TimerOnDLS(), Timer::Value(1000));
 	auto program = builder.done();
 
 	auto connection = generate_test_connection();
