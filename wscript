@@ -87,7 +87,7 @@ def build(bld):
         bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=0",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
     else:
-        bld.env.SIMTEST_TIMEOUT_SECONDS = 1 * 7200
+        bld.env.SIMTEST_TIMEOUT_SECONDS = 1 * 14400
         bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=1",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
 
@@ -210,6 +210,7 @@ def build(bld):
         use = ['lola_vx_v1', 'GTEST', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
         defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
+        test_timeout=60
     )
 
     bld(
@@ -220,6 +221,7 @@ def build(bld):
         use = ['lola_vx_v2', 'GTEST', 'haldls_test_common_inc'],
         install_path = '${PREFIX}/bin',
         defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
+        test_timeout=60
     )
 
     bld(

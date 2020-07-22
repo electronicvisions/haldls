@@ -6,12 +6,64 @@
 #include "lola/vx/genpybind.h"
 #include <boost/hana/adapt_struct.hpp>
 
+#include "haldls/vx/fpga.h"
 #include "haldls/vx/ppu.h"
 
 class Elf;
 
 namespace lola {
 namespace vx GENPYBIND_TAG_LOLA_VX {
+
+/**
+ * Contiguous block of bytes in the external PPU memory.
+ */
+class GENPYBIND(visible) ExternalPPUMemoryBlock
+{
+public:
+	typedef halco::hicann_dls::vx::ExternalPPUMemoryBlockOnFPGA coordinate_type;
+	typedef std::false_type has_local_data;
+
+	typedef std::vector<haldls::vx::ExternalPPUMemoryByte> bytes_type;
+
+	typedef halco::hicann_dls::vx::ExternalPPUMemoryBlockSize size_type;
+
+	explicit ExternalPPUMemoryBlock(
+	    size_type size = size_type(halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA::size))
+	    SYMBOL_VISIBLE;
+
+	haldls::vx::ExternalPPUMemoryByte& at(size_t index) SYMBOL_VISIBLE;
+	haldls::vx::ExternalPPUMemoryByte const& at(size_t index) const SYMBOL_VISIBLE;
+	haldls::vx::ExternalPPUMemoryByte& operator[](size_t index) SYMBOL_VISIBLE;
+	haldls::vx::ExternalPPUMemoryByte const& operator[](size_t index) const SYMBOL_VISIBLE;
+
+	ExternalPPUMemoryBlock get_subblock(size_t begin, size_type length) const SYMBOL_VISIBLE;
+	void set_subblock(size_t begin, ExternalPPUMemoryBlock const& subblock) SYMBOL_VISIBLE;
+
+	size_type size() const SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(bytes))
+	bytes_type const& get_bytes() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(bytes))
+	void set_bytes(bytes_type const& bytes) SYMBOL_VISIBLE;
+
+	bool operator==(ExternalPPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExternalPPUMemoryBlock const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryBlock const& config)
+	    SYMBOL_VISIBLE;
+
+	std::string to_string() const SYMBOL_VISIBLE;
+
+	friend haldls::vx::detail::VisitPreorderImpl<ExternalPPUMemoryBlock>;
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version);
+
+	bytes_type m_bytes;
+};
 
 class GENPYBIND(visible) PPUProgram
 {
@@ -103,5 +155,4 @@ private:
 } // namespace vx
 } // namespace lola
 
-BOOST_HANA_ADAPT_STRUCT(lola::vx::PPUProgram::Symbol, type, coordinate);
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::PPUProgram::Symbol)
+#include "lola/vx/ppu.tcc"

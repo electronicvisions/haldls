@@ -8,7 +8,11 @@
 #include <libelf.h>
 #include <netinet/in.h>
 
+#include <cereal/types/vector.hpp>
+
+#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/coordinates.h"
+#include "haldls/cerealization.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/ppu.h"
 
@@ -17,6 +21,132 @@
 
 namespace lola {
 namespace vx {
+
+ExternalPPUMemoryBlock::ExternalPPUMemoryBlock(size_type const size) : m_bytes(size.value()) {}
+
+ExternalPPUMemoryBlock::bytes_type const& ExternalPPUMemoryBlock::get_bytes() const
+{
+	return m_bytes;
+}
+
+void ExternalPPUMemoryBlock::set_bytes(bytes_type const& bytes)
+{
+	if (bytes.size() != size()) {
+		std::stringstream ss;
+		ss << "given vector size(" << bytes.size() << ") does not match container size(" << size()
+		   << ")";
+		throw std::range_error(ss.str());
+	}
+	m_bytes = bytes;
+}
+
+haldls::vx::ExternalPPUMemoryByte& ExternalPPUMemoryBlock::at(size_t index)
+{
+	if (index >= size()) {
+		std::stringstream ss;
+		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+		throw std::out_of_range(ss.str());
+	}
+	return m_bytes.at(index);
+}
+
+haldls::vx::ExternalPPUMemoryByte const& ExternalPPUMemoryBlock::at(size_t index) const
+{
+	if (index >= size()) {
+		std::stringstream ss;
+		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+		throw std::out_of_range(ss.str());
+	}
+	return m_bytes.at(index);
+}
+
+haldls::vx::ExternalPPUMemoryByte& ExternalPPUMemoryBlock::operator[](size_t index)
+{
+	return at(index);
+}
+
+haldls::vx::ExternalPPUMemoryByte const& ExternalPPUMemoryBlock::operator[](size_t index) const
+{
+	return at(index);
+}
+
+ExternalPPUMemoryBlock ExternalPPUMemoryBlock::get_subblock(size_t begin, size_type length) const
+{
+	if (begin + length > size()) {
+		std::stringstream ss;
+		ss << "subblock from index " << begin << " of size " << length
+		   << " larger than block size of " << size();
+		throw std::out_of_range(ss.str());
+	}
+	ExternalPPUMemoryBlock subblock(length);
+	for (size_t i = 0; i < length; ++i) {
+		subblock.m_bytes.at(i) = m_bytes.at(i + begin);
+	}
+	return subblock;
+}
+
+void ExternalPPUMemoryBlock::set_subblock(size_t begin, ExternalPPUMemoryBlock const& subblock)
+{
+	if (begin + subblock.size() > size()) {
+		std::stringstream ss;
+		ss << "subblock from index " << begin << " of size " << subblock.size()
+		   << " larger than block size of " << size();
+		throw std::out_of_range(ss.str());
+	}
+	for (size_t i = 0; i < subblock.size(); ++i) {
+		m_bytes.at(i + begin) = subblock.m_bytes.at(i);
+	}
+}
+
+halco::hicann_dls::vx::ExternalPPUMemoryBlockSize ExternalPPUMemoryBlock::size() const
+{
+	return halco::hicann_dls::vx::ExternalPPUMemoryBlockSize(m_bytes.size());
+}
+
+bool ExternalPPUMemoryBlock::operator==(ExternalPPUMemoryBlock const& other) const
+{
+	return (m_bytes == other.get_bytes());
+}
+
+bool ExternalPPUMemoryBlock::operator!=(ExternalPPUMemoryBlock const& other) const
+{
+	return !(*this == other);
+}
+
+std::string ExternalPPUMemoryBlock::to_string() const
+{
+	std::stringstream ss;
+	for (auto x : m_bytes) {
+		auto const c = x.get_value().value();
+		// Return if null byte is found
+		if (c == 0) {
+			return ss.str();
+		}
+
+		// discard non-printable characters
+		if (isprint(c) or isspace(c)) {
+			ss << *reinterpret_cast<char const*>(&c);
+		}
+	}
+	return ss.str();
+}
+
+template <class Archive>
+void ExternalPPUMemoryBlock::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_bytes));
+}
+
+std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryBlock const& config)
+{
+	os << "ExternalPPUMemoryBlock(" << std::endl;
+	for (auto const& byte : config.m_bytes) {
+		os << "\t" << byte << std::endl;
+	}
+	os << ")";
+	return os;
+}
+
 
 PPUProgram::Symbol::Symbol() : type(Type::other), coordinate() {}
 
@@ -213,3 +343,5 @@ PPUElfFile::~PPUElfFile()
 } // namespace lola
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::PPUProgram::Symbol)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(lola::vx::ExternalPPUMemoryBlock)
+CEREAL_CLASS_VERSION(lola::vx::ExternalPPUMemoryBlock, 0)

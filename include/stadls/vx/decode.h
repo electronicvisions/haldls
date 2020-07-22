@@ -33,6 +33,11 @@ typename T::coordinate_type get_coord(T const& config)
 		        PPUMemoryWordOnPPU(0), PPUMemoryWordOnPPU(config.get_words().size() - 1)),
 		    PPUOnDLS());
 	}
+	if constexpr (std::is_same<T, lola::vx::ExternalPPUMemoryBlock>::value) {
+		coord = ExternalPPUMemoryBlockOnFPGA(
+		    ExternalPPUMemoryByteOnFPGA(0),
+		    ExternalPPUMemoryByteOnFPGA(config.get_bytes().size() - 1));
+	}
 	return coord;
 }
 
