@@ -103,7 +103,8 @@ TEST(SynapseQuad, EncodeDecode)
 	    ref_addresses = {{halco::hicann_dls::vx::OmnibusAddress(0x02cf'0080),
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02cf'00c0)}};
 	std::array<fisch::vx::Omnibus, SynapseQuad::config_size_in_words> ref_data = {
-	    {fisch::vx::OmnibusData(0x00B7'0000), fisch::vx::OmnibusData(0x007F'0000)}};
+	    {fisch::vx::Omnibus(fisch::vx::OmnibusData(0x00B7'0000)),
+	     fisch::vx::Omnibus(fisch::vx::OmnibusData(0x007F'0000))}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;

@@ -144,8 +144,8 @@ TEST(ADPLL, EncodeDecode)
 		std::array<JTAGPLLRegisterOnDLS, ADPLL::config_size_in_words> ref_addresses = {
 		    JTAGPLLRegisterOnDLS(0), JTAGPLLRegisterOnDLS(1)};
 		std::array<fisch::vx::JTAGPLLRegister, ADPLL::config_size_in_words> ref_data = {
-		    fisch::vx::JTAGPLLRegister::Value(0x2a20a902),
-		    fisch::vx::JTAGPLLRegister::Value(0xc0cbf200)};
+		    fisch::vx::JTAGPLLRegister(fisch::vx::JTAGPLLRegister::Value(0x2a20a902)),
+		    fisch::vx::JTAGPLLRegister(fisch::vx::JTAGPLLRegister::Value(0xc0cbf200))};
 
 		{ // write addresses
 			std::vector<JTAGPLLRegisterOnDLS> write_addresses;
@@ -280,7 +280,7 @@ TEST(PLLClockOutputBlock, EncodeDecode)
 		std::array<JTAGPLLRegisterOnDLS, PLLClockOutputBlock::config_size_in_words> ref_addresses = {
 		    JTAGPLLRegisterOnDLS(4)};
 		std::array<fisch::vx::JTAGPLLRegister, PLLClockOutputBlock::config_size_in_words> ref_data =
-		    {fisch::vx::JTAGPLLRegister::Value(0x918d8181)};
+		    {fisch::vx::JTAGPLLRegister(fisch::vx::JTAGPLLRegister::Value(0x918d8181))};
 
 		{ // write addresses
 			std::vector<JTAGPLLRegisterOnDLS> write_addresses;
@@ -427,7 +427,7 @@ TEST(PLLSelfTest, EncodeDecode)
 		std::array<JTAGPLLRegisterOnDLS, PLLSelfTest::config_size_in_words> ref_addresses = {
 		    JTAGPLLRegisterOnDLS(5)};
 		std::array<fisch::vx::JTAGPLLRegister, PLLSelfTest::config_size_in_words> ref_data = {
-		    fisch::vx::JTAGPLLRegister::Value(0x0)};
+		    fisch::vx::JTAGPLLRegister(fisch::vx::JTAGPLLRegister::Value(0x0))};
 
 		{ // write addresses
 			std::vector<JTAGPLLRegisterOnDLS> write_addresses;

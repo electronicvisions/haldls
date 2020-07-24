@@ -123,7 +123,8 @@ TEST(ColumnCurrentQuad, EncodeDecode)
 	    ref_addresses = {{halco::hicann_dls::vx::OmnibusAddress(0x02c1'4003),
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02c2'4003)}};
 	std::array<fisch::vx::Omnibus, ColumnCurrentQuad::config_size_in_words> ref_data = {
-	    {fisch::vx::OmnibusData(0x0002'0000), fisch::vx::OmnibusData(0x0001'0000)}};
+	    {fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0002'0000)),
+	     fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0001'0000))}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;

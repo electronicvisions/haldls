@@ -305,7 +305,7 @@ TEST(SpikeCounterRead, EncodeDecode)
 	}
 
 	// Decode
-	words_type data = {fisch::vx::OmnibusData(0x164)};
+	words_type data = {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x164))};
 	SpikeCounterRead config_copy;
 	ASSERT_NE(config, config_copy);
 	visit_preorder(config_copy, neuron_coord, stadls::DecodeVisitor<words_type>{std::move(data)});
@@ -430,7 +430,7 @@ TEST(NeuronSRAMTimingConfig, EncodeDecode)
 	    ref_addresses = {OmnibusChipOverJTAGAddress{neuron_ne_sram_timing_base_address},
 	                     OmnibusChipOverJTAGAddress{neuron_ne_sram_timing_base_address + 1}};
 	std::array<OmnibusChipOverJTAG, NeuronSRAMTimingConfig::config_size_in_words> ref_data = {
-	    OmnibusData{100}, OmnibusData{5 | 7 << 4}};
+	    OmnibusChipOverJTAG(OmnibusData{100}), OmnibusChipOverJTAG(OmnibusData{5 | 7 << 4})};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -539,7 +539,7 @@ TEST(NeuronBackendSRAMTimingConfig, EncodeDecode)
 	        OmnibusChipOverJTAGAddress{neuron_backend_east_sram_timing_base_address},
 	        OmnibusChipOverJTAGAddress{neuron_backend_east_sram_timing_base_address + 1}};
 	std::array<OmnibusChipOverJTAG, NeuronBackendSRAMTimingConfig::config_size_in_words> ref_data =
-	    {OmnibusData{100}, OmnibusData{5 | 7 << 4}};
+	    {OmnibusChipOverJTAG(OmnibusData{100}), OmnibusChipOverJTAG(OmnibusData{5 | 7 << 4})};
 
 	{ // write addresses
 		addresses_type write_addresses;

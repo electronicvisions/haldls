@@ -29,7 +29,7 @@ TEST(CADCConfig, EncodeDecode)
 	std::array<OmnibusChipOverJTAGAddress, CADCConfig::config_size_in_words> ref_addresses = {
 	    OmnibusChipOverJTAGAddress{0x0240'1000ul}};
 	std::array<OmnibusChipOverJTAG, CADCConfig::config_size_in_words> ref_data = {
-	    OmnibusData{1 | 12 << 4}};
+	    OmnibusChipOverJTAG(OmnibusData{1 | 12 << 4})};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
@@ -50,7 +50,7 @@ TEST(CADCOffsetSRAMTimingConfig, EncodeDecode)
 	    ref_addresses = {OmnibusChipOverJTAGAddress{cadc_top_sram_timing_east_base_address},
 	                     OmnibusChipOverJTAGAddress{cadc_top_sram_timing_east_base_address + 1}};
 	std::array<OmnibusChipOverJTAG, CADCOffsetSRAMTimingConfig::config_size_in_words> ref_data = {
-	    OmnibusData{100}, OmnibusData{5 | 7 << 4}};
+	    OmnibusChipOverJTAG(OmnibusData{100}), OmnibusChipOverJTAG(OmnibusData{5 | 7 << 4})};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }

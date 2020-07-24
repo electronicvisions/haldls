@@ -353,7 +353,8 @@ std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> D
 	}
 	auto power_down = fisch::vx::SPIDACControlRegister::Value(power_down_bits);
 
-	return {gain_reference, power_down};
+	return {fisch::vx::SPIDACControlRegister(gain_reference),
+	        fisch::vx::SPIDACControlRegister(power_down)};
 }
 
 void DACControl::decode(

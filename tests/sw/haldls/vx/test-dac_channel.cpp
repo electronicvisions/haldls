@@ -35,7 +35,7 @@ TEST(DACChannel, EncodeDecode)
 	std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::config_size_in_words>
 	    ref_addresses = {ref_address};
 	std::array<fisch::vx::SPIDACDataRegister, DACChannel::config_size_in_words> ref_data = {
-	    {fisch::vx::SPIDACDataRegister::Value(config.get_value())}};
+	    {fisch::vx::SPIDACDataRegister(fisch::vx::SPIDACDataRegister::Value(config.get_value()))}};
 
 	{
 		addresses_type write_addresses;

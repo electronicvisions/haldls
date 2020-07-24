@@ -350,8 +350,8 @@ std::array<WordT, ADPLL::config_size_in_words> ADPLL::encode() const
 		upper.set(fisch::vx::JTAGPLLRegister::Value(upper_bitfield.u.raw));
 		return {lower, upper};
 	} else {
-		return {fisch::vx::OmnibusData(lower_bitfield.u.raw),
-		        fisch::vx::OmnibusData(upper_bitfield.u.raw)};
+		return {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(lower_bitfield.u.raw)),
+		        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(upper_bitfield.u.raw))};
 	}
 }
 template SYMBOL_VISIBLE std::array<fisch::vx::JTAGPLLRegister, ADPLL::config_size_in_words>

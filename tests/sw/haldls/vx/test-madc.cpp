@@ -117,7 +117,7 @@ TEST(MADCControl, EncodeDecode)
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, MADCControl::write_config_size_in_words>
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{0x000c'0000}};
 	std::array<fisch::vx::OmnibusChipOverJTAG, MADCControl::write_config_size_in_words> ref_data = {
-	    static_cast<fisch::vx::OmnibusData>(0b1101001)};
+	    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0b1101001))};
 
 	{ // write addresses
 		addresses_type write_addresses;

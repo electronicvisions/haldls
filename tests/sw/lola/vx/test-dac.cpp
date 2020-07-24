@@ -85,10 +85,12 @@ TEST(DACControlBlock, EncodeDecode)
 	        typename addresses_type::value_type(
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::power_down, DACOnBoard(1))};
 	std::array<fisch::vx::SPIDACControlRegister, DACOnBoard::size* DACControl::config_size_in_words>
-	    ref_data = {fisch::vx::SPIDACControlRegister::Value(0b001100),
-	                fisch::vx::SPIDACControlRegister::Value(0xff ^ (1u << 2)),
-	                fisch::vx::SPIDACControlRegister::Value(0b001100),
-	                fisch::vx::SPIDACControlRegister::Value(0xff)};
+	    ref_data = {
+	        fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0b001100)),
+	        fisch::vx::SPIDACControlRegister(
+	            fisch::vx::SPIDACControlRegister::Value(0xff ^ (1u << 2))),
+	        fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0b001100)),
+	        fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0xff))};
 
 	{
 		addresses_type write_addresses;
@@ -164,7 +166,8 @@ TEST(DACChannelBlock, EncodeDecode)
 	    fisch::vx::SPIDACDataRegister, DACChannelOnBoard::size * DACChannel::config_size_in_words>
 	    ref_data;
 	for (auto coord : iter_all<DACChannelOnBoard>()) {
-		ref_data[coord.toEnum()] = fisch::vx::SPIDACDataRegister::Value(config.value[coord]);
+		ref_data[coord.toEnum()] = fisch::vx::SPIDACDataRegister(
+		    fisch::vx::SPIDACDataRegister::Value(config.value[coord]));
 	}
 
 	{

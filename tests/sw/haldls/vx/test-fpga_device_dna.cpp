@@ -60,7 +60,8 @@ TEST(FPGADeviceDNA, EncodeDecode)
 	    typename fisch::vx::Omnibus::coordinate_type, FPGADeviceDNA::write_config_size_in_words>
 	    ref_write_addresses = {};
 	std::array<fisch::vx::Omnibus, FPGADeviceDNA::read_config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusData(0x100), fisch::vx::OmnibusData{0x22b}};
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x100)),
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x22b))};
 
 	{ // write addresses
 		addresses_type write_addresses;

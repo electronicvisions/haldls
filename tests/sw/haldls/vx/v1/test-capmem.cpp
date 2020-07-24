@@ -66,7 +66,7 @@ TEST(CapMemCell, EncodeDecode)
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{capmem_nw_sram_base_address}};
 	std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCell::config_size_in_words> ref_data = {
-	    static_cast<fisch::vx::OmnibusData>(val)};
+	    fisch::vx::OmnibusChipOverJTAG(static_cast<fisch::vx::OmnibusData>(val))};
 
 	HALDLS_TEST_ENCODE_DECODE(cell, coord, ref_addresses, ref_data)
 }
@@ -115,7 +115,7 @@ TEST(CapMemBlock, EncodeDecode)
 			auto const val = draw_ranged_non_default_value<typename CapMemCell::Value>();
 			block.set_cell(CapMemCellOnDLS(CapMemCellOnCapMemBlock(column, row), block_coord), val);
 			ref_data[CapMemCellOnCapMemBlock(column, row).toEnum()] =
-			    static_cast<fisch::vx::OmnibusData>(val);
+			    fisch::vx::OmnibusChipOverJTAG(static_cast<fisch::vx::OmnibusData>(val));
 		}
 	}
 

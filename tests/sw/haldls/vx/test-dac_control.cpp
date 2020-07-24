@@ -56,8 +56,9 @@ TEST(DACControl, EncodeDecode)
 	        typename addresses_type::value_type(
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::power_down, coord)};
 	std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> ref_data = {
-	    fisch::vx::SPIDACControlRegister::Value(0b001100),
-	    fisch::vx::SPIDACControlRegister::Value(0xff ^ (1u << 2))};
+	    fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0b001100)),
+	    fisch::vx::SPIDACControlRegister(
+	        fisch::vx::SPIDACControlRegister::Value(0xff ^ (1u << 2)))};
 
 	{
 		addresses_type write_addresses;

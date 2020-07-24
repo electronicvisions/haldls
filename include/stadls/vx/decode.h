@@ -125,7 +125,7 @@ void decode_random(std::mt19937& gen, haldls::vx::JTAGIdCode& config)
 	auto random_jtag_id_word = random_word(gen) | 1u;
 
 	std::array<fisch::vx::JTAGIdCode, haldls::vx::JTAGIdCode::read_config_size_in_words> data{
-	    fisch::vx::JTAGIdCode::Value(random_jtag_id_word)};
+	    fisch::vx::JTAGIdCode(fisch::vx::JTAGIdCode::Value(random_jtag_id_word))};
 
 	config.decode(data);
 }

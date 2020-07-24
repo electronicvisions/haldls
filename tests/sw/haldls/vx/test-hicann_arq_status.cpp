@@ -119,8 +119,10 @@ TEST(HicannARQStatus, EncodeDecode)
 	                     OmnibusAddress(0x8c000012), OmnibusAddress(0x8c000013)};
 
 	std::array<fisch::vx::Omnibus, HicannARQStatus::read_config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusData{0x2}, fisch::vx::OmnibusData{0x4}, fisch::vx::OmnibusData{0x3},
-	    fisch::vx::OmnibusData{0x1}};
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x2}),
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x4}),
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x3}),
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x1})};
 
 	{ // read addresses
 		addresses_type read_addresses;

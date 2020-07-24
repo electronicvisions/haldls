@@ -267,7 +267,7 @@ TEST(PhyConfigFPGA, EncodeDecode)
 	std::array<halco::hicann_dls::vx::OmnibusAddress, PhyConfigFPGA::config_size_in_words>
 	    ref_addresses = {ref_address};
 	std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusData{0x204040}};
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x204040})};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -289,7 +289,7 @@ TEST(PhyConfigChip, EncodeDecode)
 	std::array<JTAGPhyRegisterOnDLS, PhyConfigChip::config_size_in_words> ref_addresses = {
 	    coord.toJTAGPhyRegisterOnDLS()};
 	std::array<fisch::vx::JTAGPhyRegister, PhyConfigChip::config_size_in_words> ref_data = {
-	    fisch::vx::JTAGPhyRegister::Value(0x204000)};
+	    fisch::vx::JTAGPhyRegister(fisch::vx::JTAGPhyRegister::Value(0x204000))};
 
 	{ // write addresses
 		std::vector<JTAGPhyRegisterOnDLS> write_addresses;
@@ -336,7 +336,7 @@ TEST(CommonPhyConfigFPGA, EncodeDecode)
 	std::array<OmnibusAddress, CommonPhyConfigFPGA::config_size_in_words> ref_addresses = {
 	    OmnibusAddress(0x8400'0000)};
 	std::array<fisch::vx::Omnibus, CommonPhyConfigFPGA::config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusData(0xff)};
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0xff))};
 
 	{ // write addresses
 		std::vector<OmnibusAddress> write_addresses;
@@ -406,7 +406,7 @@ TEST(CommonPhyConfigChip, EncodeDecode)
 	std::array<OmnibusChipOverJTAGAddress, CommonPhyConfigChip::config_size_in_words>
 	    ref_addresses = {OmnibusChipOverJTAGAddress(0x00040000)};
 	std::array<fisch::vx::OmnibusChipOverJTAG, CommonPhyConfigChip::config_size_in_words> ref_data =
-	    {fisch::vx::OmnibusData(0x0f)};
+	    {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x0f))};
 
 	{ // write addresses
 		std::vector<OmnibusChipOverJTAGAddress> write_addresses;

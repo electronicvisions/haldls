@@ -148,8 +148,10 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02c0'4000),
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02c4'4000)}};
 	std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words> ref_data = {
-	    {fisch::vx::OmnibusData(0x0040'0000), fisch::vx::OmnibusData(0x0080'0000),
-	     fisch::vx::OmnibusData(0x0000'0000), fisch::vx::OmnibusData(0x0020'0000)}};
+	    {fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0040'0000)),
+	     fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0080'0000)),
+	     fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0000'0000)),
+	     fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0020'0000))}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;
