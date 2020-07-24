@@ -107,8 +107,8 @@ MADCControl::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, MADCControl::write_config_size_in_words>
-    MADCControl::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, MADCControl::write_config_size_in_words>
+    MADCControl::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord);
 
 
@@ -125,8 +125,8 @@ template SYMBOL_VISIBLE std::
         coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, MADCControl::read_config_size_in_words>
-    MADCControl::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, MADCControl::read_config_size_in_words>
+    MADCControl::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord);
 
 namespace {
@@ -178,8 +178,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, MADCControl::write_config_size_in_words>
     MADCControl::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, MADCControl::write_config_size_in_words>
-MADCControl::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, MADCControl::write_config_size_in_words>
+MADCControl::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void MADCControl::decode(
@@ -189,8 +189,8 @@ void MADCControl::decode(
 template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, MADCControl::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, MADCControl::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, MADCControl::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, MADCControl const& config)
 {
@@ -617,8 +617,8 @@ template SYMBOL_VISIBLE
         coordinate_type const& coord) const;
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, MADCConfig::config_size_in_words>
-    MADCConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, MADCConfig::config_size_in_words>
+    MADCConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord) const;
 
 namespace {
@@ -778,8 +778,8 @@ std::array<WordT, MADCConfig::config_size_in_words> MADCConfig::encode() const
 template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, MADCConfig::config_size_in_words>
 MADCConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, MADCConfig::config_size_in_words>
-MADCConfig::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, MADCConfig::config_size_in_words>
+MADCConfig::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void MADCConfig::decode(std::array<WordT, MADCConfig::config_size_in_words> const& data)
@@ -839,8 +839,8 @@ void MADCConfig::decode(std::array<WordT, MADCConfig::config_size_in_words> cons
 template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, MADCConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, MADCConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, MADCConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, MADCConfig const& config)
 {

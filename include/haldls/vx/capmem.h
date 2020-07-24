@@ -22,7 +22,7 @@ class access;
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
-class OmnibusChip;
+class Omnibus;
 } // namespace fisch::vx
 
 // TODO: Issue #3375 move to genpybind as is general
@@ -568,24 +568,18 @@ template <>
 struct BackendContainerTrait<CapMemBlockConfig>
     : public BackendContainerBase<
           CapMemBlockConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<CapMemBlock>
-    : public BackendContainerBase<
-          CapMemBlock,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<CapMemBlock, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<CapMemCell>
-    : public BackendContainerBase<
-          CapMemCell,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<CapMemCell, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -612,7 +606,7 @@ template <>
 struct BackendContainerTrait<ReferenceGeneratorConfig>
     : public BackendContainerBase<
           ReferenceGeneratorConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

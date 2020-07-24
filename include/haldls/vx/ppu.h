@@ -17,7 +17,7 @@ class access;
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
-class OmnibusChip;
+class Omnibus;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -272,23 +272,20 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PPUMemoryWord>
-    : public BackendContainerBase<
-          PPUMemoryWord,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<PPUMemoryWord, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<PPUMemoryBlock>
     : public BackendContainerBase<
           PPUMemoryBlock,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<PPUMemory>
-    : public BackendContainerBase<PPUMemory, fisch::vx::OmnibusChip, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<PPUMemory, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -342,7 +339,7 @@ template <>
 struct BackendContainerTrait<PPUStatusRegister>
     : public BackendContainerBase<
           PPUStatusRegister,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -350,7 +347,7 @@ template <>
 struct BackendContainerTrait<PPUControlRegister>
     : public BackendContainerBase<
           PPUControlRegister,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

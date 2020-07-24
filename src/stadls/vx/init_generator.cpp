@@ -102,7 +102,7 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 
 		if (highspeed_link.enable_systime) {
 			builder.write(
-			    SystimeSyncBaseOnDLS(), highspeed_link.systime_sync_base, Backend::OmnibusChip);
+			    SystimeSyncBaseOnDLS(), highspeed_link.systime_sync_base, Backend::Omnibus);
 			// Block until omnibus is idle -> HS-Link is up
 			builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 			builder.write(SystimeSyncOnFPGA(), SystimeSync());
@@ -146,35 +146,35 @@ PlaybackGeneratorReturn<InitGenerator::Result> InitGenerator::generate() const
 	for (auto coord : iter_all<CommonSynramConfigOnDLS>()) {
 		builder.write(
 		    coord, common_synram_config[coord],
-		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+		    enable_highspeed_link ? Backend::Omnibus : Backend::OmnibusChipOverJTAG);
 	}
 
 	// Set CADC offset SRAM configs
 	for (auto coord : iter_all<CADCOffsetSRAMTimingConfigOnDLS>()) {
 		builder.write(
 		    coord, cadc_offset_sram_timing_config[coord],
-		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+		    enable_highspeed_link ? Backend::Omnibus : Backend::OmnibusChipOverJTAG);
 	}
 
 	// Set synapse driver SRAM configs
 	for (auto coord : iter_all<SynapseDriverSRAMTimingConfigOnDLS>()) {
 		builder.write(
 		    coord, synapse_driver_sram_timing_config[coord],
-		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+		    enable_highspeed_link ? Backend::Omnibus : Backend::OmnibusChipOverJTAG);
 	}
 
 	// Set neuron SRAM configs
 	for (auto coord : iter_all<NeuronSRAMTimingConfigOnDLS>()) {
 		builder.write(
 		    coord, neuron_sram_timing_config[coord],
-		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+		    enable_highspeed_link ? Backend::Omnibus : Backend::OmnibusChipOverJTAG);
 	}
 
 	// Set neuron backend SRAM configs
 	for (auto coord : iter_all<NeuronBackendSRAMTimingConfigOnDLS>()) {
 		builder.write(
 		    coord, neuron_backend_sram_timing_config[coord],
-		    enable_highspeed_link ? Backend::OmnibusChip : Backend::OmnibusChipOverJTAG);
+		    enable_highspeed_link ? Backend::Omnibus : Backend::OmnibusChipOverJTAG);
 	}
 
 	// Block until omnibus or JTAG is idle

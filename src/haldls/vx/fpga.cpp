@@ -38,14 +38,14 @@ std::ostream& operator<<(std::ostream& os, FPGADeviceDNA const& config)
 	return print_words_for_each_backend(os, config);
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, FPGADeviceDNA::read_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, FPGADeviceDNA::read_config_size_in_words>
 FPGADeviceDNA::read_addresses(coordinate_type const& /*coord*/)
 {
-	return {halco::hicann_dls::vx::OmnibusFPGAAddress(fpga_device_dna_base_address),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(fpga_device_dna_base_address + 1)};
+	return {halco::hicann_dls::vx::OmnibusAddress(fpga_device_dna_base_address),
+	        halco::hicann_dls::vx::OmnibusAddress(fpga_device_dna_base_address + 1)};
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, FPGADeviceDNA::write_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, FPGADeviceDNA::write_config_size_in_words>
 FPGADeviceDNA::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
@@ -75,14 +75,14 @@ struct FPGADeviceDNABitfield
 
 } // namespace
 
-std::array<fisch::vx::OmnibusFPGA, FPGADeviceDNA::write_config_size_in_words>
-FPGADeviceDNA::encode() const
+std::array<fisch::vx::Omnibus, FPGADeviceDNA::write_config_size_in_words> FPGADeviceDNA::encode()
+    const
 {
 	return {};
 }
 
 void FPGADeviceDNA::decode(
-    std::array<fisch::vx::OmnibusFPGA, FPGADeviceDNA::read_config_size_in_words> const& data)
+    std::array<fisch::vx::Omnibus, FPGADeviceDNA::read_config_size_in_words> const& data)
 {
 	FPGADeviceDNABitfield bitfield;
 	bitfield.u.m.low = data[1].get();
@@ -127,16 +127,16 @@ std::ostream& operator<<(std::ostream& os, EventRecordingConfig const& config)
 	return print_words_for_each_backend(os, config);
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, EventRecordingConfig::read_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, EventRecordingConfig::read_config_size_in_words>
 EventRecordingConfig::read_addresses(coordinate_type const& /*coord*/) const
 {
-	return {halco::hicann_dls::vx::OmnibusFPGAAddress(event_recording_config_base_address)};
+	return {halco::hicann_dls::vx::OmnibusAddress(event_recording_config_base_address)};
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, EventRecordingConfig::write_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, EventRecordingConfig::write_config_size_in_words>
 EventRecordingConfig::write_addresses(coordinate_type const& /*coord*/) const
 {
-	return {halco::hicann_dls::vx::OmnibusFPGAAddress(event_recording_config_base_address)};
+	return {halco::hicann_dls::vx::OmnibusAddress(event_recording_config_base_address)};
 }
 
 namespace {
@@ -163,7 +163,7 @@ struct EventRecordingConfigBitfield
 } // namespace
 
 void EventRecordingConfig::decode(
-    std::array<fisch::vx::OmnibusFPGA, EventRecordingConfig::read_config_size_in_words> const& data)
+    std::array<fisch::vx::Omnibus, EventRecordingConfig::read_config_size_in_words> const& data)
 {
 	EventRecordingConfigBitfield bitfield;
 	bitfield.u.m.enable_event_recording = data[0].get();
@@ -171,12 +171,13 @@ void EventRecordingConfig::decode(
 	m_enable_event_recording = bitfield.u.m.enable_event_recording;
 }
 
-std::array<fisch::vx::OmnibusFPGA, EventRecordingConfig::write_config_size_in_words> EventRecordingConfig::encode() const
+std::array<fisch::vx::Omnibus, EventRecordingConfig::write_config_size_in_words>
+EventRecordingConfig::encode() const
 {
 	EventRecordingConfigBitfield bitfield;
 	bitfield.u.m.enable_event_recording = m_enable_event_recording;
 
-	return {fisch::vx::OmnibusFPGA(fisch::vx::OmnibusFPGA::Value(static_cast<uint32_t>(bitfield.u.raw)))};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(static_cast<uint32_t>(bitfield.u.raw)))};
 }
 
 template <class Archive>

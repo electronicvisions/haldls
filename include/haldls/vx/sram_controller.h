@@ -10,7 +10,7 @@ class access;
 } // namespace cereal
 
 namespace fisch::vx {
-class OmnibusChip;
+class Omnibus;
 class OmnibusChipOverJTAG;
 } // namespace fisch::vx
 

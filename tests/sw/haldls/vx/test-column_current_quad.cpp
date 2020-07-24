@@ -118,41 +118,41 @@ TEST(ColumnCurrentQuad, EncodeDecode)
 	current_switch.set_enable_synaptic_current_inhibitory(true);
 	current_switch_block.set_switch(current_switch_coord, current_switch);
 
-	std::array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCurrentQuad::config_size_in_words>
-	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02c1'4000),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c2'4000)}};
-	std::array<fisch::vx::OmnibusChip, ColumnCurrentQuad::config_size_in_words> ref_data = {
+	std::array<halco::hicann_dls::vx::OmnibusAddress, ColumnCurrentQuad::config_size_in_words>
+	    ref_addresses = {{halco::hicann_dls::vx::OmnibusAddress(0x02c1'4000),
+	                      halco::hicann_dls::vx::OmnibusAddress(0x02c2'4000)}};
+	std::array<fisch::vx::Omnibus, ColumnCurrentQuad::config_size_in_words> ref_data = {
 	    {fisch::vx::OmnibusData(0x0002'0000), fisch::vx::OmnibusData(0x0001'0000)}};
 
 	{ // write addresses
-		std::vector<halco::hicann_dls::vx::OmnibusChipAddress> write_addresses;
+		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;
 		visit_preorder(
 		    current_switch_block, block_coord,
-		    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipAddress> >{
+		    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusAddress> >{
 		        write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	{ // read addresses
-		std::vector<halco::hicann_dls::vx::OmnibusChipAddress> read_addresses;
+		std::vector<halco::hicann_dls::vx::OmnibusAddress> read_addresses;
 		visit_preorder(
 		    current_switch_block, block_coord,
-		    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipAddress> >{
+		    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusAddress> >{
 		        read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::OmnibusChip> data;
+	std::vector<fisch::vx::Omnibus> data;
 	visit_preorder(
 	    current_switch_block, block_coord,
-	    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChip> >{data});
+	    stadls::EncodeVisitor<std::vector<fisch::vx::Omnibus> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	ColumnCurrentQuad block_copy;
 	ASSERT_NE(current_switch_block, block_copy);
 	visit_preorder(
 	    block_copy, block_coord,
-	    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusChip> >{std::move(data)});
+	    stadls::DecodeVisitor<std::vector<fisch::vx::Omnibus> >{std::move(data)});
 	ASSERT_EQ(current_switch_block, block_copy);
 }
 

@@ -200,12 +200,12 @@ namespace haldls::vx::detail {
 
 template <>
 struct BackendContainerTrait<lola::vx::CADCSampleRow>
-    : public BackendContainerBase<lola::vx::CADCSampleRow, fisch::vx::OmnibusChip>
+    : public BackendContainerBase<lola::vx::CADCSampleRow, fisch::vx::Omnibus>
 {};
 
 template <>
 struct BackendContainerTrait<lola::vx::CADCSamples>
-    : public BackendContainerBase<lola::vx::CADCSamples, fisch::vx::OmnibusChip>
+    : public BackendContainerBase<lola::vx::CADCSamples, fisch::vx::Omnibus>
 {};
 
 template <>

@@ -81,9 +81,9 @@ void test_encode_decode()
 	ASSERT_EQ(config, config_copy);
 }
 
-TEST(SystimeSyncBase, EncodeDecode_OmnibusChip)
+TEST(SystimeSyncBase, EncodeDecode_Omnibus)
 {
-	test_encode_decode<fisch::vx::OmnibusChip>();
+	test_encode_decode<fisch::vx::Omnibus>();
 }
 
 TEST(SystimeSyncBase, EncodeDecode_OmnibusChipOverJTAG)

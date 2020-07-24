@@ -17,7 +17,7 @@ class access;
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
-class OmnibusChip;
+class Omnibus;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -119,10 +119,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<MADCControl>
-    : public BackendContainerBase<
-          MADCControl,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<MADCControl, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -582,10 +579,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<MADCConfig>
-    : public BackendContainerBase<
-          MADCConfig,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<MADCConfig, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

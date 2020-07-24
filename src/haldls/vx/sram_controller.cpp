@@ -117,7 +117,7 @@ std::array<WordT, SRAMTimingConfig::config_size_in_words> SRAMTimingConfig::enco
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SRAMTimingConfig::config_size_in_words>
     SRAMTimingConfig::encode() const;
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, SRAMTimingConfig::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SRAMTimingConfig::config_size_in_words>
 SRAMTimingConfig::encode() const;
 
 template <typename WordT>
@@ -135,7 +135,7 @@ void SRAMTimingConfig::decode(std::array<WordT, SRAMTimingConfig::config_size_in
 template SYMBOL_VISIBLE void SRAMTimingConfig::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, SRAMTimingConfig::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void SRAMTimingConfig::decode(
-    std::array<fisch::vx::OmnibusChip, SRAMTimingConfig::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, SRAMTimingConfig::config_size_in_words> const& data);
 
 } // namespace haldls::vx::detail
 

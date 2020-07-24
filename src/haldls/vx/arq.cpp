@@ -50,34 +50,33 @@ void HicannARQStatus::set_tx_count(TxCount const value)
 	m_tx_count = value;
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, HicannARQStatus::read_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, HicannARQStatus::read_config_size_in_words>
 HicannARQStatus::read_addresses(HicannARQStatus::coordinate_type const& /*coord*/)
 {
-	std::array<
-	    halco::hicann_dls::vx::OmnibusFPGAAddress, HicannARQStatus::read_config_size_in_words>
+	std::array<halco::hicann_dls::vx::OmnibusAddress, HicannARQStatus::read_config_size_in_words>
 	    data;
 	size_t i = 0;
 	std::generate(data.begin(), data.end(), [&]() {
-		return static_cast<halco::hicann_dls::vx::OmnibusFPGAAddress>(
+		return static_cast<halco::hicann_dls::vx::OmnibusAddress>(
 		    hicann_arq_status_base_address + i++);
 	});
 	return data;
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, HicannARQStatus::write_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, HicannARQStatus::write_config_size_in_words>
 HicannARQStatus::write_addresses(HicannARQStatus::coordinate_type const& /*coord*/)
 {
 	return {};
 }
 
-std::array<fisch::vx::OmnibusFPGA, HicannARQStatus::write_config_size_in_words>
+std::array<fisch::vx::Omnibus, HicannARQStatus::write_config_size_in_words>
 HicannARQStatus::encode() const
 {
 	return {};
 }
 
 void HicannARQStatus::decode(
-    std::array<fisch::vx::OmnibusFPGA, HicannARQStatus::read_config_size_in_words> const& data)
+    std::array<fisch::vx::Omnibus, HicannARQStatus::read_config_size_in_words> const& data)
 {
 	m_write_count = WriteCount(data.at(0).get());
 	m_tx_count = TxCount(data.at(1).get());

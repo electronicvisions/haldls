@@ -107,7 +107,7 @@ template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CADCConfig::config_size_in_words>
     CADCConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCConfig::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CADCConfig::config_size_in_words>
     CADCConfig::addresses(coordinate_type const& coord);
 
 template <typename WordT>
@@ -123,7 +123,7 @@ std::array<WordT, CADCConfig::config_size_in_words> CADCConfig::encode() const
 
 template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, CADCConfig::config_size_in_words>
 CADCConfig::encode() const;
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CADCConfig::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CADCConfig::config_size_in_words>
 CADCConfig::encode() const;
 
 template <typename WordT>
@@ -138,7 +138,7 @@ void CADCConfig::decode(std::array<WordT, CADCConfig::config_size_in_words> cons
 template SYMBOL_VISIBLE void CADCConfig::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, CADCConfig::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void CADCConfig::decode(
-    std::array<fisch::vx::OmnibusChip, CADCConfig::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, CADCConfig::config_size_in_words> const& data);
 
 
 CADCChannelConfig::CADCChannelConfig() : m_offset() {}
@@ -215,7 +215,7 @@ template SYMBOL_VISIBLE std::array<
     CADCChannelConfig::config_size_in_words>
 CADCChannelConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCChannelConfig::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CADCChannelConfig::config_size_in_words>
     CADCChannelConfig::addresses(coordinate_type const& coord);
 
 template <typename WordT>
@@ -230,7 +230,7 @@ std::array<WordT, CADCChannelConfig::config_size_in_words> CADCChannelConfig::en
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, CADCChannelConfig::config_size_in_words>
     CADCChannelConfig::encode() const;
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CADCChannelConfig::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CADCChannelConfig::config_size_in_words>
 CADCChannelConfig::encode() const;
 
 template <typename WordT>
@@ -245,7 +245,7 @@ template SYMBOL_VISIBLE void CADCChannelConfig::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, CADCChannelConfig::config_size_in_words> const&
         data);
 template SYMBOL_VISIBLE void CADCChannelConfig::decode(
-    std::array<fisch::vx::OmnibusChip, CADCChannelConfig::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, CADCChannelConfig::config_size_in_words> const& data);
 
 
 CADCSampleQuad::CADCSampleQuad() : m_samples() {}
@@ -310,7 +310,7 @@ std::ostream& operator<<(std::ostream& os, CADCSampleQuad const& config)
 	return os;
 }
 
-std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCSampleQuad::read_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, CADCSampleQuad::read_config_size_in_words>
 CADCSampleQuad::read_addresses(coordinate_type const& coord)
 {
 	uint32_t const base = synram_cadc_base_addresses.at(coord.toSynramOnDLS().toEnum())
@@ -321,17 +321,17 @@ CADCSampleQuad::read_addresses(coordinate_type const& coord)
 	uint32_t const address_offset = quad.y() * halco::hicann_dls::vx::SynapseQuadColumnOnDLS::size +
 	                                halco::hicann_dls::vx::SynapseQuadColumnOnDLS::max -
 	                                detail::to_synram_quad_address_offset(quad.x());
-	return {halco::hicann_dls::vx::OmnibusChipAddress(base + address_offset)};
+	return {halco::hicann_dls::vx::OmnibusAddress(base + address_offset)};
 }
 
-std::array<halco::hicann_dls::vx::OmnibusChipAddress, CADCSampleQuad::write_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, CADCSampleQuad::write_config_size_in_words>
 CADCSampleQuad::write_addresses(coordinate_type const& /* coord */)
 {
 	return {};
 }
 
-std::array<fisch::vx::OmnibusChip, CADCSampleQuad::write_config_size_in_words>
-CADCSampleQuad::encode() const
+std::array<fisch::vx::Omnibus, CADCSampleQuad::write_config_size_in_words> CADCSampleQuad::encode()
+    const
 {
 	return {};
 }
@@ -349,7 +349,7 @@ uint8_t reverse_byte(uint8_t b)
 } // namespace
 
 void CADCSampleQuad::decode(
-    std::array<fisch::vx::OmnibusChip, CADCSampleQuad::read_config_size_in_words> const& data)
+    std::array<fisch::vx::Omnibus, CADCSampleQuad::read_config_size_in_words> const& data)
 {
 	CADCSampleQuadBitfield bitfield(data[0].get());
 	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(0)) =
@@ -387,10 +387,9 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CADCOffsetSRAMTimingConfig::config_size_in_words>
 CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const;
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    CADCOffsetSRAMTimingConfig::config_size_in_words>
-CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusAddress, CADCOffsetSRAMTimingConfig::config_size_in_words>
+    CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 
 template <typename Archive>
 void CADCOffsetSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)

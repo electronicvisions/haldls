@@ -16,7 +16,7 @@ class access;
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
-class OmnibusChip;
+class Omnibus;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -257,7 +257,7 @@ template <>
 struct BackendContainerTrait<SynapseDriverConfig>
     : public BackendContainerBase<
           SynapseDriverConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -293,7 +293,7 @@ template <>
 struct BackendContainerTrait<SynapseDriverSRAMTimingConfig>
     : public BackendContainerBase<
           SynapseDriverSRAMTimingConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

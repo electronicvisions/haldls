@@ -14,8 +14,8 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
-typedef std::vector<halco::hicann_dls::vx::OmnibusFPGAAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusFPGA> words_type;
+typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
+typedef std::vector<fisch::vx::Omnibus> words_type;
 
 template <typename PhyConfigDerived>
 void test_phy_config_derived_general()
@@ -263,10 +263,10 @@ TEST(PhyConfigFPGA, EncodeDecode)
 
 	PhyConfigFPGAOnDLS coord = draw_ranged_non_default_value<PhyConfigFPGAOnDLS>(0);
 
-	halco::hicann_dls::vx::OmnibusFPGAAddress ref_address(phy_omnibus_mask + coord.toEnum());
-	std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyConfigFPGA::config_size_in_words>
+	halco::hicann_dls::vx::OmnibusAddress ref_address(phy_omnibus_mask + coord.toEnum());
+	std::array<halco::hicann_dls::vx::OmnibusAddress, PhyConfigFPGA::config_size_in_words>
 	    ref_addresses = {ref_address};
-	std::array<fisch::vx::OmnibusFPGA, PhyConfigFPGA::config_size_in_words> ref_data = {
+	std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> ref_data = {
 	    fisch::vx::OmnibusData{0x204040}};
 
 	{ // write addresses
@@ -333,21 +333,21 @@ TEST(CommonPhyConfigFPGA, EncodeDecode)
 
 	CommonPhyConfigFPGAOnDLS coord;
 
-	std::array<OmnibusFPGAAddress, CommonPhyConfigFPGA::config_size_in_words> ref_addresses = {
-	    OmnibusFPGAAddress(0x0400'0000)};
-	std::array<fisch::vx::OmnibusFPGA, CommonPhyConfigFPGA::config_size_in_words> ref_data = {
+	std::array<OmnibusAddress, CommonPhyConfigFPGA::config_size_in_words> ref_addresses = {
+	    OmnibusAddress(0x8400'0000)};
+	std::array<fisch::vx::Omnibus, CommonPhyConfigFPGA::config_size_in_words> ref_data = {
 	    fisch::vx::OmnibusData(0xff)};
 
 	{ // write addresses
-		std::vector<OmnibusFPGAAddress> write_addresses;
+		std::vector<OmnibusAddress> write_addresses;
 		visit_preorder(
 		    config, coord,
-		    stadls::WriteAddressVisitor<std::vector<OmnibusFPGAAddress>>{write_addresses});
+		    stadls::WriteAddressVisitor<std::vector<OmnibusAddress>>{write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::OmnibusFPGA> data;
-	visit_preorder(config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusFPGA>>{data});
+	std::vector<fisch::vx::Omnibus> data;
+	visit_preorder(config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::Omnibus>>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 }
 

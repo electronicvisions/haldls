@@ -59,8 +59,6 @@ constexpr std::array<uint32_t, 2> correlation_config_base_addresses = {
 constexpr uint32_t phy_on_chip_base_address{0x0004'0000};
 constexpr uint32_t pll_base_address{0x0008'0000};
 constexpr uint32_t systime_base_address{0x0};
-constexpr uint32_t fpga_device_dna_base_address{0x3};
-constexpr uint32_t event_recording_config_base_address{0x5};
 
 constexpr uint32_t capmem_nw_sram_base_address{0x140000};
 constexpr uint32_t capmem_ne_sram_base_address{0x148000};
@@ -185,11 +183,14 @@ constexpr uint32_t spike_counter_reset_right_sram_base_address{
 constexpr std::array<uint32_t, 2> spike_counter_reset_sram_base_addresses = {
     spike_counter_reset_left_sram_base_address, spike_counter_reset_right_sram_base_address};
 
-constexpr uint32_t ut_omnibus_mask{0x0400'0000};
+constexpr uint32_t fpga_omnibus_mask{0x8000'0000};
+constexpr uint32_t ut_omnibus_mask{0x0400'0000 | fpga_omnibus_mask};
 constexpr uint32_t phy_omnibus_mask{0x0200'0000 | ut_omnibus_mask};
-constexpr uint32_t perftest_omnibus_mask{0x0800'0000};
+constexpr uint32_t perftest_omnibus_mask{0x0800'0000 | fpga_omnibus_mask};
 constexpr uint32_t l2_omnibus_mask{perftest_omnibus_mask | ut_omnibus_mask};
 constexpr uint32_t hicann_arq_status_base_address{l2_omnibus_mask + 0x0000'0010};
+constexpr uint32_t fpga_device_dna_base_address{0x3 | fpga_omnibus_mask};
+constexpr uint32_t event_recording_config_base_address{0x5 | fpga_omnibus_mask};
 
 constexpr uint32_t spl1_fabric_base_address{0x0013'0000};
 constexpr uint32_t crossbar_out_mux_base_address{spl1_fabric_base_address};

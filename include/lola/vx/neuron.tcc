@@ -8,7 +8,7 @@ template <>
 struct BackendContainerTrait<lola::vx::AtomicNeuron>
     : public BackendContainerBase<
           lola::vx::AtomicNeuron,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

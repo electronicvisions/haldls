@@ -124,9 +124,9 @@ template SYMBOL_VISIBLE std::array<
 BackgroundSpikeSource::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, BackgroundSpikeSource::config_size_in_words>
-    BackgroundSpikeSource::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, BackgroundSpikeSource::config_size_in_words>
+    BackgroundSpikeSource::addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord);
 
 namespace {
@@ -184,9 +184,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, BackgroundSpikeSource::config_size_in_words>
     BackgroundSpikeSource::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, BackgroundSpikeSource::config_size_in_words>
-    BackgroundSpikeSource::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, BackgroundSpikeSource::config_size_in_words>
+BackgroundSpikeSource::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void BackgroundSpikeSource::decode(
@@ -210,8 +209,8 @@ template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::OmnibusChi
     std::array<fisch::vx::OmnibusChipOverJTAG, BackgroundSpikeSource::config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, BackgroundSpikeSource::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, BackgroundSpikeSource::config_size_in_words> const& data);
 
 template <class Archive>
 void BackgroundSpikeSource::serialize(Archive& ar, std::uint32_t const)

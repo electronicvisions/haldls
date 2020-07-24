@@ -18,7 +18,7 @@ class access;
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
-class OmnibusChip;
+class Omnibus;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -92,7 +92,7 @@ template <>
 struct BackendContainerTrait<CrossbarOutputConfig>
     : public BackendContainerBase<
           CrossbarOutputConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -176,7 +176,7 @@ template <>
 struct BackendContainerTrait<CrossbarInputDropCounter>
     : public BackendContainerBase<
           CrossbarInputDropCounter,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -259,7 +259,7 @@ template <>
 struct BackendContainerTrait<CrossbarOutputEventCounter>
     : public BackendContainerBase<
           CrossbarOutputEventCounter,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -350,10 +350,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<CrossbarNode>
-    : public BackendContainerBase<
-          CrossbarNode,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<CrossbarNode, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

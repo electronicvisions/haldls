@@ -74,9 +74,8 @@ template SYMBOL_VISIBLE std::
         coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, PPUMemoryWord::config_size_in_words>
-    PPUMemoryWord::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord);
+    std::array<halco::hicann_dls::vx::OmnibusAddress, PPUMemoryWord::config_size_in_words>
+    PPUMemoryWord::addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
@@ -88,8 +87,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, PPUMemoryWord::config_size_in_words>
     PPUMemoryWord::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, PPUMemoryWord::config_size_in_words>
-PPUMemoryWord::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PPUMemoryWord::config_size_in_words>
+PPUMemoryWord::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void PPUMemoryWord::decode(std::array<WordT, PPUMemoryWord::config_size_in_words> const& data)
@@ -100,8 +99,8 @@ void PPUMemoryWord::decode(std::array<WordT, PPUMemoryWord::config_size_in_words
 template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, PPUMemoryWord::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, PPUMemoryWord::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, PPUMemoryWord::config_size_in_words> const& data);
 
 template <class Archive>
 void PPUMemoryWord::serialize(Archive& ar, std::uint32_t const)
@@ -522,8 +521,8 @@ PPUControlRegister::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>
     coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, PPUControlRegister::config_size_in_words>
-    PPUControlRegister::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, PPUControlRegister::config_size_in_words>
+    PPUControlRegister::addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord);
 
 template <typename WordT>
@@ -541,8 +540,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, PPUControlRegister::config_size_in_words>
     PPUControlRegister::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, PPUControlRegister::config_size_in_words>
-PPUControlRegister::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PPUControlRegister::config_size_in_words>
+PPUControlRegister::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void PPUControlRegister::decode(
@@ -559,8 +558,8 @@ template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::OmnibusChipOv
     std::array<fisch::vx::OmnibusChipOverJTAG, PPUControlRegister::config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, PPUControlRegister::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, PPUControlRegister::config_size_in_words> const& data);
 
 template <class Archive>
 void PPUControlRegister::serialize(Archive& ar, std::uint32_t const)
@@ -612,9 +611,9 @@ template SYMBOL_VISIBLE std::array<
 PPUStatusRegister::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, PPUStatusRegister::read_config_size_in_words>
-    PPUStatusRegister::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, PPUStatusRegister::read_config_size_in_words>
+    PPUStatusRegister::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord);
 
 template <typename AddressT>
@@ -630,9 +629,9 @@ template SYMBOL_VISIBLE std::array<
 PPUStatusRegister::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, PPUStatusRegister::write_config_size_in_words>
-    PPUStatusRegister::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, PPUStatusRegister::write_config_size_in_words>
+    PPUStatusRegister::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord);
 
 template <typename WordT>
@@ -646,8 +645,8 @@ template SYMBOL_VISIBLE
     PPUStatusRegister::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, PPUStatusRegister::write_config_size_in_words>
-    PPUStatusRegister::encode<fisch::vx::OmnibusChip>() const;
+    std::array<fisch::vx::Omnibus, PPUStatusRegister::write_config_size_in_words>
+    PPUStatusRegister::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void PPUStatusRegister::decode(
@@ -660,8 +659,8 @@ template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::OmnibusChipOve
     std::array<fisch::vx::OmnibusChipOverJTAG, PPUStatusRegister::read_config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, PPUStatusRegister::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, PPUStatusRegister::read_config_size_in_words> const& data);
 
 template <class Archive>
 void PPUStatusRegister::serialize(Archive& ar, std::uint32_t const)

@@ -11,7 +11,7 @@ class access;
 } // namespace cereal
 
 namespace fisch::vx {
-class OmnibusChip;
+class Omnibus;
 class OmnibusChipOverJTAG;
 } // namespace fisch::vx
 
@@ -138,7 +138,7 @@ template <>
 struct BackendContainerTrait<CommonCorrelationConfig>
     : public BackendContainerBase<
           CommonCorrelationConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

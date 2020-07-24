@@ -259,8 +259,8 @@ std::array<AddressT, PadMultiplexerConfig::config_size_in_words> PadMultiplexerC
 	        madc_base_address + 15 + coord.toEnum() * PadMultiplexerConfig::config_size_in_words)};
 }
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, PadMultiplexerConfig::config_size_in_words>
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, PadMultiplexerConfig::config_size_in_words>
     PadMultiplexerConfig::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
@@ -396,9 +396,8 @@ std::array<WordT, PadMultiplexerConfig::config_size_in_words> PadMultiplexerConf
 	return data;
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, PadMultiplexerConfig::config_size_in_words>
-    PadMultiplexerConfig::encode() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PadMultiplexerConfig::config_size_in_words>
+PadMultiplexerConfig::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, PadMultiplexerConfig::config_size_in_words>
     PadMultiplexerConfig::encode() const;
@@ -467,7 +466,7 @@ void PadMultiplexerConfig::decode(
 }
 
 template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
-    std::array<fisch::vx::OmnibusChip, PadMultiplexerConfig::config_size_in_words> const& words);
+    std::array<fisch::vx::Omnibus, PadMultiplexerConfig::config_size_in_words> const& words);
 
 template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, PadMultiplexerConfig::config_size_in_words> const&
@@ -702,8 +701,8 @@ ReadoutSourceSelection::addresses(coordinate_type const& /* coord */)
 	return {AddressT(madc_base_address + 12), AddressT(madc_base_address + 13)};
 }
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, ReadoutSourceSelection::config_size_in_words>
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, ReadoutSourceSelection::config_size_in_words>
     ReadoutSourceSelection::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
@@ -866,9 +865,8 @@ std::array<WordT, ReadoutSourceSelection::config_size_in_words> ReadoutSourceSel
 	return data;
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, ReadoutSourceSelection::config_size_in_words>
-    ReadoutSourceSelection::encode() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, ReadoutSourceSelection::config_size_in_words>
+ReadoutSourceSelection::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutSourceSelection::config_size_in_words>
     ReadoutSourceSelection::encode() const;
@@ -949,7 +947,7 @@ void ReadoutSourceSelection::decode(
 }
 
 template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
-    std::array<fisch::vx::OmnibusChip, ReadoutSourceSelection::config_size_in_words> const& words);
+    std::array<fisch::vx::Omnibus, ReadoutSourceSelection::config_size_in_words> const& words);
 
 template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutSourceSelection::config_size_in_words> const&

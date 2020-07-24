@@ -247,8 +247,8 @@ SynapseDriverConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress
     coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseDriverConfig::config_size_in_words>
-    SynapseDriverConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SynapseDriverConfig::config_size_in_words>
+    SynapseDriverConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord);
 
 
@@ -332,8 +332,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseDriverConfig::config_size_in_words>
     SynapseDriverConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, SynapseDriverConfig::config_size_in_words>
-SynapseDriverConfig::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SynapseDriverConfig::config_size_in_words>
+SynapseDriverConfig::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void SynapseDriverConfig::decode(std::array<WordT, SynapseDriverConfig::config_size_in_words> const& data)
@@ -348,8 +348,8 @@ void SynapseDriverConfig::decode(std::array<WordT, SynapseDriverConfig::config_s
 template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseDriverConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, SynapseDriverConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, SynapseDriverConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& mode)
 {
@@ -468,7 +468,7 @@ template SYMBOL_VISIBLE std::array<
     SynapseDriverSRAMTimingConfig::config_size_in_words>
 SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
+    halco::hicann_dls::vx::OmnibusAddress,
     SynapseDriverSRAMTimingConfig::config_size_in_words>
 SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 

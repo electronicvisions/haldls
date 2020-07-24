@@ -44,7 +44,7 @@ TEST(FPGADeviceDNA, General)
 
 TEST(FPGADeviceDNA, EncodeDecode)
 {
-	typedef std::vector<fisch::vx::OmnibusFPGA::coordinate_type> addresses_type;
+	typedef std::vector<fisch::vx::Omnibus::coordinate_type> addresses_type;
 
 	FPGADeviceDNA config;
 
@@ -53,13 +53,13 @@ TEST(FPGADeviceDNA, EncodeDecode)
 	FPGADeviceDNAOnFPGA coord;
 
 	std::array<
-	    typename fisch::vx::OmnibusFPGA::coordinate_type, FPGADeviceDNA::read_config_size_in_words>
-	    ref_read_addresses = {typename fisch::vx::OmnibusFPGA::coordinate_type{0x3ul},
-	                          typename fisch::vx::OmnibusFPGA::coordinate_type{0x4ul}};
+	    typename fisch::vx::Omnibus::coordinate_type, FPGADeviceDNA::read_config_size_in_words>
+	    ref_read_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8000'0003ul},
+	                          typename fisch::vx::Omnibus::coordinate_type{0x8000'0004ul}};
 	std::array<
-	    typename fisch::vx::OmnibusFPGA::coordinate_type, FPGADeviceDNA::write_config_size_in_words>
+	    typename fisch::vx::Omnibus::coordinate_type, FPGADeviceDNA::write_config_size_in_words>
 	    ref_write_addresses = {};
-	std::array<fisch::vx::OmnibusFPGA, FPGADeviceDNA::read_config_size_in_words> ref_data = {
+	std::array<fisch::vx::Omnibus, FPGADeviceDNA::read_config_size_in_words> ref_data = {
 	    fisch::vx::OmnibusData(0x100), fisch::vx::OmnibusData{0x22b}};
 
 	{ // write addresses
@@ -76,11 +76,11 @@ TEST(FPGADeviceDNA, EncodeDecode)
 
 	FPGADeviceDNA config_copy;
 	ASSERT_NE(config, config_copy);
-	std::vector<fisch::vx::OmnibusFPGA> data(FPGADeviceDNA::read_config_size_in_words);
+	std::vector<fisch::vx::Omnibus> data(FPGADeviceDNA::read_config_size_in_words);
 	std::copy(ref_data.cbegin(), ref_data.cend(), data.begin());
 	visit_preorder(
 	    config_copy, coord,
-	    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusFPGA>>{std::move(data)});
+	    stadls::DecodeVisitor<std::vector<fisch::vx::Omnibus>>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }
 

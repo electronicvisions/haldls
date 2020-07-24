@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 		    po::validation_error::invalid_option_value, "Choose between PPU 0 and PPU 1.");
 	}
 	PPUOnDLS ppu_coord(ppu_id);
-	auto backend = Backend::OmnibusChip;
+	auto backend = Backend::Omnibus;
 	if (use_jtag) {
 		backend = Backend::OmnibusChipOverJTAG;
 	}

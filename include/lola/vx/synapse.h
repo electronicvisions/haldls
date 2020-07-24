@@ -549,7 +549,7 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseWeightRow>
     : public BackendContainerBase<
           lola::vx::SynapseWeightRow,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -596,7 +596,7 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseLabelRow>
     : public BackendContainerBase<
           lola::vx::SynapseLabelRow,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -643,7 +643,7 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseCorrelationCalibRow>
     : public BackendContainerBase<
           lola::vx::SynapseCorrelationCalibRow,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -692,7 +692,7 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseRow>
     : public BackendContainerBase<
           lola::vx::SynapseRow,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -745,7 +745,7 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseWeightMatrix>
     : public BackendContainerBase<
           lola::vx::SynapseWeightMatrix,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -792,7 +792,7 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseLabelMatrix>
     : public BackendContainerBase<
           lola::vx::SynapseLabelMatrix,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -839,7 +839,7 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseCorrelationCalibMatrix>
     : public BackendContainerBase<
           lola::vx::SynapseCorrelationCalibMatrix,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -889,7 +889,7 @@ template <>
 struct BackendContainerTrait<lola::vx::SynapseMatrix>
     : public BackendContainerBase<
           lola::vx::SynapseMatrix,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -940,7 +940,7 @@ template <>
 struct BackendContainerTrait<lola::vx::CorrelationResetRow>
     : public BackendContainerBase<
           lola::vx::CorrelationResetRow,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

@@ -13,7 +13,7 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
-typedef std::vector<fisch::vx::OmnibusFPGA> words_type;
+typedef std::vector<fisch::vx::Omnibus> words_type;
 
 TEST(EventRecordingConfig, General)
 {
@@ -43,7 +43,7 @@ TEST(EventRecordingConfig, General)
 
 TEST(EventRecordingConfig, EncodeDecode)
 {
-	typedef std::vector<fisch::vx::OmnibusFPGA::coordinate_type> addresses_type;
+	typedef std::vector<fisch::vx::Omnibus::coordinate_type> addresses_type;
 
 	EventRecordingConfig config;
 	config.set_enable_event_recording(true);
@@ -51,11 +51,13 @@ TEST(EventRecordingConfig, EncodeDecode)
 	EventRecordingConfigOnFPGA coord;
 
 	std::array<
-	    typename fisch::vx::OmnibusFPGA::coordinate_type, EventRecordingConfig::read_config_size_in_words>
-	    ref_read_addresses = {typename fisch::vx::OmnibusFPGA::coordinate_type{0x5ul}};
+	    typename fisch::vx::Omnibus::coordinate_type,
+	    EventRecordingConfig::read_config_size_in_words>
+	    ref_read_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8000'0005ul}};
 	std::array<
-	    typename fisch::vx::OmnibusFPGA::coordinate_type, EventRecordingConfig::write_config_size_in_words>
-	    ref_write_addresses = {typename fisch::vx::OmnibusFPGA::coordinate_type{0x5ul}};
+	    typename fisch::vx::Omnibus::coordinate_type,
+	    EventRecordingConfig::write_config_size_in_words>
+	    ref_write_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8000'0005ul}};
 
 	{ // write addresses
 		addresses_type write_addresses;

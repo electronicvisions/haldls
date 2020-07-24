@@ -78,9 +78,8 @@ template SYMBOL_VISIBLE std::
         coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, SystimeSyncBase::config_size_in_words>
-    SystimeSyncBase::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& coord);
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SystimeSyncBase::config_size_in_words>
+    SystimeSyncBase::addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, SystimeSyncBase::config_size_in_words> SystimeSyncBase::encode() const
@@ -95,8 +94,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SystimeSyncBase::config_size_in_words>
     SystimeSyncBase::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, SystimeSyncBase::config_size_in_words>
-SystimeSyncBase::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SystimeSyncBase::config_size_in_words>
+SystimeSyncBase::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void SystimeSyncBase::decode(std::array<WordT, SystimeSyncBase::config_size_in_words> const& data)
@@ -111,8 +110,8 @@ void SystimeSyncBase::decode(std::array<WordT, SystimeSyncBase::config_size_in_w
 template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, SystimeSyncBase::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, SystimeSyncBase::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, SystimeSyncBase::config_size_in_words> const& data);
 
 template <class Archive>
 void SystimeSyncBase::serialize(Archive& ar, std::uint32_t const)

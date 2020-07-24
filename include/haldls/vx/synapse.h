@@ -17,7 +17,7 @@ class access;
 } // namespace cereal
 
 namespace fisch::vx {
-class OmnibusChip;
+class Omnibus;
 class OmnibusChipOverJTAG;
 } // namespace fisch::vx
 
@@ -795,7 +795,7 @@ template <>
 struct BackendContainerTrait<CommonSynramConfig>
     : public BackendContainerBase<
           CommonSynramConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -803,7 +803,7 @@ template <>
 struct BackendContainerTrait<SynapseWeightQuad>
     : public BackendContainerBase<
           SynapseWeightQuad,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -811,7 +811,7 @@ template <>
 struct BackendContainerTrait<SynapseLabelQuad>
     : public BackendContainerBase<
           SynapseLabelQuad,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -819,23 +819,20 @@ template <>
 struct BackendContainerTrait<SynapseCorrelationCalibQuad>
     : public BackendContainerBase<
           SynapseCorrelationCalibQuad,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<SynapseQuad>
-    : public BackendContainerBase<
-          SynapseQuad,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<SynapseQuad, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<ColumnCorrelationQuad>
     : public BackendContainerBase<
           ColumnCorrelationQuad,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -843,7 +840,7 @@ template <>
 struct BackendContainerTrait<ColumnCurrentQuad>
     : public BackendContainerBase<
           ColumnCurrentQuad,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -851,7 +848,7 @@ template <>
 struct BackendContainerTrait<SynapseBiasSelection>
     : public BackendContainerBase<
           SynapseBiasSelection,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -859,7 +856,7 @@ template <>
 struct BackendContainerTrait<CorrelationReset>
     : public BackendContainerBase<
           CorrelationReset,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

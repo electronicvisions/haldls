@@ -218,11 +218,10 @@ template SYMBOL_VISIBLE std::array<
 CommonNeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    CommonNeuronBackendConfig::config_size_in_words>
-CommonNeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-    coordinate_type const& cell);
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusAddress, CommonNeuronBackendConfig::config_size_in_words>
+    CommonNeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(
+        coordinate_type const& cell);
 
 template <typename WordT>
 std::array<WordT, CommonNeuronBackendConfig::config_size_in_words>
@@ -258,8 +257,8 @@ template SYMBOL_VISIBLE
     CommonNeuronBackendConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CommonNeuronBackendConfig::config_size_in_words>
-    CommonNeuronBackendConfig::encode<fisch::vx::OmnibusChip>() const;
+    std::array<fisch::vx::Omnibus, CommonNeuronBackendConfig::config_size_in_words>
+    CommonNeuronBackendConfig::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void CommonNeuronBackendConfig::decode(
@@ -302,9 +301,8 @@ template SYMBOL_VISIBLE void CommonNeuronBackendConfig::decode<fisch::vx::Omnibu
         fisch::vx::OmnibusChipOverJTAG,
         CommonNeuronBackendConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void CommonNeuronBackendConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CommonNeuronBackendConfig::config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void CommonNeuronBackendConfig::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, CommonNeuronBackendConfig::config_size_in_words> const& data);
 
 bool CommonNeuronBackendConfig::operator==(CommonNeuronBackendConfig const& other) const
 {
@@ -614,8 +612,8 @@ NeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress
     coordinate_type const& cell);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronBackendConfig::config_size_in_words>
-    NeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronBackendConfig::config_size_in_words>
+    NeuronBackendConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename WordT>
@@ -651,9 +649,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronBackendConfig::config_size_in_words>
     NeuronBackendConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, NeuronBackendConfig::config_size_in_words>
-    NeuronBackendConfig::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, NeuronBackendConfig::config_size_in_words>
+NeuronBackendConfig::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void NeuronBackendConfig::decode(
@@ -692,8 +689,8 @@ template SYMBOL_VISIBLE void NeuronBackendConfig::decode<fisch::vx::OmnibusChipO
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronBackendConfig::config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void NeuronBackendConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, NeuronBackendConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void NeuronBackendConfig::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, NeuronBackendConfig::config_size_in_words> const& data);
 
 bool NeuronBackendConfig::operator==(NeuronBackendConfig const& other) const
 {
@@ -1199,8 +1196,8 @@ template SYMBOL_VISIBLE std::
         coordinate_type const& cell);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronConfig::config_size_in_words>
-    NeuronConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(coordinate_type const& cell);
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronConfig::config_size_in_words>
+    NeuronConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& cell);
 
 template <typename WordT>
 std::array<WordT, NeuronConfig::config_size_in_words> NeuronConfig::encode() const
@@ -1250,8 +1247,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronConfig::config_size_in_words>
     NeuronConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, NeuronConfig::config_size_in_words>
-NeuronConfig::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, NeuronConfig::config_size_in_words>
+NeuronConfig::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> const& data)
@@ -1298,8 +1295,8 @@ void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> 
 template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, NeuronConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, NeuronConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, NeuronConfig const& config)
 {
@@ -1445,9 +1442,8 @@ template SYMBOL_VISIBLE std::
         coordinate_type const& cell);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronReset::read_config_size_in_words>
-    NeuronReset::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-        coordinate_type const& cell);
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronReset::read_config_size_in_words>
+    NeuronReset::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& cell);
 
 template <typename AddressT>
 std::array<AddressT, NeuronReset::write_config_size_in_words> NeuronReset::write_addresses(
@@ -1467,8 +1463,8 @@ NeuronReset::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronReset::write_config_size_in_words>
-    NeuronReset::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronReset::write_config_size_in_words>
+    NeuronReset::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename WordT>
@@ -1482,8 +1478,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronReset::write_config_size_in_words>
     NeuronReset::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, NeuronReset::write_config_size_in_words>
-NeuronReset::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, NeuronReset::write_config_size_in_words>
+NeuronReset::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void NeuronReset::decode(std::array<WordT, NeuronReset::read_config_size_in_words> const&)
@@ -1492,8 +1488,8 @@ void NeuronReset::decode(std::array<WordT, NeuronReset::read_config_size_in_word
 template SYMBOL_VISIBLE void NeuronReset::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronReset::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void NeuronReset::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, NeuronReset::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void NeuronReset::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, NeuronReset::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, NeuronReset const&)
 {
@@ -1533,9 +1529,9 @@ template SYMBOL_VISIBLE std::array<
 NeuronResetQuad::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronResetQuad::read_config_size_in_words>
-    NeuronResetQuad::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronResetQuad::read_config_size_in_words>
+    NeuronResetQuad::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename AddressT>
@@ -1555,9 +1551,9 @@ template SYMBOL_VISIBLE std::array<
 NeuronResetQuad::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronResetQuad::write_config_size_in_words>
-    NeuronResetQuad::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronResetQuad::write_config_size_in_words>
+    NeuronResetQuad::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename WordT>
@@ -1571,9 +1567,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronResetQuad::write_config_size_in_words>
     NeuronResetQuad::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, NeuronResetQuad::write_config_size_in_words>
-    NeuronResetQuad::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, NeuronResetQuad::write_config_size_in_words>
+NeuronResetQuad::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void NeuronResetQuad::decode(std::array<WordT, NeuronResetQuad::read_config_size_in_words> const&)
@@ -1583,8 +1578,8 @@ template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::OmnibusChipOverJ
     std::array<fisch::vx::OmnibusChipOverJTAG, NeuronResetQuad::read_config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, NeuronResetQuad::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, NeuronResetQuad::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, NeuronResetQuad const&)
 {
@@ -1625,8 +1620,8 @@ BlockPostPulse::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress
     coordinate_type const& cell);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, BlockPostPulse::read_config_size_in_words>
-    BlockPostPulse::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, BlockPostPulse::read_config_size_in_words>
+    BlockPostPulse::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename AddressT>
@@ -1642,9 +1637,9 @@ template SYMBOL_VISIBLE std::array<
 BlockPostPulse::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& block);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, BlockPostPulse::write_config_size_in_words>
-    BlockPostPulse::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, BlockPostPulse::write_config_size_in_words>
+    BlockPostPulse::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& block);
 
 template <typename WordT>
@@ -1658,9 +1653,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, BlockPostPulse::write_config_size_in_words>
     BlockPostPulse::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, BlockPostPulse::write_config_size_in_words>
-    BlockPostPulse::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, BlockPostPulse::write_config_size_in_words>
+BlockPostPulse::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void BlockPostPulse::decode(std::array<WordT, BlockPostPulse::read_config_size_in_words> const&)
@@ -1670,8 +1664,8 @@ template SYMBOL_VISIBLE void BlockPostPulse::decode<fisch::vx::OmnibusChipOverJT
     std::array<fisch::vx::OmnibusChipOverJTAG, BlockPostPulse::read_config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void BlockPostPulse::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, BlockPostPulse::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void BlockPostPulse::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, BlockPostPulse::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, BlockPostPulse const&)
 {
@@ -1736,9 +1730,9 @@ template SYMBOL_VISIBLE std::array<
 SpikeCounterRead::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, SpikeCounterRead::read_config_size_in_words>
-    SpikeCounterRead::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SpikeCounterRead::read_config_size_in_words>
+    SpikeCounterRead::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename AddressT>
@@ -1754,9 +1748,9 @@ template SYMBOL_VISIBLE std::array<
 SpikeCounterRead::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, SpikeCounterRead::write_config_size_in_words>
-    SpikeCounterRead::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SpikeCounterRead::write_config_size_in_words>
+    SpikeCounterRead::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename WordT>
@@ -1769,9 +1763,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SpikeCounterRead::write_config_size_in_words>
     SpikeCounterRead::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, SpikeCounterRead::write_config_size_in_words>
-    SpikeCounterRead::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SpikeCounterRead::write_config_size_in_words>
+SpikeCounterRead::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void SpikeCounterRead::decode(
@@ -1785,8 +1778,8 @@ template SYMBOL_VISIBLE void SpikeCounterRead::decode<fisch::vx::OmnibusChipOver
     std::array<fisch::vx::OmnibusChipOverJTAG, SpikeCounterRead::read_config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void SpikeCounterRead::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, SpikeCounterRead::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void SpikeCounterRead::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, SpikeCounterRead::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, SpikeCounterRead const& config)
 {
@@ -1835,9 +1828,9 @@ template SYMBOL_VISIBLE std::array<
 SpikeCounterReset::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, SpikeCounterReset::read_config_size_in_words>
-    SpikeCounterReset::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SpikeCounterReset::read_config_size_in_words>
+    SpikeCounterReset::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename AddressT>
@@ -1858,9 +1851,9 @@ template SYMBOL_VISIBLE std::array<
 SpikeCounterReset::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, SpikeCounterReset::write_config_size_in_words>
-    SpikeCounterReset::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SpikeCounterReset::write_config_size_in_words>
+    SpikeCounterReset::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename WordT>
@@ -1875,8 +1868,8 @@ template SYMBOL_VISIBLE
     SpikeCounterReset::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, SpikeCounterReset::write_config_size_in_words>
-    SpikeCounterReset::encode<fisch::vx::OmnibusChip>() const;
+    std::array<fisch::vx::Omnibus, SpikeCounterReset::write_config_size_in_words>
+    SpikeCounterReset::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void SpikeCounterReset::decode(
@@ -1887,8 +1880,8 @@ template SYMBOL_VISIBLE void SpikeCounterReset::decode<fisch::vx::OmnibusChipOve
     std::array<fisch::vx::OmnibusChipOverJTAG, SpikeCounterReset::read_config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void SpikeCounterReset::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, SpikeCounterReset::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void SpikeCounterReset::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, SpikeCounterReset::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, SpikeCounterReset const&)
 {
@@ -1937,8 +1930,8 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     NeuronSRAMTimingConfig::config_size_in_words>
 NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const;
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, NeuronSRAMTimingConfig::config_size_in_words>
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronSRAMTimingConfig::config_size_in_words>
     NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 
 template <class Archive>
@@ -1975,7 +1968,7 @@ template SYMBOL_VISIBLE std::array<
     NeuronBackendSRAMTimingConfig::config_size_in_words>
 NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
+    halco::hicann_dls::vx::OmnibusAddress,
     NeuronBackendSRAMTimingConfig::config_size_in_words>
 NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const;
 

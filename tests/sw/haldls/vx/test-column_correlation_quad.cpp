@@ -141,45 +141,44 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 	correlation_switch.set_enable_cadc_neuron_readout_acausal(true);
 	correlation_switch_block.set_switch(correlation_switch_coord, correlation_switch);
 
-	std::array<
-	    halco::hicann_dls::vx::OmnibusChipAddress, ColumnCorrelationQuad::config_size_in_words>
-	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'8080),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'80c0),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c0'4000),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02c4'4000)}};
-	std::array<fisch::vx::OmnibusChip, ColumnCorrelationQuad::config_size_in_words> ref_data = {
+	std::array<halco::hicann_dls::vx::OmnibusAddress, ColumnCorrelationQuad::config_size_in_words>
+	    ref_addresses = {{halco::hicann_dls::vx::OmnibusAddress(0x02cf'8080),
+	                      halco::hicann_dls::vx::OmnibusAddress(0x02cf'80c0),
+	                      halco::hicann_dls::vx::OmnibusAddress(0x02c0'4000),
+	                      halco::hicann_dls::vx::OmnibusAddress(0x02c4'4000)}};
+	std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words> ref_data = {
 	    {fisch::vx::OmnibusData(0x0040'0000), fisch::vx::OmnibusData(0x0080'0000),
 	     fisch::vx::OmnibusData(0x0000'0000), fisch::vx::OmnibusData(0x0020'0000)}};
 
 	{ // write addresses
-		std::vector<halco::hicann_dls::vx::OmnibusChipAddress> write_addresses;
+		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;
 		visit_preorder(
 		    correlation_switch_block, block_coord,
-		    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipAddress> >{
+		    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusAddress> >{
 		        write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	{ // read addresses
-		std::vector<halco::hicann_dls::vx::OmnibusChipAddress> read_addresses;
+		std::vector<halco::hicann_dls::vx::OmnibusAddress> read_addresses;
 		visit_preorder(
 		    correlation_switch_block, block_coord,
-		    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipAddress> >{
+		    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusAddress> >{
 		        read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::OmnibusChip> data;
+	std::vector<fisch::vx::Omnibus> data;
 	visit_preorder(
 	    correlation_switch_block, block_coord,
-	    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChip> >{data});
+	    stadls::EncodeVisitor<std::vector<fisch::vx::Omnibus> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	ColumnCorrelationQuad block_copy;
 	ASSERT_NE(correlation_switch_block, block_copy);
 	visit_preorder(
 	    block_copy, block_coord,
-	    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusChip> >{std::move(data)});
+	    stadls::DecodeVisitor<std::vector<fisch::vx::Omnibus> >{std::move(data)});
 	ASSERT_EQ(correlation_switch_block, block_copy);
 }
 

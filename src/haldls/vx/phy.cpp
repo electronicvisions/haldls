@@ -348,20 +348,19 @@ bool PhyConfigFPGA::operator!=(PhyConfigFPGA const& other) const
 
 HALDLS_VX_DEFAULT_OSTREAM_OP(PhyConfigFPGA)
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyConfigFPGA::config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, PhyConfigFPGA::config_size_in_words>
 PhyConfigFPGA::addresses(coordinate_type const& coord)
 {
-	return {halco::hicann_dls::vx::OmnibusFPGAAddress(phy_omnibus_mask + coord.toEnum())};
+	return {halco::hicann_dls::vx::OmnibusAddress(phy_omnibus_mask + coord.toEnum())};
 }
 
-std::array<fisch::vx::OmnibusFPGA, PhyConfigFPGA::config_size_in_words> PhyConfigFPGA::encode()
-    const
+std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> PhyConfigFPGA::encode() const
 {
-	return {fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(pack()))};
+	return {fisch::vx::Omnibus(fisch::vx::OmnibusData(pack()))};
 }
 
 void PhyConfigFPGA::decode(
-    std::array<fisch::vx::OmnibusFPGA, PhyConfigFPGA::config_size_in_words> const& data)
+    std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> const& data)
 {
 	unpack(data[0].get().value());
 }
@@ -447,13 +446,13 @@ bool CommonPhyConfigFPGA::operator!=(CommonPhyConfigFPGA const& other) const
 
 HALDLS_VX_DEFAULT_OSTREAM_OP(CommonPhyConfigFPGA)
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, CommonPhyConfigFPGA::config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, CommonPhyConfigFPGA::config_size_in_words>
 CommonPhyConfigFPGA::addresses(coordinate_type const& /*coord*/)
 {
-	return {halco::hicann_dls::vx::OmnibusFPGAAddress(ut_omnibus_mask)};
+	return {halco::hicann_dls::vx::OmnibusAddress(ut_omnibus_mask)};
 }
 
-std::array<fisch::vx::OmnibusFPGA, CommonPhyConfigFPGA::config_size_in_words>
+std::array<fisch::vx::Omnibus, CommonPhyConfigFPGA::config_size_in_words>
 CommonPhyConfigFPGA::encode() const
 {
 	hate::bitset<halco::hicann_dls::vx::PhyConfigFPGAOnDLS::size> enable_mask;
@@ -461,12 +460,12 @@ CommonPhyConfigFPGA::encode() const
 		enable_mask.set(phy.toEnum(), m_enable_phy[phy]);
 	}
 
-	return {fisch::vx::OmnibusFPGA(
+	return {fisch::vx::Omnibus(
 	    fisch::vx::OmnibusData(static_cast<fisch::vx::OmnibusData::value_type>(enable_mask)))};
 }
 
 void CommonPhyConfigFPGA::decode(
-    std::array<fisch::vx::OmnibusFPGA, CommonPhyConfigFPGA::config_size_in_words> const& data)
+    std::array<fisch::vx::Omnibus, CommonPhyConfigFPGA::config_size_in_words> const& data)
 {
 	hate::bitset<halco::hicann_dls::vx::PhyConfigFPGAOnDLS::size> enable_mask(data.at(0).get());
 	for (auto phy : halco::common::iter_all<halco::hicann_dls::vx::PhyConfigFPGAOnDLS>()) {
@@ -638,31 +637,31 @@ std::ostream& operator<<(std::ostream& os, PhyStatus const& config)
 	return os;
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyStatus::read_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, PhyStatus::read_config_size_in_words>
 PhyStatus::read_addresses(coordinate_type const& coord)
 {
-	return {halco::hicann_dls::vx::OmnibusFPGAAddress(ut_omnibus_mask + 4 + coord.value()),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(
+	return {halco::hicann_dls::vx::OmnibusAddress(ut_omnibus_mask + 4 + coord.value()),
+	        halco::hicann_dls::vx::OmnibusAddress(
 	            ut_omnibus_mask + 4 + coordinate_type::size + coord.value()),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(
+	        halco::hicann_dls::vx::OmnibusAddress(
 	            ut_omnibus_mask + 4 + 2 * coordinate_type::size + coord.value()),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(l2_omnibus_mask + 2 * coord.value()),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(l2_omnibus_mask + 2 * coord.value() + 1)};
+	        halco::hicann_dls::vx::OmnibusAddress(l2_omnibus_mask + 2 * coord.value()),
+	        halco::hicann_dls::vx::OmnibusAddress(l2_omnibus_mask + 2 * coord.value() + 1)};
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PhyStatus::write_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, PhyStatus::write_config_size_in_words>
 PhyStatus::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
 }
 
-std::array<fisch::vx::OmnibusFPGA, PhyStatus::write_config_size_in_words> PhyStatus::encode() const
+std::array<fisch::vx::Omnibus, PhyStatus::write_config_size_in_words> PhyStatus::encode() const
 {
 	return {};
 }
 
 void PhyStatus::decode(
-    std::array<fisch::vx::OmnibusFPGA, PhyStatus::read_config_size_in_words> const& data)
+    std::array<fisch::vx::Omnibus, PhyStatus::read_config_size_in_words> const& data)
 {
 	m_crc_error_count = CRCErrorCount(data.at(0).get());
 	m_online_time = OnlineTime(data.at(1).get());

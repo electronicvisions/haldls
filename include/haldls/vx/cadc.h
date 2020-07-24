@@ -12,12 +12,12 @@ class access;
 } // namespace cereal
 
 namespace fisch::vx {
-class OmnibusChip;
+class Omnibus;
 class OmnibusChipOverJTAG;
 } // namespace fisch::vx
 
 namespace halco::hicann_dls::vx {
-class OmnibusChipAddress;
+class OmnibusAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -132,10 +132,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<CADCConfig>
-    : public BackendContainerBase<
-          CADCConfig,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<CADCConfig, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -208,7 +205,7 @@ template <>
 struct BackendContainerTrait<CADCChannelConfig>
     : public BackendContainerBase<
           CADCChannelConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -259,13 +256,13 @@ public:
 
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
-	static std::array<halco::hicann_dls::vx::OmnibusChipAddress, read_config_size_in_words>
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
 	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	static std::array<halco::hicann_dls::vx::OmnibusChipAddress, write_config_size_in_words>
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
 	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::OmnibusChip, write_config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::OmnibusChip, read_config_size_in_words> const& data)
+	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 protected:
@@ -280,7 +277,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<CADCSampleQuad>
-    : public BackendContainerBase<CADCSampleQuad, fisch::vx::OmnibusChip>
+    : public BackendContainerBase<CADCSampleQuad, fisch::vx::Omnibus>
 {};
 
 } // namespace detail
@@ -315,7 +312,7 @@ template <>
 struct BackendContainerTrait<CADCOffsetSRAMTimingConfig>
     : public BackendContainerBase<
           CADCOffsetSRAMTimingConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

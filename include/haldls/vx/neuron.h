@@ -17,7 +17,7 @@ class access;
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
-class OmnibusChip;
+class Omnibus;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -712,7 +712,7 @@ template <>
 struct BackendContainerTrait<CommonNeuronBackendConfig>
     : public BackendContainerBase<
           CommonNeuronBackendConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -720,16 +720,13 @@ template <>
 struct BackendContainerTrait<NeuronBackendConfig>
     : public BackendContainerBase<
           NeuronBackendConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<NeuronConfig>
-    : public BackendContainerBase<
-          NeuronConfig,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<NeuronConfig, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -777,10 +774,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<NeuronReset>
-    : public BackendContainerBase<
-          NeuronReset,
-          fisch::vx::OmnibusChip,
-          fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<NeuronReset, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -832,7 +826,7 @@ template <>
 struct BackendContainerTrait<NeuronResetQuad>
     : public BackendContainerBase<
           NeuronResetQuad,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -886,7 +880,7 @@ template <>
 struct BackendContainerTrait<BlockPostPulse>
     : public BackendContainerBase<
           BlockPostPulse,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -967,7 +961,7 @@ template <>
 struct BackendContainerTrait<SpikeCounterRead>
     : public BackendContainerBase<
           SpikeCounterRead,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -1019,7 +1013,7 @@ template <>
 struct BackendContainerTrait<SpikeCounterReset>
     : public BackendContainerBase<
           SpikeCounterReset,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -1055,7 +1049,7 @@ template <>
 struct BackendContainerTrait<NeuronSRAMTimingConfig>
     : public BackendContainerBase<
           NeuronSRAMTimingConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -1091,7 +1085,7 @@ template <>
 struct BackendContainerTrait<NeuronBackendSRAMTimingConfig>
     : public BackendContainerBase<
           NeuronBackendSRAMTimingConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

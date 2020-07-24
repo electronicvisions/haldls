@@ -79,8 +79,8 @@ TEST(CADCSamples, CerealizeCoverage)
 
 TEST(CADCSamples, EncodeDecode)
 {
-	typedef std::vector<halco::hicann_dls::vx::OmnibusChipAddress> addresses_type;
-	typedef std::vector<fisch::vx::OmnibusChip> words_type;
+	typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
+	typedef std::vector<fisch::vx::Omnibus> words_type;
 
 	CADCSamplesOnDLS coord;
 
@@ -93,11 +93,10 @@ TEST(CADCSamples, EncodeDecode)
 	    CADCSampleQuad::read_config_size_in_words * SynapseQuadColumnOnDLS::size *
 	    CADCChannelType::size * SynramOnDLS::size);
 	for (auto& word : ref_data) {
-		word = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0));
+		word = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
 	}
-	ref_data[11] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0xf));
-	ref_data[13 + SynapseQuadColumnOnDLS::size] =
-	    fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0x10));
+	ref_data[11] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0xf));
+	ref_data[13 + SynapseQuadColumnOnDLS::size] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0x10));
 
 	{
 		CADCSampleQuadOnDLS quad_coord_trigger(

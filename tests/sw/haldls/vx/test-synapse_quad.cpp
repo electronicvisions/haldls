@@ -98,41 +98,40 @@ TEST(SynapseQuad, EncodeDecode)
 		synapse_block.set_amp_calibs(amp_calibs);
 	}
 
-	std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseQuad::config_size_in_words>
-	    ref_addresses = {{halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'0080),
-	                      halco::hicann_dls::vx::OmnibusChipAddress(0x02cf'00c0)}};
-	std::array<fisch::vx::OmnibusChip, SynapseQuad::config_size_in_words> ref_data = {
+	std::array<halco::hicann_dls::vx::OmnibusAddress, SynapseQuad::config_size_in_words>
+	    ref_addresses = {{halco::hicann_dls::vx::OmnibusAddress(0x02cf'0080),
+	                      halco::hicann_dls::vx::OmnibusAddress(0x02cf'00c0)}};
+	std::array<fisch::vx::Omnibus, SynapseQuad::config_size_in_words> ref_data = {
 	    {fisch::vx::OmnibusData(0x00B7'0000), fisch::vx::OmnibusData(0x007F'0000)}};
 
 	{ // write addresses
-		std::vector<halco::hicann_dls::vx::OmnibusChipAddress> write_addresses;
+		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;
 		visit_preorder(
 		    synapse_block, block_coord,
-		    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipAddress> >{
+		    stadls::WriteAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusAddress> >{
 		        write_addresses});
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
 	{ // read addresses
-		std::vector<halco::hicann_dls::vx::OmnibusChipAddress> read_addresses;
+		std::vector<halco::hicann_dls::vx::OmnibusAddress> read_addresses;
 		visit_preorder(
 		    synapse_block, block_coord,
-		    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusChipAddress> >{
+		    stadls::ReadAddressVisitor<std::vector<halco::hicann_dls::vx::OmnibusAddress> >{
 		        read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::OmnibusChip> data;
+	std::vector<fisch::vx::Omnibus> data;
 	visit_preorder(
-	    synapse_block, block_coord,
-	    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChip> >{data});
+	    synapse_block, block_coord, stadls::EncodeVisitor<std::vector<fisch::vx::Omnibus> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	SynapseQuad block_copy;
 	ASSERT_NE(synapse_block, block_copy);
 	visit_preorder(
 	    block_copy, block_coord,
-	    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusChip> >{std::move(data)});
+	    stadls::DecodeVisitor<std::vector<fisch::vx::Omnibus> >{std::move(data)});
 	ASSERT_EQ(synapse_block, block_copy);
 }
 

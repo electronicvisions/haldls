@@ -103,11 +103,9 @@ template SYMBOL_VISIBLE std::array<
 PADIEvent::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
 	coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::array<
-	halco::hicann_dls::vx::OmnibusChipAddress,
-	PADIEvent::write_config_size_in_words>
-PADIEvent::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-	coordinate_type const& coord);
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, PADIEvent::write_config_size_in_words>
+    PADIEvent::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& coord);
 
 
 template <typename AddressT>
@@ -123,11 +121,9 @@ template SYMBOL_VISIBLE std::array<
 PADIEvent::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
 	coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::array<
-	halco::hicann_dls::vx::OmnibusChipAddress,
-	PADIEvent::read_config_size_in_words>
-PADIEvent::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-	coordinate_type const& coord);
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, PADIEvent::read_config_size_in_words>
+    PADIEvent::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, PADIEvent::write_config_size_in_words> PADIEvent::encode() const
@@ -148,8 +144,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, PADIEvent::write_config_size_in_words>
     PADIEvent::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, PADIEvent::write_config_size_in_words>
-PADIEvent::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PADIEvent::write_config_size_in_words>
+PADIEvent::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void PADIEvent::decode(std::array<WordT, PADIEvent::read_config_size_in_words> const& /* data */)
@@ -158,8 +154,8 @@ void PADIEvent::decode(std::array<WordT, PADIEvent::read_config_size_in_words> c
 template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, PADIEvent::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, PADIEvent::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, PADIEvent::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, PADIEvent const& config)
 {
@@ -285,8 +281,8 @@ CommonPADIBusConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress
     coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CommonPADIBusConfig::config_size_in_words>
-    CommonPADIBusConfig::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CommonPADIBusConfig::config_size_in_words>
+    CommonPADIBusConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& coord);
 
 
@@ -325,9 +321,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words>
     CommonPADIBusConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CommonPADIBusConfig::config_size_in_words>
-    CommonPADIBusConfig::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CommonPADIBusConfig::config_size_in_words>
+CommonPADIBusConfig::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void CommonPADIBusConfig::decode(
@@ -364,8 +359,8 @@ template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::OmnibusChipO
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CommonPADIBusConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, CommonPADIBusConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CommonPADIBusConfig const& config)
 {
@@ -472,11 +467,10 @@ template SYMBOL_VISIBLE std::array<
 CommonSTPConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
 	coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::array<
-	halco::hicann_dls::vx::OmnibusChipAddress,
-	CommonSTPConfig::write_config_size_in_words>
-CommonSTPConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-	coordinate_type const& coord);
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CommonSTPConfig::write_config_size_in_words>
+    CommonSTPConfig::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
+        coordinate_type const& coord);
 
 
 template <typename AddressT>
@@ -492,11 +486,10 @@ template SYMBOL_VISIBLE std::array<
 CommonSTPConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
 	coordinate_type const& coord);
 
-template SYMBOL_VISIBLE std::array<
-	halco::hicann_dls::vx::OmnibusChipAddress,
-	CommonSTPConfig::read_config_size_in_words>
-CommonSTPConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
-	coordinate_type const& coord);
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CommonSTPConfig::read_config_size_in_words>
+    CommonSTPConfig::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
+        coordinate_type const& coord);
 
 template <typename WordT>
 std::array<WordT, CommonSTPConfig::write_config_size_in_words> CommonSTPConfig::encode() const
@@ -513,9 +506,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonSTPConfig::write_config_size_in_words>
     CommonSTPConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CommonSTPConfig::write_config_size_in_words>
-    CommonSTPConfig::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CommonSTPConfig::write_config_size_in_words>
+CommonSTPConfig::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void CommonSTPConfig::decode(
@@ -526,8 +518,8 @@ template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::OmnibusChipOverJ
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonSTPConfig::read_config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CommonSTPConfig::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, CommonSTPConfig::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CommonSTPConfig const& config)
 {

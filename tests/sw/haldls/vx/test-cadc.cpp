@@ -223,29 +223,28 @@ TEST(CADCSampleQuad, EncodeDecode)
 	        SynapseQuadOnSynram(X(3), Y(5)), CADCChannelType::acausal, CADCReadoutType::buffered),
 	    SynramOnDLS(0));
 
-	std::array<OmnibusChipAddress, CADCSampleQuad::read_config_size_in_words> ref_addresses = {
-	    OmnibusChipAddress{0x02ec'017ful}};
-	std::array<OmnibusChip, CADCSampleQuad::read_config_size_in_words> ref_data = {
+	std::array<OmnibusAddress, CADCSampleQuad::read_config_size_in_words> ref_addresses = {
+	    OmnibusAddress{0x02ec'017ful}};
+	std::array<Omnibus, CADCSampleQuad::read_config_size_in_words> ref_data = {
 	    OmnibusData{0x48 << 16}};
 
 	{ // write addresses
-		std::vector<OmnibusChipAddress> write_addresses;
+		std::vector<OmnibusAddress> write_addresses;
 		visit_preorder(
 		    config, coord, stadls::WriteAddressVisitor<decltype(write_addresses)>{write_addresses});
-		EXPECT_THAT(
-		    write_addresses, ::testing::ElementsAreArray(std::array<OmnibusChipAddress, 0>{}));
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(std::array<OmnibusAddress, 0>{}));
 	}
 
 	{ // read addresses
-		std::vector<OmnibusChipAddress> read_addresses;
+		std::vector<OmnibusAddress> read_addresses;
 		visit_preorder(
 		    config, coord, stadls::ReadAddressVisitor<decltype(read_addresses)>{read_addresses});
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<OmnibusChip> data;
+	std::vector<Omnibus> data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<decltype(data)>{data});
-	EXPECT_THAT(data, ::testing::ElementsAreArray(std::array<OmnibusChip, 0>{}));
+	EXPECT_THAT(data, ::testing::ElementsAreArray(std::array<Omnibus, 0>{}));
 
 	CADCSampleQuad config_copy;
 	ASSERT_NE(config, config_copy);

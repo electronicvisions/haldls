@@ -33,19 +33,18 @@ bool PerfTest::operator!=(PerfTest const& other) const
 
 HALDLS_VX_DEFAULT_OSTREAM_OP(PerfTest)
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PerfTest::config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, PerfTest::config_size_in_words>
 PerfTest::addresses(coordinate_type const& /*coord*/)
 {
-	return {halco::hicann_dls::vx::OmnibusFPGAAddress(perftest_omnibus_mask)};
+	return {halco::hicann_dls::vx::OmnibusAddress(perftest_omnibus_mask)};
 }
 
-std::array<fisch::vx::OmnibusFPGA, PerfTest::config_size_in_words> PerfTest::encode() const
+std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> PerfTest::encode() const
 {
-	return {fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(m_enable))};
+	return {fisch::vx::Omnibus(fisch::vx::OmnibusData(m_enable))};
 }
 
-void PerfTest::decode(
-    std::array<fisch::vx::OmnibusFPGA, PerfTest::config_size_in_words> const& data)
+void PerfTest::decode(std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> const& data)
 {
 	m_enable = (data[0].get() & 0x1);
 }
@@ -116,30 +115,30 @@ bool PerfTestStatus::operator!=(PerfTestStatus const& other) const
 
 HALDLS_VX_DEFAULT_OSTREAM_OP(PerfTestStatus)
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PerfTestStatus::read_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, PerfTestStatus::read_config_size_in_words>
 PerfTestStatus::read_addresses(coordinate_type const& /*coord*/)
 {
 	auto base = perftest_omnibus_mask;
-	return {halco::hicann_dls::vx::OmnibusFPGAAddress(base + 1),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(base + 2),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(base + 3),
-	        halco::hicann_dls::vx::OmnibusFPGAAddress(base + 4)};
+	return {halco::hicann_dls::vx::OmnibusAddress(base + 1),
+	        halco::hicann_dls::vx::OmnibusAddress(base + 2),
+	        halco::hicann_dls::vx::OmnibusAddress(base + 3),
+	        halco::hicann_dls::vx::OmnibusAddress(base + 4)};
 }
 
-std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, PerfTestStatus::write_config_size_in_words>
+std::array<halco::hicann_dls::vx::OmnibusAddress, PerfTestStatus::write_config_size_in_words>
 PerfTestStatus::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {};
 }
 
-std::array<fisch::vx::OmnibusFPGA, PerfTestStatus::write_config_size_in_words>
-PerfTestStatus::encode() const
+std::array<fisch::vx::Omnibus, PerfTestStatus::write_config_size_in_words> PerfTestStatus::encode()
+    const
 {
 	return {};
 }
 
 void PerfTestStatus::decode(
-    std::array<fisch::vx::OmnibusFPGA, PerfTestStatus::read_config_size_in_words> const& data)
+    std::array<fisch::vx::Omnibus, PerfTestStatus::read_config_size_in_words> const& data)
 {
 	m_sent = Sent(data[0].get());
 	m_received = Received(data[1].get());

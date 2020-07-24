@@ -14,7 +14,7 @@ class access;
 } // namespace cereal
 
 namespace halco::hicann_dls::vx {
-class OmnibusFPGAAddress;
+class OmnibusAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -60,11 +60,11 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, PerfTest const& config) SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	static std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, config_size_in_words> addresses(
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
 	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::OmnibusFPGA, config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::Omnibus, config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::OmnibusFPGA, config_size_in_words> const& data) SYMBOL_VISIBLE
+	void decode(std::array<fisch::vx::Omnibus, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 private:
@@ -78,8 +78,7 @@ private:
 namespace detail {
 
 template <>
-struct BackendContainerTrait<PerfTest>
-    : public BackendContainerBase<PerfTest, fisch::vx::OmnibusFPGA>
+struct BackendContainerTrait<PerfTest> : public BackendContainerBase<PerfTest, fisch::vx::Omnibus>
 {};
 
 } // namespace detail
@@ -189,13 +188,13 @@ public:
 
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 4;
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
-	static std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, read_config_size_in_words>
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
 	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	static std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, write_config_size_in_words>
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
 	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::OmnibusFPGA, write_config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::OmnibusFPGA, read_config_size_in_words> const& data)
+	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
@@ -213,7 +212,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PerfTestStatus>
-    : public BackendContainerBase<PerfTestStatus, fisch::vx::OmnibusFPGA>
+    : public BackendContainerBase<PerfTestStatus, fisch::vx::Omnibus>
 {};
 
 } // namespace detail

@@ -19,7 +19,7 @@ class access;
 namespace fisch::vx {
 
 class OmnibusChipOverJTAG;
-class OmnibusChip;
+class Omnibus;
 
 } // namespace fisch::vx
 
@@ -399,7 +399,7 @@ template <>
 struct BackendContainerTrait<PadMultiplexerConfig>
     : public BackendContainerBase<
           PadMultiplexerConfig,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
@@ -407,7 +407,7 @@ template <>
 struct BackendContainerTrait<ReadoutSourceSelection>
     : public BackendContainerBase<
           ReadoutSourceSelection,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

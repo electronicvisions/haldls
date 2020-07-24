@@ -97,7 +97,7 @@ std::array<AddressT, CommonSynramConfig::config_size_in_words> CommonSynramConfi
 }
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CommonSynramConfig::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CommonSynramConfig::config_size_in_words>
     CommonSynramConfig::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
@@ -154,7 +154,7 @@ std::array<WordT, CommonSynramConfig::config_size_in_words> CommonSynramConfig::
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CommonSynramConfig::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CommonSynramConfig::config_size_in_words>
 CommonSynramConfig::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonSynramConfig::config_size_in_words>
@@ -177,7 +177,7 @@ void CommonSynramConfig::decode(
 }
 
 template SYMBOL_VISIBLE void CommonSynramConfig::decode(
-    std::array<fisch::vx::OmnibusChip, CommonSynramConfig::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, CommonSynramConfig::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void CommonSynramConfig::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonSynramConfig::config_size_in_words> const&
         data);
@@ -237,7 +237,7 @@ std::array<AddressT, SynapseWeightQuad::config_size_in_words> SynapseWeightQuad:
 }
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseWeightQuad::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SynapseWeightQuad::config_size_in_words>
     SynapseWeightQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
@@ -315,7 +315,7 @@ std::array<WordT, SynapseWeightQuad::config_size_in_words> SynapseWeightQuad::en
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, SynapseWeightQuad::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SynapseWeightQuad::config_size_in_words>
 SynapseWeightQuad::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseWeightQuad::config_size_in_words>
@@ -339,7 +339,7 @@ void SynapseWeightQuad::decode(
 }
 
 template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
-    std::array<fisch::vx::OmnibusChip, SynapseWeightQuad::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, SynapseWeightQuad::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseWeightQuad::config_size_in_words> const&
         data);
@@ -395,7 +395,7 @@ std::array<AddressT, SynapseLabelQuad::config_size_in_words> SynapseLabelQuad::a
 }
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseLabelQuad::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SynapseLabelQuad::config_size_in_words>
     SynapseLabelQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::
@@ -458,7 +458,7 @@ std::array<WordT, SynapseLabelQuad::config_size_in_words> SynapseLabelQuad::enco
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, SynapseLabelQuad::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SynapseLabelQuad::config_size_in_words>
 SynapseLabelQuad::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseLabelQuad::config_size_in_words>
@@ -481,7 +481,7 @@ void SynapseLabelQuad::decode(std::array<WordT, SynapseLabelQuad::config_size_in
 }
 
 template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
-    std::array<fisch::vx::OmnibusChip, SynapseLabelQuad::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, SynapseLabelQuad::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseLabelQuad::config_size_in_words> const& data);
 
@@ -549,10 +549,9 @@ SynapseCorrelationCalibQuad::addresses(SynapseCorrelationCalibQuad::coordinate_t
 	return {AddressT(base_even + address_offset), AddressT(base_odd + address_offset)};
 }
 
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    SynapseCorrelationCalibQuad::config_size_in_words>
-SynapseCorrelationCalibQuad::addresses(coordinate_type const& coord);
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusAddress, SynapseCorrelationCalibQuad::config_size_in_words>
+    SynapseCorrelationCalibQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
@@ -636,7 +635,7 @@ SynapseCorrelationCalibQuad::encode() const
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, SynapseCorrelationCalibQuad::config_size_in_words>
+    std::array<fisch::vx::Omnibus, SynapseCorrelationCalibQuad::config_size_in_words>
     SynapseCorrelationCalibQuad::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseCorrelationCalibQuad::config_size_in_words>
@@ -667,8 +666,7 @@ void SynapseCorrelationCalibQuad::decode(
 }
 
 template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
-    std::array<fisch::vx::OmnibusChip, SynapseCorrelationCalibQuad::config_size_in_words> const&
-        data);
+    std::array<fisch::vx::Omnibus, SynapseCorrelationCalibQuad::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
     std::array<
         fisch::vx::OmnibusChipOverJTAG,
@@ -758,7 +756,7 @@ std::array<AddressT, SynapseQuad::config_size_in_words> SynapseQuad::addresses(
 }
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, SynapseQuad::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SynapseQuad::config_size_in_words>
     SynapseQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
@@ -840,7 +838,7 @@ std::array<WordT, SynapseQuad::config_size_in_words> SynapseQuad::encode() const
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, SynapseQuad::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SynapseQuad::config_size_in_words>
 SynapseQuad::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseQuad::config_size_in_words>
@@ -873,7 +871,7 @@ void SynapseQuad::decode(std::array<WordT, SynapseQuad::config_size_in_words> co
 }
 
 template SYMBOL_VISIBLE void SynapseQuad::decode(
-    std::array<fisch::vx::OmnibusChip, SynapseQuad::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, SynapseQuad::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void SynapseQuad::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseQuad::config_size_in_words> const& data);
 
@@ -1052,8 +1050,8 @@ std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelat
 	         AddressT(address_1), AddressT(address_2)}};
 }
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCorrelationQuad::config_size_in_words>
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, ColumnCorrelationQuad::config_size_in_words>
     ColumnCorrelationQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
@@ -1179,9 +1177,8 @@ std::array<WordT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelation
 	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[3]))};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, ColumnCorrelationQuad::config_size_in_words>
-    ColumnCorrelationQuad::encode() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words>
+ColumnCorrelationQuad::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCorrelationQuad::config_size_in_words>
     ColumnCorrelationQuad::encode() const;
@@ -1216,7 +1213,7 @@ void ColumnCorrelationQuad::decode(
 }
 
 template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
-    std::array<fisch::vx::OmnibusChip, ColumnCorrelationQuad::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCorrelationQuad::config_size_in_words> const&
         data);
@@ -1350,7 +1347,7 @@ std::array<AddressT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad:
 }
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, ColumnCurrentQuad::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusAddress, ColumnCurrentQuad::config_size_in_words>
     ColumnCurrentQuad::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
@@ -1440,7 +1437,7 @@ std::array<WordT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad::en
 	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[1]))};
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, ColumnCurrentQuad::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, ColumnCurrentQuad::config_size_in_words>
 ColumnCurrentQuad::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCurrentQuad::config_size_in_words>
@@ -1473,7 +1470,7 @@ void ColumnCurrentQuad::decode(
 }
 
 template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
-    std::array<fisch::vx::OmnibusChip, ColumnCurrentQuad::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, ColumnCurrentQuad::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCurrentQuad::config_size_in_words> const&
         data);
@@ -1579,10 +1576,9 @@ SynapseBiasSelection::write_addresses(coordinate_type const& /*coord*/)
 	return {AddressT(anncore_center_base_address)};
 }
 
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    SynapseBiasSelection::write_config_size_in_words>
-SynapseBiasSelection::write_addresses(coordinate_type const& coord);
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusAddress, SynapseBiasSelection::write_config_size_in_words>
+    SynapseBiasSelection::write_addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
@@ -1596,10 +1592,9 @@ SynapseBiasSelection::read_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipAddress,
-    SynapseBiasSelection::read_config_size_in_words>
-SynapseBiasSelection::read_addresses(coordinate_type const& coord);
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusAddress, SynapseBiasSelection::read_config_size_in_words>
+    SynapseBiasSelection::read_addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
@@ -1674,7 +1669,7 @@ std::array<WordT, SynapseBiasSelection::write_config_size_in_words> SynapseBiasS
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, SynapseBiasSelection::write_config_size_in_words>
+    std::array<fisch::vx::Omnibus, SynapseBiasSelection::write_config_size_in_words>
     SynapseBiasSelection::encode() const;
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseBiasSelection::write_config_size_in_words>
@@ -1686,8 +1681,7 @@ void SynapseBiasSelection::decode(
 {}
 
 template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
-    std::array<fisch::vx::OmnibusChip, SynapseBiasSelection::read_config_size_in_words> const&
-        words);
+    std::array<fisch::vx::Omnibus, SynapseBiasSelection::read_config_size_in_words> const& words);
 template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
     std::array<
         fisch::vx::OmnibusChipOverJTAG,
@@ -1719,9 +1713,9 @@ template SYMBOL_VISIBLE std::array<
 CorrelationReset::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, CorrelationReset::read_config_size_in_words>
-    CorrelationReset::read_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CorrelationReset::read_config_size_in_words>
+    CorrelationReset::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename AddressT>
@@ -1742,9 +1736,9 @@ template SYMBOL_VISIBLE std::array<
 CorrelationReset::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
     coordinate_type const& cell);
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, CorrelationReset::write_config_size_in_words>
-    CorrelationReset::write_addresses<halco::hicann_dls::vx::OmnibusChipAddress>(
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CorrelationReset::write_config_size_in_words>
+    CorrelationReset::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
         coordinate_type const& cell);
 
 template <typename WordT>
@@ -1758,9 +1752,8 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, CorrelationReset::write_config_size_in_words>
     CorrelationReset::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CorrelationReset::write_config_size_in_words>
-    CorrelationReset::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CorrelationReset::write_config_size_in_words>
+CorrelationReset::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void CorrelationReset::decode(std::array<WordT, CorrelationReset::read_config_size_in_words> const&)
@@ -1770,8 +1763,8 @@ template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::OmnibusChipOver
     std::array<fisch::vx::OmnibusChipOverJTAG, CorrelationReset::read_config_size_in_words> const&
         data);
 
-template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CorrelationReset::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, CorrelationReset::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CorrelationReset const&)
 {

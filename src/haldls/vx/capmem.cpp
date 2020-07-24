@@ -57,8 +57,8 @@ template SYMBOL_VISIBLE
         coordinate_type const& cell);
 
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CapMemCell::config_size_in_words>
-    CapMemCell::addresses<halco::hicann_dls::vx::OmnibusChipAddress>(coordinate_type const& cell);
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CapMemCell::config_size_in_words>
+    CapMemCell::addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& cell);
 
 template <typename WordT>
 std::array<WordT, CapMemCell::config_size_in_words> CapMemCell::encode() const
@@ -73,8 +73,8 @@ std::array<WordT, CapMemCell::config_size_in_words> CapMemCell::encode() const
 template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCell::config_size_in_words>
 CapMemCell::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CapMemCell::config_size_in_words>
-CapMemCell::encode<fisch::vx::OmnibusChip>() const;
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CapMemCell::config_size_in_words>
+CapMemCell::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void CapMemCell::decode(std::array<WordT, CapMemCell::config_size_in_words> const& data)
@@ -90,8 +90,8 @@ void CapMemCell::decode(std::array<WordT, CapMemCell::config_size_in_words> cons
 template SYMBOL_VISIBLE void CapMemCell::decode<fisch::vx::OmnibusChipOverJTAG>(
     std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCell::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void CapMemCell::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, CapMemCell::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CapMemCell::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, CapMemCell::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CapMemCell const& cell)
 {
@@ -522,7 +522,7 @@ template SYMBOL_VISIBLE std::array<
     CapMemBlockConfig::config_size_in_words>
 CapMemBlockConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusChipAddress, CapMemBlockConfig::config_size_in_words>
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CapMemBlockConfig::config_size_in_words>
     CapMemBlockConfig::addresses(coordinate_type const& coord);
 
 template <typename WordT>
@@ -570,7 +570,7 @@ std::array<WordT, CapMemBlockConfig::config_size_in_words> CapMemBlockConfig::en
 template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, CapMemBlockConfig::config_size_in_words>
     CapMemBlockConfig::encode() const;
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChip, CapMemBlockConfig::config_size_in_words>
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CapMemBlockConfig::config_size_in_words>
 CapMemBlockConfig::encode() const;
 
 template <typename WordT>
@@ -620,7 +620,7 @@ template SYMBOL_VISIBLE void CapMemBlockConfig::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, CapMemBlockConfig::config_size_in_words> const&
         data);
 template SYMBOL_VISIBLE void CapMemBlockConfig::decode(
-    std::array<fisch::vx::OmnibusChip, CapMemBlockConfig::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, CapMemBlockConfig::config_size_in_words> const& data);
 
 template <class Archive>
 void CapMemBlockConfig::serialize(Archive& ar, std::uint32_t const)
@@ -799,7 +799,7 @@ ReferenceGeneratorConfig::addresses(coordinate_type const& /*coord*/)
 }
 
 template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, ReferenceGeneratorConfig::config_size_in_words>
+    array<halco::hicann_dls::vx::OmnibusAddress, ReferenceGeneratorConfig::config_size_in_words>
     ReferenceGeneratorConfig::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
@@ -876,8 +876,8 @@ template SYMBOL_VISIBLE
     ReferenceGeneratorConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, ReferenceGeneratorConfig::config_size_in_words>
-    ReferenceGeneratorConfig::encode<fisch::vx::OmnibusChip>() const;
+    std::array<fisch::vx::Omnibus, ReferenceGeneratorConfig::config_size_in_words>
+    ReferenceGeneratorConfig::encode<fisch::vx::Omnibus>() const;
 
 template <typename WordT>
 void ReferenceGeneratorConfig::decode(
@@ -905,8 +905,8 @@ template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::Omnibus
         fisch::vx::OmnibusChipOverJTAG,
         ReferenceGeneratorConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::OmnibusChip>(
-    std::array<fisch::vx::OmnibusChip, ReferenceGeneratorConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, ReferenceGeneratorConfig::config_size_in_words> const& data);
 
 template <class Archive>
 void ReferenceGeneratorConfig::serialize(Archive& ar, std::uint32_t const)

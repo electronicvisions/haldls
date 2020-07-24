@@ -133,8 +133,8 @@ template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CommonCorrelationConfig::config_size_in_words>
 CommonCorrelationConfig::addresses(coordinate_type const& coord);
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusChipAddress, CommonCorrelationConfig::config_size_in_words>
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CommonCorrelationConfig::config_size_in_words>
     CommonCorrelationConfig::addresses(coordinate_type const& coord);
 
 template <typename WordT>
@@ -158,7 +158,7 @@ template SYMBOL_VISIBLE
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonCorrelationConfig::config_size_in_words>
     CommonCorrelationConfig::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChip, CommonCorrelationConfig::config_size_in_words>
+    std::array<fisch::vx::Omnibus, CommonCorrelationConfig::config_size_in_words>
     CommonCorrelationConfig::encode() const;
 
 template <typename WordT>
@@ -179,7 +179,7 @@ template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonCorrelationConfig::config_size_in_words> const&
         data);
 template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
-    std::array<fisch::vx::OmnibusChip, CommonCorrelationConfig::config_size_in_words> const& data);
+    std::array<fisch::vx::Omnibus, CommonCorrelationConfig::config_size_in_words> const& data);
 
 } // namespace vx
 } // namespace haldls

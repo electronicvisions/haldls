@@ -14,7 +14,7 @@ class access;
 } // namespace cereal
 
 namespace halco::hicann_dls::vx {
-class OmnibusFPGAAddress;
+class OmnibusAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -97,13 +97,13 @@ public:
 
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 4;
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
-	static std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, read_config_size_in_words>
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
 	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	static std::array<halco::hicann_dls::vx::OmnibusFPGAAddress, write_config_size_in_words>
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
 	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::OmnibusFPGA, write_config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::OmnibusFPGA, read_config_size_in_words> const& data)
+	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
@@ -124,7 +124,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<HicannARQStatus>
-    : public BackendContainerBase<HicannARQStatus, fisch::vx::OmnibusFPGA>
+    : public BackendContainerBase<HicannARQStatus, fisch::vx::Omnibus>
 {};
 
 } // namespace detail

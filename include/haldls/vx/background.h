@@ -17,7 +17,7 @@ class access;
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
-class OmnibusChip;
+class Omnibus;
 } // namespace fisch::vx
 
 namespace haldls {
@@ -255,7 +255,7 @@ template <>
 struct BackendContainerTrait<BackgroundSpikeSource>
     : public BackendContainerBase<
           BackgroundSpikeSource,
-          fisch::vx::OmnibusChip,
+          fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 

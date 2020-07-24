@@ -107,8 +107,8 @@ TEST(SynapseMatrix, CerealizeCoverage)
 
 TEST(SynapseMatrix, EncodeDecode)
 {
-	typedef std::vector<halco::hicann_dls::vx::OmnibusChipAddress> labels_type;
-	typedef std::vector<fisch::vx::OmnibusChip> words_type;
+	typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> labels_type;
+	typedef std::vector<fisch::vx::Omnibus> words_type;
 
 	SynapseMatrix config;
 	config.weights[SynapseRowOnSynram(12)][SynapseOnSynapseRow(23)] = SynapseMatrix::Weight(63);
@@ -120,7 +120,7 @@ TEST(SynapseMatrix, EncodeDecode)
 	    SynapseQuad::config_size_in_words * SynapseQuadColumnOnDLS::size * SynapseRowOnSynram::size>
 	    ref_addresses;
 	std::array<
-	    fisch::vx::OmnibusChip,
+	    fisch::vx::Omnibus,
 	    SynapseQuad::config_size_in_words * SynapseQuadColumnOnDLS::size * SynapseRowOnSynram::size>
 	    ref_data;
 	for (auto c : iter_all<SynapseQuadOnSynram>()) {
@@ -130,11 +130,11 @@ TEST(SynapseMatrix, EncodeDecode)
 		ref_addresses[c.toEnum() * 2] = quad.addresses<typename labels_type::value_type>(syn)[0];
 		ref_addresses[c.toEnum() * 2 + 1] =
 		    quad.addresses<typename labels_type::value_type>(syn)[1];
-		ref_data[c.toEnum() * 2] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0));
-		ref_data[c.toEnum() * 2 + 1] = fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0));
+		ref_data[c.toEnum() * 2] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
+		ref_data[c.toEnum() * 2 + 1] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
 	}
 	ref_data[10 + 12 * SynapseQuadColumnOnDLS::size * SynapseQuad::config_size_in_words] =
-	    fisch::vx::OmnibusChip(fisch::vx::OmnibusData(0x3f00'0000ul));
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x3f00'0000ul));
 
 	{
 		labels_type write_addresses;

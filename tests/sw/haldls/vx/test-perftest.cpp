@@ -12,8 +12,8 @@
 using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 
-typedef std::vector<halco::hicann_dls::vx::OmnibusFPGAAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusFPGA> words_type;
+typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
+typedef std::vector<fisch::vx::Omnibus> words_type;
 
 TEST(PerfTest, General)
 {
@@ -45,10 +45,10 @@ TEST(PerfTest, EncodeDecode)
 
 	PerfTestOnFPGA coord;
 
-	OmnibusFPGAAddress ref_address(0x0800'0000);
-	std::array<OmnibusFPGAAddress, PerfTest::config_size_in_words> ref_addresses = {ref_address};
-	std::array<fisch::vx::OmnibusFPGA, PerfTest::config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x1))};
+	OmnibusAddress ref_address(0x8800'0000);
+	std::array<OmnibusAddress, PerfTest::config_size_in_words> ref_addresses = {ref_address};
+	std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> ref_data = {
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x1))};
 
 	{
 		addresses_type write_addresses;
@@ -132,16 +132,16 @@ TEST(PerfTestStatus, EncodeDecode)
 
 	PerfTestStatusOnFPGA coord;
 
-	OmnibusFPGAAddress base_address(0x0800'0000);
-	std::array<OmnibusFPGAAddress, PerfTestStatus::read_config_size_in_words> ref_addresses = {
-	    OmnibusFPGAAddress(base_address + 1), OmnibusFPGAAddress(base_address + 2),
-	    OmnibusFPGAAddress(base_address + 3), OmnibusFPGAAddress(base_address + 4)};
+	OmnibusAddress base_address(0x8800'0000);
+	std::array<OmnibusAddress, PerfTestStatus::read_config_size_in_words> ref_addresses = {
+	    OmnibusAddress(base_address + 1), OmnibusAddress(base_address + 2),
+	    OmnibusAddress(base_address + 3), OmnibusAddress(base_address + 4)};
 
-	std::array<fisch::vx::OmnibusFPGA, PerfTestStatus::read_config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x123)),
-	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x456)),
-	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x789)),
-	    fisch::vx::OmnibusFPGA(fisch::vx::OmnibusData(0x010))};
+	std::array<fisch::vx::Omnibus, PerfTestStatus::read_config_size_in_words> ref_data = {
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x123)),
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x456)),
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x789)),
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x010))};
 
 	{
 		addresses_type read_addresses;

@@ -12,8 +12,8 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
-typedef std::vector<halco::hicann_dls::vx::OmnibusFPGAAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusFPGA> words_type;
+typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
+typedef std::vector<fisch::vx::Omnibus> words_type;
 
 TEST(HicannARQStatus, General)
 {
@@ -114,12 +114,11 @@ TEST(HicannARQStatus, EncodeDecode)
 
 	HicannARQStatusOnFPGA coord;
 
-	std::array<
-	    halco::hicann_dls::vx::OmnibusFPGAAddress, HicannARQStatus::read_config_size_in_words>
-	    ref_addresses = {OmnibusFPGAAddress(0x0c000010), OmnibusFPGAAddress(0x0c000011),
-	                     OmnibusFPGAAddress(0x0c000012), OmnibusFPGAAddress(0x0c000013)};
+	std::array<halco::hicann_dls::vx::OmnibusAddress, HicannARQStatus::read_config_size_in_words>
+	    ref_addresses = {OmnibusAddress(0x8c000010), OmnibusAddress(0x8c000011),
+	                     OmnibusAddress(0x8c000012), OmnibusAddress(0x8c000013)};
 
-	std::array<fisch::vx::OmnibusFPGA, HicannARQStatus::read_config_size_in_words> ref_data = {
+	std::array<fisch::vx::Omnibus, HicannARQStatus::read_config_size_in_words> ref_data = {
 	    fisch::vx::OmnibusData{0x2}, fisch::vx::OmnibusData{0x4}, fisch::vx::OmnibusData{0x3},
 	    fisch::vx::OmnibusData{0x1}};
 
@@ -133,7 +132,6 @@ TEST(HicannARQStatus, EncodeDecode)
 	visit_preorder(
 	    read_config, coord,
 	    stadls::DecodeVisitor<
-	        std::array<fisch::vx::OmnibusFPGA, HicannARQStatus::read_config_size_in_words>>{
-	        ref_data});
+	        std::array<fisch::vx::Omnibus, HicannARQStatus::read_config_size_in_words>>{ref_data});
 	EXPECT_EQ(config, read_config);
 }
