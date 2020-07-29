@@ -1,5 +1,6 @@
 #include "lola/vx/ppu.h"
 
+#include <iostream>
 #include <map>
 #include <vector>
 
@@ -225,10 +226,8 @@ std::ostream& operator<<(std::ostream& os, ExternalPPUMemory const& config)
 
 PPUProgram::Symbol::Symbol() : type(Type::other), coordinate() {}
 
-PPUProgram::Symbol::Symbol(
-    Type const& type, halco::hicann_dls::vx::PPUMemoryBlockOnPPU const& coord) :
-    type(type),
-    coordinate(coord)
+PPUProgram::Symbol::Symbol(Type const& type, Coordinate const& coord) :
+    type(type), coordinate(coord)
 {}
 
 bool PPUProgram::Symbol::operator==(Symbol const& other) const
@@ -258,7 +257,9 @@ std::ostream& operator<<(std::ostream& os, PPUProgram::Symbol const& symbol)
 			break;
 		}
 	}
-	os << ", " << symbol.coordinate << ")";
+	os << ", ";
+	std::visit([&](auto const& c) { os << c; }, symbol.coordinate);
+	os << ")";
 	return os;
 }
 
@@ -346,14 +347,24 @@ PPUElfFile::symbols_type PPUElfFile::read_symbols()
 					}
 				}
 				auto const name = std::string(strtab + x.st_name);
-				auto min = halco::hicann_dls::vx::PPUMemoryWordOnPPU(
-				    x.st_value / sizeof(haldls::vx::PPUMemoryWord::raw_type));
-				auto max = halco::hicann_dls::vx::PPUMemoryWordOnPPU(
-				    min +
-				    (x.st_size + sizeof(haldls::vx::PPUMemoryWord::raw_type) - 1) /
-				        sizeof(haldls::vx::PPUMemoryWord::raw_type) -
-				    1);
-				symbol.coordinate = halco::hicann_dls::vx::PPUMemoryBlockOnPPU(min, max);
+				constexpr size_t external_base = external_base_address;
+				if (x.st_value >= external_base) { // external memory
+					auto min = halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(
+					    x.st_value - external_base);
+					auto max =
+					    halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(min + x.st_size - 1);
+					symbol.coordinate =
+					    halco::hicann_dls::vx::ExternalPPUMemoryBlockOnFPGA(min, max);
+				} else { // internal memory
+					auto min = halco::hicann_dls::vx::PPUMemoryWordOnPPU(
+					    x.st_value / sizeof(haldls::vx::PPUMemoryWord::raw_type));
+					auto max = halco::hicann_dls::vx::PPUMemoryWordOnPPU(
+					    min +
+					    (x.st_size + sizeof(haldls::vx::PPUMemoryWord::raw_type) - 1) /
+					        sizeof(haldls::vx::PPUMemoryWord::raw_type) -
+					    1);
+					symbol.coordinate = halco::hicann_dls::vx::PPUMemoryBlockOnPPU(min, max);
+				}
 				symbols.insert({name, symbol});
 			}
 		}
@@ -363,22 +374,10 @@ PPUElfFile::symbols_type PPUElfFile::read_symbols()
 	return symbols;
 }
 
-haldls::vx::PPUMemoryBlock PPUElfFile::read_program()
+namespace {
+
+haldls::vx::PPUMemoryBlock to_internal_block(std::vector<char>&& bytes)
 {
-	size_t phdrnum = 0;
-
-	if (elf_getphdrnum(m_elf_ptr, &phdrnum) != 0) {
-		throw std::runtime_error("Getting number of program headers failed.");
-	}
-
-	Elf32_Phdr* phdr = elf32_getphdr(m_elf_ptr);
-	if (phdr == nullptr) {
-		throw std::runtime_error("No program header found.");
-	}
-
-	std::vector<char> bytes(phdr->p_filesz);
-	pread(m_fd, bytes.data(), phdr->p_filesz, phdr->p_offset);
-
 	// pad to multiple of raw word size
 	while ((bytes.size() % sizeof(haldls::vx::PPUMemoryWord::raw_type)) != 0) {
 		bytes.push_back(0);
@@ -405,6 +404,93 @@ haldls::vx::PPUMemoryBlock PPUElfFile::read_program()
 	    halco::hicann_dls::vx::PPUMemoryBlockSize(ppu_memory_words.size()));
 	block.set_words(ppu_memory_words);
 	return block;
+}
+
+std::optional<ExternalPPUMemoryBlock> to_external_block(std::vector<char>&& bytes)
+{
+	if (bytes.empty()) {
+		return {};
+	}
+
+	// pad to multiple of raw word size
+	while ((bytes.size() % sizeof(haldls::vx::PPUMemoryWord::raw_type)) != 0) {
+		bytes.push_back(0);
+	}
+
+	ExternalPPUMemoryBlock block(halco::hicann_dls::vx::ExternalPPUMemoryBlockSize(bytes.size()));
+
+	auto ppu_bytes = block.get_bytes();
+	std::transform(bytes.begin(), bytes.end(), ppu_bytes.begin(), [](auto const& byte) {
+		return haldls::vx::ExternalPPUMemoryByte(haldls::vx::ExternalPPUMemoryByte::Value(
+		    *reinterpret_cast<haldls::vx::ExternalPPUMemoryByte::raw_type const*>(&byte)));
+	});
+
+	block.set_bytes(ppu_bytes);
+	return block;
+}
+
+} // namespace
+
+PPUElfFile::Memory PPUElfFile::read_program()
+{
+	size_t shstrndx;
+	if (elf_getshdrstrndx(m_elf_ptr, &shstrndx) != 0) {
+		throw std::runtime_error("Shstrndx not found.");
+	}
+
+	std::vector<char> internal_bytes;
+	std::vector<char> external_bytes;
+
+	auto const copy_scn = [](Elf_Scn* scn, std::vector<char>& bytes, size_t base_address) {
+		Elf_Data* data = nullptr;
+		if ((data = elf_getdata(scn, data)) != nullptr) {
+			// maybe resize such that the new section fits
+			if (bytes.size() <= base_address + data->d_size) {
+				bytes.resize(base_address + data->d_size);
+			}
+			auto const byte_ptr = reinterpret_cast<char*>(data->d_buf);
+			auto const begin = bytes.begin() + base_address;
+			if (byte_ptr == nullptr) {
+				std::fill(begin, begin + data->d_size, 0);
+			} else {
+				std::copy(byte_ptr, byte_ptr + data->d_size, begin);
+			}
+		} else {
+			throw std::runtime_error("Error during elf_getdata.");
+		}
+	};
+
+	Elf_Scn* scn = nullptr;
+	while ((scn = elf_nextscn(m_elf_ptr, scn)) != nullptr) {
+		Elf32_Shdr* shdr;
+		if ((shdr = elf32_getshdr(scn)) == nullptr) {
+			break;
+		}
+		char* name;
+		if ((name = elf_strptr(m_elf_ptr, shstrndx, shdr->sh_name)) == nullptr) {
+			throw std::runtime_error("elf_strptr failed.");
+		}
+		if (std::string(name).rfind("int", 0) == 0) {
+			copy_scn(scn, internal_bytes, shdr->sh_addr);
+		} else if (std::string(name).rfind("ext", 0) == 0) {
+			constexpr size_t external_base = external_base_address;
+			copy_scn(scn, external_bytes, shdr->sh_addr - external_base);
+		} else if (
+		    (std::string(name).find(".text") != std::string::npos) ||
+		    (std::string(name).find(".data") != std::string::npos) ||
+		    (std::string(name).find(".rodata") != std::string::npos) ||
+		    (std::string(name).find(".bss") != std::string::npos) ||
+		    (std::string(name).find(".init") != std::string::npos) ||
+		    (std::string(name).find(".fini") != std::string::npos)) {
+			// old-skool matches
+			copy_scn(scn, internal_bytes, shdr->sh_addr);
+		}
+		/* else drop silently */
+	}
+
+	auto const internal_block = to_internal_block(std::move(internal_bytes));
+	auto const external_block = to_external_block(std::move(external_bytes));
+	return {internal_block, external_block};
 }
 
 PPUElfFile::~PPUElfFile()

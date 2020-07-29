@@ -5,10 +5,16 @@
 #include "hate/visibility.h"
 #include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
+#include <optional>
+#include <variant>
 #include <boost/hana/adapt_struct.hpp>
 
 #include "haldls/vx/fpga.h"
 #include "haldls/vx/ppu.h"
+
+#ifdef __GENPYBIND_GENERATED__
+#include <pybind11/pybind11.h>
+#endif
 
 class Elf;
 
@@ -122,6 +128,11 @@ public:
 	class GENPYBIND(visible) Symbol
 	{
 	public:
+		typedef std::variant<
+		    halco::hicann_dls::vx::PPUMemoryBlockOnPPU,
+		    halco::hicann_dls::vx::ExternalPPUMemoryBlockOnFPGA>
+		    Coordinate;
+
 		/**
 		 * Symbol type.
 		 */
@@ -140,14 +151,13 @@ public:
 		/**
 		 * Construct a symbol from a type and a coordinate.
 		 */
-		Symbol(Type const& type, halco::hicann_dls::vx::PPUMemoryBlockOnPPU const& coord)
-		    SYMBOL_VISIBLE;
+		Symbol(Type const& type, Coordinate const& coord) SYMBOL_VISIBLE;
 
 		/** Type of symbol. */
 		Type type;
 
 		/** Location of memory block corresponding to symbol. */
-		halco::hicann_dls::vx::PPUMemoryBlockOnPPU coordinate;
+		Coordinate coordinate;
 
 		bool operator==(Symbol const& other) const SYMBOL_VISIBLE;
 
@@ -182,12 +192,18 @@ public:
 	 */
 	symbols_type read_symbols() SYMBOL_VISIBLE;
 
+	struct GENPYBIND(visible) Memory
+	{
+		haldls::vx::PPUMemoryBlock internal;
+		std::optional<lola::vx::ExternalPPUMemoryBlock> external;
+	};
+
 	/**
 	 * Read program memory data, i.e. the data associated to all sections necessary for execution
 	 * placed at their specified location in memory.
-	 * @return Continuous block of PPU memory data.
+	 * @return Continuous block of PPU memory data for external and internal memory.
 	 */
-	haldls::vx::PPUMemoryBlock read_program() SYMBOL_VISIBLE;
+	Memory read_program() SYMBOL_VISIBLE;
 
 	/**
 	 * Close file.
@@ -197,6 +213,11 @@ public:
 private:
 	int m_fd;
 	Elf* m_elf_ptr;
+
+	/**
+	 * Base address of external memory for instructions from the view of the PPU.
+	 */
+	constexpr static uint32_t external_base_address = 0x8000'0000;
 };
 
 } // namespace vx

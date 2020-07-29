@@ -162,13 +162,30 @@ class TestPylolaVXV2(unittest.TestCase):
                                         'lola_ppu_test_elf_file.bin')))
         # all numbers below might and will change on change in build-profile,
         # compiler or runtime
-        program_size = 113
-        self.assertEqual(elf_file.read_program().size(), program_size)
+        program_internal_size = 42
+        self.assertEqual(elf_file.read_program().internal.size(),
+                         program_internal_size)
+
+        mem = elf_file.read_program()
+        ext_mem = mem.external
+        if mem.external is not None:
+            self.assertEqual(ext_mem, mem.external)
+
+        mem = elf_file.read_program()
+        old_ext_mem = mem.external
+        self.assertIsNotNone(mem.external)
+        mem.external = None
+        ext_mem = mem.external
+        self.assertEqual(ext_mem, mem.external)
+        self.assertNotEqual(ext_mem, old_ext_mem)
+        # TODO (Issue #3988): mem.external = None leads to "free" of
+        # old_ext_mem
+        # self.assertEqual(old_ext_mem, elf_file.read_program().external)
 
         symbols = elf_file.read_symbols()
         # get these numbers by powerpc-ppu-nm <program>
         symbol_a_position = halco.PPUMemoryBlockOnPPU(
-            halco.PPUMemoryWordOnPPU(113), halco.PPUMemoryWordOnPPU(113))
+            halco.PPUMemoryWordOnPPU(38), halco.PPUMemoryWordOnPPU(38))
         self.assertEqual(symbols["a"], lola.PPUProgram.Symbol(
             lola.PPUProgram.Symbol.Type.object, symbol_a_position))
 

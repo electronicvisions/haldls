@@ -41,20 +41,22 @@ TEST(PPUElfFile, General)
 
 	PPUElfFile file(test_ppu_program);
 	auto symbols = file.read_symbols();
-	auto block = file.read_program();
+	auto [block, external_block] = file.read_program();
 
 	// all numbers below might and will change on changes in build profile, compiler or runtime
-	constexpr size_t program_num_words = 113;
-	PPUMemoryBlockOnPPU symbol_a_position(PPUMemoryWordOnPPU(113), PPUMemoryWordOnPPU(113));
-	PPUMemoryBlockOnPPU symbol_b_position(PPUMemoryWordOnPPU(114), PPUMemoryWordOnPPU(115));
-	PPUMemoryBlockOnPPU symbol___call_constructors_position(
-	    PPUMemoryWordOnPPU(65), PPUMemoryWordOnPPU(88));
-	PPUMemoryBlockOnPPU symbol___call_destructors_position(
-	    PPUMemoryWordOnPPU(89), PPUMemoryWordOnPPU(112));
-	PPUMemoryBlockOnPPU symbol___cxa_pure_virtual_position(
-	    PPUMemoryWordOnPPU(24), PPUMemoryWordOnPPU(36));
-	PPUMemoryBlockOnPPU symbol_start_position(PPUMemoryWordOnPPU(49), PPUMemoryWordOnPPU(64));
-	PPUMemoryBlockOnPPU symbol__start_position(PPUMemoryWordOnPPU(37), PPUMemoryWordOnPPU(48));
+	constexpr size_t program_num_words = 42;
+	PPUMemoryBlockOnPPU symbol_a_position(PPUMemoryWordOnPPU(38), PPUMemoryWordOnPPU(38));
+	PPUMemoryBlockOnPPU symbol_b_position(PPUMemoryWordOnPPU(40), PPUMemoryWordOnPPU(41));
+	ExternalPPUMemoryBlockOnFPGA symbol___call_constructors_position(
+	    ExternalPPUMemoryByteOnFPGA(0x0), ExternalPPUMemoryByteOnFPGA(0x0 + 0x78 - 1));
+	ExternalPPUMemoryBlockOnFPGA symbol___call_destructors_position(
+	    ExternalPPUMemoryByteOnFPGA(0xa0), ExternalPPUMemoryByteOnFPGA(0xa0 + 0x78 - 1));
+	ExternalPPUMemoryBlockOnFPGA symbol___cxa_pure_virtual_position(
+	    ExternalPPUMemoryByteOnFPGA(0x120), ExternalPPUMemoryByteOnFPGA(0x120 + 0x20 - 1));
+	ExternalPPUMemoryBlockOnFPGA symbol__start_position(
+	    ExternalPPUMemoryByteOnFPGA(0x80), ExternalPPUMemoryByteOnFPGA(0x80 + 0x1c - 1));
+	ExternalPPUMemoryBlockOnFPGA symbol_start_position(
+	    ExternalPPUMemoryByteOnFPGA(0x150), ExternalPPUMemoryByteOnFPGA(0x150 + 0x40 - 1));
 
 	ASSERT_EQ(block.size(), program_num_words);
 
@@ -82,14 +84,14 @@ TEST(Symbol, General)
 
 
 	ASSERT_EQ(sym.type, PPUProgram::Symbol::Type::other);
-	ASSERT_EQ(sym.coordinate, PPUMemoryBlockOnPPU());
+	ASSERT_EQ(sym.coordinate, PPUProgram::Symbol::Coordinate(PPUMemoryBlockOnPPU()));
 
 	sym.type = PPUProgram::Symbol::Type::object;
 	ASSERT_EQ(sym.type, PPUProgram::Symbol::Type::object);
 
 	PPUMemoryBlockOnPPU coord(PPUMemoryWordOnPPU(10), PPUMemoryWordOnPPU(14));
 	sym.coordinate = coord;
-	ASSERT_EQ(sym.coordinate, coord);
+	ASSERT_EQ(sym.coordinate, PPUProgram::Symbol::Coordinate(coord));
 
 	PPUProgram::Symbol sym1(sym.type, sym.coordinate);
 	ASSERT_EQ(sym1, sym);

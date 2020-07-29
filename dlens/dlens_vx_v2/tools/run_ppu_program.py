@@ -4,7 +4,7 @@ import argparse
 from dlens_vx_v2 import halco
 from dlens_vx_v2.sta import PlaybackProgramBuilder, DigitalInit, \
     generate, run
-from dlens_vx_v2.hal import PPUControlRegister, Timer, PPUMemoryBlock, Barrier
+from dlens_vx_v2.hal import PPUControlRegister, Timer, Barrier
 from dlens_vx_v2.lola import PPUElfFile
 from dlens_vx_v2.hxcomm import ConnectionHandle, ManagedConnection
 
@@ -38,22 +38,24 @@ def load_and_start_program(connection: ConnectionHandle,
     program = program_file.read_program()
     program_on_ppu = halco.PPUMemoryBlockOnPPU(
         halco.PPUMemoryWordOnPPU(0),
-        halco.PPUMemoryWordOnPPU(program.size() - 1)
+        halco.PPUMemoryWordOnPPU(program.internal.size() - 1)
     )
+    program_on_fpga = None
+    if program.external:
+        program_on_fpga = halco.ExternalPPUMemoryBlockOnFPGA(
+            halco.ExternalPPUMemoryByteOnFPGA(0),
+            halco.ExternalPPUMemoryByteOnFPGA(program.external.size() - 1)
+        )
 
     program_on_dls = halco.PPUMemoryBlockOnDLS(program_on_ppu, ppu)
 
     # Ensure PPU is in reset state
     builder.write(ppu.toPPUControlRegisterOnDLS(), ppu_control_reg_reset)
 
-    # Manually initialize memory where symbols will lie, issue #3477
-    for _name, symbol in program_file.read_symbols().items():
-        value = PPUMemoryBlock(symbol.coordinate.toPPUMemoryBlockSize())
-        symbol_on_dls = halco.PPUMemoryBlockOnDLS(symbol.coordinate, ppu)
-        builder.write(symbol_on_dls, value)
-
     # Write PPU program
-    builder.write(program_on_dls, program)
+    builder.write(program_on_dls, program.internal)
+    if program_on_fpga:
+        builder.write(program_on_fpga, program.external)
 
     # Set PPU to run state, start execution
     builder.write(ppu.toPPUControlRegisterOnDLS(), ppu_control_reg_run)
