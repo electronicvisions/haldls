@@ -2,6 +2,7 @@
 #include "fisch/vx/event.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/event.h"
+#include "halco/hicann-dls/vx/highspeed_link.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/padi.h"
@@ -387,6 +388,141 @@ struct MADCSampleFromChipChecker
 };
 
 } // namespace detail
+
+
+/**
+ * Highspeed-Link notification from chip.
+ */
+class GENPYBIND(visible) HighspeedLinkNotification
+{
+public:
+	/** Default constructor. */
+	HighspeedLinkNotification() = default;
+
+	/**
+	 * Construct a HighspeedLinkNotification from the data representation.
+	 * @param data Data to use
+	 */
+	HighspeedLinkNotification(fisch::vx::HighspeedLinkNotification const& data) SYMBOL_VISIBLE;
+
+	/**
+	 * Get sample value.
+	 * @return Value value
+	 */
+	GENPYBIND(getter_for(phy))
+	halco::hicann_dls::vx::PhyStatusOnFPGA get_phy() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set sample value.
+	 * @param value Value sample value to set
+	 */
+	GENPYBIND(setter_for(phy))
+	void set_phy(halco::hicann_dls::vx::PhyStatusOnFPGA value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get if link is up.
+	 * @return Boolean value
+	 */
+	GENPYBIND(getter_for(link_up))
+	bool get_link_up() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set if link is up.
+	 * @param value Boolean value to set
+	 */
+	GENPYBIND(setter_for(link_up))
+	void set_link_up(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get if decode error occured.
+	 * @return Boolean value
+	 */
+	GENPYBIND(getter_for(decode_error))
+	bool get_decode_error() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set if decode error occured.
+	 * @param value Boolean value to set
+	 */
+	GENPYBIND(setter_for(decode_error))
+	void set_decode_error(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get if crc error occured.
+	 * @return Boolean value
+	 */
+	GENPYBIND(getter_for(crc_error))
+	bool get_crc_error() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set if crc error occured.
+	 * @param value Boolean value to set
+	 */
+	GENPYBIND(setter_for(crc_error))
+	void set_crc_error(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get if crc is recovered.
+	 * @return Boolean value
+	 */
+	GENPYBIND(getter_for(crc_recover))
+	bool get_crc_recover() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set if crc is recovered.
+	 * @param value Boolean value to set
+	 */
+	GENPYBIND(setter_for(crc_recover))
+	void set_crc_recover(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get if check error occured.
+	 * @return Boolean value
+	 */
+	GENPYBIND(getter_for(check_error))
+	bool get_check_error() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set if check error occured.
+	 * @param value Boolean value to set
+	 */
+	GENPYBIND(setter_for(check_error))
+	void set_check_error(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get FPGA time.
+	 * @return FPGATime value
+	 */
+	GENPYBIND(getter_for(fpga_time))
+	FPGATime get_fpga_time() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set FPGA time.
+	 * @param value FPGATime value to set
+	 */
+	GENPYBIND(setter_for(fpga_time))
+	void set_fpga_time(FPGATime value) SYMBOL_VISIBLE;
+
+	bool operator==(HighspeedLinkNotification const& other) const SYMBOL_VISIBLE;
+	bool operator!=(HighspeedLinkNotification const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, HighspeedLinkNotification const& sample)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version);
+
+	halco::hicann_dls::vx::PhyStatusOnFPGA m_phy{};
+	bool m_link_up{false};
+	bool m_decode_error{false};
+	bool m_crc_error{false};
+	bool m_crc_recover{false};
+	bool m_check_error{false};
+	FPGATime m_fpga_time{};
+};
 
 } // namespace haldls::vx
 

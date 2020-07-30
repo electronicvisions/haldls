@@ -27,7 +27,15 @@ RunTimeInfo run(Connection& connection, PlaybackProgram& program)
 
 		return stadls::vx::run(conn, program.m_program_impl);
 	};
-	return hxcomm::visit_connection(run_impl, connection);
+	auto const time_info = hxcomm::visit_connection(run_impl, connection);
+	{
+		auto logger = log4cxx::Logger::getLogger("stadls.run");
+		std::stringstream ss;
+		ss << "Got highspeed-link notifications:" << std::endl;
+		hate::join(ss, program.get_highspeed_link_notifications(), ",\n");
+		LOG4CXX_TRACE(logger, ss.str());
+	}
+	return time_info;
 }
 
 template <typename Connection>

@@ -88,6 +88,16 @@ typename PlaybackProgram::madc_samples_type PlaybackProgram::get_madc_samples() 
 	return samples;
 }
 
+typename PlaybackProgram::highspeed_link_notifications_type
+PlaybackProgram::get_highspeed_link_notifications() const
+{
+	highspeed_link_notifications_type notifications;
+	auto const& notifications_impl = m_program_impl->get_highspeed_link_notifications();
+	std::copy(
+	    notifications_impl.begin(), notifications_impl.end(), std::back_inserter(notifications));
+	return notifications;
+}
+
 typename PlaybackProgram::spike_pack_counts_type const& PlaybackProgram::get_spikes_pack_counts()
     const
 {

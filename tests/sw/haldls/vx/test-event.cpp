@@ -123,3 +123,102 @@ TEST(SpikeFromChip, CerealizeCoverage)
 	}
 	ASSERT_EQ(obj1, obj2);
 }
+
+TEST(HighspeedLinkNotification, General)
+{
+	EXPECT_NO_THROW(HighspeedLinkNotification());
+	EXPECT_NO_THROW(HighspeedLinkNotification(fisch::vx::HighspeedLinkNotification()));
+
+	HighspeedLinkNotification config;
+	HighspeedLinkNotification other_config = config;
+
+	EXPECT_EQ(other_config, config);
+
+	{
+		halco::hicann_dls::vx::PhyStatusOnFPGA const value(3);
+		config.set_phy(value);
+		EXPECT_EQ(config.get_phy(), value);
+	}
+
+	{
+		bool const value = !config.get_link_up();
+		config.set_link_up(value);
+		EXPECT_EQ(config.get_link_up(), value);
+	}
+
+	{
+		bool const value = !config.get_decode_error();
+		config.set_decode_error(value);
+		EXPECT_EQ(config.get_decode_error(), value);
+	}
+
+	{
+		bool const value = !config.get_crc_error();
+		config.set_crc_error(value);
+		EXPECT_EQ(config.get_crc_error(), value);
+	}
+
+	{
+		bool const value = !config.get_crc_recover();
+		config.set_crc_recover(value);
+		EXPECT_EQ(config.get_crc_recover(), value);
+	}
+
+	{
+		bool const value = !config.get_check_error();
+		config.set_check_error(value);
+		EXPECT_EQ(config.get_check_error(), value);
+	}
+
+	{
+		FPGATime const value(3);
+		config.set_fpga_time(value);
+		EXPECT_EQ(config.get_fpga_time(), value);
+	}
+
+	EXPECT_NE(config, other_config);
+
+	HighspeedLinkNotification config3 = config;
+	EXPECT_EQ(config, config3);
+}
+
+TEST(HighspeedLinkNotification, Ostream)
+{
+	HighspeedLinkNotification obj(fisch::vx::HighspeedLinkNotification(
+	    fisch::vx::HighspeedLinkNotification::Value(0b10010100), FPGATime(15)));
+
+	std::stringstream stream;
+	stream << obj;
+
+	EXPECT_EQ(
+	    stream.str(),
+	    "HighspeedLinkNotification(\n\tPhyStatusOnFPGA(4),\n\tlink_up: true,\n\tdecode_error: "
+	    "false,\n\tcrc_error: true,\n\tcrc_recover: false,\n\tcheck_error: "
+	    "false,\n\tFPGATime(15)\n)");
+}
+
+TEST(HighspeedLinkNotification, CerealizeCoverage)
+{
+	HighspeedLinkNotification obj1, obj2;
+
+	obj1.set_phy(halco::hicann_dls::vx::PhyStatusOnFPGA(4));
+	obj1.set_fpga_time(FPGATime(3));
+	obj1.set_link_up(!obj1.get_link_up());
+	obj1.set_decode_error(!obj1.get_decode_error());
+	obj1.set_crc_error(!obj1.get_crc_error());
+	obj1.set_crc_recover(!obj1.get_crc_recover());
+	obj1.set_check_error(!obj1.get_check_error());
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}

@@ -297,9 +297,137 @@ void MADCSampleFromChip::serialize(Archive& ar, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(MADCSampleFromChip)
 
+
+HighspeedLinkNotification::HighspeedLinkNotification(
+    fisch::vx::HighspeedLinkNotification const& data)
+{
+	m_fpga_time = data.get_fpga_time();
+	auto const value = data.get_value().value();
+	m_phy = halco::hicann_dls::vx::PhyStatusOnFPGA((value & 0b11100000) >> 5);
+	m_link_up = value & 0b00010000;
+	m_decode_error = value & 0b000001000;
+	m_crc_error = value & 0b00000100;
+	m_crc_recover = value & 0b00000010;
+	m_check_error = value & 0b00000001;
+}
+
+halco::hicann_dls::vx::PhyStatusOnFPGA HighspeedLinkNotification::get_phy() const
+{
+	return m_phy;
+}
+
+void HighspeedLinkNotification::set_phy(halco::hicann_dls::vx::PhyStatusOnFPGA const value)
+{
+	m_phy = value;
+}
+
+bool HighspeedLinkNotification::get_link_up() const
+{
+	return m_link_up;
+}
+
+void HighspeedLinkNotification::set_link_up(bool const value)
+{
+	m_link_up = value;
+}
+
+bool HighspeedLinkNotification::get_decode_error() const
+{
+	return m_decode_error;
+}
+
+void HighspeedLinkNotification::set_decode_error(bool const value)
+{
+	m_decode_error = value;
+}
+
+bool HighspeedLinkNotification::get_crc_error() const
+{
+	return m_crc_error;
+}
+
+void HighspeedLinkNotification::set_crc_error(bool const value)
+{
+	m_crc_error = value;
+}
+
+bool HighspeedLinkNotification::get_crc_recover() const
+{
+	return m_crc_recover;
+}
+
+void HighspeedLinkNotification::set_crc_recover(bool const value)
+{
+	m_crc_recover = value;
+}
+
+void HighspeedLinkNotification::set_check_error(bool const value)
+{
+	m_check_error = value;
+}
+
+bool HighspeedLinkNotification::get_check_error() const
+{
+	return m_check_error;
+}
+
+FPGATime HighspeedLinkNotification::get_fpga_time() const
+{
+	return m_fpga_time;
+}
+
+void HighspeedLinkNotification::set_fpga_time(FPGATime const value)
+{
+	m_fpga_time = value;
+}
+
+bool HighspeedLinkNotification::operator==(HighspeedLinkNotification const& other) const
+{
+	return m_phy == other.m_phy && m_fpga_time == other.m_fpga_time &&
+	       m_link_up == other.m_link_up && m_decode_error == other.m_decode_error &&
+	       m_crc_error == other.m_crc_error && m_crc_recover == other.m_crc_recover &&
+	       m_check_error == other.m_check_error;
+}
+
+bool HighspeedLinkNotification::operator!=(HighspeedLinkNotification const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, HighspeedLinkNotification const& sample)
+{
+	std::stringstream ss;
+	ss << std::boolalpha;
+	ss << "HighspeedLinkNotification(" << std::endl;
+	ss << "\t" << sample.m_phy << "," << std::endl;
+	ss << "\tlink_up: " << sample.m_link_up << "," << std::endl;
+	ss << "\tdecode_error: " << sample.m_decode_error << "," << std::endl;
+	ss << "\tcrc_error: " << sample.m_crc_error << "," << std::endl;
+	ss << "\tcrc_recover: " << sample.m_crc_recover << "," << std::endl;
+	ss << "\tcheck_error: " << sample.m_check_error << "," << std::endl;
+	ss << "\t" << sample.m_fpga_time << std::endl;
+	ss << ")";
+	return (os << ss.str());
+}
+
+template <typename Archive>
+void HighspeedLinkNotification::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_phy));
+	ar(CEREAL_NVP(m_link_up));
+	ar(CEREAL_NVP(m_decode_error));
+	ar(CEREAL_NVP(m_crc_error));
+	ar(CEREAL_NVP(m_crc_recover));
+	ar(CEREAL_NVP(m_check_error));
+	ar(CEREAL_NVP(m_fpga_time));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(HighspeedLinkNotification)
+
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::SpikePack1ToChip, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SpikePack2ToChip, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SpikePack3ToChip, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SpikeFromChip, 0)
+CEREAL_CLASS_VERSION(haldls::vx::HighspeedLinkNotification, 0)

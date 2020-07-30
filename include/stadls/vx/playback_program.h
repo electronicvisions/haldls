@@ -118,6 +118,7 @@ public:
 
 	typedef std::vector<haldls::vx::SpikeFromChip> spikes_type;
 	typedef std::vector<haldls::vx::MADCSampleFromChip> madc_samples_type;
+	typedef std::vector<haldls::vx::HighspeedLinkNotification> highspeed_link_notifications_type;
 
 	typedef fisch::vx::PlaybackProgram::spike_pack_counts_type spike_pack_counts_type
 	    GENPYBIND(visible);
@@ -137,6 +138,13 @@ public:
 	 */
 	GENPYBIND(getter_for(madc_samples))
 	madc_samples_type get_madc_samples() const SYMBOL_VISIBLE;
+
+	/**
+	 * Get vector of time-annotated highspeed-link notifications.
+	 * @return Vector of notifications
+	 */
+	GENPYBIND(getter_for(highspeed_link_notifications))
+	highspeed_link_notifications_type get_highspeed_link_notifications() const SYMBOL_VISIBLE;
 
 	/**
 	 * Get number of occurences of spike packing from chip.

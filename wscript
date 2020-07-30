@@ -99,7 +99,7 @@ def build(bld):
         source = bld.path.ant_glob('src/stadls/vx/*.cpp'),
         install_path = '${PREFIX}/lib',
         features = 'cxx cxxshlib pyembed',
-        use = ['haldls_vx', 'lola_vx'],
+        use = ['haldls_vx', 'lola_vx', 'logger_obj'],
         uselib = 'HALDLS_LIBRARIES',
     )
 
