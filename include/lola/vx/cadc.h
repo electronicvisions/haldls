@@ -225,6 +225,7 @@ struct VisitPreorderImpl<lola::vx::CADCSampleRow>
 		// only do something on read
 		if constexpr (!std::is_same<ContainerT, lola::vx::CADCSampleRow const>::value) {
 			// trigger ADC sampling by reading one quad of causal channels
+			// The values are broken and discarded, see Issue #3637
 			CADCSampleQuad quad_config_trigger;
 			CADCSampleQuadOnDLS quad_coord_trigger(
 			    CADCSampleQuadOnSynram(
@@ -235,14 +236,8 @@ struct VisitPreorderImpl<lola::vx::CADCSampleRow>
 			    coord.toSynramOnDLS());
 			visit_preorder(quad_config_trigger, quad_coord_trigger, visitor);
 
-			for (auto const entry : iter_all<EntryOnQuad>()) {
-				config.causal[SynapseOnSynapseRow(entry)] = quad_config_trigger.get_sample(entry);
-			}
-
-			// buffered read of remaining causal channel quads
-			for (size_t i = SynapseQuadColumnOnDLS::min + 1; i <= SynapseQuadColumnOnDLS::max;
-			     ++i) {
-				auto quad_column = SynapseQuadColumnOnDLS(i);
+			// buffered read of causal channel quads
+			for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
 				CADCSampleQuadOnDLS quad_coord(
 				    CADCSampleQuadOnSynram(
 				        SynapseQuadOnSynram(quad_column, coord.toSynapseRowOnSynram()),
@@ -288,98 +283,45 @@ struct VisitPreorderImpl<lola::vx::CADCSamples>
 
 		// only do something on read
 		if constexpr (!std::is_same<ContainerT, lola::vx::CADCSamples const>::value) {
+			auto const trigger = [&](auto const& loc) {
+				CADCSampleQuad quad_config_trigger;
+				CADCSampleQuadOnDLS quad_coord_trigger_top(
+				    CADCSampleQuadOnSynram(
+				        SynapseQuadOnSynram(
+				            SynapseQuadColumnOnDLS(SynapseQuadColumnOnDLS::min),
+				            SynapseRowOnSynram()),
+				        CADCChannelType::causal, CADCReadoutType::trigger_read),
+				    loc);
+				visit_preorder(quad_config_trigger, quad_coord_trigger_top, visitor);
+			};
+
 			// trigger ADC sampling in top synram by reading one quad of causal channels
-			CADCSampleQuad quad_config_trigger;
-			CADCSampleQuadOnDLS quad_coord_trigger_top(
-			    CADCSampleQuadOnSynram(
-			        SynapseQuadOnSynram(
-			            SynapseQuadColumnOnDLS(SynapseQuadColumnOnDLS::min), SynapseRowOnSynram()),
-			        CADCChannelType::causal, CADCReadoutType::trigger_read),
-			    SynramOnDLS::top);
-			visit_preorder(quad_config_trigger, quad_coord_trigger_top, visitor);
-
-			for (auto const entry : iter_all<EntryOnQuad>()) {
-				config.causal[SynramOnDLS::top][SynapseOnSynapseRow(entry)] =
-				    quad_config_trigger.get_sample(entry);
-			}
-
 			// immediately trigger ADC sampling in bottom synram as well
-			CADCSampleQuadOnDLS quad_coord_trigger_bot(
-			    CADCSampleQuadOnSynram(
-			        SynapseQuadOnSynram(
-			            SynapseQuadColumnOnDLS(SynapseQuadColumnOnDLS::min), SynapseRowOnSynram()),
-			        CADCChannelType::causal, CADCReadoutType::trigger_read),
-			    SynramOnDLS::bottom);
-			visit_preorder(quad_config_trigger, quad_coord_trigger_bot, visitor);
+			// The values are broken and discarded, see Issue #3637
+			trigger(SynramOnDLS::top);
+			trigger(SynramOnDLS::bottom);
 
-			for (auto const entry : iter_all<EntryOnQuad>()) {
-				config.causal[SynramOnDLS::bottom][SynapseOnSynapseRow(entry)] =
-				    quad_config_trigger.get_sample(entry);
-			}
-
-			// buffered read of remaining causal channel quads in top synram
-			for (size_t i = SynapseQuadColumnOnDLS::min + 1; i <= SynapseQuadColumnOnDLS::max;
-			     ++i) {
-				auto quad_column = SynapseQuadColumnOnDLS(i);
-				CADCSampleQuadOnDLS quad_coord(
-				    CADCSampleQuadOnSynram(
-				        SynapseQuadOnSynram(quad_column, SynapseRowOnSynram()),
-				        CADCChannelType::causal, CADCReadoutType::buffered),
-				    SynramOnDLS::top);
-				CADCSampleQuad quad_config;
-				visit_preorder(quad_config, quad_coord, visitor);
-				for (auto const syn : iter_all<EntryOnQuad>()) {
-					SynapseOnSynapseRow syn_on_row(syn, quad_column);
-					config.causal[SynramOnDLS::top][syn_on_row] = quad_config.get_sample(syn);
+			auto const buffered = [&](auto& values, auto const& type, auto const& loc) {
+				for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
+					CADCSampleQuadOnDLS quad_coord(
+					    CADCSampleQuadOnSynram(
+					        SynapseQuadOnSynram(quad_column, SynapseRowOnSynram()), type,
+					        CADCReadoutType::buffered),
+					    loc);
+					CADCSampleQuad quad_config;
+					visit_preorder(quad_config, quad_coord, visitor);
+					for (auto const syn : iter_all<EntryOnQuad>()) {
+						SynapseOnSynapseRow syn_on_row(syn, quad_column);
+						values[loc][syn_on_row] = quad_config.get_sample(syn);
+					}
 				}
-			}
+			};
 
-			// buffered read of acausal channel quads in top synram
-			for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
-				CADCSampleQuadOnDLS quad_coord(
-				    CADCSampleQuadOnSynram(
-				        SynapseQuadOnSynram(quad_column, SynapseRowOnSynram()),
-				        CADCChannelType::acausal, CADCReadoutType::buffered),
-				    SynramOnDLS::top);
-				CADCSampleQuad quad_config;
-				visit_preorder(quad_config, quad_coord, visitor);
-				for (auto const syn : iter_all<EntryOnQuad>()) {
-					SynapseOnSynapseRow syn_on_row(syn, quad_column);
-					config.acausal[SynramOnDLS::top][syn_on_row] = quad_config.get_sample(syn);
-				}
-			}
-
-			// buffered read of remaining causal channel quads in bottom synram
-			for (size_t i = SynapseQuadColumnOnDLS::min + 1; i <= SynapseQuadColumnOnDLS::max;
-			     ++i) {
-				auto quad_column = SynapseQuadColumnOnDLS(i);
-				CADCSampleQuadOnDLS quad_coord(
-				    CADCSampleQuadOnSynram(
-				        SynapseQuadOnSynram(quad_column, SynapseRowOnSynram()),
-				        CADCChannelType::causal, CADCReadoutType::buffered),
-				    SynramOnDLS::bottom);
-				CADCSampleQuad quad_config;
-				visit_preorder(quad_config, quad_coord, visitor);
-				for (auto const syn : iter_all<EntryOnQuad>()) {
-					SynapseOnSynapseRow syn_on_row(syn, quad_column);
-					config.causal[SynramOnDLS::bottom][syn_on_row] = quad_config.get_sample(syn);
-				}
-			}
-
-			// buffered read of acausal channel quads in bottom synram
-			for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
-				CADCSampleQuadOnDLS quad_coord(
-				    CADCSampleQuadOnSynram(
-				        SynapseQuadOnSynram(quad_column, SynapseRowOnSynram()),
-				        CADCChannelType::acausal, CADCReadoutType::buffered),
-				    SynramOnDLS::bottom);
-				CADCSampleQuad quad_config;
-				visit_preorder(quad_config, quad_coord, visitor);
-				for (auto const syn : iter_all<EntryOnQuad>()) {
-					SynapseOnSynapseRow syn_on_row(syn, quad_column);
-					config.acausal[SynramOnDLS::bottom][syn_on_row] = quad_config.get_sample(syn);
-				}
-			}
+			// buffered reads
+			buffered(config.causal, CADCChannelType::causal, SynramOnDLS::top);
+			buffered(config.acausal, CADCChannelType::acausal, SynramOnDLS::top);
+			buffered(config.causal, CADCChannelType::causal, SynramOnDLS::bottom);
+			buffered(config.acausal, CADCChannelType::acausal, SynramOnDLS::bottom);
 		}
 	}
 };
