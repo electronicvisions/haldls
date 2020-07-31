@@ -6,6 +6,7 @@
 #include "stadls/vx/playback_program.h"
 
 #include <vector>
+#include <set>
 
 namespace stadls::vx {
 
@@ -15,8 +16,9 @@ RunTimeInfo run(Connection& connection, PlaybackProgram& program)
 	auto const run_impl = [&program](auto& conn) {
 		std::vector<hxcomm::vx::Target> remaining;
 
-		auto supported = conn.supported_targets;
-		auto const& unsupported = program.get_unsupported_targets();
+		auto const supported = std::set(conn.supported_targets);
+		auto const& unsupported_unsorted = program.get_unsupported_targets();
+		auto const unsupported = std::set(unsupported_unsorted.begin(), unsupported_unsorted.end());
 		std::set_difference(
 		    supported.begin(), supported.end(), unsupported.begin(), unsupported.end(),
 		    std::back_inserter(remaining));
