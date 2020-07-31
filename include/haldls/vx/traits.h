@@ -1,9 +1,12 @@
 #pragma once
-#include <type_traits>
-#include "fisch/vx/container_fwd.h"
+#include "fisch/vx/container.h"
+#include "fisch/vx/traits.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"
+#include "hate/visibility.h"
+#include <type_traits>
 #include <boost/utility/enable_if.hpp>
+#include <boost/variant.hpp>
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
@@ -56,6 +59,31 @@ constexpr bool is_in_array(std::array<T, N> const& arr, T const& test)
 		}
 	}
 	return false;
+}
+
+/**
+ * Generate lookup table from backend to readable and writable property.
+ */
+template <typename TL>
+struct gen_is_read_and_writeable_lookup_table;
+
+template <typename... Ts>
+struct gen_is_read_and_writeable_lookup_table<hate::type_list<Ts...>>
+{
+	constexpr static std::array<bool, sizeof...(Ts)> value = {
+	    (fisch::vx::IsReadable<Ts>::value && fisch::vx::IsWritable<Ts>::value)...};
+};
+
+/**
+ * Get whether given backend container is readable and writable.
+ * @param b Backend to check
+ * @return Boolean value
+ */
+constexpr bool is_read_and_writeable(Backend const b)
+{
+	constexpr auto lookup_table =
+	    gen_is_read_and_writeable_lookup_table<BackendContainerList>::value;
+	return lookup_table[static_cast<size_t>(b)];
 }
 
 /**

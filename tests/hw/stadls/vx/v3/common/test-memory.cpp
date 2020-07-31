@@ -52,6 +52,27 @@ typedef hate::filter_type_list_t<haldls::vx::HasLocalData, ContainerList> HasLoc
 typedef hate::filter_type_list_t<haldls::vx::detail::IsWriteReadable, HasLocalDataContainerList>
     ReadableAndWriteableContainerList;
 
+template <typename T, typename TL>
+struct to_pairs;
+
+template <typename T, typename... Ts>
+struct to_pairs<T, hate::type_list<Ts...>>
+{
+	typedef hate::type_list<std::pair<T, Ts>...> type;
+};
+
+template <typename TL>
+struct to_container_backend_pairs;
+
+template <typename... Ts>
+struct to_container_backend_pairs<hate::type_list<Ts...>>
+{
+	typedef hate::multi_concat_t<typename to_pairs<
+	    Ts,
+	    typename haldls::vx::detail::BackendContainerTrait<Ts>::container_list>::type...>
+	    type;
+};
+
 template <typename TL>
 struct to_testing_types;
 
@@ -83,7 +104,8 @@ struct HasNoSideeffects
 typedef hate::filter_type_list_t<HasNoSideeffects, ReadableAndWriteableContainerList>
     ReadableAndWriteableNoSideeffectsContainerList;
 
-typedef to_testing_types<ReadableAndWriteableNoSideeffectsContainerList>::type
+typedef to_testing_types<
+    to_container_backend_pairs<ReadableAndWriteableNoSideeffectsContainerList>::type>::type
     ReadableAndWriteableContainers;
 
 /**
@@ -115,7 +137,7 @@ TYPED_TEST_SUITE(
 /**
  * Write random data to (a subset of) all coordinates, read it back and compare.
  *
- * For read- as well as write instructions, the container's default backend is used.
+ * All container backends supporting read and write instructions are used.
  */
 TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 {
@@ -123,31 +145,31 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 		GTEST_SKIP() << "Test is manually disabled for this container.";
 	}
 
-	// test only carried out for the default word type
-	typedef
-	    typename haldls::vx::detail::BackendContainerTrait<TypeParam>::default_container word_type;
-	if constexpr (
-	    !fisch::vx::IsReadable<word_type>::value || !fisch::vx::IsWritable<word_type>::value) {
-		GTEST_SKIP() << "Backend word type does not support read and write operation.";
+	typedef typename TypeParam::first_type Container;
+	constexpr auto backend = haldls::vx::detail::backend_from_backend_container_type<
+	    typename TypeParam::second_type>::backend;
+	// check if backend supports read and write
+	if (!haldls::vx::detail::is_read_and_writeable(backend)) {
+		GTEST_SKIP() << "Backend not read- and writeable.";
 	}
 
 	PlaybackProgramBuilder write_builder;
 	PlaybackProgramBuilder read_builder;
 
-	std::vector<TypeParam> reference_containers;
-	std::vector<PlaybackProgram::ContainerTicket<TypeParam>> read_tickets;
+	std::vector<Container> reference_containers;
+	std::vector<PlaybackProgram::ContainerTicket<Container>> read_tickets;
 
 	for (auto const coord :
-	     iter_sparse<typename TypeParam::coordinate_type>(MAX_WORDS_PER_REDUCED_TEST)) {
-		TypeParam reference_container;
+	     iter_sparse<typename Container::coordinate_type>(MAX_WORDS_PER_REDUCED_TEST)) {
+		Container reference_container;
 
 		stadls::vx::decode_random(random_generator, reference_container);
 
 		reference_containers.push_back(reference_container);
 
-		write_builder.write(coord, reference_container);
+		write_builder.write(coord, reference_container, backend);
 
-		auto ticket = read_builder.read(coord);
+		auto ticket = read_builder.read(coord, backend);
 		read_tickets.push_back(ticket);
 	}
 
