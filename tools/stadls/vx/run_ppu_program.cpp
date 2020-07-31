@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <boost/program_options.hpp>
 
 #include "fisch/vx/constants.h"

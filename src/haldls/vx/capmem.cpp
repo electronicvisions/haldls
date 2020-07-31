@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <numeric>
 #include <utility>
-#include <cereal/types/boost_variant.hpp>
+#include <cereal/types/variant.hpp>
 
 #include "fisch/vx/jtag.h"
 #include "fisch/vx/omnibus.h"
@@ -25,6 +25,12 @@ namespace vx {
 
 using halco::common::typed_array;
 using namespace halco::hicann_dls::vx;
+
+std::ostream& operator<<(std::ostream& os, CapMemCell::value_type const& value)
+{
+	std::visit([&](auto const& v) { os << v; }, value);
+	return os;
+}
 
 CapMemCell::value_type CapMemCell::get_value() const
 {
@@ -63,10 +69,10 @@ template SYMBOL_VISIBLE
 template <typename WordT>
 std::array<WordT, CapMemCell::config_size_in_words> CapMemCell::encode() const
 {
-	if (auto const ptr = boost::get<DisableRefresh>(&m_value)) {
+	if (auto const ptr = std::get_if<DisableRefresh>(&m_value)) {
 		return {WordT(fisch::vx::OmnibusData(*ptr))};
 	} else {
-		return {WordT(fisch::vx::OmnibusData(boost::get<Value>(m_value)))};
+		return {WordT(fisch::vx::OmnibusData(std::get<Value>(m_value)))};
 	}
 }
 
@@ -95,17 +101,7 @@ template SYMBOL_VISIBLE void CapMemCell::decode<fisch::vx::Omnibus>(
 
 std::ostream& operator<<(std::ostream& os, CapMemCell const& cell)
 {
-	using namespace hate::math;
-	if (auto ptr = boost::get<CapMemCell::DisableRefresh>(&(cell.m_value))) {
-		os << *ptr << std::endl;
-	} else {
-		auto const w =
-		    static_cast<CapMemCell::Value::value_type>(boost::get<CapMemCell::Value>(cell.m_value));
-		std::stringstream out;
-		out << std::showbase << std::internal << std::setfill('0') << std::hex
-		    << std::setw(round_up_integer_division(num_bits(CapMemCell::Value::max), 4)) << w;
-		os << out.str() << std::endl;
-	}
+	os << cell.m_value << std::endl;
 	return print_words_for_each_backend(os, cell);
 }
 

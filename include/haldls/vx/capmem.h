@@ -2,9 +2,7 @@
 #include <array>
 #include <cstdint>
 #include <ostream>
-// std::variant not serializable by cereal with builtin support
-#include <boost/variant.hpp>
-#include <pybind11/stl.h>
+#include <variant>
 
 #include "halco/common/geometry.h"
 #include "halco/common/iter_all.h"
@@ -25,25 +23,6 @@ class OmnibusChipOverJTAG;
 class Omnibus;
 } // namespace fisch::vx
 
-// TODO: Issue #3375 move to genpybind as is general
-namespace pybind11::detail {
-
-template <typename... Ts>
-struct type_caster<boost::variant<Ts...>> : variant_caster<boost::variant<Ts...>>
-{};
-
-template <>
-struct visit_helper<boost::variant>
-{
-	template <typename... Args>
-	static auto call(Args&&... args) -> decltype(boost::apply_visitor(args...))
-	{
-		return boost::apply_visitor(args...);
-	}
-};
-
-} // namespace pybind11::detail
-
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
@@ -56,8 +35,10 @@ public:
 	struct GENPYBIND(inline_base("*")) Value
 	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 1022, 0>
 	{
-		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-		    rant_t(val)
+		// default constructor needed because std::variant checks std::is_default_constructible
+		// which is false for constructors with default arguments
+		constexpr explicit Value() : rant_t(0) {}
+		constexpr explicit Value(uintmax_t const val) GENPYBIND(implicit_conversion) : rant_t(val)
 		{}
 	};
 
@@ -67,9 +48,8 @@ public:
 		constexpr explicit DisableRefresh(uintmax_t const val = 1023) : rant_t(val) {}
 	};
 
-	typedef boost::
-	    variant<::haldls::vx::CapMemCell::Value, ::haldls::vx::CapMemCell::DisableRefresh>
-	        value_type;
+	typedef std::variant<::haldls::vx::CapMemCell::Value, ::haldls::vx::CapMemCell::DisableRefresh>
+	    value_type;
 
 	GENPYBIND_MANUAL({
 		auto cls = pybind11::class_<::haldls::vx::CapMemCell::value_type>(parent, "value_type");
@@ -110,6 +90,8 @@ private:
 
 	value_type m_value;
 };
+
+std::ostream& operator<<(std::ostream& os, CapMemCell::value_type const& value) SYMBOL_VISIBLE;
 
 class GENPYBIND(visible) CapMemBlock : public DifferentialWriteTrait
 {

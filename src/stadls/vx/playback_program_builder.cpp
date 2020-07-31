@@ -1,5 +1,6 @@
 #include "stadls/vx/playback_program_builder.h"
 
+#include <iostream>
 #include <optional>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/unordered_set.hpp>

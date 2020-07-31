@@ -2,7 +2,7 @@
 #include <type_traits>
 #include <boost/hana.hpp>
 #include <cereal/cereal.hpp>
-#include <cereal/types/boost_variant.hpp>
+#include <cereal/types/variant.hpp>
 
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"

@@ -31,10 +31,10 @@ TEST(CapMemCell, General)
 	CapMemCell o;
 	auto val = draw_ranged_non_default_value<value_type>();
 	o.set_value(val);
-	ASSERT_EQ(boost::get<CapMemCell::Value>(o.get_value()), val);
+	ASSERT_EQ(std::get<CapMemCell::Value>(o.get_value()), val);
 
 	o.set_value(CapMemCell::DisableRefresh());
-	ASSERT_EQ(boost::get<CapMemCell::DisableRefresh>(o.get_value()), CapMemCell::DisableRefresh());
+	ASSERT_EQ(std::get<CapMemCell::DisableRefresh>(o.get_value()), CapMemCell::DisableRefresh());
 
 	// test assign
 	CapMemCell o_copy = o;
@@ -99,7 +99,7 @@ TEST(CapMemBlock, General)
 	size_t i = 0;
 	for (auto cell : halco::common::iter_all<CapMemCellOnCapMemBlock>()) {
 		block.set_cell(cell, CapMemCell::Value(i));
-		ASSERT_EQ(boost::get<CapMemCell::Value>(block.get_cell(cell)), CapMemCell::Value(i));
+		ASSERT_EQ(std::get<CapMemCell::Value>(block.get_cell(cell)), CapMemCell::Value(i));
 		i = (i + 1) % CapMemCell::Value::max;
 	}
 
