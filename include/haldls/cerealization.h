@@ -32,7 +32,7 @@ void from_json(T& t, std::string const& s)
 } // namespace haldls::vx
 
 
-// explicitly instantiate our template SYMBOL_VISIBLE functions
+// explicitly instantiate our template SYMBOL_VISIBLE functions; includes to_json/from_json
 #define EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CLASS_NAME)                                          \
 	template SYMBOL_VISIBLE void CLASS_NAME ::serialize(                                           \
 	    cereal::BinaryOutputArchive&, std::uint32_t const);                                        \
@@ -50,5 +50,5 @@ void from_json(T& t, std::string const& s)
 	    cereal::XMLOutputArchive&, std::uint32_t const);                                           \
 	template SYMBOL_VISIBLE void CLASS_NAME ::serialize(                                           \
 	    cereal::XMLInputArchive&, std::uint32_t const);                                            \
-	template SYMBOL_VISIBLE std::string to_json(CLASS_NAME const&);                                \
-	template SYMBOL_VISIBLE void from_json(CLASS_NAME&, std::string const&);
+	template SYMBOL_VISIBLE std::string haldls::vx::to_json(CLASS_NAME const&);                    \
+	template SYMBOL_VISIBLE void haldls::vx::from_json(CLASS_NAME&, std::string const&);

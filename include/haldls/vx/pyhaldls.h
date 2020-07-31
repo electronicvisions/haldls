@@ -14,6 +14,7 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyfisch_vx");
 })
 
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/haldls.h"
 #include "haldls/vx/pickle.h"
 #include "hate/type_list.h"
@@ -21,25 +22,23 @@ GENPYBIND_MANUAL({
 namespace haldls::vx::detail {
 
 #define PLAYBACK_CONTAINER(Name, Type) #Name,
-#define LAST_PLAYBACK_CONTAINER(Name, Type) #Name
-static std::vector<std::string> const container_names = {
+static std::vector<std::string> const pickle_type_names = {
 #include "haldls/vx/container.def"
-};
+    "Barrier"};
 
 #define PLAYBACK_CONTAINER(Name, Type) Type,
-#define LAST_PLAYBACK_CONTAINER(Name, Type) Type
 typedef hate::type_list<
 #include "haldls/vx/container.def"
-    >
-    container_types;
+    haldls::vx::Barrier>
+    pickle_types;
 
 py::list get_containers_list(py::module& m);
 
 } // haldls::vx::detail
 
 GENPYBIND_MANUAL({
-	::haldls::vx::AddPickle<::haldls::vx::detail::container_types>::apply(
-	    parent, ::haldls::vx::detail::container_names);
+	::haldls::vx::AddPickle<::haldls::vx::detail::pickle_types>::apply(
+	    parent, ::haldls::vx::detail::pickle_type_names);
 
 	parent.attr("containers") = [&parent]() {
 		return haldls::vx::detail::get_containers_list(parent);

@@ -1,6 +1,12 @@
 #include "stadls/vx/dumper.h"
 
-using namespace stadls::vx;
+#include <cereal/types/utility.hpp>
+#include <cereal/types/variant.hpp>
+#include <cereal/types/vector.hpp>
+
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.h"
+#include "lola/vx/cerealization.h"
 
 namespace stadls::vx {
 
@@ -71,6 +77,12 @@ std::ostream& operator<<(std::ostream& os, Dumper const& builder)
 	return os;
 }
 
+template <typename Archive>
+void Dumper::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_dumpit));
+}
+
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template void Dumper::write<Type>(                                                             \
 	    typename Type::coordinate_type const& coord, Type const& config);                          \
@@ -82,3 +94,5 @@ std::ostream& operator<<(std::ostream& os, Dumper const& builder)
 #include "lola/vx/container.def"
 
 } // namespace stadls::vx
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::Dumper)

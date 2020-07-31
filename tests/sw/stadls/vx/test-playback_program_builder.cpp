@@ -3,6 +3,11 @@
 #include "hate/variant.h"
 #include "hxcomm/vx/target.h"
 #include "stadls/vx/dumper.h"
+
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.h"
+#include "lola/vx/cerealization.h"
+
 #include "stadls/vx/playback_program_builder.h"
 
 #include "fisch/vx/playback_program_builder.h"
@@ -117,6 +122,22 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 	EXPECT_EQ(cocos_saved.size(), 4);
 
 	EXPECT_EQ(cocos_written, cocos_saved);
+
+	{
+		std::ostringstream ostream;
+		{
+			cereal::JSONOutputArchive oa(ostream);
+			oa(builder);
+		}
+
+		PlaybackProgramBuilderDumper builder_copy;
+		std::istringstream istream(ostream.str());
+		{
+			cereal::JSONInputArchive ia(istream);
+			ia(builder_copy);
+		}
+		ASSERT_EQ(builder.done(), builder_copy.done());
+	}
 
 	/* repack into a real builder */
 	PlaybackProgramBuilder real_builder;

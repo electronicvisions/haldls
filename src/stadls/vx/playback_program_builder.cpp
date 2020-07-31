@@ -1,8 +1,11 @@
 #include "stadls/vx/playback_program_builder.h"
 
 #include <optional>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/unordered_set.hpp>
 
 #include "fisch/vx/playback_program_builder.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/is_readable.h"
 #include "hate/type_traits.h"
@@ -462,6 +465,22 @@ bool PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::is_write_only() co
 	}
 }
 
+template <typename BuilderStorage, typename DoneType>
+template <typename Archive>
+void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::serialize(
+    [[maybe_unused]] Archive& ar, std::uint32_t const)
+{
+	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
+		throw std::runtime_error(
+		    "fisch-based PlaybackProgramBuilderAdapter doesn't support serialization");
+	} else if constexpr (std::is_same_v<BuilderStorage, Dumper>) {
+		ar(CEREAL_NVP(m_builder_impl));
+		ar(CEREAL_NVP(m_unsupported_targets));
+	} else {
+		throw std::logic_error("Unknown specialization");
+	}
+}
+
 template class PlaybackProgramBuilderAdapter<
     fisch::vx::PlaybackProgramBuilder,
     stadls::vx::PlaybackProgram>;
@@ -478,3 +497,6 @@ template std::ostream& operator<<(
     PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type> const&);
 
 } // namespace stadls::vx::detail
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::PlaybackProgramBuilder)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::PlaybackProgramBuilderDumper)

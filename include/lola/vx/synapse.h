@@ -978,3 +978,4 @@ BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseWeightMatrix, values);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseLabelMatrix, values);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseCorrelationCalibMatrix, time_calibs, amp_calibs);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseMatrix, weights, labels, time_calibs, amp_calibs);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::CorrelationResetRow);

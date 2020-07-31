@@ -12,6 +12,22 @@
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
 
+// clang-format off
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
+#include <cereal/archives/binary.hpp>
+#include <cereal/cereal.hpp>
+#endif
+
+#ifdef __GENPYBIND_GENERATED__
+// Needed for manual wrapping (pickling) of Dumper::done_type
+#include <cereal/types/utility.hpp>
+#include <cereal/types/variant.hpp>
+#include <cereal/types/vector.hpp>
+#include "halco/common/cerealization_geometry.h"
+#include "lola/vx/cerealization.h"
+#endif
+// clang-format on
+
 #define GENPYBIND_TAG_STADLS_VX_HIDDEN GENPYBIND(tag(stadls_vx_hidden))
 namespace stadls::vx::dumper_done GENPYBIND_TAG_STADLS_VX_HIDDEN {
 // Workaround for genpybind bug #3622:
@@ -75,6 +91,34 @@ public:
 				}
 				return ret;
 				})
+			.def(py::pickle(
+				[](pybind11::object const& self) { // __getstate__
+					auto const& thing = self.cast<stadls::vx::Dumper::done_type const&>();
+					std::ostringstream os;
+					{
+						cereal::BinaryOutputArchive ar(os);
+						ar << thing;
+					}
+					if (pybind11::hasattr(self, "__dict__")) {
+						return pybind11::make_tuple(pybind11::bytes(os.str()), self.attr("__dict__"));
+					} else {
+						return pybind11::make_tuple(pybind11::bytes(os.str()));
+					}
+				},
+				[](pybind11::tuple const& data) { // __setstate__
+					stadls::vx::Dumper::done_type thing;
+					std::istringstream is(data[0].cast<std::string>());
+					{
+						cereal::BinaryInputArchive ar(is);
+						ar(thing);
+					}
+					pybind11::dict d;
+					if (data.size() == 2) {
+						d = data[1].cast<py::dict>();
+					}
+					return std::make_pair(thing, d);
+				})
+			)
 		;
 	})
 	// clang-format on
@@ -170,6 +214,10 @@ public:
 	bool empty() const;
 
 private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version);
+
 	done_type m_dumpit;
 };
 

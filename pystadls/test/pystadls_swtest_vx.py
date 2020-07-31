@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import pickle
 import unittest
 
 from pyhalco_common import iter_all
@@ -48,8 +49,12 @@ class TestPystadlsVx(unittest.TestCase):
         self.assertEqual(program.tolist()[3], tmp)
         self.assertNotEqual(program.tolist()[4], tmp)
 
+        dump = pickle.dumps(program.tolist())
+        restored_cocos = pickle.loads(dump)
+        self.assertEqual(program.tolist(), restored_cocos)
+
         builder = stadls.PlaybackProgramBuilder()
-        for cor, con in program.tolist():
+        for cor, con in restored_cocos:
             if isinstance(cor, (halco.TimerOnDLS, halco.BarrierOnFPGA)) and \
                isinstance(con, (haldls.Timer.Value, haldls.Barrier)):
                 builder.block_until(cor, con)

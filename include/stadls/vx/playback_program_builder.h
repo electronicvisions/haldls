@@ -21,8 +21,11 @@
 #include "stadls/vx/playback_program.h"
 
 // clang-format off
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
+#include "haldls/vx/pickle.h"
+#endif
+
 #ifdef __GENPYBIND_GENERATED__
-// needed for python wrapping
 #include "fisch/vx/playback_program_builder.h"
 #endif
 // clang-format on
@@ -240,6 +243,10 @@ private:
 	using Impl = detail::PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType>;
 	friend Impl;
 
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version);
+
 	std::unique_ptr<BuilderStorage> m_builder_impl;
 
 	std::unordered_set<hxcomm::vx::Target> m_unsupported_targets;
@@ -262,9 +269,14 @@ typedef detail::PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder,
 typedef detail::PlaybackProgramBuilderAdapter<Dumper, Dumper::done_type>
     PlaybackProgramBuilderDumper GENPYBIND(opaque);
 
-} // namespace stadls::vx
-
 extern template class SYMBOL_VISIBLE stadls::vx::detail::
     PlaybackProgramBuilderAdapter<fisch::vx::PlaybackProgramBuilder, stadls::vx::PlaybackProgram>;
 extern template class SYMBOL_VISIBLE stadls::vx::detail::
     PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type>;
+
+GENPYBIND_MANUAL({
+	haldls::vx::AddPickle<hate::type_list<stadls::vx::PlaybackProgramBuilderDumper>>::apply(
+	    parent, {"PlaybackProgramBuilderDumper"});
+})
+
+} // namespace stadls::vx
