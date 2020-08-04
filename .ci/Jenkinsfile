@@ -5,7 +5,7 @@ try {
 	Map<String, Object> commonPipelineOptions = [
 		projects           : ["haldls"],
 		testTimeout        : 240,
-		notificationChannel: "#dls-software"
+		notificationChannel: "#jenkins-trashbin"  // success is checked globally
 	]
 
 	Map<String, Object> pipelineDeploymentOptions = [
