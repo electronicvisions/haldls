@@ -5,4 +5,5 @@
 #include "stadls/vx/v3/playback_generator.h"
 #include "stadls/vx/v3/playback_program.h"
 #include "stadls/vx/v3/playback_program_builder.h"
+#include "stadls/vx/v3/reinit_stack_entry.h"
 #include "stadls/vx/v3/run.h"
