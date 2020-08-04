@@ -1,6 +1,7 @@
 #include "haldls/vx/timer.h"
 
 #include "fisch/vx/constants.h"
+#include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/print.h"
 
@@ -12,7 +13,7 @@ Timer::Timer(Value const value) : m_value(value) {}
 
 void Timer::set(Value const value)
 {
-	m_value.set(value);
+	m_value = value;
 }
 
 bool Timer::operator==(Timer const& other) const
@@ -35,7 +36,7 @@ std::array<halco::hicann_dls::vx::TimerOnDLS, Timer::config_size_in_words> Timer
 
 std::array<fisch::vx::Timer, Timer::config_size_in_words> Timer::encode() const
 {
-	return {m_value};
+	return {fisch::vx::Timer{fisch::vx::Timer::Value{m_value.value()}}};
 }
 
 void Timer::decode(std::array<fisch::vx::Timer, Timer::config_size_in_words> const& /*data*/) {}

@@ -25,10 +25,10 @@ public:
 	typedef halco::hicann_dls::vx::TimerOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	struct GENPYBIND(inline_base("*")) Value : public fisch::vx::Timer::Value
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::BaseType<Value, uint32_t>
 	{
-		explicit Value(value_type const value = 0) GENPYBIND(implicit_conversion) :
-		    fisch::vx::Timer::Value(value)
+		constexpr explicit Value(uintmax_t value = 0) GENPYBIND(implicit_conversion) : base_t(value)
 		{}
 
 		static const Value fpga_clock_cycles_per_us SYMBOL_VISIBLE;
@@ -65,7 +65,7 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
-	fisch::vx::Timer m_value;
+	Value m_value;
 };
 
 namespace detail {
@@ -78,3 +78,9 @@ struct BackendContainerTrait<Timer> : public BackendContainerBase<Timer, fisch::
 
 } // namespace vx
 } // namespace haldls
+
+namespace std {
+
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::Timer::Value)
+
+} // namespace std
