@@ -42,6 +42,8 @@ struct to_ticket_variant<hate::type_list<BackendContainer...>>
 
 class PlaybackProgram;
 
+class ReinitStackEntry;
+
 template <typename Connection>
 RunTimeInfo run(Connection&, PlaybackProgram&);
 
@@ -251,6 +253,8 @@ private:
 
 	template <typename Connection>
 	friend RunTimeInfo run(Connection&, PlaybackProgram&);
+
+	friend ReinitStackEntry;
 
 	/**
 	 * Construct PlaybackProgram from implementation.

@@ -289,6 +289,20 @@ class HwTestPystadlsVxV2(unittest.TestCase):
                         msg="Recorded rate deviates by more than 1% from "
                             "the calculated one.")
 
+    def test_reinit_stack_entry(self):
+        builder, _ = stadls.DigitalInit().generate()
+        builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(100))
+        init = builder.done()
+
+        builder = stadls.PlaybackProgramBuilder()
+        builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(400))
+        program = builder.done()
+
+        with hxcomm.ManagedConnection() as conn:
+            reinit = stadls.ReinitStackEntry(conn)
+            reinit.set(init, enforce=True)
+            stadls.run(conn, program)
+
 
 if __name__ == "__main__":
     unittest.main()
