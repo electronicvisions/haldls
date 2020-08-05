@@ -1,5 +1,4 @@
 
-#include "hxcomm/common/connection_variant.h"
 #include "hxcomm/common/visit_connection.h"
 
 #include "fisch/vx/run.h"
