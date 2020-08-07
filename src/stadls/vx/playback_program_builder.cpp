@@ -54,7 +54,9 @@ PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>::PlaybackProgramBuilderA
     PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>&& other) :
     m_builder_impl(std::move(other.m_builder_impl)),
     m_unsupported_targets(std::move(other.m_unsupported_targets))
-{}
+{
+	other.m_builder_impl = std::move(std::make_unique<BuilderStorage>());
+}
 
 template <typename BuilderStorage, typename DoneType>
 PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>&
