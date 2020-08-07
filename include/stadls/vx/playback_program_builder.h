@@ -274,6 +274,28 @@ extern template class SYMBOL_VISIBLE stadls::vx::detail::
 extern template class SYMBOL_VISIBLE stadls::vx::detail::
     PlaybackProgramBuilderAdapter<stadls::vx::Dumper, stadls::vx::Dumper::done_type>;
 
+/**
+ * Convert a PlaybackProgramBuilderDumper to a PlaybackProgramBuilder.
+ * The dumper is emptied during the process.
+ * @param dumper Dumper to convert
+ */
+PlaybackProgramBuilder GENPYBIND(visible)
+    convert_to_builder(PlaybackProgramBuilderDumper& dumper) SYMBOL_VISIBLE;
+
+/**
+ * Convert a PlaybackProgramBuilderDumper to a PlaybackProgramBuilder (rvalue reference overload).
+ * The dumper is emptied during the process.
+ * @param dumper Dumper to convert
+ */
+PlaybackProgramBuilder convert_to_builder(PlaybackProgramBuilderDumper&& dumper) SYMBOL_VISIBLE;
+
+/**
+ * Convert a sequence of coordinate container pairs to a PlaybackProgramBuilder.
+ * @param cocos Coordinate-Container pair sequence
+ */
+PlaybackProgramBuilder GENPYBIND(visible)
+    convert_to_builder(Dumper::done_type const& cocos) SYMBOL_VISIBLE;
+
 GENPYBIND_MANUAL({
 	haldls::vx::AddPickle<hate::type_list<stadls::vx::PlaybackProgramBuilderDumper>>::apply(
 	    parent, {"PlaybackProgramBuilderDumper"});

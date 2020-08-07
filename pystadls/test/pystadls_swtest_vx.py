@@ -38,6 +38,8 @@ class TestPystadlsVx(unittest.TestCase):
         builder.block_until(halco.BarrierOnFPGA(), haldls.Barrier.omnibus)
 
         # pop playback program
+        builder_copy = stadls.PlaybackProgramBuilderDumper()
+        builder_copy.copy_back(builder)
         program = builder.done()
 
         self.assertEqual(len(program), 5 + len(all_leds) * 2 * 3 + 2,
@@ -60,6 +62,11 @@ class TestPystadlsVx(unittest.TestCase):
                 builder.block_until(cor, con)
             else:
                 builder.write(cor, con)
+        real_program = builder.done()
+        self.assertEqual(real_program,
+                         stadls.convert_to_builder(program).done())
+        self.assertEqual(real_program,
+                         stadls.convert_to_builder(builder_copy).done())
 
 
 if __name__ == "__main__":

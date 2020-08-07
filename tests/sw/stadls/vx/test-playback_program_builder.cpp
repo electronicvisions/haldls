@@ -118,6 +118,8 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 
 	EXPECT_ANY_THROW(builder.read(CapMemCellOnDLS()));
 
+	PlaybackProgramBuilderDumper builder_copy;
+	builder_copy.copy_back(builder);
 	auto cocos_saved = builder.done();
 	EXPECT_EQ(cocos_saved.size(), 4);
 
@@ -158,4 +160,12 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 		);
 		// clang-format on
 	}
+
+	auto program = real_builder.done();
+	EXPECT_EQ(program, convert_to_builder(cocos_saved).done());
+
+	PlaybackProgramBuilderDumper builder_copy_copy;
+	builder_copy_copy.copy_back(builder_copy);
+	EXPECT_EQ(program, convert_to_builder(builder_copy).done());
+	EXPECT_EQ(program, convert_to_builder(std::move(builder_copy_copy)).done());
 }

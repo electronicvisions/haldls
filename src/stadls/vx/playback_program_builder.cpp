@@ -498,5 +498,39 @@ template std::ostream& operator<<(
 
 } // namespace stadls::vx::detail
 
+namespace stadls::vx {
+
+PlaybackProgramBuilder convert_to_builder(PlaybackProgramBuilderDumper& dumper)
+{
+	return convert_to_builder(dumper.done());
+}
+
+PlaybackProgramBuilder convert_to_builder(PlaybackProgramBuilderDumper&& dumper)
+{
+	return convert_to_builder(dumper.done());
+}
+
+PlaybackProgramBuilder convert_to_builder(Dumper::done_type const& cocos)
+{
+	typedef hate::type_list<haldls::vx::Timer::Value, haldls::vx::Barrier> block_types;
+	PlaybackProgramBuilder builder;
+	for (auto const& coco : cocos) {
+		std::visit(
+		    [&builder](auto const& cc) {
+			    auto const& [coord, config] = cc;
+			    typedef std::remove_cv_t<std::remove_reference_t<decltype(config)>> config_type;
+			    if constexpr (hate::is_in_type_list<config_type, block_types>::value) {
+				    builder.block_until(coord, config);
+			    } else {
+				    builder.write(coord, config);
+			    }
+		    },
+		    coco);
+	}
+	return builder;
+}
+
+} // namespace stadls::vx
+
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::PlaybackProgramBuilder)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::PlaybackProgramBuilderDumper)
