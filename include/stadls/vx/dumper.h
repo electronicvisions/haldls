@@ -16,6 +16,7 @@
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 #include <cereal/archives/binary.hpp>
 #include <cereal/cereal.hpp>
+namespace py = pybind11;
 #endif
 
 #ifdef __GENPYBIND_GENERATED__
