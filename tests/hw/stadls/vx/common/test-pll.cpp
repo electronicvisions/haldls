@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "halco/hicann-dls/vx/coordinates.h"
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/pll.h"
 #include "haldls/vx/reset.h"

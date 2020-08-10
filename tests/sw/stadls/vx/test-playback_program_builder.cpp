@@ -11,6 +11,7 @@
 #include "stadls/vx/playback_program_builder.h"
 
 #include "fisch/vx/playback_program_builder.h"
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/padi.h"
 #include "haldls/vx/timer.h"

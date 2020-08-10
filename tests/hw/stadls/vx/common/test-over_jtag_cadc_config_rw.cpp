@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
 #include "fisch/vx/constants.h"
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/pll.h"
 #include "haldls/vx/reset.h"
-#include "haldls/vx/timer.h"
 #include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"

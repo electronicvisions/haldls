@@ -2,8 +2,8 @@
 
 #include "fisch/vx/omnibus.h"
 #include "haldls/vx/arq.h"
+#include "haldls/vx/barrier.h"
 #include "haldls/vx/systime.h"
-#include "haldls/vx/timer.h"
 #include "stadls/vx/init_generator.h"
 #include "stadls/vx/playback_program.h"
 #include "stadls/vx/playback_program_builder.h"
