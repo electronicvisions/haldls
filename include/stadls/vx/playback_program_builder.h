@@ -22,6 +22,7 @@
 
 // clang-format off
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
+#include "haldls/cerealization.h"
 #include "haldls/vx/pickle.h"
 #endif
 
@@ -299,6 +300,8 @@ PlaybackProgramBuilder GENPYBIND(visible)
 GENPYBIND_MANUAL({
 	haldls::vx::AddPickle<hate::type_list<stadls::vx::PlaybackProgramBuilderDumper>>::apply(
 	    parent, {"PlaybackProgramBuilderDumper"});
+
+	::haldls::vx::WrapToFromFunctions<stadls::vx::PlaybackProgramBuilderDumper>::apply(parent);
 })
 
 } // namespace stadls::vx

@@ -14,6 +14,7 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyfisch_vx");
 })
 
+#include "haldls/cerealization.h"
 #include "haldls/vx/barrier.h"
 #include "haldls/vx/haldls.h"
 #include "haldls/vx/pickle.h"
@@ -43,4 +44,6 @@ GENPYBIND_MANUAL({
 	parent.attr("containers") = [&parent]() {
 		return haldls::vx::detail::get_containers_list(parent);
 	}();
+
+	::haldls::vx::WrapToFromFunctions<::haldls::vx::detail::pickle_types>::apply(parent);
 })

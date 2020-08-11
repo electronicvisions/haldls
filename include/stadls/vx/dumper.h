@@ -16,6 +16,7 @@
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 #include <cereal/archives/binary.hpp>
 #include <cereal/cereal.hpp>
+#include "haldls/cerealization.h"
 namespace py = pybind11;
 #endif
 
@@ -221,6 +222,10 @@ private:
 
 	done_type m_dumpit;
 };
+
+GENPYBIND_MANUAL({
+	::haldls::vx::WrapToFromFunctions<stadls::vx::Dumper::done_type>::apply(parent);
+})
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	extern template void Dumper::write<Type>(typename Type::coordinate_type const&, Type const&);  \

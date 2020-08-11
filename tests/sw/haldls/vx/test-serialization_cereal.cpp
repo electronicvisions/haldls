@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "haldls/cerealization.h"
 #include "haldls/vx/jtag.h"
 #include "haldls/vx/perftest.h"
 #include "haldls/vx/ppu.h"
@@ -61,8 +62,48 @@ TYPED_TEST(CommonSerializationTests, HasSerialization)
 		cereal::JSONInputArchive ia(istream);
 		ia(obj2);
 	}
+
 	// This does only test that Serialization does not insert wrong values
 	// but does not check coverage since both instances are default constructed.
 	// Coverage check is done in each container's test file.
 	ASSERT_EQ(obj2, obj1);
+}
+
+TYPED_TEST(CommonSerializationTests, HasToFromSerialization)
+{
+	TypeParam obj1, obj2;
+	std::string s;
+
+	{
+		s = haldls::vx::to_json(obj1);
+		haldls::vx::from_json(obj2, s);
+
+		// This does only test that Serialization does not insert wrong values;
+		// cf. above.
+		ASSERT_EQ(obj2, obj1);
+	}
+	{
+		s = haldls::vx::to_binary(obj1);
+		haldls::vx::from_binary(obj2, s);
+
+		// This does only test that Serialization does not insert wrong values;
+		// cf. above.
+		ASSERT_EQ(obj2, obj1);
+	}
+	{
+		s = haldls::vx::to_portablebinary(obj1);
+		haldls::vx::from_portablebinary(obj2, s);
+
+		// This does only test that Serialization does not insert wrong values;
+		// cf. above.
+		ASSERT_EQ(obj2, obj1);
+	}
+	{
+		s = haldls::vx::to_xml(obj1);
+		haldls::vx::from_xml(obj2, s);
+
+		// This does only test that Serialization does not insert wrong values;
+		// cf. above.
+		ASSERT_EQ(obj2, obj1);
+	}
 }

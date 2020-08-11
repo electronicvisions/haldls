@@ -13,6 +13,7 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyhaldls_vx");
 })
 
+#include "haldls/cerealization.h"
 #include "haldls/vx/pickle.h"
 #include "lola/vx/cerealization.h"
 #include "lola/vx/lola.h"
@@ -22,7 +23,7 @@ namespace lola::vx::detail {
 
 #define PLAYBACK_CONTAINER(Name, Type) #Name,
 #define LAST_PLAYBACK_CONTAINER(Name, Type) #Name
-static std::vector<std::string> const container_names = {
+static std::vector<std::string> const pickle_type_names = {
 #include "lola/vx/container.def"
 };
 
@@ -31,17 +32,19 @@ static std::vector<std::string> const container_names = {
 typedef hate::type_list<
 #include "lola/vx/container.def"
     >
-    container_types;
+    pickle_types;
 
 py::list get_containers_list(py::module& m);
 
 } // namespace lola::vx::detail
 
 GENPYBIND_MANUAL({
-	::haldls::vx::AddPickle<::lola::vx::detail::container_types>::apply(
-	    parent, ::lola::vx::detail::container_names);
+	::haldls::vx::AddPickle<::lola::vx::detail::pickle_types>::apply(
+	    parent, ::lola::vx::detail::pickle_type_names);
 
 	parent.attr("containers") = [&parent]() {
 		return lola::vx::detail::get_containers_list(parent);
 	}();
+
+	::haldls::vx::WrapToFromFunctions<::lola::vx::detail::pickle_types>::apply(parent);
 })
