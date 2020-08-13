@@ -88,11 +88,20 @@ struct WrapToFromFunctions
 {
 	static void apply(pybind11::module& m)
 	{
+		// convert binary-encoded std::string to bytes in Python
 		(m.def("to_json", &haldls::vx::to_json<Ts>), ...);
 		(m.def("from_json", &haldls::vx::from_json<Ts>), ...);
-		(m.def("to_binary", &haldls::vx::to_binary<Ts>), ...);
+		// clang-format off
+		(m.def("to_binary", [](Ts const& t) {
+			   return pybind11::bytes(haldls::vx::to_binary<Ts>(t));
+		}), ...);
+		// clang-format on
 		(m.def("from_binary", &haldls::vx::from_binary<Ts>), ...);
-		(m.def("to_portablebinary", &haldls::vx::to_portablebinary<Ts>), ...);
+		// clang-format off
+		(m.def("to_portablebinary", [](Ts const& t) {
+			   return pybind11::bytes(haldls::vx::to_portablebinary<Ts>(t));
+		}), ...);
+		// clang-format on
 		(m.def("from_portablebinary", &haldls::vx::from_portablebinary<Ts>), ...);
 		(m.def("to_xml", &haldls::vx::to_xml<Ts>), ...);
 		(m.def("from_xml", &haldls::vx::from_xml<Ts>), ...);
