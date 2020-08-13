@@ -27,15 +27,6 @@ def configure(cfg):
     cfg.load('pylint')
     cfg.load('pycodestyle')
 
-    if cfg.env.with_pybind:
-        cfg.check(
-            compiler='cxx',
-            features='cxx pyembed',
-            uselib_store='PYBIND11LOLA',
-            mandatory=True,
-            header_name='pybind11/pybind11.h',
-        )
-
 
 def build(bld):
     if not bld.env.with_pybind:
@@ -53,7 +44,7 @@ def build(bld):
         source='../include/lola/vx/pylola.h',
         genpybind_tags='lola_vx',
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'PYBIND11LOLA', 'pylola_vx_obj'],
+        use=['lola_vx', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx', 'pylola_vx_obj'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs'
     )
