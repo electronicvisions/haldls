@@ -94,3 +94,21 @@ TEST(VectorGeneratorControl, EncodeDecode)
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }
+
+HALDLS_TEST(VectorGeneratorLUTEntry, (value))
+
+TEST(VectorGeneratorLUTEntry, EncodeDecode)
+{
+	VectorGeneratorLUTEntry config;
+	config.set_value(VectorGeneratorLUTEntry::Value(0x123));
+
+	VectorGeneratorLUTEntryOnFPGA coord(VectorGeneratorLUTEntryOnVectorGeneratorLUT(123));
+
+	std::array<halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorLUTEntry::config_size_in_words>
+	    ref_addresses = {OmnibusAddress(0x84000100 + 123)};
+
+	std::array<fisch::vx::Omnibus, VectorGeneratorLUTEntry::config_size_in_words> ref_data = {
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x123})};
+
+	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
+}

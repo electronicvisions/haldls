@@ -327,6 +327,95 @@ void VectorGeneratorControl::serialize(Archive& ar, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorControl)
 
+
+typename VectorGeneratorLUTEntry::Value VectorGeneratorLUTEntry::get_value() const
+{
+	return m_value;
+}
+
+void VectorGeneratorLUTEntry::set_value(Value const value)
+{
+	m_value = value;
+}
+
+bool VectorGeneratorLUTEntry::operator==(VectorGeneratorLUTEntry const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool VectorGeneratorLUTEntry::operator!=(VectorGeneratorLUTEntry const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename Archive>
+void VectorGeneratorLUTEntry::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorLUTEntry)
+
+namespace {
+
+struct VectorGeneratorLUTEntryBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t value       :  11;
+			uint32_t /* unused */ : 21;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	VectorGeneratorLUTEntryBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	VectorGeneratorLUTEntryBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorLUTEntry::config_size_in_words>
+VectorGeneratorLUTEntry::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    vector_generator_base_addresses.at(coord.toVectorGeneratorLUTOnFPGA().toEnum()) +
+	    coord.toVectorGeneratorLUTEntryOnVectorGeneratorLUT() + 0x100)};
+}
+
+std::array<fisch::vx::Omnibus, VectorGeneratorLUTEntry::config_size_in_words>
+VectorGeneratorLUTEntry::encode() const
+{
+	VectorGeneratorLUTEntryBitfield bitfield;
+	bitfield.u.m.value = m_value;
+
+	return {fisch::vx::Omnibus(fisch::vx::OmnibusData(bitfield.u.raw))};
+}
+
+void VectorGeneratorLUTEntry::decode(
+    std::array<fisch::vx::Omnibus, VectorGeneratorLUTEntry::config_size_in_words> const& data)
+{
+	VectorGeneratorLUTEntryBitfield bitfield(data[0].get());
+	m_value = Value(bitfield.u.m.value);
+}
+
+std::ostream& operator<<(std::ostream& os, VectorGeneratorLUTEntry const& config)
+{
+	os << "VectorGeneratorLUTEntry(" << config.m_value << ")";
+	return os;
+}
+
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorControl, 0)
+CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorLUTEntry, 0)
