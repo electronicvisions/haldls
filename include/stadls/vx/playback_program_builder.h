@@ -211,8 +211,15 @@ public:
 	GENPYBIND_MANUAL({
 		parent.def("__repr__", [](GENPYBIND_PARENT_TYPE const& p) {
 			std::stringstream ss;
-			ss << "PlaybackProgramBuilder(to FPGA size: " << p.size_to_fpga()
-			   << ", is write only: " << p.is_write_only() << ")";
+			if constexpr (std::is_same_v<
+			                  std::decay_t<decltype(p)>,
+			                  ::stadls::vx::detail::PlaybackProgramBuilderAdapter<
+			                      ::stadls::vx::Dumper, ::stadls::vx::Dumper::done_type>>) {
+				ss << "PlaybackProgramBuilderDumper()";
+			} else {
+				ss << "PlaybackProgramBuilder(to FPGA size: " << p.size_to_fpga()
+				   << ", is write only: " << p.is_write_only() << ")";
+			}
 			return ss.str();
 		});
 		parent.def("__str__", [](GENPYBIND_PARENT_TYPE const& p) {
