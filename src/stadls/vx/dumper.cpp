@@ -10,22 +10,38 @@
 
 namespace stadls::vx {
 
+bool DumperDone::operator==(DumperDone const& other) const
+{
+	return values == other.values;
+}
+
+bool DumperDone::operator!=(DumperDone const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename Archive>
+void DumperDone::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(values));
+}
+
 void Dumper::block_until(
     typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value time)
 {
-	m_dumpit.push_back(std::make_pair(coord, time));
+	m_dumpit.values.push_back(std::make_pair(coord, time));
 }
 
 void Dumper::block_until(
     halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier barrier)
 {
-	m_dumpit.push_back(std::make_pair(coord, barrier));
+	m_dumpit.values.push_back(std::make_pair(coord, barrier));
 }
 
 template <typename ContainerT>
 void Dumper::write(typename ContainerT::coordinate_type const& coord, ContainerT const& config)
 {
-	m_dumpit.push_back(std::make_pair(coord, config));
+	m_dumpit.values.push_back(std::make_pair(coord, config));
 }
 
 template <typename ContainerT>
@@ -43,31 +59,34 @@ Dumper::done_type Dumper::done()
 
 void Dumper::merge_back(Dumper& other)
 {
-	m_dumpit.insert(m_dumpit.end(), other.m_dumpit.begin(), other.m_dumpit.end());
-	other.m_dumpit.clear();
+	m_dumpit.values.insert(
+	    m_dumpit.values.end(), other.m_dumpit.values.begin(), other.m_dumpit.values.end());
+	other.m_dumpit.values.clear();
 }
 
 void Dumper::merge_front(Dumper& other)
 {
 	Dumper::done_type tmp;
 	std::swap(tmp, other.m_dumpit);
-	std::copy(m_dumpit.begin(), m_dumpit.end(), std::back_inserter(tmp));
+	std::copy(m_dumpit.values.begin(), m_dumpit.values.end(), std::back_inserter(tmp.values));
 	std::swap(m_dumpit, tmp);
 }
 
 void Dumper::copy_back(Dumper const& other)
 {
-	std::copy(other.m_dumpit.begin(), other.m_dumpit.end(), std::back_inserter(m_dumpit));
+	std::copy(
+	    other.m_dumpit.values.begin(), other.m_dumpit.values.end(),
+	    std::back_inserter(m_dumpit.values));
 }
 
 bool Dumper::empty() const
 {
-	return m_dumpit.empty();
+	return m_dumpit.values.empty();
 }
 
 std::ostream& operator<<(std::ostream& os, Dumper const& builder)
 {
-	for (auto const& coco_variant : builder.m_dumpit) {
+	for (auto const& coco_variant : builder.m_dumpit.values) {
 		std::visit(
 		    [&os](auto const& coco_variant) {
 			    os << std::get<0>(coco_variant) << " " << std::get<1>(coco_variant) << "\n";
@@ -95,4 +114,5 @@ void Dumper::serialize(Archive& ar, std::uint32_t const)
 
 } // namespace stadls::vx
 
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::DumperDone)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::Dumper)

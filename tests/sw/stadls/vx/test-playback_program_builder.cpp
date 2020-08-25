@@ -94,12 +94,15 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 {
 	PlaybackProgramBuilderDumper builder;
 	Dumper::done_type cocos_written;
-	cocos_written.push_back(std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(123))));
-	cocos_written.push_back(std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456))));
-	cocos_written.push_back(std::make_pair(TimerOnDLS(), Timer::Value(1234)));
-	cocos_written.push_back(std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456))));
+	cocos_written.values.push_back(
+	    std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(123))));
+	cocos_written.values.push_back(
+	    std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456))));
+	cocos_written.values.push_back(std::make_pair(TimerOnDLS(), Timer::Value(1234)));
+	cocos_written.values.push_back(
+	    std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456))));
 
-	for (auto& item : cocos_written) {
+	for (auto& item : cocos_written.values) {
 		// clang-format off
 		std::visit(
 			hate::overloaded {
@@ -122,7 +125,7 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 	PlaybackProgramBuilderDumper builder_copy;
 	builder_copy.copy_back(builder);
 	auto cocos_saved = builder.done();
-	EXPECT_EQ(cocos_saved.size(), 4);
+	EXPECT_EQ(cocos_saved.values.size(), 4);
 
 	EXPECT_EQ(cocos_written, cocos_saved);
 
@@ -144,7 +147,7 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 
 	/* repack into a real builder */
 	PlaybackProgramBuilder real_builder;
-	for (auto& item : cocos_saved) {
+	for (auto& item : cocos_saved.values) {
 		// clang-format off
 		std::visit(
 			hate::overloaded {

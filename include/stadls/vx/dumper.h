@@ -14,75 +14,42 @@
 
 // clang-format off
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
-#include <cereal/archives/binary.hpp>
-#include <cereal/cereal.hpp>
 #include "haldls/cerealization.h"
+#include "haldls/vx/pickle.h"
 namespace py = pybind11;
 #endif
 
-#ifdef __GENPYBIND_GENERATED__
-// Needed for manual wrapping (pickling) of Dumper::done_type
-#include <cereal/types/utility.hpp>
-#include <cereal/types/variant.hpp>
-#include <cereal/types/vector.hpp>
-#include "halco/common/cerealization_geometry.h"
-#include "lola/vx/cerealization.h"
-#endif
-// clang-format on
+namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
-#define GENPYBIND_TAG_STADLS_VX_HIDDEN GENPYBIND(tag(stadls_vx_hidden))
-namespace stadls::vx::dumper_done GENPYBIND_TAG_STADLS_VX_HIDDEN {
-// Workaround for genpybind bug #3622:
-// We have to hide the real type from genpybind b/c of missing namespacing when
-// generating wrapper code => use "opaque" dummy type and expose manually below.
-#if defined(__GENPYBIND__) && !defined(__GENPYBIND_GENERATED__)
-struct GENPYBIND(hidden) type
+struct GENPYBIND(visible) DumperDone
 {
-	size_t size() const;
-	int* begin();
-	int* begin() const;
-	int* end();
-	int* end() const;
-};
-#else
-/**
- * Variant over all coordinate/container pairs
- */
-typedef std::variant<
+	/**
+	 * Variant over all coordinate/container pairs
+	 */
+	typedef std::variant<
 #define PLAYBACK_CONTAINER(Name, Type) std::pair<typename Type::coordinate_type, Type>,
 #pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/container.def"
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/container.def"
-    std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>,
-    std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier> >
-    coco_type;
-typedef std::vector<coco_type> type;
-#endif
-} // namespace stadls::vx::dumper_done
+	    std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>,
+	    std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier> >
+	    coco_type;
+	typedef std::vector<coco_type> values_type;
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+	DumperDone() = default;
 
-/** Dumper implements an interface derived from fisch::vx::PlaybackProgramBuilder.
- * However, it does work on haldls container/halco coordinate pairs instead of
- * fisch containers. Reads are not supported as there is currently no application;
- * writes are collected into a std container holding coordinate/container
- * pairs. The std container is returned by done().
- */
-class GENPYBIND(visible) SYMBOL_VISIBLE Dumper
-{
-public:
-	/** Manual wrapping done_type to python.
-	 */
-	typedef dumper_done::type done_type;
+	values_type values{};
+
+	bool operator==(DumperDone const& other) const SYMBOL_VISIBLE;
+	bool operator!=(DumperDone const& other) const SYMBOL_VISIBLE;
+
 	// clang-format off
 	GENPYBIND_MANUAL({
-		parent->py::template class_<stadls::vx::Dumper::done_type>(parent, "done_type")
-			.def(py::init<>())
-			.def("__len__", [](stadls::vx::Dumper::done_type const& v) { return v.size(); })
-			.def("tolist", [](stadls::vx::Dumper::done_type const& v) {
+		parent.def("__len__", [](GENPYBIND_PARENT_TYPE const& v) { return v.values.size(); })
+			.def("tolist", [](GENPYBIND_PARENT_TYPE const& v) {
 				py::list ret;
-				for (auto const& vv : v) {
+				for (auto const& vv : v.values) {
 					py::object item;
 					std::visit(
 						[&item](auto const& vvv) {
@@ -92,38 +59,26 @@ public:
 					ret.append(item);
 				}
 				return ret;
-				})
-			.def(py::pickle(
-				[](pybind11::object const& self) { // __getstate__
-					auto const& thing = self.cast<stadls::vx::Dumper::done_type const&>();
-					std::ostringstream os;
-					{
-						cereal::BinaryOutputArchive ar(os);
-						ar << thing;
-					}
-					if (pybind11::hasattr(self, "__dict__")) {
-						return pybind11::make_tuple(pybind11::bytes(os.str()), self.attr("__dict__"));
-					} else {
-						return pybind11::make_tuple(pybind11::bytes(os.str()));
-					}
-				},
-				[](pybind11::tuple const& data) { // __setstate__
-					stadls::vx::Dumper::done_type thing;
-					std::istringstream is(data[0].cast<std::string>());
-					{
-						cereal::BinaryInputArchive ar(is);
-						ar(thing);
-					}
-					pybind11::dict d;
-					if (data.size() == 2) {
-						d = data[1].cast<py::dict>();
-					}
-					return std::make_pair(thing, d);
-				})
-			)
-		;
+				});
 	})
 	// clang-format on
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t);
+};
+
+/** Dumper implements an interface derived from fisch::vx::PlaybackProgramBuilder.
+ * However, it does work on haldls container/halco coordinate pairs instead of
+ * fisch containers. Reads are not supported as there is currently no application;
+ * writes are collected into a std container holding coordinate/container
+ * pairs. The std container is returned by done().
+ */
+class Dumper
+{
+public:
+	typedef DumperDone done_type;
 
 	/** Default constructor. */
 	Dumper() = default;
@@ -183,8 +138,6 @@ public:
 	 * Print coordinate/container pairs added until now.
 	 * @return Altered ostream
 	 */
-	GENPYBIND(stringstream)
-	SYMBOL_VISIBLE
 	friend std::ostream& operator<<(std::ostream& os, Dumper const& builder);
 
 	/**
@@ -224,7 +177,9 @@ private:
 };
 
 GENPYBIND_MANUAL({
-	::haldls::vx::WrapToFromFunctions<stadls::vx::Dumper::done_type>::apply(parent);
+	haldls::vx::AddPickle<hate::type_list<stadls::vx::DumperDone>>::apply(parent, {"DumperDone"});
+
+	::haldls::vx::WrapToFromFunctions<stadls::vx::DumperDone>::apply(parent);
 })
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
@@ -237,5 +192,3 @@ GENPYBIND_MANUAL({
 #include "lola/vx/container.def"
 
 } // namespace stadls::vx
-
-PYBIND11_MAKE_OPAQUE(stadls::vx::Dumper::done_type)
