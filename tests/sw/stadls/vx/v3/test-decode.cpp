@@ -7,9 +7,12 @@
 #include "stadls/vx/v3/decode.h"
 #include <random>
 
-typedef hate::
-    type_list<lola::vx::v3::AtomicNeuron, haldls::vx::NullPayloadReadable, haldls::vx::INA219Status>
-        NotRandomizableTypes;
+typedef hate::type_list<
+    lola::vx::v3::AtomicNeuron,
+    haldls::vx::NullPayloadReadable,
+    haldls::vx::INA219Status,
+    haldls::vx::VectorGeneratorControl>
+    NotRandomizableTypes;
 
 typedef hate::type_list<
     lola::vx::v3::AtomicNeuron,
@@ -17,7 +20,8 @@ typedef hate::type_list<
     haldls::vx::CommonPhyConfigChip,
     haldls::vx::CommonPhyConfigFPGA,
     haldls::vx::v3::CapMemBlockConfig,
-    haldls::vx::INA219Status>
+    haldls::vx::INA219Status,
+    haldls::vx::VectorGeneratorControl>
     NotOneableTypes;
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \

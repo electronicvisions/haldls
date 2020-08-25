@@ -208,6 +208,10 @@ constexpr uint32_t perftest_omnibus_mask{
 // 				slave(l2)
 constexpr uint32_t l2_omnibus_mask{0x0000'4000 | perftest_omnibus_mask};
 constexpr uint32_t hicann_arq_status_base_address{/*2 x NUM_PHY*/ 0x0000'0010 | l2_omnibus_mask};
+constexpr uint32_t vector_generator_top_base_address{0x0400'0000 | fpga_omnibus_mask};
+constexpr uint32_t vector_generator_bottom_base_address{0x0400'1000 | fpga_omnibus_mask};
+constexpr std::array<uint32_t, 2> vector_generator_base_addresses = {
+    vector_generator_top_base_address, vector_generator_bottom_base_address};
 
 constexpr uint32_t spl1_fabric_base_address{0x0013'0000};
 constexpr uint32_t crossbar_out_mux_base_address{spl1_fabric_base_address};

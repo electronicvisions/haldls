@@ -10,6 +10,7 @@
 
 
 #include "halco/common/iter_sparse.h"
+#include "halco/common/typed_array.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/common.h"
 #include "hate/math.h"
@@ -154,6 +155,25 @@ struct random_value<T, std::void_t<typename T::base_t>>
 		} else if constexpr (halco::common::detail::IsBaseType<typename T::base_t>::value) {
 			return draw_non_default_value<T>(exclude);
 		}
+	}
+};
+
+template <typename T, typename C>
+struct random_value<halco::common::typed_array<T, C>>
+{
+	/**
+	 * Generate random value.
+	 * @param exclude Value to exclude
+	 * @return Random value unequal to `exclude`
+	 */
+	halco::common::typed_array<T, C> operator()(
+	    halco::common::typed_array<T, C> const& exclude) const
+	{
+		halco::common::typed_array<T, C> ret;
+		for (auto const c : halco::common::iter_all<C>()) {
+			ret[c] = random_value<T>{}(exclude[c]);
+		}
+		return ret;
 	}
 };
 

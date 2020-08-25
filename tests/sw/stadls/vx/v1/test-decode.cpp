@@ -7,9 +7,12 @@
 #include "stadls/vx/v1/decode.h"
 #include <random>
 
-typedef hate::
-    type_list<lola::vx::v1::AtomicNeuron, haldls::vx::NullPayloadReadable, haldls::vx::INA219Status>
-        NotRandomizableTypes;
+typedef hate::type_list<
+    lola::vx::v1::AtomicNeuron,
+    haldls::vx::NullPayloadReadable,
+    haldls::vx::INA219Status,
+    haldls::vx::VectorGeneratorControl>
+    NotRandomizableTypes;
 
 typedef hate::type_list<
     lola::vx::v1::AtomicNeuron,

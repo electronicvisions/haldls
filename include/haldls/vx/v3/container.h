@@ -27,6 +27,7 @@
 #include "haldls/vx/v3/synapse_driver.h"
 #include "haldls/vx/v3/systime.h"
 #include "haldls/vx/v3/timer.h"
+#include "haldls/vx/v3/vector_generator.h"
 
 #include "haldls/vx/genpybind.h"
 #include "hate/visibility.h"
