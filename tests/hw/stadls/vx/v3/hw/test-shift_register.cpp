@@ -5,6 +5,8 @@
 #include "haldls/vx/v3/spi.h"
 #include "haldls/vx/v3/timer.h"
 #include "hxcomm/vx/connection_from_env.h"
+#include "stadls/vx/v3/init_generator.h"
+#include "stadls/vx/v3/playback_generator.h"
 #include "stadls/vx/v3/playback_program.h"
 #include "stadls/vx/v3/playback_program_builder.h"
 #include "stadls/vx/v3/run.h"
@@ -21,13 +23,8 @@ using namespace stadls::vx::v3;
  */
 TEST(ShiftRegister, ToggleLEDs)
 {
-	PlaybackProgramBuilder builder;
-
-	builder.write(ResetChipOnDLS(), ResetChip(true));
-	builder.write(TimerOnDLS(), Timer());
-	builder.block_until(TimerOnDLS(), Timer::Value(10));
-	builder.write(ResetChipOnDLS(), ResetChip(false));
-	builder.block_until(TimerOnDLS(), Timer::Value(100));
+	auto sequence = DigitalInit();
+	auto [builder, _] = generate(sequence);
 
 	// disable LEDs
 	builder.write(ShiftRegisterOnBoard(), ShiftRegister());
