@@ -218,7 +218,7 @@ public:
 				ss << "PlaybackProgramBuilderDumper()";
 			} else {
 				ss << "PlaybackProgramBuilder(to FPGA size: " << p.size_to_fpga()
-				   << ", is write only: " << p.is_write_only() << ")";
+				   << ", is write only: " << std::boolalpha << p.is_write_only() << ")";
 			}
 			return ss.str();
 		});
