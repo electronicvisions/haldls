@@ -112,3 +112,72 @@ TEST(VectorGeneratorLUTEntry, EncodeDecode)
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
+
+HALDLS_TEST(VectorGeneratorNotificationAddress, (value))
+
+TEST(VectorGeneratorNotificationAddress, EncodeDecode)
+{
+	VectorGeneratorNotificationAddress config;
+	config.set_value(VectorGeneratorNotificationAddress::Value(0x12345678));
+
+	VectorGeneratorNotificationAddressOnFPGA coord;
+
+	std::array<
+	    halco::hicann_dls::vx::OmnibusAddress,
+	    VectorGeneratorNotificationAddress::config_size_in_words>
+	    ref_addresses = {OmnibusAddress(0x84000001)};
+
+	std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words>
+	    ref_data = {fisch::vx::Omnibus(fisch::vx::OmnibusData{0x12345678})};
+
+	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
+}
+
+TEST(VectorGeneratorTrigger, General)
+{
+	VectorGeneratorTrigger config;
+
+	VectorGeneratorTrigger config_eq = config;
+	VectorGeneratorTrigger config_default;
+
+	// test comparison
+	ASSERT_EQ(config, config_eq);
+	ASSERT_TRUE(config == config_default);
+
+	ASSERT_EQ(config, config_default);
+	ASSERT_FALSE(config != config_eq);
+}
+
+TEST(VectorGeneratorTrigger, CerealizeCoverage)
+{
+	VectorGeneratorTrigger obj1, obj2;
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
+TEST(VectorGeneratorTrigger, EncodeDecode)
+{
+	VectorGeneratorTrigger config;
+
+	VectorGeneratorTriggerOnFPGA coord;
+
+	std::array<
+	    halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorTrigger::write_config_size_in_words>
+	    ref_addresses = {OmnibusAddress(0x84000002)};
+
+	std::array<fisch::vx::Omnibus, VectorGeneratorTrigger::write_config_size_in_words> ref_data = {
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x0})};
+
+	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
+}

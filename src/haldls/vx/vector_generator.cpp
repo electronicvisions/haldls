@@ -8,6 +8,7 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
+#include "haldls/vx/ppu.h"
 
 namespace haldls::vx {
 
@@ -415,7 +416,121 @@ std::ostream& operator<<(std::ostream& os, VectorGeneratorLUTEntry const& config
 	return os;
 }
 
+
+VectorGeneratorNotificationAddress::VectorGeneratorNotificationAddress(
+    halco::hicann_dls::vx::PPUMemoryWordOnDLS const& word)
+{
+	m_value = PPUMemoryWord::addresses<Value>(word).at(0);
+}
+
+typename VectorGeneratorNotificationAddress::Value VectorGeneratorNotificationAddress::get_value()
+    const
+{
+	return m_value;
+}
+
+void VectorGeneratorNotificationAddress::set_value(Value const value)
+{
+	m_value = value;
+}
+
+bool VectorGeneratorNotificationAddress::operator==(
+    VectorGeneratorNotificationAddress const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool VectorGeneratorNotificationAddress::operator!=(
+    VectorGeneratorNotificationAddress const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename Archive>
+void VectorGeneratorNotificationAddress::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorNotificationAddress)
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    VectorGeneratorNotificationAddress::config_size_in_words>
+VectorGeneratorNotificationAddress::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    vector_generator_base_addresses.at(coord.toEnum()) + 0x1)};
+}
+
+std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words>
+VectorGeneratorNotificationAddress::encode() const
+{
+	return {fisch::vx::Omnibus(fisch::vx::OmnibusData(m_value))};
+}
+
+void VectorGeneratorNotificationAddress::decode(
+    std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words> const&
+        data)
+{
+	m_value = Value(data[0].get().value());
+}
+
+std::ostream& operator<<(std::ostream& os, VectorGeneratorNotificationAddress const& config)
+{
+	os << "VectorGeneratorNotificationAddress(" << config.m_value << ")";
+	return os;
+}
+
+
+bool VectorGeneratorTrigger::operator==(VectorGeneratorTrigger const&) const
+{
+	return true;
+}
+
+bool VectorGeneratorTrigger::operator!=(VectorGeneratorTrigger const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename Archive>
+void VectorGeneratorTrigger::serialize(Archive&, std::uint32_t const)
+{}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorTrigger)
+
+std::
+    array<halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorTrigger::write_config_size_in_words>
+    VectorGeneratorTrigger::write_addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    vector_generator_base_addresses.at(coord.toEnum()) + 0x2)};
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorTrigger::read_config_size_in_words>
+VectorGeneratorTrigger::read_addresses(coordinate_type const&)
+{
+	return {};
+}
+
+std::array<fisch::vx::Omnibus, VectorGeneratorTrigger::write_config_size_in_words>
+VectorGeneratorTrigger::encode() const
+{
+	return {fisch::vx::Omnibus()};
+}
+
+void VectorGeneratorTrigger::decode(
+    std::array<fisch::vx::Omnibus, VectorGeneratorTrigger::read_config_size_in_words> const&)
+{}
+
+std::ostream& operator<<(std::ostream& os, VectorGeneratorTrigger const&)
+{
+	os << "VectorGeneratorTrigger()";
+	return os;
+}
+
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorControl, 0)
 CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorLUTEntry, 0)
+CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorNotificationAddress, 0)

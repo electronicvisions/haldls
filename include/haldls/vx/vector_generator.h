@@ -3,6 +3,7 @@
 #include <ostream>
 
 #include "halco/common/typed_array.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/vector_generator.h"
 
 #include "haldls/cerealization.h"
@@ -16,6 +17,7 @@ class access;
 
 namespace halco::hicann_dls::vx {
 class OmnibusAddress;
+struct PPUMemoryWordOnDLS;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
@@ -309,6 +311,118 @@ namespace detail {
 template <>
 struct BackendContainerTrait<VectorGeneratorLUTEntry>
     : public BackendContainerBase<VectorGeneratorLUTEntry, fisch::vx::Omnibus>
+{};
+
+} // namespace detail
+
+
+class GENPYBIND(visible) VectorGeneratorNotificationAddress
+{
+public:
+	typedef std::true_type is_leaf_node;
+	typedef halco::hicann_dls::vx::VectorGeneratorNotificationAddressOnFPGA coordinate_type;
+
+	typedef halco::hicann_dls::vx::OmnibusAddress Value GENPYBIND(visible);
+
+	/** Default constructor. */
+	VectorGeneratorNotificationAddress() = default;
+
+	/**
+	 * Get value.
+	 * @return Value
+	 */
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set value.
+	 * @param value Value
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(Value value) SYMBOL_VISIBLE;
+
+	/**
+	 * Construct notification address from word location on PPU memory.
+	 * @param word Word location
+	 */
+	VectorGeneratorNotificationAddress(halco::hicann_dls::vx::PPUMemoryWordOnDLS const& word)
+	    SYMBOL_VISIBLE;
+
+	bool operator==(VectorGeneratorNotificationAddress const& other) const SYMBOL_VISIBLE;
+	bool operator!=(VectorGeneratorNotificationAddress const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(
+	    std::ostream& os, VectorGeneratorNotificationAddress const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::Omnibus, config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::Omnibus, config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Value m_value{};
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorNotificationAddress)
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<VectorGeneratorNotificationAddress>
+    : public BackendContainerBase<VectorGeneratorNotificationAddress, fisch::vx::Omnibus>
+{};
+
+} // namespace detail
+
+
+class GENPYBIND(visible) VectorGeneratorTrigger
+{
+public:
+	typedef std::true_type is_leaf_node;
+	typedef halco::hicann_dls::vx::VectorGeneratorTriggerOnFPGA coordinate_type;
+
+	/** Default constructor. */
+	VectorGeneratorTrigger() = default;
+
+	bool operator==(VectorGeneratorTrigger const& other) const SYMBOL_VISIBLE;
+	bool operator!=(VectorGeneratorTrigger const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, VectorGeneratorTrigger const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorTrigger)
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<VectorGeneratorTrigger>
+    : public BackendContainerBase<VectorGeneratorTrigger, fisch::vx::Omnibus>
 {};
 
 } // namespace detail

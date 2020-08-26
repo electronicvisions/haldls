@@ -6,5 +6,8 @@ namespace haldls::vx::v2 GENPYBIND_TAG_HALDLS_VX_V2 {
 
 using VectorGeneratorControl GENPYBIND(visible) = haldls::vx::VectorGeneratorControl;
 using VectorGeneratorLUTEntry GENPYBIND(visible) = haldls::vx::VectorGeneratorLUTEntry;
+using VectorGeneratorNotificationAddress GENPYBIND(visible) =
+    haldls::vx::VectorGeneratorNotificationAddress;
+using VectorGeneratorTrigger GENPYBIND(visible) = haldls::vx::VectorGeneratorTrigger;
 
 } // namespace haldls::vx::v2
