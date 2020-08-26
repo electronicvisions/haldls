@@ -38,7 +38,7 @@ public:
 	typedef halco::hicann_dls::vx::BackgroundSpikeSourceOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
-	    hxcomm::vx::Target::hardware};
+	    hxcomm::vx::Target::hardware, hxcomm::vx::Target::simulation};
 
 	/**
 	 * Inter-spike interval for regular and inter-bin interval for Poisson spike generation.
