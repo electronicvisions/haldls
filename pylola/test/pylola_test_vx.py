@@ -3,6 +3,7 @@ import pickle
 import os
 import unittest
 from random import randrange
+import numpy as np
 import pyhalco_hicann_dls_vx as halco
 import pylola_vx as lola
 
@@ -77,6 +78,74 @@ class TestPylolaVX(unittest.TestCase):
         np_amp_calibs[16] = 3
         row.amp_calibs.from_numpy(np_amp_calibs)
         self.assertEqual(row.amp_calibs[16], 3)
+
+    def test_synapse_matrix(self):
+        matrix = lola.SynapseMatrix()
+
+        fill_weights = np.zeros((halco.SynapseRowOnSynram.size,
+                                 halco.SynapseOnSynapseRow.size)) + 30
+        matrix.weights.from_numpy(fill_weights)
+        self.assertEqual(matrix.weights[8][15], 30)
+
+        matrix.weights[7][1] = 9
+        self.assertEqual(matrix.weights[7][1], 9)
+        np_weights = matrix.weights.to_numpy()
+        self.assertEqual(np_weights[7][1], 9)
+        self.assertEqual(np_weights.shape,
+                         (halco.SynapseRowOnSynram.size,
+                          halco.SynapseOnSynapseRow.size))
+        np_weights[13][37] = 64
+        with self.assertRaisesRegex((RuntimeError, OverflowError),
+                                    r"range overflow: (\d+) > max\((\d+)\)"):
+            matrix.weights.from_numpy(np_weights)
+        np_weights[13][37] = 5
+        matrix.weights.from_numpy(np_weights)
+        self.assertEqual(matrix.weights[13][37], 5)
+
+        matrix.labels[14][14] = 28
+        self.assertEqual(matrix.labels[14][14], 28)
+        np_labels = matrix.labels.to_numpy()
+        self.assertEqual(np_labels[14][14], 28)
+        self.assertEqual(np_labels.shape,
+                         (halco.SynapseRowOnSynram.size,
+                          halco.SynapseOnSynapseRow.size))
+        np_labels[16][16] = 64
+        with self.assertRaisesRegex((RuntimeError, OverflowError),
+                                    r"range overflow: (\d+) > max\((\d+)\)"):
+            matrix.labels.from_numpy(np_labels)
+        np_labels[16][16] = 4
+        matrix.labels.from_numpy(np_labels)
+        self.assertEqual(matrix.labels[16][16], 4)
+
+        matrix.time_calibs[15][15] = 2
+        self.assertEqual(matrix.time_calibs[15][15], 2)
+        np_time_calibs = matrix.time_calibs.to_numpy()
+        self.assertEqual(np_time_calibs[15][15], 2)
+        self.assertEqual(np_time_calibs.shape,
+                         (halco.SynapseRowOnSynram.size,
+                          halco.SynapseOnSynapseRow.size))
+        np_time_calibs[16][16] = 4
+        with self.assertRaisesRegex((RuntimeError, OverflowError),
+                                    r"range overflow: (\d+) > max\((\d+)\)"):
+            matrix.time_calibs.from_numpy(np_time_calibs)
+        np_time_calibs[16][16] = 3
+        matrix.time_calibs.from_numpy(np_time_calibs)
+        self.assertEqual(matrix.time_calibs[16][16], 3)
+
+        matrix.amp_calibs[16][16] = 3
+        self.assertEqual(matrix.amp_calibs[16][16], 3)
+        np_amp_calibs = matrix.amp_calibs.to_numpy()
+        self.assertEqual(np_amp_calibs[16][16], 3)
+        self.assertEqual(np_amp_calibs.shape,
+                         (halco.SynapseRowOnSynram.size,
+                          halco.SynapseOnSynapseRow.size))
+        np_amp_calibs[16][16] = 4
+        with self.assertRaisesRegex((RuntimeError, OverflowError),
+                                    r"range overflow: (\d+) > max\((\d+)\)"):
+            matrix.amp_calibs.from_numpy(np_amp_calibs)
+        np_amp_calibs[16][16] = 3
+        matrix.amp_calibs.from_numpy(np_amp_calibs)
+        self.assertEqual(matrix.amp_calibs[16][16], 3)
 
     def test_ppu_elf_file(self):
         this_dir = os.path.dirname(os.path.realpath(__file__))
