@@ -161,9 +161,10 @@ public:
 	haldls::vx::ReferenceGeneratorConfig reference_generator_config;
 
 	/** Initialize the CapMem with usable default values. */
-	typedef halco::common::
-	    typed_array<haldls::vx::CapMemBlockConfig, typename Coordinates::CapMemBlockConfigOnDLS>
-	        capmem_block_config_type GENPYBIND(opaque(false));
+	typedef halco::common::typed_array<
+	    haldls::vx::CapMemBlockConfig<Coordinates>,
+	    typename Coordinates::CapMemBlockConfigOnDLS>
+	    capmem_block_config_type GENPYBIND(opaque(false));
 	capmem_block_config_type capmem_block_config;
 
 	typedef hate::Nil Result;
@@ -241,7 +242,7 @@ public:
 	/** Set initial CapMem config.
 	 * By default, a value of zero is written to all cells. */
 	typedef halco::common::
-	    typed_array<haldls::vx::CapMemBlock, typename Coordinates::CapMemBlockOnDLS>
+	    typed_array<haldls::vx::CapMemBlock<Coordinates>, typename Coordinates::CapMemBlockOnDLS>
 	        capmem_block_type GENPYBIND(opaque(false));
 	capmem_block_type capmem_config;
 

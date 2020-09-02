@@ -1,8 +1,8 @@
-#include "lola/vx/neuron.h"
+#include "lola/vx/v1/neuron.h"
 
 #include "lola/vx/hana.h"
 
-namespace lola::vx {
+namespace lola::vx::v1 {
 
 AtomicNeuron::SynapticInput::SynapticInput() : enable(false), i_bias_res(), i_bias_gm(), v_syn() {}
 
@@ -495,4 +495,4 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron const& config)
 	return os;
 }
 
-} // namespace lola::vx
+} // namespace lola::vx::v1

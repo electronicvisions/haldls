@@ -3,6 +3,29 @@
 #include <boost/utility/enable_if.hpp>
 #include "hate/type_list.h"
 
+namespace halco::hicann_dls::vx::v1 {
+struct Coordinates;
+} // namespace halco::hicann_dls::vx::v1
+
+namespace halco::hicann_dls::vx::v2 {
+struct Coordinates;
+} // namespace halco::hicann_dls::vx::v2
+
+namespace haldls::vx {
+
+template <typename Coordinates>
+class CapMemBlock;
+
+namespace v1 {
+using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v1::Coordinates>;
+} // namespace v1
+
+namespace v2 {
+using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v2::Coordinates>;
+} // namespace v2
+
+} // namespace haldls::vx
+
 namespace haldls::vx::detail {
 
 template <typename T, typename = void>
@@ -22,7 +45,12 @@ struct IsWriteable<
 	constexpr static bool value = T::write_config_size_in_words;
 };
 
-typedef hate::type_list<PPUMemoryBlock, CapMemBlock, lola::vx::SynapseRow, lola::vx::SynapseMatrix>
+typedef hate::type_list<
+    PPUMemoryBlock,
+    v1::CapMemBlock,
+    v2::CapMemBlock,
+    lola::vx::SynapseRow,
+    lola::vx::SynapseMatrix>
     NonLeafNodeWriteableContainerList;
 
 // manually add all non-leaf node containers which are writeable

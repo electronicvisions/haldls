@@ -7,13 +7,14 @@
 #include "fisch/vx/jtag.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/v1/capmem.h"
-#include "haldls/vx/v1/common.h"
-#include "haldls/vx/v1/omnibus_constants.h"
+#include "halco/hicann-dls/vx/v2/capmem.h"
+#include "haldls/vx/v2/capmem.h"
+#include "haldls/vx/v2/common.h"
+#include "haldls/vx/v2/omnibus_constants.h"
 #include "test-helper.h"
 
-using namespace haldls::vx::v1;
-using namespace halco::hicann_dls::vx;
+using namespace haldls::vx::v2;
+using namespace halco::hicann_dls::vx::v2;
 using namespace halco::common;
 using namespace hate::math;
 
@@ -383,9 +384,9 @@ TEST(CapMemBlockConfig, CerealizeCoverage)
 	obj1.set_debug_readout_enable(!obj1.get_debug_readout_enable());
 	obj1.set_enable_boost(!obj1.get_enable_boost());
 	obj1.set_enable_autoboost(!obj1.get_enable_autoboost());
-	obj1.set_debug_capmem_coord(halco::hicann_dls::vx::CapMemCellOnCapMemBlock(
-	    draw_ranged_non_default_value<halco::hicann_dls::vx::CapMemRowOnCapMemBlock>(0),
-	    draw_ranged_non_default_value<halco::hicann_dls::vx::CapMemColumnOnCapMemBlock>(0)));
+	obj1.set_debug_capmem_coord(CapMemCellOnCapMemBlock(
+	    draw_ranged_non_default_value<CapMemRowOnCapMemBlock>(0),
+	    draw_ranged_non_default_value<CapMemColumnOnCapMemBlock>(0)));
 	obj1.set_debug_v_ref_select(CapMemBlockConfig::VRefSelect::v_ref_v);
 	obj1.set_debug_i_out_select(CapMemBlockConfig::IOutSelect::i_out_ramp);
 #define RANDOMIZE(name, type)                                                                      \

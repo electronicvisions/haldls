@@ -138,7 +138,7 @@ InitGenerator<BuilderType, Coordinates>::generate() const
 
 		// Set all CapMem cells to value zero
 		for (auto coord : iter_all<typename Coordinates::CapMemBlockOnDLS>()) {
-			builder.write(coord, haldls::vx::CapMemBlock());
+			builder.write(coord, haldls::vx::CapMemBlock<Coordinates>());
 		}
 
 		// Initialize the CapMem with usable default values.

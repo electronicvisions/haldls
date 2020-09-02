@@ -5,25 +5,24 @@
 namespace haldls::vx::detail {
 
 template <>
-struct BackendContainerTrait<lola::vx::AtomicNeuron>
+struct BackendContainerTrait<lola::vx::v1::AtomicNeuron>
     : public BackendContainerBase<
-          lola::vx::AtomicNeuron,
+          lola::vx::v1::AtomicNeuron,
           fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
 template <>
-struct VisitPreorderImpl<lola::vx::AtomicNeuron>
+struct VisitPreorderImpl<lola::vx::v1::AtomicNeuron>
 {
 	template <typename ContainerT, typename VisitorT>
 	static void call(
 	    ContainerT& config,
-	    lola::vx::AtomicNeuron::coordinate_type const& coord,
+	    lola::vx::v1::AtomicNeuron::coordinate_type const& coord,
 	    VisitorT&& visitor)
 	{
-		using namespace haldls::vx;
 		using halco::common::iter_all;
-		using namespace halco::hicann_dls::vx;
+		using namespace halco::hicann_dls::vx::v1;
 
 		visitor(coord, config);
 
@@ -33,7 +32,7 @@ struct VisitPreorderImpl<lola::vx::AtomicNeuron>
 			return CapMemCellOnDLS(CapMemCellOnCapMemBlock(capmem_column, row), capmem_block);
 		};
 
-		NeuronConfig neuron_config;
+		haldls::vx::v1::NeuronConfig neuron_config;
 
 		neuron_config.set_enable_synaptic_input_excitatory(config.excitatory_input.enable);
 		neuron_config.set_enable_synaptic_input_inhibitory(config.inhibitory_input.enable);
@@ -85,27 +84,28 @@ struct VisitPreorderImpl<lola::vx::AtomicNeuron>
 
 		visit_preorder(neuron_config, coord.toNeuronConfigOnDLS(), visitor);
 
-		CapMemCell cell_i_bias_syn_exc_gm(config.excitatory_input.i_bias_gm);
-		CapMemCell cell_i_bias_syn_exc_res(config.excitatory_input.i_bias_res);
-		CapMemCell cell_v_syn_exc(config.excitatory_input.v_syn);
-		CapMemCell cell_i_bias_syn_inh_gm(config.inhibitory_input.i_bias_gm);
-		CapMemCell cell_i_bias_syn_inh_res(config.inhibitory_input.i_bias_res);
-		CapMemCell cell_v_syn_inh(config.inhibitory_input.v_syn);
-		CapMemCell cell_v_leak(config.leak_reset.leak.v_leak);
-		CapMemCell cell_i_bias_leak(config.leak_reset.leak.i_bias);
-		CapMemCell cell_v_reset(config.leak_reset.reset.v_reset);
-		CapMemCell cell_i_bias_reset(config.leak_reset.reset.i_bias);
-		CapMemCell cell_v_threshold(config.threshold.v_threshold);
-		CapMemCell cell_i_offset(config.constant_current.i_offset);
-		CapMemCell cell_v_leak_adapt(config.adaptation.v_leak);
-		CapMemCell cell_i_bias_adapt_amp(config.adaptation.i_bias_amp);
-		CapMemCell cell_i_bias_adapt_sd(config.adaptation.i_bias_sd);
-		CapMemCell cell_i_bias_adapt_res(config.adaptation.i_bias_res);
-		CapMemCell cell_i_bias_adapt(config.adaptation.i_bias);
-		CapMemCell cell_i_adapt_w(config.adaptation.i_w);
-		CapMemCell cell_i_bias_nmda(config.multicompartment.i_bias_nmda);
-		CapMemCell cell_i_bias_readout(config.readout.i_bias);
-		CapMemCell cell_i_bias_source_follower(config.leak_reset.i_bias_source_follower);
+		haldls::vx::v1::CapMemCell cell_i_bias_syn_exc_gm(config.excitatory_input.i_bias_gm);
+		haldls::vx::v1::CapMemCell cell_i_bias_syn_exc_res(config.excitatory_input.i_bias_res);
+		haldls::vx::v1::CapMemCell cell_v_syn_exc(config.excitatory_input.v_syn);
+		haldls::vx::v1::CapMemCell cell_i_bias_syn_inh_gm(config.inhibitory_input.i_bias_gm);
+		haldls::vx::v1::CapMemCell cell_i_bias_syn_inh_res(config.inhibitory_input.i_bias_res);
+		haldls::vx::v1::CapMemCell cell_v_syn_inh(config.inhibitory_input.v_syn);
+		haldls::vx::v1::CapMemCell cell_v_leak(config.leak_reset.leak.v_leak);
+		haldls::vx::v1::CapMemCell cell_i_bias_leak(config.leak_reset.leak.i_bias);
+		haldls::vx::v1::CapMemCell cell_v_reset(config.leak_reset.reset.v_reset);
+		haldls::vx::v1::CapMemCell cell_i_bias_reset(config.leak_reset.reset.i_bias);
+		haldls::vx::v1::CapMemCell cell_v_threshold(config.threshold.v_threshold);
+		haldls::vx::v1::CapMemCell cell_i_offset(config.constant_current.i_offset);
+		haldls::vx::v1::CapMemCell cell_v_leak_adapt(config.adaptation.v_leak);
+		haldls::vx::v1::CapMemCell cell_i_bias_adapt_amp(config.adaptation.i_bias_amp);
+		haldls::vx::v1::CapMemCell cell_i_bias_adapt_sd(config.adaptation.i_bias_sd);
+		haldls::vx::v1::CapMemCell cell_i_bias_adapt_res(config.adaptation.i_bias_res);
+		haldls::vx::v1::CapMemCell cell_i_bias_adapt(config.adaptation.i_bias);
+		haldls::vx::v1::CapMemCell cell_i_adapt_w(config.adaptation.i_w);
+		haldls::vx::v1::CapMemCell cell_i_bias_nmda(config.multicompartment.i_bias_nmda);
+		haldls::vx::v1::CapMemCell cell_i_bias_readout(config.readout.i_bias);
+		haldls::vx::v1::CapMemCell cell_i_bias_source_follower(
+		    config.leak_reset.i_bias_source_follower);
 
 		visit_preorder(
 		    cell_i_bias_syn_exc_gm, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_syn_exc_gm),
@@ -151,7 +151,7 @@ struct VisitPreorderImpl<lola::vx::AtomicNeuron>
 		    cell_i_bias_source_follower,
 		    to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_source_follower), visitor);
 
-		NeuronBackendConfig neuron_backend_config;
+		haldls::vx::v1::NeuronBackendConfig neuron_backend_config;
 		neuron_backend_config.set_enable_spike_out(config.event_routing.enable_digital);
 		neuron_backend_config.set_enable_bayesian_extension(config.bayesian.enable);
 		neuron_backend_config.set_enable_bayesian_0(config.bayesian.enable_0);
@@ -170,7 +170,7 @@ struct VisitPreorderImpl<lola::vx::AtomicNeuron>
 
 		visit_preorder(neuron_backend_config, coord.toNeuronBackendConfigOnDLS(), visitor);
 
-		if constexpr (!std::is_same<ContainerT, lola::vx::AtomicNeuron const>::value) {
+		if constexpr (!std::is_same<ContainerT, lola::vx::v1::AtomicNeuron const>::value) {
 			config.excitatory_input.enable = neuron_config.get_enable_synaptic_input_excitatory();
 			config.inhibitory_input.enable = neuron_config.get_enable_synaptic_input_inhibitory();
 
@@ -223,7 +223,7 @@ struct VisitPreorderImpl<lola::vx::AtomicNeuron>
 			config.readout.enable_buffered_access = neuron_config.get_enable_readout();
 			if ((config.readout.source == haldls::vx::NeuronConfig::ReadoutSource::adaptation) ^
 			    neuron_config.get_enable_adaptation_readout()) {
-				throw std::runtime_error("lola::vx::AtomicNeuron can't represent a state of "
+				throw std::runtime_error("lola::vx::v1::AtomicNeuron can't represent a state of "
 				                         "(readout-mux==adaptation ^ enable_adaptation)");
 			}
 
@@ -275,10 +275,10 @@ struct VisitPreorderImpl<lola::vx::AtomicNeuron>
 } // namespace haldls::vx::detail
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::SynapticInput, enable, i_bias_res, i_bias_gm, v_syn);
+    lola::vx::v1::AtomicNeuron::SynapticInput, enable, i_bias_res, i_bias_gm, v_syn);
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::LeakReset::Leak,
+    lola::vx::v1::AtomicNeuron::LeakReset::Leak,
     v_leak,
     i_bias,
     enable_degeneration,
@@ -286,19 +286,19 @@ BOOST_HANA_ADAPT_STRUCT(
     enable_multiplication);
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::LeakReset::Reset,
+    lola::vx::v1::AtomicNeuron::LeakReset::Reset,
     v_reset,
     i_bias,
     enable_degeneration,
     enable_division,
     enable_multiplication);
 
-BOOST_HANA_ADAPT_STRUCT(lola::vx::AtomicNeuron::LeakReset, leak, reset, i_bias_source_follower);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::AtomicNeuron::LeakReset, leak, reset, i_bias_source_follower);
 
-BOOST_HANA_ADAPT_STRUCT(lola::vx::AtomicNeuron::Threshold, enable, v_threshold);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::AtomicNeuron::Threshold, enable, v_threshold);
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::Multicompartment,
+    lola::vx::v1::AtomicNeuron::Multicompartment,
     connect_soma,
     connect_soma_right,
     connect_right,
@@ -308,12 +308,12 @@ BOOST_HANA_ADAPT_STRUCT(
     enable_conductance_multiplication,
     i_bias_nmda);
 
-BOOST_HANA_ADAPT_STRUCT(lola::vx::AtomicNeuron::ConstantCurrent, enable, i_offset);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::AtomicNeuron::ConstantCurrent, enable, i_offset);
 
-BOOST_HANA_ADAPT_STRUCT(lola::vx::AtomicNeuron::MembraneCapacitance, enable_merge, capacitance);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::AtomicNeuron::MembraneCapacitance, enable_merge, capacitance);
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::Adaptation,
+    lola::vx::v1::AtomicNeuron::Adaptation,
     enable,
     enable_pulse,
     enable_capacitor,
@@ -326,10 +326,10 @@ BOOST_HANA_ADAPT_STRUCT(
     i_w,
     v_leak);
 
-BOOST_HANA_ADAPT_STRUCT(lola::vx::AtomicNeuron::Exponential, enable, strength);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::AtomicNeuron::Exponential, enable, strength);
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::Readout,
+    lola::vx::v1::AtomicNeuron::Readout,
     enable_buffered_access,
     enable_amplifier,
     enable_unbuffered_access,
@@ -337,7 +337,7 @@ BOOST_HANA_ADAPT_STRUCT(
     i_bias);
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::EventRouting,
+    lola::vx::v1::AtomicNeuron::EventRouting,
     enable_analog,
     enable_digital,
     enable_bypass_excitatory,
@@ -346,9 +346,9 @@ BOOST_HANA_ADAPT_STRUCT(
     enable_post_overwrite);
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::RefractoryPeriod, input_clock, reset_holdoff, refractory_time);
+    lola::vx::v1::AtomicNeuron::RefractoryPeriod, input_clock, reset_holdoff, refractory_time);
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron::Bayesian,
+    lola::vx::v1::AtomicNeuron::Bayesian,
     enable,
     connect_fire_vertical,
     connect_fire_to_right,
@@ -359,7 +359,7 @@ BOOST_HANA_ADAPT_STRUCT(
     enable_1);
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::AtomicNeuron,
+    lola::vx::v1::AtomicNeuron,
     excitatory_input,
     inhibitory_input,
     leak_reset,
