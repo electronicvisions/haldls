@@ -4,7 +4,7 @@ import os
 import unittest
 from random import randrange
 import numpy as np
-import pyhalco_hicann_dls_vx as halco
+import pyhalco_hicann_dls_vx_v1 as halco
 import pylola_vx_v1 as lola
 
 

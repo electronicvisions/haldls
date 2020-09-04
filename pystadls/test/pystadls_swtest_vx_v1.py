@@ -4,7 +4,7 @@ import pickle
 import unittest
 
 from pyhalco_common import iter_all
-import pyhalco_hicann_dls_vx as halco
+import pyhalco_hicann_dls_vx_v1 as halco
 import pyhaldls_vx_v1 as haldls
 import pystadls_vx_v1 as stadls
 import pyfisch_vx as fisch

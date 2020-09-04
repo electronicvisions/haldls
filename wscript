@@ -91,7 +91,7 @@ def build(bld):
                + bld.path.ant_glob('src/haldls/vx/v1/*.cpp'),
         install_path = '${PREFIX}/lib',
         features = 'cxx cxxshlib pyembed',
-        use = ['haldls_inc', 'halco_hicann_dls_vx', 'fisch_vx'],
+        use = ['haldls_inc', 'halco_hicann_dls_vx_v1', 'fisch_vx'],
         uselib = 'HALDLS_LIBRARIES',
     )
 

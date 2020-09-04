@@ -54,7 +54,7 @@ def build(bld):
         name='pyhaldls_test_vx_v1',
         tests='test/pyhaldls_test_vx_v1.py',
         features='use pytest pylint pycodestyle',
-        use=['pyhalco_hicann_dls_vx', 'pyhaldls_vx_v1', 'pyhalco_common_files'],
+        use=['pyhalco_hicann_dls_vx_v1', 'pyhaldls_vx_v1', 'pyhalco_common_files'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),

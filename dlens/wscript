@@ -36,7 +36,7 @@ def build(bld):
         use = ['pyhaldls_vx_v1',
                'pystadls_vx_v1',
                'pylola_vx_v1',
-               'pyhalco_hicann_dls_vx',
+               'pyhalco_hicann_dls_vx_v1',
                'pyhxcomm_vx'
         ],
         install_path = '${PREFIX}/lib',

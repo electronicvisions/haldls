@@ -44,7 +44,7 @@ def build(bld):
         source='../include/lola/vx/v1/pylola.h',
         genpybind_tags=['lola_vx', 'lola_vx_v1'],
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['lola_vx_v1', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx', 'pyhaldls_vx_v1', 'pylola_vx_v1_obj'],
+        use=['lola_vx_v1', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx_v1', 'pyhaldls_vx_v1', 'pylola_vx_v1_obj'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs'
     )
