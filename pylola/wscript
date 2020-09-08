@@ -40,6 +40,13 @@ def build(bld):
     )
 
     bld(
+        features='cxx pyembed',
+        target='pylola_vx_v2_obj',
+        source='../src/lola/vx/v2/pylola.cpp',
+        use='lola_vx_v2',
+    )
+
+    bld(
         target='pylola_vx_v1',
         source='../include/lola/vx/v1/pylola.h',
         genpybind_tags=['lola_vx', 'lola_vx_v1'],
@@ -50,10 +57,32 @@ def build(bld):
     )
 
     bld(
+        target='pylola_vx_v2',
+        source='../include/lola/vx/v2/pylola.h',
+        genpybind_tags=['lola_vx', 'lola_vx_v2'],
+        features='genpybind cxx cxxshlib pyext pyembed',
+        use=['lola_vx_v2', 'pyhalco_common_files', 'pyhalco_hicann_dls_vx_v2', 'pyhaldls_vx_v2', 'pylola_vx_v2_obj'],
+        install_path='${PREFIX}/lib',
+        linkflags='-Wl,-z,defs'
+    )
+
+    bld(
         name='pylola_test_vx_v1',
         tests=bld.path.ant_glob('test/*_vx_v1.py'),
         features='use pytest pylint pycodestyle',
         use=['pylola_vx_v1'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_environ=dict(TEST_PPU_PROGRAM=join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin')),
+        test_timeout=120
+    )
+
+    bld(
+        name='pylola_test_vx_v2',
+        tests=bld.path.ant_glob('test/*_vx_v2.py'),
+        features='use pytest pylint pycodestyle',
+        use=['pylola_vx_v2'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),

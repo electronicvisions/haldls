@@ -1,0 +1,25 @@
+#ifndef PLAYBACK_CONTAINER
+#define PLAYBACK_CONTAINER(Name, Type)
+#endif
+
+#ifndef LAST_PLAYBACK_CONTAINER
+#define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
+#endif
+
+PLAYBACK_CONTAINER(DACControlBlock, lola::vx::v2::DACControlBlock)
+PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::v2::DACChannelBlock)
+PLAYBACK_CONTAINER(CADCSampleRow, lola::vx::v2::CADCSampleRow)
+PLAYBACK_CONTAINER(CADCSamples, lola::vx::v2::CADCSamples)
+PLAYBACK_CONTAINER(SynapseMatrix, lola::vx::v2::SynapseMatrix)
+PLAYBACK_CONTAINER(SynapseWeightMatrix, lola::vx::v2::SynapseWeightMatrix)
+PLAYBACK_CONTAINER(SynapseLabelMatrix, lola::vx::v2::SynapseLabelMatrix)
+PLAYBACK_CONTAINER(SynapseCorrelationCalibMatrix, lola::vx::v2::SynapseCorrelationCalibMatrix)
+PLAYBACK_CONTAINER(CorrelationResetRow, lola::vx::v2::CorrelationResetRow)
+PLAYBACK_CONTAINER(SynapseWeightRow, lola::vx::v2::SynapseWeightRow)
+PLAYBACK_CONTAINER(SynapseLabelRow, lola::vx::v2::SynapseLabelRow)
+PLAYBACK_CONTAINER(SynapseCorrelationCalibRow, lola::vx::v2::SynapseCorrelationCalibRow)
+PLAYBACK_CONTAINER(AtomicNeuron, lola::vx::v2::AtomicNeuron)
+LAST_PLAYBACK_CONTAINER(SynapseRow, lola::vx::v2::SynapseRow)
+
+#undef PLAYBACK_CONTAINER
+#undef LAST_PLAYBACK_CONTAINER

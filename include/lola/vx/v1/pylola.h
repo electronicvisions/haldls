@@ -19,7 +19,7 @@ GENPYBIND_MANUAL({
 #include "lola/vx/v1/lola.h"
 
 
-namespace lola::vx::detail {
+namespace lola::vx::v1::detail {
 
 #define PLAYBACK_CONTAINER(Name, Type) #Name,
 #define LAST_PLAYBACK_CONTAINER(Name, Type) #Name
@@ -36,15 +36,15 @@ typedef hate::type_list<
 
 py::list get_containers_list(py::module& m);
 
-} // namespace lola::vx::detail
+} // namespace lola::vx::v1::detail
 
 GENPYBIND_MANUAL({
-	::haldls::vx::AddPickle<::lola::vx::detail::pickle_types>::apply(
-	    parent, ::lola::vx::detail::pickle_type_names);
+	::haldls::vx::AddPickle<::lola::vx::v1::detail::pickle_types>::apply(
+	    parent, ::lola::vx::v1::detail::pickle_type_names);
 
 	parent.attr("containers") = [&parent]() {
-		return lola::vx::detail::get_containers_list(parent);
+		return lola::vx::v1::detail::get_containers_list(parent);
 	}();
 
-	::haldls::vx::WrapToFromFunctions<::lola::vx::detail::pickle_types>::apply(parent);
+	::haldls::vx::WrapToFromFunctions<::lola::vx::v1::detail::pickle_types>::apply(parent);
 })

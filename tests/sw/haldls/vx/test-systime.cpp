@@ -5,11 +5,11 @@
 #include "fisch/vx/omnibus.h"
 #include "fisch/vx/systime.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/v1/systime.h"
+#include "haldls/vx/systime.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace haldls::vx::v1;
+using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 

@@ -4,9 +4,9 @@
 #include "fisch/vx/barrier.h"
 #include "halco/hicann-dls/vx/barrier.h"
 #include "haldls/cerealization.h"
-#include "haldls/vx/v1/barrier.h"
+#include "haldls/vx/barrier.h"
 
-using namespace haldls::vx::v1;
+using namespace haldls::vx;
 
 TEST(Barrier, General)
 {

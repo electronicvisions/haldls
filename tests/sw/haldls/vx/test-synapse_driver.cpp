@@ -5,14 +5,14 @@
 #include "fisch/vx/jtag.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/vx/v1/common.h"
-#include "haldls/vx/v1/omnibus_constants.h"
-#include "haldls/vx/v1/sram_controller.h"
-#include "haldls/vx/v1/synapse_driver.h"
+#include "haldls/vx/common.h"
+#include "haldls/vx/omnibus_constants.h"
+#include "haldls/vx/sram_controller.h"
+#include "haldls/vx/synapse_driver.h"
 #include "test-helper.h"
 
 using namespace fisch::vx;
-using namespace haldls::vx::v1;
+using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 

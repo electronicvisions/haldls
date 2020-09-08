@@ -1,15 +1,15 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "haldls/vx/v1/null_payload_readable.h"
+#include "haldls/vx/null_payload_readable.h"
 
 #include "fisch/vx/null_payload_readable.h"
 #include "halco/hicann-dls/vx/fpga.h"
 #include "haldls/cerealization.h"
-#include "haldls/vx/v1/common.h"
+#include "haldls/vx/common.h"
 #include "stadls/visitors.h"
 
-using namespace haldls::vx::v1;
+using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 
 typedef std::vector<NullPayloadReadableOnFPGA> addresses_type;

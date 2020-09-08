@@ -1,17 +1,17 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "haldls/vx/v1/synapse.h"
+#include "haldls/vx/synapse.h"
 
 #include "fisch/vx/jtag.h"
 #include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/v1/common.h"
+#include "haldls/vx/common.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
 
-using namespace haldls::vx::v1;
+using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 

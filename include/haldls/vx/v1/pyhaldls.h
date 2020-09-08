@@ -20,7 +20,7 @@ GENPYBIND_MANUAL({
 #include "haldls/vx/v1/haldls.h"
 #include "hate/type_list.h"
 
-namespace haldls::vx::detail {
+namespace haldls::vx::v1::detail {
 
 #define PLAYBACK_CONTAINER(Name, Type) #Name,
 static std::vector<std::string> const pickle_type_names = {
@@ -35,15 +35,15 @@ typedef hate::type_list<
 
 py::list get_containers_list(py::module& m);
 
-} // haldls::vx::detail
+} // haldls::vx::v1::detail
 
 GENPYBIND_MANUAL({
-	::haldls::vx::AddPickle<::haldls::vx::detail::pickle_types>::apply(
-	    parent, ::haldls::vx::detail::pickle_type_names);
+	::haldls::vx::AddPickle<::haldls::vx::v1::detail::pickle_types>::apply(
+	    parent, ::haldls::vx::v1::detail::pickle_type_names);
 
 	parent.attr("containers") = [&parent]() {
-		return haldls::vx::detail::get_containers_list(parent);
+		return haldls::vx::v1::detail::get_containers_list(parent);
 	}();
 
-	::haldls::vx::WrapToFromFunctions<::haldls::vx::detail::pickle_types>::apply(parent);
+	::haldls::vx::WrapToFromFunctions<::haldls::vx::v1::detail::pickle_types>::apply(parent);
 })

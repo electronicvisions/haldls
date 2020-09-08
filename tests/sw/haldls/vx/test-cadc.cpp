@@ -4,14 +4,14 @@
 #include "fisch/vx/jtag.h"
 #include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/v1/cadc.h"
-#include "haldls/vx/v1/common.h"
-#include "haldls/vx/v1/omnibus_constants.h"
-#include "haldls/vx/v1/sram_controller.h"
+#include "haldls/vx/cadc.h"
+#include "haldls/vx/common.h"
+#include "haldls/vx/omnibus_constants.h"
+#include "haldls/vx/sram_controller.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace haldls::vx::v1;
+using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 using namespace fisch::vx;

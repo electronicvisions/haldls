@@ -1,6 +1,6 @@
 #include "haldls/vx/v1/pyhaldls.h"
 
-namespace haldls::vx::detail {
+namespace haldls::vx::v1::detail {
 
 py::list get_containers_list(py::module& m)
 {
@@ -10,4 +10,4 @@ py::list get_containers_list(py::module& m)
 	return ret;
 }
 
-} // namespace haldls::vx::detail
+} // namespace haldls::vx::v1::detail

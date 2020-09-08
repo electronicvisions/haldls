@@ -68,7 +68,7 @@ std::ostream& print_words_for_each_backend(std::ostream& os, T const& config)
 }
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
-	template SYMBOL_VISIBLE std::ostream& print_words_for_each_backend<Type>(                      \
+	template std::ostream& print_words_for_each_backend<Type>(                                     \
 	    std::ostream & os, Type const& config);
 #include "haldls/vx/v1/container.def"
 

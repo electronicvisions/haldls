@@ -39,6 +39,13 @@ def build(bld):
     )
 
     bld(
+        features='cxx pyembed',
+        target='pystadls_vx_v2_obj',
+        source='../src/stadls/vx/v2/pystadls.cpp',
+        use='stadls_vx_v2',
+    )
+
+    bld(
         target='pystadls_vx_v1',
         source='../include/stadls/vx/v1/pystadls.h',
         genpybind_tags=['stadls_vx', 'stadls_vx_v1'],
@@ -50,10 +57,32 @@ def build(bld):
     )
 
     bld(
+        target='pystadls_vx_v2',
+        source='../include/stadls/vx/v2/pystadls.h',
+        genpybind_tags=['stadls_vx', 'stadls_vx_v2'],
+        features='genpybind cxx cxxshlib pyext pyembed',
+        use=['stadls_vx_v2', 'pylogging', 'pyhalco_hicann_dls_vx_v2',
+             'pyhaldls_vx_v2', 'pystadls_vx_v2_obj', 'pyhxcomm_vx'],
+        install_path='${PREFIX}/lib',
+        linkflags='-Wl,-z,defs',
+    )
+
+    bld(
         name='pystadls_pbgenerator_vx_v1',
         tests='test/pystadls_pbgenerator_vx_v1.py',
         features='use pytest pylint pycodestyle',
         use=['pystadls_vx_v1'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
+    )
+
+    bld(
+        name='pystadls_pbgenerator_vx_v2',
+        tests='test/pystadls_pbgenerator_vx_v2.py',
+        features='use pytest pylint pycodestyle',
+        use=['pystadls_vx_v2'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
@@ -72,10 +101,33 @@ def build(bld):
     )
 
     bld(
+        name='pystadls_swtest_vx_v2',
+        tests='test/pystadls_swtest_vx_v2.py',
+        features='use pytest pylint pycodestyle',
+        use=['pyhalco_hicann_dls_vx_v2', 'pystadls_vx_v2', 'pyhaldls_vx_v2', 'pyhalco_common_files', 'pyhxcomm_vx'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        test_timeout=120
+    )
+
+    bld(
         name='pystadls_hwtest_vx_v1',
         tests='test/pystadls_hwtest_vx_v1.py',
         features='use pytest pylint pycodestyle',
         use=['pyhalco_hicann_dls_vx_v1', 'pystadls_vx_v1', 'pyhaldls_vx_v1', 'pyhalco_common_files', 'pyhxcomm_vx'],
+        install_path='${PREFIX}/bin',
+        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
+        test_timeout=120
+    )
+
+    bld(
+        name='pystadls_hwtest_vx_v2',
+        tests='test/pystadls_hwtest_vx_v2.py',
+        features='use pytest pylint pycodestyle',
+        use=['pyhalco_hicann_dls_vx_v2', 'pystadls_vx_v2', 'pyhaldls_vx_v2', 'pyhalco_common_files', 'pyhxcomm_vx'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
