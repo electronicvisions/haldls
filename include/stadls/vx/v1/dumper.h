@@ -73,7 +73,10 @@ private:
 	void serialize(Archive& ar, std::uint32_t);
 };
 
-using Dumper GENPYBIND(visible) = stadls::vx::detail::Dumper<DumperDone>;
+// Dumper is a detail, its template parameter DumperDone isn't.
+// The latter is used by the PlaybackProgramBuilderDumper API.
+// Hence, we don't wrap the detail, but only the public API type.
+using Dumper GENPYBIND(hidden) = stadls::vx::detail::Dumper<DumperDone>;
 
 GENPYBIND_MANUAL({
 	haldls::vx::AddPickle<hate::type_list<stadls::vx::v1::DumperDone>>::apply(
