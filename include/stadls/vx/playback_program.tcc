@@ -123,16 +123,3 @@ bool PlaybackProgram::operator!=(PlaybackProgram const& other) const
 }
 
 } // namespace stadls::vx
-
-
-// TODO: improve separation of version-specific code paths #3671
-
-#include "haldls/vx/v1/container.h"
-#include "lola/vx/v1/container.h"
-
-#define PLAYBACK_CONTAINER(_Name, Type)                                                            \
-	template class SYMBOL_VISIBLE stadls::vx::PlaybackProgram::ContainerTicket<Type>;
-#pragma push_macro("PLAYBACK_CONTAINER")
-#include "haldls/vx/v1/container.def"
-#pragma pop_macro("PLAYBACK_CONTAINER")
-#include "lola/vx/v1/container.def"

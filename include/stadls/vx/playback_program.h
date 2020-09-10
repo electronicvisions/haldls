@@ -20,9 +20,9 @@ namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
 namespace detail {
 
-template <typename, typename>
+template <typename, typename, template <typename> class>
 class PlaybackProgramBuilderAdapter;
-template <typename, typename>
+template <typename, typename, template <typename> class>
 class PlaybackProgramBuilderAdapterImpl;
 
 } // namespace detail
@@ -84,7 +84,7 @@ public:
 		    typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 		    ticket_impl_type;
 
-		template <typename, typename>
+		template <typename, typename, template <typename> class>
 		friend class detail::PlaybackProgramBuilderAdapterImpl;
 
 		ContainerTicket(coordinate_type const& coord, ticket_impl_type const& ticket_impl) :
@@ -230,10 +230,10 @@ public:
 	})
 
 private:
-	template <typename, typename>
+	template <typename, typename, template <typename> class>
 	friend class stadls::vx::detail::PlaybackProgramBuilderAdapter;
 
-	template <typename, typename>
+	template <typename, typename, template <typename> class>
 	friend class stadls::vx::detail::PlaybackProgramBuilderAdapterImpl;
 
 	template <typename Connection>

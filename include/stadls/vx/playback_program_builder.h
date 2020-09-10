@@ -24,75 +24,44 @@
 #endif
 // clang-format on
 
-// FIXME: vx/v1
-#include "haldls/vx/v1/container.h"
-#include "lola/vx/v1/container.h"
-
 namespace fisch::vx {
 class PlaybackProgramBuilder;
 } // namespace fisch::vx
 
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 namespace v1 {
 class DumperDone;
 using Dumper = class stadls::vx::detail::Dumper<stadls::vx::v1::DumperDone>;
 } // namespace v1
 
+namespace v2 {
+class DumperDone;
+using Dumper = class stadls::vx::detail::Dumper<stadls::vx::v2::DumperDone>;
+} // namespace v2
+#endif
+
 namespace detail {
 
-template <typename, typename>
+template <typename, typename, template <typename> class>
 class PlaybackProgramBuilderAdapterImpl;
 
-template <typename, typename>
+template <typename, typename, template <typename> class>
 class PlaybackProgramBuilderAdapter;
 
-template <typename T, typename U>
-std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilderAdapter<T, U> const& builder)
+template <typename T, typename U, template <typename> class C>
+std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilderAdapter<T, U, C> const& builder)
     SYMBOL_VISIBLE;
-
-
-// FIXME: version-specific lookup
-/**
- * List of container types used to resolve a container type from a coordinate type.
- */
-typedef hate::type_list<
-#define PLAYBACK_CONTAINER(Name, Type) Type,
-#include "haldls/vx/v1/container.def"
-#define LAST_PLAYBACK_CONTAINER(Name, Type) Type
-#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
-#include "lola/vx/v1/container.def"
-    >
-    container_list;
-
-/**
- * List of coordinate types sorted the same way as the container list.
- */
-typedef hate::type_list<
-#define PLAYBACK_CONTAINER(Name, Type) typename Type::coordinate_type,
-#include "haldls/vx/v1/container.def"
-#define LAST_PLAYBACK_CONTAINER(Name, Type) typename Type::coordinate_type
-#define PLAYBACK_CONTAINER(Name, Type) LAST_PLAYBACK_CONTAINER(Name, Type),
-#include "lola/vx/v1/container.def"
-    >
-    coordinate_list;
-
-/**
- * Given a coordinate type, resolves the corresponding unique container type.
- * @tparam CoordinateT Coordinate type to resolve container type for
- */
-template <typename CoordinateT>
-struct coordinate_type_to_container_type
-{
-	typedef typename hate::index_type_list_by_integer<
-	    hate::index_type_list_by_type<CoordinateT, coordinate_list>::value,
-	    container_list>::type type;
-};
 
 /**
  * Sequential PlaybackProgram builder.
  */
-template <typename BuilderStorage, typename DoneType>
+template <
+    typename BuilderStorage,
+    typename DoneType,
+    template <typename>
+    class CoordinateToContainer>
 class SYMBOL_VISIBLE PlaybackProgramBuilderAdapter
 {
 public:
@@ -187,12 +156,9 @@ public:
 	 * @param coord Coordinate value selecting location
 	 * @param backend Backend selection
 	 */
-	// FIXME: provide chip-version specific => generalize return type and
-	// coordinate here, then partial specialize for chip version
 	template <typename CoordinateType>
-	PlaybackProgram::ContainerTicket<
-	    typename coordinate_type_to_container_type<CoordinateType>::type>
-	read(CoordinateType const& coord, haldls::vx::Backend backend);
+	PlaybackProgram::ContainerTicket<typename CoordinateToContainer<CoordinateType>::type> read(
+	    CoordinateType const& coord, haldls::vx::Backend backend);
 
 	/**
 	 * Add instructions to read container data from given location.
@@ -201,12 +167,9 @@ public:
 	 * @note This function without backend parameter is needed due to python wrapping not being
 	 * able to handle templated default arguments.
 	 */
-	// FIXME: provide chip-version specific => generalize return type and
-	// coordinate here, then partial specialize for chip version
 	template <typename CoordinateType>
-	PlaybackProgram::ContainerTicket<
-	    typename coordinate_type_to_container_type<CoordinateType>::type>
-	read(CoordinateType const& coord);
+	PlaybackProgram::ContainerTicket<typename CoordinateToContainer<CoordinateType>::type> read(
+	    CoordinateType const& coord);
 
 	/**
 	 * Merge other PlaybackProgramBuilderAdapter to the end of this builder instance.
@@ -258,16 +221,18 @@ public:
 	 */
 	DoneType done();
 
-	template <typename T, typename U>
+	template <typename T, typename U, template <typename> class C>
 	friend std::ostream& operator<<(
-	    std::ostream& os, PlaybackProgramBuilderAdapter<T, U> const& builder);
+	    std::ostream& os, PlaybackProgramBuilderAdapter<T, U, C> const& builder);
 
 	GENPYBIND_MANUAL({
 		parent.def("__repr__", [](GENPYBIND_PARENT_TYPE const& p) {
 			std::stringstream ss;
-			if constexpr (std::is_same_v<
+			typedef hate::type_list<::stadls::vx::v1::Dumper, ::stadls::vx::v2::Dumper>
+			    dumper_types;
+			if constexpr (hate::is_in_type_list<
 			                  typename std::decay<decltype(p)>::type::Builder,
-			                  ::stadls::vx::v1::Dumper>) {
+			                  dumper_types>::value) {
 				ss << "PlaybackProgramBuilderDumper()";
 			} else {
 				ss << "PlaybackProgramBuilder(to FPGA size: " << p.size_to_fpga()
@@ -301,7 +266,8 @@ public:
 	bool is_write_only() const;
 
 private:
-	using Impl = detail::PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType>;
+	using Impl =
+	    detail::PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToContainer>;
 	friend Impl;
 
 	friend class cereal::access;

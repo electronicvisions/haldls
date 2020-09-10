@@ -14,8 +14,8 @@ namespace stadls::vx {
 
 namespace detail {
 
-template <typename BuilderType>
-InitGenerator<BuilderType>::InitGenerator() :
+template <typename BuilderType, typename Coordinates>
+InitGenerator<BuilderType, Coordinates>::InitGenerator() :
     shift_register(),
     dac_control_block(),
     dac_channel_block(lola::vx::DACChannelBlock::default_ldo_2),
@@ -36,8 +36,8 @@ InitGenerator<BuilderType>::InitGenerator() :
     capmem_block_config()
 {}
 
-template <typename BuilderType>
-InitGenerator<BuilderType>::HighspeedLink::HighspeedLink() :
+template <typename BuilderType, typename Coordinates>
+InitGenerator<BuilderType, Coordinates>::HighspeedLink::HighspeedLink() :
     common_phy_config_fpga(),
     common_phy_config_chip(),
     phy_configs_fpga(),
@@ -46,9 +46,9 @@ InitGenerator<BuilderType>::HighspeedLink::HighspeedLink() :
     enable_systime(true)
 {}
 
-template <typename BuilderType>
-PlaybackGeneratorReturn<BuilderType, typename InitGenerator<BuilderType>::Result>
-InitGenerator<BuilderType>::generate() const
+template <typename BuilderType, typename Coordinates>
+PlaybackGeneratorReturn<BuilderType, typename InitGenerator<BuilderType, Coordinates>::Result>
+InitGenerator<BuilderType, Coordinates>::generate() const
 {
 	using namespace haldls::vx;
 	using namespace halco::hicann_dls::vx;
@@ -137,12 +137,12 @@ InitGenerator<BuilderType>::generate() const
 		builder.write(ReferenceGeneratorConfigOnDLS(), reference_generator_config);
 
 		// Set all CapMem cells to value zero
-		for (auto coord : iter_all<CapMemBlockOnDLS>()) {
-			builder.write(coord, CapMemBlock());
+		for (auto coord : iter_all<typename Coordinates::CapMemBlockOnDLS>()) {
+			builder.write(coord, haldls::vx::CapMemBlock());
 		}
 
 		// Initialize the CapMem with usable default values.
-		for (auto coord : iter_all<CapMemBlockConfigOnDLS>()) {
+		for (auto coord : iter_all<typename Coordinates::CapMemBlockConfigOnDLS>()) {
 			builder.write(coord, capmem_block_config[coord]);
 		}
 	}
@@ -188,8 +188,8 @@ InitGenerator<BuilderType>::generate() const
 	return {std::move(builder), Result{}};
 }
 
-template <typename BuilderType>
-std::ostream& operator<<(std::ostream& os, InitGenerator<BuilderType> const&)
+template <typename BuilderType, typename Coordinates>
+std::ostream& operator<<(std::ostream& os, InitGenerator<BuilderType, Coordinates> const&)
 {
 	return os;
 }
@@ -197,9 +197,9 @@ std::ostream& operator<<(std::ostream& os, InitGenerator<BuilderType> const&)
 } // namespace detail
 
 
-template <typename BuilderType>
-ExperimentInit<BuilderType>::ExperimentInit() :
-    detail::InitGenerator<BuilderType>(),
+template <typename BuilderType, typename Coordinates>
+ExperimentInit<BuilderType, Coordinates>::ExperimentInit() :
+    detail::InitGenerator<BuilderType, Coordinates>(),
     common_neuron_backend_config(),
     column_correlation_quad_config(),
     column_current_quad_config(),
@@ -207,21 +207,21 @@ ExperimentInit<BuilderType>::ExperimentInit() :
 {
 	this->enable_capmem = true;
 	for (auto const coord :
-	     halco::common::iter_all<halco::hicann_dls::vx::CommonNeuronBackendConfigOnDLS>()) {
+	     halco::common::iter_all<typename Coordinates::CommonNeuronBackendConfigOnDLS>()) {
 		common_neuron_backend_config[coord].set_enable_clocks(true);
 	}
 }
 
-template <typename BuilderType>
-PlaybackGeneratorReturn<BuilderType, typename ExperimentInit<BuilderType>::Result>
-ExperimentInit<BuilderType>::generate() const
+template <typename BuilderType, typename Coordinates>
+PlaybackGeneratorReturn<BuilderType, typename ExperimentInit<BuilderType, Coordinates>::Result>
+ExperimentInit<BuilderType, Coordinates>::generate() const
 {
 	using namespace haldls::vx;
 	using namespace halco::hicann_dls::vx;
 	using namespace halco::common;
 
-	auto [builder, res] =
-	    stadls::vx::generate(*static_cast<detail::InitGenerator<BuilderType> const*>(this));
+	auto [builder, res] = stadls::vx::generate(
+	    *static_cast<detail::InitGenerator<BuilderType, Coordinates> const*>(this));
 
 	// Write common neuron backend config
 	for (auto coord : iter_all<CommonNeuronBackendConfigOnDLS>()) {
@@ -239,27 +239,16 @@ ExperimentInit<BuilderType>::generate() const
 	}
 
 	// Set capmem config for all blocks
-	for (auto coord : iter_all<CapMemBlockOnDLS>()) {
+	for (auto coord : iter_all<typename Coordinates::CapMemBlockOnDLS>()) {
 		builder.write(coord, capmem_config[coord]);
 	}
 
 	return {std::move(builder), res};
 }
 
-template <typename BuilderType>
-DigitalInit<BuilderType>::DigitalInit() : detail::InitGenerator<BuilderType>()
+template <typename BuilderType, typename Coordinates>
+DigitalInit<BuilderType, Coordinates>::DigitalInit() :
+    detail::InitGenerator<BuilderType, Coordinates>()
 {}
 
 } // namespace stadls::vx
-
-#include "stadls/vx/v1/init_generator.h"
-
-template class stadls::vx::detail::InitGenerator<stadls::vx::v1::PlaybackProgramBuilder>;
-template class stadls::vx::ExperimentInit<stadls::vx::v1::PlaybackProgramBuilder>;
-template class stadls::vx::DigitalInit<stadls::vx::v1::PlaybackProgramBuilder>;
-
-template std::ostream& stadls::vx::detail::operator<<(
-    std::ostream&,
-    stadls::vx::detail::InitGenerator<stadls::vx::detail::PlaybackProgramBuilderAdapter<
-        fisch::vx::PlaybackProgramBuilder,
-        stadls::vx::PlaybackProgram> > const&);

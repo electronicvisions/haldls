@@ -2,6 +2,7 @@
 #include "stadls/vx/dumper.h"
 #include "stadls/vx/genpybind.h"
 
+#include "halco/hicann-dls/vx/v1/coordinates.h"
 #include "haldls/vx/v1/container.h"
 #include "lola/vx/v1/container.h"
 

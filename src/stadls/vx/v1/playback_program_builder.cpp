@@ -8,22 +8,26 @@ namespace stadls::vx::detail {
 
 template class PlaybackProgramBuilderAdapter<
     fisch::vx::PlaybackProgramBuilder,
-    stadls::vx::PlaybackProgram>;
+    stadls::vx::PlaybackProgram,
+    stadls::vx::v1::CoordinateToContainer>;
 template class PlaybackProgramBuilderAdapter<
     stadls::vx::v1::Dumper,
-    stadls::vx::v1::Dumper::done_type>;
+    stadls::vx::v1::Dumper::done_type,
+    stadls::vx::v1::CoordinateToContainer>;
 
 template std::ostream& operator<<(
     std::ostream&,
     PlaybackProgramBuilderAdapter<
         fisch::vx::PlaybackProgramBuilder,
-        stadls::vx::PlaybackProgram> const&);
+        stadls::vx::PlaybackProgram,
+        stadls::vx::v1::CoordinateToContainer> const&);
 
 template std::ostream& operator<<(
     std::ostream&,
     PlaybackProgramBuilderAdapter<
         stadls::vx::v1::Dumper,
-        stadls::vx::v1::Dumper::done_type> const&);
+        stadls::vx::v1::Dumper::done_type,
+        stadls::vx::v1::CoordinateToContainer> const&);
 
 } // namespace stadls::vx::detail
 
