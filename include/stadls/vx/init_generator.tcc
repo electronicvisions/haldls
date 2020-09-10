@@ -198,55 +198,6 @@ std::ostream& operator<<(std::ostream& os, InitGenerator<BuilderType, Coordinate
 
 
 template <typename BuilderType, typename Coordinates>
-ExperimentInit<BuilderType, Coordinates>::ExperimentInit() :
-    detail::InitGenerator<BuilderType, Coordinates>(),
-    common_neuron_backend_config(),
-    column_correlation_quad_config(),
-    column_current_quad_config(),
-    capmem_config()
-{
-	this->enable_capmem = true;
-	for (auto const coord :
-	     halco::common::iter_all<typename Coordinates::CommonNeuronBackendConfigOnDLS>()) {
-		common_neuron_backend_config[coord].set_enable_clocks(true);
-	}
-}
-
-template <typename BuilderType, typename Coordinates>
-PlaybackGeneratorReturn<BuilderType, typename ExperimentInit<BuilderType, Coordinates>::Result>
-ExperimentInit<BuilderType, Coordinates>::generate() const
-{
-	using namespace haldls::vx;
-	using namespace halco::hicann_dls::vx;
-	using namespace halco::common;
-
-	auto [builder, res] = stadls::vx::generate(
-	    *static_cast<detail::InitGenerator<BuilderType, Coordinates> const*>(this));
-
-	// Write common neuron backend config
-	for (auto coord : iter_all<CommonNeuronBackendConfigOnDLS>()) {
-		builder.write(coord, common_neuron_backend_config[coord]);
-	}
-
-	// Set column correlation quad config
-	for (auto coord : iter_all<ColumnCorrelationQuadOnDLS>()) {
-		builder.write(coord, column_correlation_quad_config[coord]);
-	}
-
-	// Set column current quad config
-	for (auto coord : iter_all<ColumnCurrentQuadOnDLS>()) {
-		builder.write(coord, column_current_quad_config[coord]);
-	}
-
-	// Set capmem config for all blocks
-	for (auto coord : iter_all<typename Coordinates::CapMemBlockOnDLS>()) {
-		builder.write(coord, capmem_config[coord]);
-	}
-
-	return {std::move(builder), res};
-}
-
-template <typename BuilderType, typename Coordinates>
 DigitalInit<BuilderType, Coordinates>::DigitalInit() :
     detail::InitGenerator<BuilderType, Coordinates>()
 {}

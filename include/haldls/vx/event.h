@@ -50,9 +50,9 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 
 	/** Configurable neuron backend output label, bits 0-7. */
 	GENPYBIND(getter_for(neuron_backend_address_out))
-	NeuronBackendConfig::AddressOut get_neuron_backend_address_out() const SYMBOL_VISIBLE;
+	NeuronBackendAddressOut get_neuron_backend_address_out() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(neuron_backend_address_out))
-	void set_neuron_backend_address_out(NeuronBackendConfig::AddressOut value) SYMBOL_VISIBLE;
+	void set_neuron_backend_address_out(NeuronBackendAddressOut value) SYMBOL_VISIBLE;
 
 	/** Configurable row select address on PADIBus, bits 6-10. */
 	GENPYBIND(getter_for(row_select_address))
@@ -62,9 +62,9 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 
 	/** Configurable synapse address, bits 0-5. */
 	GENPYBIND(getter_for(synapse_label))
-	SynapseQuad::Label get_synapse_label() const SYMBOL_VISIBLE;
+	SynapseLabelValue get_synapse_label() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(synapse_label))
-	void set_synapse_label(SynapseQuad::Label value) SYMBOL_VISIBLE;
+	void set_synapse_label(SynapseLabelValue value) SYMBOL_VISIBLE;
 };
 
 #define SpikePackToChip(Num)                                                                       \

@@ -3,13 +3,14 @@
 
 #include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/synapse.h"
+#include "halco/hicann-dls/vx/v2/quad.h"
+#include "haldls/vx/v2/synapse.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
 
-using namespace haldls::vx;
-using namespace halco::hicann_dls::vx;
+using namespace haldls::vx::v2;
+using namespace halco::hicann_dls::vx::v2;
 using namespace halco::common;
 
 TEST(ColumnCorrelationQuad_ColumnCorrelationSwitch, General)
@@ -142,10 +143,10 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 	correlation_switch_block.set_switch(correlation_switch_coord, correlation_switch);
 
 	std::array<halco::hicann_dls::vx::OmnibusAddress, ColumnCorrelationQuad::config_size_in_words>
-	    ref_addresses = {{halco::hicann_dls::vx::OmnibusAddress(0x02cf'8080),
-	                      halco::hicann_dls::vx::OmnibusAddress(0x02cf'80c0),
-	                      halco::hicann_dls::vx::OmnibusAddress(0x02c0'4000),
-	                      halco::hicann_dls::vx::OmnibusAddress(0x02c4'4000)}};
+	    ref_addresses = {{halco::hicann_dls::vx::OmnibusAddress(0x02cf'8083),
+	                      halco::hicann_dls::vx::OmnibusAddress(0x02cf'80c3),
+	                      halco::hicann_dls::vx::OmnibusAddress(0x02c0'4003),
+	                      halco::hicann_dls::vx::OmnibusAddress(0x02c4'4003)}};
 	std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words> ref_data = {
 	    {fisch::vx::OmnibusData(0x0040'0000), fisch::vx::OmnibusData(0x0080'0000),
 	     fisch::vx::OmnibusData(0x0000'0000), fisch::vx::OmnibusData(0x0020'0000)}};

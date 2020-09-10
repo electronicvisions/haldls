@@ -312,7 +312,7 @@ public:
 	{
 		EventRouting() SYMBOL_VISIBLE;
 
-		typedef haldls::vx::NeuronBackendConfig::AddressOut Address GENPYBIND(visible);
+		typedef haldls::vx::v1::NeuronBackendConfig::AddressOut Address GENPYBIND(visible);
 
 		EventRouting(
 		    bool enable_analog,
@@ -416,9 +416,10 @@ public:
 
 	struct GENPYBIND(visible) RefractoryPeriod
 	{
-		typedef haldls::vx::NeuronBackendConfig::InputClock InputClock GENPYBIND(visible);
-		typedef haldls::vx::NeuronBackendConfig::ResetHoldoff ResetHoldoff GENPYBIND(visible);
-		typedef haldls::vx::NeuronBackendConfig::RefractoryTime RefractoryTime GENPYBIND(visible);
+		typedef haldls::vx::v1::NeuronBackendConfig::InputClock InputClock GENPYBIND(visible);
+		typedef haldls::vx::v1::NeuronBackendConfig::ResetHoldoff ResetHoldoff GENPYBIND(visible);
+		typedef haldls::vx::v1::NeuronBackendConfig::RefractoryTime RefractoryTime
+		    GENPYBIND(visible);
 
 		/**
 		 * Select between the two input clocks specified in the common neuron backend.
@@ -476,7 +477,7 @@ public:
 	};
 
 
-	typedef halco::hicann_dls::vx::AtomicNeuronOnDLS coordinate_type;
+	typedef halco::hicann_dls::vx::v1::AtomicNeuronOnDLS coordinate_type;
 	typedef std::false_type has_local_data;
 
 	AtomicNeuron() SYMBOL_VISIBLE;

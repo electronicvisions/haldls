@@ -26,6 +26,16 @@ using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v2::Coordinat
 
 } // namespace haldls::vx
 
+namespace lola::vx::v1 {
+class SynapseRow;
+class SynapseMatrix;
+} // namespace lola::vx::v1
+
+namespace lola::vx::v2 {
+class SynapseRow;
+class SynapseMatrix;
+} // namespace lola::vx::v2
+
 namespace haldls::vx::detail {
 
 template <typename T, typename = void>
@@ -49,8 +59,10 @@ typedef hate::type_list<
     PPUMemoryBlock,
     v1::CapMemBlock,
     v2::CapMemBlock,
-    lola::vx::SynapseRow,
-    lola::vx::SynapseMatrix>
+    lola::vx::v1::SynapseRow,
+    lola::vx::v1::SynapseMatrix,
+    lola::vx::v2::SynapseRow,
+    lola::vx::v2::SynapseMatrix>
     NonLeafNodeWriteableContainerList;
 
 // manually add all non-leaf node containers which are writeable

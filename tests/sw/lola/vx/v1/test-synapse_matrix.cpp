@@ -15,7 +15,7 @@
 
 using namespace lola::vx::v1;
 using namespace haldls::vx::v1;
-using namespace halco::hicann_dls::vx;
+using namespace halco::hicann_dls::vx::v1;
 using namespace halco::common;
 
 TEST(SynapseMatrix, General)

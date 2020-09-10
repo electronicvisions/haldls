@@ -1,21 +1,21 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "lola/vx/v1/synapse.h"
+#include "lola/vx/v2/synapse.h"
 
 #include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_heap_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/v1/common.h"
-#include "haldls/vx/v1/synapse.h"
+#include "haldls/vx/v2/common.h"
+#include "haldls/vx/v2/synapse.h"
 #include "lola/vx/cerealization.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace lola::vx::v1;
-using namespace haldls::vx::v1;
-using namespace halco::hicann_dls::vx;
+using namespace lola::vx::v2;
+using namespace haldls::vx::v2;
+using namespace halco::hicann_dls::vx::v2;
 using namespace halco::common;
 
 TEST(SynapseRow, General)
@@ -121,7 +121,7 @@ TEST(SynapseRow, EncodeDecode)
 		ref_data[c.toEnum() * 2] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
 		ref_data[c.toEnum() * 2 + 1] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
 	}
-	ref_data[10] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0x3f00'0000ul));
+	ref_data[68] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0000'003ful));
 
 	{
 		addresses_type write_addresses;
@@ -135,9 +135,9 @@ TEST(SynapseRow, EncodeDecode)
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	SynapseRow config_copy;

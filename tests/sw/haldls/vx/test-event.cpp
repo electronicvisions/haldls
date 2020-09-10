@@ -38,7 +38,7 @@ TEST(SpikeLabel, General)
 	}
 
 	{
-		NeuronBackendConfig::AddressOut const value(243);
+		NeuronBackendAddressOut const value(243);
 		config.set_neuron_backend_address_out(value);
 		EXPECT_EQ(config.get_neuron_backend_address_out(), value);
 	}
@@ -50,7 +50,7 @@ TEST(SpikeLabel, General)
 	}
 
 	{
-		SynapseQuad::Label const value(23);
+		SynapseLabelValue const value(23);
 		config.set_synapse_label(value);
 		EXPECT_EQ(config.get_synapse_label(), value);
 	}

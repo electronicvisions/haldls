@@ -3,13 +3,14 @@
 
 #include "fisch/vx/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/synapse.h"
+#include "halco/hicann-dls/vx/v1/quad.h"
+#include "haldls/vx/v1/synapse.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
 
-using namespace haldls::vx;
-using namespace halco::hicann_dls::vx;
+using namespace haldls::vx::v1;
+using namespace halco::hicann_dls::vx::v1;
 using namespace halco::common;
 
 TEST(ColumnCurrentQuad_ColumnCurrentSwitch, General)

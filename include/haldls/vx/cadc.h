@@ -1,6 +1,5 @@
 #pragma once
 #include "halco/common/geometry.h"
-#include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/cadc.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/sram_controller.h"
@@ -138,14 +137,21 @@ struct BackendContainerTrait<CADCConfig>
 
 } // namespace detail
 
+template <typename Coordinates>
+class CADCChannelConfig;
+
+template <typename Coordinates>
+std::ostream& operator<<(std::ostream& os, CADCChannelConfig<Coordinates> const& config);
+
 /**
  * CADC container with channel-local digital offset config.
  */
-class GENPYBIND(visible) CADCChannelConfig
+template <typename Coordinates>
+class SYMBOL_VISIBLE CADCChannelConfig
 {
 public:
 	typedef std::true_type is_leaf_node;
-	typedef halco::hicann_dls::vx::CADCChannelConfigOnDLS coordinate_type;
+	typedef typename Coordinates::CADCChannelConfigOnDLS coordinate_type;
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::hardware};
 
@@ -155,132 +161,90 @@ public:
 	struct GENPYBIND(inline_base("*")) Offset
 	    : public halco::common::detail::RantWrapper<Offset, int_fast16_t, 127, -128>
 	{
+		typedef halco::common::detail::RantWrapper<Offset, int_fast16_t, 127, -128> rant_t;
 		constexpr explicit Offset(intmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
 	};
 
 	/** Default constructor. */
-	CADCChannelConfig() SYMBOL_VISIBLE;
+	CADCChannelConfig();
 
 	/**
 	 * Get Offset value.
 	 * @return Offset value
 	 */
 	GENPYBIND(getter_for(offset))
-	Offset get_offset() const SYMBOL_VISIBLE;
+	Offset get_offset() const;
 
 	/**
 	 * Set Offset value.
 	 * @param value Offset value
 	 */
 	GENPYBIND(setter_for(offset))
-	void set_offset(Offset value) SYMBOL_VISIBLE;
+	void set_offset(Offset value);
 
-	bool operator==(CADCChannelConfig const& other) const SYMBOL_VISIBLE;
-	bool operator!=(CADCChannelConfig const& other) const SYMBOL_VISIBLE;
+	bool operator==(CADCChannelConfig const& other) const;
+	bool operator!=(CADCChannelConfig const& other) const;
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, CADCChannelConfig const& config)
-	    SYMBOL_VISIBLE;
+	friend std::ostream& operator<<<>(
+	    std::ostream& os, CADCChannelConfig<Coordinates> const& config);
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
 	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& word)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename WordT>
-	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename WordT>
-	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
 
 protected:
 	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	void serialize(Archive& ar, std::uint32_t const version);
 
 	Offset m_offset;
 };
 
+#define CADC_EXTERN_TEMPLATE(Coordinates)                                                          \
+	extern template class SYMBOL_VISIBLE CADCChannelConfig<Coordinates>;                           \
+	extern template SYMBOL_VISIBLE GENPYBIND(hidden) std::ostream& operator<<<Coordinates>(        \
+	    std::ostream& os, CADCChannelConfig<Coordinates> const& value);                            \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \
+	    CADCChannelConfig<Coordinates>::config_size_in_words>                                      \
+	CADCChannelConfig<Coordinates>::addresses(coordinate_type const& coord);                       \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    halco::hicann_dls::vx::OmnibusAddress,                                                     \
+	    CADCChannelConfig<Coordinates>::config_size_in_words>                                      \
+	CADCChannelConfig<Coordinates>::addresses(coordinate_type const& coord);                       \
+                                                                                                   \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    fisch::vx::OmnibusChipOverJTAG, CADCChannelConfig<Coordinates>::config_size_in_words>      \
+	CADCChannelConfig<Coordinates>::encode() const;                                                \
+	extern template SYMBOL_VISIBLE                                                                 \
+	    std::array<fisch::vx::Omnibus, CADCChannelConfig<Coordinates>::config_size_in_words>       \
+	    CADCChannelConfig<Coordinates>::encode() const;                                            \
+                                                                                                   \
+	extern template SYMBOL_VISIBLE void CADCChannelConfig<Coordinates>::decode(                    \
+	    std::array<                                                                                \
+	        fisch::vx::OmnibusChipOverJTAG,                                                        \
+	        CADCChannelConfig<Coordinates>::config_size_in_words> const& data);                    \
+	extern template SYMBOL_VISIBLE void CADCChannelConfig<Coordinates>::decode(                    \
+	    std::array<                                                                                \
+	        fisch::vx::Omnibus, CADCChannelConfig<Coordinates>::config_size_in_words> const&       \
+	        data);
+
 namespace detail {
 
-template <>
-struct BackendContainerTrait<CADCChannelConfig>
+template <typename Coordinates>
+struct BackendContainerTrait<CADCChannelConfig<Coordinates>>
     : public BackendContainerBase<
-          CADCChannelConfig,
+          CADCChannelConfig<Coordinates>,
           fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
-{};
-
-} // namespace detail
-
-/**
- * CADC container of four CADC samples.
- */
-class GENPYBIND(visible) CADCSampleQuad
-{
-public:
-	typedef std::true_type is_leaf_node;
-	typedef halco::hicann_dls::vx::CADCSampleQuadOnDLS coordinate_type;
-
-	/**
-	 * CADC measurement value (offset-corrected, see CADCChannelConfig).
-	 */
-	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 255, 0>
-	{
-		constexpr explicit Value(intmax_t const val = 0) GENPYBIND(implicit_conversion) :
-		    rant_t(val)
-		{}
-	};
-
-	/** Default constructor. */
-	CADCSampleQuad() SYMBOL_VISIBLE;
-
-	/**
-	 * Get sample value.
-	 * @param coord Sample on quad coordinate
-	 * @return Value value
-	 */
-	Value get_sample(halco::hicann_dls::vx::EntryOnQuad const& coord) const SYMBOL_VISIBLE;
-
-	/**
-	 * Set sample value.
-	 * @param coord Sample on quad coordinate
-	 * @param value Value value
-	 */
-	void set_sample(halco::hicann_dls::vx::EntryOnQuad const& coord, Value value) SYMBOL_VISIBLE;
-
-	bool operator==(CADCSampleQuad const& other) const SYMBOL_VISIBLE;
-	bool operator!=(CADCSampleQuad const& other) const SYMBOL_VISIBLE;
-
-	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, CADCSampleQuad const& config) SYMBOL_VISIBLE;
-
-	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
-	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
-	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
-	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
-	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
-
-protected:
-	friend class cereal::access;
-	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
-
-	halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> m_samples;
-};
-
-namespace detail {
-
-template <>
-struct BackendContainerTrait<CADCSampleQuad>
-    : public BackendContainerBase<CADCSampleQuad, fisch::vx::Omnibus>
 {};
 
 } // namespace detail

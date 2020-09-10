@@ -188,76 +188,7 @@ private:
 
 } // namespace stadls::vx::detail
 
-// clang-format off
-// TODO: otherwise => "error: ambiguous template instantiation for
-//                     'struct halco::common::detail::limits<halco::hicann_dls::vx::ColumnCorrelationQuadOnDLS, void>'"
-// clang-format on
-namespace halco::common {
-template struct halco::common::typed_array<
-    haldls::vx::ColumnCorrelationQuad,
-    halco::hicann_dls::vx::ColumnCorrelationQuadOnDLS>;
-template struct halco::common::
-    typed_array<haldls::vx::ColumnCurrentQuad, halco::hicann_dls::vx::ColumnCurrentQuadOnDLS>;
-} // namespace halco::common
-
 namespace stadls::vx /* no genpybind tag */ {
-
-/**
- * Generator for initialization required for typical experiments.
- * Uses the InitGenerator() to establish digital communication to the chip, and
- * further initializes the CapMem in a working state and selects internal bias currents for
- * synapses.
- */
-template <typename BuilderType, typename Coordinates>
-class ExperimentInit : public detail::InitGenerator<BuilderType, Coordinates>
-{
-public:
-	/** Default constructor. */
-	ExperimentInit() SYMBOL_VISIBLE;
-
-	/** Builder typedef (e.g. for usage in generators). */
-	typedef BuilderType Builder;
-
-	/** Set common neuron backend with clocks enabled.
-	 * If clocks are disabled, it may behave strangely. */
-	typedef halco::common::typed_array<
-	    haldls::vx::CommonNeuronBackendConfig,
-	    typename Coordinates::CommonNeuronBackendConfigOnDLS>
-	    common_neuron_backend_config_type GENPYBIND(opaque(false));
-	common_neuron_backend_config_type common_neuron_backend_config;
-
-	/** Set ColumnCorrelationQuad/Switch connections. */
-	typedef halco::common::typed_array<
-	    haldls::vx::ColumnCorrelationQuad,
-	    typename Coordinates::ColumnCorrelationQuadOnDLS>
-	    column_correlation_quad_type GENPYBIND(opaque(false));
-	column_correlation_quad_type column_correlation_quad_config;
-
-	/** Set ColumnCurrentQuad/Switch connections. */
-	typedef halco::common::
-	    typed_array<haldls::vx::ColumnCurrentQuad, typename Coordinates::ColumnCurrentQuadOnDLS>
-	        column_current_quad_type GENPYBIND(opaque(false));
-	column_current_quad_type column_current_quad_config;
-
-	/** Set initial CapMem config.
-	 * By default, a value of zero is written to all cells. */
-	typedef halco::common::
-	    typed_array<haldls::vx::CapMemBlock<Coordinates>, typename Coordinates::CapMemBlockOnDLS>
-	        capmem_block_type GENPYBIND(opaque(false));
-	capmem_block_type capmem_config;
-
-	typedef typename detail::InitGenerator<BuilderType, Coordinates>::Result Result;
-
-private:
-	friend auto stadls::vx::generate<ExperimentInit>(ExperimentInit const&);
-
-	/**
-	 * Generate PlaybackProgramBuilder.
-	 * @return PlaybackGeneratorReturn instance with sequence embodied and specified Result value
-	 */
-	PlaybackGeneratorReturn<BuilderType, Result> generate() const SYMBOL_VISIBLE;
-};
-
 
 /**
  * Generator for initialization of the chip up to digital communication.

@@ -1,17 +1,17 @@
-#include "lola/vx/synapse.h"
+#include "lola/vx/v2/synapse.h"
 
 #include <boost/hana/adapt_struct.hpp>
 #include "lola/vx/gray_scale.h"
 #include "lola/vx/hana.h"
 
-namespace lola::vx {
+namespace lola::vx::v2 {
 
 namespace {
 
 template <typename ValuesT>
 std::string print_row(ValuesT const& values)
 {
-	using namespace halco::hicann_dls::vx;
+	using namespace halco::hicann_dls::vx::v2;
 	using namespace halco::common;
 	typedef typename std::remove_cv<
 	    typename std::remove_reference<decltype(values)>::type>::type::value_type value_type;
@@ -131,7 +131,7 @@ namespace {
 template <typename ValuesT>
 std::string print_matrix(ValuesT const& values)
 {
-	using namespace halco::hicann_dls::vx;
+	using namespace halco::hicann_dls::vx::v2;
 	using namespace halco::common;
 	typedef typename std::remove_cv<typename std::remove_reference<decltype(values)>::type>::type::
 	    value_type::value_type value_type;
@@ -276,4 +276,4 @@ std::ostream& operator<<(std::ostream& os, CorrelationResetRow const& /* row */)
 	return os;
 }
 
-} // namespace lola::vx
+} // namespace lola::vx::v2

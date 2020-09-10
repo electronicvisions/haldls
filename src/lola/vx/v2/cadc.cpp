@@ -1,4 +1,4 @@
-#include "lola/vx/cadc.h"
+#include "lola/vx/v2/cadc.h"
 
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
@@ -6,7 +6,7 @@
 #include "lola/vx/gray_scale.h"
 #include "lola/vx/hana.h"
 
-namespace lola::vx {
+namespace lola::vx::v2 {
 
 CADCSampleRow::CADCSampleRow() {}
 
@@ -22,7 +22,7 @@ bool CADCSampleRow::operator!=(CADCSampleRow const& other) const
 
 std::ostream& operator<<(std::ostream& os, CADCSampleRow const& row)
 {
-	using namespace halco::hicann_dls::vx;
+	using namespace halco::hicann_dls::vx::v2;
 	using namespace halco::common;
 
 	auto print = [](auto const& values) -> std::string {
@@ -63,7 +63,7 @@ bool CADCSamples::operator!=(CADCSamples const& other) const
 
 std::ostream& operator<<(std::ostream& os, CADCSamples const& samples)
 {
-	using namespace halco::hicann_dls::vx;
+	using namespace halco::hicann_dls::vx::v2;
 	using namespace halco::common;
 
 	auto print = [](auto const& values) -> std::string {
@@ -99,4 +99,4 @@ std::ostream& operator<<(std::ostream& os, CADCSamples const& samples)
 	return os;
 }
 
-} // namespace lola::vx
+} // namespace lola::vx::vx

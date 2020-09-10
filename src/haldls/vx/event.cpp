@@ -41,12 +41,12 @@ void SpikeLabel::set_padi_label(PADILabel const value)
 	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0x3ff) | (this->value() & 0xfc00)));
 }
 
-NeuronBackendConfig::AddressOut SpikeLabel::get_neuron_backend_address_out() const
+NeuronBackendAddressOut SpikeLabel::get_neuron_backend_address_out() const
 {
-	return NeuronBackendConfig::AddressOut(value() & 0xff);
+	return NeuronBackendAddressOut(value() & 0xff);
 }
 
-void SpikeLabel::set_neuron_backend_address_out(NeuronBackendConfig::AddressOut const value)
+void SpikeLabel::set_neuron_backend_address_out(NeuronBackendAddressOut const value)
 {
 	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0xff) | (this->value() & 0xff00)));
 }
@@ -63,12 +63,12 @@ void SpikeLabel::set_row_select_address(PADIEvent::RowSelectAddress const value)
 	    (this->value() & ~(static_cast<uint16_t>(0b11111) << 6))));
 }
 
-SynapseQuad::Label SpikeLabel::get_synapse_label() const
+SynapseLabelValue SpikeLabel::get_synapse_label() const
 {
-	return SynapseQuad::Label(value() & 0x3f);
+	return SynapseLabelValue(value() & 0x3f);
 }
 
-void SpikeLabel::set_synapse_label(SynapseQuad::Label const value)
+void SpikeLabel::set_synapse_label(SynapseLabelValue const value)
 {
 	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0x3f) | (this->value() & 0xffc0)));
 }

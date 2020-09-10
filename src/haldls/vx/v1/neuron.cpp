@@ -5,8 +5,14 @@
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/neuron.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/print.h"
+#include "haldls/vx/v1/address_transformation.h"
+
+namespace haldls::vx {
+NEURON_BACKEND_CONFIG_UNROLL(halco::hicann_dls::vx::v1::Coordinates)
+} // namespace haldls::vx
 
 namespace haldls::vx::v1 {
 
@@ -672,7 +678,97 @@ void NeuronConfig::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_en_leak_mul));
 }
 
+NeuronResetQuad::NeuronResetQuad() {}
+
+template <typename AddressT>
+std::array<AddressT, NeuronResetQuad::read_config_size_in_words> NeuronResetQuad::read_addresses(
+    NeuronResetQuad::coordinate_type const& /* neuron */)
+{
+	return {};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    NeuronResetQuad::read_config_size_in_words>
+NeuronResetQuad::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell);
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronResetQuad::read_config_size_in_words>
+    NeuronResetQuad::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
+        coordinate_type const& cell);
+
+template <typename AddressT>
+std::array<AddressT, NeuronResetQuad::write_config_size_in_words> NeuronResetQuad::write_addresses(
+    NeuronResetQuad::coordinate_type const& neuron)
+{
+	auto const base_address = correlation_reset_base_addresses.at(neuron.toSynramOnDLS());
+	int row_offset = halco::hicann_dls::vx::v1::SynapseRowOnSynram::size *
+	                 halco::hicann_dls::vx::v1::SynapseQuadColumnOnDLS::size;
+	int quad_offset = detail::to_synram_quad_address_offset(neuron.toSynapseQuadColumnOnDLS());
+	return {AddressT(base_address + row_offset + quad_offset)};
+}
+
+template SYMBOL_VISIBLE std::array<
+    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
+    NeuronResetQuad::write_config_size_in_words>
+NeuronResetQuad::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
+    coordinate_type const& cell);
+
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronResetQuad::write_config_size_in_words>
+    NeuronResetQuad::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
+        coordinate_type const& cell);
+
+template <typename WordT>
+std::array<WordT, NeuronResetQuad::write_config_size_in_words> NeuronResetQuad::encode() const
+{
+	// Value does not matter
+	return {WordT()};
+}
+
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronResetQuad::write_config_size_in_words>
+    NeuronResetQuad::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+
+template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, NeuronResetQuad::write_config_size_in_words>
+NeuronResetQuad::encode<fisch::vx::Omnibus>() const;
+
+template <typename WordT>
+void NeuronResetQuad::decode(std::array<WordT, NeuronResetQuad::read_config_size_in_words> const&)
+{}
+
+template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronResetQuad::read_config_size_in_words> const&
+        data);
+
+template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::Omnibus>(
+    std::array<fisch::vx::Omnibus, NeuronResetQuad::read_config_size_in_words> const& data);
+
+std::ostream& operator<<(std::ostream& os, NeuronResetQuad const&)
+{
+	os << "NeuronResetQuad()";
+	return os;
+}
+
+bool NeuronResetQuad::operator==(NeuronResetQuad const&) const
+{
+	return true;
+}
+
+bool NeuronResetQuad::operator!=(NeuronResetQuad const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename Archive>
+void NeuronResetQuad::serialize(Archive&, std::uint32_t const)
+{}
+
 } // namespace haldls::vx::v1
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v1::NeuronConfig)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v1::NeuronResetQuad)
+CEREAL_CLASS_VERSION(haldls::vx::v1::NeuronBackendConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::v1::NeuronConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::v1::NeuronResetQuad, 0)

@@ -199,30 +199,42 @@ private:
 };
 
 /**
+ * Address of the spikes sent out by a neuron.
+ */
+struct GENPYBIND(inline_base("*")) NeuronBackendAddressOut
+    : public halco::common::detail::RantWrapper<NeuronBackendAddressOut, uint_fast16_t, 255, 0>
+{
+	typedef halco::common::detail::RantWrapper<NeuronBackendAddressOut, uint_fast16_t, 255, 0>
+	    rant_t;
+	constexpr explicit NeuronBackendAddressOut(uintmax_t const val = 0)
+	    GENPYBIND(implicit_conversion) :
+	    rant_t(val)
+	{}
+};
+
+template <typename Coordinates>
+class NeuronBackendConfig;
+
+template <typename Coordinates>
+std::ostream& operator<<(std::ostream& os, NeuronBackendConfig<Coordinates> const& config);
+
+/**
  * Read/write access to the NeuronBackend container.
  * All relevant settings of the NeuronBackend can be accessed and set via the NeuronBackendConfig.
  * The choice of the parameters (e.g. RefractoryTime) depends on the use case of the user and the
  * targeted biological model/experiment. Implementation examples are yet to be written and will
  * then be found in the CI test environment.
  */
-class GENPYBIND(visible) NeuronBackendConfig : public DifferentialWriteTrait
+template <typename Coordinates>
+class NeuronBackendConfig : public DifferentialWriteTrait
 {
 public:
-	typedef halco::hicann_dls::vx::NeuronBackendConfigOnDLS coordinate_type;
+	typedef typename Coordinates::NeuronBackendConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
 
-	/**
-	 * Address of the spikes sent out by a neuron.
-	 */
-	struct GENPYBIND(inline_base("*")) AddressOut
-	    : public halco::common::detail::RantWrapper<AddressOut, uint_fast16_t, 255, 0>
-	{
-		constexpr explicit AddressOut(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-		    rant_t(val)
-		{}
-	};
+	typedef NeuronBackendAddressOut AddressOut GENPYBIND(visible);
 
 	/**
 	 * ResetHoldoff period: The time delta between the reset and the refractory period.
@@ -243,7 +255,9 @@ public:
 	struct GENPYBIND(inline_base("*")) ResetHoldoff
 	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0>
 	{
-		constexpr explicit ResetHoldoff(uintmax_t const val = 15) GENPYBIND(implicit_conversion) :
+		typedef halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0> rant_t;
+		constexpr explicit ResetHoldoff() : rant_t(0) {}
+		constexpr explicit ResetHoldoff(uintmax_t const val) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
 	};
@@ -266,7 +280,9 @@ public:
 	struct GENPYBIND(inline_base("*")) RefractoryTime
 	    : public halco::common::detail::RantWrapper<RefractoryTime, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit RefractoryTime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		typedef halco::common::detail::RantWrapper<RefractoryTime, uint_fast16_t, 255, 0> rant_t;
+		constexpr explicit RefractoryTime() : rant_t(0) {}
+		constexpr explicit RefractoryTime(uintmax_t const val) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
 	};
@@ -278,73 +294,75 @@ public:
 	struct GENPYBIND(inline_base("*")) InputClock
 	    : public halco::common::detail::RantWrapper<InputClock, uint_fast8_t, 1, 0>
 	{
-		constexpr explicit InputClock(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		typedef halco::common::detail::RantWrapper<InputClock, uint_fast8_t, 1, 0> rant_t;
+		constexpr explicit InputClock() : rant_t(0) {}
+		constexpr explicit InputClock(uintmax_t const val) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
 	};
 
-	NeuronBackendConfig() SYMBOL_VISIBLE;
+	NeuronBackendConfig();
 
 	// accessors
 	GENPYBIND(getter_for(address_out))
-	AddressOut get_address_out() const SYMBOL_VISIBLE;
+	AddressOut get_address_out() const;
 	GENPYBIND(setter_for(address_out))
-	void set_address_out(AddressOut addr) SYMBOL_VISIBLE;
+	void set_address_out(AddressOut addr);
 
 	GENPYBIND(getter_for(reset_holdoff))
-	ResetHoldoff get_reset_holdoff() const SYMBOL_VISIBLE;
+	ResetHoldoff get_reset_holdoff() const;
 	GENPYBIND(setter_for(reset_holdoff))
-	void set_reset_holdoff(ResetHoldoff val) SYMBOL_VISIBLE;
+	void set_reset_holdoff(ResetHoldoff val);
 
 	GENPYBIND(getter_for(refractory_time))
-	RefractoryTime get_refractory_time() const SYMBOL_VISIBLE;
+	RefractoryTime get_refractory_time() const;
 	GENPYBIND(setter_for(refractory_time))
-	void set_refractory_time(RefractoryTime val) SYMBOL_VISIBLE;
+	void set_refractory_time(RefractoryTime val);
 
 	GENPYBIND(getter_for(post_overwrite))
-	bool get_post_overwrite() const SYMBOL_VISIBLE;
+	bool get_post_overwrite() const;
 	GENPYBIND(setter_for(post_overwrite))
-	void set_post_overwrite(bool val) SYMBOL_VISIBLE;
+	void set_post_overwrite(bool val);
 
 	GENPYBIND(getter_for(select_input_clock))
-	InputClock get_select_input_clock() const SYMBOL_VISIBLE;
+	InputClock get_select_input_clock() const;
 	GENPYBIND(setter_for(select_input_clock))
-	void set_select_input_clock(InputClock src) SYMBOL_VISIBLE;
+	void set_select_input_clock(InputClock src);
 
 	GENPYBIND(getter_for(enable_adaptation_pulse))
-	bool get_enable_adaptation_pulse() const SYMBOL_VISIBLE;
+	bool get_enable_adaptation_pulse() const;
 	GENPYBIND(setter_for(enable_adaptation_pulse))
-	void set_enable_adaptation_pulse(bool val) SYMBOL_VISIBLE;
+	void set_enable_adaptation_pulse(bool val);
 
 	GENPYBIND(getter_for(enable_bayesian_extension))
-	bool get_enable_bayesian_extension() const SYMBOL_VISIBLE;
+	bool get_enable_bayesian_extension() const;
 	GENPYBIND(setter_for(enable_bayesian_extension))
-	void set_enable_bayesian_extension(bool val) SYMBOL_VISIBLE;
+	void set_enable_bayesian_extension(bool val);
 
 	GENPYBIND(getter_for(enable_neuron_slave))
-	bool get_enable_neuron_slave() const SYMBOL_VISIBLE;
+	bool get_enable_neuron_slave() const;
 	GENPYBIND(setter_for(enable_neuron_slave))
-	void set_enable_neuron_slave(bool val) SYMBOL_VISIBLE;
+	void set_enable_neuron_slave(bool val);
 
 	GENPYBIND(getter_for(connect_fire_bottom))
-	bool get_connect_fire_bottom() const SYMBOL_VISIBLE;
+	bool get_connect_fire_bottom() const;
 	GENPYBIND(setter_for(connect_fire_bottom))
-	void set_connect_fire_bottom(bool val) SYMBOL_VISIBLE;
+	void set_connect_fire_bottom(bool val);
 
 	GENPYBIND(getter_for(connect_fire_from_right))
-	bool get_connect_fire_from_right() const SYMBOL_VISIBLE;
+	bool get_connect_fire_from_right() const;
 	GENPYBIND(setter_for(connect_fire_from_right))
-	void set_connect_fire_from_right(bool val) SYMBOL_VISIBLE;
+	void set_connect_fire_from_right(bool val);
 
 	GENPYBIND(getter_for(connect_fire_to_right))
-	bool get_connect_fire_to_right() const SYMBOL_VISIBLE;
+	bool get_connect_fire_to_right() const;
 	GENPYBIND(setter_for(connect_fire_to_right))
-	void set_connect_fire_to_right(bool val) SYMBOL_VISIBLE;
+	void set_connect_fire_to_right(bool val);
 
 	GENPYBIND(getter_for(enable_spike_out))
-	bool get_enable_spike_out() const SYMBOL_VISIBLE;
+	bool get_enable_spike_out() const;
 	GENPYBIND(setter_for(enable_spike_out))
-	void set_enable_spike_out(bool val) SYMBOL_VISIBLE;
+	void set_enable_spike_out(bool val);
 
 	/** Enable the fire output of a neuron.
 	 * If the threshold comparator creates a fire signal, all connected neurons
@@ -353,36 +371,35 @@ public:
 	 * If this setting is disabled, spikes will not trigger post pulses in the synapses.
 	 */
 	GENPYBIND(getter_for(enable_neuron_master))
-	bool get_enable_neuron_master() const SYMBOL_VISIBLE;
+	bool get_enable_neuron_master() const;
 	GENPYBIND(setter_for(enable_neuron_master))
-	void set_enable_neuron_master(bool val) SYMBOL_VISIBLE;
+	void set_enable_neuron_master(bool val);
 
 	GENPYBIND(getter_for(enable_bayesian_0))
-	bool get_enable_bayesian_0() const SYMBOL_VISIBLE;
+	bool get_enable_bayesian_0() const;
 	GENPYBIND(setter_for(enable_bayesian_0))
-	void set_enable_bayesian_0(bool val) SYMBOL_VISIBLE;
+	void set_enable_bayesian_0(bool val);
 
 	GENPYBIND(getter_for(enable_bayesian_1))
-	bool get_enable_bayesian_1() const SYMBOL_VISIBLE;
+	bool get_enable_bayesian_1() const;
 	GENPYBIND(setter_for(enable_bayesian_1))
-	void set_enable_bayesian_1(bool val) SYMBOL_VISIBLE;
+	void set_enable_bayesian_1(bool val);
 
-	bool operator==(NeuronBackendConfig const& other) const SYMBOL_VISIBLE;
-	bool operator!=(NeuronBackendConfig const& other) const SYMBOL_VISIBLE;
+	bool operator==(NeuronBackendConfig const& other) const;
+	bool operator!=(NeuronBackendConfig const& other) const;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 4;
 	template <typename AddressT>
 	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& neuron)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename WordT>
-	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename WordT>
-	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, NeuronBackendConfig const& config)
-	    SYMBOL_VISIBLE;
+	friend std::ostream& operator<<<>(
+	    std::ostream& os, NeuronBackendConfig<Coordinates> const& config);
 
 private:
 	friend class cereal::access;
@@ -416,10 +433,10 @@ struct BackendContainerTrait<CommonNeuronBackendConfig>
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
-template <>
-struct BackendContainerTrait<NeuronBackendConfig>
+template <typename Coordinates>
+struct BackendContainerTrait<NeuronBackendConfig<Coordinates>>
     : public BackendContainerBase<
-          NeuronBackendConfig,
+          NeuronBackendConfig<Coordinates>,
           fisch::vx::Omnibus,
           fisch::vx::OmnibusChipOverJTAG>
 {};
@@ -470,59 +487,6 @@ namespace detail {
 template <>
 struct BackendContainerTrait<NeuronReset>
     : public BackendContainerBase<NeuronReset, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
-{};
-
-} // namespace detail
-
-
-/**
- * Container to trigger reset of a quad of neurons at once.
- * Currently, also the correlation in the corresponding synapse quad in row zero
- * is reset. This behaviour will be fixed for HX-v2 (issue 3346).
- */
-class GENPYBIND(visible) NeuronResetQuad
-{
-public:
-	typedef halco::hicann_dls::vx::NeuronResetQuadOnDLS coordinate_type;
-	typedef std::true_type is_leaf_node;
-
-	/** Default constructor */
-	NeuronResetQuad() SYMBOL_VISIBLE;
-
-	bool operator==(NeuronResetQuad const& other) const SYMBOL_VISIBLE;
-	bool operator!=(NeuronResetQuad const& other) const SYMBOL_VISIBLE;
-
-	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
-	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
-	template <typename AddressT>
-	static std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename AddressT>
-	static std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename WordT>
-	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename WordT>
-	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-
-	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, NeuronResetQuad const& config) SYMBOL_VISIBLE;
-
-private:
-	friend class cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
-};
-
-namespace detail {
-
-template <>
-struct BackendContainerTrait<NeuronResetQuad>
-    : public BackendContainerBase<
-          NeuronResetQuad,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -789,6 +753,36 @@ struct BackendContainerTrait<NeuronBackendSRAMTimingConfig>
 {};
 
 } // namespace detail
+
+#define NEURON_EXTERN_TEMPLATE(Coordinates)                                                        \
+	extern template class SYMBOL_VISIBLE NeuronBackendConfig<Coordinates>;                         \
+	extern template SYMBOL_VISIBLE GENPYBIND(hidden) std::ostream& operator<<<Coordinates>(        \
+	    std::ostream& os, NeuronBackendConfig<Coordinates> const& value);                          \
+                                                                                                   \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \
+	    NeuronBackendConfig<Coordinates>::config_size_in_words>                                    \
+	NeuronBackendConfig<Coordinates>::addresses(coordinate_type const& coord);                     \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    halco::hicann_dls::vx::OmnibusAddress,                                                     \
+	    NeuronBackendConfig<Coordinates>::config_size_in_words>                                    \
+	NeuronBackendConfig<Coordinates>::addresses(coordinate_type const& coord);                     \
+                                                                                                   \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    fisch::vx::OmnibusChipOverJTAG, NeuronBackendConfig<Coordinates>::config_size_in_words>    \
+	NeuronBackendConfig<Coordinates>::encode() const;                                              \
+	extern template SYMBOL_VISIBLE                                                                 \
+	    std::array<fisch::vx::Omnibus, NeuronBackendConfig<Coordinates>::config_size_in_words>     \
+	    NeuronBackendConfig<Coordinates>::encode() const;                                          \
+                                                                                                   \
+	extern template SYMBOL_VISIBLE void NeuronBackendConfig<Coordinates>::decode(                  \
+	    std::array<                                                                                \
+	        fisch::vx::OmnibusChipOverJTAG,                                                        \
+	        NeuronBackendConfig<Coordinates>::config_size_in_words> const& data);                  \
+	extern template SYMBOL_VISIBLE void NeuronBackendConfig<Coordinates>::decode(                  \
+	    std::array<                                                                                \
+	        fisch::vx::Omnibus, NeuronBackendConfig<Coordinates>::config_size_in_words> const&     \
+	        data);
 
 } // namespace vx
 } // namespace haldls

@@ -7,8 +7,6 @@
 extern template class SYMBOL_VISIBLE stadls::vx::detail::
     InitGenerator<stadls::vx::v2::PlaybackProgramBuilder, halco::hicann_dls::vx::v2::Coordinates>;
 extern template class SYMBOL_VISIBLE stadls::vx::
-    ExperimentInit<stadls::vx::v2::PlaybackProgramBuilder, halco::hicann_dls::vx::v2::Coordinates>;
-extern template class SYMBOL_VISIBLE stadls::vx::
     DigitalInit<stadls::vx::v2::PlaybackProgramBuilder, halco::hicann_dls::vx::v2::Coordinates>;
 
 extern template SYMBOL_VISIBLE std::ostream& stadls::vx::detail::operator<<(
@@ -29,18 +27,73 @@ using InitGenerator GENPYBIND(opaque(true), expose_as(_InitGenerator)) = stadls:
 
 } // namespace detail
 
-using ExperimentInit = stadls::vx::
-    ExperimentInit<stadls::vx::v2::PlaybackProgramBuilder, halco::hicann_dls::vx::v2::Coordinates>;
 using DigitalInit = stadls::vx::
     DigitalInit<stadls::vx::v2::PlaybackProgramBuilder, halco::hicann_dls::vx::v2::Coordinates>;
 
+/**
+ * Generator for initialization required for typical experiments.
+ * Uses the InitGenerator() to establish digital communication to the chip, and
+ * further initializes the CapMem in a working state and selects internal bias currents for
+ * synapses.
+ */
+class ExperimentInit
+    : public stadls::vx::detail::
+          InitGenerator<PlaybackProgramBuilder, halco::hicann_dls::vx::v2::Coordinates>
+{
+public:
+	/** Default constructor. */
+	ExperimentInit() SYMBOL_VISIBLE;
+
+	/** Builder typedef (e.g. for usage in generators). */
+	typedef PlaybackProgramBuilder Builder;
+
+	/** Set common neuron backend with clocks enabled.
+	 * If clocks are disabled, it may behave strangely. */
+	typedef halco::common::typed_array<
+	    haldls::vx::CommonNeuronBackendConfig,
+	    halco::hicann_dls::vx::v2::CommonNeuronBackendConfigOnDLS>
+	    common_neuron_backend_config_type GENPYBIND(opaque(false));
+	common_neuron_backend_config_type common_neuron_backend_config;
+
+	/** Set ColumnCorrelationQuad/Switch connections. */
+	typedef halco::common::typed_array<
+	    haldls::vx::v2::ColumnCorrelationQuad,
+	    halco::hicann_dls::vx::v2::ColumnCorrelationQuadOnDLS>
+	    column_correlation_quad_type GENPYBIND(opaque(false));
+	column_correlation_quad_type column_correlation_quad_config;
+
+	/** Set ColumnCurrentQuad/Switch connections. */
+	typedef halco::common::typed_array<
+	    haldls::vx::v2::ColumnCurrentQuad,
+	    halco::hicann_dls::vx::v2::ColumnCurrentQuadOnDLS>
+	    column_current_quad_type GENPYBIND(opaque(false));
+	column_current_quad_type column_current_quad_config;
+
+	/** Set initial CapMem config.
+	 * By default, a value of zero is written to all cells. */
+	typedef halco::common::
+	    typed_array<haldls::vx::v2::CapMemBlock, halco::hicann_dls::vx::v2::CapMemBlockOnDLS>
+	        capmem_block_type GENPYBIND(opaque(false));
+	capmem_block_type capmem_config;
+
+	typedef typename stadls::vx::detail::InitGenerator<
+	    PlaybackProgramBuilder,
+	    halco::hicann_dls::vx::v2::Coordinates>::Result Result;
+
+private:
+	friend auto stadls::vx::generate<ExperimentInit>(ExperimentInit const&);
+
+	/**
+	 * Generate PlaybackProgramBuilder.
+	 * @return PlaybackGeneratorReturn instance with sequence embodied and specified Result value
+	 */
+	PlaybackGeneratorReturn<Result> generate() const SYMBOL_VISIBLE;
+};
+
 namespace detail {
 
-// TODO: we can't use the alias above, cf. https://github.com/kljohann/genpybind/issues/32
 struct GENPYBIND(expose_as(ExperimentInit), inline_base("*ExperimentInit*")) PyExperimentInit
-    : public /*ExperimentInit*/ stadls::vx::ExperimentInit<
-          stadls::vx::v2::PlaybackProgramBuilder,
-          halco::hicann_dls::vx::v2::Coordinates>
+    : public ExperimentInit
     , public PlaybackGenerator
 {
 	virtual pybind11::tuple generate() const override
@@ -49,6 +102,7 @@ struct GENPYBIND(expose_as(ExperimentInit), inline_base("*ExperimentInit*")) PyE
 	}
 };
 
+// TODO: we can't use the alias above, cf. https://github.com/kljohann/genpybind/issues/32
 struct GENPYBIND(expose_as(DigitalInit), inline_base("*DigitalInit*")) PyDigitalInit
     : public /*DigitalInit*/ stadls::vx::DigitalInit<
           stadls::vx::v2::PlaybackProgramBuilder,

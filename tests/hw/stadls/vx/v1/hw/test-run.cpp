@@ -6,6 +6,7 @@
 
 #include "connection.h"
 
+using namespace halco::hicann_dls::vx::v1;
 using namespace stadls::vx::v1;
 
 TEST(Run, ExecutableRestriction)
@@ -13,7 +14,7 @@ TEST(Run, ExecutableRestriction)
 	PlaybackProgramBuilder builder;
 	auto program_unrestricted = builder.done();
 
-	builder.read(halco::hicann_dls::vx::v1::CrossbarNodeOnDLS());
+	builder.read(CrossbarNodeOnDLS());
 	auto program_simulation_restricted = builder.done();
 
 	auto connection = generate_test_connection();

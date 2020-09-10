@@ -1,21 +1,21 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "lola/vx/v1/cadc.h"
+#include "lola/vx/v2/cadc.h"
 
 #include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/v1/cadc.h"
-#include "haldls/vx/v1/common.h"
+#include "haldls/vx/v2/cadc.h"
+#include "haldls/vx/v2/common.h"
 #include "lola/vx/cerealization.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace lola::vx::v1;
-using namespace haldls::vx::v1;
-using namespace halco::hicann_dls::vx;
+using namespace lola::vx::v2;
+using namespace haldls::vx::v2;
+using namespace halco::hicann_dls::vx::v2;
 using namespace halco::common;
 
 TEST(CADCSampleRow, General)
@@ -90,8 +90,9 @@ TEST(CADCSampleRow, EncodeDecode)
 	for (auto& word : ref_data) {
 		word = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
 	}
-	ref_data[11] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0xf));
-	ref_data[13 + SynapseQuadColumnOnDLS::size] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0x10));
+	ref_data.at(11) = fisch::vx::Omnibus(fisch::vx::OmnibusData(0xf));
+	ref_data.at(13 + SynapseQuadColumnOnDLS::size) =
+	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x10));
 
 	for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
 		CADCSampleQuadOnDLS quad_coord(
@@ -131,6 +132,7 @@ TEST(CADCSampleRow, EncodeDecode)
 	}
 
 	visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(ref_data)});
-	ASSERT_EQ(config.causal[SynapseOnSynapseRow(43)], CADCSampleRow::Value(0xf0));
-	ASSERT_EQ(config.acausal[SynapseOnSynapseRow(51)], CADCSampleRow::Value(0x8));
+
+	ASSERT_EQ(config.causal[SynapseOnSynapseRow(80)], CADCSampleRow::Value(0xf0));
+	ASSERT_EQ(config.acausal[SynapseOnSynapseRow(96)], CADCSampleRow::Value(0x8));
 }

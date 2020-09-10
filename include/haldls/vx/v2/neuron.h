@@ -1,4 +1,5 @@
 #pragma once
+#include "halco/hicann-dls/vx/v2/coordinates.h"
 #include "halco/hicann-dls/vx/v2/neuron.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
@@ -12,12 +13,16 @@ class OmnibusChipOverJTAG;
 class Omnibus;
 } // namespace fisch::vx
 
+namespace haldls::vx {
+NEURON_EXTERN_TEMPLATE(halco::hicann_dls::vx::v2::Coordinates)
+} // namespace haldls::vx
+
 namespace haldls::vx::v2 GENPYBIND_TAG_HALDLS_VX_V2 {
 
 using CommonNeuronBackendConfig GENPYBIND(visible) = haldls::vx::CommonNeuronBackendConfig;
-using NeuronBackendConfig GENPYBIND(visible) = haldls::vx::NeuronBackendConfig;
+using NeuronBackendConfig GENPYBIND(opaque) =
+    haldls::vx::NeuronBackendConfig<halco::hicann_dls::vx::v2::Coordinates>;
 using NeuronReset GENPYBIND(visible) = haldls::vx::NeuronReset;
-using NeuronResetQuad GENPYBIND(visible) = haldls::vx::NeuronResetQuad;
 using BlockPostPulse GENPYBIND(visible) = haldls::vx::BlockPostPulse;
 using SpikeCounterRead GENPYBIND(visible) = haldls::vx::SpikeCounterRead;
 using SpikeCounterReset GENPYBIND(visible) = haldls::vx::SpikeCounterReset;
@@ -348,6 +353,46 @@ private:
 	bool m_en_pause;
 };
 
+/**
+ * Container to trigger reset of a quad of neurons at once.
+ * Currently, also the correlation in the corresponding synapse quad in row zero
+ * is reset. This behaviour will be fixed for HX-v2 (issue 3346).
+ */
+class GENPYBIND(visible) NeuronResetQuad
+{
+public:
+	typedef halco::hicann_dls::vx::v2::NeuronResetQuadOnDLS coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/** Default constructor */
+	NeuronResetQuad() SYMBOL_VISIBLE;
+
+	bool operator==(NeuronResetQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(NeuronResetQuad const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	template <typename AddressT>
+	static std::array<AddressT, read_config_size_in_words> read_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename AddressT>
+	static std::array<AddressT, write_config_size_in_words> write_addresses(
+	    coordinate_type const& neuron) SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	template <typename WordT>
+	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, NeuronResetQuad const& config) SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+};
+
 } // namespace haldls::vx::v2
 
 namespace haldls::vx::detail {
@@ -360,5 +405,12 @@ struct BackendContainerTrait<v2::NeuronConfig>
           fisch::vx::OmnibusChipOverJTAG>
 {};
 
+template <>
+struct BackendContainerTrait<v2::NeuronResetQuad>
+    : public BackendContainerBase<
+          v2::NeuronResetQuad,
+          fisch::vx::Omnibus,
+          fisch::vx::OmnibusChipOverJTAG>
+{};
 
 } // namespace haldls::vx::detail

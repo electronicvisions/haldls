@@ -35,7 +35,7 @@ public:
 	typedef halco::hicann_dls::vx::PADIEventOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	using EventAddress = haldls::vx::SynapseQuad::Label;
+	using EventAddress = haldls::vx::SynapseLabelValue;
 
 	/**
 	 * Address in Hagen-mode.
