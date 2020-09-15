@@ -10,6 +10,7 @@ def depends(ctx):
     ctx('haldls', 'pystadls')
     ctx('halco', 'pyhalco')
     ctx('hxcomm', 'pyhxcomm')
+    ctx('logger', 'pylogging')
     ctx('code-format')
 
 
@@ -37,7 +38,8 @@ def build(bld):
                'pystadls_vx_v1',
                'pylola_vx_v1',
                'pyhalco_hicann_dls_vx_v1',
-               'pyhxcomm_vx'
+               'pyhxcomm_vx',
+               'pylogging'
         ],
         install_path = '${PREFIX}/lib',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),

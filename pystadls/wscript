@@ -7,7 +7,6 @@ from waflib.extras.symwaf2ic import get_toplevel_path
 def depends(ctx):
     ctx('haldls')
     ctx('halco', 'pyhalco')
-    ctx('logger', 'pylogging')
     ctx('code-format')
 
 def options(opt):
@@ -50,7 +49,7 @@ def build(bld):
         source='../include/stadls/vx/v1/pystadls.h',
         genpybind_tags=['stadls_vx', 'stadls_vx_v1'],
         features='genpybind cxx cxxshlib pyext pyembed',
-        use=['stadls_vx_v1', 'pylogging', 'pyhalco_hicann_dls_vx_v1',
+        use=['stadls_vx_v1', 'pyhalco_hicann_dls_vx_v1',
              'pyhaldls_vx_v1', 'pystadls_vx_v1_obj', 'pyhxcomm_vx'],
         install_path='${PREFIX}/lib',
         linkflags='-Wl,-z,defs',
