@@ -69,7 +69,7 @@ def build(bld):
     bld(name='dlens_health_check_vx_v1',
         tests='tests/dlens_health_check_vx_v1.py',
         features='use pytest pylint pycodestyle',
-        use=['dlens_vx'],
+        use=['dlens_vx_v1'],
         install_path='${PREFIX}/bin',
         pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
         pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
