@@ -6,6 +6,11 @@
 #define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
 #endif
 
+/**
+ * @note If you add a new entry in this list, be sure to increase the cereal version of
+ *       stadls::vx::v2::Dumper and stadls::vx::v2::DumperDone in `src/stadls/vx/v2/dumper.cpp`.
+ */
+
 PLAYBACK_CONTAINER(DACControlBlock, lola::vx::v2::DACControlBlock)
 PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::v2::DACChannelBlock)
 PLAYBACK_CONTAINER(CADCSampleRow, lola::vx::v2::CADCSampleRow)

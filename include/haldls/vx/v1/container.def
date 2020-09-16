@@ -6,6 +6,11 @@
 #define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
 #endif
 
+/**
+ * @note If you add a new entry in this list, be sure to increase the cereal version of
+ *       stadls::vx::v1::Dumper and stadls::vx::v1::DumperDone in `src/stadls/vx/v1/dumper.cpp`.
+ */
+
 PLAYBACK_CONTAINER(INA219Config, haldls::vx::v1::INA219Config)
 PLAYBACK_CONTAINER(INA219Status, haldls::vx::v1::INA219Status)
 PLAYBACK_CONTAINER(NullPayloadReadable, haldls::vx::v1::NullPayloadReadable)

@@ -37,3 +37,5 @@ template class stadls::vx::detail::Dumper<stadls::vx::v1::DumperDone>;
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v1::DumperDone)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v1::Dumper)
+CEREAL_CLASS_VERSION(stadls::vx::v1::DumperDone, 0)
+CEREAL_CLASS_VERSION(stadls::vx::v1::Dumper, 0)
