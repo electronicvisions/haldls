@@ -29,7 +29,9 @@ try {
 
 	Map<String, Object> pipelineOptions = deploy ? pipelineDeploymentOptions : pipelineNoDeploymentOptions
 
-	wafDefaultPipeline(pipelineOptions)
+	withCcache() {
+		wafDefaultPipeline(pipelineOptions)
+	}
 
 	conditionalStage(name: "Module Deployment", skip: !deploy) {
 		runOnSlave(label: "frontend") {

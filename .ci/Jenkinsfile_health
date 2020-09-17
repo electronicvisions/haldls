@@ -37,9 +37,11 @@ try {
 		// no timeout for Gerrit-triggered jobs
 		// enforce finished job in less than an hour in order to only have one running at a time
 		conditionalTimeout(enable: !isTriggeredByGerrit(), time: 50, unit: "MINUTES") {
-			wafDefaultPipeline(container: [app: "dls-core"],
-			                   projects : ["haldls"],
-			                   notificationChannel : "#jenkins-trashbin")
+			withCcache() {
+				wafDefaultPipeline(container: [app: "dls-core"],
+				                   projects : ["haldls"],
+				                   notificationChannel : "#jenkins-trashbin")
+			}
 
 			runOnSlave(label: "frontend") {
 				stage("Execute checks") {
