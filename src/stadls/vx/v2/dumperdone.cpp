@@ -1,19 +1,8 @@
 #include "stadls/vx/v2/dumperdone.h"
 
-#include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.tcc"
 
-#include <cereal/types/utility.hpp>
-#include <cereal/types/variant.hpp>
-#include <cereal/types/vector.hpp>
-
 namespace stadls::vx::v2 {
-
-template <typename Archive>
-void DumperDone::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(values));
-}
 
 bool DumperDone::operator==(DumperDone const& other) const
 {
@@ -26,5 +15,13 @@ bool DumperDone::operator!=(DumperDone const& other) const
 
 } // namespace stadls::vx::v2
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::DumperDone)
+template std::string haldls::vx::to_json(stadls::vx::v2::DumperDone const&);
+template std::string haldls::vx::to_binary(stadls::vx::v2::DumperDone const&);
+template std::string haldls::vx::to_portablebinary(stadls::vx::v2::DumperDone const&);
+template std::string haldls::vx::to_xml(stadls::vx::v2::DumperDone const&);
+template void haldls::vx::from_json(stadls::vx::v2::DumperDone&, std::string const&);
+template void haldls::vx::from_binary(stadls::vx::v2::DumperDone&, std::string const&);
+template void haldls::vx::from_portablebinary(stadls::vx::v2::DumperDone&, std::string const&);
+template void haldls::vx::from_xml(stadls::vx::v2::DumperDone&, std::string const&);
+
 CEREAL_CLASS_VERSION(stadls::vx::v2::DumperDone, 0)
