@@ -215,7 +215,10 @@ struct ReferenceGeneratorConfigBitfield
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types shoudl match.");
 	} u;
 
-	ReferenceGeneratorConfigBitfield() { u.words = {{0, 0, 0}}; }
+	ReferenceGeneratorConfigBitfield()
+	{
+		u.words = {{0, 0, 0}};
+	}
 
 	ReferenceGeneratorConfigBitfield(
 	    std::array<uint32_t, ReferenceGeneratorConfig::config_size_in_words> data)
