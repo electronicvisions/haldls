@@ -24,7 +24,8 @@ InitGenerator::InitGenerator() :
     synapse_bias_selection(),
     enable_capmem(false),
     reference_generator_config(),
-    capmem_block_config()
+    capmem_block_config(),
+    capmem_config()
 {}
 
 InitGenerator::HighspeedLink::HighspeedLink() :
@@ -124,14 +125,14 @@ PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate(
 		builder.block_until(TimerOnDLS(), reference_generator_reset_duration);
 		builder.write(ReferenceGeneratorConfigOnDLS(), reference_generator_config);
 
-		// Set all CapMem cells to value zero
-		for (auto coord : iter_all<CapMemBlockOnDLS>()) {
-			builder.write(coord, haldls::vx::v2::CapMemBlock());
-		}
-
 		// Initialize the CapMem with usable default values.
 		for (auto coord : iter_all<CapMemBlockConfigOnDLS>()) {
 			builder.write(coord, capmem_block_config[coord]);
+		}
+
+		// Set all CapMem cells
+		for (auto coord : iter_all<halco::hicann_dls::vx::v2::CapMemBlockOnDLS>()) {
+			builder.write(coord, capmem_config[coord]);
 		}
 	}
 
@@ -190,8 +191,7 @@ ExperimentInit::ExperimentInit() :
     detail::InitGenerator(),
     common_neuron_backend_config(),
     column_correlation_quad_config(),
-    column_current_quad_config(),
-    capmem_config()
+    column_current_quad_config()
 {
 	this->enable_capmem = true;
 	for (auto const coord :
@@ -221,11 +221,6 @@ PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
 	// Set column current quad config
 	for (auto coord : iter_all<ColumnCurrentQuadOnDLS>()) {
 		builder.write(coord, column_current_quad_config[coord]);
-	}
-
-	// Set capmem config for all blocks
-	for (auto coord : iter_all<halco::hicann_dls::vx::v2::CapMemBlockOnDLS>()) {
-		builder.write(coord, capmem_config[coord]);
 	}
 
 	return {std::move(builder), res};

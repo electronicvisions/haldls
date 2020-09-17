@@ -139,6 +139,13 @@ public:
 	    capmem_block_config_type GENPYBIND(opaque(false));
 	capmem_block_config_type capmem_block_config;
 
+	/** Set initial CapMem config.
+	 * By default, a value of zero is written to all cells. */
+	typedef halco::common::
+	    typed_array<haldls::vx::v1::CapMemBlock, halco::hicann_dls::vx::v1::CapMemBlockOnDLS>
+	        capmem_block_type GENPYBIND(opaque(false));
+	capmem_block_type capmem_config;
+
 	typedef hate::Nil Result;
 
 	GENPYBIND(stringstream)
@@ -208,13 +215,6 @@ public:
 	    halco::hicann_dls::vx::v1::ColumnCurrentQuadOnDLS>
 	    column_current_quad_type GENPYBIND(opaque(false));
 	column_current_quad_type column_current_quad_config;
-
-	/** Set initial CapMem config.
-	 * By default, a value of zero is written to all cells. */
-	typedef halco::common::
-	    typed_array<haldls::vx::v1::CapMemBlock, halco::hicann_dls::vx::v1::CapMemBlockOnDLS>
-	        capmem_block_type GENPYBIND(opaque(false));
-	capmem_block_type capmem_config;
 
 	typedef detail::InitGenerator::Result Result;
 
