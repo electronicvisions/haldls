@@ -9,7 +9,7 @@
 #include "haldls/vx/v1/container.h"
 #include "haldls/vx/v1/traits.h"
 #include "hxcomm/vx/connection_from_env.h"
-#include "stadls/vx/decode.h"
+#include "stadls/vx/v1/decode.h"
 #include "stadls/vx/v1/init_generator.h"
 #include "stadls/vx/v1/playback_program.h"
 #include "stadls/vx/v1/run.h"
