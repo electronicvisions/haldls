@@ -11,6 +11,7 @@
  *       stadls::vx::v1::Dumper and stadls::vx::v1::DumperDone in `src/stadls/vx/v1/dumper.cpp`.
  */
 
+PLAYBACK_CONTAINER(Crossbar, lola::vx::v1::Crossbar)
 PLAYBACK_CONTAINER(DACControlBlock, lola::vx::v1::DACControlBlock)
 PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::v1::DACChannelBlock)
 PLAYBACK_CONTAINER(CADCSampleRow, lola::vx::v1::CADCSampleRow)
