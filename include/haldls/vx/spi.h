@@ -1,19 +1,16 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "fisch/vx/constants.h"
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/dac.h"
 #include "halco/hicann-dls/vx/xboard.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 class SPIShiftRegisterOnBoard;
@@ -260,6 +257,8 @@ private:
 	halco::common::typed_array<bool, halco::hicann_dls::vx::VDDOnBoard> m_enable_vdd;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ShiftRegister)
+
 namespace detail {
 
 template <>
@@ -330,6 +329,8 @@ private:
 	Value m_value;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(DACChannel)
+
 namespace detail {
 
 template <>
@@ -389,6 +390,8 @@ private:
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::DACChannelOnDAC> m_enable_channel;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(DACControl)
 
 namespace detail {
 

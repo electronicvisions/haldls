@@ -1,17 +1,14 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/fpga.h"
 
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 class NullPayloadReadableOnFPGA;
@@ -51,6 +48,8 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NullPayloadReadable)
 
 namespace detail {
 

@@ -1,13 +1,10 @@
 #pragma once
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -114,6 +111,8 @@ private:
 };
 
 } // namespace detail
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(detail::SRAMTimingConfig)
 
 } // namespace vx
 } // namespace haldls

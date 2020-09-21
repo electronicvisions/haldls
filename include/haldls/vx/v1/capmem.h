@@ -1,12 +1,9 @@
 #pragma once
 #include "halco/hicann-dls/vx/v1/capmem.h"
 #include "halco/hicann-dls/vx/v1/coordinates.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/capmem.h"
 #include "haldls/vx/genpybind.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -207,3 +204,5 @@ HALCO_GEOMETRY_HASH_CLASS(haldls::vx::v1::ReferenceGeneratorConfig::ReferenceCon
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::v1::ReferenceGeneratorConfig::ResistorControl)
 
 } // namespace std
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v1::ReferenceGeneratorConfig)

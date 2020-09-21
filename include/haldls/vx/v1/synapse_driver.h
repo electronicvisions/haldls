@@ -1,11 +1,8 @@
 #pragma once
 #include "halco/hicann-dls/vx/v1/synapse_driver.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/synapse_driver.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -258,3 +255,5 @@ struct BackendContainerTrait<v1::SynapseDriverConfig>
 {};
 
 } // namespace haldls::vx::detail
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v1::SynapseDriverConfig)

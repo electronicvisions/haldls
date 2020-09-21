@@ -1,7 +1,7 @@
 #pragma once
-#include <stdint.h>
 #include "halco/hicann-dls/vx/v1/synapse.h"
 #include "hate/visibility.h"
+#include <cstdint>
 
 namespace haldls::vx::v1::detail {
 

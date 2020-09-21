@@ -1,17 +1,13 @@
 #pragma once
-
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/hicann-dls/vx/timing.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -69,6 +65,8 @@ private:
 
 	Value m_value;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SystimeSyncBase)
 
 namespace detail {
 
@@ -137,6 +135,8 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SystimeSync)
 
 namespace detail {
 

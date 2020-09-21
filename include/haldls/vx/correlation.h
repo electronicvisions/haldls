@@ -1,14 +1,11 @@
 #pragma once
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/correlation.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -131,6 +128,8 @@ private:
 	ResetFallTime m_reset_fall_time;
 	bool m_reset_mode;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonCorrelationConfig)
 
 namespace detail {
 

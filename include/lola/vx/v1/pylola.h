@@ -2,6 +2,7 @@
 #include <vector>
 #include <pybind11/pybind11.h>
 
+#include "haldls/cerealization.tcc"
 #include "lola/vx/genpybind.h"
 
 namespace py = pybind11;

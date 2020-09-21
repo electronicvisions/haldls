@@ -1,5 +1,7 @@
 #include "lola/vx/v1/neuron.h"
 
+#include "haldls/cerealization.tcc"
+#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 namespace lola::vx::v1 {
@@ -496,3 +498,19 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron const& config)
 }
 
 } // namespace lola::vx::v1
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::SynapticInput)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::LeakReset::Leak)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::LeakReset::Reset)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::LeakReset)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Threshold)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Multicompartment)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::ConstantCurrent)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::MembraneCapacitance)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Adaptation)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Exponential)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Readout)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::EventRouting)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::RefractoryPeriod)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Bayesian)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron)

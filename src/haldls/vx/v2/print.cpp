@@ -1,4 +1,4 @@
-#include "haldls/vx/print.h"
+#include "haldls/vx/print.tcc"
 
 #include <array>
 #include <boost/type_index.hpp>

@@ -1,17 +1,14 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "fisch/vx/reset.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/highspeed_link.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 class OmnibusAddress;
@@ -74,6 +71,8 @@ private:
 
 	bool m_enable;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PerfTest)
 
 namespace detail {
 
@@ -207,6 +206,8 @@ private:
 	InOrder m_in_order;
 	ErrorWord m_error_word;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PerfTestStatus)
 
 namespace detail {
 

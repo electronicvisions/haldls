@@ -1,21 +1,18 @@
 #pragma once
 #include <array>
+#include <iosfwd>
 #include <limits>
-#include <ostream>
 
 #include "fisch/vx/constants.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/i2c.h"
 #include "halco/hicann-dls/vx/xboard.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace halco::hicann_dls::vx {} // namespace halco::hicann_dls::vx
 
@@ -100,6 +97,8 @@ private:
 	ADCMode m_bus_adc_mode;
 	ADCMode m_shunt_adc_mode;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(INA219Config)
 
 namespace detail {
 
@@ -256,6 +255,8 @@ private:
 	bool m_bus_voltage_overflow;
 	ShuntVoltage m_shunt_voltage;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(INA219Status)
 
 namespace detail {
 

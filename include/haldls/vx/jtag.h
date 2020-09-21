@@ -1,18 +1,15 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "fisch/vx/constants.h"
 #include "fisch/vx/jtag.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/jtag.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class JTAGClockScaler;
@@ -95,6 +92,8 @@ private:
 	Value m_value;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(JTAGClockScaler)
+
 namespace detail {
 
 template <>
@@ -136,6 +135,8 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ResetJTAGTap)
 
 namespace detail {
 
@@ -257,6 +258,8 @@ private:
 	PartNumber m_part_number;
 	ManufacturerId m_manufacturer_id;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(JTAGIdCode)
 
 namespace detail {
 

@@ -1,20 +1,14 @@
 #pragma once
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/chip.h"
 #include "halco/hicann-dls/vx/readout.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-
-namespace cereal {
-
-class access;
-
-} // namespace cereal
 
 namespace fisch::vx {
 
@@ -233,6 +227,7 @@ private:
 	bool m_debug_to_pad;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PadMultiplexerConfig)
 
 /**
  * Configuration container for the two mux and buffer blocks for voltage readout.
@@ -392,6 +387,9 @@ private:
 	    m_buffers;
 	source_multiplexer_type m_enable_buffer_to_pad;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection::SourceMultiplexer)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection)
 
 namespace detail {
 

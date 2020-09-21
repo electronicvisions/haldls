@@ -2,12 +2,9 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/v2/cadc.h"
 #include "halco/hicann-dls/vx/v2/coordinates.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/genpybind.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -100,3 +97,5 @@ struct BackendContainerTrait<v2::CADCSampleQuad>
 {};
 
 } // namespace haldls::vx::detail
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::CADCSampleQuad)

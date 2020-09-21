@@ -5,7 +5,7 @@
 #include "stadls/vx/v2/dumper.h"
 
 #include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
 #include "lola/vx/cerealization.h"
 
 #include "stadls/vx/v2/playback_program_builder.h"

@@ -1,6 +1,8 @@
 #include <boost/hana/adapt_struct.hpp>
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/neuron.h"
+#include "lola/vx/cerealization.h"
 
 namespace haldls::vx::detail {
 
@@ -371,3 +373,19 @@ BOOST_HANA_ADAPT_STRUCT(
     exponential,
     event_routing,
     readout);
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::SynapticInput)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::LeakReset::Leak)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::LeakReset::Reset)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::LeakReset)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Threshold)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Multicompartment)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::ConstantCurrent)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::MembraneCapacitance)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Adaptation)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Exponential)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Readout)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::EventRouting)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::RefractoryPeriod)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Bayesian)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron)

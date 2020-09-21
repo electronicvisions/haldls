@@ -1,8 +1,10 @@
 #include "lola/vx/v1/synapse.h"
 
-#include <boost/hana/adapt_struct.hpp>
+#include "haldls/cerealization.tcc"
+#include "lola/vx/cerealization.tcc"
 #include "lola/vx/gray_scale.h"
 #include "lola/vx/hana.h"
+#include <boost/hana/adapt_struct.hpp>
 
 namespace lola::vx::v1 {
 
@@ -277,3 +279,13 @@ std::ostream& operator<<(std::ostream& os, CorrelationResetRow const& /* row */)
 }
 
 } // namespace lola::vx::v1
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseWeightRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseLabelRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseCorrelationCalibRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseWeightMatrix)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseLabelMatrix)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseCorrelationCalibMatrix)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseMatrix)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::CorrelationResetRow)

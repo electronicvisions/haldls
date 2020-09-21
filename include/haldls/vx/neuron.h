@@ -1,19 +1,16 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/neuron.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -197,6 +194,8 @@ private:
 	WaitSpikeCounterRead m_wait_spike_counter_read;
 	WaitFireNeuron m_wait_fire_neuron;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronBackendConfig)
 
 /**
  * Address of the spikes sent out by a neuron.
@@ -482,6 +481,8 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
+
 namespace detail {
 
 template <>
@@ -532,6 +533,8 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(BlockPostPulse)
 
 namespace detail {
 
@@ -614,6 +617,8 @@ private:
 	bool m_overflow;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterRead)
+
 namespace detail {
 
 template <>
@@ -666,6 +671,8 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterReset)
+
 namespace detail {
 
 template <>
@@ -704,6 +711,8 @@ private:
 	void serialize(Archive& ar, std::uint32_t);
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronSRAMTimingConfig)
+
 namespace detail {
 
 template <>
@@ -741,6 +750,8 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t);
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendSRAMTimingConfig)
 
 namespace detail {
 

@@ -1,17 +1,14 @@
 #pragma once
-#include <boost/hana/adapt_struct.hpp>
 #include "halco/hicann-dls/vx/coordinates.h"
+#include "haldls/cerealization.h"
 #include "hate/visibility.h"
+#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
+#include <boost/hana/adapt_struct.hpp>
 
 #include "haldls/vx/ppu.h"
 
-namespace cereal {
-class access;
-} // namespace cereal
-
 class Elf;
-
 
 namespace lola {
 namespace vx GENPYBIND_TAG_LOLA_VX {
@@ -107,3 +104,4 @@ private:
 } // namespace lola
 
 BOOST_HANA_ADAPT_STRUCT(lola::vx::PPUProgram::Symbol, type, coordinate);
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::PPUProgram::Symbol)

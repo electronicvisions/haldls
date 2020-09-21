@@ -1,19 +1,16 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/chip.h"
 #include "halco/hicann-dls/vx/madc.h"
 #include "halco/hicann-dls/vx/readout.h"
 #include "halco/hicann-dls/vx/synapse.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -114,6 +111,8 @@ private:
 	bool m_start_recording;
 	bool m_wake_up;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(MADCControl)
 
 namespace detail {
 
@@ -574,6 +573,8 @@ private:
 	hemisphere_type m_connect_iconv_neuron;
 	synapse_target_type m_connect_iconv_synapse;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(MADCConfig)
 
 namespace detail {
 

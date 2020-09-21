@@ -3,16 +3,13 @@
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/event.h"
 #include "halco/hicann-dls/vx/highspeed_link.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/padi.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
@@ -107,9 +104,9 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 		    SYMBOL_VISIBLE;                                                                        \
                                                                                                    \
 		constexpr static size_t GENPYBIND(hidden) config_size_in_words = 1;                        \
-		static std::array<                                                                         \
-			halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS, config_size_in_words>              \
-		addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);                   \
+		static std::                                                                               \
+		    array<halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS, config_size_in_words>        \
+		    addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);               \
 		std::array<fisch::vx::SpikePack##Num##ToChip, config_size_in_words> encode() const         \
 		    SYMBOL_VISIBLE GENPYBIND(hidden);                                                      \
 		void decode(std::array<fisch::vx::SpikePack##Num##ToChip, config_size_in_words> const&     \
@@ -122,6 +119,8 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
                                                                                                    \
 		labels_type m_impl;                                                                        \
 	};                                                                                             \
+                                                                                                   \
+	EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikePack##Num##ToChip)                                    \
                                                                                                    \
 	namespace detail {                                                                             \
                                                                                                    \
@@ -240,6 +239,8 @@ public:
 		uint64_t chip_time;
 	};
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeFromChip)
 
 namespace detail {
 
@@ -360,6 +361,8 @@ public:
 		uint64_t chip_time;
 	};
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(MADCSampleFromChip)
 
 namespace detail {
 
@@ -523,6 +526,8 @@ private:
 	bool m_check_error{false};
 	FPGATime m_fpga_time{};
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(HighspeedLinkNotification)
 
 } // namespace haldls::vx
 

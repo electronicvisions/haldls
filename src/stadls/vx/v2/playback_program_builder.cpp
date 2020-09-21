@@ -1,8 +1,11 @@
 #include "stadls/vx/v2/playback_program_builder.h"
+
+#include "haldls/cerealization.tcc"
 #include "haldls/vx/common.h"
 #include "haldls/vx/v2/container.h"
 #include "lola/vx/v2/container.h"
 #include "stadls/vx/playback_program.h"
+#include "stadls/vx/playback_program_builder.tcc"
 
 namespace stadls::vx::detail {
 

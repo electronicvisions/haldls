@@ -3,7 +3,7 @@
 
 #include "fisch/vx/barrier.h"
 #include "halco/hicann-dls/vx/barrier.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
 #include "haldls/vx/barrier.h"
 #include "test-helper.h"
 

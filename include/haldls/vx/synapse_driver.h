@@ -1,18 +1,15 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/synapse_driver.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -46,6 +43,8 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t);
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SynapseDriverSRAMTimingConfig)
 
 namespace detail {
 

@@ -1,20 +1,17 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/event.h"
 #include "halco/hicann-dls/vx/routing_crossbar.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -85,6 +82,8 @@ private:
 	enable_event_counter_type m_enable_event_counter;
 	enable_slow_type m_enable_slow;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CrossbarOutputConfig)
 
 namespace detail {
 
@@ -170,6 +169,8 @@ private:
 	Value m_value;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CrossbarInputDropCounter)
+
 namespace detail {
 
 template <>
@@ -252,6 +253,8 @@ private:
 
 	Value m_value;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CrossbarOutputEventCounter)
 
 namespace detail {
 
@@ -345,6 +348,8 @@ private:
 	neuron_label_type m_target;
 	bool m_enable_drop_counter;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CrossbarNode)
 
 namespace detail {
 

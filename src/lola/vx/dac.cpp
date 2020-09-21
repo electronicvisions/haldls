@@ -2,8 +2,9 @@
 
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
 #include "hate/join.h"
+#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 namespace lola::vx {
@@ -84,3 +85,6 @@ std::ostream& operator<<(std::ostream& os, DACControlBlock const& block)
 }
 
 } // namespace lola::vx
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::DACChannelBlock)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::DACControlBlock)

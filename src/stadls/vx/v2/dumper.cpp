@@ -1,3 +1,6 @@
+#include "stadls/vx/dumper.tcc"
+
+#include "haldls/cerealization.tcc"
 #include "stadls/vx/v2/dumper.h"
 
 namespace stadls::vx {
@@ -22,6 +25,9 @@ bool DumperDone::operator!=(DumperDone const& other) const
 } // namespace v2
 
 template class stadls::vx::detail::Dumper<stadls::vx::v2::DumperDone>;
+
+template std::ostream& stadls::vx::detail::operator<<(
+    std::ostream&, stadls::vx::detail::Dumper<stadls::vx::v2::DumperDone> const&);
 
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	template void v2::Dumper::write<Type>(                                                         \

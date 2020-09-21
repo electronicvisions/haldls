@@ -6,8 +6,8 @@
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.h"
-#include "haldls/vx/print.h"
+#include "haldls/cerealization.tcc"
+#include "haldls/vx/print.tcc"
 #include "haldls/vx/v1/address_transformation.h"
 #include "haldls/vx/v1/omnibus_constants.h"
 

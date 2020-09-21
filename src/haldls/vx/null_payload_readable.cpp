@@ -2,7 +2,7 @@
 
 #include "fisch/vx/null_payload_readable.h"
 #include "halco/hicann-dls/vx/fpga.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
 
 namespace haldls {
 namespace vx {

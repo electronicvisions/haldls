@@ -9,8 +9,10 @@
 #include <netinet/in.h>
 
 #include "halco/hicann-dls/vx/coordinates.h"
+#include "haldls/cerealization.tcc"
 #include "haldls/vx/ppu.h"
 
+#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 namespace lola {
@@ -209,3 +211,5 @@ PPUElfFile::~PPUElfFile()
 
 } // namespace vx
 } // namespace lola
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::PPUProgram::Symbol)

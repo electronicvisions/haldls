@@ -1,7 +1,6 @@
 #pragma once
-#include <sstream>
+#include <iosfwd>
 #include <vector>
-#include <cereal/archives/binary.hpp>
 #include <pybind11/pybind11.h>
 
 #include "hate/type_list.h"
@@ -59,26 +58,18 @@ private:
 		auto ism = pybind11::is_method(attr);
 		auto const getattr = [](pybind11::object const& self) {
 			auto& thing = self.cast<T const&>();
-			std::ostringstream os;
-			{
-				cereal::BinaryOutputArchive ar(os);
-				ar << thing;
-			}
+			std::string serialized{haldls::vx::to_binary(thing)};
 			if (pybind11::hasattr(self, "__dict__")) {
-				return pybind11::make_tuple(pybind11::bytes(os.str()), self.attr("__dict__"));
+				return pybind11::make_tuple(pybind11::bytes(serialized), self.attr("__dict__"));
 			} else {
-				return pybind11::make_tuple(pybind11::bytes(os.str()));
+				return pybind11::make_tuple(pybind11::bytes(serialized));
 			}
 		};
 
 		auto const setattr = [](pybind11::object& self, pybind11::tuple const& data) {
 			auto& thing = self.cast<T&>();
 			new (&thing) T();
-			std::istringstream is(data[0].cast<std::string>());
-			{
-				cereal::BinaryInputArchive ar(is);
-				ar(thing);
-			}
+			haldls::vx::from_binary(thing, data[0].cast<std::string>());
 			if (pybind11::hasattr(self, "__dict__")) {
 				self.attr("__dict__") = data[1];
 			}

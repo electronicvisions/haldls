@@ -3,22 +3,23 @@
 #include "stadls/vx/genpybind.h"
 
 #include "halco/hicann-dls/vx/v2/coordinates.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/v2/container.h"
 #include "lola/vx/v2/container.h"
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
-// #include "haldls/cerealization.h"
 #include "haldls/vx/pickle.h"
 namespace py = pybind11;
 #endif
 
 #ifdef __GENPYBIND_GENERATED__
-// Needed for manual wrapping (pickling) of Dumper::done_type
+// Needed for manual wrapping (pickling) of DumperDone::values_type
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/cerealization.h"
+#include "lola/vx/cerealization.h"
 #include <cereal/types/utility.hpp>
 #include <cereal/types/variant.hpp>
 #include <cereal/types/vector.hpp>
-#include "halco/common/cerealization_geometry.h"
-#include "lola/vx/cerealization.h"
 #endif
 
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX_V2 {
@@ -90,6 +91,9 @@ GENPYBIND_MANUAL({
 
 extern template class SYMBOL_VISIBLE stadls::vx::detail::Dumper<stadls::vx::v2::DumperDone>;
 
+extern template SYMBOL_VISIBLE std::ostream& stadls::vx::detail::operator<<(
+    std::ostream&, stadls::vx::detail::Dumper<stadls::vx::v2::DumperDone> const&);
+
 #define PLAYBACK_CONTAINER(_Name, Type)                                                            \
 	extern template SYMBOL_VISIBLE void stadls::vx::v2::Dumper::write<Type>(                       \
 	    typename Type::coordinate_type const&, Type const&);                                       \
@@ -102,4 +106,6 @@ extern template class SYMBOL_VISIBLE stadls::vx::detail::Dumper<stadls::vx::v2::
 
 } // namespace stadls::vx
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::DumperDone)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::Dumper)
 PYBIND11_MAKE_OPAQUE(stadls::vx::v2::Dumper::done_type)

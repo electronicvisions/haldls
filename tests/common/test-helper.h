@@ -10,7 +10,7 @@
 
 
 #include "halco/common/iter_sparse.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
 #include "haldls/vx/common.h"
 #include "hate/math.h"
 #include "stadls/visitors.h"

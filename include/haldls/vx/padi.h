@@ -1,18 +1,15 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/padi.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -150,6 +147,8 @@ private:
 	RowSelectAddress m_row_select_address;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PADIEvent)
+
 /**
  * Configuration for a PADI bus block.
  * Each of the four buses can be configured to accept events from the PADI
@@ -248,6 +247,8 @@ private:
 	dacen_pulse_extension_type m_dacen_pulse_extension;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonPADIBusConfig)
+
 /**
  * Common STP configuration shared by synapse drivers per vertical half.
  * It allows to enable/disable and set the speed for the recovery clock.
@@ -313,6 +314,8 @@ private:
 	bool m_enable_recovery_clock;
 	RecoveryClockSpeed m_recovery_clock_speed;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonSTPConfig)
 
 namespace detail {
 

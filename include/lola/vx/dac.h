@@ -1,17 +1,15 @@
 #pragma once
-#include <boost/hana/adapt_struct.hpp>
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/dac.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/spi.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
+#include <boost/hana/adapt_struct.hpp>
 
 namespace lola::vx GENPYBIND_TAG_LOLA_VX {
 
@@ -147,3 +145,6 @@ struct VisitPreorderImpl<lola::vx::DACControlBlock>
 
 BOOST_HANA_ADAPT_STRUCT(lola::vx::DACChannelBlock, value);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::DACControlBlock, enable);
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::DACChannelBlock)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::DACControlBlock)

@@ -1,19 +1,16 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/synapse.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -131,6 +128,8 @@ private:
 	WaitCtrClear m_wait_ctr_clear;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonSynramConfig)
+
 class GENPYBIND(visible) SynapseBiasSelection
 {
 public:
@@ -202,6 +201,8 @@ private:
 	bias_selection_type m_int_store_bias;
 	bias_selection_type m_int_output_bias;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SynapseBiasSelection)
 
 namespace detail {
 

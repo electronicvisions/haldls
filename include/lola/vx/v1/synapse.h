@@ -1,18 +1,16 @@
 #pragma once
-#include <boost/hana/adapt_struct.hpp>
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_heap_array.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/traits.h"
 #include "haldls/vx/v1/synapse.h"
 #include "hate/visibility.h"
+#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
+#include <boost/hana/adapt_struct.hpp>
 
 #include <pybind11/numpy.h>
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace lola::vx::v1 GENPYBIND_TAG_LOLA_VX_V1 {
 
@@ -772,3 +770,13 @@ BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::SynapseLabelMatrix, values);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::SynapseCorrelationCalibMatrix, time_calibs, amp_calibs);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::SynapseMatrix, weights, labels, time_calibs, amp_calibs);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::CorrelationResetRow);
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseRow)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseWeightRow)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseLabelRow)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseCorrelationCalibRow)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseWeightMatrix)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseLabelMatrix)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseCorrelationCalibMatrix)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseMatrix)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::CorrelationResetRow)

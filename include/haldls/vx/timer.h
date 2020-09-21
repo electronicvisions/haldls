@@ -1,17 +1,14 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "fisch/vx/timer.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/timing.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
@@ -67,6 +64,8 @@ private:
 
 	Value m_value;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(Timer)
 
 namespace detail {
 

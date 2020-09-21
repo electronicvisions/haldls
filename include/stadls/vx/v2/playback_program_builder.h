@@ -1,4 +1,5 @@
 #pragma once
+#include "haldls/cerealization.h"
 #include "haldls/vx/v2/container.h"
 #include "lola/vx/v2/container.h"
 #include "stadls/vx/genpybind.h"
@@ -153,3 +154,6 @@ GENPYBIND_MANUAL({
 #include "lola/vx/v2/container.def"
 
 } // namespace stadls::vx
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::PlaybackProgramBuilder)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::PlaybackProgramBuilderDumper)

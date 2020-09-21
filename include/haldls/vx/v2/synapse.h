@@ -3,20 +3,17 @@
 #include "haldls/vx/synapse.h"
 
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/v2/switch_rows.h"
 #include "halco/hicann-dls/vx/v2/synapse.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -687,3 +684,13 @@ HALCO_GEOMETRY_HASH_CLASS(haldls::vx::v2::SynapseCorrelationCalibQuad::TimeCalib
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::v2::SynapseCorrelationCalibQuad::AmpCalib)
 
 } // namespace std
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::SynapseWeightQuad)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::SynapseLabelQuad)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::SynapseCorrelationCalibQuad)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::SynapseQuad)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::ColumnCorrelationQuad)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::ColumnCorrelationQuad::ColumnCorrelationSwitch)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::ColumnCurrentQuad::ColumnCurrentSwitch)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::ColumnCurrentQuad)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::CorrelationReset)

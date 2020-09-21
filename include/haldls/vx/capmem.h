@@ -1,22 +1,19 @@
 #pragma once
 #include <array>
 #include <cstdint>
-#include <ostream>
+#include <iosfwd>
 #include <variant>
 
 #include "halco/common/geometry.h"
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/capmem.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;

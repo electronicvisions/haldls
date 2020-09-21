@@ -1,20 +1,17 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/ppu.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/coordinate_to_container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -72,6 +69,8 @@ private:
 	Value m_value;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryWord)
+
 class GENPYBIND(visible) PPUMemoryBlock
 {
 public:
@@ -119,6 +118,8 @@ private:
 
 	words_type m_words;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryBlock)
 
 class GENPYBIND(visible) PPUMemory
 {
@@ -171,6 +172,8 @@ private:
 
 	words_type m_words;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUMemory)
 
 class GENPYBIND(visible) PPUControlRegister : public DifferentialWriteTrait
 {
@@ -231,6 +234,8 @@ private:
 	bool m_force_clock_off;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUControlRegister)
+
 class GENPYBIND(visible) PPUStatusRegister
 {
 public:
@@ -270,6 +275,8 @@ private:
 
 	bool m_sleep;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUStatusRegister)
 
 namespace detail {
 

@@ -1,20 +1,17 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/background.h"
 #include "halco/hicann-dls/vx/event.h"
 
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -251,6 +248,8 @@ private:
 	Mask m_mask;
 	halco::hicann_dls::vx::NeuronLabel m_neuron_label;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(BackgroundSpikeSource)
 
 namespace detail {
 

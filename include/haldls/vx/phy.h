@@ -1,17 +1,14 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/highspeed_link.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 class OmnibusAddress;
@@ -196,6 +193,8 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PhyConfigFPGA)
+
 namespace detail {
 
 template <>
@@ -238,6 +237,8 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PhyConfigChip)
 
 namespace detail {
 
@@ -289,6 +290,8 @@ private:
 	halco::common::typed_array<bool, halco::hicann_dls::vx::PhyConfigFPGAOnDLS> m_enable_phy;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigFPGA)
+
 namespace detail {
 
 template <>
@@ -338,6 +341,8 @@ private:
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::PhyConfigChipOnDLS> m_enable_phy;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigChip)
 
 namespace detail {
 
@@ -465,6 +470,8 @@ private:
 	RxCount m_rx_count;
 	TxCount m_tx_count;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PhyStatus)
 
 namespace detail {
 

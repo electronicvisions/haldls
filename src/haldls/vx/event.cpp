@@ -3,7 +3,7 @@
 #include <cereal/types/array.hpp>
 
 #include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
 
 namespace haldls::vx {
 

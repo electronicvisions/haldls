@@ -2,7 +2,8 @@
 
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
+#include "lola/vx/cerealization.tcc"
 #include "lola/vx/gray_scale.h"
 #include "lola/vx/hana.h"
 
@@ -100,3 +101,6 @@ std::ostream& operator<<(std::ostream& os, CADCSamples const& samples)
 }
 
 } // namespace lola::vx::vx
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::CADCSampleRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::CADCSamples)

@@ -2,8 +2,8 @@
 
 #include "fisch/vx/constants.h"
 #include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.h"
-#include "haldls/vx/print.h"
+#include "haldls/cerealization.tcc"
+#include "haldls/vx/print.tcc"
 
 namespace haldls::vx {
 

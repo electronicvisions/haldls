@@ -1,17 +1,14 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/pll.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 class JTAGPLLRegisterOnDLS;
@@ -325,6 +322,8 @@ private:
 	bool m_use_external_config;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ADPLL)
+
 namespace detail {
 
 /**
@@ -483,6 +482,8 @@ private:
 	halco::common::typed_array<ClockOutput, halco::hicann_dls::vx::PLLClockOutputOnDLS> m_output;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PLLClockOutputBlock)
+
 namespace detail {
 
 template <>
@@ -612,6 +613,8 @@ private:
 	CheckValue m_check_value;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTest)
+
 namespace detail {
 
 template <>
@@ -702,6 +705,8 @@ private:
 	bool m_finished;
 	CounterValue m_counter_value;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTestStatus)
 
 namespace detail {
 

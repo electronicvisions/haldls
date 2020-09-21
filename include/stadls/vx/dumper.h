@@ -129,5 +129,3 @@ private:
 };
 
 } // namespace stadls::vx::detail
-
-#include "stadls/vx/dumper.tcc"

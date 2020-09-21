@@ -1,8 +1,9 @@
 #include "haldls/vx/reset.h"
 
+
 #include "fisch/vx/reset.h"
-#include "haldls/cerealization.h"
-#include "haldls/vx/print.h"
+#include "haldls/cerealization.tcc"
+#include "haldls/vx/print.tcc"
 
 namespace haldls::vx {
 

@@ -1,15 +1,12 @@
 #pragma once
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/cadc.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -127,6 +124,8 @@ protected:
 	ResetWait m_reset_wait;
 	DeadTime m_dead_time;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CADCConfig)
 
 namespace detail {
 
@@ -272,6 +271,8 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t);
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CADCOffsetSRAMTimingConfig)
 
 namespace detail {
 

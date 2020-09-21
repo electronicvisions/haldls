@@ -1,16 +1,13 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/fpga.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 class OmnibusAddress;
@@ -82,6 +79,8 @@ private:
 	Value m_value;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGADeviceDNA)
+
 /**
  * Container for the event (spikes, MADC samples) recording configuration register.
  */
@@ -132,6 +131,7 @@ private:
 	bool m_enable_event_recording;
 };
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventRecordingConfig)
 
 class GENPYBIND(visible) ExternalPPUMemoryByte
 {
@@ -181,6 +181,8 @@ private:
 
 	Value m_value;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryByte)
 
 namespace detail {
 

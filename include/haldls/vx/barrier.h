@@ -1,13 +1,10 @@
 #pragma once
-#include <ostream>
+#include <iosfwd>
 
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
@@ -53,6 +50,8 @@ private:
 	bool m_enable_jtag;
 	bool m_enable_systime;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(Barrier)
 
 } // namespace vx
 } // namespace haldls

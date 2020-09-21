@@ -4,10 +4,10 @@
 #include "fisch/vx/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
 #include "haldls/vx/neuron.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.h"
+#include "haldls/vx/print.tcc"
 
 namespace haldls::vx {
 NEURON_BACKEND_CONFIG_UNROLL(halco::hicann_dls::vx::v2::Coordinates)

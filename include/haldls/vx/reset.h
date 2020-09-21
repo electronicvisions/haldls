@@ -1,15 +1,12 @@
 #pragma once
 #include <array>
-#include <ostream>
+#include <iosfwd>
 
 #include "halco/hicann-dls/vx/reset.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class ResetChip;
@@ -62,6 +59,8 @@ private:
 
 	bool m_value;
 };
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ResetChip)
 
 namespace detail {
 

@@ -12,9 +12,9 @@
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/v2/coordinates.h"
-#include "haldls/cerealization.h"
+#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.h"
+#include "haldls/vx/print.tcc"
 #include "hate/join.h"
 #include "hate/math.h"
 

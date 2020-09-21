@@ -1,12 +1,9 @@
 #pragma once
 #include "halco/hicann-dls/vx/v2/coordinates.h"
 #include "halco/hicann-dls/vx/v2/neuron.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
-
-namespace cereal {
-class access;
-} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -414,3 +411,6 @@ struct BackendContainerTrait<v2::NeuronResetQuad>
 {};
 
 } // namespace haldls::vx::detail
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::NeuronConfig)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::NeuronResetQuad)
