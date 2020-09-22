@@ -33,7 +33,7 @@ TEST(JTAGIdCode, ReadJTAGId)
 	ASSERT_TRUE(jtag_id_ticket.valid());
 	auto jtag_id = jtag_id_ticket.get();
 
-	EXPECT_TRUE((jtag_id.get_version() >= 0) && (jtag_id.get_version() <= 2));
+	EXPECT_TRUE((jtag_id.get_version() >= 0) && (jtag_id.get_version() <= 3));
 	EXPECT_EQ(jtag_id.get_part_number(), 0x4858);    // ASCII('HX')
 	EXPECT_EQ(jtag_id.get_manufacturer_id(), 0x057); // UHEI JDEC identifier
 }
