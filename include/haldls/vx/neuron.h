@@ -256,7 +256,7 @@ public:
 	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0>
 	{
 		typedef halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0> rant_t;
-		constexpr explicit ResetHoldoff() : rant_t(0) {}
+		constexpr explicit ResetHoldoff() : rant_t(15) {}
 		constexpr explicit ResetHoldoff(uintmax_t const val) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
