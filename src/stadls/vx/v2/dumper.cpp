@@ -1,31 +1,9 @@
-#include "stadls/vx/dumper.tcc"
+#include "stadls/vx/v2/dumper.h"
 
 #include "haldls/cerealization.tcc"
-#include "stadls/vx/v2/dumper.h"
-#include <cereal/types/utility.hpp>
-#include <cereal/types/variant.hpp>
-#include <cereal/types/vector.hpp>
+#include "stadls/vx/dumper.tcc"
 
 namespace stadls::vx {
-
-namespace v2 {
-
-template <typename Archive>
-void DumperDone::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(values));
-}
-
-bool DumperDone::operator==(DumperDone const& other) const
-{
-	return values == other.values;
-}
-bool DumperDone::operator!=(DumperDone const& other) const
-{
-	return !(*this == other);
-}
-
-} // namespace v2
 
 template class stadls::vx::detail::Dumper<stadls::vx::v2::DumperDone>;
 
@@ -44,7 +22,5 @@ template std::ostream& stadls::vx::detail::operator<<(
 
 } // namespace stadls::vx
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::DumperDone)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::Dumper)
-CEREAL_CLASS_VERSION(stadls::vx::v2::DumperDone, 0)
 CEREAL_CLASS_VERSION(stadls::vx::v2::Dumper, 0)
