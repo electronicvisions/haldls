@@ -1,14 +1,8 @@
 #pragma once
-#include <memory>
-#include <utility> // std::pair
-#include <variant>
-#include <vector>
-
 #include "halco/hicann-dls/vx/barrier.h"
 #include "haldls/vx/barrier.h"
 #include "haldls/vx/timer.h"
 #include "hate/visibility.h"
-#include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
 
 namespace stadls::vx::detail {

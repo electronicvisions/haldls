@@ -1,12 +1,9 @@
 #include "stadls/vx/dumper.h"
 
-#include <cereal/types/utility.hpp>
-#include <cereal/types/variant.hpp>
-#include <cereal/types/vector.hpp>
-
 #include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.h"
 #include "lola/vx/cerealization.h"
+#include <utility> // std::make_pair
 
 namespace stadls::vx::detail {
 

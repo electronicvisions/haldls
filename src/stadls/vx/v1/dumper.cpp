@@ -2,6 +2,9 @@
 
 #include "haldls/cerealization.tcc"
 #include "stadls/vx/dumper.tcc"
+#include <cereal/types/utility.hpp>
+#include <cereal/types/variant.hpp>
+#include <cereal/types/vector.hpp>
 
 namespace stadls::vx {
 
