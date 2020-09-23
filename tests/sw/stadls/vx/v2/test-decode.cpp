@@ -6,10 +6,12 @@
 #include "lola/vx/v2/container.h"
 #include "stadls/vx/v2/decode.h"
 
-typedef hate::type_list<haldls::vx::NullPayloadReadable, haldls::vx::INA219Status>
-    NotRandomizableTypes;
+typedef hate::
+    type_list<lola::vx::v2::AtomicNeuron, haldls::vx::NullPayloadReadable, haldls::vx::INA219Status>
+        NotRandomizableTypes;
 
 typedef hate::type_list<
+    lola::vx::v2::AtomicNeuron,
     haldls::vx::NullPayloadReadable,
     haldls::vx::CommonPhyConfigChip,
     haldls::vx::CommonPhyConfigFPGA,
