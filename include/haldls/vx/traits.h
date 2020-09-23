@@ -1,10 +1,8 @@
 #pragma once
 #include <type_traits>
-
 #include "fisch/vx/container_fwd.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"
-#include "hate/visibility.h"
 #include <boost/utility/enable_if.hpp>
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
