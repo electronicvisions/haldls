@@ -5,9 +5,13 @@
 #include <string>
 #include <vector>
 
+#include <boost/variant.hpp>
+
+#include "fisch/vx/container_ticket.h"
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/event.h"
+#include "hate/type_list.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
 #include "stadls/vx/genpybind.h"
@@ -24,6 +28,15 @@ template <typename, typename, template <typename> class>
 class PlaybackProgramBuilderAdapter;
 template <typename, typename, template <typename> class>
 class PlaybackProgramBuilderAdapterImpl;
+
+template <typename BackendContainerTypeList>
+struct to_ticket_variant;
+
+template <typename... BackendContainer>
+struct to_ticket_variant<hate::type_list<BackendContainer...>>
+{
+	typedef boost::variant<fisch::vx::ContainerTicket<BackendContainer>...> type;
+};
 
 } // namespace detail
 
@@ -80,7 +93,7 @@ public:
 		fpga_time_type get_fpga_time() const SYMBOL_VISIBLE;
 
 	private:
-		typedef typename haldls::vx::detail::to_ticket_variant<
+		typedef typename detail::to_ticket_variant<
 		    typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 		    ticket_impl_type;
 

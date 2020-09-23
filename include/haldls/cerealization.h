@@ -2,6 +2,7 @@
 
 #include "hate/type_list.h"
 #include "hate/visibility.h"
+#include <cstdint>
 #include <iosfwd>
 #include <cereal/macros.hpp>
 

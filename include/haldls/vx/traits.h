@@ -1,12 +1,11 @@
 #pragma once
 #include <type_traits>
 
-#include <boost/variant.hpp>
 #include "fisch/vx/container_fwd.h"
-#include "fisch/vx/container_ticket.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"
 #include "hate/visibility.h"
+#include <boost/utility/enable_if.hpp>
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
@@ -127,15 +126,6 @@ struct BackendContainerBase
 template <typename ContainerT>
 struct BackendContainerTrait : public BackendContainerBase<ContainerT, ContainerT>
 {};
-
-template <typename BackendContainerTypeList>
-struct to_ticket_variant;
-
-template <typename... BackendContainer>
-struct to_ticket_variant<hate::type_list<BackendContainer...>>
-{
-	typedef boost::variant<fisch::vx::ContainerTicket<BackendContainer>...> type;
-};
 
 } // namespace detail
 
