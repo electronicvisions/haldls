@@ -1,3 +1,4 @@
+#pragma once
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/timer.h"
 
