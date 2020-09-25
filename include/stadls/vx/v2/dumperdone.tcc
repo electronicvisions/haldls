@@ -23,14 +23,14 @@ void DumperDone::serialize(Archive& ar, std::uint32_t const)
 #include "haldls/vx/v2/container.def"
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/v2/container.def"
-	    {"haldls::vx::Timer::Value",
+	    {hate::full_name<haldls::vx::Timer::Value>(),
 	     [](Archive& ar, coco_type& coco) {
 		     auto& value = std::get<
 		         std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>>(
 		         coco);
 		     ar(CEREAL_NVP(value));
 	     }},
-	    {"haldls::vx::Barrier", [](Archive& ar, coco_type& coco) {
+	    {hate::full_name<haldls::vx::Barrier>(), [](Archive& ar, coco_type& coco) {
 		     auto& value =
 		         std::get<std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>>(
 		             coco);
@@ -45,15 +45,12 @@ void DumperDone::serialize(Archive& ar, std::uint32_t const)
 		    [](auto const& v) { return hate::full_name<std::decay_t<decltype(v.first)>>(); },
 		    value);
 		ar(CEREAL_NVP(name));
-		if constexpr (Archive::is_loading::value) {
-			auto const load = lookup.find(name);
-			if (load == lookup.end()) {
-				throw std::runtime_error("Deserialization of CoCo of specified name not found.");
-			}
-			load->second(ar, value);
-		} else {
-			lookup.at(name)(ar, value);
+		auto const serializer = lookup.find(name);
+		if (serializer == lookup.end()) {
+			throw std::runtime_error(
+			    "Serializer of CoCo of specified name(" + name + ") not found.");
 		}
+		serializer->second(ar, value);
 	}
 }
 
