@@ -32,15 +32,17 @@ void DumperDone::serialize(Archive& ar, std::uint32_t const)
 	static const std::map<std::string, void (*)(Archive&, coco_type&)> lookup = {
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	std::make_pair(                                                                                \
-	    hate::full_name<Type>(), &serialize_coco<Archive, typename Type::coordinate_type, Type>),
+	    hate::full_name<std::pair<typename Type::coordinate_type, Type>>(),                        \
+	    &serialize_coco<Archive, typename Type::coordinate_type, Type>),
 #pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/v2/container.def"
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/v2/container.def"
-	    {hate::full_name<haldls::vx::Timer::Value>(),
+	    {hate::full_name<
+	         std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>>(),
 	     &serialize_coco<
 	         Archive, typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>},
-	    {hate::full_name<haldls::vx::Barrier>(),
+	    {hate::full_name<std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>>(),
 	     &serialize_coco<Archive, halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>}};
 
 	size_t size = values.size();
@@ -48,8 +50,7 @@ void DumperDone::serialize(Archive& ar, std::uint32_t const)
 	values.resize(size);
 	for (auto& value : values) {
 		std::string name = std::visit(
-		    [](auto const& v) { return hate::full_name<std::decay_t<decltype(v.second)>>(); },
-		    value);
+		    [](auto const& v) { return hate::full_name<std::decay_t<decltype(v)>>(); }, value);
 		ar(CEREAL_NVP(name));
 		auto const serializer = lookup.find(name);
 		if (serializer == lookup.end()) {
