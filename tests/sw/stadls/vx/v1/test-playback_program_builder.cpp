@@ -126,6 +126,7 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 	PlaybackProgramBuilderDumper builder_copy;
 	builder_copy.copy_back(builder);
 	auto cocos_saved = builder.done();
+	builder.copy_back(builder_copy);
 	EXPECT_EQ(cocos_saved.values.size(), 4);
 
 	EXPECT_EQ(cocos_written, cocos_saved);
