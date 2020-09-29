@@ -3,6 +3,8 @@ import argparse
 import os
 from os.path import join
 from waflib.extras.symwaf2ic import get_toplevel_path
+from waflib.Task import TaskSemaphore
+from waflib.TaskGen import feature, after_method
 
 
 def depends(ctx):
@@ -67,6 +69,17 @@ def configure(cfg):
         cfg.recurse("dlens")
 
 
+@feature('apply_semaphore')
+@after_method('apply_link', 'process_source')
+def apply_semaphore(self):
+    semaphore = getattr(self, 'semaphore', None)
+    if not semaphore:
+        return
+    for tsk in self.tasks:
+        if not hasattr(tsk, 'semaphore'):
+            tsk.semaphore = semaphore
+
+
 def build(bld):
     bld.env.DLSvx_HARDWARE_AVAILABLE = "cube" == os.environ.get("SLURM_JOB_PARTITION")
     bld.env.DLSvx_SIM_AVAILABLE = "FLANGE_SIMULATION_RCF_PORT" in os.environ
@@ -105,14 +118,18 @@ def build(bld):
         uselib = 'HALDLS_LIBRARIES',
     )
 
+    reduced_jobs = max(bld.jobs // 8, 1)
+    bld.env['stadls_semaphore'] = TaskSemaphore(reduced_jobs)
+
     bld(
         target = 'stadls_vx_v1',
         source = bld.path.ant_glob('src/stadls/vx/*.cpp')
                + bld.path.ant_glob('src/stadls/vx/v1/*.cpp'),
         install_path = '${PREFIX}/lib',
-        features = 'cxx cxxshlib pyembed',
+        features = 'cxx cxxshlib pyembed apply_semaphore',
         use = ['haldls_vx_v1', 'lola_vx_v1', 'logger_obj'],
         uselib = 'HALDLS_LIBRARIES',
+        semaphore = bld.env['stadls_semaphore'],
     )
 
     bld(
@@ -120,9 +137,10 @@ def build(bld):
         source = bld.path.ant_glob('src/stadls/vx/*.cpp')
                + bld.path.ant_glob('src/stadls/vx/v2/*.cpp'),
         install_path = '${PREFIX}/lib',
-        features = 'cxx cxxshlib pyembed',
+        features = 'cxx cxxshlib pyembed apply_semaphore',
         use = ['haldls_vx_v2', 'lola_vx_v2', 'logger_obj'],
         uselib = 'HALDLS_LIBRARIES',
+        semaphore = bld.env['stadls_semaphore'],
     )
 
     bld(
