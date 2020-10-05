@@ -15,10 +15,9 @@ def depends(ctx):
     ctx('fisch')
 
     if getattr(ctx.options, 'with_haldls_python_bindings', True):
-        ctx('haldls', 'pyhaldls')
-        ctx('haldls', 'pystadls')
-        ctx('haldls', 'pylola')
-        ctx('haldls', 'dlens')
+        ctx('halco', 'pyhalco')
+        ctx('hxcomm', 'pyhxcomm')
+        ctx('logger', 'pylogging')
 
 
 def options(opt):
@@ -72,9 +71,8 @@ def configure(cfg):
 @feature('apply_semaphore')
 @after_method('apply_link', 'process_source')
 def apply_semaphore(self):
-    semaphore = getattr(self, 'semaphore', None)
-    if not semaphore:
-        return
+    semaphore = getattr(self, 'semaphore')
+    assert isinstance(semaphore, TaskSemaphore)
     for tsk in self.tasks:
         if not hasattr(tsk, 'semaphore'):
             tsk.semaphore = semaphore

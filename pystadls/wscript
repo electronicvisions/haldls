@@ -4,11 +4,6 @@ from os.path import join
 from waflib.extras.gtest import summary
 from waflib.extras.symwaf2ic import get_toplevel_path
 
-def depends(ctx):
-    ctx('haldls')
-    ctx('halco', 'pyhalco')
-    ctx('code-format')
-
 def options(opt):
     opt.load('pytest')
     opt.load('pylint')
