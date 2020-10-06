@@ -103,10 +103,6 @@ TEST(NeuronConfig, General)
 	config.set_invert_membrane_offset(value);
 	ASSERT_EQ(config.get_invert_membrane_offset(), value);
 
-	value = !config.get_enable_capacitor_merge();
-	config.set_enable_capacitor_merge(value);
-	ASSERT_EQ(config.get_enable_capacitor_merge(), value);
-
 	auto memcap = NeuronConfig::MembraneCapacitorSize(config.get_membrane_capacitor_size() + 1);
 	config.set_membrane_capacitor_size(memcap);
 	ASSERT_EQ(config.get_membrane_capacitor_size(), memcap);

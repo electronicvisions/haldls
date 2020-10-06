@@ -181,12 +181,6 @@ public:
 	GENPYBIND(setter_for(invert_membrane_offset))
 	void set_invert_membrane_offset(bool value) SYMBOL_VISIBLE;
 
-	// enable merging of membrane and adaptation capacitances
-	GENPYBIND(getter_for(enable_capacitor_merge))
-	bool get_enable_capacitor_merge() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_capacitor_merge))
-	void set_enable_capacitor_merge(bool value) SYMBOL_VISIBLE;
-
 	// configure membrane size
 	GENPYBIND(getter_for(membrane_capacitor_size))
 	MembraneCapacitorSize get_membrane_capacitor_size() const SYMBOL_VISIBLE;
@@ -330,7 +324,6 @@ private:
 	bool m_en_byp_exc;
 	bool m_en_mem_off;
 	bool m_invert_current;
-	bool m_en_cap_merge;
 	MembraneCapacitorSize m_mem_cap_size;
 	bool m_invert_adapt_a;
 	bool m_invert_adapt_b;

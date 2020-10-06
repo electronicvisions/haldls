@@ -37,7 +37,6 @@ NeuronConfig::NeuronConfig() :
     m_en_byp_exc(false),
     m_en_mem_off(false),
     m_invert_current(false),
-    m_en_cap_merge(false),
     m_mem_cap_size(0),
     m_invert_adapt_a(false),
     m_invert_adapt_b(false),
@@ -96,7 +95,7 @@ struct NeuronConfigBitfield
 			uint32_t                                                      : 24;  // 8-31 ; 4
 
 			uint32_t en_mem_off                                           :  1;  // 0    ; 5
-			uint32_t en_cap_merge                                         :  1;  // 1    ; 5
+			uint32_t                                                      :  1;  // 1    ; 5
 			uint32_t mem_cap_size                                         :  6;  // 2-7  ; 5
 			uint32_t                                                      : 24;  // 8-31 ; 5
 
@@ -328,15 +327,6 @@ void NeuronConfig::set_invert_membrane_offset(bool const value)
 	m_invert_current = value;
 }
 
-bool NeuronConfig::get_enable_capacitor_merge() const
-{
-	return m_en_cap_merge;
-}
-void NeuronConfig::set_enable_capacitor_merge(bool const value)
-{
-	m_en_cap_merge = value;
-}
-
 NeuronConfig::MembraneCapacitorSize NeuronConfig::get_membrane_capacitor_size() const
 {
 	return m_mem_cap_size;
@@ -539,7 +529,6 @@ std::array<WordT, NeuronConfig::config_size_in_words> NeuronConfig::encode() con
 	bitfield.u.m.en_byp_exc = m_en_byp_exc;
 	bitfield.u.m.en_mem_off = m_en_mem_off;
 	bitfield.u.m.invert_current = m_invert_current;
-	bitfield.u.m.en_cap_merge = m_en_cap_merge;
 	bitfield.u.m.mem_cap_size = static_cast<uint32_t>(m_mem_cap_size);
 	bitfield.u.m.invert_adapt_a = m_invert_adapt_a;
 	bitfield.u.m.invert_adapt_b = m_invert_adapt_b;
@@ -598,7 +587,6 @@ void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> 
 	m_en_byp_exc = bitfield.u.m.en_byp_exc;
 	m_en_mem_off = bitfield.u.m.en_mem_off;
 	m_invert_current = bitfield.u.m.invert_current;
-	m_en_cap_merge = bitfield.u.m.en_cap_merge;
 	m_mem_cap_size = MembraneCapacitorSize(bitfield.u.m.mem_cap_size);
 	m_invert_adapt_a = bitfield.u.m.invert_adapt_a;
 	m_invert_adapt_b = bitfield.u.m.invert_adapt_b;
@@ -650,7 +638,6 @@ std::ostream& operator<<(std::ostream& os, NeuronConfig const& config)
 	<< "enable_bypass_excitatory\t\t\t" << config.m_en_byp_exc << "\tenable exc. bypass circuit" << std::endl
 	<< "enable_membrane_offset\t\t\t\t" << config.m_en_mem_off << "\tenable membrane offset current (can also be used for stimulus/step current)" << std::endl
 	<< "invert_membrane_offset\t\t" << config.m_invert_current << "\tinvert membrane offset current" << std::endl
-	<< "enable_capacitor_merge\t\t\t\t" << config.m_en_cap_merge << "\tenable merging of membrane and adaptation capacitances" << std::endl
 	<< "membrane_capacitor_size\t\t\t\t" << std::to_string(config.m_mem_cap_size) << "\tconfigure membrane size" << std::endl
 	<< "invert_adaptation_a\t\t\t\t" << config.m_invert_adapt_a << "\tflip the sign of a" << std::endl
 	<< "invert_adaptation_b\t\t\t\t" << config.m_invert_adapt_b << "\tflip the sign of b" << std::endl
@@ -695,7 +682,6 @@ bool NeuronConfig::operator==(NeuronConfig const& other) const
 	    m_en_byp_exc == other.get_enable_bypass_excitatory() &&
 	    m_en_mem_off == other.get_enable_membrane_offset() &&
 	    m_invert_current == other.get_invert_membrane_offset() &&
-	    m_en_cap_merge == other.get_enable_capacitor_merge() &&
 	    m_mem_cap_size == other.get_membrane_capacitor_size() &&
 	    m_invert_adapt_a == other.get_invert_adaptation_a() &&
 	    m_invert_adapt_b == other.get_invert_adaptation_b() &&
@@ -742,7 +728,6 @@ void NeuronConfig::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_en_byp_exc));
 	ar(CEREAL_NVP(m_en_mem_off));
 	ar(CEREAL_NVP(m_invert_current));
-	ar(CEREAL_NVP(m_en_cap_merge));
 	ar(CEREAL_NVP(m_mem_cap_size));
 	ar(CEREAL_NVP(m_invert_adapt_a));
 	ar(CEREAL_NVP(m_invert_adapt_b));
