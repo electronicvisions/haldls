@@ -706,7 +706,7 @@ bool NeuronConfig::operator!=(NeuronConfig const& other) const
 }
 
 template <class Archive>
-void NeuronConfig::serialize(Archive& ar, std::uint32_t const)
+void NeuronConfig::serialize(Archive& ar, std::uint32_t const version)
 {
 	ar(CEREAL_NVP(m_en_comp_cond_div));
 	ar(CEREAL_NVP(m_en_comp_cond_mul));
@@ -728,6 +728,10 @@ void NeuronConfig::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_en_byp_exc));
 	ar(CEREAL_NVP(m_en_mem_off));
 	ar(CEREAL_NVP(m_invert_current));
+	if (version < 1) {
+		bool m_en_cap_merge = false;
+		ar(CEREAL_NVP(m_en_cap_merge));
+	}
 	ar(CEREAL_NVP(m_mem_cap_size));
 	ar(CEREAL_NVP(m_invert_adapt_a));
 	ar(CEREAL_NVP(m_invert_adapt_b));
@@ -839,5 +843,5 @@ void NeuronResetQuad::serialize(Archive&, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::NeuronConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::NeuronResetQuad)
 CEREAL_CLASS_VERSION(haldls::vx::v2::NeuronBackendConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::v2::NeuronConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::v2::NeuronConfig, 1)
 CEREAL_CLASS_VERSION(haldls::vx::v2::NeuronResetQuad, 0)
