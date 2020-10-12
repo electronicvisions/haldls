@@ -76,18 +76,24 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(Barrier)
 
 Barrier const Barrier::omnibus = []() {
 	Barrier s;
+	s.set_enable_jtag(false);
 	s.set_enable_omnibus(true);
+	s.set_enable_systime(false);
 	return s;
 }();
 
 Barrier const Barrier::jtag = []() {
 	Barrier s;
 	s.set_enable_jtag(true);
+	s.set_enable_omnibus(false);
+	s.set_enable_systime(false);
 	return s;
 }();
 
 Barrier const Barrier::systime = []() {
 	Barrier s;
+	s.set_enable_jtag(false);
+	s.set_enable_omnibus(false);
 	s.set_enable_systime(true);
 	return s;
 }();
