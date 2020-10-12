@@ -6,4 +6,4 @@ import dlens_vx_v2.sta
 import dlens_vx_v2.hxcomm
 
 logger.reset()
-logger.default_config(level=logger.LogLevel.DEBUG)
+logger.default_config(level=logger.LogLevel.WARN)
