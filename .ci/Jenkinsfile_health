@@ -1,28 +1,84 @@
 @Library("jenlib") _
+
+import com.cloudbees.groovy.cps.NonCPS
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
+
+
+class HXCubeWing implements Serializable {
+	int hxcubeId
+	int fpgaId
+	WorkflowScript pipeline
+	private Integer cachedChipRevision = null
+
+	HXCubeWing(pipeline, int hxcubeId, int fpgaId) {
+		this.pipeline = pipeline
+		this.hxcubeId = hxcubeId
+		this.fpgaId = fpgaId
+	}
+
+	@NonCPS
+	int getWaferId() {
+		return hxcubeId + 60
+	}
+
+	int getChipRevision() {
+		if (cachedChipRevision != null) {
+			return cachedChipRevision
+		}
+
+		String hwdbQuery = "import pyhwdb; " +
+		                   "db = pyhwdb.database(); " +
+		                   "db.load(db.get_default_path()); " +
+		                   "print(db.get_hxcube_setup_entry(${hxcubeId}).fpgas[${fpgaId}].wing.chip_revision)"
+		pipeline.inSingularity(app: "dls-core") {
+			pipeline.withModules(modules: ["hwdb_bss2"]) {
+				cachedChipRevision = pipeline.jesh(script: "python -c '${hwdbQuery}'",
+				                                   returnStdout: true).trim().toInteger()
+			}
+		}
+		return cachedChipRevision
+	}
+
+	@NonCPS
+	String toString() {
+		return (String) "HXCube${hxcubeId}F${fpgaId}"
+	}
+}
+
 
 try {
 	// TODO: this should come from hwdb (Issue #3571)
-	List<String> setups = []
+	List<HXCubeWing> setups = []
 	if (!isTriggeredByGerrit()) {
-		setups += ["62", "63", "65", "68", "69", "70", "72", "73", "74", "75"]
+		setups += [
+				new HXCubeWing(this, 2, 0),
+				new HXCubeWing(this, 2, 3),
+				new HXCubeWing(this, 3, 3),
+				new HXCubeWing(this, 5, 3),
+				new HXCubeWing(this, 8, 3),
+				new HXCubeWing(this, 9, 3),
+				new HXCubeWing(this, 10, 3),
+				new HXCubeWing(this, 12, 3),
+				new HXCubeWing(this, 13, 3),
+				new HXCubeWing(this, 14, 3),
+				new HXCubeWing(this, 15, 3)
+		]
 	}
 
 	Map<String, Closure> parallelTests = [:]
-	Map<String, Boolean> success = [:]
+	Map<HXCubeWing, Boolean> success = [:]
 
-	for (String setup : setups) {
-		String setup_local = setup
-		parallelTests[setup_local] = {
+	for (HXCubeWing setup : setups) {
+		HXCubeWing setup_local = setup
+		parallelTests[setup_local.toString()] = {
 			try {
 				// no timeout for Gerrit-triggered jobs
 				conditionalTimeout(enable: !isTriggeredByGerrit(), time: 5, unit: "MINUTES") {
-					onSlurmResource(partition: "cube", wafer: setup_local, "fpga-without-aout": 3) {
+					onSlurmResource(partition: "cube", wafer: setup_local.waferId, "fpga-without-aout": setup_local.fpgaId) {
 						try {
 							timeout(time: 30, unit: "SECONDS") {
-								// Issue #3727: Allow v2 setups here
-								success[setup_local] = jesh(script: "python bin/dlens_health_check_vx_v1.py",
-								                            returnStatus: true)
+								success[setup_local] = jesh(script: "python bin/dlens_health_check_vx_v${setup_local.chipRevision}.py",
+								                            returnStatus: true) == 0
 							}
 						} catch (FlowInterruptedException ignored) {
 							success[setup_local] = false
@@ -30,7 +86,7 @@ try {
 					}
 				}
 			} catch (FlowInterruptedException ignored) {
-				echo "Wafer ${setup_local} not free for 5 minutes, aborting."
+				echo "Setup ${setup_local} not free for 5 minutes, aborting."
 			}
 		}
 	}
@@ -59,7 +115,7 @@ try {
 				setJobDescription(result)
 			}
 
-			if (success.any { key, value -> value != true }) {
+			if (success.any { key, value -> !value }) {
 				setBuildState(state: "UNSTABLE", reason: "Not all tested setups are OK.")
 			}
 		}
@@ -74,11 +130,11 @@ try {
 
 /**
  * Compile html-based table of check results.
- * @param setups List of setup names
+ * @param setups List of setups
  * @param success Map of setup check success values
  * @return String containing compiled html document
  */
-String compileHtml(List<String> setups, Map<String, Boolean> success) {
+static String compileHtml(List<HXCubeWing> setups, Map<HXCubeWing, Boolean> success) {
 	// Manual building of styles instead of using css classes since they are considered unsafe
 	// and ignored.
 	String entry_style = "border-color:black;" +
@@ -91,7 +147,7 @@ String compileHtml(List<String> setups, Map<String, Boolean> success) {
 	                     "padding:10px 5px;" +
 	                     "word-break:normal;"
 	String content = ""
-	for (String setup : setups) {
+	for (HXCubeWing setup : setups) {
 		content += "<tr>\n"
 		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${setup}</td>"
 		if (success.containsKey(setup)) {
