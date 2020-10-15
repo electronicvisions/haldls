@@ -3,9 +3,9 @@ import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 
 try {
 	// TODO: this should come from hwdb (Issue #3571)
-	List<String> setups = ["62"]  // FIXME: drop this if tings work
+	List<String> setups = []
 	if (!isTriggeredByGerrit()) {
-		setups += ["63", "65", "68", "69", "70", "72", "73", "74", "75"]
+		setups += ["62", "63", "65", "68", "69", "70", "72", "73", "74", "75"]
 	}
 
 	Map<String, Closure> parallelTests = [:]
