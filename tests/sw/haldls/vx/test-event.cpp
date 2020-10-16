@@ -44,6 +44,12 @@ TEST(SpikeLabel, General)
 	}
 
 	{
+		NeuronEventOutputOnDLS const value(halco::common::Enum(5));
+		config.set_neuron_event_output(value);
+		EXPECT_EQ(config.get_neuron_event_output(), value);
+	}
+
+	{
 		PADIEvent::RowSelectAddress const value(23);
 		config.set_row_select_address(value);
 		EXPECT_EQ(config.get_row_select_address(), value);

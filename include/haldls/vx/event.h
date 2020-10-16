@@ -45,6 +45,13 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 	GENPYBIND(setter_for(padi_label))
 	void set_padi_label(PADILabel value) SYMBOL_VISIBLE;
 
+	/** Neuron event output of on-chip neurons, bits 8-10. */
+	GENPYBIND(getter_for(neuron_event_output))
+	halco::hicann_dls::vx::NeuronEventOutputOnDLS get_neuron_event_output() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(neuron_event_output))
+	void set_neuron_event_output(halco::hicann_dls::vx::NeuronEventOutputOnDLS value)
+	    SYMBOL_VISIBLE;
+
 	/** Configurable neuron backend output label, bits 0-7. */
 	GENPYBIND(getter_for(neuron_backend_address_out))
 	NeuronBackendAddressOut get_neuron_backend_address_out() const SYMBOL_VISIBLE;

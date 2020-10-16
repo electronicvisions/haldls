@@ -4,6 +4,7 @@
 
 #include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.tcc"
+#include "hate/math.h"
 
 namespace haldls::vx {
 
@@ -39,6 +40,20 @@ SpikeLabel::PADILabel SpikeLabel::get_padi_label() const
 void SpikeLabel::set_padi_label(PADILabel const value)
 {
 	operator=(SpikeLabel((static_cast<uint16_t>(value) & 0x3ff) | (this->value() & 0xfc00)));
+}
+
+halco::hicann_dls::vx::NeuronEventOutputOnDLS SpikeLabel::get_neuron_event_output() const
+{
+	return halco::hicann_dls::vx::NeuronEventOutputOnDLS(
+	    halco::common::Enum((value() >> hate::math::num_bits(NeuronBackendAddressOut::max)) & 0x7));
+}
+
+void SpikeLabel::set_neuron_event_output(halco::hicann_dls::vx::NeuronEventOutputOnDLS const value)
+{
+	operator=(SpikeLabel(
+	    (static_cast<uint16_t>(value.toEnum())
+	     << hate::math::num_bits(NeuronBackendAddressOut::max)) |
+	    (this->value() & (~0x700))));
 }
 
 NeuronBackendAddressOut SpikeLabel::get_neuron_backend_address_out() const
