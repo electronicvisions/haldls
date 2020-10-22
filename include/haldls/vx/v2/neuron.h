@@ -211,12 +211,6 @@ public:
 	GENPYBIND(setter_for(enable_exponential))
 	void set_enable_exponential(bool value) SYMBOL_VISIBLE;
 
-	// enable readout of adaptation voltage (user must also configure readout_select!)
-	GENPYBIND(getter_for(enable_adaptation_readout))
-	bool get_enable_adaptation_readout() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_adaptation_readout))
-	void set_enable_adaptation_readout(bool value) SYMBOL_VISIBLE;
-
 	// enable direct, unbuffered access to membrane
 	GENPYBIND(getter_for(enable_unbuffered_access))
 	bool get_enable_unbuffered_access() const SYMBOL_VISIBLE;
@@ -329,7 +323,6 @@ private:
 	bool m_invert_adapt_b;
 	bool m_en_adapt;
 	bool m_en_exp;
-	bool m_en_read_vw;
 	bool m_en_unbuf_access;
 	bool m_en_readout_amp;
 	ReadoutSource m_readout_select;

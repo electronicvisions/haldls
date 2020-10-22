@@ -90,8 +90,6 @@ struct VisitPreorderImpl<lola::vx::v2::AtomicNeuron>
 		neuron_config.set_enable_bypass_excitatory(config.event_routing.enable_bypass_excitatory);
 		neuron_config.set_enable_bypass_inhibitory(config.event_routing.enable_bypass_inhibitory);
 
-		neuron_config.set_enable_adaptation_readout(
-		    config.readout.source == haldls::vx::v2::NeuronConfig::ReadoutSource::adaptation);
 		neuron_config.set_enable_unbuffered_access(config.readout.enable_unbuffered_access);
 		neuron_config.set_enable_readout_amplifier(config.readout.enable_amplifier);
 		neuron_config.set_readout_source(config.readout.source);
@@ -250,11 +248,6 @@ struct VisitPreorderImpl<lola::vx::v2::AtomicNeuron>
 			config.readout.enable_amplifier = neuron_config.get_enable_readout_amplifier();
 			config.readout.source = neuron_config.get_readout_source();
 			config.readout.enable_buffered_access = neuron_config.get_enable_readout();
-			if ((config.readout.source == haldls::vx::v2::NeuronConfig::ReadoutSource::adaptation) ^
-			    neuron_config.get_enable_adaptation_readout()) {
-				throw std::runtime_error("lola::vx::v2::AtomicNeuron can't represent a state of "
-				                         "(readout-mux==adaptation ^ enable_adaptation)");
-			}
 
 			if (neuron_config.get_enable_fire()) {
 				if (!neuron_config.get_enable_strong_fire()) {

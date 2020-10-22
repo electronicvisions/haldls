@@ -123,10 +123,6 @@ TEST(NeuronConfig, General)
 	config.set_enable_exponential(value);
 	ASSERT_EQ(config.get_enable_exponential(), value);
 
-	value = !config.get_enable_adaptation_readout();
-	config.set_enable_adaptation_readout(value);
-	ASSERT_EQ(config.get_enable_adaptation_readout(), value);
-
 	value = !config.get_enable_unbuffered_access();
 	config.set_enable_unbuffered_access(value);
 	ASSERT_EQ(config.get_enable_unbuffered_access(), value);

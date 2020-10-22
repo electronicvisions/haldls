@@ -42,7 +42,6 @@ NeuronConfig::NeuronConfig() :
     m_invert_adapt_b(false),
     m_en_adapt(false),
     m_en_exp(false),
-    m_en_read_vw(false),
     m_en_unbuf_access(false),
     m_en_readout_amp(false),
     m_readout_select(NeuronConfig::ReadoutSource::membrane),
@@ -75,7 +74,7 @@ struct NeuronConfigBitfield
 			uint32_t en_strong_fire                                       :  1;  // 6    ; 2
 			uint32_t                                                      : 25;  // 7-31 ; 2
 
-			uint32_t en_read_vw                                           :  1;  // 0    ; 3
+			uint32_t                                                      :  1;  // 0    ; 3
 			uint32_t en_exp                                               :  1;  // 1    ; 3
 			uint32_t                                                      :  1;  // 2    ; 3
 			uint32_t en_unbuf_access                                      :  1;  // 3    ; 3
@@ -372,15 +371,6 @@ void NeuronConfig::set_enable_exponential(bool const value)
 	m_en_exp = value;
 }
 
-bool NeuronConfig::get_enable_adaptation_readout() const
-{
-	return m_en_read_vw;
-}
-void NeuronConfig::set_enable_adaptation_readout(bool const value)
-{
-	m_en_read_vw = value;
-}
-
 bool NeuronConfig::get_enable_unbuffered_access() const
 {
 	return m_en_unbuf_access;
@@ -534,7 +524,6 @@ std::array<WordT, NeuronConfig::config_size_in_words> NeuronConfig::encode() con
 	bitfield.u.m.invert_adapt_b = m_invert_adapt_b;
 	bitfield.u.m.en_adapt = m_en_adapt;
 	bitfield.u.m.en_exp = m_en_exp;
-	bitfield.u.m.en_read_vw = m_en_read_vw;
 	bitfield.u.m.en_unbuf_access = m_en_unbuf_access;
 	bitfield.u.m.en_readout_amp = m_en_readout_amp;
 	bitfield.u.m.readout_select = static_cast<uint32_t>(m_readout_select);
@@ -592,7 +581,6 @@ void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> 
 	m_invert_adapt_b = bitfield.u.m.invert_adapt_b;
 	m_en_adapt = bitfield.u.m.en_adapt;
 	m_en_exp = bitfield.u.m.en_exp;
-	m_en_read_vw = bitfield.u.m.en_read_vw;
 	m_en_unbuf_access = bitfield.u.m.en_unbuf_access;
 	m_en_readout_amp = bitfield.u.m.en_readout_amp;
 	m_readout_select = ReadoutSource(bitfield.u.m.readout_select);
@@ -643,7 +631,6 @@ std::ostream& operator<<(std::ostream& os, NeuronConfig const& config)
 	<< "invert_adaptation_b\t\t\t\t" << config.m_invert_adapt_b << "\tflip the sign of b" << std::endl
 	<< "enable_adaptation\t\t\t\t" << config.m_en_adapt << "\tenable adaptation" << std::endl
 	<< "enable_exponential\t\t\t\t" << config.m_en_exp << "\tenable exponential term" << std::endl
-	<< "enable_adaptation_readout\t\t\t" << config.m_en_read_vw << "\tenable readout of adaptation voltage (user must also configure readout_select!)" << std::endl
 	<< "enable_unbuffered_access\t\t\t" << config.m_en_unbuf_access << "\tenable direct, unbuffered access to membrane" << std::endl
 	<< "enable_readout_amplifier\t\t\t" << config.m_en_readout_amp << "\tenable readout amplifier" << std::endl
 	<< "readout_source\t\t\t\t\t" << std::to_string(static_cast<uint_fast8_t>(config.m_readout_select)) << "\tselect readout source (0: membrane, 1: exc. synin, 2: inh. synin, 3: adaptation)" << std::endl
@@ -686,7 +673,6 @@ bool NeuronConfig::operator==(NeuronConfig const& other) const
 	    m_invert_adapt_a == other.get_invert_adaptation_a() &&
 	    m_invert_adapt_b == other.get_invert_adaptation_b() &&
 	    m_en_adapt == other.get_enable_adaptation() && m_en_exp == other.get_enable_exponential() &&
-	    m_en_read_vw == other.get_enable_adaptation_readout() &&
 	    m_en_unbuf_access == other.get_enable_unbuffered_access() &&
 	    m_en_readout_amp == other.get_enable_readout_amplifier() &&
 	    m_readout_select == other.get_readout_source() &&
@@ -737,7 +723,6 @@ void NeuronConfig::serialize(Archive& ar, std::uint32_t const version)
 	ar(CEREAL_NVP(m_invert_adapt_b));
 	ar(CEREAL_NVP(m_en_adapt));
 	ar(CEREAL_NVP(m_en_exp));
-	ar(CEREAL_NVP(m_en_read_vw));
 	ar(CEREAL_NVP(m_en_unbuf_access));
 	ar(CEREAL_NVP(m_en_readout_amp));
 	ar(CEREAL_NVP(m_readout_select));
