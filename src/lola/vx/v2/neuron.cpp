@@ -12,7 +12,7 @@ AtomicNeuron::SynapticInput::SynapticInput() :
     i_drop_input(),
     i_shift_reference(),
     i_bias_gm(),
-    enable_small_capacitor(false),
+    enable_small_capacitor(true),
     enable_high_resistance(false)
 {}
 

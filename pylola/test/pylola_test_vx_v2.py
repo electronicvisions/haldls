@@ -203,9 +203,9 @@ class TestPylolaVXV2(unittest.TestCase):
         neuron.excitatory_input.i_bias_gm = value
         self.assertEqual(neuron.excitatory_input.i_bias_gm, value)
 
-        self.assertEqual(neuron.excitatory_input.enable_small_capacitor, False)
-        neuron.excitatory_input.enable_small_capacitor = True
         self.assertEqual(neuron.excitatory_input.enable_small_capacitor, True)
+        neuron.excitatory_input.enable_small_capacitor = False
+        self.assertEqual(neuron.excitatory_input.enable_small_capacitor, False)
 
         self.assertEqual(neuron.excitatory_input.enable_high_resistance, False)
         neuron.excitatory_input.enable_high_resistance = True
@@ -238,9 +238,9 @@ class TestPylolaVXV2(unittest.TestCase):
         neuron.inhibitory_input.i_bias_gm = value
         self.assertEqual(neuron.inhibitory_input.i_bias_gm, value)
 
-        self.assertEqual(neuron.inhibitory_input.enable_small_capacitor, False)
-        neuron.inhibitory_input.enable_small_capacitor = True
         self.assertEqual(neuron.inhibitory_input.enable_small_capacitor, True)
+        neuron.inhibitory_input.enable_small_capacitor = False
+        self.assertEqual(neuron.inhibitory_input.enable_small_capacitor, False)
 
         self.assertEqual(neuron.inhibitory_input.enable_high_resistance, False)
         neuron.inhibitory_input.enable_high_resistance = True
