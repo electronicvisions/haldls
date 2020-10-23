@@ -469,6 +469,26 @@ public:
 	RefractoryPeriod refractory_period;
 	Bayesian bayesian;
 
+	/** Allow converting to/from a haldls neuron config. */
+	explicit operator haldls::vx::v2::NeuronConfig() const;
+	GENPYBIND_MANUAL({
+		parent.def("asNeuronConfig", [](GENPYBIND_PARENT_TYPE const& self) {
+			return static_cast<haldls::vx::v2::NeuronConfig>(self);
+		});
+	})
+
+	void set_from(haldls::vx::v2::NeuronConfig const& neuron_config) SYMBOL_VISIBLE;
+
+	/** Allow converting to/from a haldls neuron backend config. */
+	explicit operator haldls::vx::v2::NeuronBackendConfig() const;
+	GENPYBIND_MANUAL({
+		parent.def("asNeuronBackendConfig", [](GENPYBIND_PARENT_TYPE const& self) {
+			return static_cast<haldls::vx::v2::NeuronBackendConfig>(self);
+		});
+	})
+
+	void set_from(haldls::vx::v2::NeuronBackendConfig const& neuron_backend_config) SYMBOL_VISIBLE;
+
 	bool operator==(AtomicNeuron const& other) const SYMBOL_VISIBLE;
 	bool operator!=(AtomicNeuron const& other) const SYMBOL_VISIBLE;
 
