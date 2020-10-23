@@ -8,8 +8,8 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "hate/bitset.h"
+#include "hate/join.h"
 
 namespace haldls {
 namespace vx {
@@ -50,7 +50,14 @@ bool CrossbarOutputConfig::operator!=(CrossbarOutputConfig const& other) const
 
 std::ostream& operator<<(std::ostream& os, CrossbarOutputConfig const& config)
 {
-	return print_words_for_each_backend(os, config);
+	std::stringstream ss;
+	ss << "CrossbarOutputConfig(enable_event_counter: [";
+	ss << std::boolalpha;
+	hate::join(ss, config.m_enable_event_counter, ", ");
+	ss << "], enable_slow: [";
+	hate::join(ss, config.m_enable_slow, ", ");
+	ss << "])";
+	return (os << ss.str());
 }
 
 template <typename AddressT>
@@ -184,7 +191,7 @@ bool CrossbarInputDropCounter::operator!=(CrossbarInputDropCounter const& other)
 
 std::ostream& operator<<(std::ostream& os, CrossbarInputDropCounter const& config)
 {
-	return print_words_for_each_backend(os, config);
+	return (os << "CrossbarInputDropCounter(" << config.m_value << ")");
 }
 
 template <typename AddressT>
@@ -288,7 +295,7 @@ bool CrossbarOutputEventCounter::operator!=(CrossbarOutputEventCounter const& ot
 
 std::ostream& operator<<(std::ostream& os, CrossbarOutputEventCounter const& config)
 {
-	return print_words_for_each_backend(os, config);
+	return (os << "CrossbarOutputEventCounter(" << config.m_value << ")");
 }
 
 template <typename AddressT>
@@ -414,7 +421,10 @@ bool CrossbarNode::operator!=(CrossbarNode const& other) const
 
 std::ostream& operator<<(std::ostream& os, CrossbarNode const& config)
 {
-	return print_words_for_each_backend(os, config);
+	std::stringstream ss;
+	ss << "CrossbarNode(mask: " << config.m_mask << ", target: " << config.m_target
+	   << ", enable_drop_counter: " << std::boolalpha << config.m_enable_drop_counter << ")";
+	return (os << ss.str());
 }
 
 CrossbarNode const CrossbarNode::drop_all = []() {
