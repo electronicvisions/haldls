@@ -416,7 +416,9 @@ BOOST_HANA_ADAPT_STRUCT(
     adaptation,
     exponential,
     event_routing,
-    readout);
+    readout,
+    refractory_period,
+    bayesian);
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::AtomicNeuron::SynapticInput)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::AtomicNeuron::Leak)
