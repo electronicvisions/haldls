@@ -7,13 +7,12 @@ import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 class HXCubeWing implements Serializable {
 	int hxcubeId
 	int fpgaId
-	WorkflowScript pipeline
-	private Integer cachedChipRevision = null
+	int chipRevision
 
-	HXCubeWing(pipeline, int hxcubeId, int fpgaId) {
-		this.pipeline = pipeline
+	HXCubeWing(int hxcubeId, int fpgaId, int chipRevision) {
 		this.hxcubeId = hxcubeId
 		this.fpgaId = fpgaId
+		this.chipRevision = chipRevision
 	}
 
 	@NonCPS
@@ -21,22 +20,29 @@ class HXCubeWing implements Serializable {
 		return hxcubeId + 60
 	}
 
-	int getChipRevision() {
-		if (cachedChipRevision != null) {
-			return cachedChipRevision
-		}
-
-		String hwdbQuery = "import pyhwdb; " +
-		                   "db = pyhwdb.database(); " +
-		                   "db.load(db.get_default_path()); " +
-		                   "print(db.get_hxcube_setup_entry(${hxcubeId}).fpgas[${fpgaId}].wing.chip_revision)"
+	static List<HXCubeWing> getAllSetups(WorkflowScript pipeline) {
+		String hwdbQuery = "import pyhwdb\n" +
+		                   "db = pyhwdb.database()\n" +
+		                   "db.load(db.get_default_path())\n" +
+		                   "for cube_id in db.get_hxcube_ids():\n" +
+		                   "    cube = db.get_hxcube_setup_entry(cube_id)\n" +
+		                   "    for fpga_id in cube.fpgas:\n" +
+		                   "        wing = cube.fpgas[fpga_id].wing\n" +
+		                   "        if wing is not None:\n" +
+		                   "            print(f\"{cube_id},{fpga_id},{wing.chip_revision}\")\n"
+		String hwdbResult = null
 		pipeline.inSingularity(app: "dls-core") {
 			pipeline.withModules(modules: ["hwdb_bss2"]) {
-				cachedChipRevision = pipeline.jesh(script: "python -c '${hwdbQuery}'",
-				                                   returnStdout: true).trim().toInteger()
+				hwdbResult = pipeline.jesh(script: "python -c '${hwdbQuery}'", returnStdout: true).trim()
 			}
 		}
-		return cachedChipRevision
+
+		List<HXCubeWing> allSetups = []
+		hwdbResult.eachLine { line ->
+			def (int cubeId, int fpgaId, int chipRevision) = line.tokenize(",").collect { it.toInteger() }
+			allSetups.add(new HXCubeWing(cubeId, fpgaId, chipRevision))
+		}
+		return allSetups
 	}
 
 	@NonCPS
@@ -47,22 +53,9 @@ class HXCubeWing implements Serializable {
 
 
 try {
-	// TODO: this should come from hwdb (Issue #3571)
 	List<HXCubeWing> setups = []
 	if (!isTriggeredByGerrit()) {
-		setups += [
-				new HXCubeWing(this, 2, 0),
-				new HXCubeWing(this, 2, 3),
-				new HXCubeWing(this, 3, 3),
-				new HXCubeWing(this, 5, 3),
-				new HXCubeWing(this, 8, 3),
-				new HXCubeWing(this, 9, 3),
-				new HXCubeWing(this, 10, 3),
-				new HXCubeWing(this, 12, 3),
-				new HXCubeWing(this, 13, 3),
-				new HXCubeWing(this, 14, 3),
-				new HXCubeWing(this, 15, 3)
-		]
+		setups += HXCubeWing.getAllSetups(this)
 	}
 
 	Map<String, Closure> parallelTests = [:]
