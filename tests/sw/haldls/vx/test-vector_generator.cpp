@@ -181,3 +181,34 @@ TEST(VectorGeneratorTrigger, EncodeDecode)
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }
+
+HALDLS_TEST(VectorGeneratorFIFOWord, (values)(last)(enable))
+
+TEST(VectorGeneratorFIFOWord, EncodeDecode)
+{
+	VectorGeneratorFIFOWord config;
+	auto values = config.get_values();
+	values[EntryOnQuad(0)] = VectorGeneratorFIFOWord::Value(12);
+	config.set_values(values);
+
+	auto last = config.get_last();
+	last[EntryOnQuad(1)] = true;
+	config.set_last(last);
+
+	auto enable = config.get_enable();
+	enable[EntryOnQuad(0)] = true;
+	enable[EntryOnQuad(1)] = true;
+	config.set_enable(enable);
+
+	VectorGeneratorFIFOWordOnFPGA coord;
+
+	std::array<
+	    halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorFIFOWord::write_config_size_in_words>
+	    ref_addresses = {OmnibusAddress(0x84000200)};
+
+	std::array<fisch::vx::Omnibus, VectorGeneratorFIFOWord::write_config_size_in_words> ref_data = {
+	    fisch::vx::Omnibus(
+	        fisch::vx::OmnibusData{(12ul << 24) + ((1ul << 7) << 16)}, {false, false, true, true})};
+
+	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
+}

@@ -23,4 +23,4 @@ template std::ostream& stadls::vx::detail::operator<<(
 } // namespace stadls::vx
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::Dumper)
-CEREAL_CLASS_VERSION(stadls::vx::v2::Dumper, 3)
+CEREAL_CLASS_VERSION(stadls::vx::v2::Dumper, 4)

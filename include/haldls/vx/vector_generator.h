@@ -4,10 +4,12 @@
 
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "halco/hicann-dls/vx/quad.h"
 #include "halco/hicann-dls/vx/vector_generator.h"
 
 #include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
+#include "haldls/vx/padi.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
@@ -427,5 +429,106 @@ struct BackendContainerTrait<VectorGeneratorTrigger>
 
 } // namespace detail
 
+
+/**
+ * Container for writing a word of (maximally) four activation values into the FIFO in front of the
+ * vector generator.
+ */
+class GENPYBIND(visible) VectorGeneratorFIFOWord
+{
+public:
+	typedef std::true_type is_leaf_node;
+	typedef halco::hicann_dls::vx::VectorGeneratorFIFOWordOnFPGA coordinate_type;
+
+	typedef PADIEvent::HagenActivation Value GENPYBIND(visible);
+
+	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> Values
+	    GENPYBIND(opaque);
+	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::EntryOnQuad> Enables
+	    GENPYBIND(opaque);
+
+	/** Default constructor. */
+	VectorGeneratorFIFOWord() SYMBOL_VISIBLE;
+
+	/**
+	 * Get values.
+	 * @return Values
+	 */
+	GENPYBIND(getter_for(values), return_value_policy(reference))
+	Values const& get_values() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set values.
+	 * @param value Values
+	 */
+	GENPYBIND(setter_for(values))
+	void set_values(Values value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get last enables.
+	 * @return Values
+	 */
+	GENPYBIND(getter_for(last), return_value_policy(reference))
+	Enables const& get_last() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set last enables.
+	 * @param value Values
+	 */
+	GENPYBIND(setter_for(last))
+	void set_last(Enables value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get enables for entries to write.
+	 * @return Values
+	 */
+	GENPYBIND(getter_for(enable), return_value_policy(reference))
+	Enables const& get_enable() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enables for entries to write.
+	 * @param value Values
+	 */
+	GENPYBIND(setter_for(enable))
+	void set_enable(Enables value) SYMBOL_VISIBLE;
+
+	bool operator==(VectorGeneratorFIFOWord const& other) const SYMBOL_VISIBLE;
+	bool operator!=(VectorGeneratorFIFOWord const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, VectorGeneratorFIFOWord const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Values m_values;
+	Enables m_last;
+	Enables m_enable;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorFIFOWord)
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<VectorGeneratorFIFOWord>
+    : public BackendContainerBase<VectorGeneratorFIFOWord, fisch::vx::Omnibus>
+{};
+
+} // namespace detail
 
 } // namespace haldls::vx

@@ -20,4 +20,4 @@ template std::string haldls::vx::to_portablebinary(stadls::vx::v2::DumperDone co
 template void haldls::vx::from_json(stadls::vx::v2::DumperDone&, std::string const&);
 template void haldls::vx::from_portablebinary(stadls::vx::v2::DumperDone&, std::string const&);
 
-CEREAL_CLASS_VERSION(stadls::vx::v2::DumperDone, 3)
+CEREAL_CLASS_VERSION(stadls::vx::v2::DumperDone, 4)

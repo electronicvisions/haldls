@@ -529,8 +529,150 @@ std::ostream& operator<<(std::ostream& os, VectorGeneratorTrigger const&)
 	return os;
 }
 
+
+VectorGeneratorFIFOWord::VectorGeneratorFIFOWord() : m_values(), m_last(), m_enable() {}
+
+VectorGeneratorFIFOWord::Values const& VectorGeneratorFIFOWord::get_values() const
+{
+	return m_values;
+}
+
+void VectorGeneratorFIFOWord::set_values(Values const value)
+{
+	m_values = value;
+}
+
+VectorGeneratorFIFOWord::Enables const& VectorGeneratorFIFOWord::get_last() const
+{
+	return m_last;
+}
+
+void VectorGeneratorFIFOWord::set_last(Enables const value)
+{
+	m_last = value;
+}
+
+VectorGeneratorFIFOWord::Enables const& VectorGeneratorFIFOWord::get_enable() const
+{
+	return m_enable;
+}
+
+void VectorGeneratorFIFOWord::set_enable(Enables const value)
+{
+	m_enable = value;
+}
+
+bool VectorGeneratorFIFOWord::operator==(VectorGeneratorFIFOWord const& other) const
+{
+	return (m_values == other.m_values) && (m_last == other.m_last) && (m_enable == other.m_enable);
+}
+
+bool VectorGeneratorFIFOWord::operator!=(VectorGeneratorFIFOWord const& other) const
+{
+	return !(*this == other);
+}
+
+template <typename Archive>
+void VectorGeneratorFIFOWord::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_values));
+	ar(CEREAL_NVP(m_last));
+	ar(CEREAL_NVP(m_enable));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorFIFOWord)
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    VectorGeneratorFIFOWord::write_config_size_in_words>
+VectorGeneratorFIFOWord::write_addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    vector_generator_base_addresses.at(coord.toEnum()) + 0x200)};
+}
+
+std::
+    array<halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorFIFOWord::read_config_size_in_words>
+    VectorGeneratorFIFOWord::read_addresses(coordinate_type const&)
+{
+	return {};
+}
+
+namespace {
+
+struct VectorGeneratorFIFOWordBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t value_3      : 5;
+			uint32_t /* unused */ : 2;
+			uint32_t last_3       : 1;
+			uint32_t value_2      : 5;
+			uint32_t /* unused */ : 2;
+			uint32_t last_2       : 1;
+			uint32_t value_1      : 5;
+			uint32_t /* unused */ : 2;
+			uint32_t last_1       : 1;
+			uint32_t value_0      : 5;
+			uint32_t /* unused */ : 2;
+			uint32_t last_0       : 1;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	VectorGeneratorFIFOWordBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	VectorGeneratorFIFOWordBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<fisch::vx::Omnibus, VectorGeneratorFIFOWord::write_config_size_in_words>
+VectorGeneratorFIFOWord::encode() const
+{
+	using namespace halco::hicann_dls::vx;
+	VectorGeneratorFIFOWordBitfield bitfield;
+	bitfield.u.m.value_0 = m_values.at(EntryOnQuad(0));
+	bitfield.u.m.value_1 = m_values.at(EntryOnQuad(1));
+	bitfield.u.m.value_2 = m_values.at(EntryOnQuad(2));
+	bitfield.u.m.value_3 = m_values.at(EntryOnQuad(3));
+	bitfield.u.m.last_0 = m_last.at(EntryOnQuad(0));
+	bitfield.u.m.last_1 = m_last.at(EntryOnQuad(1));
+	bitfield.u.m.last_2 = m_last.at(EntryOnQuad(2));
+	bitfield.u.m.last_3 = m_last.at(EntryOnQuad(3));
+	fisch::vx::Omnibus::ByteEnables enables = {
+	    m_enable.at(EntryOnQuad(3)), m_enable.at(EntryOnQuad(2)), m_enable.at(EntryOnQuad(1)),
+	    m_enable.at(EntryOnQuad(0))};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(bitfield.u.raw), enables)};
+}
+
+void VectorGeneratorFIFOWord::decode(
+    std::array<fisch::vx::Omnibus, VectorGeneratorFIFOWord::read_config_size_in_words> const&)
+{}
+
+std::ostream& operator<<(std::ostream& os, VectorGeneratorFIFOWord const& data)
+{
+	os << "VectorGeneratorFIFOWord(" << std::endl
+	   << "values: [" << hate::join_string(data.m_values, ", ") << "]" << std::endl
+	   << "enable: [" << hate::join_string(data.m_enable, ", ") << "]" << std::endl
+	   << "last: [" << hate::join_string(data.m_last, ", ") << "]" << std::endl
+	   << ")";
+	return os;
+}
+
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorControl, 0)
 CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorLUTEntry, 0)
 CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorNotificationAddress, 0)
+CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorFIFOWord, 0)

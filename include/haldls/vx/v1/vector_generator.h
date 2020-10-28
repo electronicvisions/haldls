@@ -9,5 +9,6 @@ using VectorGeneratorLUTEntry GENPYBIND(visible) = haldls::vx::VectorGeneratorLU
 using VectorGeneratorNotificationAddress GENPYBIND(visible) =
     haldls::vx::VectorGeneratorNotificationAddress;
 using VectorGeneratorTrigger GENPYBIND(visible) = haldls::vx::VectorGeneratorTrigger;
+using VectorGeneratorFIFOWord GENPYBIND(visible) = haldls::vx::VectorGeneratorFIFOWord;
 
 } // namespace haldls::vx::v1
