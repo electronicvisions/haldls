@@ -143,6 +143,7 @@ static String compileHtml(List<HXCubeWing> setups, Map<HXCubeWing, Boolean> succ
 	for (HXCubeWing setup : setups) {
 		content += "<tr>\n"
 		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${setup}</td>"
+		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${setup.chipRevision}</td>"
 		if (success.containsKey(setup)) {
 			if (success[setup]) {
 				content += "<td style=\"${entry_style}background-color:#32cb00;" +
@@ -163,6 +164,7 @@ static String compileHtml(List<HXCubeWing> setups, Map<HXCubeWing, Boolean> succ
 <thead>
 <tr>
 <th style="${entry_style}text-align:center">Setup</th>
+<th style="${entry_style}text-align:center">Chip Revision</th>
 <th style="${entry_style}text-align:center">State</th>
 </tr>
 </thead>
