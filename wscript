@@ -83,7 +83,7 @@ def build(bld):
     bld.env.DLSvx_SIM_AVAILABLE = "FLANGE_SIMULATION_RCF_PORT" in os.environ
 
     if bld.options.disable_coverage_reduction:
-        bld.env.SIMTEST_TIMEOUT_SECONDS = 50 * 3600
+        bld.env.SIMTEST_TIMEOUT_SECONDS = 75 * 3600
         bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=0",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
     else:
