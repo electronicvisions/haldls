@@ -33,21 +33,31 @@ class HXCubeWing implements Serializable {
 		String hwdbResult = null
 		pipeline.inSingularity(app: "dls-core") {
 			pipeline.withModules(modules: ["hwdb_bss2"]) {
-				hwdbResult = pipeline.jesh(script: "python -c '${hwdbQuery}'", returnStdout: true).trim()
+				pipeline.runOnSlave(label: "frontend") {
+					hwdbResult = pipeline.jesh(script: "python -c '${hwdbQuery}'", returnStdout: true).trim()
+				}
 			}
 		}
-
-		List<HXCubeWing> allSetups = []
-		hwdbResult.eachLine { line ->
-			def (int cubeId, int fpgaId, int chipRevision) = line.tokenize(",").collect { it.toInteger() }
-			allSetups.add(new HXCubeWing(cubeId, fpgaId, chipRevision))
-		}
-		return allSetups
+		return parseHwdbQueryResult(hwdbResult)
 	}
 
 	@NonCPS
 	String toString() {
 		return (String) "HXCube${hxcubeId}F${fpgaId}"
+	}
+
+	@NonCPS
+	private static List<HXCubeWing> parseHwdbQueryResult(String queryResult) {
+		List<HXCubeWing> allSetups = []
+		queryResult.eachLine { line ->  // Iterable.eachLine must not be CPS transformed
+			// Rolled-out assignment is a workaround for JENKINS-55001
+			List<String> results = line.tokenize(",")
+			int cubeId = results[0].toInteger()
+			int fpgaId = results[1].toInteger()
+			int chipRevision = results[2].toInteger()
+			allSetups.add(new HXCubeWing(cubeId, fpgaId, chipRevision))
+		}
+		return allSetups
 	}
 }
 
