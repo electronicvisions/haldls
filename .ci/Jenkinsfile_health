@@ -97,7 +97,7 @@ try {
 	try {
 		// no timeout for Gerrit-triggered jobs
 		// enforce finished job in less than an hour in order to only have one running at a time
-		conditionalTimeout(enable: !isTriggeredByGerrit(), time: 50, unit: "MINUTES") {
+		conditionalTimeout(enable: !isTriggeredByGerrit(), time: 110, unit: "MINUTES") {
 			withCcache() {
 				wafDefaultPipeline(container: [app: "dls-core"],
 				                   projects: ["haldls"],
