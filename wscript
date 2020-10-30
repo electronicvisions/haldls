@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 import argparse
+from enum import Enum, auto
 import os
 from os.path import join
+import re
+import yaml
+from waflib.Errors import BuildError
 from waflib.extras.symwaf2ic import get_toplevel_path
 from waflib.Task import TaskSemaphore
 from waflib.TaskGen import feature, after_method
@@ -80,8 +84,30 @@ def apply_semaphore(self):
 
 
 def build(bld):
-    bld.env.DLSvx_HARDWARE_AVAILABLE = "cube" == os.environ.get("SLURM_JOB_PARTITION")
-    bld.env.DLSvx_SIM_AVAILABLE = "FLANGE_SIMULATION_RCF_PORT" in os.environ
+    class TestTarget(Enum):
+        SOFTWARE_ONLY = auto()
+        HARDWARE = auto()
+        SIMULATION = auto()
+
+    if "FLANGE_SIMULATION_RCF_PORT" in os.environ:
+        bld.env.TEST_TARGET = TestTarget.SIMULATION
+
+        try:
+            chip_revision = int(os.environ.get("SIMULATED_CHIP_REVISION"))
+        except TypeError:
+            raise BuildError("Environment variable 'SIMULATED_CHIP_REVISION' "
+                             "not set or cannot be casted to integer.")
+        bld.env.CURRENT_SETUP = dict(chip_revision=chip_revision)
+    elif "SLURM_HWDB_ENTRIES" in os.environ:
+        bld.env.TEST_TARGET = TestTarget.HARDWARE
+        slurm_licenses = os.environ.get("SLURM_HARDWARE_LICENSES")
+        hwdb_entries = os.environ.get("SLURM_HWDB_ENTRIES")
+        fpga_id = int(re.match(r"W(?P<wafer>\d+)F(?P<fpga>\d+)",
+                               slurm_licenses)["fpga"])
+        bld.env.CURRENT_SETUP = yaml.full_load(hwdb_entries)["fpgas"][fpga_id]
+    else:
+        bld.env.TEST_TARGET = TestTarget.SOFTWARE_ONLY
+        bld.env.CURRENT_SETUP = dict(chip_revision=None)
 
     if bld.options.disable_coverage_reduction:
         bld.env.SIMTEST_TIMEOUT_SECONDS = 75 * 3600
@@ -237,7 +263,8 @@ def build(bld):
         defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
-        skip_run = not bld.env.DLSvx_HARDWARE_AVAILABLE
+        skip_run = not (bld.env.TEST_TARGET == TestTarget.HARDWARE and
+                        int(bld.env.CURRENT_SETUP["chip_revision"]) == 1)
     )
 
     bld(
@@ -252,7 +279,8 @@ def build(bld):
         defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
-        skip_run = not bld.env.DLSvx_HARDWARE_AVAILABLE
+        skip_run = not (bld.env.TEST_TARGET == TestTarget.HARDWARE and
+                        int(bld.env.CURRENT_SETUP["chip_revision"]) == 2)
     )
 
     bld(
@@ -267,7 +295,8 @@ def build(bld):
         defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
-        skip_run = not bld.env.DLSvx_SIM_AVAILABLE,
+        skip_run = not (bld.env.TEST_TARGET == TestTarget.SIMULATION and
+                        int(bld.env.CURRENT_SETUP["chip_revision"]) == 1),
         test_timeout = bld.env.SIMTEST_TIMEOUT_SECONDS
     )
 
@@ -283,7 +312,8 @@ def build(bld):
         defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
-        skip_run = not bld.env.DLSvx_SIM_AVAILABLE,
+        skip_run=not (bld.env.TEST_TARGET == TestTarget.SIMULATION and
+                      int(bld.env.CURRENT_SETUP["chip_revision"]) == 2),
         test_timeout = bld.env.SIMTEST_TIMEOUT_SECONDS
     )
 
