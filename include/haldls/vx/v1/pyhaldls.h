@@ -47,4 +47,7 @@ GENPYBIND_MANUAL({
 	}();
 
 	::haldls::vx::WrapToFromFunctions<::haldls::vx::v1::detail::pickle_types>::apply(parent);
+
+	auto typing = parent->py::module::import("typing");
+	parent.attr("Container") = typing.attr("Union")[parent->py::tuple(parent.attr("containers"))];
 })
