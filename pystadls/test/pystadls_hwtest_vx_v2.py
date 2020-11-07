@@ -109,12 +109,13 @@ class HwTestPystadlsVxV2(unittest.TestCase):
         """
         Observe an MADC test pattern and assert it is accessible
         through the madc_samples.to_numpy() interface.
+        Samples are recorded continuously, in order to test more
+        samples than configurable in the MADC config.
         """
 
         builder, _ = stadls.DigitalInit().generate()
 
         madc_config = haldls.MADCConfig()
-        madc_config.number_of_samples = 10000
         madc_config.enable_dummy_data = True
         builder.write(halco.MADCConfigOnDLS(), madc_config)
 
@@ -135,13 +136,21 @@ class HwTestPystadlsVxV2(unittest.TestCase):
         # trigger MADC sampling, power MADC down once done
         madc_control.wake_up = False
         madc_control.start_recording = True
-        madc_control.enable_power_down_after_sampling = True
+        madc_control.enable_power_down_after_sampling = False
+        madc_control.enable_continuous_sampling = True
         builder.write(halco.MADCControlOnDLS(), madc_control)
 
         # wait for samples
+        sampling_time = 40000  # us
         builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(
-            (initial_wait + 500)
+            (initial_wait + sampling_time)
             * int(haldls.Timer.Value.fpga_clock_cycles_per_us)))
+
+        # turn off MADC
+        madc_control.start_recording = False
+        madc_control.stop_recording = True
+        madc_control.enable_power_down_after_sampling = True
+        builder.write(halco.MADCControlOnDLS(), madc_control)
 
         # run program
         program = builder.done()
@@ -156,9 +165,15 @@ class HwTestPystadlsVxV2(unittest.TestCase):
         samples = samples[samples["value"] != 0]
         samples = numpy.sort(samples, order=["chip_time", "fpga_time"])
 
+        # assert number of received samples is as expected,
+        # assuming a sampling rate of 30 MHz
+        sampling_rate = 30  # MHz
+        expected_number_of_samples = \
+            sampling_time * sampling_rate  # us * MHz cancels
+
         self.assertEqual(samples.ndim, 1)
         self.assertGreater(
-            len(samples), int(madc_config.number_of_samples) * 0.98,
+            len(samples), int(expected_number_of_samples * 0.95),
             "Too few MADC samples recorded.")
 
         expected_dtype = numpy.dtype([
