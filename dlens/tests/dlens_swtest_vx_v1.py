@@ -14,7 +14,7 @@ class TestDlensVXV1(unittest.TestCase):
         capmem_on_dls = halco.CapMemBlockOnDLS()
         self.assertIsNotNone(capmem_on_dls)
 
-        enum = halco.Enum(2)
+        enum = halco.common.Enum(2)
         self.assertIsNotNone(enum)
 
         row = lola.SynapseRow()
