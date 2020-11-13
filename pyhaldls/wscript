@@ -45,7 +45,7 @@ def build(bld):
         source='../include/haldls/vx/v1/pyhaldls.h',
         genpybind_tags=['haldls_vx', 'haldls_vx_v1'],
         features='genpybind cxx cxxshlib pyext pyembed apply_semaphore',
-        use=['haldls_vx_v1', 'pyfisch_vx', 'pyhaldls_vx_v1_obj'],
+        use=['haldls_vx_v1', 'pyfisch_vx', 'pyhaldls_vx_v1_obj', 'pyhalco_hicann_dls_vx_v1'],
         install_path='${PREFIX}/lib',
         # Avoid warning; 1 OoM less and I see warnings (ECM)
         cxxflags='--param=max-vartrack-size=100000000',
@@ -58,7 +58,7 @@ def build(bld):
         source='../include/haldls/vx/v2/pyhaldls.h',
         genpybind_tags=['haldls_vx', 'haldls_vx_v2'],
         features='genpybind cxx cxxshlib pyext pyembed apply_semaphore',
-        use=['haldls_vx_v2', 'pyfisch_vx', 'pyhaldls_vx_v2_obj'],
+        use=['haldls_vx_v2', 'pyfisch_vx', 'pyhaldls_vx_v2_obj', 'pyhalco_hicann_dls_vx_v2'],
         install_path='${PREFIX}/lib',
         # Avoid warning; 1 OoM less and I see warnings (ECM)
         cxxflags='--param=max-vartrack-size=100000000',
