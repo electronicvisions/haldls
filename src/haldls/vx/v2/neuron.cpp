@@ -723,6 +723,10 @@ void NeuronConfig::serialize(Archive& ar, std::uint32_t const version)
 	ar(CEREAL_NVP(m_invert_adapt_b));
 	ar(CEREAL_NVP(m_en_adapt));
 	ar(CEREAL_NVP(m_en_exp));
+	if (version < 2) {
+		bool m_en_read_vw = false;
+		ar(CEREAL_NVP(m_en_read_vw));
+	}
 	ar(CEREAL_NVP(m_en_unbuf_access));
 	ar(CEREAL_NVP(m_en_readout_amp));
 	ar(CEREAL_NVP(m_readout_select));
@@ -828,5 +832,5 @@ void NeuronResetQuad::serialize(Archive&, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::NeuronConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v2::NeuronResetQuad)
 CEREAL_CLASS_VERSION(haldls::vx::v2::NeuronBackendConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::v2::NeuronConfig, 1)
+CEREAL_CLASS_VERSION(haldls::vx::v2::NeuronConfig, 2)
 CEREAL_CLASS_VERSION(haldls::vx::v2::NeuronResetQuad, 0)
