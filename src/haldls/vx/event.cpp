@@ -4,6 +4,7 @@
 
 #include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.tcc"
+#include "hate/join.h"
 #include "hate/math.h"
 
 namespace haldls::vx {
@@ -411,16 +412,27 @@ bool HighspeedLinkNotification::operator!=(HighspeedLinkNotification const& othe
 
 std::ostream& operator<<(std::ostream& os, HighspeedLinkNotification const& sample)
 {
+	std::vector<std::string> active_notifications;
+	if (sample.m_link_up) {
+		active_notifications.push_back("link up");
+	}
+	if (sample.m_decode_error) {
+		active_notifications.push_back("decode error");
+	}
+	if (sample.m_crc_error) {
+		active_notifications.push_back("crc error");
+	}
+	if (sample.m_crc_recover) {
+		active_notifications.push_back("crc recover");
+	}
+	if (sample.m_check_error) {
+		active_notifications.push_back("check error");
+	}
+
 	std::stringstream ss;
-	ss << std::boolalpha;
-	ss << "HighspeedLinkNotification(" << std::endl;
-	ss << "\t" << sample.m_phy << "," << std::endl;
-	ss << "\tlink_up: " << sample.m_link_up << "," << std::endl;
-	ss << "\tdecode_error: " << sample.m_decode_error << "," << std::endl;
-	ss << "\tcrc_error: " << sample.m_crc_error << "," << std::endl;
-	ss << "\tcrc_recover: " << sample.m_crc_recover << "," << std::endl;
-	ss << "\tcheck_error: " << sample.m_check_error << "," << std::endl;
-	ss << "\t" << sample.m_fpga_time << std::endl;
+	ss << "HighspeedLinkNotification(";
+	ss << sample.m_phy << ", " << sample.m_fpga_time << ": ";
+	hate::join(ss, active_notifications, ", ");
 	ss << ")";
 	return (os << ss.str());
 }

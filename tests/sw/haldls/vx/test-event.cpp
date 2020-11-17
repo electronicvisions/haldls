@@ -201,9 +201,7 @@ TEST(HighspeedLinkNotification, Ostream)
 
 	EXPECT_EQ(
 	    stream.str(),
-	    "HighspeedLinkNotification(\n\tPhyStatusOnFPGA(4),\n\tlink_up: true,\n\tdecode_error: "
-	    "false,\n\tcrc_error: true,\n\tcrc_recover: false,\n\tcheck_error: "
-	    "false,\n\tFPGATime(15)\n)");
+	    "HighspeedLinkNotification(PhyStatusOnFPGA(4), FPGATime(15): link up, crc error)");
 }
 
 TEST(HighspeedLinkNotification, CerealizeCoverage)
