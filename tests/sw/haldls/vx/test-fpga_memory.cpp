@@ -56,7 +56,7 @@ TEST(ExternalPPUMemoryByte, EncodeDecode)
 	    typename fisch::vx::Omnibus::coordinate_type, ExternalPPUMemoryByte::config_size_in_words>
 	    ref_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8e00'0000 + (22 / 4)}};
 	std::array<fisch::vx::Omnibus, ExternalPPUMemoryByte::config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x0012'0000), {false, false, true, false})};
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x0000'1200), {false, true, false, false})};
 
 	{ // write addresses
 		addresses_type write_addresses;

@@ -118,10 +118,12 @@ TEST(ExternalPPUMemoryBlock, EncodeDecode)
 		ref_addresses[ii] =
 		    static_cast<OmnibusAddress>(0x8e0'00000 + ((min.toEnum() + ii) / sizeof(uint32_t)));
 		fisch::vx::Omnibus::ByteEnables byte_enables{};
-		byte_enables[(min.toEnum() + ii) % sizeof(uint32_t)] = true;
+		byte_enables[(sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))] = true;
 		ref_data[ii] = fisch::vx::Omnibus(
 		    static_cast<fisch::vx::OmnibusData>(
-		        (50 + ii) << (((min.toEnum() + ii) % sizeof(uint32_t)) * CHAR_BIT)),
+		        (50 + ii)
+		        << (((sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))) *
+		            CHAR_BIT)),
 		    byte_enables);
 		memory[ii].set_value(ExternalPPUMemoryByte::Value(50 + ii));
 	}
