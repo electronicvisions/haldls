@@ -428,8 +428,13 @@ public:
 		InputClock input_clock;
 
 		/**
-		 * Prevent the neuron from spiking again for some period of time after the refractory time
-		 * ends. A value of 15 indicates the neuron can spike again immediately.
+		 * Release the reset potential before the refractory time ends.
+		 * This allows a dead time after the reset where no new spike can be recorded
+		 * and the membrane is connected to the leak potential already.
+		 * A value of 15 disables this feature, indicating the reset and refractory periods are
+		 * equal and the neuron can spike again immediately.
+		 *
+		 * Note: A more detailed description is given with the ResetHoldoff type.
 		 */
 		ResetHoldoff reset_holdoff;
 

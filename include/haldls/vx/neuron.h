@@ -236,20 +236,28 @@ public:
 	typedef NeuronBackendAddressOut AddressOut GENPYBIND(visible);
 
 	/**
-	 * ResetHoldoff period: The time delta between the reset and the refractory period.
+	 * ResetHoldoff period: Adjusts the time delta between the reset and the refractory period.
+	 * The reset is released before the end of the refractory time.
+	 *
+	 * The refractory-counter starts at a value of (0xFF - refractory_time) and is increased every
+	 * clock cycle until its maximum value of 0xFF is reached.
 	 * The reset-holdoff time is configured by comparison with the four LSB of the refractory-
 	 * counter: The mechanism stops the reset as soon as the bits programmed in the reset-holdoff
 	 * mask match the LSB of the refractory-counter and all MSB of the refractory-counter are set.
 	 * Until the end of the programmed refractory time, the circuit does still reject new threshold
 	 * crossings. This combination of still rejecting spikes, but stopping the reset defines the
-	 * reset-holdoff time. For the user it is important to note, that the reset-holdoff time is
-	 * subtracted from the refractory period, to turn it off, one can use the maximum code (0xF)
-	 * for the holdoff time, resulting in the reset-holdoff time dropping to zero.
+	 * reset-holdoff time. For the user it is important that the holdoff can be disabled by
+	 * setting it to the maximum value (0xF). The reset period is (0xF - reset_holdoff) shorter
+	 * than the refractory period.
 	 *
 	 * Example: The reset is turned off before the end of the refractory period. As the neuron is
 	 * still refractory, no new spike is registered, although the fire signal is still high. Only
 	 * after the end of the refractory period the circuits accepts new fire signals. The difference
 	 * between refractory period and reset duration defines the reset-holdoff period.
+	 *
+	 * Note: Setting a small refractory counter value in combination with a reset
+	 * holdoff will result in glitchy behaviour, as the counter value triggering the
+	 * end of the reset will never be reached if refractory_counter < (15 - reset_holdoff).
 	 */
 	struct GENPYBIND(inline_base("*")) ResetHoldoff
 	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0>
