@@ -168,10 +168,10 @@ int main(int argc, char* argv[])
 	PPUControlRegisterOnDLS ppu_control_register_coord = ppu_coord.toPPUControlRegisterOnDLS();
 	PPUStatusRegisterOnDLS ppu_status_register_coord = ppu_coord.toPPUStatusRegisterOnDLS();
 	ppu_control_register.set_inhibit_reset(false);
-	LOG4CXX_INFO(logger, "Emitting write for control register.")
+	LOG4CXX_INFO(logger, "Emitting write for control register.");
 	builder.write(ppu_control_register_coord, ppu_control_register, backend);
 
-	LOG4CXX_INFO(logger, "Emitting write for program.")
+	LOG4CXX_INFO(logger, "Emitting write for program.");
 	// First reset memory by writing all zeros
 	PPUMemory::words_type zero_words;
 	zero_words.fill(PPUMemoryWord(PPUMemoryWord::Value(0)));
@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
 	builder.write(ppu_memory_program_coord, ppu_memory_program, backend);
 
 	ppu_control_register.set_inhibit_reset(true);
-	LOG4CXX_INFO(logger, "Emitting write for control register.")
+	LOG4CXX_INFO(logger, "Emitting write for control register.");
 	builder.write(ppu_control_register_coord, ppu_control_register, backend);
 
 	builder.write(TimerOnDLS(), Timer());
