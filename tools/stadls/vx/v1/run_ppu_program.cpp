@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
 	builder.write(ppu_memory_program_coord, ppu_memory_program, backend);
 
 	ppu_control_register.set_inhibit_reset(true);
-	LOG4CXX_INFO(logger, "Emitting write for control register.")
+	LOG4CXX_INFO(logger, "Emitting write for control register.");
 	builder.write(ppu_control_register_coord, ppu_control_register, backend);
 
 	builder.write(TimerOnDLS(), Timer());
