@@ -17,7 +17,7 @@ namespace vx {
 CommonNeuronBackendConfig::CommonNeuronBackendConfig() :
     m_en_event_regs(false),
     m_force_reset(false),
-    m_en_clocks(false),
+    m_en_clocks(true),
     m_clock_scale_slow(CommonNeuronBackendConfig::ClockScale()),
     m_clock_scale_fast(CommonNeuronBackendConfig::ClockScale()),
     m_sample_pos_edge(),

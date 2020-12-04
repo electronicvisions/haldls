@@ -194,10 +194,6 @@ ExperimentInit::ExperimentInit() :
     column_current_quad_config()
 {
 	this->enable_capmem = true;
-	for (auto const coord :
-	     halco::common::iter_all<halco::hicann_dls::vx::v2::CommonNeuronBackendConfigOnDLS>()) {
-		common_neuron_backend_config[coord].set_enable_clocks(true);
-	}
 }
 
 PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
