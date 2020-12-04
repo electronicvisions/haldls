@@ -191,7 +191,8 @@ ExperimentInit::ExperimentInit() :
     detail::InitGenerator(),
     common_neuron_backend_config(),
     column_correlation_quad_config(),
-    column_current_quad_config()
+    column_current_quad_config(),
+    common_correlation_config()
 {
 	this->enable_capmem = true;
 }
@@ -217,6 +218,11 @@ PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
 	// Set column current quad config
 	for (auto coord : iter_all<ColumnCurrentQuadOnDLS>()) {
 		builder.write(coord, column_current_quad_config[coord]);
+	}
+
+	// Write common correlation config
+	for (auto coord : iter_all<CommonCorrelationConfigOnDLS>()) {
+		builder.write(coord, common_correlation_config[coord]);
 	}
 
 	return {std::move(builder), res};

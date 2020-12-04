@@ -216,6 +216,13 @@ public:
 	    column_current_quad_type GENPYBIND(opaque(false));
 	column_current_quad_type column_current_quad_config;
 
+	/** Set common correlation config. */
+	typedef halco::common::typed_array<
+	    haldls::vx::CommonCorrelationConfig,
+	    halco::hicann_dls::vx::v1::CommonCorrelationConfigOnDLS>
+	    common_correlation_config_type GENPYBIND(opaque(false));
+	common_correlation_config_type common_correlation_config;
+
 	typedef detail::InitGenerator::Result Result;
 
 private:
