@@ -58,6 +58,8 @@ struct VisitPreorderImpl<lola::vx::v2::AtomicNeuron>
 		haldls::vx::v2::CapMemCell cell_i_bias_adapt_tau(config.adaptation.i_bias_tau);
 		haldls::vx::v2::CapMemCell cell_i_bias_adapt_a(config.adaptation.i_bias_a);
 		haldls::vx::v2::CapMemCell cell_i_bias_adapt_b(config.adaptation.i_bias_b);
+		haldls::vx::v2::CapMemCell cell_v_exp(config.exponential.v_exp);
+		haldls::vx::v2::CapMemCell cell_i_bias_exp(config.exponential.i_bias);
 		haldls::vx::v2::CapMemCell cell_i_bias_nmda(config.multicompartment.i_bias_nmda);
 
 		visit_preorder(
@@ -105,6 +107,9 @@ struct VisitPreorderImpl<lola::vx::v2::AtomicNeuron>
 		    cell_i_bias_adapt_b, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_adapt_b), visitor);
 		visit_preorder(
 		    cell_v_ref_adapt, to_capmem_cell(CapMemRowOnCapMemBlock::v_adapt_ref), visitor);
+		visit_preorder(cell_v_exp, to_capmem_cell(CapMemRowOnCapMemBlock::v_exp), visitor);
+		visit_preorder(
+		    cell_i_bias_exp, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_exp), visitor);
 		visit_preorder(
 		    cell_i_bias_nmda, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_nmda), visitor);
 
@@ -135,6 +140,8 @@ struct VisitPreorderImpl<lola::vx::v2::AtomicNeuron>
 			config.adaptation.i_bias_tau = cell_i_bias_adapt_tau.get_value();
 			config.adaptation.i_bias_a = cell_i_bias_adapt_a.get_value();
 			config.adaptation.i_bias_b = cell_i_bias_adapt_b.get_value();
+			config.exponential.v_exp = cell_v_exp.get_value();
+			config.exponential.i_bias = cell_i_bias_exp.get_value();
 			config.multicompartment.i_bias_nmda = cell_i_bias_nmda.get_value();
 		}
 	}
