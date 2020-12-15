@@ -61,9 +61,10 @@ std::ostream& operator<<(std::ostream& os, PollingOmnibusBlockConfig const& conf
 std::array<halco::hicann_dls::vx::OmnibusAddress, PollingOmnibusBlockConfig::config_size_in_words>
 PollingOmnibusBlockConfig::addresses(coordinate_type const& /*coord*/)
 {
-	return {halco::hicann_dls::vx::OmnibusAddress(fpga_omnibus_mask + 6),
-	        halco::hicann_dls::vx::OmnibusAddress(fpga_omnibus_mask + 7),
-	        halco::hicann_dls::vx::OmnibusAddress(fpga_omnibus_mask + 8)};
+	return {
+	    halco::hicann_dls::vx::OmnibusAddress(executor_omnibus_mask + 6),
+	    halco::hicann_dls::vx::OmnibusAddress(executor_omnibus_mask + 7),
+	    halco::hicann_dls::vx::OmnibusAddress(executor_omnibus_mask + 8)};
 }
 
 std::array<fisch::vx::Omnibus, PollingOmnibusBlockConfig::config_size_in_words>

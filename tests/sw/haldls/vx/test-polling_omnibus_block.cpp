@@ -23,7 +23,7 @@ TEST(PollingOmnibusBlockConfig, EncodeDecode)
 	typename PollingOmnibusBlockConfig::coordinate_type coord;
 
 	std::array<OmnibusAddress, PollingOmnibusBlockConfig::config_size_in_words> ref_addresses = {
-	    OmnibusAddress{0x8000'0006}, OmnibusAddress{0x8000'0007}, OmnibusAddress{0x8000'0008}};
+	    OmnibusAddress{0x8800'0006}, OmnibusAddress{0x8800'0007}, OmnibusAddress{0x8800'0008}};
 
 	std::array<fisch::vx::Omnibus, PollingOmnibusBlockConfig::config_size_in_words> ref_data = {
 	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x12345678)),

@@ -45,7 +45,7 @@ TEST(PerfTest, EncodeDecode)
 
 	PerfTestOnFPGA coord;
 
-	OmnibusAddress ref_address(0x8800'0000);
+	OmnibusAddress ref_address(0x8800'8000);
 	std::array<OmnibusAddress, PerfTest::config_size_in_words> ref_addresses = {ref_address};
 	std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> ref_data = {
 	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x1))};
@@ -132,7 +132,7 @@ TEST(PerfTestStatus, EncodeDecode)
 
 	PerfTestStatusOnFPGA coord;
 
-	OmnibusAddress base_address(0x8800'0000);
+	OmnibusAddress base_address(0x8800'8000);
 	std::array<OmnibusAddress, PerfTestStatus::read_config_size_in_words> ref_addresses = {
 	    OmnibusAddress(base_address + 1), OmnibusAddress(base_address + 2),
 	    OmnibusAddress(base_address + 3), OmnibusAddress(base_address + 4)};

@@ -130,9 +130,9 @@ TEST(PhyStatus, EncodeDecode)
 	PhyStatusOnFPGA coord(3);
 
 	std::array<halco::hicann_dls::vx::OmnibusAddress, PhyStatus::read_config_size_in_words>
-	    ref_addresses = {OmnibusAddress(0x84000007), OmnibusAddress(0x8400000f),
-	                     OmnibusAddress(0x84000017), OmnibusAddress(0x8c000006),
-	                     OmnibusAddress(0x8c000007)};
+	    ref_addresses = {
+	        OmnibusAddress(0x88004007), OmnibusAddress(0x8800400f), OmnibusAddress(0x88004017),
+	        OmnibusAddress(0x8800c006), OmnibusAddress(0x8800c007)};
 
 	std::array<fisch::vx::Omnibus, PhyStatus::read_config_size_in_words> ref_data = {
 	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x1}),

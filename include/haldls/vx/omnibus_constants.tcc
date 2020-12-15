@@ -176,15 +176,38 @@ constexpr uint32_t spike_counter_reset_right_sram_base_address{
 constexpr std::array<uint32_t, 2> spike_counter_reset_sram_base_addresses = {
     spike_counter_reset_left_sram_base_address, spike_counter_reset_right_sram_base_address};
 
+// cf. omnibus_top bus splits
+// split(31, num_in_flight(l2_pkg::omnibus_sync_depth))
+// 	slave(asic) # same!
 constexpr uint32_t fpga_omnibus_mask{0x8000'0000};
-constexpr uint32_t ut_omnibus_mask{0x0400'0000 | fpga_omnibus_mask};
-constexpr uint32_t phy_omnibus_mask{0x0200'0000 | ut_omnibus_mask};
-constexpr uint32_t perftest_omnibus_mask{0x0800'0000 | fpga_omnibus_mask};
-constexpr uint32_t l2_omnibus_mask{perftest_omnibus_mask | ut_omnibus_mask};
-constexpr uint32_t hicann_arq_status_base_address{l2_omnibus_mask + 0x0000'0010};
-constexpr uint32_t fpga_device_dna_base_address{0x3 | fpga_omnibus_mask};
-constexpr uint32_t event_recording_config_base_address{0x5 | fpga_omnibus_mask};
-constexpr uint32_t external_ppu_memory_base_address{0x0e00'0000 | fpga_omnibus_mask};
+// 	split(27, num_in_flight(8))
+// 		slave(ppumem)
+constexpr uint32_t external_ppu_memory_base_address{0x0000'0000 | fpga_omnibus_mask};
+// 		split(15, num_in_flight(8))
+// 			split(14)
+// 				slave(executor)
+constexpr uint32_t executor_omnibus_mask{
+    0x0800'0000 | external_ppu_memory_base_address}; // unused for now
+constexpr uint32_t fpga_device_dna_base_address{0x3 | executor_omnibus_mask};
+constexpr uint32_t event_recording_config_base_address{0x5 | executor_omnibus_mask};
+// 				split(13)
+// 					slave(ut)
+constexpr uint32_t ut_omnibus_mask{0x0000'4000 | executor_omnibus_mask};
+// 					split(12)
+// 						slave(phy)
+constexpr uint32_t phy_omnibus_mask{0x0000'2000 | ut_omnibus_mask};
+// 						split(11, num_in_flight(1))
+// 							slave(spimaster)
+constexpr uint32_t spimaster_omnibus_mask{0x0000'1000 | phy_omnibus_mask}; // unused for now
+// 							slave(i2cmaster)
+constexpr uint32_t i2cmaster_omnibus_mask{0x0000'0800 | spimaster_omnibus_mask}; // unused for now
+// 			split(14, num_in_flight(8))
+// 				slave(perftest)
+constexpr uint32_t perftest_omnibus_mask{
+    0x0000'8000 | 0x0800'0000 | external_ppu_memory_base_address};
+// 				slave(l2)
+constexpr uint32_t l2_omnibus_mask{0x0000'4000 | perftest_omnibus_mask};
+constexpr uint32_t hicann_arq_status_base_address{/*2 x NUM_PHY*/ 0x0000'0010 | l2_omnibus_mask};
 
 constexpr uint32_t spl1_fabric_base_address{0x0013'0000};
 constexpr uint32_t crossbar_out_mux_base_address{spl1_fabric_base_address};

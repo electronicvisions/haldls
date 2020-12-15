@@ -116,7 +116,7 @@ TEST(ExternalPPUMemoryBlock, EncodeDecode)
 
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
 		ref_addresses[ii] =
-		    static_cast<OmnibusAddress>(0x8e0'00000 + ((min.toEnum() + ii) / sizeof(uint32_t)));
+		    static_cast<OmnibusAddress>(0x8000'0000 + ((min.toEnum() + ii) / sizeof(uint32_t)));
 		fisch::vx::Omnibus::ByteEnables byte_enables{};
 		byte_enables[(sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))] = true;
 		ref_data[ii] = fisch::vx::Omnibus(

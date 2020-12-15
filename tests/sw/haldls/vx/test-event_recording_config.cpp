@@ -53,11 +53,11 @@ TEST(EventRecordingConfig, EncodeDecode)
 	std::array<
 	    typename fisch::vx::Omnibus::coordinate_type,
 	    EventRecordingConfig::read_config_size_in_words>
-	    ref_read_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8000'0005ul}};
+	    ref_read_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8800'0005ul}};
 	std::array<
 	    typename fisch::vx::Omnibus::coordinate_type,
 	    EventRecordingConfig::write_config_size_in_words>
-	    ref_write_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8000'0005ul}};
+	    ref_write_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8800'0005ul}};
 
 	{ // write addresses
 		addresses_type write_addresses;

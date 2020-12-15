@@ -54,8 +54,9 @@ TEST(FPGADeviceDNA, EncodeDecode)
 
 	std::array<
 	    typename fisch::vx::Omnibus::coordinate_type, FPGADeviceDNA::read_config_size_in_words>
-	    ref_read_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8000'0003ul},
-	                          typename fisch::vx::Omnibus::coordinate_type{0x8000'0004ul}};
+	    ref_read_addresses = {
+	        typename fisch::vx::Omnibus::coordinate_type{0x8800'0003ul},
+	        typename fisch::vx::Omnibus::coordinate_type{0x8800'0004ul}};
 	std::array<
 	    typename fisch::vx::Omnibus::coordinate_type, FPGADeviceDNA::write_config_size_in_words>
 	    ref_write_addresses = {};

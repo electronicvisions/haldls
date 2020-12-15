@@ -115,8 +115,9 @@ TEST(HicannARQStatus, EncodeDecode)
 	HicannARQStatusOnFPGA coord;
 
 	std::array<halco::hicann_dls::vx::OmnibusAddress, HicannARQStatus::read_config_size_in_words>
-	    ref_addresses = {OmnibusAddress(0x8c000010), OmnibusAddress(0x8c000011),
-	                     OmnibusAddress(0x8c000012), OmnibusAddress(0x8c000013)};
+	    ref_addresses = {
+	        OmnibusAddress(0x8800c010), OmnibusAddress(0x8800c011), OmnibusAddress(0x8800c012),
+	        OmnibusAddress(0x8800c013)};
 
 	std::array<fisch::vx::Omnibus, HicannARQStatus::read_config_size_in_words> ref_data = {
 	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x2}),
