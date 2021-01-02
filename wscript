@@ -13,6 +13,7 @@ def depends(ctx):
     ctx('halco')
     ctx('hate')
     ctx('fisch')
+    ctx('ztl')
 
     if getattr(ctx.options, 'with_haldls_python_bindings', True):
         ctx('halco', 'pyhalco')
@@ -242,7 +243,7 @@ def build(bld):
                + bld.path.ant_glob('tests/hw/stadls/vx/v1/hw/test-*.cpp')
                + bld.path.ant_glob('tests/hw/stadls/vx/v1/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v1', 'stadls_vx_v1', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc'],
+        use = ['haldls_vx_v1', 'stadls_vx_v1', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc', 'ZTL'],
         defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
@@ -257,7 +258,7 @@ def build(bld):
                + bld.path.ant_glob('tests/hw/stadls/vx/v2/hw/test-*.cpp')
                + bld.path.ant_glob('tests/hw/stadls/vx/v2/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v2', 'stadls_vx_v2', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc'],
+        use = ['haldls_vx_v2', 'stadls_vx_v2', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc', 'ZTL'],
         defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],

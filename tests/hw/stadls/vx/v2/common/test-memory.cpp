@@ -13,6 +13,7 @@
 #include "stadls/vx/v2/init_generator.h"
 #include "stadls/vx/v2/playback_program.h"
 #include "stadls/vx/v2/run.h"
+#include "ztl/debug.h"
 
 #ifdef SIMULATION_TEST
 constexpr static bool is_simulation = true;
@@ -63,7 +64,23 @@ template <class ContainerUnderTest>
 class SingleContainerWriteReadMemoryTest : public testing::Test
 {};
 
-TYPED_TEST_SUITE(SingleContainerWriteReadMemoryTest, ReadableAndWriteableContainers);
+
+namespace haldls::vx {
+class TypeNameToString
+{
+public:
+	template <typename T>
+	static std::string GetName(int)
+	{
+		return ZTL::typestring<T>().substr(strlen("haldls::vx::"));
+	}
+};
+} // namespace haldls::vx
+
+TYPED_TEST_SUITE(
+    SingleContainerWriteReadMemoryTest,
+    ReadableAndWriteableContainers,
+    haldls::vx::TypeNameToString);
 
 /**
  * Write random data to (a subset of) all coordinates, read it back and compare.
