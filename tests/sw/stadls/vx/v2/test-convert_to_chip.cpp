@@ -111,6 +111,7 @@ typedef hate::type_list<
     haldls::vx::v2::PPUMemoryWord,                      // included in PPUMemory
     haldls::vx::v2::ExternalPPUMemoryByte,              // included in ExternalPPUMemory
     haldls::vx::v2::ExternalPPUMemoryQuad,              // included in ExternalPPUMemory
+    lola::vx::v2::LogicalNeuron,                        // FIXME
     lola::vx::v2::ExternalPPUMemoryBlock,               // coordinate not easily iterable
     lola::vx::v2::DACControlBlock,                      // init
     lola::vx::v2::DACChannelBlock,                      // init
@@ -127,30 +128,42 @@ typedef hate::type_list<
     lola::vx::v2::CorrelationResetRow>
     ContainersNotCoveredByChip;
 
+template <typename Type>
+std::enable_if_t<!hate::is_in_type_list<Type, ContainersNotCoveredByChip>::value>
+test_ChipCoverage()
+{
+	static_assert(!hate::is_in_type_list<Type, ContainersNotCoveredByChip>::value);
+	std::mt19937 rng(1234);
+	lola::vx::v2::Chip chip_default;
+	for (auto const coord : halco::common::iter_all<typename Type::coordinate_type>()) {
+		stadls::vx::v2::PlaybackProgramBuilderDumper dumper;
+		Type config =
+		    haldls::vx::detail::coordinate_to_container<typename Type::coordinate_type, Type>(
+		        coord);
+		auto config_default = config;
+		while (config == config_default) {
+			stadls::vx::decode_random<Type>(rng, config);
+		}
+		dumper.write(coord, config);
+		auto const dumperdone = dumper.done();
+		auto chip_converted = stadls::vx::v2::convert_to_chip(dumperdone);
+		EXPECT_NE(chip_converted, chip_default) << coord;
+	}
+}
+
+template <typename Type>
+std::enable_if_t<hate::is_in_type_list<Type, ContainersNotCoveredByChip>::value> test_ChipCoverage()
+{
+	GTEST_SKIP();
+}
+
 /**
  * Ensure coverage of lola Chip object over haldls containers.
  */
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	TEST(Name, lola_vx_Chip_Coverage)                                                              \
 	{                                                                                              \
-		if constexpr (!hate::is_in_type_list<Type, ContainersNotCoveredByChip>::value) {           \
-			std::mt19937 rng(1234);                                                                \
-			lola::vx::v2::Chip chip_default;                                                       \
-			for (auto const coord : halco::common::iter_all<Type::coordinate_type>()) {            \
-				stadls::vx::v2::PlaybackProgramBuilderDumper dumper;                               \
-				Type config =                                                                      \
-				    haldls::vx::detail::coordinate_to_container<Type::coordinate_type, Type>(      \
-				        coord);                                                                    \
-				auto config_default = config;                                                      \
-				while (config == config_default) {                                                 \
-					stadls::vx::decode_random<Type>(rng, config);                                  \
-				}                                                                                  \
-				dumper.write(coord, config);                                                       \
-				auto const dumperdone = dumper.done();                                             \
-				auto chip_converted = stadls::vx::v2::convert_to_chip(dumperdone);                 \
-				EXPECT_NE(chip_converted, chip_default) << coord;                                  \
-			}                                                                                      \
-		}                                                                                          \
+		test_ChipCoverage<Type>();                                                                 \
 	}
 #pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/v2/container.def"

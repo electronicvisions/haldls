@@ -4,6 +4,7 @@
 #include "lola/vx/v3/chip.h"
 #include "lola/vx/v3/dac.h"
 #include "lola/vx/v3/memory_timing.h"
+#include "lola/vx/v3/morphology.h"
 #include "lola/vx/v3/neuron.h"
 #include "lola/vx/v3/ppu.h"
 #include "lola/vx/v3/readout_chain.h"

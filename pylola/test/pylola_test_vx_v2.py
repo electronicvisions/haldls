@@ -3,6 +3,7 @@ import pickle
 import os
 import unittest
 from random import randrange
+from copy import deepcopy
 import numpy as np
 import pyhalco_hicann_dls_vx_v2 as halco
 import pylola_vx_v2 as lola
@@ -12,6 +13,7 @@ def random_ranged(type_param):
     return randrange(type_param.min, type_param.max + 1)
 
 
+# pylint: disable=too-many-public-methods
 class TestPylolaVXV2(unittest.TestCase):
     def test_import(self):
         self.assertIsNotNone(lola)
@@ -552,6 +554,144 @@ class TestPylolaVXV2(unittest.TestCase):
         self.assertEqual(neuron.bayesian.enable_1, False)
         neuron.bayesian.enable_1 = True
         self.assertEqual(neuron.bayesian.enable_1, True)
+
+    def test_morphology_builder(self):
+        builder = lola.Morphology()
+        moco = halco.AtomicNeuronOnLogicalNeuron
+        row = halco.NeuronRowOnLogicalNeuron
+        col = halco.NeuronColumnOnLogicalNeuron
+
+        # test all member functions of the builder class Morphology
+        builder.connect_to_soma(moco(0, 0))
+        self.assertEqual(builder[moco(0, 0)].connect_soma, True)
+        self.assertEqual(builder[moco(0, 0)].enable_conductance, False)
+
+        builder.connect_resistor_to_soma(moco(0, 0))
+        self.assertEqual(builder[moco(0, 0)].connect_soma, False)
+        self.assertEqual(builder[moco(0, 0)].enable_conductance, True)
+
+        builder.create_compartment([moco(0, 0), moco(0, 1)])
+        self.assertEqual(builder[moco(0, 0)].connect_vertical, True)
+        self.assertEqual(builder[moco(0, 1)].connect_vertical, True)
+
+        builder.connect_soma_line(col.min, col.max, row(0))
+        # to conntect 128 compartments we need 127 interconnections
+        for column_idx in range(127):
+            self.assertEqual(builder[moco(column_idx, 0)].connect_soma_right,
+                             True)
+        self.assertEqual(builder[moco(127, 0)].connect_soma_right, False)
+
+    def test_morphology_connect_comp(self):
+        builder = lola.Morphology()
+        moco = halco.AtomicNeuronOnLogicalNeuron
+
+        # morph_chain: ▀▀█▄█▀
+        horizontal_chain_row1_seg1 = [moco(0, 0), moco(1, 0), moco(2, 0)]
+        horizontal_chain_row1_seg2 = [moco(4, 0), moco(5, 0)]
+        horizontal_chain_row2_seg1 = [moco(2, 1), moco(3, 1), moco(4, 1)]
+        segments = horizontal_chain_row1_seg1 + horizontal_chain_row2_seg1 + \
+            horizontal_chain_row1_seg2
+        vertical_chain_segs = [moco(2, 0), moco(2, 1), moco(4, 0), moco(4, 1)]
+
+        _ = builder.create_compartment(segments)
+
+        # check that connections are set
+        for idx in range(len(horizontal_chain_row1_seg1) - 1):
+            self.assertEqual(
+                builder[horizontal_chain_row1_seg1[idx]].connect_right, True)
+        for idx in range(len(horizontal_chain_row1_seg2) - 1):
+            self.assertEqual(
+                builder[horizontal_chain_row1_seg2[idx]].connect_right, True)
+        for idx in range(len(horizontal_chain_row2_seg1) - 1):
+            self.assertEqual(
+                builder[horizontal_chain_row2_seg1[idx]].connect_right, True)
+        for idx in range(len(vertical_chain_segs) - 1):
+            self.assertEqual(
+                builder[vertical_chain_segs[idx]].connect_vertical, True)
+
+        # test: violating contiguousness (by deleting elements within the
+        # chain created above)
+        for segment in segments[1:-1]:
+            incorrect_builder = lola.Morphology()
+            tmp_segments = deepcopy(segments)
+            tmp_segments.remove(segment)
+            self.assertRaises(RuntimeError, incorrect_builder.
+                              create_compartment, tmp_segments)
+
+    def test_logical_neuron(self):
+        moco = halco.AtomicNeuronOnLogicalNeuron
+        row = halco.NeuronRowOnLogicalNeuron
+        col = halco.NeuronColumnOnLogicalNeuron
+
+        # test the done routine for incomplete morphologies
+        builder = lola.Morphology()
+        builder.create_compartment([moco(0, 0), moco(0, 1)])
+        builder.connect_to_soma(moco(2, 0))
+        # until now builder is not describing a contiguous morphology
+        self.assertRaises(RuntimeError, builder.done)
+        builder.connect_soma_line(col(0), col(2), row(0))
+        self.assertRaises(RuntimeError, builder.done)
+        # now it is contiguous
+        builder.connect_resistor_to_soma(moco(0, 0))
+        _, _ = builder.done()
+
+        # another test for done routine with a neuron whose connect_soma_right
+        # is set but is not a bridge neuron
+        builder2 = lola.Morphology()
+        builder2.create_compartment([moco(0, 0), moco(0, 1)])
+        # 'random' bridge neuron -> should not be allowed config
+        builder2.connect_soma_line(col(20), col(21), row(0))
+        self.assertRaises(RuntimeError, builder2.done)
+
+    def test_illegal_construction(self):
+        moco = halco.AtomicNeuronOnLogicalNeuron
+        row = halco.NeuronRowOnLogicalNeuron
+        col = halco.NeuronColumnOnLogicalNeuron
+
+        # follwing morphology is tested
+        # +-+-+-+  <- somatic line
+        # R |   |  <- connection to somatic line
+        # | |   |
+        # N-N N-N  <- neuron
+        # 0 0 ? ?  <- Compartment membership
+        builder1 = lola.Morphology()
+        builder1.create_compartment([moco(0, 0), moco(1, 0)])
+        builder1.create_compartment([moco(2, 0), moco(3, 0)])
+        builder1.create_compartment([moco(5, 0)])
+        builder1.connect_to_soma(moco(3, 0))
+        builder1.connect_resistor_to_soma(moco(0, 0))
+        builder1.connect_soma_line(col(0), col(3), row(0))
+        builder1.connect_to_soma(moco(1, 0))
+
+        self.assertRaises(RuntimeError, builder1.done)
+
+        # follwing morphology is tested
+        #   +-+  <- somatic line
+        #   | |  <- connection to somatic line
+        #   | |
+        # N-N N  <- neuron
+        # 0 0 ?  <- Compartment membership
+        builder2 = lola.Morphology()
+        builder2.create_compartment([moco(0, 0), moco(1, 0)])
+        builder2.connect_to_soma(moco(1, 0))
+        builder2.connect_to_soma(moco(2, 0))
+        builder2.connect_soma_line(col(1), col(2), row(0))
+
+        self.assertRaises(RuntimeError, builder2.done)
+
+        # follwing morphology is tested
+        # +-+-+-+  <- somatic line
+        # |     R  <- connection to somatic line
+        # |     |
+        # N   N-N  <- neuron
+        # 0   1 1  <- Compartment membership
+        builder3 = lola.Morphology()
+        builder3.create_compartment([moco(2, 0), moco(3, 0)])
+        builder3.connect_resistor_to_soma(moco(3, 0))
+        builder3.connect_to_soma(moco(0, 0))
+        builder3.connect_soma_line(col(0), col(3), row(0))
+
+        builder3.done()
 
 
 if __name__ == "__main__":

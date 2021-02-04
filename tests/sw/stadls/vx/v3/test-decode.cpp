@@ -11,12 +11,14 @@
 typedef hate::type_list<
     haldls::vx::NullPayloadReadable,
     haldls::vx::INA219Status,
-    haldls::vx::VectorGeneratorControl>
+    haldls::vx::VectorGeneratorControl,
+    lola::vx::v3::LogicalNeuron>
     NotRandomizableTypes;
 
 typedef hate::type_list<
     lola::vx::v3::AtomicNeuron,
     lola::vx::v3::Chip,
+    lola::vx::v3::LogicalNeuron,
     haldls::vx::SynapseBiasSelection,
     lola::vx::v3::CapMem,
     haldls::vx::NullPayloadReadable,

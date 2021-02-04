@@ -111,6 +111,7 @@ typedef hate::type_list<
     haldls::vx::v3::PPUMemoryWord,                      // included in PPUMemory
     haldls::vx::v3::ExternalPPUMemoryByte,              // included in ExternalPPUMemory
     haldls::vx::v3::ExternalPPUMemoryQuad,              // included in ExternalPPUMemory
+    lola::vx::v3::LogicalNeuron,                        // FIXME
     lola::vx::v3::ExternalPPUMemoryBlock,               // coordinate not easily iterable
     lola::vx::v3::DACControlBlock,                      // init
     lola::vx::v3::DACChannelBlock,                      // init
@@ -126,56 +127,67 @@ typedef hate::type_list<
     lola::vx::v3::CorrelationResetRow>
     ContainersNotCoveredByChip;
 
+template <typename Type>
+std::enable_if_t<!hate::is_in_type_list<Type, ContainersNotCoveredByChip>::value>
+test_ChipCoverage()
+{
+	using namespace halco::hicann_dls::vx::v3;
+	using namespace haldls::vx::v3;
+	std::mt19937 rng(1234);
+	lola::vx::v3::Chip chip_default;
+	if constexpr (std::is_same<Type, CapMemCell>::value) {
+		for (auto const block : halco::common::iter_all<CapMemBlockOnDLS>()) {
+			std::vector<CapMemColumnOnCapMemBlock> const column_to_test{
+			    CapMemColumnOnCapMemBlock(0), CapMemColumnOnCapMemBlock(128),
+			    CapMemColumnOnCapMemBlock(129)};
+			for (auto const column : column_to_test) {
+				for (auto const row : halco::common::iter_all<CapMemRowOnCapMemBlock>()) {
+					CapMemCellOnDLS coord(CapMemCellOnCapMemBlock(column, row), block);
+					stadls::vx::v3::PlaybackProgramBuilderDumper dumper;
+					CapMemCell config = haldls::vx::detail::coordinate_to_container<
+					    CapMemCell::coordinate_type, CapMemCell>(coord);
+					auto config_default = config;
+					while (config == config_default) {
+						stadls::vx::decode_random<CapMemCell>(rng, config);
+					}
+					dumper.write(coord, config);
+					auto const dumperdone = dumper.done();
+					auto chip_converted = stadls::vx::v3::convert_to_chip(dumperdone);
+					EXPECT_NE(chip_converted, chip_default) << coord;
+				}
+			}
+		}
+	} else {
+		for (auto const coord : halco::common::iter_all<typename Type::coordinate_type>()) {
+			stadls::vx::v3::PlaybackProgramBuilderDumper dumper;
+			Type config =
+			    haldls::vx::detail::coordinate_to_container<typename Type::coordinate_type, Type>(
+			        coord);
+			auto config_default = config;
+			while (config == config_default) {
+				stadls::vx::decode_random<Type>(rng, config);
+			}
+			dumper.write(coord, config);
+			auto const dumperdone = dumper.done();
+			auto chip_converted = stadls::vx::v3::convert_to_chip(dumperdone);
+			EXPECT_NE(chip_converted, chip_default) << coord;
+		}
+	}
+}
+
+template <typename Type>
+std::enable_if_t<hate::is_in_type_list<Type, ContainersNotCoveredByChip>::value> test_ChipCoverage()
+{
+	GTEST_SKIP();
+}
+
 /**
  * Ensure coverage of lola Chip object over haldls containers.
  */
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \
 	TEST(Name, lola_vx_Chip_Coverage)                                                              \
 	{                                                                                              \
-		using namespace halco::hicann_dls::vx::v3;                                                 \
-		using namespace haldls::vx::v3;                                                            \
-		if constexpr (!hate::is_in_type_list<Type, ContainersNotCoveredByChip>::value) {           \
-			std::mt19937 rng(1234);                                                                \
-			lola::vx::v3::Chip chip_default;                                                       \
-			if constexpr (std::is_same<Type, CapMemCell>::value) {                                 \
-				for (auto const block : halco::common::iter_all<CapMemBlockOnDLS>()) {             \
-					std::vector<CapMemColumnOnCapMemBlock> const column_to_test{                   \
-					    CapMemColumnOnCapMemBlock(0), CapMemColumnOnCapMemBlock(128),              \
-					    CapMemColumnOnCapMemBlock(129)};                                           \
-					for (auto const column : column_to_test) {                                     \
-						for (auto const row : halco::common::iter_all<CapMemRowOnCapMemBlock>()) { \
-							CapMemCellOnDLS coord(CapMemCellOnCapMemBlock(column, row), block);    \
-							stadls::vx::v3::PlaybackProgramBuilderDumper dumper;                   \
-							CapMemCell config = haldls::vx::detail::coordinate_to_container<       \
-							    CapMemCell::coordinate_type, CapMemCell>(coord);                   \
-							auto config_default = config;                                          \
-							while (config == config_default) {                                     \
-								stadls::vx::decode_random<CapMemCell>(rng, config);                \
-							}                                                                      \
-							dumper.write(coord, config);                                           \
-							auto const dumperdone = dumper.done();                                 \
-							auto chip_converted = stadls::vx::v3::convert_to_chip(dumperdone);     \
-							EXPECT_NE(chip_converted, chip_default) << coord;                      \
-						}                                                                          \
-					}                                                                              \
-				}                                                                                  \
-			} else {                                                                               \
-				for (auto const coord : halco::common::iter_all<Type::coordinate_type>()) {        \
-					stadls::vx::v3::PlaybackProgramBuilderDumper dumper;                           \
-					Type config =                                                                  \
-					    haldls::vx::detail::coordinate_to_container<Type::coordinate_type, Type>(  \
-					        coord);                                                                \
-					auto config_default = config;                                                  \
-					while (config == config_default) {                                             \
-						stadls::vx::decode_random<Type>(rng, config);                              \
-					}                                                                              \
-					dumper.write(coord, config);                                                   \
-					auto const dumperdone = dumper.done();                                         \
-					auto chip_converted = stadls::vx::v3::convert_to_chip(dumperdone);             \
-					EXPECT_NE(chip_converted, chip_default) << coord;                              \
-				}                                                                                  \
-			}                                                                                      \
-		}                                                                                          \
+		test_ChipCoverage<Type>();                                                                 \
 	}
 #pragma push_macro("PLAYBACK_CONTAINER")
 #include "haldls/vx/v3/container.def"
