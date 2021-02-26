@@ -80,28 +80,29 @@ TEST(CADCSampleRow, EncodeDecode)
 	CADCSampleRowOnDLS coord(Enum(12));
 
 	std::array<
-	    typename addresses_type::value_type,
-	    CADCSampleQuad::read_config_size_in_words*(
-	        SynapseQuadColumnOnDLS::size * CADCChannelType::size + 1)>
+	    typename addresses_type::value_type, CADCSampleQuad::read_config_size_in_words *
+	                                             SynapseQuadColumnOnDLS::size *
+	                                             CADCChannelType::size>
 	    ref_addresses;
 	words_type ref_data(
-	    CADCSampleQuad::read_config_size_in_words *
-	    (SynapseQuadColumnOnDLS::size * CADCChannelType::size + 1));
+	    CADCSampleQuad::read_config_size_in_words * SynapseQuadColumnOnDLS::size *
+	    CADCChannelType::size);
 	for (auto& word : ref_data) {
 		word = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
 	}
-	ref_data.at(11) = fisch::vx::Omnibus(fisch::vx::OmnibusData(0xf));
-	ref_data.at(13 + SynapseQuadColumnOnDLS::size) =
+	ref_data.at(10) = fisch::vx::Omnibus(fisch::vx::OmnibusData(0xf));
+	ref_data.at(12 + SynapseQuadColumnOnDLS::size) =
 	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x10));
 
-	for (auto quad_column : iter_all<SynapseQuadColumnOnDLS>()) {
+	for (size_t i = SynapseQuadColumnOnDLS::min + 1; i <= SynapseQuadColumnOnDLS::max; ++i) {
+		auto quad_column = SynapseQuadColumnOnDLS(i);
 		CADCSampleQuadOnDLS quad_coord(
 		    CADCSampleQuadOnSynram(
 		        SynapseQuadOnSynram(quad_column, coord.toSynapseRowOnSynram()),
 		        CADCChannelType::causal, CADCReadoutType::buffered),
 		    coord.toSynramOnDLS());
 		CADCSampleQuad quad_config;
-		ref_addresses[quad_column.toEnum() + 1] = quad_config.read_addresses(quad_coord)[0];
+		ref_addresses[i] = quad_config.read_addresses(quad_coord)[0];
 	}
 
 	CADCSampleQuadOnDLS quad_coord_trigger(
@@ -120,7 +121,7 @@ TEST(CADCSampleRow, EncodeDecode)
 		        CADCChannelType::acausal, CADCReadoutType::buffered),
 		    coord.toSynramOnDLS());
 		CADCSampleQuad quad_config;
-		ref_addresses[quad_column.toEnum() + SynapseQuadColumnOnDLS::size + 1] =
+		ref_addresses[quad_column.toEnum() + SynapseQuadColumnOnDLS::size] =
 		    quad_config.read_addresses(quad_coord)[0];
 	}
 
