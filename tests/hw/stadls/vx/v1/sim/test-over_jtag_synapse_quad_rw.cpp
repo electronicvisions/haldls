@@ -11,7 +11,7 @@
 #include "stadls/vx/v1/playback_program.h"
 #include "stadls/vx/v1/run.h"
 
-#include "connection.h"
+#include "hxcomm/vx/connection_from_env.h"
 #include "test-helper.h"
 
 using namespace halco::common;
@@ -62,7 +62,7 @@ TEST(SynapseQuad, WROverJTAG)
 	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 	auto program = builder.done();
 
-	auto connection = generate_test_connection();
+	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	for (auto const [quad, ticket] : quad_tickets) {

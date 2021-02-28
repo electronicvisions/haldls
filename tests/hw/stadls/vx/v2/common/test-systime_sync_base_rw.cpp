@@ -10,7 +10,7 @@
 #include "stadls/vx/v2/playback_program_builder.h"
 #include "stadls/vx/v2/run.h"
 
-#include "connection.h"
+#include "hxcomm/vx/connection_from_env.h"
 
 #include "test-helper.h"
 
@@ -64,7 +64,7 @@ TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)
 		EXPECT_FALSE(ticket.valid());
 	}
 
-	auto connection = generate_test_connection();
+	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	for (auto const ticket : tickets) {

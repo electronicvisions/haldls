@@ -1,14 +1,13 @@
-#include <gtest/gtest.h>
 #include "halco/hicann-dls/vx/v2/barrier.h"
 #include "halco/hicann-dls/vx/v2/neuron.h"
 #include "halco/hicann-dls/vx/v2/routing_crossbar.h"
 #include "haldls/vx/v2/barrier.h"
+#include "hxcomm/vx/connection_from_env.h"
 #include "stadls/vx/v2/init_generator.h"
 #include "stadls/vx/v2/playback_program.h"
 #include "stadls/vx/v2/playback_program_builder.h"
 #include "stadls/vx/v2/run.h"
-
-#include "connection.h"
+#include <gtest/gtest.h>
 
 using namespace halco::hicann_dls::vx::v2;
 using namespace haldls::vx::v2;
@@ -24,7 +23,7 @@ TEST(Run, ExecutableRestriction)
 	sim_builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program_simulation_restricted = sim_builder.done();
 
-	auto connection = generate_test_connection();
+	auto connection = hxcomm::vx::get_connection_from_env();
 
 	EXPECT_NO_THROW(run(connection, program_unrestricted));
 	EXPECT_NO_THROW(run(connection, program_simulation_restricted));

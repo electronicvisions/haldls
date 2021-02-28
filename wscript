@@ -226,16 +226,6 @@ def build(bld):
     )
 
     bld(
-        target = 'stadls_hwtest_vx_inc',
-        export_includes = 'tests/hw/stadls/vx/connection_hw/',
-    )
-
-    bld(
-        target = 'stadls_simtest_vx_inc',
-        export_includes = 'tests/hw/stadls/vx/connection_sim/',
-    )
-
-    bld(
         target = 'stadls_hwtest_vx_v1',
         features = 'gtest cxx cxxprogram pyembed',
         source = bld.path.ant_glob('tests/hw/stadls/vx/hw/test-*.cpp')
@@ -243,7 +233,7 @@ def build(bld):
                + bld.path.ant_glob('tests/hw/stadls/vx/v1/hw/test-*.cpp')
                + bld.path.ant_glob('tests/hw/stadls/vx/v1/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v1', 'stadls_vx_v1', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc', 'ZTL'],
+        use = ['haldls_vx_v1', 'stadls_vx_v1', 'GTEST', 'haldls_test_common_inc', 'ZTL'],
         defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
@@ -258,7 +248,7 @@ def build(bld):
                + bld.path.ant_glob('tests/hw/stadls/vx/v2/hw/test-*.cpp')
                + bld.path.ant_glob('tests/hw/stadls/vx/v2/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v2', 'stadls_vx_v2', 'GTEST', 'stadls_hwtest_vx_inc', 'haldls_test_common_inc', 'ZTL'],
+        use = ['haldls_vx_v2', 'stadls_vx_v2', 'GTEST', 'haldls_test_common_inc', 'ZTL'],
         defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
@@ -273,7 +263,7 @@ def build(bld):
                + bld.path.ant_glob('tests/hw/stadls/vx/v1/sim/test-*.cpp')
                + bld.path.ant_glob('tests/hw/stadls/vx/v1/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v1', 'GTEST', 'stadls_simtest_vx_inc', 'stadls_vx_v1', 'haldls_test_common_inc'],
+        use = ['haldls_vx_v1', 'GTEST', 'stadls_vx_v1', 'haldls_test_common_inc'],
         defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],
@@ -289,7 +279,7 @@ def build(bld):
                + bld.path.ant_glob('tests/hw/stadls/vx/v2/sim/test-*.cpp')
                + bld.path.ant_glob('tests/hw/stadls/vx/v2/common/test-*.cpp'),
         test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v2', 'GTEST', 'stadls_simtest_vx_inc', 'stadls_vx_v2', 'haldls_test_common_inc'],
+        use = ['haldls_vx_v2', 'GTEST', 'stadls_vx_v2', 'haldls_test_common_inc'],
         defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
         install_path = '${PREFIX}/bin',
         linkflags = ['-lboost_program_options-mt'],

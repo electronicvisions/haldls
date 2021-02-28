@@ -1,17 +1,10 @@
+#include "hate/visibility.h"
 #include <string>
-
 #include <boost/program_options.hpp>
 #include <gtest/gtest.h>
 
 // logger include directory structure omits prefix
 #include "logging_ctrl.h"
-
-#include "connection.h"
-
-TestConnection generate_test_connection()
-{
-	return TestConnection();
-}
 
 #if REDUCED_TESTS
 std::optional<size_t> SYMBOL_VISIBLE max_words_per_reduced_test = MAX_WORDS_PER_REDUCED_TEST;

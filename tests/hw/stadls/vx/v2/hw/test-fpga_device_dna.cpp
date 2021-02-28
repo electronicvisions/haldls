@@ -1,13 +1,11 @@
-#include <gtest/gtest.h>
-
 #include "halco/hicann-dls/vx/v2/coordinates.h"
 #include "haldls/vx/v2/barrier.h"
 #include "haldls/vx/v2/fpga.h"
+#include "hxcomm/vx/connection_from_env.h"
 #include "stadls/vx/v2/playback_program.h"
 #include "stadls/vx/v2/playback_program_builder.h"
 #include "stadls/vx/v2/run.h"
-
-#include "connection.h"
+#include <gtest/gtest.h>
 
 using namespace haldls::vx::v2;
 using namespace stadls::vx::v2;
@@ -24,7 +22,7 @@ TEST(FPGADeviceDNA, Read)
 
 	EXPECT_FALSE(ticket.valid());
 
-	auto connection = generate_test_connection();
+	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	EXPECT_TRUE(ticket.valid());

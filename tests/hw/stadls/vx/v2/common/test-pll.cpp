@@ -1,5 +1,3 @@
-#include <gtest/gtest.h>
-
 #include "halco/hicann-dls/vx/v2/coordinates.h"
 #include "haldls/vx/v2/barrier.h"
 #include "haldls/vx/v2/jtag.h"
@@ -7,11 +5,11 @@
 #include "haldls/vx/v2/reset.h"
 #include "haldls/vx/v2/timer.h"
 #include "haldls/vx/v2/traits.h"
+#include "hxcomm/vx/connection_from_env.h"
 #include "stadls/vx/v2/playback_program.h"
 #include "stadls/vx/v2/playback_program_builder.h"
 #include "stadls/vx/v2/run.h"
-
-#include "connection.h"
+#include <gtest/gtest.h>
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx::v2;
@@ -42,7 +40,7 @@ protected:
 
 	void test_run_program(PlaybackProgram& program)
 	{
-		auto connection = generate_test_connection();
+		auto connection = hxcomm::vx::get_connection_from_env();
 		run(connection, program);
 	}
 

@@ -11,7 +11,7 @@
 #include "stadls/vx/v2/playback_program_builder.h"
 #include "stadls/vx/v2/run.h"
 
-#include "connection.h"
+#include "hxcomm/vx/connection_from_env.h"
 #include "test-helper.h"
 
 using namespace halco::common;
@@ -44,7 +44,7 @@ TEST(HicannARQStatus, OmnibusReadCount)
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
-	auto connection = generate_test_connection();
+	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	EXPECT_TRUE(ticket_ref.valid());
@@ -84,7 +84,7 @@ TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
-	auto connection = generate_test_connection();
+	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	EXPECT_TRUE(ticket.valid());

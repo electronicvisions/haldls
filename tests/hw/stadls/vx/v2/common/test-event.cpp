@@ -1,15 +1,13 @@
-#include <gtest/gtest.h>
-
 #include "halco/hicann-dls/vx/v2/coordinates.h"
 #include "haldls/vx/v2/event.h"
 #include "haldls/vx/v2/systime.h"
 #include "haldls/vx/v2/timer.h"
+#include "hxcomm/vx/connection_from_env.h"
 #include "stadls/vx/v2/init_generator.h"
 #include "stadls/vx/v2/playback_program_builder.h"
 #include "stadls/vx/v2/run.h"
-
-#include "connection.h"
 #include "test-helper.h"
+#include <gtest/gtest.h>
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx::v2;
@@ -41,7 +39,7 @@ using namespace stadls::vx::v2;
 		builder.block_until(TimerOnDLS(), Timer::Value(1000));                                     \
 		auto program = builder.done();                                                             \
                                                                                                    \
-		auto connection = generate_test_connection();                                              \
+		auto connection = hxcomm::vx::get_connection_from_env();                                   \
 		run(connection, program);                                                                  \
                                                                                                    \
 		auto spikes = program.get_spikes();                                                        \
