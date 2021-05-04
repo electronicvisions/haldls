@@ -597,6 +597,16 @@ void MADCConfig::set_connect_iconv_synapse(synapse_target_type const& value)
 	m_connect_iconv_synapse = value;
 }
 
+double MADCConfig::get_sample_rate() const
+{
+	// the 500 MHz applies only for the default PLL settings
+	double res = 500. / (m_sample_duration_adjust + 12);
+	if (m_enable_madc_clock_scaling)
+		return res / (2 * (m_madc_clock_scale_value + 1));
+	else
+		return res;
+}
+
 template <typename AddressT>
 std::array<AddressT, MADCConfig::config_size_in_words> SYMBOL_VISIBLE
 MADCConfig::addresses(coordinate_type const& /* coord */) const
