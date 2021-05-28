@@ -9,7 +9,7 @@ try {
 	]
 
 	Map<String, Object> pipelineDeploymentOptions = [
-		container              : [app: "dls"],
+		container              : [app: "dls-nodev"],
 		configureInstallOptions: "--build-profile=release_with_debug"
 	] << commonPipelineOptions
 
@@ -37,7 +37,7 @@ try {
 
 	conditionalStage(name: "Module Deployment", skip: !deploy) {
 		runOnSlave(label: "frontend") {
-			inSingularity(app: "dls") {
+			inSingularity(app: "dls-nodev") {
 				deployModule([name: "haldls", source: "bin/ lib/ doc/ repos_log.txt"])
 			}
 		}
