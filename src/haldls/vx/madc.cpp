@@ -600,7 +600,8 @@ void MADCConfig::set_connect_iconv_synapse(synapse_target_type const& value)
 double MADCConfig::get_sample_rate() const
 {
 	// the 500 MHz applies only for the default PLL settings
-	double res = 500. / (m_sample_duration_adjust + 12);
+	double madc_clk_frequency = 500;
+	double res = madc_clk_frequency / (m_sample_duration_adjust + 12);
 	if (m_enable_madc_clock_scaling)
 		return res / (2 * (m_madc_clock_scale_value + 1));
 	else
