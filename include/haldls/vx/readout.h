@@ -21,8 +21,8 @@ namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
  * A configuration container for the top-level readout mux, selecting the connections between
- * the two analog readout pads and different components of the chip.
- * There are two equal instances of this mux on the chip, for the two pads.
+ * an analog readout pad and different components on the chip.
+ * There are two equal instances of this mux on the chip, one for each of the two pads.
  */
 class GENPYBIND(visible) PadMultiplexerConfig
 {
