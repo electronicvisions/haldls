@@ -285,28 +285,32 @@ public:
 		ColumnCorrelationSwitch() SYMBOL_VISIBLE;
 
 		/**
-		 * Get enable value for internal causal line to CADC channel.
+		 * Get enable value for the connection between the internal causal line and
+		 * the CADC channel.
 		 * @return Boolean enable value
 		 */
 		GENPYBIND(getter_for(enable_internal_causal))
 		bool get_enable_internal_causal() const SYMBOL_VISIBLE;
 
 		/**
-		 * Set enable value for internal causal line to CADC channel.
+		 * Set enable value for the connection between the internal causal line and
+		 * the CADC channel.
 		 * @param value Boolean enable value
 		 */
 		GENPYBIND(setter_for(enable_internal_causal))
 		void set_enable_internal_causal(bool value) SYMBOL_VISIBLE;
 
 		/**
-		 * Get enable value for connecting acausal correlation to shared debug line.
+		 * Get enable value for the connection between the internal acausal line and
+		 * the CADC channel.
 		 * @return Boolean enable value
 		 */
 		GENPYBIND(getter_for(enable_internal_acausal))
 		bool get_enable_internal_acausal() const SYMBOL_VISIBLE;
 
 		/**
-		 * Set enable value for connecting acausal correlation to shared debug line.
+		 * Set enable value for the connection between the internal acausal line and
+		 * the CADC channel.
 		 * @param value Boolean enable value
 		 */
 		GENPYBIND(setter_for(enable_internal_acausal))
@@ -478,7 +482,7 @@ public:
 		 * the current pulses originating from the synapse circuits can be read out.
 		 * Note that current measuring equipment (i. e. source meter) is needed
 		 * for this measurement.
-		 * Also note that the readout line is shared amongst multiple synapses.
+		 * Also note that the readout line is shared amongst multiple synapse columns.
 		 * Enabling the readout switch will short the synaptic columns, which is however
 		 * non-destructive.
 		 * @return Boolean enable value
@@ -492,7 +496,7 @@ public:
 		 * the current pulses originating from the synapse circuits can be read out.
 		 * Note that current measuring equipment (i. e. source meter) is needed
 		 * for this measurement.
-		 * Also note that the readout line is shared amongst multiple synapses.
+		 * Also note that the readout line is shared amongst multiple synapse columns.
 		 * Enabling the readout switch will short the synaptic columns, which is however
 		 * non-destructive.
 		 * @param value Boolean enable value
@@ -506,7 +510,7 @@ public:
 		 * the current pulses originating from the synapse circuits can be read out.
 		 * Note that current measuring equipment (i. e. source meter) is needed
 		 * for this measurement.
-		 * Also note that the readout line is shared amongst multiple synapses.
+		 * Also note that the readout line is shared amongst multiple synapse columns.
 		 * Enabling the readout switch will short the synaptic columns, which is however
 		 * non-destructive.
 		 * @return Boolean enable value
@@ -520,7 +524,7 @@ public:
 		 * the current pulses originating from the synapse circuits can be read out.
 		 * Note that current measuring equipment (i. e. source meter) is needed
 		 * for this measurement.
-		 * Also note that the readout line is shared amongst multiple synapses.
+		 * Also note that the readout line is shared amongst multiple synapse columns.
 		 * Enabling the readout switch will short the synaptic columns, which is however
 		 * non-destructive.
 		 * @param value Boolean enable value
