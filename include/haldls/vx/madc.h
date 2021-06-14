@@ -520,17 +520,6 @@ public:
 	GENPYBIND(setter_for(connect_iconv_synapse), return_value_policy(reference))
 	void set_connect_iconv_synapse(synapse_target_type const& value) SYMBOL_VISIBLE;
 
-	/**
-	 * Accessors for the sampling rate of the madc in MHz.
-	 *
-	 * Caution: The formula of the underlying function was derived from sampled data.
-	 * The calculation considers only three settings of the MADC state:
-	 *   * m_sample_duration_adjust
-	 *   * m_enable_madc_clock_scaling
-	 *   * m_madc_clock_scale_value
-	 */
-	double get_sample_rate() const SYMBOL_VISIBLE;
-
 	bool operator==(MADCConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(MADCConfig const& other) const SYMBOL_VISIBLE;
 
