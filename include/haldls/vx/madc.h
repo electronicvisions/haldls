@@ -523,7 +523,6 @@ public:
 	/**
 	 * Accessors for the sampling rate of the madc in MHz.
 	 *
-	 * Caution: The calculation assumes 500 MHz as the default madc clock frequency.
 	 * Caution: The formula of the underlying function was derived from sampled data.
 	 * The calculation considers only three settings of the MADC state:
 	 *   * m_sample_duration_adjust
