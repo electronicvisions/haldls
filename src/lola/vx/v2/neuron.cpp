@@ -505,9 +505,9 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron const& config)
 	ss << config.membrane_capacitance << std::endl;
 	ss << config.adaptation << std::endl;
 	ss << config.exponential << std::endl;
-	ss << config.event_routing;
-	ss << config.readout;
-	ss << config.refractory_period;
+	ss << config.event_routing << std::endl;
+	ss << config.readout << std::endl;
+	ss << config.refractory_period << std::endl;
 	ss << config.bayesian;
 	os << ss.str();
 	return os;
