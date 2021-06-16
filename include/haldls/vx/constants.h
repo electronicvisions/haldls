@@ -18,4 +18,10 @@ inline static const GENPYBIND(visible) Timer::Value reference_generator_reset_du
 // planned to be implemented.
 inline static const GENPYBIND(visible) double nominal_pll_f_reference = 5e7;
 
+// The madc sample signal is active in one cycle at every 12-clock cycle (and can be extended via
+// sample_duration_adjust, enable_madc_clock_scaling and madc_clock_scale_value). For one-channel
+// ADC the sampling rate is 1/12th of the clock frequency (cf.
+// https://gerrit.bioai.eu/gitweb?p=hicann-dls-private.git;a=blob_plain;f=hicann-dls/units/hx_madc/doc/MADC.pdf;hb=HEAD;js=1).
+static constexpr GENPYBIND(visible) uint_fast8_t minimal_madc_clock_cycles_per_sample = 12;
+
 } // namespace haldls::vx

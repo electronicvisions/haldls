@@ -6,6 +6,7 @@
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
+#include "haldls/vx/constants.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 
@@ -595,6 +596,16 @@ MADCConfig::synapse_target_type const& MADCConfig::get_connect_iconv_synapse() c
 void MADCConfig::set_connect_iconv_synapse(synapse_target_type const& value)
 {
 	m_connect_iconv_synapse = value;
+}
+
+double MADCConfig::calculate_sample_rate(double const& madc_base_frequency) const
+{
+	double const res =
+	    madc_base_frequency / (m_sample_duration_adjust + minimal_madc_clock_cycles_per_sample);
+	if (m_enable_madc_clock_scaling)
+		return res / (2 * (m_madc_clock_scale_value + 1));
+	else
+		return res;
 }
 
 template <typename AddressT>

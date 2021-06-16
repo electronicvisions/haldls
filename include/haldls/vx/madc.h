@@ -9,6 +9,7 @@
 #include "halco/hicann-dls/vx/synapse.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
+#include "haldls/vx/pll.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
@@ -520,6 +521,19 @@ public:
 	synapse_target_type const& get_connect_iconv_synapse() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(connect_iconv_synapse))
 	void set_connect_iconv_synapse(synapse_target_type const& value) SYMBOL_VISIBLE;
+
+	/**
+	 * Accessors for the sampling rate of the madc in Hz.
+	 *
+	 * The calculation considers the following settings of the MADC state:
+	 *   * m_sample_duration_adjust
+	 *   * m_enable_madc_clock_scaling
+	 *   * m_madc_clock_scale_value
+	 * @param madc_base_frequency Base frequency of the madc, which can be obtained from the ADPLL
+	 * settings and PLLClockOutputBlock.
+	 * @return Double describing the madc sample rate
+	 */
+	double calculate_sample_rate(double const& madc_base_frequency) const SYMBOL_VISIBLE;
 
 	bool operator==(MADCConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(MADCConfig const& other) const SYMBOL_VISIBLE;
