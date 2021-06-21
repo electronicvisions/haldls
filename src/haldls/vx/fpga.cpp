@@ -8,7 +8,7 @@
 #include "halco/hicann-dls/vx/quad.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
+#include "hate/math.h"
 
 namespace haldls {
 namespace vx {
@@ -37,8 +37,8 @@ bool FPGADeviceDNA::operator!=(FPGADeviceDNA const& other) const
 
 std::ostream& operator<<(std::ostream& os, FPGADeviceDNA const& config)
 {
-	os << config.m_value << std::endl;
-	return print_words_for_each_backend(os, config);
+	os << "FPGADeviceDNA(" << config.m_value << ")";
+	return os;
 }
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, FPGADeviceDNA::read_config_size_in_words>
@@ -126,8 +126,10 @@ bool EventRecordingConfig::operator!=(EventRecordingConfig const& other) const
 
 std::ostream& operator<<(std::ostream& os, EventRecordingConfig const& config)
 {
-	os << config.m_enable_event_recording << std::endl;
-	return print_words_for_each_backend(os, config);
+	std::stringstream ss;
+	ss << "EventRecordingConfig(enable_event_recording: " << std::boolalpha
+	   << config.m_enable_event_recording << ")";
+	return (os << ss.str());
 }
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, EventRecordingConfig::read_config_size_in_words>
@@ -222,7 +224,7 @@ std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryByte const& config)
 	auto const w = static_cast<uintmax_t>(config.m_value);
 	std::stringstream out;
 	out << "ExternalPPUMemoryByte(";
-	out << std::showbase << std::internal << std::setfill('0') << std::hex
+	out << "0x" << std::setfill('0') << std::hex
 	    << std::setw(round_up_integer_division(num_bits(ExternalPPUMemoryByte::Value::max), 4))
 	    << w;
 	os << out.str() << ")";

@@ -18,7 +18,12 @@ typedef std::vector<OmnibusChipOverJTAG> words_type;
 TEST(PPUMemoryWord, General)
 {
 	test_generic_functionality_single_value<PPUMemoryWord>();
-	test_hex_ostream_operator_single_value<PPUMemoryWord>();
+
+	// test ostream
+	PPUMemoryWord config(PPUMemoryWord::Value(0x23));
+	std::stringstream out;
+	out << config;
+	ASSERT_TRUE(out.str().find("0x00000023") != std::string::npos);
 }
 
 TEST(PPUMemoryWord, EncodeDecode)

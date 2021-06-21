@@ -7,7 +7,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 namespace haldls {
 namespace vx {
@@ -36,8 +35,8 @@ bool SystimeSyncBase::operator!=(SystimeSyncBase const& other) const
 
 std::ostream& operator<<(std::ostream& os, SystimeSyncBase const& config)
 {
-	os << config.m_value << std::endl;
-	return print_words_for_each_backend(os, config);
+	os << "SystimeSyncBase(" << config.m_value << ")";
+	return os;
 }
 
 template <typename AddressT>
@@ -146,7 +145,9 @@ bool SystimeSync::operator!=(SystimeSync const& other) const
 
 std::ostream& operator<<(std::ostream& os, SystimeSync const& config)
 {
-	return print_words_for_each_backend(os, config);
+	std::stringstream ss;
+	ss << "SystimeSync(do_sync: " << std::boolalpha << config.m_do_sync << ")";
+	return (os << ss.str());
 }
 
 std::array<SystimeSync::coordinate_type, SystimeSync::read_config_size_in_words>

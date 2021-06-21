@@ -16,7 +16,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "hate/join.h"
 #include "hate/math.h"
 
@@ -97,13 +96,6 @@ void CapMemCell<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_value));
 }
 
-template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, CapMemCell<Coordinates> const& cell)
-{
-	os << cell.m_value << std::endl;
-	return print_words_for_each_backend(os, cell);
-}
-
 #define CAPMEM_CELL_UNROLL(Coordinates)                                                            \
 	template class CapMemCell<Coordinates>;                                                        \
                                                                                                    \
@@ -112,9 +104,6 @@ std::ostream& operator<<(std::ostream& os, CapMemCell<Coordinates> const& cell)
 		std::visit([&](auto const& v) { os << v; }, value);                                        \
 		return os;                                                                                 \
 	}                                                                                              \
-                                                                                                   \
-	template SYMBOL_VISIBLE std::ostream& operator<<<Coordinates>(                                 \
-	    std::ostream& os, CapMemCell<Coordinates> const& cell);                                    \
                                                                                                    \
 	template SYMBOL_VISIBLE std::array<                                                            \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \
@@ -201,8 +190,6 @@ std::ostream& operator<<(std::ostream& os, CapMemBlock<Coordinates> const& block
 
 #define CAPMEM_BLOCK_UNROLL(Coordinates)                                                           \
 	template class CapMemBlock<Coordinates>;                                                       \
-	template SYMBOL_VISIBLE std::ostream& operator<<<Coordinates>(                                 \
-	    std::ostream& os, CapMemBlock<Coordinates> const& block);                                  \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemBlock<Coordinates>)
 
 template <typename Coordinates>
@@ -727,16 +714,52 @@ void CapMemBlockConfig<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_boost_b));
 }
 
-template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, CapMemBlockConfig<Coordinates> const& config)
+std::ostream& operator<<(std::ostream& os, CapMemBlockConfigVRefSelect const& config)
 {
-	return print_words_for_each_backend(os, config);
+	switch (config) {
+		case CapMemBlockConfigVRefSelect::disabled: {
+			os << "disabled";
+			break;
+		}
+		case CapMemBlockConfigVRefSelect::v_ref_v: {
+			os << "v_ref_v";
+			break;
+		}
+		case CapMemBlockConfigVRefSelect::v_ref_i: {
+			os << "v_ref_i";
+			break;
+		}
+		default: {
+			throw std::logic_error("Unknown v_ref_select.");
+		}
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, CapMemBlockConfigIOutSelect const& config)
+{
+	switch (config) {
+		case CapMemBlockConfigIOutSelect::disabled: {
+			os << "disabled";
+			break;
+		}
+		case CapMemBlockConfigIOutSelect::i_out_mux: {
+			os << "i_out_mux";
+			break;
+		}
+		case CapMemBlockConfigIOutSelect::i_out_ramp: {
+			os << "i_out_ramp";
+			break;
+		}
+		default: {
+			throw std::logic_error("Unknown i_out_select.");
+		}
+	}
+	return os;
 }
 
 #define CAPMEM_BLOCK_CONFIG_UNROLL(Coordinates)                                                    \
 	template class CapMemBlockConfig<Coordinates>;                                                 \
-	template SYMBOL_VISIBLE std::ostream& operator<<<Coordinates>(                                 \
-	    std::ostream& os, CapMemBlockConfig<Coordinates> const& block);                            \
 	template SYMBOL_VISIBLE std::array<                                                            \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \
 	    CapMemBlockConfig<Coordinates>::config_size_in_words>                                      \

@@ -5,7 +5,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 namespace haldls::vx {
 
@@ -31,7 +30,12 @@ bool PerfTest::operator!=(PerfTest const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PerfTest)
+std::ostream& operator<<(std::ostream& os, PerfTest const& config)
+{
+	std::stringstream ss;
+	ss << "PerfTest(enable: " << std::boolalpha << config.m_enable << ")";
+	return (os << ss.str());
+}
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, PerfTest::config_size_in_words>
 PerfTest::addresses(coordinate_type const& /*coord*/)
@@ -113,7 +117,12 @@ bool PerfTestStatus::operator!=(PerfTestStatus const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PerfTestStatus)
+std::ostream& operator<<(std::ostream& os, PerfTestStatus const& config)
+{
+	os << "PerfTestStatus(" << config.m_sent << ", " << config.m_received << ", "
+	   << config.m_in_order << ", " << config.m_error_word << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, PerfTestStatus::read_config_size_in_words>
 PerfTestStatus::read_addresses(coordinate_type const& /*coord*/)

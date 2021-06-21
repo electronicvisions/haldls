@@ -214,9 +214,6 @@ struct GENPYBIND(inline_base("*")) NeuronBackendAddressOut
 template <typename Coordinates>
 class NeuronBackendConfig;
 
-template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, NeuronBackendConfig<Coordinates> const& config);
-
 /**
  * Read/write access to the NeuronBackend container.
  * All relevant settings of the NeuronBackend can be accessed and set via the NeuronBackendConfig.
@@ -405,8 +402,30 @@ public:
 	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<<>(
-	    std::ostream& os, NeuronBackendConfig<Coordinates> const& config);
+	friend std::ostream& operator<<(
+	    std::ostream& os, NeuronBackendConfig<Coordinates> const& config)
+	{
+		std::stringstream ss;
+		ss << "NeuronBackendConfig(\n" << std::boolalpha;
+		// clang-format off
+		ss << "\taddress_out:               \t" << std::to_string(config.m_address_out) << "\n"
+		   << "\treset_holdoff_config:      \t" << std::to_string(config.m_reset_holdoff) << "\n"
+		   << "\trefractory_time:           \t" << std::to_string(config.m_refractory_time) << "\n"
+		   << "\tpost_overwrite:            \t" << config.m_post_overwrite << "\n"
+		   << "\tselect_input_clock:        \t" << config.m_select_input_clock << "\n"
+		   << "\tenable_adaptation_pulse:   \t" << config.m_en_adapt_pulse << "\n"
+		   << "\tenable_bayesian_extension: \t" << config.m_en_baesian_extension << "\n"
+		   << "\tenable_neuron_slave:       \t" << config.m_en_neuron_slave << "\n"
+		   << "\tconnect_fire_bottom:       \t" << config.m_connect_fire_bottom << "\n"
+		   << "\tconnect_fire_from_right:   \t" << config.m_connect_fire_from_right << "\n"
+		   << "\tconnect_fire_to_right:     \t" << config.m_connect_fire_to_right << "\n"
+		   << "\tenable_spike_out:          \t" << config.m_en_spike_out << "\n"
+		   << "\tenable_neuron_master:      \t" << config.m_en_neuron_master << "\n"
+		   << "\tenable_0_bayesian:         \t" << config.m_en_0_baesian << "\n"
+		   << "\tenable_1_bayesian:         \t" << config.m_en_1_baesian << "\n)";
+		// clang-format on
+		return (os << ss.str());
+	}
 
 private:
 	friend class cereal::access;
@@ -775,8 +794,6 @@ struct BackendContainerTrait<NeuronBackendSRAMTimingConfig>
 
 #define NEURON_EXTERN_TEMPLATE(Coordinates)                                                        \
 	extern template class SYMBOL_VISIBLE NeuronBackendConfig<Coordinates>;                         \
-	extern template SYMBOL_VISIBLE GENPYBIND(hidden) std::ostream& operator<<<Coordinates>(        \
-	    std::ostream& os, NeuronBackendConfig<Coordinates> const& value);                          \
                                                                                                    \
 	extern template SYMBOL_VISIBLE std::array<                                                     \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \

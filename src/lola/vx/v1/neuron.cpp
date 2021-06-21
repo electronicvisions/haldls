@@ -304,24 +304,8 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Readout const& config)
 	std::stringstream ss;
 	ss << "Readout(enable_buffered_access: " << std::boolalpha << config.enable_buffered_access
 	   << ", enable_amplifier: " << config.enable_amplifier
-	   << ", enable_unbuffered_access: " << config.enable_unbuffered_access << ", source: ";
-	switch (config.source) {
-		case haldls::vx::v1::NeuronConfig::ReadoutSource::membrane:
-			ss << "membrane";
-			break;
-		case haldls::vx::v1::NeuronConfig::ReadoutSource::exc_synin:
-			ss << "exc_synin";
-			break;
-		case haldls::vx::v1::NeuronConfig::ReadoutSource::inh_synin:
-			ss << "inh_synin";
-			break;
-		case haldls::vx::v1::NeuronConfig::ReadoutSource::adaptation:
-			ss << "adaptation";
-			break;
-		default:
-			break; // never reached
-	}
-	ss << ", i_bias: " << config.i_bias << ")";
+	   << ", enable_unbuffered_access: " << config.enable_unbuffered_access
+	   << ", source: " << config.source << ", i_bias: " << config.i_bias << ")";
 	os << ss.str();
 	return os;
 }
@@ -480,19 +464,21 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron const& config)
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "excitatory_input: " << config.excitatory_input << std::endl;
-	ss << "inhibitory_input: " << config.inhibitory_input << std::endl;
-	ss << config.leak_reset << std::endl;
-	ss << config.threshold << std::endl;
-	ss << config.multicompartment << std::endl;
-	ss << config.constant_current << std::endl;
-	ss << config.membrane_capacitance << std::endl;
-	ss << config.adaptation << std::endl;
-	ss << config.exponential << std::endl;
-	ss << config.event_routing;
-	ss << config.readout;
-	ss << config.refractory_period;
-	ss << config.bayesian;
+	ss << "AtomicNeuron(\n";
+	ss << "\texcitatory_input: " << config.excitatory_input << "\n";
+	ss << "\tinhibitory_input: " << config.inhibitory_input << "\n";
+	ss << "\t" << config.leak_reset << "\n";
+	ss << "\t" << config.threshold << "\n";
+	ss << "\t" << config.multicompartment << "\n";
+	ss << "\t" << config.constant_current << "\n";
+	ss << "\t" << config.membrane_capacitance << "\n";
+	ss << "\t" << config.adaptation << "\n";
+	ss << "\t" << config.exponential << "\n";
+	ss << "\t" << config.event_routing << "\n";
+	ss << "\t" << config.readout << "\n";
+	ss << "\t" << config.refractory_period << "\n";
+	ss << "\t" << config.bayesian << "\n";
+	ss << ")";
 	os << ss.str();
 	return os;
 }

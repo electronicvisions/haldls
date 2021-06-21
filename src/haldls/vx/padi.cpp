@@ -7,7 +7,7 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
+#include "hate/join.h"
 
 namespace haldls {
 namespace vx {
@@ -159,18 +159,16 @@ template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::Omnibus>(
 
 std::ostream& operator<<(std::ostream& os, PADIEvent const& config)
 {
-	print_words_for_each_backend<PADIEvent>(os, config);
+	std::stringstream ss;
+	ss << "PADIEvent(\n" << std::boolalpha;
 	// clang-format off
-	os << "NAME\t\t\tVALUE\tDESCRIPTION" << std::endl
-	   << std::boolalpha
-	   << "fire_bus[0]              \t" << config.m_fire_bus[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(0)] << std::endl
-	   << "fire_bus[1]              \t" << config.m_fire_bus[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(1)] << std::endl
-	   << "fire_bus[2]              \t" << config.m_fire_bus[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(2)] << std::endl
-	   << "fire_bus[3]              \t" << config.m_fire_bus[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)] << std::endl
-	   << "event_address            \t" << config.m_event_address << std::endl
-	   << "row_select_address       \t" << config.m_row_select_address << std::endl;
+	ss << "\tfire_bus:           \t[";
+	hate::join(ss, config.m_fire_bus.begin(), config.m_fire_bus.end(), ", ");
+	ss << "]\n"
+	   << "\tevent_address:      \t" << config.m_event_address << "\n"
+	   << "\trow_select_address: \t" << config.m_row_select_address << "\n)";
 	// clang-format on
-	return os;
+	return (os << ss.str());
 }
 
 bool PADIEvent::operator==(PADIEvent const& other) const
@@ -364,24 +362,20 @@ template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::Omnibus>(
 
 std::ostream& operator<<(std::ostream& os, CommonPADIBusConfig const& config)
 {
-	print_words_for_each_backend<CommonPADIBusConfig>(os, config);
+	std::stringstream ss;
+	ss << "CommonPADIBusConfig(\n" << std::boolalpha;
 	// clang-format off
-	os << "NAME\t\t\tVALUE\tDESCRIPTION" << std::endl
-	   << std::boolalpha
-	   << "enable_spl1[0]              \t" << config.m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(0)] << std::endl
-	   << "enable_spl1[1]              \t" << config.m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(1)] << std::endl
-	   << "enable_spl1[2]              \t" << config.m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(2)] << std::endl
-	   << "enable_spl1[3]              \t" << config.m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)] << std::endl
-	   << "enable_extended_timing[0]   \t" << config.m_enable_extended_timing[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(0)] << std::endl
-	   << "enable_extended_timing[1]   \t" << config.m_enable_extended_timing[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(1)] << std::endl
-	   << "enable_extended_timing[2]   \t" << config.m_enable_extended_timing[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(2)] << std::endl
-	   << "enable_extended_timing[3]   \t" << config.m_enable_extended_timing[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)] << std::endl
-	   << "dacen_pulse_extension[0]    \t" << config.m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(0)] << std::endl
-	   << "dacen_pulse_extension[1]    \t" << config.m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(1)] << std::endl
-	   << "dacen_pulse_extension[2]    \t" << config.m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(2)] << std::endl
-	   << "dacen_pulse_extension[3]    \t" << config.m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)] << std::endl;
+	ss << "\tenable_spl1:            \t[";
+	hate::join(ss, config.m_enable_spl1.begin(), config.m_enable_spl1.end(), ", ");
+	ss << "]\n";
+	ss << "\tenable_extended_timing: \t[";
+	hate::join(ss, config.m_enable_extended_timing.begin(), config.m_enable_extended_timing.end(), ", ");
+	ss << "]\n";
+	ss << "\tdacen_pulse_extension:  \t[";
+	hate::join(ss, config.m_dacen_pulse_extension.begin(), config.m_dacen_pulse_extension.end(), ", ");
+	ss << "]\n)";
 	// clang-format on
-	return os;
+	return (os << ss.str());
 }
 
 bool CommonPADIBusConfig::operator==(CommonPADIBusConfig const& other) const
@@ -523,14 +517,10 @@ template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::Omnibus>(
 
 std::ostream& operator<<(std::ostream& os, CommonSTPConfig const& config)
 {
-	print_words_for_each_backend<CommonSTPConfig>(os, config);
-	// clang-format off
-	os << "NAME\t\t\tVALUE\tDESCRIPTION" << std::endl
-	   << std::boolalpha
-	   << "enable_recovery_clock    \t" << config.m_enable_recovery_clock << std::endl
-	   << "recovery_clock_speed     \t" << config.m_recovery_clock_speed << std::endl;
-	// clang-format on
-	return os;
+	std::stringstream ss;
+	ss << "CommonSTPConfig(enable_recovery_clock: " << std::boolalpha
+	   << config.m_enable_recovery_clock << ", " << config.m_recovery_clock_speed << ")";
+	return (os << ss.str());
 }
 
 bool CommonSTPConfig::operator==(CommonSTPConfig const& other) const

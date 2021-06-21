@@ -1,7 +1,8 @@
 #pragma once
 #include <array>
 #include <cstdint>
-#include <iosfwd>
+#include <ostream>
+#include <sstream>
 #include <variant>
 
 #include "halco/common/geometry.h"
@@ -12,6 +13,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
+#include "hate/join.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
 
@@ -25,9 +27,6 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 template <typename Coordinates>
 class CapMemCell;
-
-template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, CapMemCell<Coordinates> const& cell);
 
 template <typename Coordinates>
 class SYMBOL_VISIBLE CapMemCell : public DifferentialWriteTrait
@@ -76,7 +75,13 @@ public:
 	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<<>(std::ostream& os, CapMemCell const& cell);
+	friend std::ostream& operator<<(std::ostream& os, CapMemCell const& cell)
+	{
+		os << "CapMemCell(";
+		std::visit([&](auto const& v) { os << v; }, cell.m_value);
+		os << ")";
+		return os;
+	}
 
 	bool operator==(CapMemCell const& other) const;
 	bool operator!=(CapMemCell const& other) const;
@@ -91,9 +96,6 @@ private:
 
 template <typename Coordinates>
 class CapMemBlock;
-
-template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, CapMemBlock<Coordinates> const& cell);
 
 template <typename Coordinates>
 class SYMBOL_VISIBLE CapMemBlock : public DifferentialWriteTrait
@@ -111,7 +113,16 @@ public:
 	    typename CapMemCell<Coordinates>::value_type const& value);
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<<>(std::ostream& os, CapMemBlock<Coordinates> const& block);
+	friend std::ostream& operator<<(std::ostream& os, CapMemBlock<Coordinates> const& block)
+	{
+		os << "CapMemBlock(\n";
+		for (auto const coord :
+		     halco::common::iter_all<typename Coordinates::CapMemCellOnCapMemBlock>()) {
+			os << "\t" << coord << ": " << block.m_capmem_cells[coord] << "\n";
+		}
+		os << ")" << std::flush;
+		return os;
+	}
 
 	bool operator==(CapMemBlock const& other) const;
 	bool operator!=(CapMemBlock const& other) const;
@@ -131,9 +142,6 @@ private:
 template <typename Coordinates>
 class CapMemBlockConfig;
 
-template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, CapMemBlockConfig<Coordinates> const& cell);
-
 /** Enum inside templated class not wrapped correctly by genpybind (Issue #3699). */
 enum class GENPYBIND(expose_as(_CapMemBlockConfigVRefSelect))
     CapMemBlockConfigVRefSelect : uint_fast8_t
@@ -143,6 +151,9 @@ enum class GENPYBIND(expose_as(_CapMemBlockConfigVRefSelect))
 	v_ref_i = 2
 };
 
+std::ostream& operator<<(std::ostream& os, CapMemBlockConfigVRefSelect const& config)
+    SYMBOL_VISIBLE;
+
 /** Enum inside templated class not wrapped correctly by genpybind (Issue #3699). */
 enum class GENPYBIND(expose_as(_CapMemBlockConfigIOutSelect))
     CapMemBlockConfigIOutSelect : uint_fast8_t
@@ -151,6 +162,9 @@ enum class GENPYBIND(expose_as(_CapMemBlockConfigIOutSelect))
 	i_out_mux = 1,
 	i_out_ramp = 2
 };
+
+std::ostream& operator<<(std::ostream& os, CapMemBlockConfigIOutSelect const& config)
+    SYMBOL_VISIBLE;
 
 template <typename Coordinates>
 class SYMBOL_VISIBLE CapMemBlockConfig : public DifferentialWriteTrait
@@ -429,7 +443,35 @@ public:
 	bool operator!=(CapMemBlockConfig const& other) const;
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<<>(std::ostream&, CapMemBlockConfig<Coordinates> const&);
+	friend std::ostream& operator<<(std::ostream& os, CapMemBlockConfig<Coordinates> const& config)
+	{
+		std::stringstream ss;
+		ss << "CapMemBlockConfig(\n";
+		ss << std::boolalpha;
+		ss << "\tenable_capmem:              \t" << config.m_enable_capmem << "\n";
+		ss << "\tdebug_readout_enable:       \t" << config.m_debug_readout_enable << "\n";
+		ss << "\tdebug_capmem_coord:         \t" << config.m_debug_capmem_coord << "\n";
+		ss << "\tdebug_v_ref_select:         \t" << config.m_debug_v_ref_select << "\n";
+		ss << "\tdebug_i_out_select:         \t" << config.m_debug_i_out_select << "\n";
+		ss << "\tdebug_out_amp_bias:         \t" << config.m_debug_out_amp_bias << "\n";
+		ss << "\tdebug_source_follower_bias: \t" << config.m_debug_source_follower_bias << "\n";
+		ss << "\tdebug_level_shifter_bias:   \t" << config.m_debug_level_shifter_bias << "\n";
+		ss << "\tv_global_bias:              \t" << config.m_v_global_bias << "\n";
+		ss << "\tcurrent_cell_res:           \t" << config.m_current_cell_res << "\n";
+		ss << "\tenable_boost:               \t" << config.m_enable_boost << "\n";
+		ss << "\tboost_factor:               \t" << config.m_boost_factor << "\n";
+		ss << "\tenable_autoboost:           \t" << config.m_enable_autoboost << "\n";
+		ss << "\tprescale_pause:             \t" << config.m_prescale_pause << "\n";
+		ss << "\tprescale_ramp:              \t" << config.m_prescale_ramp << "\n";
+		ss << "\tsub_counter:                \t" << config.m_sub_counter << "\n";
+		ss << "\tpause_counter:              \t" << config.m_pause_counter << "\n";
+		ss << "\tpulse_a:                    \t" << config.m_pulse_a << "\n";
+		ss << "\tpulse_b:                    \t" << config.m_pulse_b << "\n";
+		ss << "\tboost_a:                    \t" << config.m_boost_a << "\n";
+		ss << "\tboost_b:                    \t" << config.m_boost_b << "\n";
+		ss << ")" << std::flush;
+		return (os << ss.str());
+	}
 
 private:
 	friend class cereal::access;
@@ -537,12 +579,6 @@ struct VisitPreorderImpl<CapMemBlock<Coordinates>>
 	    std::array<fisch::vx::Omnibus, CapMemCell<Coordinates>::config_size_in_words> const&       \
 	        data);                                                                                 \
                                                                                                    \
-	extern template SYMBOL_VISIBLE GENPYBIND(hidden) std::ostream& operator<<<Coordinates>(        \
-	    std::ostream& os, CapMemCell<Coordinates> const& value);                                   \
-	extern template SYMBOL_VISIBLE GENPYBIND(hidden) std::ostream& operator<<<Coordinates>(        \
-	    std::ostream& os, CapMemBlock<Coordinates> const& value);                                  \
-	extern template SYMBOL_VISIBLE GENPYBIND(hidden) std::ostream& operator<<<Coordinates>(        \
-	    std::ostream& os, CapMemBlockConfig<Coordinates> const& value);                            \
 	extern template SYMBOL_VISIBLE std::array<                                                     \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \
 	    CapMemCell<Coordinates>::config_size_in_words>                                             \

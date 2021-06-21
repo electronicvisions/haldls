@@ -7,7 +7,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "hate/join.h"
 
 namespace haldls::vx {
@@ -388,33 +387,6 @@ bool NeuronBackendConfig<Coordinates>::operator!=(NeuronBackendConfig const& oth
 }
 
 template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, NeuronBackendConfig<Coordinates> const& config)
-{
-	// TODO add descriptions
-	print_words_for_each_backend<NeuronBackendConfig<Coordinates>>(os, config);
-	// clang-format off
-	os << "NAME\t\t\t\tVALUE\tDESCRIPTION" << std::endl
-	<< std::boolalpha
-	<< "address_out\t\t\t" << std::to_string(config.m_address_out) << "\t?" << std::endl
-	<< "reset_holdoff_config\t\t" << std::to_string(config.m_reset_holdoff) << "\t?" << std::endl
-	<< "refractory_time\t\t\t\t" << std::to_string(config.m_refractory_time) << "\t?" << std::endl
-	<< "post_overwrite\t\t\t" << config.m_post_overwrite << "\t?" << std::endl
-	<< "select_input_clock\t\t" << std::to_string(static_cast<uint8_t>(config.m_select_input_clock)) << "\t?" << std::endl
-	<< "enable_adaptation_pulse\t\t" << config.m_en_adapt_pulse << "\t?" << std::endl
-	<< "enable_bayesian_extension\t" << config.m_en_baesian_extension << "\t?" << std::endl
-	<< "enable_neuron_slave\t\t" << config.m_en_neuron_slave << "\t?" << std::endl
-	<< "connect_fire_bottom\t\t" << config.m_connect_fire_bottom << "\t?" << std::endl
-	<< "connect_fire_from_right\t\t" << config.m_connect_fire_from_right << "\t?" << std::endl
-	<< "connect_fire_to_right\t\t" << config.m_connect_fire_to_right << "\t?" << std::endl
-	<< "enable_spike_out\t\t" << config.m_en_spike_out << "\t?" << std::endl
-	<< "enable_neuron_master\t\t" << config.m_en_neuron_master << "\t?" << std::endl
-	<< "enable_0_bayesian\t\t" << config.m_en_0_baesian << "\t?" << std::endl
-	<< "enable_1_bayesian\t\t" << config.m_en_1_baesian << "\t?";
-	// clang-format on
-	return os;
-}
-
-template <typename Coordinates>
 template <class Archive>
 void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 {
@@ -437,8 +409,6 @@ void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t cons
 
 #define NEURON_BACKEND_CONFIG_UNROLL(Coordinates)                                                  \
 	template class NeuronBackendConfig<Coordinates>;                                               \
-	template std::ostream& operator<<<Coordinates>(                                                \
-	    std::ostream& os, NeuronBackendConfig<Coordinates> const& block);                          \
                                                                                                    \
 	template std::array<                                                                           \
 	    fisch::vx::OmnibusChipOverJTAG, NeuronBackendConfig<Coordinates>::config_size_in_words>    \

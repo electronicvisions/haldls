@@ -24,7 +24,7 @@ bool DACChannelBlock::operator!=(DACChannelBlock const& other) const
 
 std::ostream& operator<<(std::ostream& os, DACChannelBlock const& block)
 {
-	return (os << "[" << hate::join_string(block.value, ", ") << "]");
+	return (os << "DACChannelBlock([" << hate::join_string(block.value, ", ") << "])");
 }
 
 DACChannelBlock const DACChannelBlock::default_ldo_1 = []() -> DACChannelBlock {
@@ -81,7 +81,7 @@ bool DACControlBlock::operator!=(DACControlBlock const& other) const
 
 std::ostream& operator<<(std::ostream& os, DACControlBlock const& block)
 {
-	return (os << "[" << hate::join_string(block.enable, ", ") << "]");
+	return (os << "DACControlBlock([" << hate::join_string(block.enable, ", ") << "])");
 }
 
 } // namespace lola::vx

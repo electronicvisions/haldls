@@ -16,7 +16,8 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
+#include "hate/indent.h"
+#include "hate/math.h"
 
 
 namespace haldls {
@@ -46,13 +47,14 @@ bool PPUMemoryWord::operator!=(PPUMemoryWord const& other) const
 
 std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
 {
+	os << "PPUMemoryWord(";
 	using namespace hate::math;
 	auto const w = static_cast<PPUMemoryWord::raw_type>(pmw.get_value());
 	std::stringstream out;
-	out << std::showbase << std::internal << std::setfill('0') << std::hex
+	out << "0x" << std::setfill('0') << std::hex
 	    << std::setw(round_up_integer_division(num_bits(PPUMemoryWord::Value::max), 4)) << w;
-	os << out.str() << std::endl;
-	return print_words_for_each_backend(os, pmw);
+	os << out.str() << ")";
+	return os;
 }
 
 template <typename AddressT>
@@ -232,6 +234,7 @@ void PPUMemoryBlock::serialize(Archive& ar, std::uint32_t const)
 
 std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 {
+	os << "PPUMemoryBlock(\n";
 	int const words_per_line = 4;
 	auto const words = pmb.get_words();
 	std::stringstream out;
@@ -253,9 +256,13 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 				ascii << (isprint(chars[k]) ? chars[k] : '.');
 			}
 		}
-		out << halfwords.str() << ascii.str() << std::endl;
+		out << halfwords.str() << ascii.str();
+		if (i != words.size() - words_per_line) {
+			out << "\n";
+		}
 	}
-	os << out.str();
+	os << hate::indent(out.str(), "\t");
+	os << ")";
 	return os;
 }
 
@@ -372,6 +379,7 @@ bool PPUMemory::operator!=(PPUMemory const& other) const
 
 std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 {
+	os << "PPUMemory(\n";
 	int const words_per_line = 4;
 	auto const words = pm.get_words();
 	std::stringstream out;
@@ -399,9 +407,13 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 				ascii << (isprint(chars[k]) ? chars[k] : '.');
 			}
 		}
-		out << addr.str() << halfwords.str() << ascii.str() << std::endl;
+		out << addr.str() << halfwords.str() << ascii.str();
+		if (i != words.size() - words_per_line) {
+			out << "\n";
+		}
 	}
-	os << out.str();
+	os << hate::indent(out.str(), "\t");
+	os << ")";
 	return os;
 }
 
@@ -460,8 +472,15 @@ void PPUControlRegister::set_force_clock_off(bool const value)
 	m_force_clock_off = value;
 }
 
-
-HALDLS_VX_DEFAULT_OSTREAM_OP(PPUControlRegister)
+std::ostream& operator<<(std::ostream& os, PPUControlRegister const& config)
+{
+	std::stringstream ss;
+	ss << "PPUControlRegister(cache_controller_enable: " << std::boolalpha
+	   << config.m_cache_controller_enable << ", inhibit_reset: " << config.m_inhibit_reset
+	   << ", force_clock_on: " << config.m_force_clock_on
+	   << ", force_clock_off: " << config.m_force_clock_off << ")";
+	return (os << ss.str());
+}
 
 bool PPUControlRegister::operator==(PPUControlRegister const& other) const
 {
@@ -581,7 +600,12 @@ bool PPUStatusRegister::get_sleep() const
 	return m_sleep;
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PPUStatusRegister)
+std::ostream& operator<<(std::ostream& os, PPUStatusRegister const& config)
+{
+	std::stringstream ss;
+	ss << "PPUStatusRegister(sleep: " << std::boolalpha << config.m_sleep << ")";
+	return (os << ss.str());
+}
 
 bool PPUStatusRegister::operator==(PPUStatusRegister const& other) const
 {

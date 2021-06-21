@@ -3,7 +3,6 @@
 #include "fisch/vx/jtag.h"
 #include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.tcc"
-#include "haldls/vx/print.tcc"
 
 namespace haldls::vx {
 
@@ -24,7 +23,11 @@ bool JTAGClockScaler::operator!=(JTAGClockScaler const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(JTAGClockScaler)
+std::ostream& operator<<(std::ostream& os, JTAGClockScaler const& config)
+{
+	os << "JTAGClockScaler(" << config.m_value << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, JTAGClockScaler::config_size_in_words>
 JTAGClockScaler::addresses(coordinate_type const& coord)
@@ -63,7 +66,11 @@ bool ResetJTAGTap::operator!=(ResetJTAGTap const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(ResetJTAGTap)
+std::ostream& operator<<(std::ostream& os, ResetJTAGTap const&)
+{
+	os << "ResetJTAGTap()";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, ResetJTAGTap::config_size_in_words>
 ResetJTAGTap::addresses(coordinate_type const& coord)
@@ -131,7 +138,12 @@ bool JTAGIdCode::operator!=(JTAGIdCode const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(JTAGIdCode)
+std::ostream& operator<<(std::ostream& os, JTAGIdCode const& config)
+{
+	os << "JTAGIdCode(" << config.m_version << ", " << config.m_part_number << ", "
+	   << config.m_manufacturer_id << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, JTAGIdCode::read_config_size_in_words>
 JTAGIdCode::read_addresses(coordinate_type const& coord)

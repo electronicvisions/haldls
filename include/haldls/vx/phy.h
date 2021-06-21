@@ -129,6 +129,9 @@ public:
 	bool operator==(PhyConfigBase const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PhyConfigBase const& other) const SYMBOL_VISIBLE;
 
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, PhyConfigBase const& config) SYMBOL_VISIBLE;
+
 protected:
 	PhyConfigBase() SYMBOL_VISIBLE;
 

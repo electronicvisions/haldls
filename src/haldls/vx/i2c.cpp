@@ -4,7 +4,6 @@
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/i2c.h"
 #include "haldls/cerealization.tcc"
-#include "haldls/vx/print.tcc"
 
 namespace haldls::vx {
 
@@ -40,7 +39,69 @@ bool INA219Config::operator!=(INA219Config const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(INA219Config)
+std::ostream& operator<<(std::ostream& os, INA219Config::ADCMode const& mode)
+{
+	switch (mode) {
+		case INA219Config::ADCMode::bits9: {
+			os << "bits9";
+			break;
+		}
+		case INA219Config::ADCMode::bits10: {
+			os << "bits10";
+			break;
+		}
+		case INA219Config::ADCMode::bits11: {
+			os << "bits11";
+			break;
+		}
+		case INA219Config::ADCMode::bits12: {
+			os << "bits12";
+			break;
+		}
+		case INA219Config::ADCMode::bits12_samples1: {
+			os << "bits12_samples1";
+			break;
+		}
+		case INA219Config::ADCMode::bits12_samples2: {
+			os << "bits12_samples2";
+			break;
+		}
+		case INA219Config::ADCMode::bits12_samples4: {
+			os << "bits12_samples4";
+			break;
+		}
+		case INA219Config::ADCMode::bits12_samples8: {
+			os << "bits12_samples8";
+			break;
+		}
+		case INA219Config::ADCMode::bits12_samples16: {
+			os << "bits12_samples16";
+			break;
+		}
+		case INA219Config::ADCMode::bits12_samples32: {
+			os << "bits12_samples32";
+			break;
+		}
+		case INA219Config::ADCMode::bits12_samples64: {
+			os << "bits12_samples64";
+			break;
+		}
+		case INA219Config::ADCMode::bits12_samples128: {
+			os << "bits12_samples128";
+			break;
+		}
+		default: {
+			throw std::logic_error("Unknown ADCMode.");
+		}
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, INA219Config const& config)
+{
+	os << "INA219Config(" << config.m_bus_adc_mode << ", " << config.m_shunt_adc_mode << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::I2CINA219RwRegisterOnBoard, INA219Config::config_size_in_words>
 INA219Config::addresses(coordinate_type const& coord)
@@ -185,7 +246,14 @@ bool INA219Status::operator!=(INA219Status const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(INA219Status)
+std::ostream& operator<<(std::ostream& os, INA219Status const& status)
+{
+	std::stringstream ss;
+	ss << "bus_voltage_overflow: " << std::boolalpha << status.m_bus_voltage_overflow;
+	os << "INA219Status(" << status.m_bus_voltage << ", " << ss.str() << ", "
+	   << status.m_shunt_voltage << ")";
+	return os;
+}
 
 std::array<
     halco::hicann_dls::vx::I2CINA219RoRegisterOnBoard,

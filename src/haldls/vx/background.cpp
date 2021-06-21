@@ -6,7 +6,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 namespace haldls {
 namespace vx {
@@ -105,7 +104,12 @@ bool BackgroundSpikeSource::operator!=(BackgroundSpikeSource const& other) const
 
 std::ostream& operator<<(std::ostream& os, BackgroundSpikeSource const& config)
 {
-	return print_words_for_each_backend(os, config);
+	std::stringstream ss;
+	ss << "BackgroundSpikeSource(enable: " << std::boolalpha << config.m_enable
+	   << ", enable_random: " << config.m_enable_random << ", " << config.m_period << ", "
+	   << config.m_rate << ", " << config.m_seed << ", " << config.m_mask << ", "
+	   << config.m_neuron_label << ")";
+	return (os << ss.str());
 }
 
 template <typename AddressT>

@@ -7,7 +7,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "hate/join.h"
 
 namespace haldls {
@@ -326,24 +325,23 @@ bool CommonNeuronBackendConfig::operator!=(CommonNeuronBackendConfig const& othe
 
 std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& config)
 {
-	print_words_for_each_backend<CommonNeuronBackendConfig>(os, config);
+	std::stringstream ss;
+	ss << "CommonNeuronBackendConfig(\n" << std::boolalpha;
 	// clang-format off
-	os << "NAME\t\t\t\tVALUE\tDESCRIPTION" << std::endl
-	<< std::boolalpha
-	<< "enable_event_registers\t\t" << config.m_en_event_regs << "\t?" << std::endl
-	<< "force_reset\t\t\t" << config.m_force_reset << "\t?" << std::endl
-	<< "enable_clocks\t\t\t" << config.m_en_clocks << "\t?" << std::endl
-	<< "clock_scale_slow\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_slow)) << "\t?" << std::endl
-	<< "clock_scale_fast\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_fast)) << "\t?" << std::endl
-	<< "sample_positive_edge\t\t\t" << hate::join_string(config.m_sample_pos_edge, ", ") << "\t?" << std::endl
-	<< "clock_scale_adaptation_pulse\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_adapt_pulse)) << "\t?" << std::endl
-	<< "clock_scale_post_pulse\t\t" << std::to_string(static_cast<uint32_t>(config.m_clock_scale_post_pulse)) << "\t?" << std::endl
-	<< "wait_global_post_pulse\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_global_post_pulse)) << "\t?" << std::endl
-	<< "wait_spike_counter_reset\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_spike_counter_reset)) << "\t?" << std::endl
-	<< "wait_spike_counter_read\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_spike_counter_read)) << "\t?" << std::endl
-	<< "wait_fire_neuron\t\t" << std::to_string(static_cast<uint32_t>(config.m_wait_fire_neuron)) << "\t?";
+	ss << "\tenable_event_registers:       \t" << config.m_en_event_regs << "\n"
+	   << "\tforce_reset:                  \t" << config.m_force_reset << "\n"
+	   << "\tenable_clocks:                \t" << config.m_en_clocks << "\n"
+	   << "\tclock_scale_slow:             \t" << config.m_clock_scale_slow << "\n"
+	   << "\tclock_scale_fast:             \t" << config.m_clock_scale_fast << "\n"
+	   << "\tsample_positive_edge:         \t[" << hate::join_string(config.m_sample_pos_edge, ", ") << "]\n"
+	   << "\tclock_scale_adaptation_pulse: \t" << config.m_clock_scale_adapt_pulse << "\n"
+	   << "\tclock_scale_post_pulse:       \t" << config.m_clock_scale_post_pulse << "\n"
+	   << "\twait_global_post_pulse:       \t" << config.m_wait_global_post_pulse << "\n"
+	   << "\twait_spike_counter_reset:     \t" << config.m_wait_spike_counter_reset << "\n"
+	   << "\twait_spike_counter_read       \t" << config.m_wait_spike_counter_read << "\n"
+	   << "\twait_fire_neuron:             \t" << config.m_wait_fire_neuron << "\n)";
 	// clang-format on
-	return os;
+	return (os << ss.str());
 }
 
 template <class Archive>
@@ -632,13 +630,9 @@ template SYMBOL_VISIBLE void SpikeCounterRead::decode<fisch::vx::Omnibus>(
 
 std::ostream& operator<<(std::ostream& os, SpikeCounterRead const& config)
 {
-	print_words_for_each_backend<SpikeCounterRead>(os, config);
-	// clang-format off
-	os << "NAME\t\tVALUE\tDESCRIPTION" << std::endl
-	<< std::boolalpha
-	<< "counter_value\t" << std::to_string(static_cast<uint32_t>(config.m_count)) << "\tvalue of the spike counter" << std::endl
-	<< "overflow\t" << config.m_overflow << "\tan overflow occured in the 8 bit counter";
-	// clang-format on
+	std::stringstream ss;
+	ss << std::boolalpha << config.m_overflow;
+	os << "SpikeCounterRead(" << config.m_count << ", overflow: " << ss.str() << ")";
 	return os;
 }
 
@@ -765,7 +759,12 @@ bool NeuronSRAMTimingConfig::operator!=(NeuronSRAMTimingConfig const& other) con
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(NeuronSRAMTimingConfig)
+std::ostream& operator<<(std::ostream& os, NeuronSRAMTimingConfig const& config)
+{
+	os << "NeuronSRAMTimingConfig(" << config.get_read_delay() << ", "
+	   << config.get_address_setup_time() << ", " << config.get_enable_width() << ")";
+	return os;
+}
 
 template <typename AddressT>
 std::array<AddressT, NeuronSRAMTimingConfig::config_size_in_words>
@@ -802,7 +801,12 @@ bool NeuronBackendSRAMTimingConfig::operator!=(NeuronBackendSRAMTimingConfig con
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(NeuronBackendSRAMTimingConfig)
+std::ostream& operator<<(std::ostream& os, NeuronBackendSRAMTimingConfig const& config)
+{
+	os << "NeuronBackendSRAMTimingConfig(" << config.get_read_delay() << ", "
+	   << config.get_address_setup_time() << ", " << config.get_enable_width() << ")";
+	return os;
+}
 
 template <typename AddressT>
 std::array<AddressT, NeuronBackendSRAMTimingConfig::config_size_in_words>

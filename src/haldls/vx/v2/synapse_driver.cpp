@@ -6,7 +6,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 namespace haldls::vx::v2 {
 
@@ -396,29 +395,28 @@ std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& m
 
 std::ostream& operator<<(std::ostream& os, SynapseDriverConfig const& config)
 {
-	print_words_for_each_backend<SynapseDriverConfig>(os, config);
+	std::stringstream ss;
+	ss << "SynapseDriverConfig(\n" << std::boolalpha;
 	// clang-format off
-    os << "NAME\t\t\tVALUE\tDESCRIPTION" << std::endl
-    << std::boolalpha
-	<< "en_receiver              \t" << config.m_en_receiver << "\tenable PADI bus receiver" << std::endl
-	<< "row_address_compare_mask \t" << config.m_row_address_compare_mask << "\tbits of row select address to compare" << std::endl
-	<< "en_address_out           \t" << config.m_en_address_out << "\tEnable address forwarding to the synapses." << std::endl
-	<< "utilization              \t" << config.m_utilization << "\tparameter (BUG: no effect)" << std::endl
-	<< "offset                   \t" << config.m_offset << "\tcalibration of pulse lengths" << std::endl
-	<< "en_hagen_dac             \t" << config.m_en_hagen_dac << "\tEnable the DAC converting a hagen activation to an STP voltage." << std::endl
-	<< "recovery                 \t" << config.m_recovery << "\tspeed of recovery" << std::endl
-	<< "row_mode_bottom          \t" << config.m_row_mode_bottom << "\tset bottom row mode" << std::endl
-	<< "row_mode_top             \t" << config.m_row_mode_top << "\tset top row mode" << std::endl
-	<< "hagen_dac_offset         \t" << config.m_hagen_dac_offset << "\tOutput voltage offset for the hagen mode DAC." << std::endl
-	<< "select_target_voltages   \t" << config.m_select_target_voltages << "\tselect pair of baseline and target voltage" << std::endl
-	<< "en_readout               \t" << config.m_en_readout << "\tenable readout of STP voltage" << std::endl
-	<< "en_renewing              \t" << config.m_en_renewing << "\tenable renewing synapses (BUG: no effect)" << std::endl
-	<< "en_hagen_modulation      \t" << config.m_en_hagen_modulation << "\tenable Hagen modulation of pulse width" << std::endl
-	<< "en_stp                   \t" << config.m_en_stp << "\tenable STP circuit" << std::endl
-	<< "en_charge_sharing        \t" << config.m_en_charge_sharing << "\tenable sharing of charges (BUG: no effect)" << std::endl
-	<< "en_recovery              \t" << config.m_en_recovery << "\tenable recovery circuit" << std::endl;
+	ss << "\tenable_receiver:          \t" << config.m_en_receiver << "\n"
+	   << "\trow_address_compare_mask: \t" << config.m_row_address_compare_mask << "\n"
+	   << "\tenable_address_out:       \t" << config.m_en_address_out << "\n"
+	   << "\tutilization:              \t" << config.m_utilization << "\n"
+	   << "\toffset:                   \t" << config.m_offset << "\n"
+	   << "\tenable_hagen_dac:         \t" << config.m_en_hagen_dac << "\n"
+	   << "\trecovery:                 \t" << config.m_recovery << "\n"
+	   << "\trow_mode_bottom:          \t" << config.m_row_mode_bottom << "\n"
+	   << "\trow_mode_top:             \t" << config.m_row_mode_top << "\n"
+	   << "\thagen_dac_offset:         \t" << config.m_hagen_dac_offset << "\n"
+	   << "\tselect_target_voltages:   \t" << config.m_select_target_voltages << "\n"
+	   << "\tenable_readout:           \t" << config.m_en_readout << "\n"
+	   << "\tenable_renewing:          \t" << config.m_en_renewing << "\n"
+	   << "\tenable_hagen_modulation:  \t" << config.m_en_hagen_modulation << "\n"
+	   << "\tenable_stp:               \t" << config.m_en_stp << "\n"
+	   << "\tenable_charge_sharing:    \t" << config.m_en_charge_sharing << "\n"
+	   << "\tenable_recovery:          \t" << config.m_en_recovery << "\n)";
 	// clang-format on
-	return os;
+	return (os << ss.str());
 }
 
 bool SynapseDriverConfig::operator==(SynapseDriverConfig const& other) const

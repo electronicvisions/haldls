@@ -1,6 +1,7 @@
 #include "lola/vx/v2/neuron.h"
 
 #include "haldls/cerealization.tcc"
+#include "hate/indent.h"
 #include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
@@ -29,11 +30,14 @@ bool AtomicNeuron::SynapticInput::operator!=(SynapticInput const& other) const
 std::ostream& operator<<(std::ostream& os, AtomicNeuron::SynapticInput const& config)
 {
 	std::stringstream ss;
-	ss << "SynapticInput(enable: " << std::boolalpha << config.enable
-	   << ", i_bias_tau: " << config.i_bias_tau << ", i_drop_input: " << config.i_drop_input
-	   << ", i_shift_reference: " << config.i_shift_reference << ", i_bias_gm: " << config.i_bias_gm
-	   << ", enable_small_capacitor: " << config.enable_small_capacitor
-	   << ", enable_high_resistance: " << config.enable_high_resistance << ")";
+	ss << "SynapticInput(\n"
+	   << "\tenable:                 " << std::boolalpha << config.enable << "\n"
+	   << "\ti_bias_tau:             " << config.i_bias_tau << "\n"
+	   << "\ti_drop_input:           " << config.i_drop_input << "\n"
+	   << "\ti_shift_reference:      " << config.i_shift_reference << "\n"
+	   << "\ti_bias_gm:              " << config.i_bias_gm << "\n"
+	   << "\tenable_small_capacitor: " << config.enable_small_capacitor << "\n"
+	   << "\tenable_high_resistance: " << config.enable_high_resistance << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -60,10 +64,12 @@ bool AtomicNeuron::Leak::operator!=(Leak const& other) const
 std::ostream& operator<<(std::ostream& os, AtomicNeuron::Leak const& config)
 {
 	std::stringstream ss;
-	ss << "Leak(v_leak: " << config.v_leak << ", i_bias: " << config.i_bias
-	   << ", enable_degeneration: " << std::boolalpha << config.enable_degeneration
-	   << ", enable_division: " << config.enable_division
-	   << ", enable_multiplication: " << config.enable_multiplication << ")";
+	ss << "Leak(\n"
+	   << "\tv_leak:                " << config.v_leak << "\n"
+	   << "\ti_bias:                " << config.i_bias << "\n"
+	   << "\tenable_degeneration:   " << std::boolalpha << config.enable_degeneration << "\n"
+	   << "\tenable_division:       " << config.enable_division << "\n"
+	   << "\tenable_multiplication: " << config.enable_multiplication << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -90,10 +96,12 @@ bool AtomicNeuron::Reset::operator!=(Reset const& other) const
 std::ostream& operator<<(std::ostream& os, AtomicNeuron::Reset const& config)
 {
 	std::stringstream ss;
-	ss << "Reset(v_reset: " << config.v_reset << ", i_bias: " << config.i_bias
-	   << ", enable_degeneration: " << std::boolalpha << config.enable_degeneration
-	   << ", enable_division: " << config.enable_division
-	   << ", enable_multiplication: " << config.enable_multiplication << ")";
+	ss << "Reset(\n"
+	   << "\tv_reset:               " << config.v_reset << "\n"
+	   << "\ti_bias:                " << config.i_bias << "\n"
+	   << "\tenable_degeneration:   " << std::boolalpha << config.enable_degeneration << "\n"
+	   << "\tenable_division:       " << config.enable_division << "\n"
+	   << "\tenable_multiplication: " << config.enable_multiplication << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -115,8 +123,9 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Threshold const& config
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "Threshold(enable: " << std::boolalpha << config.enable
-	   << ", v_threshold: " << config.v_threshold << ")";
+	ss << "Threshold(\n"
+	   << "\tenable:      " << std::boolalpha << config.enable << "\n"
+	   << "\tv_threshold: " << config.v_threshold << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -140,11 +149,13 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::ConstantCurrent const& 
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "ConstantCurrent(enable: " << std::boolalpha << config.enable
-	   << ", i_offset: " << config.i_offset << ", type: "
+	ss << "ConstantCurrent(\n"
+	   << "\tenable:   " << std::boolalpha << config.enable << "\n"
+	   << "\ti_offset: " << config.i_offset << "\n"
+	   << "\ttype:     "
 	   << (config.type == lola::vx::v2::AtomicNeuron::ConstantCurrent::Type::sink ? "sink"
 	                                                                              : "source")
-	   << ")";
+	   << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -174,13 +185,15 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Multicompartment const&
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "Multicompartment(" << std::boolalpha << "connect_soma: " << config.connect_soma << ", "
-	   << "connect_soma_right: " << config.connect_soma_right << ", "
-	   << "connect_right: " << config.connect_right << ", "
-	   << "connect_vertical: " << config.connect_vertical << ", "
-	   << "enable_conductance: " << config.enable_conductance << ", "
-	   << "enable_conductance_division: " << config.enable_conductance_division << ", "
-	   << "enable_conductance_multiplication: " << config.enable_conductance_multiplication << ")";
+	ss << "Multicompartment(\n"
+	   << std::boolalpha << "\tconnect_soma:                      " << config.connect_soma << "\n"
+	   << "\tconnect_soma_right:                " << config.connect_soma_right << "\n"
+	   << "\tconnect_right:                     " << config.connect_right << "\n"
+	   << "\tconnect_vertical:                  " << config.connect_vertical << "\n"
+	   << "\tenable_conductance:                " << config.enable_conductance << "\n"
+	   << "\tenable_conductance_division:       " << config.enable_conductance_division << "\n"
+	   << "\tenable_conductance_multiplication: " << config.enable_conductance_multiplication
+	   << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -202,8 +215,8 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::MembraneCapacitance con
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "MembraneCapacitance(" << std::boolalpha << ", capacitance: " << config.capacitance
-	   << ")";
+	ss << "MembraneCapacitance(\n"
+	   << std::boolalpha << "\tcapacitance: " << config.capacitance << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -235,11 +248,16 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Adaptation const& confi
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "Adaptation(enable: " << std::boolalpha << config.enable
-	   << ", enable_pulse: " << config.enable_pulse << ", invert_a: " << config.invert_a
-	   << ", invert_b: " << config.invert_b << ", v_ref: " << config.v_ref
-	   << ", i_bias_tau: " << config.i_bias_tau << ", i_bias_a: " << config.i_bias_a
-	   << ", i_bias_b: " << config.i_bias_b << ", v_leak: " << config.v_leak << ")";
+	ss << "Adaptation(\n"
+	   << "\tenable:       " << std::boolalpha << config.enable << "\n"
+	   << "\tenable_pulse: " << config.enable_pulse << "\n"
+	   << "\tinvert_a:     " << config.invert_a << "\n"
+	   << "\tinvert_b:     " << config.invert_b << "\n"
+	   << "\tv_ref:        " << config.v_ref << "\n"
+	   << "\ti_bias_tau:   " << config.i_bias_tau << "\n"
+	   << "\ti_bias_a:     " << config.i_bias_a << "\n"
+	   << "\ti_bias_b:     " << config.i_bias_b << "\n"
+	   << "\tv_leak:       " << config.v_leak << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -261,8 +279,10 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Exponential const& conf
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "Exponential(enable: " << std::boolalpha << config.enable << ", v_exp: " << config.v_exp
-	   << ", i_bias: " << config.i_bias << ")";
+	ss << "Exponential(\n"
+	   << "\tenable: " << std::boolalpha << config.enable << "\n"
+	   << "\tv_exp:  " << config.v_exp << "\n"
+	   << "\ti_bias: " << config.i_bias << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -289,26 +309,12 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Readout const& config)
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "Readout(enable_buffered_access: " << std::boolalpha << config.enable_buffered_access
-	   << ", enable_amplifier: " << config.enable_amplifier
-	   << ", enable_unbuffered_access: " << config.enable_unbuffered_access << ", source: ";
-	switch (config.source) {
-		case haldls::vx::v2::NeuronConfig::ReadoutSource::membrane:
-			ss << "membrane";
-			break;
-		case haldls::vx::v2::NeuronConfig::ReadoutSource::exc_synin:
-			ss << "exc_synin";
-			break;
-		case haldls::vx::v2::NeuronConfig::ReadoutSource::inh_synin:
-			ss << "inh_synin";
-			break;
-		case haldls::vx::v2::NeuronConfig::ReadoutSource::adaptation:
-			ss << "adaptation";
-			break;
-		default:
-			break; // never reached
-	}
-	ss << ")";
+	ss << "Readout(\n"
+	   << "\tenable_buffered_access:   " << std::boolalpha << config.enable_buffered_access << "\n"
+	   << "\tenable_amplifier:         " << config.enable_amplifier << "\n"
+	   << "\tenable_unbuffered_access: " << config.enable_unbuffered_access << "\n"
+	   << "\tsource:                   " << config.source;
+	ss << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -352,17 +358,19 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::EventRouting const& con
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "EventRouting(analog_output: "
+	ss << "EventRouting(\n"
+	   << "\tanalog_output:            "
 	   << (config.analog_output == AtomicNeuron::EventRouting::AnalogOutputMode::off
 	           ? "off"
 	           : (config.analog_output == AtomicNeuron::EventRouting::AnalogOutputMode::normal
 	                  ? "normal"
 	                  : "strong"))
-	   << std::boolalpha << ", enable_digital: " << config.enable_digital
-	   << ", address: " << config.address
-	   << ", enable_bypass_excitatory: " << config.enable_bypass_excitatory
-	   << ", enable_bypass_inhibitory: " << config.enable_bypass_inhibitory
-	   << ", enable_post_overwrite: " << config.enable_post_overwrite << ")";
+	   << std::boolalpha << "\n"
+	   << "\tenable_digital:           " << config.enable_digital << "\n"
+	   << "\taddress:                  " << config.address << "\n"
+	   << "\tenable_bypass_excitatory: " << config.enable_bypass_excitatory << "\n"
+	   << "\tenable_bypass_inhibitory: " << config.enable_bypass_inhibitory << "\n"
+	   << "\tenable_post_overwrite:    " << config.enable_post_overwrite << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -417,10 +425,11 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::RefractoryPeriod const&
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "RefractoryPeriod(input_clock: " << config.input_clock
-	   << ", enable_pause: " << config.enable_pause
-	   << ", refractory_time: " << config.refractory_time
-	   << ", reset_holdoff: " << config.reset_holdoff << ")";
+	ss << "RefractoryPeriod(\n"
+	   << "\tinput_clock:     " << config.input_clock << "\n"
+	   << "\tenable_pause:    " << config.enable_pause << "\n"
+	   << "\trefractory_time: " << config.refractory_time << "\n"
+	   << "\treset_holdoff:   " << config.reset_holdoff << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -451,14 +460,15 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Bayesian const& config)
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "Bayesian(" << std::boolalpha << "enable: " << config.enable << ", "
-	   << "connect_fire_vertical: " << config.connect_fire_vertical << ", "
-	   << "connect_fire_to_right: " << config.connect_fire_to_right << ", "
-	   << "connect_fire_from_right: " << config.connect_fire_from_right << ", "
-	   << "enable_master: " << config.enable_master << ", "
-	   << "enable_slave: " << config.enable_slave << ", "
-	   << "enable_0: " << config.enable_0 << ", "
-	   << "enable_1: " << config.enable_1 << ")";
+	ss << "Bayesian(\n"
+	   << std::boolalpha << "\tenable:                  " << config.enable << "\n"
+	   << "\tconnect_fire_vertical:   " << config.connect_fire_vertical << "\n"
+	   << "\tconnect_fire_to_right:   " << config.connect_fire_to_right << "\n"
+	   << "\tconnect_fire_from_right: " << config.connect_fire_from_right << "\n"
+	   << "\tenable_master:           " << config.enable_master << "\n"
+	   << "\tenable_slave:            " << config.enable_slave << "\n"
+	   << "\tenable_0:                " << config.enable_0 << "\n"
+	   << "\tenable_1:                " << config.enable_1 << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -495,21 +505,23 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron const& config)
 {
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
-	ss << "excitatory_input: " << config.excitatory_input << std::endl;
-	ss << "inhibitory_input: " << config.inhibitory_input << std::endl;
-	ss << config.leak << std::endl;
-	ss << config.reset << std::endl;
-	ss << config.threshold << std::endl;
-	ss << config.multicompartment << std::endl;
-	ss << config.constant_current << std::endl;
-	ss << config.membrane_capacitance << std::endl;
-	ss << config.adaptation << std::endl;
-	ss << config.exponential << std::endl;
-	ss << config.event_routing << std::endl;
-	ss << config.readout << std::endl;
-	ss << config.refractory_period << std::endl;
+	os << "AtomicNeuron(\n";
+	ss << "excitatory_input: " << config.excitatory_input << "\n";
+	ss << "inhibitory_input: " << config.inhibitory_input << "\n";
+	ss << config.leak << "\n";
+	ss << config.reset << "\n";
+	ss << config.threshold << "\n";
+	ss << config.multicompartment << "\n";
+	ss << config.constant_current << "\n";
+	ss << config.membrane_capacitance << "\n";
+	ss << config.adaptation << "\n";
+	ss << config.exponential << "\n";
+	ss << config.event_routing << "\n";
+	ss << config.readout << "\n";
+	ss << config.refractory_period << "\n";
 	ss << config.bayesian;
-	os << ss.str();
+	os << hate::indent(ss.str(), "\t");
+	os << "\n)";
 	return os;
 }
 

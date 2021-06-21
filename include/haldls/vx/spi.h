@@ -257,6 +257,13 @@ private:
 	halco::common::typed_array<bool, halco::hicann_dls::vx::VDDOnBoard> m_enable_vdd;
 };
 
+std::ostream& operator<<(std::ostream& os, ShiftRegister::AnalogReadoutMux1Input const& config)
+    SYMBOL_VISIBLE;
+std::ostream& operator<<(std::ostream& os, ShiftRegister::AnalogReadoutMux2Input const& config)
+    SYMBOL_VISIBLE;
+std::ostream& operator<<(std::ostream& os, ShiftRegister::AnalogReadoutMux3Input const& config)
+    SYMBOL_VISIBLE;
+
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ShiftRegister)
 
 namespace detail {

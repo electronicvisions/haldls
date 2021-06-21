@@ -39,7 +39,7 @@ TEST(ExternalPPUMemoryByte, General)
 	std::stringstream out;
 	word.set_value(ExternalPPUMemoryByte::Value(12));
 	out << word;
-	EXPECT_EQ(out.str(), "ExternalPPUMemoryByte(0xc)");
+	EXPECT_EQ(out.str(), "ExternalPPUMemoryByte(0x0c)");
 }
 
 TEST(ExternalPPUMemoryByte, EncodeDecode)

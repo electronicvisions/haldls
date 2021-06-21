@@ -7,7 +7,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 namespace haldls {
 namespace vx {
@@ -86,10 +85,8 @@ void HicannARQStatus::decode(
 
 std::ostream& operator<<(std::ostream& os, HicannARQStatus const& config)
 {
-	os << config.m_read_count << std::endl;
-	os << config.m_write_count << std::endl;
-	os << config.m_rx_count << std::endl;
-	os << config.m_tx_count;
+	os << "HicannARQStatus(" << config.m_read_count << ", " << config.m_write_count << ", "
+	   << config.m_rx_count << ", " << config.m_tx_count << ")";
 	return os;
 }
 

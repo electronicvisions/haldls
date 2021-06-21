@@ -8,7 +8,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "haldls/vx/sram_controller.h"
 
 namespace haldls::vx::detail {

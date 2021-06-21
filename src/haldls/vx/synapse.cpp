@@ -8,7 +8,7 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
+#include "hate/join.h"
 
 namespace haldls::vx {
 
@@ -181,7 +181,13 @@ template SYMBOL_VISIBLE void CommonSynramConfig::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, CommonSynramConfig::config_size_in_words> const&
         data);
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(CommonSynramConfig)
+std::ostream& operator<<(std::ostream& os, CommonSynramConfig const& config)
+{
+	os << "CommonSynramConfig(west: " << config.m_pc_conf_west << ", " << config.m_w_conf_west
+	   << ", east: " << config.m_pc_conf_east << ", " << config.m_w_conf_east << ", "
+	   << config.m_wait_ctr_clear << ")";
+	return os;
+}
 
 template <class Archive>
 void CommonSynramConfig::serialize(Archive& ar, std::uint32_t const)
@@ -268,18 +274,21 @@ bool SynapseBiasSelection::operator!=(SynapseBiasSelection const& other) const
 
 std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
 {
-	for (auto coord : ::halco::common::iter_all<::halco::hicann_dls::vx::CapMemBlockOnDLS>()) {
-		os << "Quadrant " << coord.toEnum() << ":" << std::endl;
-		os << "Enable internal synapse DAC bias:               \t" << config.m_int_dac_bias[coord]
-		   << std::endl;
-		os << "Enable internal synapse ramp bias:              \t" << config.m_int_ramp_bias[coord]
-		   << std::endl;
-		os << "Enable internal synapse store bias:             \t" << config.m_int_store_bias[coord]
-		   << std::endl;
-		os << "Enable internal synapse correlation output bias:\t"
-		   << config.m_int_output_bias[coord] << std::endl;
-	}
-	return print_words_for_each_backend(os, config);
+	std::stringstream ss;
+	ss << "SynapseBiasSelection(\n" << std::boolalpha;
+	ss << "enable_internal_dac_bias:    \t[";
+	hate::join(ss, config.m_int_dac_bias.begin(), config.m_int_dac_bias.end(), ", ");
+	ss << "]\n";
+	ss << "enable_internal_ramp_bias:   \t[";
+	hate::join(ss, config.m_int_ramp_bias.begin(), config.m_int_ramp_bias.end(), ", ");
+	ss << "]\n";
+	ss << "enable_internal_store_bias:  \t[";
+	hate::join(ss, config.m_int_store_bias.begin(), config.m_int_store_bias.end(), ", ");
+	ss << "]\n";
+	ss << "enable_internal_output_bias: \t[";
+	hate::join(ss, config.m_int_output_bias.begin(), config.m_int_output_bias.end(), ", ");
+	ss << "]\n)";
+	return (os << ss.str());
 }
 
 template <typename AddressT>

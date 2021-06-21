@@ -37,9 +37,9 @@ TEST(SystimeSyncBase, General)
 
 	// test ostream operator
 	std::stringstream out;
-	word.set_value(SystimeSyncBase::Value(0xdeadbeef));
+	word.set_value(SystimeSyncBase::Value(12345));
 	out << word;
-	ASSERT_TRUE(out.str().find("0xdeadbeef") != std::string::npos);
+	ASSERT_TRUE(out.str().find("12345") != std::string::npos);
 }
 
 template <typename WordT>

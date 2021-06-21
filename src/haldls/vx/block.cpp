@@ -5,7 +5,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 namespace haldls::vx {
 
@@ -52,7 +51,12 @@ bool PollingOmnibusBlockConfig::operator!=(PollingOmnibusBlockConfig const& othe
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PollingOmnibusBlockConfig)
+std::ostream& operator<<(std::ostream& os, PollingOmnibusBlockConfig const& config)
+{
+	os << "PollingOmnibusBlockConfig(address: " << config.m_address << ", mask: " << config.m_mask
+	   << ", target: " << config.m_target << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, PollingOmnibusBlockConfig::config_size_in_words>
 PollingOmnibusBlockConfig::addresses(coordinate_type const& /*coord*/)

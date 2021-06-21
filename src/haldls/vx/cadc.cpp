@@ -7,7 +7,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "hate/join.h"
 
 
@@ -93,7 +92,13 @@ struct CADCConfigBitfield
 
 } // namespace
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(CADCConfig)
+std::ostream& operator<<(std::ostream& os, CADCConfig const& config)
+{
+	std::stringstream ss;
+	ss << "CADCConfig(enable: " << std::boolalpha << config.m_enable << ", " << config.m_reset_wait
+	   << ", " << config.m_dead_time << ")";
+	return (os << ss.str());
+}
 
 template <typename AddressT>
 std::array<AddressT, CADCConfig::config_size_in_words> CADCConfig::addresses(
@@ -150,7 +155,12 @@ bool CADCOffsetSRAMTimingConfig::operator!=(CADCOffsetSRAMTimingConfig const& ot
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(CADCOffsetSRAMTimingConfig)
+std::ostream& operator<<(std::ostream& os, CADCOffsetSRAMTimingConfig const& config)
+{
+	os << "CADCOffsetSRAMTimingConfig(" << config.get_read_delay() << ", "
+	   << config.get_address_setup_time() << ", " << config.get_enable_width() << ")";
+	return os;
+}
 
 template <typename AddressT>
 std::array<AddressT, CADCOffsetSRAMTimingConfig::config_size_in_words>

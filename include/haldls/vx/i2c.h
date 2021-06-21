@@ -98,6 +98,8 @@ private:
 	ADCMode m_shunt_adc_mode;
 };
 
+std::ostream& operator<<(std::ostream& os, INA219Config::ADCMode const& mode) SYMBOL_VISIBLE;
+
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(INA219Config)
 
 namespace detail {

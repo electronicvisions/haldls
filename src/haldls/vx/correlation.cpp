@@ -6,7 +6,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 namespace haldls {
 namespace vx {
@@ -117,7 +116,13 @@ struct CommonCorrelationConfigBitfield
 
 } // anonymous namespace
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(CommonCorrelationConfig)
+std::ostream& operator<<(std::ostream& os, CommonCorrelationConfig const& config)
+{
+	os << "CommonCorrelationConfig(" << config.m_sense_delay << ", " << config.m_reset_duration
+	   << ", " << config.m_reset_fall_time
+	   << ", reset_mode: " << (config.m_reset_mode ? "auto" : "legacy") << ")";
+	return os;
+}
 
 template <typename AddressT>
 std::array<AddressT, CommonCorrelationConfig::config_size_in_words>

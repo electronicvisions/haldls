@@ -3,7 +3,6 @@
 #include "fisch/vx/constants.h"
 #include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.tcc"
-#include "haldls/vx/print.tcc"
 
 namespace haldls::vx {
 
@@ -26,7 +25,11 @@ bool Timer::operator!=(Timer const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(Timer)
+std::ostream& operator<<(std::ostream& os, Timer const& config)
+{
+	os << "Timer(" << config.m_value << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::TimerOnDLS, Timer::config_size_in_words> Timer::addresses(
     coordinate_type const& coord)

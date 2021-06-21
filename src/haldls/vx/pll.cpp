@@ -7,8 +7,9 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "haldls/vx/traits.h"
+#include "hate/indent.h"
+#include "hate/join.h"
 
 namespace haldls {
 namespace vx {
@@ -250,7 +251,30 @@ bool ADPLL::operator!=(ADPLL const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(ADPLL)
+std::ostream& operator<<(std::ostream& os, ADPLL const& config)
+{
+	std::stringstream ss;
+	ss << "ADPLL(\n" << std::boolalpha;
+	ss << "\tloop_filter_int:     \t" << config.m_loop_filter_int << "\n";
+	ss << "\tloop_filter_prop:    \t" << config.m_loop_filter_prop << "\n";
+	ss << "\tloop_div_n:          \t" << config.m_loop_div_n << "\n";
+	ss << "\tcore_div_m0:         \t" << config.m_core_div_m0 << "\n";
+	ss << "\tcore_div_m1:         \t" << config.m_core_div_m1 << "\n";
+	ss << "\tpre_div_p0:          \t" << config.m_pre_div_p0 << "\n";
+	ss << "\tpre_div_p1:          \t" << config.m_pre_div_p1 << "\n";
+	ss << "\tpre_div_p2:          \t" << config.m_pre_div_p2 << "\n";
+	ss << "\ttune:                \t" << config.m_tune << "\n";
+	ss << "\tfilter_shift:        \t" << config.m_filter_shift << "\n";
+	ss << "\tenable:              \t" << config.m_enable << "\n";
+	ss << "\tuse_external_config: \t" << config.m_use_external_config << "\n";
+	ss << "\tdco_power_switch:    \t" << config.m_dco_power_switch << "\n";
+	ss << "\topen_lock:           \t" << config.m_open_lock << "\n";
+	ss << "\tenforce_lock:        \t" << config.m_enforce_lock << "\n";
+	ss << "\tpfd_select:          \t" << config.m_pfd_select << "\n";
+	ss << "\tlock_window:         \t" << config.m_lock_window << "\n";
+	ss << "\tenable_output_clock: \t" << config.m_enable_output_clock << "\n)";
+	return (os << ss.str());
+}
 
 namespace {
 
@@ -502,7 +526,43 @@ bool PLLClockOutputBlock::ClockOutput::operator!=(ClockOutput const& other) cons
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PLLClockOutputBlock)
+std::ostream& operator<<(std::ostream& os, ADPLL::Output const& config)
+{
+	switch (config) {
+		case ADPLL::Output::core_0: {
+			os << "core_0";
+			break;
+		}
+		case ADPLL::Output::core_1: {
+			os << "core_1";
+			break;
+		}
+		case ADPLL::Output::dco: {
+			os << "dco";
+			break;
+		}
+		default: {
+			throw std::logic_error("Unknown ADPLLOutput.");
+		}
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, PLLClockOutputBlock::ClockOutput const& config)
+{
+	std::stringstream ss;
+	ss << "ClockOutput(enable_output: " << std::boolalpha << config.m_enable_output
+	   << ", enable_bypass: " << config.m_enable_bypass << ", " << config.m_adpll << ", "
+	   << config.m_adpll_output << ")";
+	return (os << ss.str());
+}
+
+std::ostream& operator<<(std::ostream& os, PLLClockOutputBlock const& config)
+{
+	os << "PLLClockOutputBlock(\n"
+	   << hate::indent(hate::join_string(config.m_output, "\n"), "\t") << "\n)";
+	return os;
+}
 
 template <typename Archive>
 void PLLClockOutputBlock::ClockOutput::serialize(Archive& ar, std::uint32_t const)
@@ -820,7 +880,14 @@ bool PLLSelfTest::operator!=(PLLSelfTest const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PLLSelfTest)
+std::ostream& operator<<(std::ostream& os, PLLSelfTest const& config)
+{
+	std::stringstream ss;
+	ss << "PLLSelfTest(clock_enable: " << std::boolalpha << config.m_clock_enable << ", "
+	   << config.m_pre_scaler_p << ", " << config.m_select_source << ", " << config.m_check_range
+	   << ", " << config.m_check_value << ")";
+	return (os << ss.str());
+}
 
 namespace {
 
@@ -957,7 +1024,13 @@ bool PLLSelfTestStatus::operator!=(PLLSelfTestStatus const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PLLSelfTestStatus)
+std::ostream& operator<<(std::ostream& os, PLLSelfTestStatus const& config)
+{
+	std::stringstream ss;
+	ss << "PLLSelfTestStatus(" << std::boolalpha << config.m_counter_value
+	   << ", finished: " << config.m_finished << ", success: " << config.m_success << ")";
+	return (os << ss.str());
+}
 
 namespace {
 

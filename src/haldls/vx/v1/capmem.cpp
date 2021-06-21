@@ -12,7 +12,6 @@
 #include "halco/hicann-dls/vx/v1/coordinates.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "hate/join.h"
 #include "hate/math.h"
 
@@ -156,18 +155,19 @@ bool ReferenceGeneratorConfig::operator!=(ReferenceGeneratorConfig const& other)
 
 std::ostream& operator<<(std::ostream& os, ReferenceGeneratorConfig const& config)
 {
-	os << "Enable internal reference current: \t" << config.m_enable_internal_reference
-	   << std::endl;
-	os << "Enable reference current output:   \t" << config.m_enable_reference_output << std::endl;
-	os << "Enable reference current input:    \t" << config.m_enable_reference_input << std::endl;
-	os << "CapMem amplifier bias current:     \t" << config.m_capmem_amplifier << std::endl;
-	os << "CapMem offset bias current:        \t" << config.m_capmem_offset << std::endl;
-	os << "CapMem slope current:              \t" << config.m_capmem_slope << std::endl;
-	os << "Reference control DAC value:       \t" << config.m_reference_control << std::endl;
-	os << "Resistor control DAC value:        \t" << config.m_resistor_control << std::endl;
-	os << "Reset signal in current generator: \t" << config.m_enable_reset << std::endl;
+	std::stringstream ss;
+	ss << "ReferenceGeneratorConfig(\n" << std::boolalpha;
+	ss << "\tenable_internal_reference: \t" << config.m_enable_internal_reference << "\n";
+	ss << "\tenable_reference_output:   \t" << config.m_enable_reference_output << "\n";
+	ss << "\tenable_reference_input:    \t" << config.m_enable_reference_input << "\n";
+	ss << "\tcapmem_amplifier:          \t" << config.m_capmem_amplifier << "\n";
+	ss << "\tcapmem_offset:             \t" << config.m_capmem_offset << "\n";
+	ss << "\tcapmem_slope:              \t" << config.m_capmem_slope << "\n";
+	ss << "\treference_control:         \t" << config.m_reference_control << "\n";
+	ss << "\tresistor_control:          \t" << config.m_resistor_control << "\n";
+	ss << "\tenable_reset:              \t" << config.m_enable_reset << "\n)";
 
-	return print_words_for_each_backend(os, config);
+	return (os << ss.str());
 }
 
 template <typename AddressT>

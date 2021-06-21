@@ -13,6 +13,7 @@
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/common.h"
 #include "hate/math.h"
+#include "hate/type_index.h"
 #include "stadls/visitors.h"
 
 /**
@@ -81,19 +82,17 @@ void test_generic_functionality_single_value()
 }
 
 /**
- * Test ostream operator for hex output of single value.
+ * Test ostream operator for output of single value.
  */
 template <class T>
-void test_hex_ostream_operator_single_value()
+void test_ostream_operator_single_value()
 {
-    using namespace hate::math;
+	using namespace hate::math;
 	T o;
 	auto val = draw_ranged_non_default_value<typename T::Value>();
 	o.set_value(val);
 	std::stringstream expect_to_find;
-	expect_to_find << std::showbase << std::internal << std::setfill('0')
-	               << std::setw(round_up_integer_division(num_bits(T::Value::max), 4)) << std::hex
-	               << val.value();
+	expect_to_find << val.value();
 	std::stringstream out;
 	out << o;
 	ASSERT_TRUE(out.str().find(expect_to_find.str()) != std::string::npos)

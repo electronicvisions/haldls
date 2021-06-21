@@ -7,9 +7,10 @@
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
-#include "haldls/vx/print.tcc"
 #include "haldls/vx/v1/address_transformation.h"
 #include "haldls/vx/v1/omnibus_constants.h"
+#include "hate/indent.h"
+#include "hate/join.h"
 
 namespace haldls::vx::v1 {
 
@@ -160,7 +161,11 @@ template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseWeightQuad::config_size_in_words> const&
         data);
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseWeightQuad)
+std::ostream& operator<<(std::ostream& os, SynapseWeightQuad const& config)
+{
+	os << "SynapseWeightQuad(" << hate::join_string(config.m_values, ", ") << ")";
+	return os;
+}
 
 template <class Archive>
 void SynapseWeightQuad::serialize(Archive& ar, std::uint32_t const)
@@ -299,7 +304,11 @@ template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
 template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseLabelQuad::config_size_in_words> const& data);
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseLabelQuad)
+std::ostream& operator<<(std::ostream& os, SynapseLabelQuad const& config)
+{
+	os << "SynapseLabelQuad(" << hate::join_string(config.m_values, ", ") << ")";
+	return os;
+}
 
 template <class Archive>
 void SynapseLabelQuad::serialize(Archive& ar, std::uint32_t const)
@@ -484,7 +493,13 @@ template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
         fisch::vx::OmnibusChipOverJTAG,
         SynapseCorrelationCalibQuad::config_size_in_words> const& data);
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseCorrelationCalibQuad)
+std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibQuad const& config)
+{
+	os << "SynapseCorrelationCalibQuad(\n"
+	   << "\t" << hate::join_string(config.m_time_calibs, ", ") << "\n"
+	   << "\t" << hate::join_string(config.m_amp_calibs, ", ") << "\n)";
+	return os;
+}
 
 template <class Archive>
 void SynapseCorrelationCalibQuad::serialize(Archive& ar, std::uint32_t const)
@@ -688,7 +703,15 @@ template SYMBOL_VISIBLE void SynapseQuad::decode(
 template SYMBOL_VISIBLE void SynapseQuad::decode(
     std::array<fisch::vx::OmnibusChipOverJTAG, SynapseQuad::config_size_in_words> const& data);
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseQuad)
+std::ostream& operator<<(std::ostream& os, SynapseQuad const& config)
+{
+	os << "SynapseQuad(\n"
+	   << "\t" << hate::join_string(config.m_weights, ", ") << "\n"
+	   << "\t" << hate::join_string(config.m_labels, ", ") << "\n"
+	   << "\t" << hate::join_string(config.m_time_calibs, ", ") << "\n"
+	   << "\t" << hate::join_string(config.m_amp_calibs, ", ") << "\n)";
+	return os;
+}
 
 template <class Archive>
 void SynapseQuad::serialize(Archive& ar, std::uint32_t const)
@@ -815,7 +838,25 @@ void ColumnCorrelationQuad::set_switch(
 	m_switches.at(correlation_switch) = value;
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(ColumnCurrentQuad)
+std::ostream& operator<<(std::ostream& os, ColumnCurrentQuad::ColumnCurrentSwitch const& config)
+{
+	std::stringstream ss;
+	ss << "ColumnCurrentSwitch(\n" << std::boolalpha;
+	ss << "\tenable_synaptic_current_excitatory: \t" << config.m_enable_synaptic_current_excitatory
+	   << "\n";
+	ss << "\tenable_synaptic_current_excitatory: \t" << config.m_enable_synaptic_current_excitatory
+	   << "\n";
+	ss << "\tenable_debug_excitatory:            \t" << config.m_enable_debug_excitatory << "\n";
+	ss << "\tenable_debug_excitatory:            \t" << config.m_enable_debug_excitatory << "\n)";
+	return (os << ss.str());
+}
+
+std::ostream& operator<<(std::ostream& os, ColumnCurrentQuad const& config)
+{
+	os << "ColumnCurrentQuad(\n"
+	   << hate::indent(hate::join_string(config.m_switches, "\n"), "\t") << "\n)";
+	return os;
+}
 
 bool ColumnCorrelationQuad::operator==(ColumnCorrelationQuad const& other) const
 {
@@ -827,7 +868,28 @@ bool ColumnCorrelationQuad::operator!=(ColumnCorrelationQuad const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(ColumnCorrelationQuad)
+std::ostream& operator<<(
+    std::ostream& os, ColumnCorrelationQuad::ColumnCorrelationSwitch const& config)
+{
+	std::stringstream ss;
+	ss << "ColumnCorrelationSwitch(\n" << std::boolalpha;
+	ss << "\tenable_internal_causal:             \t" << config.m_enable_internal_causal << "\n";
+	ss << "\tenable_internal_acausal:            \t" << config.m_enable_internal_acausal << "\n";
+	ss << "\tenable_debug_causal:                \t" << config.m_enable_debug_causal << "\n";
+	ss << "\tenable_debug_acausal:               \t" << config.m_enable_debug_acausal << "\n";
+	ss << "\tenable_cadc_neuron_readout_causal:  \t" << config.m_enable_cadc_neuron_readout_causal
+	   << "\n";
+	ss << "\tenable_cadc_neuron_readout_acausal: \t" << config.m_enable_cadc_neuron_readout_acausal
+	   << "\n)";
+	return (os << ss.str());
+}
+
+std::ostream& operator<<(std::ostream& os, ColumnCorrelationQuad const& config)
+{
+	os << "ColumnCorrelationQuad(\n"
+	   << hate::indent(hate::join_string(config.m_switches, "\n"), "\t") << "\n)";
+	return os;
+}
 
 template <typename AddressT>
 std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelationQuad::addresses(

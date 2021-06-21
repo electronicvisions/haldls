@@ -341,6 +341,8 @@ private:
 	bool m_use_external_config;
 };
 
+std::ostream& operator<<(std::ostream&, ADPLL::Output const&) SYMBOL_VISIBLE;
+
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ADPLL)
 
 namespace detail {
@@ -434,6 +436,9 @@ public:
 
 		bool operator==(ClockOutput const& other) const SYMBOL_VISIBLE;
 		bool operator!=(ClockOutput const& other) const SYMBOL_VISIBLE;
+
+		GENPYBIND(stringstream)
+		friend std::ostream& operator<<(std::ostream& os, ClockOutput const& config) SYMBOL_VISIBLE;
 
 	private:
 		friend class cereal::access;

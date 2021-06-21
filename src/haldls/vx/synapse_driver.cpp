@@ -6,7 +6,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 namespace haldls {
 namespace vx {
@@ -21,7 +20,12 @@ bool SynapseDriverSRAMTimingConfig::operator!=(SynapseDriverSRAMTimingConfig con
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(SynapseDriverSRAMTimingConfig)
+std::ostream& operator<<(std::ostream& os, SynapseDriverSRAMTimingConfig const& config)
+{
+	os << "SynapseDriverSRAMTimingConfig(" << config.get_read_delay() << ", "
+	   << config.get_address_setup_time() << ", " << config.get_enable_width() << ")";
+	return os;
+}
 
 template <typename AddressT>
 std::array<AddressT, SynapseDriverSRAMTimingConfig::config_size_in_words>

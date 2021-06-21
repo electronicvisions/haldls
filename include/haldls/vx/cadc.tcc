@@ -7,7 +7,6 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 
 
 namespace haldls::vx {
@@ -111,18 +110,9 @@ void CADCChannelConfig<Coordinates>::decode(
 	m_offset = Offset(static_cast<int32_t>(bitfield.u.m.offset) - 128);
 }
 
-template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, CADCChannelConfig<Coordinates> const& config)
-{
-	return print_words_for_each_backend(os, config);
-}
-
 #define CADC_CHANNEL_CONFIG_UNROLL(Coordinates)                                                    \
 	template class CADCChannelConfig<Coordinates>;                                                 \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCChannelConfig<Coordinates>)                          \
-                                                                                                   \
-	template std::ostream& operator<<<Coordinates>(                                                \
-	    std::ostream& os, CADCChannelConfig<Coordinates> const& block);                            \
                                                                                                    \
 	template std::array<                                                                           \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \

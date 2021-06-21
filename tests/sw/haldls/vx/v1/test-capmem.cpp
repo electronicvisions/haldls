@@ -45,7 +45,7 @@ TEST(CapMemCell, General)
 	ASSERT_TRUE(o_copy != o_other);
 	ASSERT_NE(o, o_other);
 
-	test_hex_ostream_operator_single_value<CapMemCell>();
+	test_ostream_operator_single_value<CapMemCell>();
 }
 
 TEST(CapMemCell, CerealizeCoverage)
@@ -92,13 +92,9 @@ TEST(CapMemBlock, General)
 	ASSERT_TRUE(copy != block);
 
 	// test ostream
-	std::stringstream expect_to_find;
-	expect_to_find << std::showbase << std::internal << std::setfill('0')
-	               << std::setw(round_up_integer_division(num_bits(CapMemCell::Value::max), 4))
-	               << std::hex << 0x23;
 	std::stringstream out;
 	out << copy;
-	ASSERT_TRUE(out.str().find(expect_to_find.str()) != std::string::npos);
+	ASSERT_TRUE(out.str().find("CapMemCell(Value(35))") != std::string::npos);
 }
 
 TEST(CapMemBlock, EncodeDecode)

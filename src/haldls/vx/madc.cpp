@@ -7,7 +7,7 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
+#include "hate/join.h"
 
 namespace haldls {
 namespace vx {
@@ -194,19 +194,19 @@ template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::Omnibus>(
 
 std::ostream& operator<<(std::ostream& os, MADCControl const& config)
 {
-	print_words_for_each_backend<MADCControl>(os, config);
+	std::stringstream ss;
+	ss << "MADCControl(\n";
 	// clang-format off
-	os << "NAME\t\t\tVALUE\tDESCRIPTION" << std::endl
-	   << std::boolalpha
-	   << "enable_iconv_amplifier           \t" << config.m_enable_iconv_amplifier << std::endl
-	   << "enable_pre_amplifier             \t" << config.m_enable_pre_amplifier << std::endl
-	   << "enable_continuous_sampling       \t" << config.m_enable_continuous_sampling << std::endl
-	   << "enable_power_down_after_sampling \t" << config.m_enable_power_down_after_sampling << std::endl
-	   << "stop_recording                   \t" << config.m_stop_recording << std::endl
-	   << "start_recording                  \t" << config.m_start_recording << std::endl
-	   << "wake_up                          \t" << config.m_wake_up << std::endl;
+	ss << std::boolalpha
+	   << "\tenable_iconv_amplifier:           \t" << config.m_enable_iconv_amplifier << "\n"
+	   << "\tenable_pre_amplifier:             \t" << config.m_enable_pre_amplifier << "\n"
+	   << "\tenable_continuous_sampling:       \t" << config.m_enable_continuous_sampling << "\n"
+	   << "\tenable_power_down_after_sampling: \t" << config.m_enable_power_down_after_sampling << "\n"
+	   << "\tstop_recording:                   \t" << config.m_stop_recording << "\n"
+	   << "\tstart_recording:                  \t" << config.m_start_recording << "\n"
+	   << "\twake_up:                          \t" << config.m_wake_up << "\n)";
 	// clang-format on
-	return os;
+	return (os << ss.str());
 }
 
 bool MADCControl::operator==(MADCControl const& other) const
@@ -844,46 +844,52 @@ template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::Omnibus>(
 
 std::ostream& operator<<(std::ostream& os, MADCConfig const& config)
 {
-	print_words_for_each_backend<MADCConfig>(os, config);
+	std::stringstream ss;
+	ss << "MADCConfig(\n" << std::boolalpha;
 	// clang-format off
-	os << "active_mux_initially_selected_input                      \t" << config.m_active_mux_initially_selected_input << std::endl
-	   << "active_mux_input_select_length                           \t" << config.m_active_mux_input_select_length << std::endl
-	   << "sample_duration_adjust                                   \t" << config.m_sample_duration_adjust << std::endl
-	   << "enable_sar_reset_on_fall                                 \t" << config.m_enable_sar_reset_on_fall << std::endl
-	   << "sar_reset_wait                                           \t" << config.m_sar_reset_wait << std::endl
-	   << "sar_reset_length                                         \t" << config.m_sar_reset_length << std::endl
-	   << "powerup_wait_value                                       \t" << config.m_powerup_wait_value << std::endl
-	   << "conversion_cycles_offset                                 \t" << config.m_conversion_cycles_offset << std::endl
-	   << "calibration_wait_value                                   \t" << config.m_calibration_wait_value << std::endl
-	   << "enable_calibration                                       \t" << config.m_enable_calibration << std::endl
-	   << "number_of_samples                                        \t" << config.m_number_of_samples << std::endl
-	   << "preamp_sampling_window_start                             \t" << config.m_preamp_sampling_window_start << std::endl
-	   << "preamp_sampling_window_end                               \t" << config.m_preamp_sampling_window_end << std::endl
-	   << "iconv_sampling_window_start                              \t" << config.m_iconv_sampling_window_start << std::endl
-	   << "iconv_sampling_window_end                                \t" << config.m_iconv_sampling_window_end << std::endl
-	   << "sample_on_positive_edge                                  \t" << config.m_sample_on_positive_edge << std::endl
-	   << "enable_dummy_data                                        \t" << config.m_enable_dummy_data << std::endl
-	   << "connect_preamp_to_madc                                   \t" << config.m_connect_preamp_to_madc << std::endl
-	   << "connect_pads_to_madc                                     \t" << config.m_connect_pads_to_madc << std::endl
-	   << "connect_preamp_to_pads                                   \t" << config.m_connect_preamp_to_pads << std::endl
-	   << "preamp_gain_capacitor_size                               \t" << config.m_preamp_gain_capacitor_size << std::endl
-	   << "enable_madc_clock_scaling                                \t" << config.m_enable_madc_clock_scaling << std::endl
-	   << "madc_clock_scale_value                                   \t" << config.m_madc_clock_scale_value << std::endl
-	   << "enable_active_mux_amplifiers                             \t" << config.m_enable_active_mux_amplifiers << std::endl
-	   << "enable_pseudo_differential_reference[HemisphereOnDLS(0)] \t" << config.m_enable_pseudo_differential_reference[halco::hicann_dls::vx::HemisphereOnDLS(0)] << std::endl
-	   << "enable_pseudo_differential_reference[HemisphereOnDLS(1)] \t" << config.m_enable_pseudo_differential_reference[halco::hicann_dls::vx::HemisphereOnDLS(1)] << std::endl
-	   << "signal_selection_connect_iconv                           \t" << config.m_signal_selection_connect_iconv << std::endl
-	   << "signal_selection_connect_active_mux                      \t" << config.m_signal_selection_connect_active_mux << std::endl
-	   << "signal_selection_connect_debug                           \t" << config.m_signal_selection_connect_debug << std::endl
-	   << "signal_selection_connect_preamp                          \t" << config.m_signal_selection_connect_preamp << std::endl
-	   << "enable_iconv_amplifier                                   \t" << config.m_enable_iconv_amplifier << std::endl
-	   << "connect_iconv_neuron[HemisphereOnDLS(0)]                 \t" << config.m_connect_iconv_neuron[halco::hicann_dls::vx::HemisphereOnDLS(0)] << std::endl
-	   << "connect_iconv_neuron[HemisphereOnDLS(1)]                 \t" << config.m_connect_iconv_neuron[halco::hicann_dls::vx::HemisphereOnDLS(1)] << std::endl
-	   << "connect_iconv_synapse[SynapticInputOnNeuron::inhibitory] \t" << config.m_connect_iconv_synapse[halco::hicann_dls::vx::SynapticInputOnNeuron::inhibitory] << std::endl
-	   << "connect_iconv_synapse[SynapticInputOnNeuron::excitatory] \t" << config.m_connect_iconv_synapse[halco::hicann_dls::vx::SynapticInputOnNeuron::excitatory] << std::endl;
+	ss << "\tactive_mux_initially_selected_input:  \t" << config.m_active_mux_initially_selected_input << "\n"
+	   << "\tactive_mux_input_select_length:       \t" << config.m_active_mux_input_select_length << "\n"
+	   << "\tsample_duration_adjust:               \t" << config.m_sample_duration_adjust << "\n"
+	   << "\tenable_sar_reset_on_fall:             \t" << config.m_enable_sar_reset_on_fall << "\n"
+	   << "\tsar_reset_wait:                       \t" << config.m_sar_reset_wait << "\n"
+	   << "\tsar_reset_length:                     \t" << config.m_sar_reset_length << "\n"
+	   << "\tpowerup_wait_value:                   \t" << config.m_powerup_wait_value << "\n"
+	   << "\tconversion_cycles_offset:             \t" << config.m_conversion_cycles_offset << "\n"
+	   << "\tcalibration_wait_value:               \t" << config.m_calibration_wait_value << "\n"
+	   << "\tenable_calibration:                   \t" << config.m_enable_calibration << "\n"
+	   << "\tnumber_of_samples:                    \t" << config.m_number_of_samples << "\n"
+	   << "\tpreamp_sampling_window_start:         \t" << config.m_preamp_sampling_window_start << "\n"
+	   << "\tpreamp_sampling_window_end:           \t" << config.m_preamp_sampling_window_end << "\n"
+	   << "\ticonv_sampling_window_start:          \t" << config.m_iconv_sampling_window_start << "\n"
+	   << "\ticonv_sampling_window_end:            \t" << config.m_iconv_sampling_window_end << "\n"
+	   << "\tsample_on_positive_edge:              \t" << config.m_sample_on_positive_edge << "\n"
+	   << "\tenable_dummy_data:                    \t" << config.m_enable_dummy_data << "\n"
+	   << "\tconnect_preamp_to_madc:               \t" << config.m_connect_preamp_to_madc << "\n"
+	   << "\tconnect_pads_to_madc:                 \t" << config.m_connect_pads_to_madc << "\n"
+	   << "\tconnect_preamp_to_pads:               \t" << config.m_connect_preamp_to_pads << "\n"
+	   << "\tpreamp_gain_capacitor_size:           \t" << config.m_preamp_gain_capacitor_size << "\n"
+	   << "\tenable_madc_clock_scaling:            \t" << config.m_enable_madc_clock_scaling << "\n"
+	   << "\tmadc_clock_scale_value:               \t" << config.m_madc_clock_scale_value << "\n"
+	   << "\tenable_active_mux_amplifiers:         \t" << config.m_enable_active_mux_amplifiers << "\n"
+	   << "\tenable_pseudo_differential_reference: \t[";
+	hate::join(ss, config.m_enable_pseudo_differential_reference.begin(), config.m_enable_pseudo_differential_reference.end(), ", ");
+	ss << "]\n"
+	   << "\tsignal_selection_connect_iconv:       \t" << config.m_signal_selection_connect_iconv << "\n"
+	   << "\tsignal_selection_connect_active_mux:  \t" << config.m_signal_selection_connect_active_mux << "\n"
+	   << "\tsignal_selection_connect_debug:       \t" << config.m_signal_selection_connect_debug << "\n"
+	   << "\tsignal_selection_connect_preamp:      \t" << config.m_signal_selection_connect_preamp << "\n"
+	   << "\tenable_iconv_amplifier:               \t" << config.m_enable_iconv_amplifier << "\n"
+	   << "\tconnect_iconv_neuron                  \t[";
+	hate::join(ss, config.m_connect_iconv_neuron.begin(), config.m_connect_iconv_neuron.end(), ", ");
+	ss << "]\n"
+	   << "\tconnect_iconv_synapse:                \t[inhibitory: "
+	   << config.m_connect_iconv_synapse[halco::hicann_dls::vx::SynapticInputOnNeuron::inhibitory]
+	   << ", excitatory: "
+	   << config.m_connect_iconv_synapse[halco::hicann_dls::vx::SynapticInputOnNeuron::excitatory]
+	   << "]\n)";
 	// clang-format on
 
-	return os;
+	return (os << ss.str());
 }
 
 bool MADCConfig::operator==(MADCConfig const& other) const

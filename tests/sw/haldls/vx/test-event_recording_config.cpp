@@ -38,7 +38,7 @@ TEST(EventRecordingConfig, General)
 	std::stringstream out;
 	word.set_enable_event_recording(true);
 	out << word;
-	EXPECT_NE(out.str().find("1"), std::string::npos);
+	EXPECT_NE(out.str().find("true"), std::string::npos);
 }
 
 TEST(EventRecordingConfig, EncodeDecode)

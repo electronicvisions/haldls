@@ -14,7 +14,6 @@
 #include "halco/hicann-dls/vx/v2/coordinates.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
 #include "hate/join.h"
 #include "hate/math.h"
 
@@ -163,41 +162,21 @@ bool ReferenceGeneratorConfig::operator!=(ReferenceGeneratorConfig const& other)
 
 std::ostream& operator<<(std::ostream& os, ReferenceGeneratorConfig const& config)
 {
-	os << "Enable internal reference current:     \t" << config.m_enable_internal_reference
-	   << std::endl;
-	os << "Enable reference current output:       \t" << config.m_enable_reference_output
-	   << std::endl;
-	os << "Enable reference current input:        \t" << config.m_enable_reference_input
-	   << std::endl;
-	os << "Reference control DAC value:           \t" << config.m_reference_control << std::endl;
-	os << "Resistor control DAC value:            \t" << config.m_resistor_control << std::endl;
-	os << "Reset signal in current generator:     \t" << config.m_enable_reset << std::endl;
-	os << "CapMem block 0 amplifier bias current: \t"
-	   << config.m_capmem_amplifier[CapMemBlockOnDLS(0)] << std::endl;
-	os << "CapMem block 1 amplifier bias current: \t"
-	   << config.m_capmem_amplifier[CapMemBlockOnDLS(1)] << std::endl;
-	os << "CapMem block 2 amplifier bias current: \t"
-	   << config.m_capmem_amplifier[CapMemBlockOnDLS(2)] << std::endl;
-	os << "CapMem block 3 amplifier bias current: \t"
-	   << config.m_capmem_amplifier[CapMemBlockOnDLS(3)] << std::endl;
-	os << "CapMem block 0 offset bias current:    \t" << config.m_capmem_offset[CapMemBlockOnDLS(0)]
-	   << std::endl;
-	os << "CapMem block 1 offset bias current:    \t" << config.m_capmem_offset[CapMemBlockOnDLS(1)]
-	   << std::endl;
-	os << "CapMem block 2 offset bias current:    \t" << config.m_capmem_offset[CapMemBlockOnDLS(2)]
-	   << std::endl;
-	os << "CapMem block 3 offset bias current:    \t" << config.m_capmem_offset[CapMemBlockOnDLS(3)]
-	   << std::endl;
-	os << "CapMem block 0 slope bias current:     \t" << config.m_capmem_slope[CapMemBlockOnDLS(0)]
-	   << std::endl;
-	os << "CapMem block 1 slope bias current:     \t" << config.m_capmem_slope[CapMemBlockOnDLS(1)]
-	   << std::endl;
-	os << "CapMem block 2 slope bias current:     \t" << config.m_capmem_slope[CapMemBlockOnDLS(2)]
-	   << std::endl;
-	os << "CapMem block 3 slope bias current:     \t" << config.m_capmem_slope[CapMemBlockOnDLS(3)]
-	   << std::endl;
-
-	return print_words_for_each_backend(os, config);
+	std::stringstream ss;
+	ss << "ReferenceGeneratorConfig(\n" << std::boolalpha;
+	ss << "\tenable_internal_reference: \t" << config.m_enable_internal_reference << "\n";
+	ss << "\tenable_reference_output:   \t" << config.m_enable_reference_output << "\n";
+	ss << "\tenable_reference_input:    \t" << config.m_enable_reference_input << "\n";
+	ss << "\treference_control:         \t" << config.m_reference_control << "\n";
+	ss << "\tresistor_control:          \t" << config.m_resistor_control << "\n";
+	ss << "\tenable_reset:              \t" << config.m_enable_reset << "\n";
+	ss << "\tcapmem_amplifier:          \t[" << hate::join_string(config.m_capmem_amplifier, ", ")
+	   << "]\n";
+	ss << "\tcapmem_offset:             \t[" << hate::join_string(config.m_capmem_offset, ", ")
+	   << "]\n";
+	ss << "\tcapmem_slope:              \t[" << hate::join_string(config.m_capmem_slope, ", ")
+	   << "]\n)";
+	return (os << ss.str());
 }
 
 template <typename AddressT>

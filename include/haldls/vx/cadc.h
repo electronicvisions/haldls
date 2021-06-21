@@ -139,9 +139,6 @@ struct BackendContainerTrait<CADCConfig>
 template <typename Coordinates>
 class CADCChannelConfig;
 
-template <typename Coordinates>
-std::ostream& operator<<(std::ostream& os, CADCChannelConfig<Coordinates> const& config);
-
 /**
  * CADC container with channel-local digital offset config.
  */
@@ -187,8 +184,11 @@ public:
 	bool operator!=(CADCChannelConfig const& other) const;
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<<>(
-	    std::ostream& os, CADCChannelConfig<Coordinates> const& config);
+	friend std::ostream& operator<<(std::ostream& os, CADCChannelConfig<Coordinates> const& config)
+	{
+		os << "CADCChannelConfig(" << config.m_offset << ")";
+		return os;
+	}
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
@@ -209,8 +209,6 @@ protected:
 
 #define CADC_EXTERN_TEMPLATE(Coordinates)                                                          \
 	extern template class SYMBOL_VISIBLE CADCChannelConfig<Coordinates>;                           \
-	extern template SYMBOL_VISIBLE GENPYBIND(hidden) std::ostream& operator<<<Coordinates>(        \
-	    std::ostream& os, CADCChannelConfig<Coordinates> const& value);                            \
 	extern template SYMBOL_VISIBLE std::array<                                                     \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \
 	    CADCChannelConfig<Coordinates>::config_size_in_words>                                      \

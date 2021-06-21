@@ -387,6 +387,10 @@ public:
 		bool operator==(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
 		bool operator!=(ColumnCorrelationSwitch const& other) const SYMBOL_VISIBLE;
 
+		GENPYBIND(stringstream)
+		friend std::ostream& operator<<(std::ostream& os, ColumnCorrelationSwitch const& config)
+		    SYMBOL_VISIBLE;
+
 	private:
 		friend class cereal::access;
 		template <class Archive>
@@ -534,6 +538,9 @@ public:
 
 		bool operator==(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
 		bool operator!=(ColumnCurrentSwitch const& other) const SYMBOL_VISIBLE;
+
+		GENPYBIND(stringstream)
+		friend std::ostream& operator<<(std::ostream&, ColumnCurrentSwitch const&) SYMBOL_VISIBLE;
 
 	private:
 		friend class cereal::access;

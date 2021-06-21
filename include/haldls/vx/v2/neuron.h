@@ -336,6 +336,8 @@ private:
 	bool m_en_pause;
 };
 
+std::ostream& operator<<(std::ostream&, NeuronConfig::ReadoutSource const&) SYMBOL_VISIBLE;
+
 /**
  * Container to trigger reset of a quad of neurons at once.
  * Currently, also the correlation in the corresponding synapse quad in row zero

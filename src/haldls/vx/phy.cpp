@@ -9,7 +9,8 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
-#include "haldls/vx/print.tcc"
+#include "hate/bitset.h"
+#include "hate/join.h"
 
 namespace haldls {
 namespace vx {
@@ -240,6 +241,39 @@ void PhyConfigBase::cerealize_impl(Archive& ar)
 	ar(CEREAL_NVP(m_enable_auto_init));
 }
 
+std::ostream& operator<<(std::ostream& os, PhyConfigBase const& config)
+{
+	std::stringstream ss;
+	ss << std::boolalpha;
+	ss << "\tenable_bit_slip:                          \t" << config.get_enable_bit_slip() << "\n";
+	ss << "\tmanual_delay:                             \t" << config.get_manual_delay() << "\n";
+	ss << "\tenable_delay_cell_measurement:            \t"
+	   << config.get_enable_delay_cell_measurement() << "\n";
+	ss << "\tenable_initialization_master_mode:        \t"
+	   << config.get_enable_initialization_master_mode() << "\n";
+	ss << "\tenable_manual_tx_data_valid_for_init:     \t"
+	   << config.get_enable_manual_tx_data_valid_for_init() << "\n";
+	ss << "\tenable_force_lvds_power_up:               \t"
+	   << config.get_enable_force_lvds_power_up() << "\n";
+	ss << "\tenable_force_start:                       \t" << config.get_enable_force_start()
+	   << "\n";
+	ss << "\tenable_manual_training_mode:              \t"
+	   << config.get_enable_manual_training_mode() << "\n";
+	ss << "\tenable_ber_loopback:                      \t" << config.get_enable_ber_loopback()
+	   << "\n";
+	ss << "\tvbias:                                    \t" << config.get_vbias() << "\n";
+	ss << "\tdebug_outputs:                            \t" << config.get_debug_outputs() << "\n";
+	ss << "\tenable_transmission_without_idle_pattern: \t"
+	   << config.get_enable_transmission_without_idle_pattern() << "\n";
+	ss << "\tenable_clock_pre_alignment:               \t"
+	   << config.get_enable_clock_pre_alignment() << "\n";
+	ss << "\tenable_des_recal:                         \t" << config.get_enable_des_recal() << "\n";
+	ss << "\tenable_loopback_en:                       \t" << config.get_enable_loopback_en()
+	   << "\n";
+	ss << "\tenable_auto_init:                         \t" << config.get_enable_auto_init() << "\n";
+	return (os << ss.str());
+}
+
 namespace {
 
 struct PhyConfigBaseBitfield
@@ -346,7 +380,11 @@ bool PhyConfigFPGA::operator!=(PhyConfigFPGA const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PhyConfigFPGA)
+std::ostream& operator<<(std::ostream& os, PhyConfigFPGA const& config)
+{
+	os << "PhyConfigFPGA(\n" << static_cast<detail::PhyConfigBase>(config) << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, PhyConfigFPGA::config_size_in_words>
 PhyConfigFPGA::addresses(coordinate_type const& coord)
@@ -390,7 +428,11 @@ bool PhyConfigChip::operator!=(PhyConfigChip const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(PhyConfigChip)
+std::ostream& operator<<(std::ostream& os, PhyConfigChip const& config)
+{
+	os << "PhyConfigChip(\n" << static_cast<detail::PhyConfigBase>(config) << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::JTAGPhyRegisterOnDLS, PhyConfigChip::config_size_in_words>
 PhyConfigChip::addresses(coordinate_type const& coord)
@@ -444,7 +486,14 @@ bool CommonPhyConfigFPGA::operator!=(CommonPhyConfigFPGA const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(CommonPhyConfigFPGA)
+std::ostream& operator<<(std::ostream& os, CommonPhyConfigFPGA const& config)
+{
+	std::stringstream ss;
+	ss << "CommonPhyConfigFPGA(enable_phy: [" << std::boolalpha;
+	hate::join(ss, config.m_enable_phy.begin(), config.m_enable_phy.end(), ", ");
+	ss << "])";
+	return (os << ss.str());
+}
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, CommonPhyConfigFPGA::config_size_in_words>
 CommonPhyConfigFPGA::addresses(coordinate_type const& /*coord*/)
@@ -509,7 +558,14 @@ bool CommonPhyConfigChip::operator!=(CommonPhyConfigChip const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(CommonPhyConfigChip)
+std::ostream& operator<<(std::ostream& os, CommonPhyConfigChip const& config)
+{
+	std::stringstream ss;
+	ss << "CommonPhyConfigChip(enable_phy: [" << std::boolalpha;
+	hate::join(ss, config.m_enable_phy.begin(), config.m_enable_phy.end(), ", ");
+	ss << "])";
+	return (os << ss.str());
+}
 
 std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
@@ -629,11 +685,9 @@ bool PhyStatus::operator!=(PhyStatus const& other) const
 
 std::ostream& operator<<(std::ostream& os, PhyStatus const& config)
 {
-	os << config.m_crc_error_count << std::endl;
-	os << config.m_online_time << std::endl;
-	os << config.m_rx_dropped_count << std::endl;
-	os << config.m_rx_count << std::endl;
-	os << config.m_tx_count;
+	os << "PhyStatus(" << config.m_crc_error_count << ", " << config.m_online_time << ", "
+	   << config.m_rx_dropped_count << ", " << config.m_rx_count << ", " << config.m_tx_count
+	   << ")";
 	return os;
 }
 

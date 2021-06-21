@@ -318,6 +318,10 @@ public:
 		bool operator==(SourceMultiplexer const& other) const SYMBOL_VISIBLE;
 		bool operator!=(SourceMultiplexer const& other) const SYMBOL_VISIBLE;
 
+		GENPYBIND(stringstream)
+		friend std::ostream& operator<<(std::ostream& os, SourceMultiplexer const& config)
+		    SYMBOL_VISIBLE;
+
 	private:
 		friend class ReadoutSourceSelection;
 		friend class cereal::access;

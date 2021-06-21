@@ -6,7 +6,7 @@
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/spi.h"
 #include "haldls/cerealization.tcc"
-#include "haldls/vx/print.tcc"
+#include "hate/join.h"
 
 namespace haldls {
 namespace vx {
@@ -155,7 +155,105 @@ bool ShiftRegister::operator!=(ShiftRegister const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(ShiftRegister)
+std::ostream& operator<<(std::ostream& os, ShiftRegister::AnalogReadoutMux1Input const& config)
+{
+	switch (config) {
+		case ShiftRegister::AnalogReadoutMux1Input::off: {
+			os << "off";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux1Input::readout_chain_0: {
+			os << "readout_chain_0";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux1Input::readout_chain_1: {
+			os << "readout_chain_1";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux1Input::mux_rfu_0: {
+			os << "mux_rfu_0";
+			break;
+		}
+		default: {
+			throw std::logic_error("Unknown AnalogReadoutMux1Input.");
+		}
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, ShiftRegister::AnalogReadoutMux2Input const& config)
+{
+	switch (config) {
+		case ShiftRegister::AnalogReadoutMux2Input::off: {
+			os << "off";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux2Input::v_reset: {
+			os << "v_reset";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux2Input::vdd_res_meas: {
+			os << "vdd_res_meas";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux2Input::mux_dac_25: {
+			os << "mux_dac_25";
+			break;
+		}
+		default: {
+			throw std::logic_error("Unknown AnalogReadoutMux2Input.");
+		}
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, ShiftRegister::AnalogReadoutMux3Input const& config)
+{
+	switch (config) {
+		case ShiftRegister::AnalogReadoutMux3Input::off: {
+			os << "off";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux3Input::i_ref: {
+			os << "i_ref";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux3Input::mux_rfu_1: {
+			os << "mux_rfu_1";
+			break;
+		}
+		case ShiftRegister::AnalogReadoutMux3Input::mux_rfu_2: {
+			os << "mux_rfu_2";
+			break;
+		}
+		default: {
+			throw std::logic_error("Unknown AnalogReadoutMux3Input.");
+		}
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, ShiftRegister const& config)
+{
+	std::stringstream ss;
+	ss << "ShiftRegister(\n";
+	ss << "\tmux_1:                   \t" << config.m_mux_1 << "\n";
+	ss << "\tmux_2:                   \t" << config.m_mux_2 << "\n";
+	ss << "\tmux_3:                   \t" << config.m_mux_3 << "\n";
+	ss << "\tenable_i_ref_board:      \t" << std::boolalpha << config.m_enable_i_ref_board << "\n";
+	ss << "\tenable_measure_i_ref:    \t" << config.m_enable_measure_i_ref << "\n";
+	ss << "\tenable_dac_to_readout_0: \t" << config.m_enable_dac_to_readout_0 << "\n";
+	ss << "\tenable_dac_to_readout_1: \t" << config.m_enable_dac_to_readout_1 << "\n";
+	ss << "\tenable_led:              \t[";
+	hate::join(ss, config.m_enable_led.begin(), config.m_enable_led.end(), ", ");
+	ss << "]\n";
+	ss << "\tenable_adc_power_down:   \t" << config.m_enable_adc_power_down << "\n";
+	ss << "\tenable_adc_reset:        \t" << config.m_enable_adc_reset << "\n";
+	ss << "\tenable_vdd:              \t[";
+	hate::join(ss, config.m_enable_vdd.begin(), config.m_enable_vdd.end(), ", ");
+	ss << "]\n)";
+	return (os << ss.str());
+}
 
 std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, ShiftRegister::config_size_in_words>
 ShiftRegister::addresses(coordinate_type const& /*coord*/)
@@ -278,7 +376,11 @@ bool DACChannel::operator!=(DACChannel const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(DACChannel)
+std::ostream& operator<<(std::ostream& os, DACChannel const& config)
+{
+	os << "DACChannel(" << config.m_value << ")";
+	return os;
+}
 
 std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::config_size_in_words>
 DACChannel::addresses(coordinate_type const& coord)
@@ -331,7 +433,15 @@ bool DACControl::operator!=(DACControl const& other) const
 	return !(*this == other);
 }
 
-HALDLS_VX_DEFAULT_OSTREAM_OP(DACControl)
+std::ostream& operator<<(std::ostream& os, DACControl const& config)
+{
+	std::stringstream ss;
+	ss << "DACControl(enable_channel: [";
+	ss << std::boolalpha;
+	hate::join(ss, config.m_enable_channel.begin(), config.m_enable_channel.end(), ", ");
+	ss << "])";
+	return (os << ss.str());
+}
 
 std::array<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard, DACControl::config_size_in_words>
 DACControl::addresses(coordinate_type const& coord)
