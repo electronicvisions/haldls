@@ -6,6 +6,7 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/pll.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/constants.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
@@ -26,6 +27,14 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 class GENPYBIND(visible) ADPLL
 {
 public:
+	/** Outputs of the ADPLL. */
+	enum class Output
+	{
+		core_0,
+		core_1,
+		dco
+	};
+
 	typedef halco::hicann_dls::vx::ADPLLOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
@@ -281,6 +290,15 @@ public:
 	GENPYBIND(setter_for(use_external_config))
 	void set_use_external_config(bool value) SYMBOL_VISIBLE;
 
+	/**
+	 * Calculate the frequency for the different outputs on the ADPLL. Frequencies are returned in
+	 * Hz.
+	 * @param output Ouput for which the frequency shoud be returned
+	 * @param f_ref Nominal reference frequency the PLL uses as input
+	 */
+	double calculate_output_frequency(
+	    Output const& output, double const& f_ref = nominal_pll_f_reference) const SYMBOL_VISIBLE;
+
 	bool operator==(ADPLL const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ADPLL const& other) const SYMBOL_VISIBLE;
 
@@ -352,14 +370,6 @@ public:
 	class ClockOutput
 	{
 	public:
-		/** Possible ADPLL outputs to route to output. */
-		enum class ADPLLOutput
-		{
-			core_0,
-			core_1,
-			dco
-		};
-
 		/** Default construct PLL clock output. */
 		ClockOutput() SYMBOL_VISIBLE;
 
@@ -412,14 +422,14 @@ public:
 		 * @return ADPLL output
 		 */
 		GENPYBIND(getter_for(select_adpll_output))
-		ADPLLOutput get_select_adpll_output() const SYMBOL_VISIBLE;
+		ADPLL::Output get_select_adpll_output() const SYMBOL_VISIBLE;
 
 		/**
 		 * Set which output of selected ADPLL to route to output.
 		 * @param value ADPLL output
 		 */
 		GENPYBIND(setter_for(select_adpll_output))
-		void set_select_adpll_output(ADPLLOutput const value) SYMBOL_VISIBLE;
+		void set_select_adpll_output(ADPLL::Output const value) SYMBOL_VISIBLE;
 
 		bool operator==(ClockOutput const& other) const SYMBOL_VISIBLE;
 		bool operator!=(ClockOutput const& other) const SYMBOL_VISIBLE;
@@ -432,7 +442,7 @@ public:
 		bool m_enable_output;
 		bool m_enable_bypass;
 		halco::hicann_dls::vx::ADPLLOnDLS m_adpll;
-		ADPLLOutput m_adpll_output;
+		ADPLL::Output m_adpll_output;
 	};
 
 	typedef halco::hicann_dls::vx::PLLClockOutputBlockOnDLS coordinate_type;

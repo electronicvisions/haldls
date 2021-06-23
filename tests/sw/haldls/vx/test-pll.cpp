@@ -251,8 +251,7 @@ TEST(PLLClockOutputBlock, General)
 		value.set_enable_output(!value.get_enable_output());
 		value.set_enable_bypass(!value.get_enable_bypass());
 		value.set_select_adpll(draw_ranged_non_default_value<ADPLLOnDLS>(value.get_select_adpll()));
-		value.set_select_adpll_output(
-		    PLLClockOutputBlock::ClockOutput::ADPLLOutput::dco); // != default
+		value.set_select_adpll_output(ADPLL::Output::dco); // != default
 
 		config.set_clock_output(output, value);
 		EXPECT_EQ(config.get_clock_output(output), value);
@@ -346,8 +345,7 @@ TEST(PLLClockOutputBlock, CerealizeCoverage)
 		value.set_enable_output(!value.get_enable_output());
 		value.set_enable_bypass(!value.get_enable_bypass());
 		value.set_select_adpll(draw_ranged_non_default_value<ADPLLOnDLS>(value.get_select_adpll()));
-		value.set_select_adpll_output(
-		    PLLClockOutputBlock::ClockOutput::ADPLLOutput::dco); // != default
+		value.set_select_adpll_output(ADPLL::Output::dco); // != default
 
 		obj1.set_clock_output(output, value);
 	}

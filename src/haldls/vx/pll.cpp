@@ -214,6 +214,22 @@ void ADPLL::set_use_external_config(bool const value)
 	m_use_external_config = value;
 }
 
+double ADPLL::calculate_output_frequency(
+    Output const& output, double const& f_ref /* PLL_f_reference*/) const
+{
+	double frequency_dco = m_pre_div_p0 * m_loop_div_n * f_ref;
+	switch (output) {
+		case Output::dco:
+			return frequency_dco / m_pre_div_p2;
+		case Output::core_0:
+			return frequency_dco / (m_pre_div_p1 * m_core_div_m0);
+		case Output::core_1:
+			return frequency_dco / (m_pre_div_p1 * m_core_div_m1);
+		default:
+			throw std::runtime_error("Unsupported ADPLL output was chosen.");
+	}
+}
+
 bool ADPLL::operator==(ADPLL const& other) const
 {
 	return (
@@ -464,13 +480,12 @@ void PLLClockOutputBlock::ClockOutput::set_select_adpll(
 	m_adpll = value;
 }
 
-PLLClockOutputBlock::ClockOutput::ADPLLOutput
-PLLClockOutputBlock::ClockOutput::get_select_adpll_output() const
+ADPLL::Output PLLClockOutputBlock::ClockOutput::get_select_adpll_output() const
 {
 	return m_adpll_output;
 }
 
-void PLLClockOutputBlock::ClockOutput::set_select_adpll_output(ADPLLOutput const value)
+void PLLClockOutputBlock::ClockOutput::set_select_adpll_output(ADPLL::Output const value)
 {
 	m_adpll_output = value;
 }
@@ -512,13 +527,13 @@ PLLClockOutputBlock::PLLClockOutputBlock() : m_output()
 	    halco::hicann_dls::vx::ADPLLOnDLS(0));
 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::serdes_ser_send_clk]
-	    .set_select_adpll_output(ClockOutput::ADPLLOutput::core_0);
+	    .set_select_adpll_output(ADPLL::Output::core_0);
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::phy_ref_clk].set_select_adpll_output(
-	    ClockOutput::ADPLLOutput::core_0);
+	    ADPLL::Output::core_0);
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::ppu_clk].set_select_adpll_output(
-	    ClockOutput::ADPLLOutput::core_1);
+	    ADPLL::Output::core_1);
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS::madc_clk].set_select_adpll_output(
-	    ClockOutput::ADPLLOutput::dco);
+	    ADPLL::Output::dco);
 }
 
 PLLClockOutputBlock::ClockOutput const& PLLClockOutputBlock::get_clock_output(
@@ -689,7 +704,7 @@ void PLLClockOutputBlock::decode(std::array<WordT, config_size_in_words> const& 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(0)].set_select_adpll(
 	    halco::hicann_dls::vx::ADPLLOnDLS(bitfield.u.m.select_adpll_0));
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(0)].set_select_adpll_output(
-	    static_cast<ClockOutput::ADPLLOutput>(bitfield.u.m.select_output_adpll_0));
+	    static_cast<ADPLL::Output>(bitfield.u.m.select_output_adpll_0));
 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(1)].set_enable_output(
 	    bitfield.u.m.enable_output_1);
@@ -698,7 +713,7 @@ void PLLClockOutputBlock::decode(std::array<WordT, config_size_in_words> const& 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(1)].set_select_adpll(
 	    halco::hicann_dls::vx::ADPLLOnDLS(bitfield.u.m.select_adpll_1));
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(1)].set_select_adpll_output(
-	    static_cast<ClockOutput::ADPLLOutput>(bitfield.u.m.select_output_adpll_1));
+	    static_cast<ADPLL::Output>(bitfield.u.m.select_output_adpll_1));
 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(2)].set_enable_output(
 	    bitfield.u.m.enable_output_2);
@@ -707,7 +722,7 @@ void PLLClockOutputBlock::decode(std::array<WordT, config_size_in_words> const& 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(2)].set_select_adpll(
 	    halco::hicann_dls::vx::ADPLLOnDLS(bitfield.u.m.select_adpll_2));
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(2)].set_select_adpll_output(
-	    static_cast<ClockOutput::ADPLLOutput>(bitfield.u.m.select_output_adpll_2));
+	    static_cast<ADPLL::Output>(bitfield.u.m.select_output_adpll_2));
 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(3)].set_enable_output(
 	    bitfield.u.m.enable_output_3);
@@ -716,7 +731,7 @@ void PLLClockOutputBlock::decode(std::array<WordT, config_size_in_words> const& 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(3)].set_select_adpll(
 	    halco::hicann_dls::vx::ADPLLOnDLS(bitfield.u.m.select_adpll_3));
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(3)].set_select_adpll_output(
-	    static_cast<ClockOutput::ADPLLOutput>(bitfield.u.m.select_output_adpll_3));
+	    static_cast<ADPLL::Output>(bitfield.u.m.select_output_adpll_3));
 }
 
 template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
