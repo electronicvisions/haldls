@@ -1,6 +1,8 @@
 #include "lola/vx/v3/synapse.h"
 
 #include "haldls/cerealization.tcc"
+#include "hate/indent.h"
+#include "hate/join.h"
 #include "lola/vx/cerealization.tcc"
 #include "lola/vx/gray_scale.h"
 #include "lola/vx/hana.h"
@@ -30,6 +32,52 @@ std::string print_row(ValuesT const& values)
 }
 
 } // namespace
+
+
+ColumnCorrelationRow::ColumnCorrelationRow() {}
+
+bool ColumnCorrelationRow::operator==(ColumnCorrelationRow const& other) const
+{
+	return equal(*this, other);
+}
+
+bool ColumnCorrelationRow::operator!=(ColumnCorrelationRow const& other) const
+{
+	return unequal(*this, other);
+}
+
+std::ostream& operator<<(std::ostream& os, ColumnCorrelationRow const& row)
+{
+	os << "ColumnCorrelationRow(" << std::endl;
+	std::stringstream ss;
+	ss << hate::join_string(row.values, "\n");
+	os << hate::indent(ss.str(), "\t") << "\n";
+	os << ")";
+	return os;
+}
+
+
+ColumnCurrentRow::ColumnCurrentRow() {}
+
+bool ColumnCurrentRow::operator==(ColumnCurrentRow const& other) const
+{
+	return equal(*this, other);
+}
+
+bool ColumnCurrentRow::operator!=(ColumnCurrentRow const& other) const
+{
+	return unequal(*this, other);
+}
+
+std::ostream& operator<<(std::ostream& os, ColumnCurrentRow const& row)
+{
+	os << "ColumnCurrentRow(" << std::endl;
+	std::stringstream ss;
+	ss << hate::join_string(row.values, "\n");
+	os << hate::indent(ss.str(), "\t") << "\n";
+	os << ")";
+	return os;
+}
 
 
 SynapseWeightRow::SynapseWeightRow() {}
@@ -280,6 +328,8 @@ std::ostream& operator<<(std::ostream& os, CorrelationResetRow const& /* row */)
 
 } // namespace lola::vx::v3
 
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::ColumnCorrelationRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::ColumnCurrentRow)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseRow)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseWeightRow)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseLabelRow)

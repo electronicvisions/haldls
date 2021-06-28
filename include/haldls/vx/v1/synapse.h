@@ -29,6 +29,8 @@ class SynapseRow;
 class SynapseWeightRow;
 class SynapseLabelRow;
 class SynapseCorrelationCalibRow;
+class ColumnCorrelationRow;
+class ColumnCurrentRow;
 } // namespace lola::vx::v1
 
 namespace haldls::vx::v1 GENPYBIND_TAG_HALDLS_VX_V1 {
@@ -433,6 +435,8 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::v1::ColumnCorrelationRow>;
+
 	halco::common::typed_array<ColumnCorrelationSwitch, halco::hicann_dls::vx::EntryOnQuad>
 	    m_switches;
 };
@@ -583,6 +587,8 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
+
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::v1::ColumnCurrentRow>;
 
 	halco::common::typed_array<ColumnCurrentSwitch, halco::hicann_dls::vx::EntryOnQuad> m_switches;
 };

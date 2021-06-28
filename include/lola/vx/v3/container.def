@@ -11,8 +11,8 @@
  *       stadls::vx::v3::Dumper and stadls::vx::v3::DumperDone in `src/stadls/vx/v3/dumper.cpp`.
  */
 
-PLAYBACK_CONTAINER(Crossbar, lola::vx::v3::Crossbar)
 PLAYBACK_CONTAINER(AtomicNeuron, lola::vx::v3::AtomicNeuron)
+PLAYBACK_CONTAINER(Crossbar, lola::vx::v3::Crossbar)
 PLAYBACK_CONTAINER(DACControlBlock, lola::vx::v3::DACControlBlock)
 PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::v3::DACChannelBlock)
 PLAYBACK_CONTAINER(CADCSampleRow, lola::vx::v3::CADCSampleRow)
@@ -21,6 +21,8 @@ PLAYBACK_CONTAINER(SynapseMatrix, lola::vx::v3::SynapseMatrix)
 PLAYBACK_CONTAINER(SynapseWeightMatrix, lola::vx::v3::SynapseWeightMatrix)
 PLAYBACK_CONTAINER(SynapseLabelMatrix, lola::vx::v3::SynapseLabelMatrix)
 PLAYBACK_CONTAINER(SynapseCorrelationCalibMatrix, lola::vx::v3::SynapseCorrelationCalibMatrix)
+PLAYBACK_CONTAINER(ColumnCorrelationRow, lola::vx::v3::ColumnCorrelationRow)
+PLAYBACK_CONTAINER(ColumnCurrentRow, lola::vx::v3::ColumnCurrentRow)
 PLAYBACK_CONTAINER(CorrelationResetRow, lola::vx::v3::CorrelationResetRow)
 PLAYBACK_CONTAINER(SynapseWeightRow, lola::vx::v3::SynapseWeightRow)
 PLAYBACK_CONTAINER(SynapseLabelRow, lola::vx::v3::SynapseLabelRow)

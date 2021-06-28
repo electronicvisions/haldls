@@ -29,6 +29,8 @@ class SynapseRow;
 class SynapseWeightRow;
 class SynapseLabelRow;
 class SynapseCorrelationCalibRow;
+class ColumnCorrelationRow;
+class ColumnCurrentRow;
 } // namespace lola::vx::v2
 
 namespace haldls::vx::v2 GENPYBIND_TAG_HALDLS_VX_V2 {
@@ -435,6 +437,8 @@ private:
 
 	halco::common::typed_array<ColumnCorrelationSwitch, halco::hicann_dls::vx::EntryOnQuad>
 	    m_switches;
+
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::v2::ColumnCorrelationRow>;
 };
 
 class GENPYBIND(visible) ColumnCurrentQuad : public DifferentialWriteTrait
@@ -584,6 +588,8 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version);
 
 	halco::common::typed_array<ColumnCurrentSwitch, halco::hicann_dls::vx::EntryOnQuad> m_switches;
+
+	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::v2::ColumnCurrentRow>;
 };
 
 

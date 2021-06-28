@@ -17,6 +17,59 @@
 
 namespace lola::vx::v1 GENPYBIND_TAG_LOLA_VX_V1 {
 
+class GENPYBIND(visible) ColumnCorrelationRow : public haldls::vx::DifferentialWriteTrait
+{
+public:
+	typedef std::false_type has_local_data;
+	typedef halco::hicann_dls::vx::v1::ColumnCorrelationRowOnDLS coordinate_type;
+
+	typedef haldls::vx::v1::ColumnCorrelationQuad::ColumnCorrelationSwitch Value GENPYBIND(visible);
+
+	typedef halco::common::typed_heap_array<Value, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>
+	    Values GENPYBIND(opaque(false));
+
+	ColumnCorrelationRow() SYMBOL_VISIBLE;
+
+	Values values;
+
+	bool operator==(ColumnCorrelationRow const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ColumnCorrelationRow const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ColumnCorrelationRow const& row)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend struct haldls::vx::detail::VisitPreorderImpl<ColumnCorrelationRow>;
+};
+
+
+class GENPYBIND(visible) ColumnCurrentRow : public haldls::vx::DifferentialWriteTrait
+{
+public:
+	typedef std::false_type has_local_data;
+	typedef halco::hicann_dls::vx::v1::ColumnCurrentRowOnDLS coordinate_type;
+
+	typedef haldls::vx::v1::ColumnCurrentQuad::ColumnCurrentSwitch Value GENPYBIND(visible);
+
+	typedef halco::common::typed_heap_array<Value, halco::hicann_dls::vx::v1::SynapseOnSynapseRow>
+	    Values GENPYBIND(opaque(false));
+
+	ColumnCurrentRow() SYMBOL_VISIBLE;
+
+	Values values;
+
+	bool operator==(ColumnCurrentRow const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ColumnCurrentRow const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ColumnCurrentRow const& row) SYMBOL_VISIBLE;
+
+private:
+	friend struct haldls::vx::detail::VisitPreorderImpl<ColumnCurrentRow>;
+};
+
+
 class GENPYBIND(visible) SynapseWeightRow : public haldls::vx::DifferentialWriteTrait
 {
 public:
@@ -355,6 +408,99 @@ private:
 } // namespace lola::vx
 
 namespace haldls::vx::detail {
+
+template <>
+struct BackendContainerTrait<lola::vx::v1::ColumnCorrelationRow>
+    : public BackendContainerBase<
+          lola::vx::v1::ColumnCorrelationRow,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct VisitPreorderImpl<lola::vx::v1::ColumnCorrelationRow>
+{
+	typedef lola::vx::v1::ColumnCorrelationRow container_type;
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::v1;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			haldls::vx::v1::ColumnCorrelationQuad quad_config;
+			for (auto const syn : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				quad_config.m_switches[syn] = config.values[syn_on_row];
+			}
+			visit_preorder(
+			    quad_config,
+			    ColumnCorrelationQuadOnDLS(
+			        quad.toColumnCorrelationQuadOnSynram(), coord.toSynramOnDLS()),
+			    visitor);
+			// only on alteration
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					config.values[syn_on_row] = quad_config.m_switches[syn];
+				}
+			}
+		}
+	}
+};
+
+
+template <>
+struct BackendContainerTrait<lola::vx::v1::ColumnCurrentRow>
+    : public BackendContainerBase<
+          lola::vx::v1::ColumnCurrentRow,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct VisitPreorderImpl<lola::vx::v1::ColumnCurrentRow>
+{
+	typedef lola::vx::v1::ColumnCurrentRow container_type;
+
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    typename container_type::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::v1;
+
+		visitor(coord, config);
+
+		for (auto const quad : iter_all<SynapseQuadColumnOnDLS>()) {
+			haldls::vx::v1::ColumnCurrentQuad quad_config;
+			for (auto const syn : iter_all<EntryOnQuad>()) {
+				SynapseOnSynapseRow const syn_on_row(syn, quad);
+				quad_config.m_switches[syn] = config.values[syn_on_row];
+			}
+			visit_preorder(
+			    quad_config,
+			    ColumnCurrentQuadOnDLS(quad.toColumnCurrentQuadOnSynram(), coord.toSynramOnDLS()),
+			    visitor);
+			// only on alteration
+			if constexpr (!std::is_same<ContainerT, container_type const>::value) {
+				for (auto const syn : iter_all<EntryOnQuad>()) {
+					SynapseOnSynapseRow const syn_on_row(syn, quad);
+					config.values[syn_on_row] = quad_config.m_switches[syn];
+				}
+			}
+		}
+	}
+};
+
 
 template <>
 struct BackendContainerTrait<lola::vx::v1::SynapseWeightRow>
@@ -781,6 +927,8 @@ struct VisitPreorderImpl<lola::vx::v1::CorrelationResetRow>
 
 } // namespace haldls::vx::detail
 
+BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::ColumnCorrelationRow, values);
+BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::ColumnCurrentRow, values);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::SynapseRow, weights, labels, time_calibs, amp_calibs);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::SynapseWeightRow, values);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::SynapseLabelRow, values);
@@ -791,6 +939,8 @@ BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::SynapseCorrelationCalibMatrix, time_calibs
 BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::SynapseMatrix, weights, labels, time_calibs, amp_calibs);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::v1::CorrelationResetRow);
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::ColumnCorrelationRow)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::ColumnCurrentRow)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseRow)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseWeightRow)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::SynapseLabelRow)
