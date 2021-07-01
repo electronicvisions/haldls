@@ -295,6 +295,7 @@ public:
 	 * Hz.
 	 * @param output Ouput for which the frequency shoud be returned
 	 * @param f_ref Nominal reference frequency the PLL uses as input
+	 * @return Frequency in Hz at specified output
 	 */
 	double calculate_output_frequency(
 	    Output const& output, double const& f_ref = nominal_pll_f_reference) const SYMBOL_VISIBLE;
