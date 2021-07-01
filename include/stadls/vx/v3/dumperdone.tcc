@@ -44,6 +44,11 @@ void DumperDone::serialize(Archive& ar, std::uint32_t const)
 	         Archive, typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>},
 	    {hate::full_name<std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>>(),
 	     &serialize_coco<Archive, halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>},
+	    {"std::pair<halco::hicann_dls::vx::CommonCorrelationConfigOnDLS, "
+	     "haldls::vx::CommonCorrelationConfig>",
+	     &serialize_coco<
+	         Archive, halco::hicann_dls::vx::CommonCorrelationConfigOnDLS,
+	         haldls::vx::v3::CommonCorrelationConfig>},
 	    {hate::full_name<std::pair<
 	         halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, haldls::vx::PollingOmnibusBlock>>(),
 	     &serialize_coco<

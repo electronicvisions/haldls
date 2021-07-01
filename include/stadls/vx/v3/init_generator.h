@@ -218,7 +218,7 @@ public:
 
 	/** Set common correlation config. */
 	typedef halco::common::typed_array<
-	    haldls::vx::CommonCorrelationConfig,
+	    haldls::vx::v3::CommonCorrelationConfig,
 	    halco::hicann_dls::vx::v3::CommonCorrelationConfigOnDLS>
 	    common_correlation_config_type GENPYBIND(opaque(false));
 	common_correlation_config_type common_correlation_config;

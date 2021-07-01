@@ -1,15 +1,15 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "haldls/vx/correlation.h"
+#include "haldls/vx/v1/correlation.h"
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/common.h"
+#include "haldls/vx/v1/common.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 
-using namespace haldls::vx;
+using namespace haldls::vx::v1;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 using namespace fisch::vx::word_access_type;
@@ -44,7 +44,8 @@ TEST(CommonCorrelationConfig, General)
 	}
 
 	{
-		bool value = !config.get_reset_mode();
+		auto value = CommonCorrelationConfig::ResetMode::auto_calibrating;
+		EXPECT_NE(value, config.get_reset_mode());
 		config.set_reset_mode(value);
 		EXPECT_EQ(config.get_reset_mode(), value);
 	}
@@ -67,7 +68,7 @@ TEST(CommonCorrelationConfig, EncodeDecode)
 	config.set_sense_delay(CommonCorrelationConfig::SenseDelay(100));
 	config.set_reset_duration(CommonCorrelationConfig::ResetDuration(500));
 	config.set_reset_fall_time(CommonCorrelationConfig::ResetFallTime(30));
-	config.set_reset_mode(true);
+	config.set_reset_mode(CommonCorrelationConfig::ResetMode::auto_calibrating);
 
 	auto coord = CommonCorrelationConfigOnDLS::bottom;
 
@@ -123,7 +124,7 @@ TEST(CommonCorrelationConfig, CerealizeCoverage)
 	}
 
 	{
-		bool value = !obj1.get_reset_mode();
+		auto value = CommonCorrelationConfig::ResetMode::auto_calibrating;
 		obj1.set_reset_mode(value);
 	}
 
