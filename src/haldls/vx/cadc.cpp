@@ -72,14 +72,14 @@ struct CADCConfigBitfield
 {
 	union
 	{
-		detail::raw_omnibus_type raw;
+		fisch::vx::OmnibusData::value_type raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			detail::raw_omnibus_type enable       :  1;
-			detail::raw_omnibus_type /* unused */ :  3;
-			detail::raw_omnibus_type reset_wait   :  8;
-			detail::raw_omnibus_type dead_time    :  8;
-			detail::raw_omnibus_type /* unused */ : 12;
+			fisch::vx::OmnibusData::value_type enable       :  1;
+			fisch::vx::OmnibusData::value_type /* unused */ :  3;
+			fisch::vx::OmnibusData::value_type reset_wait   :  8;
+			fisch::vx::OmnibusData::value_type dead_time    :  8;
+			fisch::vx::OmnibusData::value_type /* unused */ : 12;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -87,7 +87,10 @@ struct CADCConfigBitfield
 
 	CADCConfigBitfield() { u.raw = 0u; }
 
-	CADCConfigBitfield(detail::raw_omnibus_type data) { u.raw = data; }
+	CADCConfigBitfield(fisch::vx::OmnibusData::value_type data)
+	{
+		u.raw = data;
+	}
 };
 
 } // namespace

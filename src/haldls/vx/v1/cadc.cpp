@@ -54,13 +54,13 @@ struct CADCSampleQuadBitfield
 {
 	union
 	{
-		haldls::vx::detail::raw_omnibus_type raw;
+		fisch::vx::OmnibusData::value_type raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			haldls::vx::detail::raw_omnibus_type sample_3 : 8;
-			haldls::vx::detail::raw_omnibus_type sample_2 : 8;
-			haldls::vx::detail::raw_omnibus_type sample_1 : 8;
-			haldls::vx::detail::raw_omnibus_type sample_0 : 8;
+			fisch::vx::OmnibusData::value_type sample_3 : 8;
+			fisch::vx::OmnibusData::value_type sample_2 : 8;
+			fisch::vx::OmnibusData::value_type sample_1 : 8;
+			fisch::vx::OmnibusData::value_type sample_0 : 8;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -71,7 +71,7 @@ struct CADCSampleQuadBitfield
 		u.raw = 0u;
 	}
 
-	CADCSampleQuadBitfield(haldls::vx::detail::raw_omnibus_type data)
+	CADCSampleQuadBitfield(fisch::vx::OmnibusData::value_type data)
 	{
 		u.raw = data;
 	}

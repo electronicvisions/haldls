@@ -52,11 +52,11 @@ struct CADCChannelConfigBitfield
 {
 	union
 	{
-		detail::raw_omnibus_type raw;
+		fisch::vx::OmnibusData::value_type raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			detail::raw_omnibus_type offset       :  8;
-			detail::raw_omnibus_type /* unused */ : 24;
+			fisch::vx::OmnibusData::value_type offset       :  8;
+			fisch::vx::OmnibusData::value_type /* unused */ : 24;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -67,7 +67,7 @@ struct CADCChannelConfigBitfield
 		u.raw = 0u;
 	}
 
-	CADCChannelConfigBitfield(detail::raw_omnibus_type data)
+	CADCChannelConfigBitfield(fisch::vx::OmnibusData::value_type data)
 	{
 		u.raw = data;
 	}
