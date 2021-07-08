@@ -36,12 +36,12 @@ public:
 	/**
 	 * Default value for LDO version 1.
 	 */
-	static const GENPYBIND(visible) DACChannelBlock default_ldo_1;
+	static const SYMBOL_VISIBLE GENPYBIND(visible) DACChannelBlock default_ldo_1;
 
 	/**
 	 * Default value for LDO version 2.
 	 */
-	static const GENPYBIND(visible) DACChannelBlock default_ldo_2;
+	static const SYMBOL_VISIBLE GENPYBIND(visible) DACChannelBlock default_ldo_2;
 
 	/**
 	 * Setter for DAC values in volts.

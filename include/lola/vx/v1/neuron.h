@@ -346,10 +346,10 @@ public:
 		 */
 		bool enable_post_overwrite;
 
-		static const EventRouting disabled;
-		static const EventRouting enabled;
-		static const EventRouting bypass_exc;
-		static const EventRouting bypass_inh;
+		static const EventRouting disabled SYMBOL_VISIBLE;
+		static const EventRouting enabled SYMBOL_VISIBLE;
+		static const EventRouting bypass_exc SYMBOL_VISIBLE;
+		static const EventRouting bypass_inh SYMBOL_VISIBLE;
 
 		bool operator==(EventRouting const& other) const SYMBOL_VISIBLE;
 		bool operator!=(EventRouting const& other) const SYMBOL_VISIBLE;

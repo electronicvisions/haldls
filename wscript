@@ -163,7 +163,7 @@ def build(bld):
                                        excl=f'src/lola/vx/v{hx_version}/pylola.cpp'),
             install_path = '${PREFIX}/lib',
             use = [f'haldls_vx_v{hx_version}', 'ELF'],
-            uselib = 'LOLA_LIBRARIES',
+            uselib = 'HALDLS_LIBRARIES',
         )
 
         bld(

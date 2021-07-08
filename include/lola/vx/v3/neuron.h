@@ -322,10 +322,10 @@ public:
 		    Address address,
 		    bool enable_post_overwrite) SYMBOL_VISIBLE;
 
-		static const EventRouting disabled;
-		static const EventRouting enabled;
-		static const EventRouting bypass_exc;
-		static const EventRouting bypass_inh;
+		static const EventRouting disabled SYMBOL_VISIBLE;
+		static const EventRouting enabled SYMBOL_VISIBLE;
+		static const EventRouting bypass_exc SYMBOL_VISIBLE;
+		static const EventRouting bypass_inh SYMBOL_VISIBLE;
 
 		bool operator==(EventRouting const& other) const SYMBOL_VISIBLE;
 		bool operator!=(EventRouting const& other) const SYMBOL_VISIBLE;
@@ -475,7 +475,7 @@ public:
 	Bayesian bayesian;
 
 	/** Allow converting to/from a haldls neuron config. */
-	explicit operator haldls::vx::v3::NeuronConfig() const;
+	explicit operator haldls::vx::v3::NeuronConfig() const SYMBOL_VISIBLE;
 	GENPYBIND_MANUAL({
 		parent.def("asNeuronConfig", [](GENPYBIND_PARENT_TYPE const& self) {
 			return static_cast<haldls::vx::v3::NeuronConfig>(self);
@@ -485,7 +485,7 @@ public:
 	void set_from(haldls::vx::v3::NeuronConfig const& neuron_config) SYMBOL_VISIBLE;
 
 	/** Allow converting to/from a haldls neuron backend config. */
-	explicit operator haldls::vx::v3::NeuronBackendConfig() const;
+	explicit operator haldls::vx::v3::NeuronBackendConfig() const SYMBOL_VISIBLE;
 	GENPYBIND_MANUAL({
 		parent.def("asNeuronBackendConfig", [](GENPYBIND_PARENT_TYPE const& self) {
 			return static_cast<haldls::vx::v3::NeuronBackendConfig>(self);
