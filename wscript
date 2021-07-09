@@ -143,7 +143,7 @@ def build(bld):
         uselib = 'HALDLS_LIBRARIES',
     )
 
-    reduced_jobs = max(bld.jobs // 8, 1)
+    reduced_jobs = max(bld.jobs // 2, 1)
     bld.env['stadls_semaphore'] = TaskSemaphore(reduced_jobs)
 
     bld(
