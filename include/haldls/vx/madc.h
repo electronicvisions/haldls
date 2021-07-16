@@ -461,9 +461,10 @@ public:
 	/**
 	 * Accessors for the configuration of the pseudo-differential reference antenna.
 	 */
-	GENPYBIND(getter_for(enable_pseudo_differential_reference), return_value_policy(reference))
+	GENPYBIND(
+	    getter_for(enable_pseudo_differential_reference), return_value_policy(reference_internal))
 	hemisphere_type const& get_enable_pseudo_differential_reference() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_pseudo_differential_reference), return_value_policy(reference))
+	GENPYBIND(setter_for(enable_pseudo_differential_reference))
 	void set_enable_pseudo_differential_reference(hemisphere_type const& value) SYMBOL_VISIBLE;
 
 	/**
@@ -510,14 +511,14 @@ public:
 	GENPYBIND(setter_for(enable_iconv_amplifier))
 	void set_enable_iconv_amplifier(bool const value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(connect_iconv_neuron), return_value_policy(reference))
+	GENPYBIND(getter_for(connect_iconv_neuron), return_value_policy(reference_internal))
 	hemisphere_type const& get_connect_iconv_neuron() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(connect_iconv_neuron), return_value_policy(reference))
+	GENPYBIND(setter_for(connect_iconv_neuron))
 	void set_connect_iconv_neuron(hemisphere_type const& value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(connect_iconv_synapse), return_value_policy(reference))
+	GENPYBIND(getter_for(connect_iconv_synapse), return_value_policy(reference_internal))
 	synapse_target_type const& get_connect_iconv_synapse() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(connect_iconv_synapse), return_value_policy(reference))
+	GENPYBIND(setter_for(connect_iconv_synapse))
 	void set_connect_iconv_synapse(synapse_target_type const& value) SYMBOL_VISIBLE;
 
 	bool operator==(MADCConfig const& other) const SYMBOL_VISIBLE;

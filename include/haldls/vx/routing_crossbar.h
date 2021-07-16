@@ -41,7 +41,7 @@ public:
 	 * Get enable value for event counters.
 	 * @return Boolean values
 	 */
-	GENPYBIND(getter_for(enable_event_counter), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_event_counter), return_value_policy(reference_internal))
 	enable_event_counter_type const& get_enable_event_counter() const SYMBOL_VISIBLE;
 
 	/**
@@ -51,7 +51,7 @@ public:
 	GENPYBIND(setter_for(enable_event_counter))
 	void set_enable_event_counter(enable_event_counter_type const& value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(enable_slow), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_slow), return_value_policy(reference_internal))
 	enable_slow_type const& get_enable_slow() const SYMBOL_VISIBLE;
 
 	GENPYBIND(setter_for(enable_slow))

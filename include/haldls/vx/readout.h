@@ -43,7 +43,7 @@ public:
 	        buffer_type GENPYBIND(opaque(false));
 
 	/** Select CADC v_ramp outputs per quadrant. */
-	GENPYBIND(getter_for(cadc_v_ramp_mux), return_value_policy(reference))
+	GENPYBIND(getter_for(cadc_v_ramp_mux), return_value_policy(reference_internal))
 	capmem_quadrant_type const& get_cadc_v_ramp_mux() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(cadc_v_ramp_mux))
 	void set_cadc_v_ramp_mux(capmem_quadrant_type const& value) SYMBOL_VISIBLE;
@@ -55,7 +55,7 @@ public:
 	void set_cadc_v_ramp_mux_to_pad(bool value) SYMBOL_VISIBLE;
 
 	/** Select CapMem i_out outputs per quadrant. */
-	GENPYBIND(getter_for(capmem_i_out_mux), return_value_policy(reference))
+	GENPYBIND(getter_for(capmem_i_out_mux), return_value_policy(reference_internal))
 	capmem_quadrant_type const& get_capmem_i_out_mux() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(capmem_i_out_mux))
 	void set_capmem_i_out_mux(capmem_quadrant_type const& value) SYMBOL_VISIBLE;
@@ -77,7 +77,7 @@ public:
 	void set_capmem_intermediate_mux_to_pad(bool value) SYMBOL_VISIBLE;
 
 	/** Select CapMem v_out outputs per quadrant. */
-	GENPYBIND(getter_for(capmem_v_out_mux), return_value_policy(reference))
+	GENPYBIND(getter_for(capmem_v_out_mux), return_value_policy(reference_internal))
 	capmem_quadrant_type const& get_capmem_v_out_mux() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(capmem_v_out_mux))
 	void set_capmem_v_out_mux(capmem_quadrant_type const& value) SYMBOL_VISIBLE;
@@ -91,7 +91,7 @@ public:
 	void set_capmem_v_out_mux_to_capmem_intermediate_mux(bool value) SYMBOL_VISIBLE;
 
 	/** Select CapMem v_ref outputs per quadrant. */
-	GENPYBIND(getter_for(capmem_v_ref_mux), return_value_policy(reference))
+	GENPYBIND(getter_for(capmem_v_ref_mux), return_value_policy(reference_internal))
 	capmem_quadrant_type const& get_capmem_v_ref_mux() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(capmem_v_ref_mux))
 	void set_capmem_v_ref_mux(capmem_quadrant_type const& value) SYMBOL_VISIBLE;
@@ -105,7 +105,7 @@ public:
 	void set_capmem_v_ref_mux_to_capmem_intermediate_mux(bool value) SYMBOL_VISIBLE;
 
 	/** Select neuron unbuffered membrane access i_stim per hemisphere. */
-	GENPYBIND(getter_for(neuron_i_stim_mux), return_value_policy(reference))
+	GENPYBIND(getter_for(neuron_i_stim_mux), return_value_policy(reference_internal))
 	hemisphere_type const& get_neuron_i_stim_mux() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(neuron_i_stim_mux))
 	void set_neuron_i_stim_mux(hemisphere_type const& value) SYMBOL_VISIBLE;
@@ -159,7 +159,7 @@ public:
 	/** Enable connection of voltage readout buffers to pad.
 	 * The connections to the voltage readout muxes/buffers are handled in the
 	 * ReadoutSourceSelection container. */
-	GENPYBIND(getter_for(buffer_to_pad), return_value_policy(reference))
+	GENPYBIND(getter_for(buffer_to_pad), return_value_policy(reference_internal))
 	buffer_type const& get_buffer_to_pad() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(buffer_to_pad))
 	void set_buffer_to_pad(buffer_type const& value) SYMBOL_VISIBLE;
@@ -298,19 +298,19 @@ public:
 		void set_cadc_debug_acausal(bool value) SYMBOL_VISIBLE;
 
 		/** Connect synapse driver debug voltage readout to mux. */
-		GENPYBIND(getter_for(synapse_driver_debug), return_value_policy(reference))
+		GENPYBIND(getter_for(synapse_driver_debug), return_value_policy(reference_internal))
 		hemisphere_type const& get_synapse_driver_debug() const SYMBOL_VISIBLE;
 		GENPYBIND(setter_for(synapse_driver_debug))
 		void set_synapse_driver_debug(hemisphere_type const& value) SYMBOL_VISIBLE;
 
 		/** Connect analog neuron readout for odd neurons (1, 3, ..., 255) to mux. */
-		GENPYBIND(getter_for(neuron_odd), return_value_policy(reference))
+		GENPYBIND(getter_for(neuron_odd), return_value_policy(reference_internal))
 		hemisphere_type const& get_neuron_odd() const SYMBOL_VISIBLE;
 		GENPYBIND(setter_for(neuron_odd))
 		void set_neuron_odd(hemisphere_type const& value) SYMBOL_VISIBLE;
 
 		/** Connect analog neuron readout for even neurons (0, 2, ..., 254) to mux. */
-		GENPYBIND(getter_for(neuron_even), return_value_policy(reference))
+		GENPYBIND(getter_for(neuron_even), return_value_policy(reference_internal))
 		hemisphere_type const& get_neuron_even() const SYMBOL_VISIBLE;
 		GENPYBIND(setter_for(neuron_even))
 		void set_neuron_even(hemisphere_type const& value) SYMBOL_VISIBLE;
@@ -356,7 +356,7 @@ public:
 	/** Enable buffer after the muxes, connecting to the pads (c.f. PadMultiplexerConfig container).
 	 * The active mux, which can be connected to the MADC, is reached even without enabling this
 	 * buffer.*/
-	GENPYBIND(getter_for(enable_buffer_to_pad), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_buffer_to_pad), return_value_policy(reference_internal))
 	source_multiplexer_type const& get_enable_buffer_to_pad() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_buffer_to_pad))
 	void set_enable_buffer_to_pad(source_multiplexer_type const& value) SYMBOL_VISIBLE;

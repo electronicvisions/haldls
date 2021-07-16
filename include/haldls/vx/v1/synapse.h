@@ -55,7 +55,7 @@ public:
 	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> values_type
 	    GENPYBIND(opaque);
 
-	GENPYBIND(getter_for(values), return_value_policy(reference))
+	GENPYBIND(getter_for(values), return_value_policy(reference_internal))
 	values_type const& get_values() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(values))
 	void set_values(values_type const& value) SYMBOL_VISIBLE;
@@ -101,7 +101,7 @@ public:
 	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> values_type
 	    GENPYBIND(opaque);
 
-	GENPYBIND(getter_for(values), return_value_policy(reference))
+	GENPYBIND(getter_for(values), return_value_policy(reference_internal))
 	values_type const& get_values() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(values))
 	void set_values(values_type const& value) SYMBOL_VISIBLE;
@@ -165,12 +165,12 @@ public:
 	typedef halco::common::typed_array<AmpCalib, halco::hicann_dls::vx::EntryOnQuad> amp_calibs_type
 	    GENPYBIND(opaque);
 
-	GENPYBIND(getter_for(time_calibs), return_value_policy(reference))
+	GENPYBIND(getter_for(time_calibs), return_value_policy(reference_internal))
 	time_calibs_type const& get_time_calibs() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(time_calibs))
 	void set_time_calibs(time_calibs_type const& value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(amp_calibs), return_value_policy(reference))
+	GENPYBIND(getter_for(amp_calibs), return_value_policy(reference_internal))
 	amp_calibs_type const& get_amp_calibs() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(amp_calibs))
 	void set_amp_calibs(amp_calibs_type const& value) SYMBOL_VISIBLE;
@@ -223,22 +223,22 @@ public:
 
 	SynapseQuad() SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(weights), return_value_policy(reference))
+	GENPYBIND(getter_for(weights), return_value_policy(reference_internal))
 	weights_type const& get_weights() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(weights))
 	void set_weights(weights_type const& value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(labels), return_value_policy(reference))
+	GENPYBIND(getter_for(labels), return_value_policy(reference_internal))
 	labels_type const& get_labels() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(labels))
 	void set_labels(labels_type const& value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(time_calibs), return_value_policy(reference))
+	GENPYBIND(getter_for(time_calibs), return_value_policy(reference_internal))
 	time_calibs_type const& get_time_calibs() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(time_calibs))
 	void set_time_calibs(time_calibs_type const& value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(amp_calibs), return_value_policy(reference))
+	GENPYBIND(getter_for(amp_calibs), return_value_policy(reference_internal))
 	amp_calibs_type const& get_amp_calibs() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(amp_calibs))
 	void set_amp_calibs(amp_calibs_type const& value) SYMBOL_VISIBLE;

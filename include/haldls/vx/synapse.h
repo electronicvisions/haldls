@@ -143,27 +143,27 @@ public:
 	explicit SynapseBiasSelection() SYMBOL_VISIBLE;
 
 	/** Set enable for internal synapse DAC bias current. */
-	GENPYBIND(getter_for(enable_internal_dac_bias), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_internal_dac_bias), return_value_policy(reference_internal))
 	bias_selection_type const& get_enable_internal_dac_bias() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_internal_dac_bias), return_value_policy(reference))
+	GENPYBIND(setter_for(enable_internal_dac_bias))
 	void set_enable_internal_dac_bias(bias_selection_type const& value) SYMBOL_VISIBLE;
 
 	/** Set enable for internal synapse correlation ramp bias current. */
-	GENPYBIND(getter_for(enable_internal_ramp_bias), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_internal_ramp_bias), return_value_policy(reference_internal))
 	bias_selection_type const& get_enable_internal_ramp_bias() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_internal_ramp_bias), return_value_policy(reference))
+	GENPYBIND(setter_for(enable_internal_ramp_bias))
 	void set_enable_internal_ramp_bias(bias_selection_type const& value) SYMBOL_VISIBLE;
 
 	/** Set enable for internal synapse correlation store bias current. */
-	GENPYBIND(getter_for(enable_internal_store_bias), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_internal_store_bias), return_value_policy(reference_internal))
 	bias_selection_type const& get_enable_internal_store_bias() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_internal_store_bias), return_value_policy(reference))
+	GENPYBIND(setter_for(enable_internal_store_bias))
 	void set_enable_internal_store_bias(bias_selection_type const& value) SYMBOL_VISIBLE;
 
 	/** Set enable for internal synapse correlation output bias current. */
-	GENPYBIND(getter_for(enable_internal_output_bias), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_internal_output_bias), return_value_policy(reference_internal))
 	bias_selection_type const& get_enable_internal_output_bias() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_internal_output_bias), return_value_policy(reference))
+	GENPYBIND(setter_for(enable_internal_output_bias))
 	void set_enable_internal_output_bias(bias_selection_type const& value) SYMBOL_VISIBLE;
 
 	bool operator==(SynapseBiasSelection const& other) const SYMBOL_VISIBLE;

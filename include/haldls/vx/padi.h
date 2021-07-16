@@ -75,7 +75,7 @@ public:
 	// accessors
 
 	/** Set mask determining the padi bus(es) to fire the event on. */
-	GENPYBIND(getter_for(fire_bus), return_value_policy(reference))
+	GENPYBIND(getter_for(fire_bus), return_value_policy(reference_internal))
 	fire_bus_type const& get_fire_bus() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(fire_bus))
 	void set_fire_bus(fire_bus_type const& value) SYMBOL_VISIBLE;
@@ -191,7 +191,7 @@ public:
 	 * Configure the individual buses to accept SPL1 events instead of PADI events.
 	 * Note that these options are mutually exclusive!
 	 */
-	GENPYBIND(getter_for(enable_spl1), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_spl1), return_value_policy(reference_internal))
 	enable_spl1_type const& get_enable_spl1() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_spl1))
 	void set_enable_spl1(enable_spl1_type const& value) SYMBOL_VISIBLE;
@@ -202,7 +202,7 @@ public:
 	 * Back-to-back events are not possible in this configuration. Handle
 	 * with care!
 	 */
-	GENPYBIND(getter_for(enable_extended_timing), return_value_policy(reference))
+	GENPYBIND(getter_for(enable_extended_timing), return_value_policy(reference_internal))
 	enable_extended_timing_type const& get_enable_extended_timing() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_extended_timing))
 	void set_enable_extended_timing(enable_extended_timing_type const& value) SYMBOL_VISIBLE;
@@ -213,7 +213,7 @@ public:
 	 * In particular useful for triggering the neuron's bypass mode.
 	 * It is not recommended to use it for weight scaling!
 	 */
-	GENPYBIND(getter_for(dacen_pulse_extension), return_value_policy(reference))
+	GENPYBIND(getter_for(dacen_pulse_extension), return_value_policy(reference_internal))
 	dacen_pulse_extension_type const& get_dacen_pulse_extension() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(dacen_pulse_extension))
 	void set_dacen_pulse_extension(dacen_pulse_extension_type const& value) SYMBOL_VISIBLE;

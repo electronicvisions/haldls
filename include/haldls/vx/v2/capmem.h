@@ -116,19 +116,19 @@ public:
 	void set_enable_reference_input(bool value) SYMBOL_VISIBLE;
 
 	/** Set CapMem amplifier bias current (settings for each quadrant). */
-	GENPYBIND(getter_for(capmem_amplifier), return_value_policy(reference))
+	GENPYBIND(getter_for(capmem_amplifier), return_value_policy(reference_internal))
 	capmem_amplifier_type const& get_capmem_amplifier() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(capmem_amplifier))
 	void set_capmem_amplifier(capmem_amplifier_type const& value) SYMBOL_VISIBLE;
 
 	/** Set CapMem offset current (settings for each quadrant). */
-	GENPYBIND(getter_for(capmem_offset), return_value_policy(reference))
+	GENPYBIND(getter_for(capmem_offset), return_value_policy(reference_internal))
 	capmem_offset_type const& get_capmem_offset() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(capmem_offset))
 	void set_capmem_offset(capmem_offset_type const& value) SYMBOL_VISIBLE;
 
 	/** Set CapMem slope current (settings for each quadrant). */
-	GENPYBIND(getter_for(capmem_slope), return_value_policy(reference))
+	GENPYBIND(getter_for(capmem_slope), return_value_policy(reference_internal))
 	capmem_slope_type const& get_capmem_slope() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(capmem_slope))
 	void set_capmem_slope(capmem_slope_type const& value) SYMBOL_VISIBLE;
