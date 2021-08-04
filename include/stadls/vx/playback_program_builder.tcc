@@ -5,6 +5,7 @@
 #include <optional>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/unordered_set.hpp>
+#include <log4cxx/logger.h>
 
 #include "fisch/vx/playback_program_builder.h"
 #include "haldls/cerealization.h"
@@ -105,9 +106,10 @@ void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContain
 {
 	static bool first = true;
 	if (first) {
-		std::cerr << "wait_until(halco.TimerOnDLS(), value) is deprecated, use "
-		             "block_until(halco.TimerOnDLS(), value) instead."
-		          << std::endl;
+		auto logger = log4cxx::Logger::getLogger("stadls.playback_program_builder");
+		LOG4CXX_WARN(
+		    logger, "wait_until(halco.TimerOnDLS(), value) is deprecated, use "
+		            "block_until(halco.TimerOnDLS(), value) instead.");
 		first = false;
 	}
 	block_until(coord, time);
