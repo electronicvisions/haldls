@@ -240,51 +240,52 @@ def build(bld):
         bld.recurse("pylola")
         bld.recurse("dlens")
 
-    bld(
-        target = 'doxygen_haldls',
-        doxy_inputs = 'include/haldls',
-        features = 'doxygen',
-        doxyfile = bld.root.make_node('%s/code-format/doxyfile' % get_toplevel_path()),
-        install_path = 'doc/haldls',
-        pars = {
-            "PROJECT_NAME": "\"HALDLS\"",
-            "OUTPUT_DIRECTORY": "%s/build/haldls/haldls/doc" % get_toplevel_path(),
-            "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= GENPYBIND_TAG_HALDLS_VX=",
-            "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/haldls_doxygen_warnings.log"),
-            "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
-        },
-    )
+    if bld.env.DOXYGEN:
+        bld(
+            target = 'doxygen_haldls',
+            doxy_inputs = 'include/haldls',
+            features = 'doxygen',
+            doxyfile = bld.root.make_node('%s/code-format/doxyfile' % get_toplevel_path()),
+            install_path = 'doc/haldls',
+            pars = {
+                "PROJECT_NAME": "\"HALDLS\"",
+                "OUTPUT_DIRECTORY": "%s/build/haldls/haldls/doc" % get_toplevel_path(),
+                "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= GENPYBIND_TAG_HALDLS_VX=",
+                "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/haldls_doxygen_warnings.log"),
+                "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
+            },
+        )
 
-    bld(
-        target = 'doxygen_stadls',
-        doxy_inputs = 'include/stadls',
-        features = 'doxygen',
-        doxyfile = bld.root.make_node('%s/code-format/doxyfile' % get_toplevel_path()),
-        install_path = 'doc/stadls',
-        pars = {
-            "PROJECT_NAME": "\"STADLS\"",
-            "OUTPUT_DIRECTORY": "%s/build/haldls/stadls/doc" % get_toplevel_path(),
-            "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= "
-                          + "GENPYBIND_TAG_STADLS_VX= "
-                          + "GENPYBIND_TAG_HALDLS_VX=",
-            "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/stadls_doxygen_warnings.log"),
-            "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
-        },
-    )
+        bld(
+            target = 'doxygen_stadls',
+            doxy_inputs = 'include/stadls',
+            features = 'doxygen',
+            doxyfile = bld.root.make_node('%s/code-format/doxyfile' % get_toplevel_path()),
+            install_path = 'doc/stadls',
+            pars = {
+                "PROJECT_NAME": "\"STADLS\"",
+                "OUTPUT_DIRECTORY": "%s/build/haldls/stadls/doc" % get_toplevel_path(),
+                "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= "
+                              + "GENPYBIND_TAG_STADLS_VX= "
+                              + "GENPYBIND_TAG_HALDLS_VX=",
+                "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/stadls_doxygen_warnings.log"),
+                "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
+            },
+        )
 
-    bld(
-        target = 'doxygen_lola',
-        doxy_inputs = 'include/lola',
-        features = 'doxygen',
-        doxyfile = bld.root.make_node('%s/code-format/doxyfile' % get_toplevel_path()),
-        install_path = 'doc/lola',
-        pars = {
-            "PROJECT_NAME": "\"LOLA\"",
-            "OUTPUT_DIRECTORY": "%s/build/haldls/lola/doc" % get_toplevel_path(),
-            "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= "
-                          + "GENPYBIND_TAG_LOLA_VX= "
-                          + "GENPYBIND_TAG_HALDLS_VX=",
-            "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/lola_doxygen_warnings.log"),
-            "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
-        },
-    )
+        bld(
+            target = 'doxygen_lola',
+            doxy_inputs = 'include/lola',
+            features = 'doxygen',
+            doxyfile = bld.root.make_node('%s/code-format/doxyfile' % get_toplevel_path()),
+            install_path = 'doc/lola',
+            pars = {
+                "PROJECT_NAME": "\"LOLA\"",
+                "OUTPUT_DIRECTORY": "%s/build/haldls/lola/doc" % get_toplevel_path(),
+                "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= "
+                              + "GENPYBIND_TAG_LOLA_VX= "
+                              + "GENPYBIND_TAG_HALDLS_VX=",
+                "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/lola_doxygen_warnings.log"),
+                "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
+            },
+        )
