@@ -61,8 +61,30 @@ struct to_testing_types<hate::type_list<Ts...>>
 	typedef ::testing::Types<Ts...> type;
 };
 
-typedef to_testing_types<ReadableAndWriteableContainerList>::type ReadableAndWriteableContainers;
+/**
+ * Filter specifying all containers which don't have side effects leading to some other container
+ * being inaccessible.
+ */
+template <typename T>
+struct HasNoSideeffects
+{
+	constexpr static bool value = !hate::is_in_type_list<
+	    T,
+	    hate::type_list<
+	        CommonSynramConfig,
+	        PhyConfigFPGA,
+	        PhyConfigChip,
+	        PPUControlRegister,
+	        CommonPhyConfigFPGA,
+	        CommonPhyConfigChip,
+	        PerfTest>>::value;
+};
 
+typedef hate::filter_type_list_t<HasNoSideeffects, ReadableAndWriteableContainerList>
+    ReadableAndWriteableNoSideeffectsContainerList;
+
+typedef to_testing_types<ReadableAndWriteableNoSideeffectsContainerList>::type
+    ReadableAndWriteableContainers;
 
 /**
  * Test fixture for generic write-read memory tests of a single container type.

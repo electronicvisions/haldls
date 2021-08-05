@@ -26,6 +26,14 @@ using namespace stadls::vx::v3;
 using namespace halco::hicann_dls::vx::v3;
 using namespace halco::common;
 
+// These containers are not supported in the hardware-setups used for automated testing
+typedef hate::type_list<
+    haldls::vx::TCA9554Config,
+    haldls::vx::AD5252ChannelConfig,
+    haldls::vx::AD5252ChannelConfigPersistent, // Persistent register. DO NOT change randomly
+    haldls::vx::DAC6573ChannelConfig>
+    WriteTestsDisabledContainers;
+
 /**
  * Random generator for this test.
  * Initialized with random seed because it leads to coverage over time.
@@ -53,8 +61,30 @@ struct to_testing_types<hate::type_list<Ts...>>
 	typedef ::testing::Types<Ts...> type;
 };
 
-typedef to_testing_types<ReadableAndWriteableContainerList>::type ReadableAndWriteableContainers;
+/**
+ * Filter specifying all containers which don't have side effects leading to some other container
+ * being inaccessible.
+ */
+template <typename T>
+struct HasNoSideeffects
+{
+	constexpr static bool value = !hate::is_in_type_list<
+	    T,
+	    hate::type_list<
+	        CommonSynramConfig,
+	        PhyConfigFPGA,
+	        PhyConfigChip,
+	        PPUControlRegister,
+	        CommonPhyConfigFPGA,
+	        CommonPhyConfigChip,
+	        PerfTest>>::value;
+};
 
+typedef hate::filter_type_list_t<HasNoSideeffects, ReadableAndWriteableContainerList>
+    ReadableAndWriteableNoSideeffectsContainerList;
+
+typedef to_testing_types<ReadableAndWriteableNoSideeffectsContainerList>::type
+    ReadableAndWriteableContainers;
 
 /**
  * Test fixture for generic write-read memory tests of a single container type.
@@ -89,6 +119,10 @@ TYPED_TEST_SUITE(
  */
 TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 {
+	if constexpr (hate::is_in_type_list<TypeParam, WriteTestsDisabledContainers>::value) {
+		GTEST_SKIP() << "Test is manually disabled for this container.";
+	}
+
 	// test only carried out for the default word type
 	typedef
 	    typename haldls::vx::detail::BackendContainerTrait<TypeParam>::default_container word_type;
