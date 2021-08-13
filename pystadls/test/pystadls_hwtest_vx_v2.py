@@ -186,7 +186,7 @@ class HwTestPystadlsVxV2(unittest.TestCase):
             "Expected samples.dtype to be {}".format(str(expected_dtype)))
 
         # assert sawtooth test pattern is visible in samples
-        diff = numpy.diff(samples["value"].astype(numpy.int))
+        diff = numpy.diff(samples["value"].astype(int))
         self.assertAlmostEqual(
             numpy.mean(diff[diff > 0]), 1, places=1,
             msg="MADC sample values don't increase by 1"
