@@ -228,7 +228,7 @@ class HwTestPystadlsVxV2(unittest.TestCase):
 
                     # calculate expected sample rate from MADC config (Hz)
                     adpll = haldls.ADPLL()
-                    output = adpll.Output(2)  # dco
+                    output = adpll.Output(adpll.Output.dco)  # dco
                     madc_base_frequ = adpll.calculate_output_frequency(output)
                     calc_rate = madc_config.calculate_sample_rate(
                         madc_base_frequ) / 1e6  # MHz
@@ -287,7 +287,7 @@ class HwTestPystadlsVxV2(unittest.TestCase):
                     self.assertAlmostEqual(
                         average_rate, calc_rate, delta=calc_rate * 0.01,
                         msg="Recorded rate deviates by more than 1% from "
-                            "the calculated one")
+                            "the calculated one.")
 
 
 if __name__ == "__main__":
