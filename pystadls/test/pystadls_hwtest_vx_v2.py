@@ -286,7 +286,7 @@ class HwTestPystadlsVxV2(unittest.TestCase):
                     # error is less than 1%
                     self.assertAlmostEqual(
                         average_rate, calc_rate, delta=calc_rate * 0.01,
-                        msg="Recorded rate deviates by more than 1% from " +
+                        msg="Recorded rate deviates by more than 1% from "
                             "the calculated one")
 
 
