@@ -52,7 +52,7 @@ public:
 	struct GENPYBIND(inline_base("*")) WaitGlobalPostPulse
 	    : public halco::common::detail::RantWrapper<WaitGlobalPostPulse, uint_fast16_t, 255, 0>
 	{
-		constexpr explicit WaitGlobalPostPulse(uintmax_t const val = 128)
+		constexpr explicit WaitGlobalPostPulse(uintmax_t const val = 1)
 		    GENPYBIND(implicit_conversion) :
 		    base_t(val)
 		{}

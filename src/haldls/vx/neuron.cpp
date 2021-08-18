@@ -14,7 +14,7 @@ namespace vx {
 
 // TODO: Initialize with reasonable default values, see Issue #3367
 CommonNeuronBackendConfig::CommonNeuronBackendConfig() :
-    m_en_event_regs(false),
+    m_en_event_regs(true),
     m_force_reset(false),
     m_en_clocks(true),
     m_clock_scale_slow(CommonNeuronBackendConfig::ClockScale()),
