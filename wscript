@@ -124,218 +124,115 @@ def build(bld):
     )
 
     bld(
-        target = 'haldls_vx_v1',
-        source = bld.path.ant_glob('src/haldls/vx/*.cpp')
-               + bld.path.ant_glob('src/haldls/vx/v1/*.cpp'),
-        install_path = '${PREFIX}/lib',
-        features = 'cxx cxxshlib pyembed',
-        use = ['haldls_inc', 'halco_hicann_dls_vx_v1', 'fisch_vx'],
-        uselib = 'HALDLS_LIBRARIES',
-    )
-
-    bld(
-        target = 'haldls_vx_v2',
-        source = bld.path.ant_glob('src/haldls/vx/*.cpp')
-               + bld.path.ant_glob('src/haldls/vx/v2/*.cpp'),
-        install_path = '${PREFIX}/lib',
-        features = 'cxx cxxshlib pyembed',
-        use = ['haldls_inc', 'halco_hicann_dls_vx_v2', 'fisch_vx'],
-        uselib = 'HALDLS_LIBRARIES',
-    )
-
-    reduced_jobs = max(bld.jobs // 2, 1)
-    bld.env['stadls_semaphore'] = TaskSemaphore(reduced_jobs)
-
-    bld(
-        target = 'stadls_vx_v1',
-        source = bld.path.ant_glob('src/stadls/vx/*.cpp')
-               + bld.path.ant_glob('src/stadls/vx/v1/*.cpp'),
-        install_path = '${PREFIX}/lib',
-        features = 'cxx cxxshlib pyembed apply_semaphore',
-        use = ['haldls_vx_v1', 'lola_vx_v1', 'logger_obj'],
-        uselib = 'HALDLS_LIBRARIES',
-        semaphore = bld.env['stadls_semaphore'],
-    )
-
-    bld(
-        target = 'stadls_vx_v2',
-        source = bld.path.ant_glob('src/stadls/vx/*.cpp')
-               + bld.path.ant_glob('src/stadls/vx/v2/*.cpp'),
-        install_path = '${PREFIX}/lib',
-        features = 'cxx cxxshlib pyembed apply_semaphore',
-        use = ['haldls_vx_v2', 'lola_vx_v2', 'logger_obj'],
-        uselib = 'HALDLS_LIBRARIES',
-        semaphore = bld.env['stadls_semaphore'],
-    )
-
-    bld(
-        features = 'cxx cxxshlib pyembed',
-        target = 'lola_vx_v1',
-        source = bld.path.ant_glob('src/lola/vx/*.cpp')
-               + bld.path.ant_glob('src/lola/vx/v1/*.cpp'),
-        install_path = '${PREFIX}/lib',
-        use = ['haldls_vx_v1', 'ELF'],
-        uselib = 'LOLA_LIBRARIES',
-    )
-
-    bld(
-        features = 'cxx cxxshlib pyembed',
-        target = 'lola_vx_v2',
-        source = bld.path.ant_glob('src/lola/vx/*.cpp')
-               + bld.path.ant_glob('src/lola/vx/v2/*.cpp'),
-        install_path = '${PREFIX}/lib',
-        use = ['haldls_vx_v2', 'ELF'],
-        uselib = 'LOLA_LIBRARIES',
-    )
-
-    bld(
-        target = 'stadls_swtest_vx_v1',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/sw/stadls/vx/test-*.cpp')
-               + bld.path.ant_glob('tests/sw/stadls/vx/v1/test-*.cpp'),
-        use = ['haldls_vx_v1', 'stadls_vx_v1', 'GTEST'],
-        install_path = '${PREFIX}/bin',
-    )
-
-    bld(
-        target = 'stadls_swtest_vx_v2',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/sw/stadls/vx/test-*.cpp')
-               + bld.path.ant_glob('tests/sw/stadls/vx/v2/test-*.cpp'),
-        use = ['haldls_vx_v2', 'stadls_vx_v2', 'GTEST'],
-        install_path = '${PREFIX}/bin',
-    )
-
-    bld(
         target = 'haldls_test_common_inc',
         export_includes = 'tests/common',
     )
+    
+    reduced_jobs = max(bld.jobs // 2, 1)
+    bld.env['stadls_semaphore'] = TaskSemaphore(reduced_jobs)
+    
+    for hx_version in [1, 2]:
+        bld(
+            target = f'haldls_vx_v{hx_version}',
+            source = bld.path.ant_glob('src/haldls/vx/*.cpp')
+                   + bld.path.ant_glob(f'src/haldls/vx/v{hx_version}/*.cpp'),
+            install_path = '${PREFIX}/lib',
+            features = 'cxx cxxshlib pyembed',
+            use = ['haldls_inc', f'halco_hicann_dls_vx_v{hx_version}', 'fisch_vx'],
+            uselib = 'HALDLS_LIBRARIES',
+        )
 
-    bld(
-        target = 'haldls_swtest_vx_v1',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp')
-               + bld.path.ant_glob('tests/sw/haldls/vx/v1/test-*.cpp'),
-        use = ['haldls_vx_v1', 'haldls_test_common_inc', 'GTEST'],
-        install_path = '${PREFIX}/bin',
-    )
+        bld(
+            target = f'stadls_vx_v{hx_version}',
+            source = bld.path.ant_glob('src/stadls/vx/*.cpp')
+                   + bld.path.ant_glob(f'src/stadls/vx/v{hx_version}/*.cpp'),
+            install_path = '${PREFIX}/lib',
+            features = 'cxx cxxshlib pyembed apply_semaphore',
+            use = [f'haldls_vx_v{hx_version}', f'lola_vx_v{hx_version}', 'logger_obj'],
+            uselib = 'HALDLS_LIBRARIES',
+            semaphore = bld.env['stadls_semaphore'],
+        )
 
-    bld(
-        target = 'haldls_swtest_vx_v2',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp')
-               + bld.path.ant_glob('tests/sw/haldls/vx/v2/test-*.cpp'),
-        use = ['haldls_vx_v2', 'haldls_test_common_inc', 'GTEST'],
-        install_path = '${PREFIX}/bin',
-    )
+        bld(
+            features = 'cxx cxxshlib pyembed',
+            target = f'lola_vx_v{hx_version}',
+            source = bld.path.ant_glob('src/lola/vx/*.cpp')
+                   + bld.path.ant_glob(f'src/lola/vx/v{hx_version}/*.cpp'),
+            install_path = '${PREFIX}/lib',
+            use = [f'haldls_vx_v{hx_version}', 'ELF'],
+            uselib = 'LOLA_LIBRARIES',
+        )
 
-    bld(
-        target = 'lola_swtest_vx_v1',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp')
-               + bld.path.ant_glob('tests/sw/lola/vx/v1/test-*.cpp'),
-        use = ['lola_vx_v1', 'GTEST', 'haldls_test_common_inc'],
-        install_path = '${PREFIX}/bin',
-        defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
-        test_timeout=60
-    )
+        bld(
+            target = f'stadls_swtest_vx_v{hx_version}',
+            features = 'gtest cxx cxxprogram pyembed',
+            source = bld.path.ant_glob('tests/sw/stadls/vx/test-*.cpp')
+                   + bld.path.ant_glob(f'tests/sw/stadls/vx/v{hx_version}/test-*.cpp'),
+            use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST'],
+            install_path = '${PREFIX}/bin',
+        )
 
-    bld(
-        target = 'lola_swtest_vx_v2',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp')
-               + bld.path.ant_glob('tests/sw/lola/vx/v2/test-*.cpp'),
-        use = ['lola_vx_v2', 'GTEST', 'haldls_test_common_inc'],
-        install_path = '${PREFIX}/bin',
-        defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
-        test_timeout=60
-    )
+        bld(
+            target = f'haldls_swtest_vx_v{hx_version}',
+            features = 'gtest cxx cxxprogram pyembed',
+            source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp')
+                   + bld.path.ant_glob(f'tests/sw/haldls/vx/v{hx_version}/test-*.cpp'),
+            use = [f'haldls_vx_v{hx_version}', 'haldls_test_common_inc', 'GTEST'],
+            install_path = '${PREFIX}/bin',
+        )
 
-    bld(
-        target = 'stadls_hwtest_vx_v1',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/hw/stadls/vx/hw/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/v1/hw/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/v1/common/test-*.cpp'),
-        test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v1', 'stadls_vx_v1', 'GTEST', 'haldls_test_common_inc', 'ZTL'],
-        defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
-        install_path = '${PREFIX}/bin',
-        linkflags = ['-lboost_program_options-mt'],
-        skip_run = not (bld.env.TEST_TARGET == TestTarget.HARDWARE and
-                        int(bld.env.CURRENT_SETUP["chip_revision"]) == 1)
-    )
+        bld(
+            target = f'lola_swtest_vx_v{hx_version}',
+            features = 'gtest cxx cxxprogram pyembed',
+            source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp')
+                   + bld.path.ant_glob(f'tests/sw/lola/vx/v{hx_version}/test-*.cpp'),
+            use = [f'lola_vx_v{hx_version}', 'GTEST', 'haldls_test_common_inc'],
+            install_path = '${PREFIX}/bin',
+            defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
+            test_timeout=60
+        )
 
-    bld(
-        target = 'stadls_hwtest_vx_v2',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/hw/stadls/vx/hw/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/v2/hw/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/v2/common/test-*.cpp'),
-        test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v2', 'stadls_vx_v2', 'GTEST', 'haldls_test_common_inc', 'ZTL'],
-        defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
-        install_path = '${PREFIX}/bin',
-        linkflags = ['-lboost_program_options-mt'],
-        skip_run = not (bld.env.TEST_TARGET == TestTarget.HARDWARE and
-                        int(bld.env.CURRENT_SETUP["chip_revision"]) == 2)
-    )
+        bld(
+            target = f'stadls_hwtest_vx_v{hx_version}',
+            features = 'gtest cxx cxxprogram pyembed',
+            source = bld.path.ant_glob('tests/hw/stadls/vx/hw/test-*.cpp')
+                   + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp')
+                   + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/hw/test-*.cpp')
+                   + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/common/test-*.cpp'),
+            test_main = 'tests/hw/stadls/vx/main.cpp',
+            use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST', 'haldls_test_common_inc', 'ZTL'],
+            defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
+            install_path = '${PREFIX}/bin',
+            linkflags = ['-lboost_program_options-mt'],
+            skip_run = not (bld.env.TEST_TARGET == TestTarget.HARDWARE and
+                            int(bld.env.CURRENT_SETUP["chip_revision"]) == hx_version)
+        )
 
-    bld(
-        target = 'stadls_simtest_vx_v1',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/hw/stadls/vx/sim/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/v1/sim/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/v1/common/test-*.cpp'),
-        test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v1', 'GTEST', 'stadls_vx_v1', 'haldls_test_common_inc'],
-        defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
-        install_path = '${PREFIX}/bin',
-        linkflags = ['-lboost_program_options-mt'],
-        skip_run = not (bld.env.TEST_TARGET == TestTarget.SIMULATION and
-                        int(bld.env.CURRENT_SETUP["chip_revision"]) == 1),
-        test_timeout = bld.env.SIMTEST_TIMEOUT_SECONDS
-    )
+        bld(
+            target = f'stadls_simtest_vx_v{hx_version}',
+            features = 'gtest cxx cxxprogram pyembed',
+            source = bld.path.ant_glob('tests/hw/stadls/vx/sim/test-*.cpp')
+                   + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp')
+                   + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/sim/test-*.cpp')
+                   + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/common/test-*.cpp'),
+            test_main = 'tests/hw/stadls/vx/main.cpp',
+            use = [f'haldls_vx_v{hx_version}', 'GTEST', f'stadls_vx_v{hx_version}', 'haldls_test_common_inc'],
+            defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
+            install_path = '${PREFIX}/bin',
+            linkflags = ['-lboost_program_options-mt'],
+            skip_run = not (bld.env.TEST_TARGET == TestTarget.SIMULATION and
+                            int(bld.env.CURRENT_SETUP["chip_revision"]) == hx_version),
+            test_timeout = bld.env.SIMTEST_TIMEOUT_SECONDS
+        )
 
-    bld(
-        target = 'stadls_simtest_vx_v2',
-        features = 'gtest cxx cxxprogram pyembed',
-        source = bld.path.ant_glob('tests/hw/stadls/vx/sim/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/v2/sim/test-*.cpp')
-               + bld.path.ant_glob('tests/hw/stadls/vx/v2/common/test-*.cpp'),
-        test_main = 'tests/hw/stadls/vx/main.cpp',
-        use = ['haldls_vx_v2', 'GTEST', 'stadls_vx_v2', 'haldls_test_common_inc'],
-        defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
-        install_path = '${PREFIX}/bin',
-        linkflags = ['-lboost_program_options-mt'],
-        skip_run=not (bld.env.TEST_TARGET == TestTarget.SIMULATION and
-                      int(bld.env.CURRENT_SETUP["chip_revision"]) == 2),
-        test_timeout = bld.env.SIMTEST_TIMEOUT_SECONDS
-    )
-
-    bld(
-        target = 'run_ppu_program_vx_v1',
-        features = 'cxx cxxprogram pyembed',
-        # TODO: switch to vx/v1
-        source = 'tools/stadls/vx/v1/run_ppu_program.cpp',
-        use = ['haldls_vx_v1', 'logger_obj', 'stadls_vx_v1'],
-        install_path = '${PREFIX}/bin',
-        linkflags = ['-lboost_program_options-mt'],
-    )
-
-    bld(
-        target = 'run_ppu_program_vx_v2',
-        features = 'cxx cxxprogram pyembed',
-        # TODO: switch to vx/v2
-        source = 'tools/stadls/vx/v2/run_ppu_program.cpp',
-        use = ['haldls_vx_v2', 'logger_obj', 'stadls_vx_v2'],
-        install_path = '${PREFIX}/bin',
-        linkflags = ['-lboost_program_options-mt'],
-    )
+        bld(
+            target = f'run_ppu_program_vx_v{hx_version}',
+            features = 'cxx cxxprogram pyembed',
+            source = f'tools/stadls/vx/v{hx_version}/run_ppu_program.cpp',
+            use = [f'haldls_vx_v{hx_version}', 'logger_obj', f'stadls_vx_v{hx_version}'],
+            install_path = '${PREFIX}/bin',
+            linkflags = ['-lboost_program_options-mt'],
+        )
 
     if bld.env.build_with_haldls_python_bindings:
         bld.recurse("pyhaldls")

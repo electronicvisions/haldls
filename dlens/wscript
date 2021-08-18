@@ -21,112 +21,60 @@ def configure(cfg):
 
 
 def build(bld):
-    bld(name='dlens_vx_v1',
-        features='py pylint pycodestyle',
-        source = bld.path.ant_glob('dlens_vx_v1/**/*.py'),
-        relative_trick=True,
-        use = ['pyhaldls_vx_v1',
-               'pystadls_vx_v1',
-               'pylola_vx_v1',
-               'pyhalco_hicann_dls_vx_v1',
-               'pyhxcomm_vx',
-               'pylogging'
-        ],
-        install_path = '${PREFIX}/lib',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_timeout=120
-    )
-
-    bld(name='dlens_vx_v2',
-        features='py pylint pycodestyle',
-        source = bld.path.ant_glob('dlens_vx_v2/**/*.py'),
-        relative_trick=True,
-        use = ['pyhaldls_vx_v2',
-               'pystadls_vx_v2',
-               'pylola_vx_v2',
-               'pyhalco_hicann_dls_vx_v2',
-               'pyhxcomm_vx'
-        ],
-        install_path = '${PREFIX}/lib',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_timeout=120
-    )
-
-    bld(name='dlens_swtest_vx_v1',
-        tests='tests/dlens_swtest_vx_v1.py',
-        features='use pytest pylint pycodestyle',
-        use=['dlens_vx_v1'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_timeout=120
-    )
-
-    bld(name='dlens_swtest_vx_v2',
-        tests='tests/dlens_swtest_vx_v2.py',
-        features='use pytest pylint pycodestyle',
-        use=['dlens_vx_v2'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        test_timeout=120
-    )
-
-    bld(name='dlens_hwtest_vx_v1',
-        tests='tests/dlens_hwtest_vx_v1.py',
-        features='use pytest pylint pycodestyle',
-        use=['dlens_vx_v1'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
-        test_timeout=120
-    )
-
-    bld(name='dlens_hwtest_vx_v2',
-        tests='tests/dlens_hwtest_vx_v2.py',
-        features='use pytest pylint pycodestyle',
-        use=['dlens_vx_v2'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
-        test_timeout=120
-    )
-
-    bld(name='dlens_health_check_vx_v1',
-        tests='tests/dlens_health_check_vx_v1.py',
-        features='use pytest pylint pycodestyle',
-        use=['dlens_vx_v1'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
-        test_timeout=30
-    )
-
-    bld(name='dlens_health_check_vx_v2',
-        tests='tests/dlens_health_check_vx_v2.py',
-        features='use pytest pylint pycodestyle',
-        use=['dlens_vx_v2'],
-        install_path='${PREFIX}/bin',
-        pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-        pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-        skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
-        test_timeout=30
-    )
-
-    # --- Deprecated aliases --- #
-    bld(name='run_ppu_program_vx_v1_py',
-        features='use',
-        use=['dlens_vx_v1'],
+    for hx_version in [1, 2]:
+        bld(name=f'dlens_vx_v{hx_version}',
+            features='py pylint pycodestyle',
+            source = bld.path.ant_glob(f'dlens_vx_v{hx_version}/**/*.py'),
+            relative_trick=True,
+            use = [f'pyhaldls_vx_v{hx_version}',
+                   f'pystadls_vx_v{hx_version}',
+                   f'pylola_vx_v{hx_version}',
+                   f'pyhalco_hicann_dls_vx_v{hx_version}',
+                   'pyhxcomm_vx',
+                   'pylogging'
+            ],
+            install_path = '${PREFIX}/lib',
+            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+            test_timeout=120
         )
 
-    bld(name='run_ppu_program_vx_v2_py',
-        features='use',
-        use=['dlens_vx_v2'],
+        bld(name=f'dlens_swtest_vx_v{hx_version}',
+            tests=f'tests/dlens_swtest_vx_v{hx_version}.py',
+            features='use pytest pylint pycodestyle',
+            use=[f'dlens_vx_v{hx_version}'],
+            install_path='${PREFIX}/bin',
+            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+            test_timeout=120
         )
+
+        bld(name=f'dlens_hwtest_vx_v{hx_version}',
+            tests=f'tests/dlens_hwtest_vx_v{hx_version}.py',
+            features='use pytest pylint pycodestyle',
+            use=[f'dlens_vx_v{hx_version}'],
+            install_path='${PREFIX}/bin',
+            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+            skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
+            test_timeout=120
+        )
+
+        bld(name=f'dlens_health_check_vx_v{hx_version}',
+            tests=f'tests/dlens_health_check_vx_v{hx_version}.py',
+            features='use pytest pylint pycodestyle',
+            use=[f'dlens_vx_v{hx_version}'],
+            install_path='${PREFIX}/bin',
+            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+            skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
+            test_timeout=30
+        )
+
+        # --- Deprecated alias --- #
+        bld(name=f'run_ppu_program_vx_v{hx_version}_py',
+            features='use',
+            use=[f'dlens_vx_v{hx_version}'],
+            )
 
     bld.add_post_fun(summary)
