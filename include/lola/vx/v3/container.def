@@ -1,0 +1,31 @@
+#ifndef PLAYBACK_CONTAINER
+#define PLAYBACK_CONTAINER(Name, Type)
+#endif
+
+#ifndef LAST_PLAYBACK_CONTAINER
+#define LAST_PLAYBACK_CONTAINER(Name, Type) PLAYBACK_CONTAINER(Name, Type)
+#endif
+
+/**
+ * @note If you add a new entry in this list, be sure to increase the cereal version of
+ *       stadls::vx::v3::Dumper and stadls::vx::v3::DumperDone in `src/stadls/vx/v3/dumper.cpp`.
+ */
+
+PLAYBACK_CONTAINER(AtomicNeuron, lola::vx::v3::AtomicNeuron)
+PLAYBACK_CONTAINER(DACControlBlock, lola::vx::v3::DACControlBlock)
+PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::v3::DACChannelBlock)
+PLAYBACK_CONTAINER(CADCSampleRow, lola::vx::v3::CADCSampleRow)
+PLAYBACK_CONTAINER(CADCSamples, lola::vx::v3::CADCSamples)
+PLAYBACK_CONTAINER(SynapseMatrix, lola::vx::v3::SynapseMatrix)
+PLAYBACK_CONTAINER(SynapseWeightMatrix, lola::vx::v3::SynapseWeightMatrix)
+PLAYBACK_CONTAINER(SynapseLabelMatrix, lola::vx::v3::SynapseLabelMatrix)
+PLAYBACK_CONTAINER(SynapseCorrelationCalibMatrix, lola::vx::v3::SynapseCorrelationCalibMatrix)
+PLAYBACK_CONTAINER(CorrelationResetRow, lola::vx::v3::CorrelationResetRow)
+PLAYBACK_CONTAINER(SynapseWeightRow, lola::vx::v3::SynapseWeightRow)
+PLAYBACK_CONTAINER(SynapseLabelRow, lola::vx::v3::SynapseLabelRow)
+PLAYBACK_CONTAINER(SynapseCorrelationCalibRow, lola::vx::v3::SynapseCorrelationCalibRow)
+PLAYBACK_CONTAINER(ExternalPPUMemoryBlock, lola::vx::v3::ExternalPPUMemoryBlock)
+LAST_PLAYBACK_CONTAINER(SynapseRow, lola::vx::v3::SynapseRow)
+
+#undef PLAYBACK_CONTAINER
+#undef LAST_PLAYBACK_CONTAINER

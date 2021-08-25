@@ -21,7 +21,7 @@ def configure(cfg):
 
 
 def build(bld):
-    for hx_version in [1, 2]:
+    for hx_version in [1, 2, 3]:
         bld(name=f'dlens_vx_v{hx_version}',
             features='py pylint pycodestyle',
             source = bld.path.ant_glob(f'dlens_vx_v{hx_version}/**/*.py'),
