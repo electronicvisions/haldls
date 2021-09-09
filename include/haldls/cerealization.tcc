@@ -4,10 +4,8 @@
 #include <sstream>
 
 #include <cereal/cereal.hpp>
-#include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>
 #include <cereal/archives/portable_binary.hpp>
-#include <cereal/archives/xml.hpp>
 
 namespace haldls::vx {
 
@@ -48,18 +46,6 @@ void from_json(T& t, std::string const& s)
 }
 
 template <typename T>
-std::string to_binary(T const& t)
-{
-	return detail::to_whatever<cereal::BinaryOutputArchive, T>(t);
-}
-
-template <typename T>
-void from_binary(T& t, std::string const& s)
-{
-	detail::from_whatever<cereal::BinaryInputArchive, T>(t, s);
-}
-
-template <typename T>
 std::string to_portablebinary(T const& t)
 {
 	return detail::to_whatever<cereal::PortableBinaryOutputArchive, T>(t);
@@ -69,18 +55,6 @@ template <typename T>
 void from_portablebinary(T& t, std::string const& s)
 {
 	detail::from_whatever<cereal::PortableBinaryInputArchive, T>(t, s);
-}
-
-template <typename T>
-std::string to_xml(T const& t)
-{
-	return detail::to_whatever<cereal::XMLOutputArchive, T>(t);
-}
-
-template <typename T>
-void from_xml(T& t, std::string const& s)
-{
-	detail::from_whatever<cereal::XMLInputArchive, T>(t, s);
 }
 
 } // namespace haldls::vx

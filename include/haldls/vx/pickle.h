@@ -58,7 +58,7 @@ private:
 		auto ism = pybind11::is_method(attr);
 		auto const getattr = [](pybind11::object const& self) {
 			auto& thing = self.cast<T const&>();
-			std::string serialized{haldls::vx::to_binary(thing)};
+			std::string serialized{haldls::vx::to_portablebinary(thing)};
 			if (pybind11::hasattr(self, "__dict__")) {
 				return pybind11::make_tuple(pybind11::bytes(serialized), self.attr("__dict__"));
 			} else {
@@ -69,7 +69,7 @@ private:
 		auto const setattr = [](pybind11::object& self, pybind11::tuple const& data) {
 			auto& thing = self.cast<T&>();
 			new (&thing) T();
-			haldls::vx::from_binary(thing, data[0].cast<std::string>());
+			haldls::vx::from_portablebinary(thing, data[0].cast<std::string>());
 			if (pybind11::hasattr(self, "__dict__")) {
 				self.attr("__dict__") = data[1];
 			}

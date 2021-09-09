@@ -83,24 +83,8 @@ TYPED_TEST(CommonSerializationTests, HasToFromSerialization)
 		ASSERT_EQ(obj2, obj1);
 	}
 	{
-		s = haldls::vx::to_binary(obj1);
-		haldls::vx::from_binary(obj2, s);
-
-		// This does only test that Serialization does not insert wrong values;
-		// cf. above.
-		ASSERT_EQ(obj2, obj1);
-	}
-	{
 		s = haldls::vx::to_portablebinary(obj1);
 		haldls::vx::from_portablebinary(obj2, s);
-
-		// This does only test that Serialization does not insert wrong values;
-		// cf. above.
-		ASSERT_EQ(obj2, obj1);
-	}
-	{
-		s = haldls::vx::to_xml(obj1);
-		haldls::vx::from_xml(obj2, s);
 
 		// This does only test that Serialization does not insert wrong values;
 		// cf. above.

@@ -9,14 +9,10 @@
 namespace cereal {
 
 class access;
-class BinaryOutputArchive;
-class BinaryInputArchive;
 class JSONOutputArchive;
 class JSONInputArchive;
 class PortableBinaryOutputArchive;
 class PortableBinaryInputArchive;
-class XMLOutputArchive;
-class XMLInputArchive;
 
 } // namespace cereal
 
@@ -30,22 +26,10 @@ template <typename T>
 void from_json(T& t, std::string const& s);
 
 template <typename T>
-std::string to_binary(T const& t);
-
-template <typename T>
-void from_binary(T& t, std::string const& s);
-
-template <typename T>
 std::string to_portablebinary(T const& t);
 
 template <typename T>
 void from_portablebinary(T& t, std::string const& s);
-
-template <typename T>
-std::string to_xml(T const& t);
-
-template <typename T>
-void from_xml(T& t, std::string const& s);
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 template <typename... Ts>
@@ -57,19 +41,11 @@ struct WrapToFromFunctions
 		(m.def("to_json", &haldls::vx::to_json<Ts>), ...);
 		(m.def("from_json", &haldls::vx::from_json<Ts>), ...);
 		// clang-format off
-		(m.def("to_binary", [](Ts const& t) {
-			   return pybind11::bytes(haldls::vx::to_binary<Ts>(t));
-		}), ...);
-		// clang-format on
-		(m.def("from_binary", &haldls::vx::from_binary<Ts>), ...);
-		// clang-format off
 		(m.def("to_portablebinary", [](Ts const& t) {
 			   return pybind11::bytes(haldls::vx::to_portablebinary<Ts>(t));
 		}), ...);
 		// clang-format on
 		(m.def("from_portablebinary", &haldls::vx::from_portablebinary<Ts>), ...);
-		(m.def("to_xml", &haldls::vx::to_xml<Ts>), ...);
-		(m.def("from_xml", &haldls::vx::from_xml<Ts>), ...);
 	}
 };
 
@@ -94,10 +70,6 @@ struct WrapToFromFunctions<hate::type_list<Ts...>>
 // explicitly instantiate our template SYMBOL_VISIBLE functions; includes to_json/from_json
 #define EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CLASS_NAME)                                            \
 	extern template SYMBOL_VISIBLE void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(               \
-	    cereal::BinaryOutputArchive&, std::uint32_t const);                                        \
-	extern template SYMBOL_VISIBLE void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(               \
-	    cereal::BinaryInputArchive&, std::uint32_t const);                                         \
-	extern template SYMBOL_VISIBLE void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(               \
 	    cereal::JSONOutputArchive&, std::uint32_t const);                                          \
 	extern template SYMBOL_VISIBLE void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(               \
 	    cereal::JSONInputArchive&, std::uint32_t const);                                           \
@@ -105,26 +77,14 @@ struct WrapToFromFunctions<hate::type_list<Ts...>>
 	    cereal::PortableBinaryOutputArchive&, std::uint32_t const);                                \
 	extern template SYMBOL_VISIBLE void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(               \
 	    cereal::PortableBinaryInputArchive&, std::uint32_t const);                                 \
-	extern template SYMBOL_VISIBLE void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(               \
-	    cereal::XMLOutputArchive&, std::uint32_t const);                                           \
-	extern template SYMBOL_VISIBLE void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(               \
-	    cereal::XMLInputArchive&, std::uint32_t const);                                            \
 	extern template SYMBOL_VISIBLE std::string haldls::vx::to_json(CLASS_NAME const&);             \
-	extern template SYMBOL_VISIBLE std::string haldls::vx::to_binary(CLASS_NAME const&);           \
 	extern template SYMBOL_VISIBLE std::string haldls::vx::to_portablebinary(CLASS_NAME const&);   \
-	extern template SYMBOL_VISIBLE std::string haldls::vx::to_xml(CLASS_NAME const&);              \
 	extern template SYMBOL_VISIBLE void haldls::vx::from_json(CLASS_NAME&, std::string const&);    \
-	extern template SYMBOL_VISIBLE void haldls::vx::from_binary(CLASS_NAME&, std::string const&);  \
 	extern template SYMBOL_VISIBLE void haldls::vx::from_portablebinary(                           \
-	    CLASS_NAME&, std::string const&);                                                          \
-	extern template SYMBOL_VISIBLE void haldls::vx::from_xml(CLASS_NAME&, std::string const&);
+	    CLASS_NAME&, std::string const&);
 
 #define EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CLASS_NAME)                                          \
 	template void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(                                     \
-	    cereal::BinaryOutputArchive&, std::uint32_t const);                                        \
-	template void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(                                     \
-	    cereal::BinaryInputArchive&, std::uint32_t const);                                         \
-	template void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(                                     \
 	    cereal::JSONOutputArchive&, std::uint32_t const);                                          \
 	template void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(                                     \
 	    cereal::JSONInputArchive&, std::uint32_t const);                                           \
@@ -132,24 +92,12 @@ struct WrapToFromFunctions<hate::type_list<Ts...>>
 	    cereal::PortableBinaryOutputArchive&, std::uint32_t const);                                \
 	template void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(                                     \
 	    cereal::PortableBinaryInputArchive&, std::uint32_t const);                                 \
-	template void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(                                     \
-	    cereal::XMLOutputArchive&, std::uint32_t const);                                           \
-	template void CLASS_NAME ::CEREAL_SERIALIZE_FUNCTION_NAME(                                     \
-	    cereal::XMLInputArchive&, std::uint32_t const);                                            \
 	template std::string haldls::vx::to_json(CLASS_NAME const&);                                   \
-	template std::string haldls::vx::to_binary(CLASS_NAME const&);                                 \
 	template std::string haldls::vx::to_portablebinary(CLASS_NAME const&);                         \
-	template std::string haldls::vx::to_xml(CLASS_NAME const&);                                    \
 	template void haldls::vx::from_json(CLASS_NAME&, std::string const&);                          \
-	template void haldls::vx::from_binary(CLASS_NAME&, std::string const&);                        \
-	template void haldls::vx::from_portablebinary(CLASS_NAME&, std::string const&);                \
-	template void haldls::vx::from_xml(CLASS_NAME&, std::string const&);
+	template void haldls::vx::from_portablebinary(CLASS_NAME&, std::string const&);
 
 #define EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(CLASS_NAME)                                       \
-	extern template SYMBOL_VISIBLE void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                    \
-	    cereal::BinaryOutputArchive&, CLASS_NAME&);                                                \
-	extern template SYMBOL_VISIBLE void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                    \
-	    cereal::BinaryInputArchive&, CLASS_NAME&);                                                 \
 	extern template SYMBOL_VISIBLE void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                    \
 	    cereal::JSONOutputArchive&, CLASS_NAME&);                                                  \
 	extern template SYMBOL_VISIBLE void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                    \
@@ -158,38 +106,20 @@ struct WrapToFromFunctions<hate::type_list<Ts...>>
 	    cereal::PortableBinaryOutputArchive&, CLASS_NAME&);                                        \
 	extern template SYMBOL_VISIBLE void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                    \
 	    cereal::PortableBinaryInputArchive&, CLASS_NAME&);                                         \
-	extern template SYMBOL_VISIBLE void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                    \
-	    cereal::XMLOutputArchive&, CLASS_NAME&);                                                   \
-	extern template SYMBOL_VISIBLE void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                    \
-	    cereal::XMLInputArchive&, CLASS_NAME&);                                                    \
 	extern template SYMBOL_VISIBLE std::string haldls::vx::to_json(CLASS_NAME const&);             \
-	extern template SYMBOL_VISIBLE std::string haldls::vx::to_binary(CLASS_NAME const&);           \
 	extern template SYMBOL_VISIBLE std::string haldls::vx::to_portablebinary(CLASS_NAME const&);   \
-	extern template SYMBOL_VISIBLE std::string haldls::vx::to_xml(CLASS_NAME const&);              \
 	extern template SYMBOL_VISIBLE void haldls::vx::from_json(CLASS_NAME&, std::string const&);    \
-	extern template SYMBOL_VISIBLE void haldls::vx::from_binary(CLASS_NAME&, std::string const&);  \
 	extern template SYMBOL_VISIBLE void haldls::vx::from_portablebinary(                           \
-	    CLASS_NAME&, std::string const&);                                                          \
-	extern template SYMBOL_VISIBLE void haldls::vx::from_xml(CLASS_NAME&, std::string const&);
+	    CLASS_NAME&, std::string const&);
 
 #define EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(CLASS_NAME)                                     \
-	template void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                                          \
-	    cereal::BinaryOutputArchive&, CLASS_NAME&);                                                \
-	template void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                                          \
-	    cereal::BinaryInputArchive&, CLASS_NAME&);                                                 \
 	template void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(cereal::JSONOutputArchive&, CLASS_NAME&); \
 	template void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(cereal::JSONInputArchive&, CLASS_NAME&);  \
 	template void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                                          \
 	    cereal::PortableBinaryOutputArchive&, CLASS_NAME&);                                        \
 	template void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(                                          \
 	    cereal::PortableBinaryInputArchive&, CLASS_NAME&);                                         \
-	template void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(cereal::XMLOutputArchive&, CLASS_NAME&);  \
-	template void cereal::CEREAL_SERIALIZE_FUNCTION_NAME(cereal::XMLInputArchive&, CLASS_NAME&);   \
 	template std::string haldls::vx::to_json(CLASS_NAME const&);                                   \
-	template std::string haldls::vx::to_binary(CLASS_NAME const&);                                 \
 	template std::string haldls::vx::to_portablebinary(CLASS_NAME const&);                         \
-	template std::string haldls::vx::to_xml(CLASS_NAME const&);                                    \
 	template void haldls::vx::from_json(CLASS_NAME&, std::string const&);                          \
-	template void haldls::vx::from_binary(CLASS_NAME&, std::string const&);                        \
-	template void haldls::vx::from_portablebinary(CLASS_NAME&, std::string const&);                \
-	template void haldls::vx::from_xml(CLASS_NAME&, std::string const&);
+	template void haldls::vx::from_portablebinary(CLASS_NAME&, std::string const&);
