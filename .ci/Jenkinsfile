@@ -4,6 +4,7 @@ try {
 
 	Map<String, Object> commonPipelineOptions = [
 		projects           : ["haldls"],
+		moduleOptions      : [modules: ["ppu-toolchain"]],
 		testTimeout        : 240,
 		notificationChannel: "#jenkins-trashbin"  // success is checked globally
 	]
