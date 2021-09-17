@@ -193,7 +193,8 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Multicompartment const&
 	   << "\tenable_conductance:                " << config.enable_conductance << "\n"
 	   << "\tenable_conductance_division:       " << config.enable_conductance_division << "\n"
 	   << "\tenable_conductance_multiplication: " << config.enable_conductance_multiplication
-	   << "\n)";
+	   << "\n"
+	   << "\ti_bias_nmda:                       " << config.i_bias_nmda << "\n)";
 	os << ss.str();
 	return os;
 }

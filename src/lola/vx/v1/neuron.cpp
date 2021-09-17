@@ -188,7 +188,8 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::Multicompartment const&
 	   << "connect_vertical: " << config.connect_vertical << ", "
 	   << "enable_conductance: " << config.enable_conductance << ", "
 	   << "enable_conductance_division: " << config.enable_conductance_division << ", "
-	   << "enable_conductance_multiplication: " << config.enable_conductance_multiplication << ")";
+	   << "enable_conductance_multiplication: " << config.enable_conductance_multiplication << ", "
+	   << "i_bias_nmda: " << config.i_bias_nmda << ")";
 	os << ss.str();
 	return os;
 }
