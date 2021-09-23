@@ -75,7 +75,7 @@ size_t count_decoding_words(T const& config)
  * @return randomly filled container
  */
 template <class T>
-void decode_random(std::mt19937& gen, T& config)
+inline void decode_random(std::mt19937& gen, T& config)
 {
 	typedef typename haldls::vx::detail::BackendContainerTrait<T>::default_container word_type;
 	typedef std::vector<word_type> words_type;
@@ -99,7 +99,7 @@ void decode_random(std::mt19937& gen, T& config)
  * @return Filled container
  */
 template <class T>
-void decode_ones(T& config)
+inline void decode_ones(T& config)
 {
 	typedef typename haldls::vx::detail::BackendContainerTrait<T>::default_container word_type;
 	typedef std::vector<word_type> words_type;
@@ -119,7 +119,7 @@ void decode_ones(T& config)
 // specializations
 
 template <>
-void decode_random(std::mt19937& gen, haldls::vx::JTAGIdCode& config)
+inline void decode_random(std::mt19937& gen, haldls::vx::JTAGIdCode& config)
 {
 	// Draw a random word, to be transformed into a valid JTAG ID
 	std::uniform_int_distribution<fisch::vx::JTAGIdCode::Value::value_type> random_word(

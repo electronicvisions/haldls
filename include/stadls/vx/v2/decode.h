@@ -8,7 +8,7 @@ namespace stadls::vx {
 // specializations
 
 template <>
-void decode_random(std::mt19937& gen, haldls::vx::v2::CapMemBlockConfig& config)
+inline void decode_random(std::mt19937& gen, haldls::vx::v2::CapMemBlockConfig& config)
 {
 	typedef haldls::vx::detail::BackendContainerTrait<
 	    haldls::vx::v2::CapMemBlockConfig>::default_container word_type;
@@ -51,7 +51,7 @@ void decode_random(std::mt19937& gen, haldls::vx::v2::CapMemBlockConfig& config)
 }
 
 template <>
-void decode_ones(haldls::vx::v2::CapMemBlockConfig& /* config */)
+inline void decode_ones(haldls::vx::v2::CapMemBlockConfig& /* config */)
 {
 	throw std::runtime_error("CapMemBlockConfig can't be initialized with all ones");
 }
