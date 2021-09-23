@@ -49,12 +49,15 @@ public:
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, Timer const& config) SYMBOL_VISIBLE;
 
-	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	static std::array<halco::hicann_dls::vx::TimerOnDLS, config_size_in_words> addresses(
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static std::array<halco::hicann_dls::vx::TimerOnDLS, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::TimerOnDLS, read_config_size_in_words> read_addresses(
 	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Timer, config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::Timer, write_config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Timer, config_size_in_words> const& data) SYMBOL_VISIBLE
+	void decode(std::array<fisch::vx::Timer, read_config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 private:

@@ -31,18 +31,25 @@ std::ostream& operator<<(std::ostream& os, Timer const& config)
 	return os;
 }
 
-std::array<halco::hicann_dls::vx::TimerOnDLS, Timer::config_size_in_words> Timer::addresses(
-    coordinate_type const& coord)
+std::array<halco::hicann_dls::vx::TimerOnDLS, Timer::write_config_size_in_words>
+Timer::write_addresses(coordinate_type const& coord)
 {
 	return {coord};
 }
 
-std::array<fisch::vx::Timer, Timer::config_size_in_words> Timer::encode() const
+std::array<halco::hicann_dls::vx::TimerOnDLS, Timer::read_config_size_in_words>
+Timer::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+std::array<fisch::vx::Timer, Timer::write_config_size_in_words> Timer::encode() const
 {
 	return {fisch::vx::Timer{fisch::vx::Timer::Value{m_value.value()}}};
 }
 
-void Timer::decode(std::array<fisch::vx::Timer, Timer::config_size_in_words> const& /*data*/) {}
+void Timer::decode(std::array<fisch::vx::Timer, Timer::read_config_size_in_words> const& /*data*/)
+{}
 
 template <class Archive>
 void Timer::serialize(Archive& ar, std::uint32_t const)
