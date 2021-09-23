@@ -588,5 +588,83 @@ struct BackendContainerTrait<AD5252ChannelConfigPersistent>
 
 } // namespace detail
 
+
+class GENPYBIND(visible) DAC6573ChannelConfig
+{
+public:
+	typedef halco::hicann_dls::vx::DAC6573ChannelOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
+
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::RantWrapper<
+	          Value,
+	          uint_fast32_t,
+	          fisch::vx::dac6573_value_max,
+	          fisch::vx::dac_value_min>
+	{
+		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	/** Default constructor. */
+	DAC6573ChannelConfig(Value const& value = Value()) : m_value(value) {}
+
+	/**
+	 * Get DAC channel value.
+	 * @return Value
+	 */
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set DAC channel value.
+	 * @param value Value to set
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(Value value) SYMBOL_VISIBLE;
+
+	bool operator==(DAC6573ChannelConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(DAC6573ChannelConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, DAC6573ChannelConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::I2CDAC6573RwRegisterOnBoard, config_size_in_words>
+	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::I2CDAC6573RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::I2CDAC6573RwRegister, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Value m_value;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(DAC6573ChannelConfig)
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<DAC6573ChannelConfig>
+    : public BackendContainerBase<DAC6573ChannelConfig, fisch::vx::I2CDAC6573RwRegister>
+{};
+
+} // namespace detail
+
 } // namespace vx
 } // namespace haldls
+
+namespace std {
+
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::DAC6573ChannelConfig::Value)
+
+}

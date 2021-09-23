@@ -30,7 +30,8 @@ using namespace halco::common;
 typedef hate::type_list<
     haldls::vx::TCA9554Config,
     haldls::vx::AD5252ChannelConfig,
-    haldls::vx::AD5252ChannelConfigPersistent> // Persistent register. DO NOT change randomly
+    haldls::vx::AD5252ChannelConfigPersistent, // Persistent register. DO NOT change randomly
+    haldls::vx::DAC6573ChannelConfig>
     WriteTestsDisabledContainers;
 
 /**

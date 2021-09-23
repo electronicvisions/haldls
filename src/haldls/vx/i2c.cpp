@@ -640,6 +640,61 @@ void AD5252ChannelConfigPersistent::serialize(Archive& ar, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfigPersistent)
 
+
+DAC6573ChannelConfig::Value DAC6573ChannelConfig::get_value() const
+{
+	return m_value;
+}
+
+void DAC6573ChannelConfig::set_value(Value value)
+{
+	m_value = value;
+}
+
+bool DAC6573ChannelConfig::operator==(DAC6573ChannelConfig const& other) const
+{
+	return other.m_value == m_value;
+}
+
+bool DAC6573ChannelConfig::operator!=(DAC6573ChannelConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::array<
+    halco::hicann_dls::vx::I2CDAC6573RwRegisterOnBoard,
+    DAC6573ChannelConfig::config_size_in_words>
+DAC6573ChannelConfig::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::I2CDAC6573RwRegisterOnBoard(
+	    coord.toDAC6573ChannelOnDAC6573(), coord.toDAC6573OnBoard())};
+}
+
+std::array<fisch::vx::I2CDAC6573RwRegister, DAC6573ChannelConfig::config_size_in_words>
+DAC6573ChannelConfig::encode() const
+{
+	return {fisch::vx::I2CDAC6573RwRegister(fisch::vx::I2CDAC6573RwRegister::Value(m_value))};
+}
+
+void DAC6573ChannelConfig::decode(
+    std::array<fisch::vx::I2CDAC6573RwRegister, config_size_in_words> const& data)
+{
+	m_value = Value(data[0].get());
+}
+
+std::ostream& operator<<(std::ostream& os, DAC6573ChannelConfig const& config)
+{
+	return os << hate::name<DAC6573ChannelConfig>() << "(value: " << config.m_value << ")";
+}
+
+template <typename Archive>
+void DAC6573ChannelConfig::serialize(Archive& ar, std::uint32_t const /*version*/)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(DAC6573ChannelConfig)
+
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::INA219Config, 0)
@@ -648,3 +703,4 @@ CEREAL_CLASS_VERSION(haldls::vx::TCA9554Inputs, 0)
 CEREAL_CLASS_VERSION(haldls::vx::TCA9554Config, 0)
 CEREAL_CLASS_VERSION(haldls::vx::AD5252ChannelConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::AD5252ChannelConfigPersistent, 0)
+CEREAL_CLASS_VERSION(haldls::vx::DAC6573ChannelConfig, 0)
