@@ -31,19 +31,25 @@ std::ostream& operator<<(std::ostream& os, ResetChip const& config)
 	return os;
 }
 
-std::array<halco::hicann_dls::vx::ResetChipOnDLS, ResetChip::config_size_in_words>
-ResetChip::addresses(coordinate_type const& coord)
+std::array<halco::hicann_dls::vx::ResetChipOnDLS, ResetChip::write_config_size_in_words>
+ResetChip::write_addresses(coordinate_type const& coord)
 {
 	return {coord};
 }
 
-std::array<fisch::vx::ResetChip, ResetChip::config_size_in_words> ResetChip::encode() const
+std::array<halco::hicann_dls::vx::ResetChipOnDLS, ResetChip::read_config_size_in_words>
+ResetChip::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+std::array<fisch::vx::ResetChip, ResetChip::write_config_size_in_words> ResetChip::encode() const
 {
 	return {fisch::vx::ResetChip(m_value)};
 }
 
 void ResetChip::decode(
-    std::array<fisch::vx::ResetChip, ResetChip::config_size_in_words> const& /*data*/)
+    std::array<fisch::vx::ResetChip, ResetChip::read_config_size_in_words> const& /*data*/)
 {}
 
 template <class Archive>
