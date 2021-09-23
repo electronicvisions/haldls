@@ -116,9 +116,11 @@ TEST(ShiftRegister, EncodeDecode)
 	ShiftRegisterOnBoard coord;
 
 	SPIShiftRegisterOnBoard ref_address;
-	std::array<SPIShiftRegisterOnBoard, ShiftRegister::config_size_in_words> ref_addresses = {SPIShiftRegisterOnBoard()};
-	std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> ref_data = {
-	    fisch::vx::SPIShiftRegister(fisch::vx::SPIShiftRegister::Value(((3ul << 6) << 16) + ((1ul << 0 | 1ul << 5) << 8) + (1ul << 6)))};
+	std::array<SPIShiftRegisterOnBoard, ShiftRegister::write_config_size_in_words> ref_addresses = {
+	    SPIShiftRegisterOnBoard()};
+	std::array<fisch::vx::SPIShiftRegister, ShiftRegister::write_config_size_in_words> ref_data = {
+	    fisch::vx::SPIShiftRegister(fisch::vx::SPIShiftRegister::Value(
+	        ((3ul << 6) << 16) + ((1ul << 0 | 1ul << 5) << 8) + (1ul << 6)))};
 
 	{ // write addresses
 		std::vector<SPIShiftRegisterOnBoard> write_addresses;

@@ -255,10 +255,17 @@ std::ostream& operator<<(std::ostream& os, ShiftRegister const& config)
 	return (os << ss.str());
 }
 
-std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, ShiftRegister::config_size_in_words>
-ShiftRegister::addresses(coordinate_type const& /*coord*/)
+std::
+    array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, ShiftRegister::write_config_size_in_words>
+    ShiftRegister::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::SPIShiftRegisterOnBoard()};
+}
+
+std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, ShiftRegister::read_config_size_in_words>
+ShiftRegister::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
 }
 
 namespace {
@@ -304,7 +311,8 @@ struct ShiftRegisterBitfield
 
 } // namespace
 
-std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> ShiftRegister::encode() const
+std::array<fisch::vx::SPIShiftRegister, ShiftRegister::write_config_size_in_words>
+ShiftRegister::encode() const
 {
 	ShiftRegisterBitfield bitfield;
 	bitfield.u.m.mux_1 = static_cast<uint32_t>(m_mux_1);
@@ -334,8 +342,9 @@ std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> Shi
 	return {fisch::vx::SPIShiftRegister(fisch::vx::SPIShiftRegister::Value(bitfield.u.raw))};
 }
 
-void ShiftRegister::decode(
-    std::array<fisch::vx::SPIShiftRegister, ShiftRegister::config_size_in_words> const& /*data*/)
+void ShiftRegister::decode(std::array<
+                           fisch::vx::SPIShiftRegister,
+                           ShiftRegister::read_config_size_in_words> const& /*data*/)
 {}
 
 template <typename Archive>
@@ -382,20 +391,27 @@ std::ostream& operator<<(std::ostream& os, DACChannel const& config)
 	return os;
 }
 
-std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::config_size_in_words>
-DACChannel::addresses(coordinate_type const& coord)
+std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::write_config_size_in_words>
+DACChannel::write_addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::SPIDACDataRegisterOnBoard(coord.toEnum())};
 }
 
-std::array<fisch::vx::SPIDACDataRegister, DACChannel::config_size_in_words> DACChannel::encode()
-    const
+std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::read_config_size_in_words>
+DACChannel::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+std::array<fisch::vx::SPIDACDataRegister, DACChannel::write_config_size_in_words>
+DACChannel::encode() const
 {
 	return {fisch::vx::SPIDACDataRegister(fisch::vx::SPIDACDataRegister::Value(m_value))};
 }
 
-void DACChannel::decode(
-    std::array<fisch::vx::SPIDACDataRegister, DACChannel::config_size_in_words> const& /*data*/)
+void DACChannel::decode(std::array<
+                        fisch::vx::SPIDACDataRegister,
+                        DACChannel::read_config_size_in_words> const& /*data*/)
 {}
 
 template <typename Archive>
@@ -443,8 +459,10 @@ std::ostream& operator<<(std::ostream& os, DACControl const& config)
 	return (os << ss.str());
 }
 
-std::array<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard, DACControl::config_size_in_words>
-DACControl::addresses(coordinate_type const& coord)
+std::array<
+    halco::hicann_dls::vx::SPIDACControlRegisterOnBoard,
+    DACControl::write_config_size_in_words>
+DACControl::write_addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::SPIDACControlRegisterOnBoard(
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::gain_reference, coord),
@@ -452,8 +470,16 @@ DACControl::addresses(coordinate_type const& coord)
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::power_down, coord)};
 }
 
-std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> DACControl::encode()
-    const
+std::array<
+    halco::hicann_dls::vx::SPIDACControlRegisterOnBoard,
+    DACControl::read_config_size_in_words>
+DACControl::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+std::array<fisch::vx::SPIDACControlRegister, DACControl::write_config_size_in_words>
+DACControl::encode() const
 {
 	auto gain_reference = fisch::vx::SPIDACControlRegister::Value(0b001100);
 
@@ -467,8 +493,9 @@ std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> D
 	        fisch::vx::SPIDACControlRegister(power_down)};
 }
 
-void DACControl::decode(
-    std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> const& /*data*/)
+void DACControl::decode(std::array<
+                        fisch::vx::SPIDACControlRegister,
+                        DACControl::read_config_size_in_words> const& /*data*/)
 {}
 
 template <typename Archive>

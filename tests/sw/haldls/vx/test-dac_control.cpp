@@ -49,16 +49,16 @@ TEST(DACControl, EncodeDecode)
 
 	auto coord = draw_ranged_non_default_value<DACOnBoard>(0);
 
-	std::array<typename addresses_type::value_type, DACControl::config_size_in_words>
+	std::array<typename addresses_type::value_type, DACControl::write_config_size_in_words>
 	    ref_addresses = {
 	        typename addresses_type::value_type(
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::gain_reference, coord),
 	        typename addresses_type::value_type(
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::power_down, coord)};
-	std::array<fisch::vx::SPIDACControlRegister, DACControl::config_size_in_words> ref_data = {
-	    fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0b001100)),
-	    fisch::vx::SPIDACControlRegister(
-	        fisch::vx::SPIDACControlRegister::Value(0xff ^ (1u << 2)))};
+	std::array<fisch::vx::SPIDACControlRegister, DACControl::write_config_size_in_words> ref_data =
+	    {fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0b001100)),
+	     fisch::vx::SPIDACControlRegister(
+	         fisch::vx::SPIDACControlRegister::Value(0xff ^ (1u << 2)))};
 
 	{
 		addresses_type write_addresses;

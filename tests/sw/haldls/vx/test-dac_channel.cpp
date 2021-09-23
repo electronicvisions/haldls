@@ -32,9 +32,10 @@ TEST(DACChannel, EncodeDecode)
 	auto coord = DACChannelOnBoard(channel_coord, dac_coord);
 
 	halco::hicann_dls::vx::SPIDACDataRegisterOnBoard ref_address(coord.toEnum());
-	std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::config_size_in_words>
+	std::array<
+	    halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::write_config_size_in_words>
 	    ref_addresses = {ref_address};
-	std::array<fisch::vx::SPIDACDataRegister, DACChannel::config_size_in_words> ref_data = {
+	std::array<fisch::vx::SPIDACDataRegister, DACChannel::write_config_size_in_words> ref_data = {
 	    {fisch::vx::SPIDACDataRegister(fisch::vx::SPIDACDataRegister::Value(config.get_value()))}};
 
 	{
