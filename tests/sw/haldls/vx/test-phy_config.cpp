@@ -286,9 +286,9 @@ TEST(PhyConfigChip, EncodeDecode)
 
 	PhyConfigChipOnDLS coord = draw_ranged_non_default_value<PhyConfigChipOnDLS>(0);
 
-	std::array<JTAGPhyRegisterOnDLS, PhyConfigChip::config_size_in_words> ref_addresses = {
+	std::array<JTAGPhyRegisterOnDLS, PhyConfigChip::write_config_size_in_words> ref_addresses = {
 	    coord.toJTAGPhyRegisterOnDLS()};
-	std::array<fisch::vx::JTAGPhyRegister, PhyConfigChip::config_size_in_words> ref_data = {
+	std::array<fisch::vx::JTAGPhyRegister, PhyConfigChip::write_config_size_in_words> ref_data = {
 	    fisch::vx::JTAGPhyRegister(fisch::vx::JTAGPhyRegister::Value(0x204000))};
 
 	{ // write addresses

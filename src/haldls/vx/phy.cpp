@@ -434,20 +434,27 @@ std::ostream& operator<<(std::ostream& os, PhyConfigChip const& config)
 	return os;
 }
 
-std::array<halco::hicann_dls::vx::JTAGPhyRegisterOnDLS, PhyConfigChip::config_size_in_words>
-PhyConfigChip::addresses(coordinate_type const& coord)
+std::array<halco::hicann_dls::vx::JTAGPhyRegisterOnDLS, PhyConfigChip::write_config_size_in_words>
+PhyConfigChip::write_addresses(coordinate_type const& coord)
 {
 	return {coord.toJTAGPhyRegisterOnDLS()};
 }
 
-std::array<fisch::vx::JTAGPhyRegister, PhyConfigChip::config_size_in_words> PhyConfigChip::encode()
-    const
+std::array<halco::hicann_dls::vx::JTAGPhyRegisterOnDLS, PhyConfigChip::read_config_size_in_words>
+PhyConfigChip::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+std::array<fisch::vx::JTAGPhyRegister, PhyConfigChip::write_config_size_in_words>
+PhyConfigChip::encode() const
 {
 	return {fisch::vx::JTAGPhyRegister(fisch::vx::JTAGPhyRegister::Value(pack()))};
 }
 
-void PhyConfigChip::decode(
-    std::array<fisch::vx::JTAGPhyRegister, PhyConfigChip::config_size_in_words> const& /*data*/)
+void PhyConfigChip::decode(std::array<
+                           fisch::vx::JTAGPhyRegister,
+                           PhyConfigChip::read_config_size_in_words> const& /*data*/)
 {}
 
 template <typename Archive>
