@@ -100,7 +100,10 @@ void SpikeLabel::set_synapse_label(SynapseLabelValue const value)
 		return m_impl;                                                                             \
 	}                                                                                              \
                                                                                                    \
-	void SpikePack##Num##ToChip::set_labels(labels_type const& value) { m_impl = value; }          \
+	void SpikePack##Num##ToChip::set_labels(labels_type const& value)                              \
+	{                                                                                              \
+		m_impl = value;                                                                            \
+	}                                                                                              \
                                                                                                    \
 	bool SpikePack##Num##ToChip::operator==(SpikePack##Num##ToChip const& other) const             \
 	{                                                                                              \
@@ -121,13 +124,22 @@ void SpikeLabel::set_synapse_label(SynapseLabelValue const value)
                                                                                                    \
 	std::array<                                                                                    \
 	    halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS,                                        \
-	    SpikePack##Num##ToChip::config_size_in_words>                                              \
-	    SpikePack##Num##ToChip::addresses(coordinate_type const& coord)                            \
+	    SpikePack##Num##ToChip::write_config_size_in_words>                                        \
+	    SpikePack##Num##ToChip::write_addresses(coordinate_type const& coord)                      \
 	{                                                                                              \
 		return {coord};                                                                            \
 	}                                                                                              \
                                                                                                    \
-	std::array<fisch::vx::SpikePack##Num##ToChip, SpikePack##Num##ToChip::config_size_in_words>    \
+	std::array<                                                                                    \
+	    halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS,                                        \
+	    SpikePack##Num##ToChip::read_config_size_in_words>                                         \
+	    SpikePack##Num##ToChip::read_addresses(coordinate_type const& /*coord*/)                   \
+	{                                                                                              \
+		return {};                                                                                 \
+	}                                                                                              \
+                                                                                                   \
+	std::array<                                                                                    \
+	    fisch::vx::SpikePack##Num##ToChip, SpikePack##Num##ToChip::write_config_size_in_words>     \
 	    SpikePack##Num##ToChip::encode() const                                                     \
 	{                                                                                              \
 		fisch::vx::SpikePack##Num##ToChip::labels_type ret;                                        \
@@ -138,14 +150,9 @@ void SpikeLabel::set_synapse_label(SynapseLabelValue const value)
 	}                                                                                              \
                                                                                                    \
 	void SpikePack##Num##ToChip::decode(                                                           \
-	    std::array<fisch::vx::SpikePack##Num##ToChip, config_size_in_words> const& data)           \
-	{                                                                                              \
-		fisch::vx::SpikePack##Num##ToChip tmp = data[0];                                           \
-		auto const& labels = tmp.get_labels();                                                     \
-		std::transform(                                                                            \
-		    std::begin(labels), std::end(labels), std::begin(m_impl),                              \
-		    [](fisch::vx::SpikeLabel const& sl) { return SpikeLabel{sl}; });                       \
-	}                                                                                              \
+	    std::array<                                                                                \
+	        fisch::vx::SpikePack##Num##ToChip, read_config_size_in_words> const& /* data */)       \
+	{}                                                                                             \
                                                                                                    \
 	template <typename Archive>                                                                    \
 	void SpikePack##Num##ToChip::serialize(Archive& ar, std::uint32_t const)                       \

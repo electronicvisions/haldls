@@ -110,14 +110,19 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 		friend std::ostream& operator<<(std::ostream& os, SpikePack##Num##ToChip const& config)    \
 		    SYMBOL_VISIBLE;                                                                        \
                                                                                                    \
-		constexpr static size_t GENPYBIND(hidden) config_size_in_words = 1;                        \
+		constexpr static size_t GENPYBIND(hidden) write_config_size_in_words = 1;                  \
+		constexpr static size_t GENPYBIND(hidden) read_config_size_in_words = 0;                   \
 		static std::                                                                               \
-		    array<halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS, config_size_in_words>        \
-		    addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);               \
-		std::array<fisch::vx::SpikePack##Num##ToChip, config_size_in_words> encode() const         \
+		    array<halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS, write_config_size_in_words>  \
+		    write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);         \
+		static std::                                                                               \
+		    array<halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS, read_config_size_in_words>   \
+		    read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);          \
+		std::array<fisch::vx::SpikePack##Num##ToChip, write_config_size_in_words> encode() const   \
 		    SYMBOL_VISIBLE GENPYBIND(hidden);                                                      \
-		void decode(std::array<fisch::vx::SpikePack##Num##ToChip, config_size_in_words> const&     \
-		                data) SYMBOL_VISIBLE GENPYBIND(hidden);                                    \
+		void decode(                                                                               \
+		    std::array<fisch::vx::SpikePack##Num##ToChip, read_config_size_in_words> const& data)  \
+		    SYMBOL_VISIBLE GENPYBIND(hidden);                                                      \
                                                                                                    \
 	private:                                                                                       \
 		friend class cereal::access;                                                               \
