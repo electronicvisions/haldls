@@ -406,7 +406,7 @@ PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToContaine
 		    }
 
 		    auto ticket_impl = builder.m_builder_impl->read(read_addresses);
-		    return PlaybackProgram::ContainerTicket<T>(coord, ticket_impl);
+		    return PlaybackProgram::ContainerTicket<T>(coord, std::move(ticket_impl));
 	    }...};
 
 	return read_table.at(backend_index)(builder, coord);

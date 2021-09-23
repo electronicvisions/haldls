@@ -104,8 +104,8 @@ public:
 		template <typename, typename, template <typename> class>
 		friend class detail::PlaybackProgramBuilderAdapterImpl;
 
-		ContainerTicket(coordinate_type const& coord, ticket_impl_type const& ticket_impl) :
-		    m_coord(coord), m_ticket_impl(ticket_impl)
+		ContainerTicket(coordinate_type const& coord, ticket_impl_type ticket_impl) :
+		    m_coord(coord), m_ticket_impl(std::move(ticket_impl))
 		{}
 
 		coordinate_type m_coord;
