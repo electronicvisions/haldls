@@ -26,6 +26,9 @@ using namespace stadls::vx::v2;
 using namespace halco::hicann_dls::vx::v2;
 using namespace halco::common;
 
+// These containers are not supported in the hardware-setups used for automated testing
+typedef hate::type_list<haldls::vx::TCA9554Config> WriteTestsDisabledContainers;
+
 /**
  * Random generator for this test.
  * Initialized with random seed because it leads to coverage over time.
@@ -89,6 +92,10 @@ TYPED_TEST_SUITE(
  */
 TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 {
+	if constexpr (hate::is_in_type_list<TypeParam, WriteTestsDisabledContainers>::value) {
+		GTEST_SKIP() << "Test is manually disabled for this container.";
+	}
+
 	// test only carried out for the default word type
 	typedef
 	    typename haldls::vx::detail::BackendContainerTrait<TypeParam>::default_container word_type;

@@ -11,6 +11,8 @@
  *       stadls::vx::v1::Dumper and stadls::vx::v1::DumperDone in `src/stadls/vx/v1/dumper.cpp`.
  */
 
+PLAYBACK_CONTAINER(TCA9554Config, haldls::vx::v1::TCA9554Config)
+PLAYBACK_CONTAINER(TCA9554Inputs, haldls::vx::v1::TCA9554Inputs)
 PLAYBACK_CONTAINER(INA219Config, haldls::vx::v1::INA219Config)
 PLAYBACK_CONTAINER(INA219Status, haldls::vx::v1::INA219Status)
 PLAYBACK_CONTAINER(NullPayloadReadable, haldls::vx::v1::NullPayloadReadable)

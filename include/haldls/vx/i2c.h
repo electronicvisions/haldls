@@ -4,8 +4,12 @@
 #include <limits>
 
 #include "fisch/vx/constants.h"
+#include "fisch/vx/i2c.h"
 #include "halco/common/geometry.h"
+#include "halco/common/iter_all.h"
+#include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/i2c.h"
+#include "halco/hicann-dls/vx/ultra96.h"
 #include "halco/hicann-dls/vx/xboard.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
@@ -268,6 +272,177 @@ struct BackendContainerTrait<INA219Status>
 {};
 
 } // namespace detail
+
+
+class GENPYBIND(visible) TCA9554Inputs
+{
+public:
+	typedef halco::hicann_dls::vx::TCA9554InputsOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
+
+	typedef GENPYBIND(opaque) halco::common::
+	    typed_array<bool, halco::hicann_dls::vx::TCA9554ChannelOnBoard> ChannelsBooleanArray;
+
+	/* Default constructor */
+	TCA9554Inputs() SYMBOL_VISIBLE;
+
+	/**
+	 * Get input value for all channels.
+	 * @return Array of channel input values
+	 */
+	GENPYBIND(getter_for(channel_input), return_value_policy(reference_internal))
+	ChannelsBooleanArray const& get_channel_input() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set input value for all channels.
+	 * @param value Array of channel input values
+	 */
+	GENPYBIND(setter_for(channel_input))
+	void set_channel_input(ChannelsBooleanArray const& value) SYMBOL_VISIBLE;
+
+	bool operator==(TCA9554Inputs const& other) const SYMBOL_VISIBLE;
+	bool operator!=(TCA9554Inputs const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, TCA9554Inputs const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard, config_size_in_words>
+	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::I2CTCA9554RoRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::I2CTCA9554RoRegister, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	ChannelsBooleanArray m_input;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Inputs)
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<TCA9554Inputs>
+    : public BackendContainerBase<TCA9554Inputs, fisch::vx::I2CTCA9554RoRegister>
+{};
+
+} // namespace detail
+
+class GENPYBIND(visible) TCA9554Config
+{
+public:
+	typedef halco::hicann_dls::vx::TCA9554ConfigOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
+
+	enum class ChannelPolarity : bool
+	{
+		normal = false,
+		inverted = true
+	};
+
+	enum class ChannelMode : bool
+	{
+		output = false,
+		input = true
+	};
+
+	typedef GENPYBIND(opaque(false)) halco::common::
+	    typed_array<bool, halco::hicann_dls::vx::TCA9554ChannelOnBoard> ChannelsBooleanArray;
+	typedef GENPYBIND(opaque) halco::common::typed_array<
+	    ChannelPolarity,
+	    halco::hicann_dls::vx::TCA9554ChannelOnBoard> ChannelsPolarityArray;
+	typedef GENPYBIND(opaque) halco::common::
+	    typed_array<ChannelMode, halco::hicann_dls::vx::TCA9554ChannelOnBoard> ChannelsModeArray;
+
+	/** Default constructor. */
+	TCA9554Config() SYMBOL_VISIBLE;
+
+	/**
+	 * Get output value for all channels.
+	 * @return Array of output values
+	 **/
+	GENPYBIND(getter_for(channel_output), return_value_policy(reference_internal))
+	ChannelsBooleanArray const& get_channel_output() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set output value for all channels.
+	 * @param value Array of output values
+	 **/
+	GENPYBIND(setter_for(channel_output))
+	void set_channel_output(ChannelsBooleanArray const& value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get polarity inversion mode of all channels.
+	 * @return Array of polarity inversion modes
+	 **/
+	GENPYBIND(getter_for(channel_polarity), return_value_policy(reference_internal))
+	ChannelsPolarityArray const& get_channel_polarity() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set polarity inversion mode of all channels.
+	 * @param value Array of polarity inversion modes
+	 **/
+	GENPYBIND(setter_for(channel_polarity))
+	void set_channel_polarity(ChannelsPolarityArray const& value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get input/output mode for all channels.
+	 * @return Array of channel input/output modes
+	 **/
+	GENPYBIND(getter_for(channel_mode), return_value_policy(reference_internal))
+	ChannelsModeArray const& get_channel_mode() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set input/output mode for all channels.
+	 * @param value Array of channel input/output modes
+	 **/
+	GENPYBIND(setter_for(channel_mode))
+	void set_channel_mode(ChannelsModeArray const& value) SYMBOL_VISIBLE;
+
+	bool operator==(TCA9554Config const& other) const SYMBOL_VISIBLE;
+	bool operator!=(TCA9554Config const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, TCA9554Config const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 3;
+	static std::array<halco::hicann_dls::vx::I2CTCA9554RwRegisterOnBoard, config_size_in_words>
+	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::I2CTCA9554RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::I2CTCA9554RwRegister, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	ChannelsBooleanArray m_output;
+	ChannelsPolarityArray m_polarity;
+	ChannelsModeArray m_mode;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Config)
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<TCA9554Config>
+    : public BackendContainerBase<TCA9554Config, fisch::vx::I2CTCA9554RwRegister>
+{};
+
+} // namespace detail
+
 
 } // namespace vx
 } // namespace haldls

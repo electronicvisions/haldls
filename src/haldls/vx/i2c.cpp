@@ -2,7 +2,11 @@
 
 #include "fisch/vx/i2c.h"
 #include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/i2c.h"
+#include "halco/hicann-dls/vx/ultra96.h"
+#include "halco/hicann-dls/vx/xboard.h"
 #include "haldls/cerealization.tcc"
 
 namespace haldls::vx {
@@ -309,7 +313,220 @@ void INA219Status::serialize(Archive& ar, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(INA219Status)
 
+
+namespace {
+
+template <typename T>
+struct TypedBoolArrayToUint8Conversion
+{
+	uint8_t raw;
+
+	TypedBoolArrayToUint8Conversion(uint8_t const& data = 0u) : raw(data) {}
+	TypedBoolArrayToUint8Conversion(T const& array)
+	{
+		from_array(array);
+	}
+
+	void from_array(T const& arr)
+	{
+		raw = 0u;
+		for (auto coord : halco::common::iter_all<halco::hicann_dls::vx::TCA9554ChannelOnBoard>()) {
+			raw |= static_cast<bool>(arr[coord]) << coord.toEnum();
+		}
+	}
+
+	T to_array() const
+	{
+		T arr;
+		for (auto coord : halco::common::iter_all<halco::hicann_dls::vx::TCA9554ChannelOnBoard>()) {
+			uint8_t const i = coord.toEnum();
+			arr[coord] = static_cast<typename T::value_type>((bool) (raw & (1 << i)));
+		}
+		return arr;
+	}
+};
+
+} // namespace
+
+TCA9554Inputs::TCA9554Inputs() : m_input() {}
+
+TCA9554Inputs::ChannelsBooleanArray const& TCA9554Inputs::get_channel_input() const
+{
+	return m_input;
+}
+
+void TCA9554Inputs::set_channel_input(const ChannelsBooleanArray& value)
+{
+	m_input = value;
+}
+
+bool TCA9554Inputs::operator==(TCA9554Inputs const& other) const
+{
+	return m_input == other.m_input;
+}
+
+bool TCA9554Inputs::operator!=(TCA9554Inputs const& other) const
+{
+	return !(*this == other);
+}
+
+std::array<halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard, TCA9554Inputs::config_size_in_words>
+TCA9554Inputs::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard(
+	    halco::hicann_dls::vx::I2CTCA9554RoRegisterOnTCA9554::inputs, coord.toTCA9554OnBoard())};
+}
+
+std::array<fisch::vx::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words>
+TCA9554Inputs::encode() const
+{
+	return {fisch::vx::I2CTCA9554RoRegister(
+	    fisch::vx::I2CTCA9554RoRegister::Value(TypedBoolArrayToUint8Conversion(m_input).raw))};
+}
+
+void TCA9554Inputs::decode(
+    std::array<fisch::vx::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words> const& data)
+{
+	m_input = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0].get()).to_array();
+}
+
+std::ostream& operator<<(std::ostream& os, TCA9554Inputs const& config)
+{
+	std::stringstream ss;
+	for (bool val : config.m_input) {
+		ss << val;
+	}
+
+	return (os << hate::name<TCA9554Inputs>() << "(inputs: " << ss.str() << ")");
+}
+
+template <typename Archive>
+void TCA9554Inputs::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_input));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Inputs)
+
+
+TCA9554Config::TCA9554Config() : m_output(), m_polarity(), m_mode()
+{
+	m_output.fill(false);
+	m_polarity.fill(ChannelPolarity::normal);
+	m_mode.fill(ChannelMode::output);
+}
+
+TCA9554Config::ChannelsBooleanArray const& TCA9554Config::get_channel_output() const
+{
+	return m_output;
+}
+
+void TCA9554Config::set_channel_output(const ChannelsBooleanArray& value)
+{
+	m_output = value;
+}
+
+TCA9554Config::ChannelsPolarityArray const& TCA9554Config::get_channel_polarity() const
+{
+	return m_polarity;
+}
+
+void TCA9554Config::set_channel_polarity(const ChannelsPolarityArray& value)
+{
+	m_polarity = value;
+}
+
+TCA9554Config::ChannelsModeArray const& TCA9554Config::get_channel_mode() const
+{
+	return m_mode;
+}
+
+void TCA9554Config::set_channel_mode(const ChannelsModeArray& value)
+{
+	m_mode = value;
+}
+
+bool TCA9554Config::operator==(TCA9554Config const& other) const
+{
+	return m_polarity == other.m_polarity && m_mode == other.m_mode && m_output == other.m_output;
+}
+
+bool TCA9554Config::operator!=(TCA9554Config const& other) const
+{
+	return !(*this == other);
+}
+
+std::array<halco::hicann_dls::vx::I2CTCA9554RwRegisterOnBoard, TCA9554Config::config_size_in_words>
+TCA9554Config::addresses(coordinate_type const& coord)
+{
+	halco::hicann_dls::vx::TCA9554OnBoard const base_coord = coord.toTCA9554OnBoard();
+
+	return {halco::hicann_dls::vx::I2CTCA9554RwRegisterOnBoard(
+	            halco::hicann_dls::vx::I2CTCA9554RwRegisterOnTCA9554::outputs, base_coord),
+	        halco::hicann_dls::vx::I2CTCA9554RwRegisterOnBoard(
+	            halco::hicann_dls::vx::I2CTCA9554RwRegisterOnTCA9554::polarity, base_coord),
+	        halco::hicann_dls::vx::I2CTCA9554RwRegisterOnBoard(
+	            halco::hicann_dls::vx::I2CTCA9554RwRegisterOnTCA9554::config, base_coord)};
+}
+
+
+std::array<fisch::vx::I2CTCA9554RwRegister, TCA9554Config::config_size_in_words>
+TCA9554Config::encode() const
+{
+	return {fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(
+	            TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(m_output).raw)),
+	        fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(
+	            TypedBoolArrayToUint8Conversion<ChannelsPolarityArray>(m_polarity).raw)),
+	        fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(
+	            TypedBoolArrayToUint8Conversion<ChannelsModeArray>(m_mode).raw))};
+}
+
+void TCA9554Config::decode(
+    std::array<fisch::vx::I2CTCA9554RwRegister, TCA9554Config::config_size_in_words> const& data)
+{
+	m_output = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0].get()).to_array();
+	m_polarity = TypedBoolArrayToUint8Conversion<ChannelsPolarityArray>(data[1].get()).to_array();
+	m_mode = TypedBoolArrayToUint8Conversion<ChannelsModeArray>(data[2].get()).to_array();
+}
+
+std::ostream& operator<<(std::ostream& os, TCA9554Config const& config)
+{
+	std::stringstream ss_mode, ss_polarity, ss_output;
+
+	for (auto coord : halco::common::iter_all<halco::hicann_dls::vx::TCA9554ChannelOnBoard>()) {
+		bool const is_last = coord == halco::hicann_dls::vx::TCA9554ChannelOnBoard::max;
+
+		ss_mode << (config.m_mode[coord] == TCA9554Config::ChannelMode::input ? "input   "
+		                                                                      : "output  ")
+		        << (is_last ? "" : " ");
+		ss_polarity << (config.m_polarity[coord] == TCA9554Config::ChannelPolarity::normal
+		                    ? "normal  "
+		                    : "inverted")
+		            << (is_last ? "" : " ");
+		ss_output << (config.m_output[coord] == true ? "active  " : "inactive")
+		          << (is_last ? "" : " ");
+	}
+
+	return os << hate::name<TCA9554Config>() << "(\n"
+	          << "\tmode:     \t" << ss_mode.str() << "\n"
+	          << "\tpolarity: \t" << ss_polarity.str() << "\n"
+	          << "\toutput:   \t" << ss_output.str() << "\n)";
+}
+
+template <typename Archive>
+void TCA9554Config::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_output));
+	ar(CEREAL_NVP(m_polarity));
+	ar(CEREAL_NVP(m_mode));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Config)
+
+
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::INA219Config, 0)
 CEREAL_CLASS_VERSION(haldls::vx::INA219Status, 0)
+CEREAL_CLASS_VERSION(haldls::vx::TCA9554Inputs, 0)
+CEREAL_CLASS_VERSION(haldls::vx::TCA9554Config, 0)
