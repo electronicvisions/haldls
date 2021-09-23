@@ -5,6 +5,7 @@
 #include "haldls/vx/v1/container.h"
 #include "lola/vx/v1/container.h"
 #include "stadls/vx/v1/decode.h"
+#include <random>
 
 typedef hate::
     type_list<lola::vx::v1::AtomicNeuron, haldls::vx::NullPayloadReadable, haldls::vx::INA219Status>
