@@ -524,9 +524,127 @@ void TCA9554Config::serialize(Archive& ar, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Config)
 
 
+AD5252ChannelConfig::AD5252ChannelConfig() : m_value() {}
+
+AD5252ChannelConfig::WiperSetting AD5252ChannelConfig::get_value() const
+{
+	return m_value;
+}
+
+void AD5252ChannelConfig::set_value(WiperSetting const value)
+{
+	m_value = value;
+}
+
+bool AD5252ChannelConfig::operator==(AD5252ChannelConfig const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool AD5252ChannelConfig::operator!=(AD5252ChannelConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::array<
+    halco::hicann_dls::vx::I2CAD5252RwRegisterOnBoard,
+    AD5252ChannelConfig::config_size_in_words>
+AD5252ChannelConfig::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::I2CAD5252RwRegisterOnBoard(
+	    halco::hicann_dls::vx::I2CAD5252RwRegisterOnAD5252Channel::rdac_volatile,
+	    coord.toAD5252ChannelOnBoard())};
+}
+std::array<fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfig::config_size_in_words>
+AD5252ChannelConfig::encode() const
+{
+	return {fisch::vx::I2CAD5252RwRegister(fisch::vx::I2CAD5252RwRegister::Value(m_value))};
+}
+
+void AD5252ChannelConfig::decode(
+    std::array<fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfig::config_size_in_words> const&
+        data)
+{
+	m_value = WiperSetting(data[0].get());
+}
+
+std::ostream& operator<<(std::ostream& os, AD5252ChannelConfig const& config)
+{
+	return os << hate::name<AD5252ChannelConfig>() << "(value: " << config.m_value << ")";
+}
+
+template <typename Archive>
+void AD5252ChannelConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfig)
+
+
+AD5252ChannelConfigPersistent::AD5252ChannelConfigPersistent() : m_value() {}
+
+AD5252ChannelConfigPersistent::WiperSetting AD5252ChannelConfigPersistent::get_value() const
+{
+	return m_value;
+}
+
+void AD5252ChannelConfigPersistent::set_value(WiperSetting const value)
+{
+	m_value = value;
+}
+
+bool AD5252ChannelConfigPersistent::operator==(AD5252ChannelConfigPersistent const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool AD5252ChannelConfigPersistent::operator!=(AD5252ChannelConfigPersistent const& other) const
+{
+	return !(*this == other);
+}
+
+std::array<
+    halco::hicann_dls::vx::I2CAD5252RwRegisterOnBoard,
+    AD5252ChannelConfigPersistent::config_size_in_words>
+AD5252ChannelConfigPersistent::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::I2CAD5252RwRegisterOnBoard(
+	    halco::hicann_dls::vx::I2CAD5252RwRegisterOnAD5252Channel::eemem_persistent,
+	    coord.toAD5252ChannelOnBoard())};
+}
+std::array<fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfigPersistent::config_size_in_words>
+AD5252ChannelConfigPersistent::encode() const
+{
+	return {fisch::vx::I2CAD5252RwRegister(fisch::vx::I2CAD5252RwRegister::Value(m_value))};
+}
+
+void AD5252ChannelConfigPersistent::decode(
+    std::array<
+        fisch::vx::I2CAD5252RwRegister,
+        AD5252ChannelConfigPersistent::config_size_in_words> const& data)
+{
+	m_value = WiperSetting(data[0].get());
+}
+
+std::ostream& operator<<(std::ostream& os, AD5252ChannelConfigPersistent const& config)
+{
+	return os << hate::name<AD5252ChannelConfigPersistent>() << "(value: " << config.m_value << ")";
+}
+
+template <typename Archive>
+void AD5252ChannelConfigPersistent::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfigPersistent)
+
 } // namespace haldls::vx
 
 CEREAL_CLASS_VERSION(haldls::vx::INA219Config, 0)
 CEREAL_CLASS_VERSION(haldls::vx::INA219Status, 0)
 CEREAL_CLASS_VERSION(haldls::vx::TCA9554Inputs, 0)
 CEREAL_CLASS_VERSION(haldls::vx::TCA9554Config, 0)
+CEREAL_CLASS_VERSION(haldls::vx::AD5252ChannelConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::AD5252ChannelConfigPersistent, 0)

@@ -27,7 +27,11 @@ using namespace halco::hicann_dls::vx::v2;
 using namespace halco::common;
 
 // These containers are not supported in the hardware-setups used for automated testing
-typedef hate::type_list<haldls::vx::TCA9554Config> WriteTestsDisabledContainers;
+typedef hate::type_list<
+    haldls::vx::TCA9554Config,
+    haldls::vx::AD5252ChannelConfig,
+    haldls::vx::AD5252ChannelConfigPersistent> // Persistent register. DO NOT change randomly
+    WriteTestsDisabledContainers;
 
 /**
  * Random generator for this test.

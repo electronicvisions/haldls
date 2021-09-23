@@ -11,6 +11,8 @@
  *       stadls::vx::v3::Dumper and stadls::vx::v3::DumperDone in `src/stadls/vx/v3/dumper.cpp`.
  */
 
+PLAYBACK_CONTAINER(AD5252ChannelConfig, haldls::vx::v3::AD5252ChannelConfig)
+PLAYBACK_CONTAINER(AD5252ChannelConfigPersistent, haldls::vx::v3::AD5252ChannelConfigPersistent)
 PLAYBACK_CONTAINER(TCA9554Config, haldls::vx::v3::TCA9554Config)
 PLAYBACK_CONTAINER(TCA9554Inputs, haldls::vx::v3::TCA9554Inputs)
 PLAYBACK_CONTAINER(INA219Config, haldls::vx::v3::INA219Config)

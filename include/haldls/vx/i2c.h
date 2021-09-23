@@ -444,5 +444,149 @@ struct BackendContainerTrait<TCA9554Config>
 } // namespace detail
 
 
+class GENPYBIND(visible) AD5252ChannelConfig
+{
+public:
+	typedef halco::hicann_dls::vx::AD5252ChannelConfigOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
+
+	struct GENPYBIND(inline_base("*")) WiperSetting
+	    : public halco::common::detail::RantWrapper<
+	          WiperSetting,
+	          uint_fast16_t,
+	          std::numeric_limits<uint8_t>::max(),
+	          std::numeric_limits<uint8_t>::min()>
+	{
+		constexpr explicit WiperSetting(uintmax_t const val = 0x90) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	/** Default constructor. */
+	AD5252ChannelConfig() SYMBOL_VISIBLE;
+
+	/**
+	 * Get wiper setting for digital potentiometer.
+	 * @return Wiper setting
+	 */
+	GENPYBIND(getter_for(value))
+	WiperSetting get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set wiper setting for digital potentiometer.
+	 * @param value The wiper setting.
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(WiperSetting value) SYMBOL_VISIBLE;
+
+	bool operator==(AD5252ChannelConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(AD5252ChannelConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, AD5252ChannelConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::I2CAD5252RwRegisterOnBoard, config_size_in_words>
+	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::I2CAD5252RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::I2CAD5252RwRegister, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	WiperSetting m_value;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfig)
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<AD5252ChannelConfig>
+    : public BackendContainerBase<AD5252ChannelConfig, fisch::vx::I2CAD5252RwRegister>
+{};
+
+} // namespace detail
+
+
+class GENPYBIND(visible) AD5252ChannelConfigPersistent
+{
+public:
+	typedef halco::hicann_dls::vx::AD5252ChannelConfigPersistentOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
+
+	struct GENPYBIND(inline_base("*")) WiperSetting
+	    : public halco::common::detail::RantWrapper<
+	          WiperSetting,
+	          uint_fast16_t,
+	          std::numeric_limits<uint8_t>::max(),
+	          std::numeric_limits<uint8_t>::min()>
+	{
+		constexpr explicit WiperSetting(uintmax_t const val = 0x90) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+
+	/** Default constructor. */
+	AD5252ChannelConfigPersistent() SYMBOL_VISIBLE;
+
+	/**
+	 * Get wiper setting for digital potentiometer.
+	 * @return Wiper setting
+	 */
+	GENPYBIND(getter_for(value))
+	WiperSetting get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set wiper setting for digital potentiometer.
+	 * @param value The wiper setting.
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(WiperSetting value) SYMBOL_VISIBLE;
+
+	bool operator==(AD5252ChannelConfigPersistent const& other) const SYMBOL_VISIBLE;
+	bool operator!=(AD5252ChannelConfigPersistent const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, AD5252ChannelConfigPersistent const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::I2CAD5252RwRegisterOnBoard, config_size_in_words>
+	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::I2CAD5252RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::I2CAD5252RwRegister, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	WiperSetting m_value;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfigPersistent)
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<AD5252ChannelConfigPersistent>
+    : public BackendContainerBase<AD5252ChannelConfigPersistent, fisch::vx::I2CAD5252RwRegister>
+{};
+
+} // namespace detail
+
 } // namespace vx
 } // namespace haldls
