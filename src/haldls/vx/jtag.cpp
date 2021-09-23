@@ -29,20 +29,27 @@ std::ostream& operator<<(std::ostream& os, JTAGClockScaler const& config)
 	return os;
 }
 
-std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, JTAGClockScaler::config_size_in_words>
-JTAGClockScaler::addresses(coordinate_type const& coord)
+std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, JTAGClockScaler::write_config_size_in_words>
+JTAGClockScaler::write_addresses(coordinate_type const& coord)
 {
 	return {coord};
 }
 
-std::array<fisch::vx::JTAGClockScaler, JTAGClockScaler::config_size_in_words>
+std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, JTAGClockScaler::read_config_size_in_words>
+JTAGClockScaler::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+std::array<fisch::vx::JTAGClockScaler, JTAGClockScaler::write_config_size_in_words>
 JTAGClockScaler::encode() const
 {
 	return {fisch::vx::JTAGClockScaler(fisch::vx::JTAGClockScaler::Value(m_value))};
 }
 
-void JTAGClockScaler::decode(
-    std::array<fisch::vx::JTAGClockScaler, JTAGClockScaler::config_size_in_words> const& /*data*/)
+void JTAGClockScaler::decode(std::array<
+                             fisch::vx::JTAGClockScaler,
+                             JTAGClockScaler::read_config_size_in_words> const& /*data*/)
 {}
 
 template <class Archive>
@@ -72,19 +79,26 @@ std::ostream& operator<<(std::ostream& os, ResetJTAGTap const&)
 	return os;
 }
 
-std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, ResetJTAGTap::config_size_in_words>
-ResetJTAGTap::addresses(coordinate_type const& coord)
+std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, ResetJTAGTap::write_config_size_in_words>
+ResetJTAGTap::write_addresses(coordinate_type const& coord)
 {
 	return {coord};
 }
 
-std::array<fisch::vx::ResetJTAGTap, ResetJTAGTap::config_size_in_words> ResetJTAGTap::encode() const
+std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, ResetJTAGTap::read_config_size_in_words>
+ResetJTAGTap::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+std::array<fisch::vx::ResetJTAGTap, ResetJTAGTap::write_config_size_in_words> ResetJTAGTap::encode()
+    const
 {
 	return {fisch::vx::ResetJTAGTap()};
 }
 
 void ResetJTAGTap::decode(
-    std::array<fisch::vx::ResetJTAGTap, ResetJTAGTap::config_size_in_words> const& /*data*/)
+    std::array<fisch::vx::ResetJTAGTap, ResetJTAGTap::read_config_size_in_words> const& /*data*/)
 {}
 
 template <class Archive>

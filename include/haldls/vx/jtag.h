@@ -60,28 +60,38 @@ public:
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, JTAGClockScaler const& config) SYMBOL_VISIBLE;
 
-	/** Number of words for read-write access. */
-	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	/** Number of words for write access. */
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+
+	/** Number of words for read access. */
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
 
 	/**
-	 * Get word addresses for encoding a write or reading.
+	 * Get word addresses for encoding a write.
 	 * @return Array of addresses
 	 */
-	static std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, config_size_in_words> addresses(
-	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	/**
+	 * Get word addresses for encoding a read.
+	 * @return Array of addresses
+	 */
+	static std::array<halco::hicann_dls::vx::JTAGClockScalerOnDLS, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	/**
 	 * Get container config encoded in writable words.
 	 * @return Array of word values
 	 */
-	std::array<fisch::vx::JTAGClockScaler, config_size_in_words> encode() const SYMBOL_VISIBLE
+	std::array<fisch::vx::JTAGClockScaler, write_config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 	/**
 	 * Decode read words into container config.
 	 * @param data Array of word values
 	 */
-	void decode(std::array<fisch::vx::JTAGClockScaler, config_size_in_words> const& data)
+	void decode(std::array<fisch::vx::JTAGClockScaler, read_config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
@@ -122,12 +132,15 @@ public:
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, ResetJTAGTap const& config) SYMBOL_VISIBLE;
 
-	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	static std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, config_size_in_words> addresses(
-	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::ResetJTAGTap, config_size_in_words> encode() const SYMBOL_VISIBLE
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::ResetJTAGTap, write_config_size_in_words> encode() const SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::ResetJTAGTap, config_size_in_words> const& data)
+	void decode(std::array<fisch::vx::ResetJTAGTap, read_config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
