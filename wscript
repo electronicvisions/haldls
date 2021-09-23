@@ -171,8 +171,10 @@ def build(bld):
             features = 'gtest cxx cxxprogram',
             source = bld.path.ant_glob('tests/sw/stadls/vx/test-*.cpp')
                    + bld.path.ant_glob(f'tests/sw/stadls/vx/v{hx_version}/test-*.cpp'),
+            test_main = 'tests/sw/stadls/vx/main.cpp',
             use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST'],
             install_path = '${PREFIX}/bin',
+            linkflags = ['-lboost_program_options-mt'],
         )
 
         bld(
