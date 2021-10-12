@@ -65,7 +65,7 @@ TEST(SynapseQuad, WROverJTAG)
 	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
-	for (auto const [quad, ticket] : quad_tickets) {
+	for (auto const& [quad, ticket] : quad_tickets) {
 		EXPECT_TRUE(ticket.valid());
 		EXPECT_EQ(ticket.get(), quads.at(quad)) << quad;
 	}

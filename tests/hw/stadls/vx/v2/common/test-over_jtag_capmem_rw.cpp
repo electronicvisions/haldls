@@ -52,7 +52,7 @@ TEST(CapMemCell, WROverJTAG)
 	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
-	for (auto const [cell, ticket] : cell_tickets) {
+	for (auto const& [cell, ticket] : cell_tickets) {
 		EXPECT_TRUE(ticket.valid());
 		EXPECT_EQ(ticket.get(), cells.at(cell));
 	}

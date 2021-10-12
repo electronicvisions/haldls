@@ -49,7 +49,7 @@ TEST(PPUMemoryWord, WROverJTAG)
 	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
-	for (auto const [word, ticket] : word_tickets) {
+	for (auto const& [word, ticket] : word_tickets) {
 		EXPECT_TRUE(ticket.valid());
 		EXPECT_EQ(ticket.get(), words.at(word));
 	}

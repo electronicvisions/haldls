@@ -60,18 +60,18 @@ TEST(SystimeSyncBase, WriteRead_OmnibusOnChipOverJTAG)
 	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 	auto program = builder.done();
 
-	for (auto const ticket : tickets) {
+	for (auto const& ticket : tickets) {
 		EXPECT_FALSE(ticket.valid());
 	}
 
 	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
-	for (auto const ticket : tickets) {
+	for (auto const& ticket : tickets) {
 		EXPECT_TRUE(ticket.valid());
 	}
 
-	for (auto const ticket : tickets) {
+	for (auto const& ticket : tickets) {
 		EXPECT_NO_THROW(ticket.get());
 	}
 
