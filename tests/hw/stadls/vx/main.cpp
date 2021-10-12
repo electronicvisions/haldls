@@ -1,5 +1,8 @@
 #include "hate/visibility.h"
+
+#include <optional>
 #include <string>
+
 #include <boost/program_options.hpp>
 #include <gtest/gtest.h>
 
