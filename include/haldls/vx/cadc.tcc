@@ -52,11 +52,11 @@ struct CADCChannelConfigBitfield
 {
 	union
 	{
-		fisch::vx::OmnibusData::value_type raw;
+		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			fisch::vx::OmnibusData::value_type offset       :  8;
-			fisch::vx::OmnibusData::value_type /* unused */ : 24;
+			uint32_t offset       :  8;
+			uint32_t /* unused */ : 24;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -67,7 +67,7 @@ struct CADCChannelConfigBitfield
 		u.raw = 0u;
 	}
 
-	CADCChannelConfigBitfield(fisch::vx::OmnibusData::value_type data)
+	CADCChannelConfigBitfield(uint32_t data)
 	{
 		u.raw = data;
 	}
@@ -98,7 +98,7 @@ CADCChannelConfig<Coordinates>::encode() const
 	CADCChannelConfigBitfield bitfield;
 	bitfield.u.m.offset = static_cast<int32_t>(m_offset) + 128;
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template <typename Coordinates>

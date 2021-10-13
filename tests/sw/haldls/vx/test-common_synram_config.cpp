@@ -81,12 +81,12 @@ TEST(CommonSynramConfig, EncodeDecode)
 		                     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x0200'0002)};
 		std::array<fisch::vx::OmnibusChipOverJTAG, CommonSynramConfig::config_size_in_words>
 		    ref_data = {
-		        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(
+		        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(
 		            config.get_pc_conf_west().value() | (config.get_pc_conf_east().value() << 4))),
-		        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(
+		        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(
 		            config.get_w_conf_west().value() | (config.get_w_conf_east().value() << 8))),
 		        fisch::vx::OmnibusChipOverJTAG(
-		            fisch::vx::OmnibusData(config.get_wait_ctr_clear().value()))};
+		            fisch::vx::OmnibusChipOverJTAG::Value(config.get_wait_ctr_clear().value()))};
 
 		{ // write addresses
 			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> write_addresses;

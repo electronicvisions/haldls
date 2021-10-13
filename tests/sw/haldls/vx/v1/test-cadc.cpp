@@ -56,7 +56,7 @@ TEST(CADCSampleQuad, EncodeDecode)
 	std::array<OmnibusAddress, CADCSampleQuad::read_config_size_in_words> ref_addresses = {
 	    OmnibusAddress{0x02ec'017ful}};
 	std::array<Omnibus, CADCSampleQuad::read_config_size_in_words> ref_data = {
-	    Omnibus(OmnibusData{0x48 << 16})};
+	    Omnibus(Omnibus::Value{0x48 << 16})};
 
 	{ // write addresses
 		std::vector<OmnibusAddress> write_addresses;
@@ -120,7 +120,7 @@ TEST(CADCChannelConfig, EncodeDecode)
 	std::array<OmnibusChipOverJTAGAddress, CADCChannelConfig::config_size_in_words> ref_addresses =
 	    {OmnibusChipOverJTAGAddress{0x0240'0807ul}};
 	std::array<OmnibusChipOverJTAG, CADCChannelConfig::config_size_in_words> ref_data = {
-	    OmnibusChipOverJTAG(OmnibusData{12 + 128})};
+	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{12 + 128})};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }

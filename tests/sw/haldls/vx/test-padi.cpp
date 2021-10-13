@@ -108,7 +108,8 @@ TEST(PADIEvent, EncodeDecode)
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{padi_base_addresses[coord] + 0}};
 	std::array<fisch::vx::OmnibusChipOverJTAG, PADIEvent::write_config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0b0101 | (13 << 16) | (7 << 22)))};
+	    fisch::vx::OmnibusChipOverJTAG(
+	        fisch::vx::OmnibusChipOverJTAG::Value(0b0101 | (13 << 16) | (7 << 22)))};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -222,7 +223,7 @@ TEST(CommonPADIBusConfig, EncodeDecode)
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{padi_base_addresses[coord] + 1}};
 	std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words> ref_data =
 	    {fisch::vx::OmnibusChipOverJTAG(
-	        fisch::vx::OmnibusData(0b1010 | (0b0001 << 4) | (3 << 24)))};
+	        fisch::vx::OmnibusChipOverJTAG::Value(0b1010 | (0b0001 << 4) | (3 << 24)))};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -309,8 +310,8 @@ TEST(CommonSTPConfig, EncodeDecode)
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{padi_base_addresses[coord] + 2}};
 	std::array<fisch::vx::OmnibusChipOverJTAG, CommonSTPConfig::write_config_size_in_words>
-	    ref_data = {
-	        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(recovery_speed | (1 << 4)))};
+	    ref_data = {fisch::vx::OmnibusChipOverJTAG(
+	        fisch::vx::OmnibusChipOverJTAG::Value(recovery_speed | (1 << 4)))};
 
 	{ // write addresses
 		addresses_type write_addresses;

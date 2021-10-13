@@ -118,10 +118,10 @@ TEST(SynapseRow, EncodeDecode)
 		ref_addresses[c.toEnum() * 2] = quad.addresses<typename addresses_type::value_type>(syn)[0];
 		ref_addresses[c.toEnum() * 2 + 1] =
 		    quad.addresses<typename addresses_type::value_type>(syn)[1];
-		ref_data[c.toEnum() * 2] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
-		ref_data[c.toEnum() * 2 + 1] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
+		ref_data[c.toEnum() * 2] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0));
+		ref_data[c.toEnum() * 2 + 1] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0));
 	}
-	ref_data[68] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0000'003ful));
+	ref_data[68] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x0000'003ful));
 
 	{
 		addresses_type write_addresses;

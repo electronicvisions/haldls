@@ -172,7 +172,7 @@ std::array<WordT, MADCControl::write_config_size_in_words> MADCControl::encode()
 	bitfield.u.m.start_recording = m_start_recording;
 	bitfield.u.m.wake_up = m_wake_up;
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template SYMBOL_VISIBLE
@@ -782,7 +782,7 @@ std::array<WordT, MADCConfig::config_size_in_words> MADCConfig::encode() const
 	std::array<WordT, MADCConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
 	return data;
 }
 

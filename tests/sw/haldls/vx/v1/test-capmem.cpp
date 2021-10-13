@@ -66,7 +66,7 @@ TEST(CapMemCell, EncodeDecode)
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{capmem_nw_sram_base_address}};
 	std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCell::config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusChipOverJTAG(static_cast<fisch::vx::OmnibusData>(val))};
+	    fisch::vx::OmnibusChipOverJTAG(static_cast<fisch::vx::OmnibusChipOverJTAG::Value>(val))};
 
 	HALDLS_TEST_ENCODE_DECODE(cell, coord, ref_addresses, ref_data)
 }
@@ -111,7 +111,8 @@ TEST(CapMemBlock, EncodeDecode)
 			auto const val = draw_ranged_non_default_value<typename CapMemCell::Value>();
 			block.set_cell(CapMemCellOnDLS(CapMemCellOnCapMemBlock(column, row), block_coord), val);
 			ref_data[CapMemCellOnCapMemBlock(column, row).toEnum()] =
-			    fisch::vx::OmnibusChipOverJTAG(static_cast<fisch::vx::OmnibusData>(val));
+			    fisch::vx::OmnibusChipOverJTAG(
+			        static_cast<fisch::vx::OmnibusChipOverJTAG::Value>(val));
 		}
 	}
 
@@ -226,16 +227,16 @@ TEST(CapMemBlockConfig, EncodeDecode)
 	EXPECT_EQ(ref_addresses, config.addresses<OmnibusChipOverJTAGAddress>(coord));
 
 	std::array<fisch::vx::OmnibusChipOverJTAG, 10> ref_data = {
-	    {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x800000)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0xa)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x2)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x000089A9)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x17)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x2)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x66270010)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x000F007B)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x000D0086)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0x12))}};
+	    {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x800000)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0xa)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x2)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x000089A9)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x17)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x2)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x66270010)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x000F007B)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x000D0086)),
+	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x12))}};
 	EXPECT_EQ(ref_data, config.encode<fisch::vx::OmnibusChipOverJTAG>());
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)

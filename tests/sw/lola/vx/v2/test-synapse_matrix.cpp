@@ -131,10 +131,10 @@ TEST(SynapseMatrix, EncodeDecode)
 		ref_addresses[c.toEnum() * 2] = quad.addresses<typename labels_type::value_type>(syn)[0];
 		ref_addresses[c.toEnum() * 2 + 1] =
 		    quad.addresses<typename labels_type::value_type>(syn)[1];
-		ref_data[c.toEnum() * 2] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
-		ref_data[c.toEnum() * 2 + 1] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
+		ref_data[c.toEnum() * 2] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0));
+		ref_data[c.toEnum() * 2 + 1] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0));
 	}
-	ref_data[1604] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0x0000'003ful));
+	ref_data[1604] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x0000'003ful));
 
 	{
 		labels_type write_addresses;

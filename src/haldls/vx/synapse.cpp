@@ -149,7 +149,7 @@ std::array<WordT, CommonSynramConfig::config_size_in_words> CommonSynramConfig::
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
 	return data;
 }
 
@@ -387,7 +387,7 @@ std::array<WordT, SynapseBiasSelection::write_config_size_in_words> SynapseBiasS
 	bitfield.u.m.int_output_q2 = m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)];
 	bitfield.u.m.int_output_q3 = m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)];
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template SYMBOL_VISIBLE

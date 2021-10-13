@@ -48,7 +48,7 @@ TEST(PerfTest, EncodeDecode)
 	OmnibusAddress ref_address(0x8800'8000);
 	std::array<OmnibusAddress, PerfTest::config_size_in_words> ref_addresses = {ref_address};
 	std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x1))};
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x1))};
 
 	{
 		addresses_type write_addresses;
@@ -138,10 +138,10 @@ TEST(PerfTestStatus, EncodeDecode)
 	    OmnibusAddress(base_address + 3), OmnibusAddress(base_address + 4)};
 
 	std::array<fisch::vx::Omnibus, PerfTestStatus::read_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x123)),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x456)),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x789)),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData(0x010))};
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x123)),
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x456)),
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x789)),
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x010))};
 
 	{
 		addresses_type read_addresses;

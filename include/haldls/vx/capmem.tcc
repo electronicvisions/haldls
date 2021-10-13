@@ -58,9 +58,9 @@ std::array<WordT, CapMemCell<Coordinates>::config_size_in_words> CapMemCell<Coor
     const
 {
 	if (auto const ptr = std::get_if<DisableRefresh>(&m_value)) {
-		return {WordT(fisch::vx::OmnibusData(*ptr))};
+		return {WordT(typename WordT::Value(*ptr))};
 	} else {
-		return {WordT(fisch::vx::OmnibusData(std::get<Value>(m_value)))};
+		return {WordT(typename WordT::Value(std::get<Value>(m_value)))};
 	}
 }
 
@@ -636,7 +636,7 @@ CapMemBlockConfig<Coordinates>::encode() const
 
 	std::array<WordT, config_size_in_words> ret;
 	std::transform(bitfield.u.raw.cbegin(), bitfield.u.raw.cend(), ret.begin(), [](auto m) {
-		return WordT(fisch::vx::OmnibusData(m));
+		return WordT(typename WordT::Value(m));
 	});
 
 	return ret;

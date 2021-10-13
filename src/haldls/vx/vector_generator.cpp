@@ -400,7 +400,7 @@ VectorGeneratorLUTEntry::encode() const
 	VectorGeneratorLUTEntryBitfield bitfield;
 	bitfield.u.m.value = m_value;
 
-	return {fisch::vx::Omnibus(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(bitfield.u.raw))};
 }
 
 void VectorGeneratorLUTEntry::decode(
@@ -466,7 +466,7 @@ VectorGeneratorNotificationAddress::addresses(coordinate_type const& coord)
 std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words>
 VectorGeneratorNotificationAddress::encode() const
 {
-	return {fisch::vx::Omnibus(fisch::vx::OmnibusData(m_value))};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(m_value))};
 }
 
 void VectorGeneratorNotificationAddress::decode(

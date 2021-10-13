@@ -72,14 +72,14 @@ struct CADCConfigBitfield
 {
 	union
 	{
-		fisch::vx::OmnibusData::value_type raw;
+		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			fisch::vx::OmnibusData::value_type enable       :  1;
-			fisch::vx::OmnibusData::value_type /* unused */ :  3;
-			fisch::vx::OmnibusData::value_type reset_wait   :  8;
-			fisch::vx::OmnibusData::value_type dead_time    :  8;
-			fisch::vx::OmnibusData::value_type /* unused */ : 12;
+			uint32_t enable       :  1;
+			uint32_t /* unused */ :  3;
+			uint32_t reset_wait   :  8;
+			uint32_t dead_time    :  8;
+			uint32_t /* unused */ : 12;
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -87,7 +87,7 @@ struct CADCConfigBitfield
 
 	CADCConfigBitfield() { u.raw = 0u; }
 
-	CADCConfigBitfield(fisch::vx::OmnibusData::value_type data)
+	CADCConfigBitfield(uint32_t data)
 	{
 		u.raw = data;
 	}
@@ -125,7 +125,7 @@ std::array<WordT, CADCConfig::config_size_in_words> CADCConfig::encode() const
 	bitfield.u.m.reset_wait = m_reset_wait;
 	bitfield.u.m.dead_time = m_dead_time;
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, CADCConfig::config_size_in_words>

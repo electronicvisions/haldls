@@ -390,8 +390,11 @@ std::array<WordT, ADPLL::config_size_in_words> ADPLL::encode() const
 		upper.set(fisch::vx::JTAGPLLRegister::Value(upper_bitfield.u.raw));
 		return {lower, upper};
 	} else {
-		return {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(lower_bitfield.u.raw)),
-		        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(upper_bitfield.u.raw))};
+		return {
+		    fisch::vx::OmnibusChipOverJTAG(
+		        fisch::vx::OmnibusChipOverJTAG::Value(lower_bitfield.u.raw)),
+		    fisch::vx::OmnibusChipOverJTAG(
+		        fisch::vx::OmnibusChipOverJTAG::Value(upper_bitfield.u.raw))};
 	}
 }
 template SYMBOL_VISIBLE std::array<fisch::vx::JTAGPLLRegister, ADPLL::config_size_in_words>
@@ -733,7 +736,7 @@ std::array<WordT, PLLClockOutputBlock::config_size_in_words> PLLClockOutputBlock
 		reg.set(fisch::vx::JTAGPLLRegister::Value(bitfield.u.raw));
 		return {reg};
 	} else {
-		return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+		return {WordT(typename WordT::Value(bitfield.u.raw))};
 	}
 }
 
@@ -952,7 +955,7 @@ std::array<WordT, PLLSelfTest::config_size_in_words> PLLSelfTest::encode() const
 		reg.set(fisch::vx::JTAGPLLRegister::Value(bitfield.u.raw));
 		return {reg};
 	} else {
-		return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+		return {WordT(typename WordT::Value(bitfield.u.raw))};
 	}
 }
 

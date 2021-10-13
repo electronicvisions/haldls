@@ -554,7 +554,7 @@ std::array<WordT, PPUControlRegister::config_size_in_words> PPUControlRegister::
 	bitfield.u.m.inhibit_reset = m_inhibit_reset;
 	bitfield.u.m.force_clock_on = m_force_clock_on;
 	bitfield.u.m.force_clock_off = m_force_clock_off;
-	return {WordT{fisch::vx::OmnibusData(bitfield.u.raw)}};
+	return {WordT{typename WordT::Value(bitfield.u.raw)}};
 }
 
 template SYMBOL_VISIBLE

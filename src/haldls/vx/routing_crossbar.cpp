@@ -119,7 +119,7 @@ std::array<WordT, CrossbarOutputConfig::config_size_in_words> CrossbarOutputConf
 	}
 	bitfield.u.m.enable_event_counter = static_cast<uint32_t>(enable_event_counter);
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template SYMBOL_VISIBLE
@@ -484,7 +484,7 @@ std::array<WordT, CrossbarNode::config_size_in_words> CrossbarNode::encode() con
 	bitfield.u.m.target = m_target;
 	bitfield.u.m.enable_drop_counter = m_enable_drop_counter;
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template SYMBOL_VISIBLE

@@ -394,7 +394,7 @@ PhyConfigFPGA::addresses(coordinate_type const& coord)
 
 std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> PhyConfigFPGA::encode() const
 {
-	return {fisch::vx::Omnibus(fisch::vx::OmnibusData(pack()))};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(pack()))};
 }
 
 void PhyConfigFPGA::decode(
@@ -516,8 +516,7 @@ CommonPhyConfigFPGA::encode() const
 		enable_mask.set(phy.toEnum(), m_enable_phy[phy]);
 	}
 
-	return {fisch::vx::Omnibus(
-	    fisch::vx::OmnibusData(static_cast<fisch::vx::OmnibusData::value_type>(enable_mask)))};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(static_cast<uint32_t>(enable_mask)))};
 }
 
 void CommonPhyConfigFPGA::decode(
@@ -593,7 +592,7 @@ CommonPhyConfigChip::encode() const
 	}
 
 	return {fisch::vx::OmnibusChipOverJTAG(
-	    fisch::vx::OmnibusData(static_cast<fisch::vx::OmnibusData::value_type>(enable_mask)))};
+	    fisch::vx::OmnibusChipOverJTAG::Value(static_cast<uint32_t>(enable_mask)))};
 }
 
 void CommonPhyConfigChip::decode(

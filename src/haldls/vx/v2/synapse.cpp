@@ -126,7 +126,7 @@ std::array<WordT, SynapseWeightQuad::config_size_in_words> SynapseWeightQuad::en
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
 	return data;
 }
 
@@ -270,7 +270,7 @@ std::array<WordT, SynapseLabelQuad::config_size_in_words> SynapseLabelQuad::enco
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
 	return data;
 }
 
@@ -447,7 +447,7 @@ SynapseCorrelationCalibQuad::encode() const
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
 	return data;
 }
 
@@ -657,7 +657,7 @@ std::array<WordT, SynapseQuad::config_size_in_words> SynapseQuad::encode() const
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
 	return data;
 }
 
@@ -1039,10 +1039,11 @@ std::array<WordT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelation
 	CORRELATION_ENCODE(3);
 #undef CORRELATION_ENCODE
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw[0])),
-	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[1])),
-	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[2])),
-	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[3]))};
+	return {
+	    WordT(typename WordT::Value(bitfield.u.raw[0])),
+	    WordT(typename WordT::Value(bitfield.u.raw[1])),
+	    WordT(typename WordT::Value(bitfield.u.raw[2])),
+	    WordT(typename WordT::Value(bitfield.u.raw[3]))};
 }
 
 template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words>
@@ -1300,8 +1301,9 @@ std::array<WordT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad::en
 	CURRENT_ENCODE(3);
 #undef CURRENT_ENCODE
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw[0])),
-	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[1]))};
+	return {
+	    WordT(typename WordT::Value(bitfield.u.raw[0])),
+	    WordT(typename WordT::Value(bitfield.u.raw[1]))};
 }
 
 template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, ColumnCurrentQuad::config_size_in_words>

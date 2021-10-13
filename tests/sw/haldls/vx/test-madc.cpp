@@ -117,7 +117,7 @@ TEST(MADCControl, EncodeDecode)
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, MADCControl::write_config_size_in_words>
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{0x000c'0000}};
 	std::array<fisch::vx::OmnibusChipOverJTAG, MADCControl::write_config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusData(0b1101001))};
+	    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0b1101001))};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -905,7 +905,7 @@ TEST(MADCConfig, EncodeDecode)
 	std::array<word_type, MADCConfig::config_size_in_words> ref_data;
 	std::transform(
 	    ref_data_raw.begin(), ref_data_raw.end(), ref_data.begin(),
-	    [](uint32_t const& w) { return static_cast<word_type>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<word_type>(word_type::Value(w)); });
 
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});

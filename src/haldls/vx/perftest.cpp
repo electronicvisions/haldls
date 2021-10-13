@@ -45,7 +45,7 @@ PerfTest::addresses(coordinate_type const& /*coord*/)
 
 std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> PerfTest::encode() const
 {
-	return {fisch::vx::Omnibus(fisch::vx::OmnibusData(m_enable))};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(m_enable))};
 }
 
 void PerfTest::decode(std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> const& data)

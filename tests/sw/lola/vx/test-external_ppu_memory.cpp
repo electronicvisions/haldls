@@ -120,7 +120,7 @@ TEST(ExternalPPUMemoryBlock, EncodeDecode)
 		fisch::vx::Omnibus::ByteEnables byte_enables{};
 		byte_enables[(sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))] = true;
 		ref_data[ii] = fisch::vx::Omnibus(
-		    static_cast<fisch::vx::OmnibusData>(
+		    static_cast<fisch::vx::Omnibus::Value>(
 		        (50 + ii)
 		        << (((sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))) *
 		            CHAR_BIT)),

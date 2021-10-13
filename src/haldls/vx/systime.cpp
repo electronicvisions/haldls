@@ -85,8 +85,9 @@ std::array<WordT, SystimeSyncBase::config_size_in_words> SystimeSyncBase::encode
 {
 	SystimeSyncBaseBitfield bitfield(m_value);
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.m.low)),
-	        WordT(fisch::vx::OmnibusData(bitfield.u.m.high))};
+	return {
+	    WordT(typename WordT::Value(bitfield.u.m.low)),
+	    WordT(typename WordT::Value(bitfield.u.m.high))};
 }
 
 template SYMBOL_VISIBLE

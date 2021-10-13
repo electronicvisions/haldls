@@ -94,10 +94,11 @@ TEST(CADCSamples, EncodeDecode)
 	    CADCSampleQuad::read_config_size_in_words * SynapseQuadColumnOnDLS::size *
 	    CADCChannelType::size * SynramOnDLS::size);
 	for (auto& word : ref_data) {
-		word = fisch::vx::Omnibus(fisch::vx::OmnibusData(0));
+		word = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0));
 	}
-	ref_data[11] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0xf));
-	ref_data[13 + SynapseQuadColumnOnDLS::size] = fisch::vx::Omnibus(fisch::vx::OmnibusData(0x10));
+	ref_data[11] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0xf));
+	ref_data[13 + SynapseQuadColumnOnDLS::size] =
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x10));
 
 	{
 		CADCSampleQuadOnDLS quad_coord_trigger(

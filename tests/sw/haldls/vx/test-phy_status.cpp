@@ -135,11 +135,11 @@ TEST(PhyStatus, EncodeDecode)
 	        OmnibusAddress(0x8800c006), OmnibusAddress(0x8800c007)};
 
 	std::array<fisch::vx::Omnibus, PhyStatus::read_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x1}),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x2}),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x3}),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x5}),
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x4})};
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x1}),
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x2}),
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x3}),
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x5}),
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x4})};
 
 	{ // read addresses
 		addresses_type read_addresses;

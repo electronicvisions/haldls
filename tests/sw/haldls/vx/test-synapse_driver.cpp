@@ -71,7 +71,8 @@ TEST(SynapseDriverSRAMTimingConfig, EncodeDecode)
 	        OmnibusChipOverJTAGAddress{synapse_driver_bottom_sram_timing_base_address},
 	        OmnibusChipOverJTAGAddress{synapse_driver_bottom_sram_timing_base_address + 1}};
 	std::array<OmnibusChipOverJTAG, SynapseDriverSRAMTimingConfig::config_size_in_words> ref_data =
-	    {OmnibusChipOverJTAG(OmnibusData{100}), OmnibusChipOverJTAG(OmnibusData{5 | 7 << 4})};
+	    {OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{100}),
+	     OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{5 | 7 << 4})};
 
 	{ // write addresses
 		addresses_type write_addresses;

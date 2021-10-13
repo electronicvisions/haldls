@@ -90,7 +90,7 @@ TEST(VectorGeneratorControl, EncodeDecode)
 
 	std::array<fisch::vx::Omnibus, VectorGeneratorControl::write_config_size_in_words> ref_data = {
 	    fisch::vx::Omnibus(
-	        fisch::vx::OmnibusData{(1ul << 8) | (123ul << 24) | (1ul << 0) | (1ul << 3)})};
+	        fisch::vx::Omnibus::Value{(1ul << 8) | (123ul << 24) | (1ul << 0) | (1ul << 3)})};
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }
@@ -108,7 +108,7 @@ TEST(VectorGeneratorLUTEntry, EncodeDecode)
 	    ref_addresses = {OmnibusAddress(0x84000100 + 123)};
 
 	std::array<fisch::vx::Omnibus, VectorGeneratorLUTEntry::config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x123})};
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x123})};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
@@ -128,7 +128,7 @@ TEST(VectorGeneratorNotificationAddress, EncodeDecode)
 	    ref_addresses = {OmnibusAddress(0x84000001)};
 
 	std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words>
-	    ref_data = {fisch::vx::Omnibus(fisch::vx::OmnibusData{0x12345678})};
+	    ref_data = {fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x12345678})};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
@@ -177,7 +177,7 @@ TEST(VectorGeneratorTrigger, EncodeDecode)
 	    ref_addresses = {OmnibusAddress(0x84000002)};
 
 	std::array<fisch::vx::Omnibus, VectorGeneratorTrigger::write_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::OmnibusData{0x0})};
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x0})};
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }
@@ -208,7 +208,8 @@ TEST(VectorGeneratorFIFOWord, EncodeDecode)
 
 	std::array<fisch::vx::Omnibus, VectorGeneratorFIFOWord::write_config_size_in_words> ref_data = {
 	    fisch::vx::Omnibus(
-	        fisch::vx::OmnibusData{(12ul << 24) + ((1ul << 7) << 16)}, {false, false, true, true})};
+	        fisch::vx::Omnibus::Value{(12ul << 24) + ((1ul << 7) << 16)},
+	        {false, false, true, true})};
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }

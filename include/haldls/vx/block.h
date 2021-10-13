@@ -2,7 +2,7 @@
 #include <array>
 #include <ostream>
 
-#include "fisch/vx/omnibus_data.h"
+#include "fisch/vx/omnibus.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
@@ -26,7 +26,7 @@ public:
 	    hxcomm::vx::Target::hardware, hxcomm::vx::Target::simulation};
 
 	typedef halco::hicann_dls::vx::OmnibusAddress Address GENPYBIND(visible);
-	typedef fisch::vx::OmnibusData Value GENPYBIND(visible);
+	typedef fisch::vx::Omnibus::Value Value GENPYBIND(visible);
 
 	/** Default constructor. */
 	PollingOmnibusBlockConfig() SYMBOL_VISIBLE;

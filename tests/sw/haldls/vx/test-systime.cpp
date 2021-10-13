@@ -57,7 +57,7 @@ void test_encode_decode()
 	    ref_addresses = {typename WordT::coordinate_type{0x0ul},
 	                     typename WordT::coordinate_type{0x1ul}};
 	std::array<WordT, SystimeSyncBase::config_size_in_words> ref_data = {
-	    WordT(fisch::vx::OmnibusData{0x22b}), WordT(fisch::vx::OmnibusData(0x100))};
+	    WordT(typename WordT::Value{0x22b}), WordT(typename WordT::Value(0x100))};
 
 	{ // write addresses
 		addresses_type write_addresses;

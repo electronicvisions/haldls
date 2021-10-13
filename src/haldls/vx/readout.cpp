@@ -431,7 +431,7 @@ std::array<WordT, PadMultiplexerConfig::config_size_in_words> PadMultiplexerConf
 	std::array<WordT, PadMultiplexerConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
 	return data;
 }
 
@@ -931,7 +931,7 @@ std::array<WordT, ReadoutSourceSelection::config_size_in_words> ReadoutSourceSel
 	std::array<WordT, ReadoutSourceSelection::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(fisch::vx::OmnibusData(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
 	return data;
 }
 

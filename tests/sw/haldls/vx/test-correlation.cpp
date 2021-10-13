@@ -76,8 +76,10 @@ TEST(CommonCorrelationConfig, EncodeDecode)
 	        OmnibusChipOverJTAGAddress{0x0320'0000ul}, OmnibusChipOverJTAGAddress{0x0320'0001ul},
 	        OmnibusChipOverJTAGAddress{0x0320'0002ul}, OmnibusChipOverJTAGAddress{0x0320'0003ul}};
 	std::array<OmnibusChipOverJTAG, CommonCorrelationConfig::config_size_in_words> ref_data = {
-	    OmnibusChipOverJTAG(OmnibusData{100}), OmnibusChipOverJTAG(OmnibusData{500}),
-	    OmnibusChipOverJTAG(OmnibusData{30}), OmnibusChipOverJTAG(OmnibusData{1})};
+	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{100}),
+	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{500}),
+	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{30}),
+	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{1})};
 
 	{ // write addresses
 		addresses_type write_addresses;

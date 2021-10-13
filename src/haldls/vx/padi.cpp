@@ -137,7 +137,7 @@ std::array<WordT, PADIEvent::write_config_size_in_words> PADIEvent::encode() con
 	bitfield.u.m.event_address = m_event_address;
 	bitfield.u.m.row_select_address = m_row_select_address;
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template SYMBOL_VISIBLE
@@ -312,7 +312,7 @@ std::array<WordT, CommonPADIBusConfig::config_size_in_words> CommonPADIBusConfig
 	bitfield.u.m.dacen_pulse_extension_3 =
 	    m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)];
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template SYMBOL_VISIBLE
@@ -493,7 +493,7 @@ std::array<WordT, CommonSTPConfig::write_config_size_in_words> CommonSTPConfig::
 	bitfield.u.m.enable_recovery_clock = m_enable_recovery_clock;
 	bitfield.u.m.recovery_clock_speed = m_recovery_clock_speed;
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw))};
+	return {WordT(typename WordT::Value(bitfield.u.raw))};
 }
 
 template SYMBOL_VISIBLE

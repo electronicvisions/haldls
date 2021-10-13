@@ -179,9 +179,10 @@ std::array<WordT, BackgroundSpikeSource::config_size_in_words> BackgroundSpikeSo
 	bitfield.u.m.mask = m_mask;
 	bitfield.u.m.neuron_label = m_neuron_label;
 
-	return {WordT(fisch::vx::OmnibusData(bitfield.u.raw[1])),
-	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[2])),
-	        WordT(fisch::vx::OmnibusData(bitfield.u.raw[0]))};
+	return {
+	    WordT(typename WordT::Value(bitfield.u.raw[1])),
+	    WordT(typename WordT::Value(bitfield.u.raw[2])),
+	    WordT(typename WordT::Value(bitfield.u.raw[0]))};
 }
 
 template SYMBOL_VISIBLE
