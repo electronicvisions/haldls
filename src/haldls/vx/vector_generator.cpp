@@ -473,7 +473,7 @@ void VectorGeneratorNotificationAddress::decode(
     std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words> const&
         data)
 {
-	m_value = Value(data[0].get().value());
+	m_value = Value(data[0].get().word.value());
 }
 
 std::ostream& operator<<(std::ostream& os, VectorGeneratorNotificationAddress const& config)
@@ -650,10 +650,10 @@ VectorGeneratorFIFOWord::encode() const
 	bitfield.u.m.last_1 = m_last.at(EntryOnQuad(1));
 	bitfield.u.m.last_2 = m_last.at(EntryOnQuad(2));
 	bitfield.u.m.last_3 = m_last.at(EntryOnQuad(3));
-	fisch::vx::Omnibus::ByteEnables enables = {
+	fisch::vx::Omnibus::Value::ByteEnables enables = {
 	    m_enable.at(EntryOnQuad(3)), m_enable.at(EntryOnQuad(2)), m_enable.at(EntryOnQuad(1)),
 	    m_enable.at(EntryOnQuad(0))};
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(bitfield.u.raw), enables)};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(bitfield.u.raw, enables))};
 }
 
 void VectorGeneratorFIFOWord::decode(

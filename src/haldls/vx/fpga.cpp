@@ -243,9 +243,9 @@ ExternalPPUMemoryByte::encode(coordinate_type const& coord) const
 {
 	auto const byte_in_word = (sizeof(uint32_t) - 1) - (coord.toEnum() % sizeof(uint32_t));
 	uint32_t const raw_value = static_cast<uint32_t>(m_value) << (byte_in_word * CHAR_BIT);
-	fisch::vx::Omnibus::ByteEnables byte_enables{};
+	fisch::vx::Omnibus::Value::ByteEnables byte_enables{};
 	byte_enables[byte_in_word] = true;
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(raw_value), byte_enables)};
+	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(raw_value, byte_enables))};
 }
 
 void ExternalPPUMemoryByte::decode(

@@ -207,9 +207,8 @@ TEST(VectorGeneratorFIFOWord, EncodeDecode)
 	    ref_addresses = {OmnibusAddress(0x84000200)};
 
 	std::array<fisch::vx::Omnibus, VectorGeneratorFIFOWord::write_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(
-	        fisch::vx::Omnibus::Value{(12ul << 24) + ((1ul << 7) << 16)},
-	        {false, false, true, true})};
+	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{
+	        (12ul << 24) + ((1ul << 7) << 16), {false, false, true, true}})};
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }

@@ -133,7 +133,7 @@ template <typename WordT>
 void CrossbarOutputConfig::decode(
     std::array<WordT, CrossbarOutputConfig::config_size_in_words> const& data)
 {
-	CrossbarOutputConfigBitfield bitfield({data.at(0).get().value()});
+	CrossbarOutputConfigBitfield bitfield(data.at(0).get());
 
 	hate::bitset<halco::hicann_dls::vx::CrossbarL2OutputOnDLS::size> enable_slow(
 	    bitfield.u.m.enable_slow);
@@ -497,7 +497,7 @@ CrossbarNode::encode<fisch::vx::Omnibus>() const;
 template <typename WordT>
 void CrossbarNode::decode(std::array<WordT, CrossbarNode::config_size_in_words> const& data)
 {
-	CrossbarNodeBitfield bitfield({data.at(0).get().value()});
+	CrossbarNodeBitfield bitfield(data.at(0).get());
 	m_mask = neuron_label_type(bitfield.u.m.mask);
 	m_target = neuron_label_type(bitfield.u.m.target);
 	m_enable_drop_counter = bitfield.u.m.enable_drop_counter;

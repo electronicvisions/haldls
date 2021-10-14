@@ -26,7 +26,7 @@ public:
 	    hxcomm::vx::Target::hardware, hxcomm::vx::Target::simulation};
 
 	typedef halco::hicann_dls::vx::OmnibusAddress Address GENPYBIND(visible);
-	typedef fisch::vx::Omnibus::Value Value GENPYBIND(visible);
+	typedef fisch::vx::Omnibus::Value::Word Value GENPYBIND(visible);
 
 	/** Default constructor. */
 	PollingOmnibusBlockConfig() SYMBOL_VISIBLE;

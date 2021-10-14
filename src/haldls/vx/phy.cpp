@@ -400,7 +400,7 @@ std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> PhyConfigFPG
 void PhyConfigFPGA::decode(
     std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> const& data)
 {
-	unpack(data[0].get().value());
+	unpack(data[0].get());
 }
 
 template <typename Archive>
