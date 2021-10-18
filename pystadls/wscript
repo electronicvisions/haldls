@@ -102,7 +102,7 @@ def build(bld):
             pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
             pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
             skip_run = not (bld.env.TEST_TARGET == TestTarget.HARDWARE and
-                            int(bld.env.CURRENT_SETUP["chip_revision"]) == 1),
+                            int(bld.env.CURRENT_SETUP["chip_revision"]) == hx_version),
             test_timeout=120
         )
 
