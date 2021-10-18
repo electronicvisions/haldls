@@ -65,6 +65,7 @@ PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate(
 	builder.write(TimerOnDLS(), Timer());
 	builder.block_until(TimerOnDLS(), chip_reset_high_duration);
 	builder.write(ResetChipOnDLS(), ResetChip(false));
+	builder.write(TimerOnDLS(), Timer());
 	builder.block_until(TimerOnDLS(), chip_reset_low_duration);
 
 	// Reset JTAG TAP
