@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
+from enum import Enum, auto
+import os
 from os.path import join
+import re
+import yaml
+from waflib.Errors import BuildError
 from waflib.extras.gtest import summary
 from waflib.extras.symwaf2ic import get_toplevel_path
 
@@ -21,6 +26,31 @@ def configure(cfg):
 
 
 def build(bld):
+    class TestTarget(Enum):
+        SOFTWARE_ONLY = auto()
+        HARDWARE = auto()
+        SIMULATION = auto()
+
+    if "FLANGE_SIMULATION_RCF_PORT" in os.environ:
+        bld.env.TEST_TARGET = TestTarget.SIMULATION
+
+        try:
+            chip_revision = int(os.environ.get("SIMULATED_CHIP_REVISION"))
+        except TypeError:
+            raise BuildError("Environment variable 'SIMULATED_CHIP_REVISION' "
+                             "not set or cannot be casted to integer.")
+        bld.env.CURRENT_SETUP = dict(chip_revision=chip_revision)
+    elif "SLURM_HWDB_ENTRIES" in os.environ:
+        bld.env.TEST_TARGET = TestTarget.HARDWARE
+        slurm_licenses = os.environ.get("SLURM_HARDWARE_LICENSES")
+        hwdb_entries = os.environ.get("SLURM_HWDB_ENTRIES")
+        fpga_id = int(re.match(r"W(?P<wafer>\d+)F(?P<fpga>\d+)",
+                               slurm_licenses)["fpga"])
+        bld.env.CURRENT_SETUP = yaml.full_load(hwdb_entries)["fpgas"][fpga_id]
+    else:
+        bld.env.TEST_TARGET = TestTarget.SOFTWARE_ONLY
+        bld.env.CURRENT_SETUP = dict(chip_revision=None)
+
     for hx_version in [1, 2, 3]:
         bld(name=f'dlens_vx_v{hx_version}',
             features='py pylint pycodestyle',
@@ -56,8 +86,11 @@ def build(bld):
             install_path='${PREFIX}/bin',
             pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
             pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-            skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
-            test_timeout=120
+            skip_run = not (((bld.env.TEST_TARGET == TestTarget.HARDWARE) or
+                             (bld.env.TEST_TARGET == TestTarget.SIMULATION))
+                            and
+                            int(bld.env.CURRENT_SETUP["chip_revision"]) == hx_version),
+            test_timeout=1000 if (bld.env.TEST_TARGET == TestTarget.SIMULATION) else 120
         )
 
         bld(name=f'dlens_health_check_vx_v{hx_version}',
@@ -67,8 +100,11 @@ def build(bld):
             install_path='${PREFIX}/bin',
             pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
             pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
-            skip_run=not bld.env.DLSvx_HARDWARE_AVAILABLE,
-            test_timeout=30
+            skip_run = not (((bld.env.TEST_TARGET == TestTarget.HARDWARE) or
+                             (bld.env.TEST_TARGET == TestTarget.SIMULATION))
+                            and
+                            int(bld.env.CURRENT_SETUP["chip_revision"]) == hx_version),
+            test_timeout=1000 if (bld.env.TEST_TARGET == TestTarget.SIMULATION) else 30
         )
 
         # --- Deprecated alias --- #
