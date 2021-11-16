@@ -5,6 +5,8 @@ import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 
 
 class HXCubeWing implements Serializable {
+	static final int GERRIT_HXCUBE_ID = 2
+
 	int hxcubeId
 	int fpgaId
 	int chipRevision
@@ -78,6 +80,10 @@ try {
 				// no timeout for Gerrit-triggered jobs
 				conditionalTimeout(enable: !isTriggeredByGerrit(), time: 5, unit: "MINUTES") {
 					onSlurmResource(partition: "cube", wafer: setup_local.waferId, "fpga-without-aout": setup_local.fpgaId) {
+						if (setup_local.hxcubeId == setup_local.GERRIT_HXCUBE_ID) {
+							configureHxCubeBitfile()
+						}
+
 						try {
 							timeout(time: 30, unit: "SECONDS") {
 								success[setup_local] = jesh(script: "python bin/dlens_health_check_vx_v${setup_local.chipRevision}.py",
