@@ -235,6 +235,7 @@ private:
 	PlaybackGeneratorReturn<Result> generate() const SYMBOL_VISIBLE;
 };
 
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 namespace detail {
 
 struct GENPYBIND(expose_as(ExperimentInit), inline_base("*ExperimentInit*")) PyExperimentInit
@@ -259,6 +260,7 @@ struct GENPYBIND(expose_as(DigitalInit), inline_base("*DigitalInit*")) PyDigital
 };
 
 } // namespace detail
+#endif // defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 
 GENPYBIND_MANUAL({
 	parent.def(

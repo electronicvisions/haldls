@@ -28,21 +28,21 @@ def build(bld):
 
     for hx_version in [1, 2, 3]:
         bld(
-            features='cxx pyembed',
+            features='cxx pyext',
             target=f'pylola_vx_v{hx_version}_obj',
             source=f'../src/lola/vx/v{hx_version}/pylola.cpp',
             use=f'lola_vx_v{hx_version}',
+            defines=['__GENPYBIND_GENERATED__'],
         )
 
         bld(
             target=f'pylola_vx_v{hx_version}',
             source=f'../include/lola/vx/v{hx_version}/pylola.h',
             genpybind_tags=['lola_vx', f'lola_vx_v{hx_version}'],
-            features='genpybind cxx cxxshlib pyext pyembed apply_semaphore',
+            features='genpybind cxx cxxshlib pyext apply_semaphore',
             use=[f'lola_vx_v{hx_version}', 'pyhalco_common_files', f'pyhalco_hicann_dls_vx_v{hx_version}',
                  f'pyhaldls_vx_v{hx_version}', f'pylola_vx_v{hx_version}_obj'],
             install_path='${PREFIX}/lib',
-            linkflags='-Wl,-z,defs',
             semaphore=bld.env['stadls_semaphore'],
         )
 

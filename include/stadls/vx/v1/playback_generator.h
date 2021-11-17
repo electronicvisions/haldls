@@ -14,8 +14,10 @@ auto generate(Ts&&... args) -> decltype(stadls::vx::generate(std::forward<Ts>(ar
 	return stadls::vx::generate(std::forward<Ts>(args)...);
 }
 
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 // only used for python
 using PlaybackGenerator GENPYBIND(visible) = stadls::vx::PlaybackGenerator;
+#endif
 
 GENPYBIND_MANUAL({
 	struct PyPlaybackGenerator : public ::stadls::vx::PlaybackGenerator

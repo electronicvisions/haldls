@@ -3,11 +3,6 @@
 #include "stadls/vx/genpybind.h"
 #include <memory>
 
-#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
-#include "pyhxcomm/vx/reinit_stack_entry.h"
-#include <pybind11/pybind11.h>
-#endif
-
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
 class PlaybackProgram;

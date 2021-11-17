@@ -11,7 +11,9 @@
 #include "lola/vx/genpybind.h"
 #include <boost/hana/adapt_struct.hpp>
 
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 #include <pybind11/numpy.h>
+#endif
 
 namespace lola::vx::v1 GENPYBIND_TAG_LOLA_VX_V1 {
 

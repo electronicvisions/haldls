@@ -28,23 +28,23 @@ def build(bld):
 
     for hx_version in [1, 2, 3]:
         bld(
-            features='cxx pyembed',
+            features='cxx pyext',
             target=f'pyhaldls_vx_v{hx_version}_obj',
             source=f'../src/haldls/vx/v{hx_version}/pyhaldls.cpp',
             use=f'haldls_vx_v{hx_version}',
+            defines=['__GENPYBIND_GENERATED__'],
         )
 
         bld(
             target=f'pyhaldls_vx_v{hx_version}',
             source=f'../include/haldls/vx/v{hx_version}/pyhaldls.h',
             genpybind_tags=['haldls_vx', f'haldls_vx_v{hx_version}'],
-            features='genpybind cxx cxxshlib pyext pyembed apply_semaphore',
+            features='genpybind cxx cxxshlib pyext apply_semaphore',
             use=[f'haldls_vx_v{hx_version}', 'pyfisch_vx', f'pyhaldls_vx_v{hx_version}_obj',
                  f'pyhalco_hicann_dls_vx_v{hx_version}'],
             install_path='${PREFIX}/lib',
             # Avoid warning; 1 OoM less and I see warnings (ECM)
             cxxflags='--param=max-vartrack-size=100000000',
-            linkflags='-Wl,-z,defs',
             semaphore=bld.env['stadls_semaphore'],
         )
 

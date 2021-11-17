@@ -17,8 +17,10 @@
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/run_time_info.h"
 
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 #include <pybind11/numpy.h>
 #include <pybind11/stl_bind.h>
+#endif
 
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
@@ -273,6 +275,8 @@ private:
 
 } // namespace stadls::vx
 
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 // disable pybind11's automatic conversion to python types via its `list_caster`
 PYBIND11_MAKE_OPAQUE(stadls::vx::PlaybackProgram::spikes_type)
 PYBIND11_MAKE_OPAQUE(stadls::vx::PlaybackProgram::madc_samples_type)
+#endif

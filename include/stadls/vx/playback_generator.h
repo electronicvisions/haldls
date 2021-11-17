@@ -1,9 +1,12 @@
 #pragma once
-#include <pybind11/pybind11.h>
 #include "hate/nil.h"
 #include "hate/type_traits.h"
 #include "hate/visibility.h"
 #include "stadls/vx/genpybind.h"
+
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
+#include <pybind11/pybind11.h>
+#endif
 
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
@@ -40,6 +43,7 @@ auto generate(Seq const& seq)
 }
 
 
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 /**
  * Abstract base class for implementation of a playback sequence in python.
  */
@@ -67,5 +71,7 @@ pybind11::tuple py_generate_impl(T const& seq)
 }
 
 } // namespace detail
+
+#endif // defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 
 } // namespace stadls::vx

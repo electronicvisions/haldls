@@ -135,9 +135,10 @@ def build(bld):
         bld(
             target = f'haldls_vx_v{hx_version}',
             source = bld.path.ant_glob('src/haldls/vx/*.cpp')
-                   + bld.path.ant_glob(f'src/haldls/vx/v{hx_version}/*.cpp'),
+                   + bld.path.ant_glob(f'src/haldls/vx/v{hx_version}/*.cpp',
+                                       excl=f'src/haldls/vx/v{hx_version}/pyhaldls.cpp'),
             install_path = '${PREFIX}/lib',
-            features = 'cxx cxxshlib pyembed',
+            features = 'cxx cxxshlib',
             use = ['haldls_inc', f'halco_hicann_dls_vx_v{hx_version}', 'fisch_vx'],
             uselib = 'HALDLS_LIBRARIES',
         )
@@ -145,19 +146,21 @@ def build(bld):
         bld(
             target = f'stadls_vx_v{hx_version}',
             source = bld.path.ant_glob('src/stadls/vx/*.cpp')
-                   + bld.path.ant_glob(f'src/stadls/vx/v{hx_version}/*.cpp'),
+                   + bld.path.ant_glob(f'src/stadls/vx/v{hx_version}/*.cpp',
+                                       excl=f'src/stadls/vx/v{hx_version}/pystadls.cpp'),
             install_path = '${PREFIX}/lib',
-            features = 'cxx cxxshlib pyembed apply_semaphore',
+            features = 'cxx cxxshlib apply_semaphore',
             use = [f'haldls_vx_v{hx_version}', f'lola_vx_v{hx_version}', 'logger_obj'],
             uselib = 'HALDLS_LIBRARIES',
             semaphore = bld.env['stadls_semaphore'],
         )
 
         bld(
-            features = 'cxx cxxshlib pyembed',
+            features = 'cxx cxxshlib',
             target = f'lola_vx_v{hx_version}',
             source = bld.path.ant_glob('src/lola/vx/*.cpp')
-                   + bld.path.ant_glob(f'src/lola/vx/v{hx_version}/*.cpp'),
+                   + bld.path.ant_glob(f'src/lola/vx/v{hx_version}/*.cpp',
+                                       excl=f'src/lola/vx/v{hx_version}/pylola.cpp'),
             install_path = '${PREFIX}/lib',
             use = [f'haldls_vx_v{hx_version}', 'ELF'],
             uselib = 'LOLA_LIBRARIES',
@@ -165,7 +168,7 @@ def build(bld):
 
         bld(
             target = f'stadls_swtest_vx_v{hx_version}',
-            features = 'gtest cxx cxxprogram pyembed',
+            features = 'gtest cxx cxxprogram',
             source = bld.path.ant_glob('tests/sw/stadls/vx/test-*.cpp')
                    + bld.path.ant_glob(f'tests/sw/stadls/vx/v{hx_version}/test-*.cpp'),
             use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST'],
@@ -174,7 +177,7 @@ def build(bld):
 
         bld(
             target = f'haldls_swtest_vx_v{hx_version}',
-            features = 'gtest cxx cxxprogram pyembed',
+            features = 'gtest cxx cxxprogram',
             source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp')
                    + bld.path.ant_glob(f'tests/sw/haldls/vx/v{hx_version}/test-*.cpp'),
             use = [f'haldls_vx_v{hx_version}', 'haldls_test_common_inc', 'GTEST'],
@@ -183,7 +186,7 @@ def build(bld):
 
         bld(
             target = f'lola_swtest_vx_v{hx_version}',
-            features = 'gtest cxx cxxprogram pyembed',
+            features = 'gtest cxx cxxprogram',
             source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp')
                    + bld.path.ant_glob(f'tests/sw/lola/vx/v{hx_version}/test-*.cpp'),
             use = [f'lola_vx_v{hx_version}', 'GTEST', 'haldls_test_common_inc'],
@@ -194,7 +197,7 @@ def build(bld):
 
         bld(
             target = f'stadls_hwtest_vx_v{hx_version}',
-            features = 'gtest cxx cxxprogram pyembed',
+            features = 'gtest cxx cxxprogram',
             source = bld.path.ant_glob('tests/hw/stadls/vx/hw/test-*.cpp')
                    + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp')
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/hw/test-*.cpp')
@@ -210,7 +213,7 @@ def build(bld):
 
         bld(
             target = f'stadls_simtest_vx_v{hx_version}',
-            features = 'gtest cxx cxxprogram pyembed',
+            features = 'gtest cxx cxxprogram',
             source = bld.path.ant_glob('tests/hw/stadls/vx/sim/test-*.cpp')
                    + bld.path.ant_glob('tests/hw/stadls/vx/common/test-*.cpp')
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/sim/test-*.cpp')
@@ -227,7 +230,7 @@ def build(bld):
 
         bld(
             target = f'run_ppu_program_vx_v{hx_version}',
-            features = 'cxx cxxprogram pyembed',
+            features = 'cxx cxxprogram',
             source = f'tools/stadls/vx/v{hx_version}/run_ppu_program.cpp',
             use = [f'haldls_vx_v{hx_version}', 'logger_obj', f'stadls_vx_v{hx_version}'],
             install_path = '${PREFIX}/bin',
