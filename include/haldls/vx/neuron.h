@@ -237,24 +237,28 @@ public:
 	 * The reset is released before the end of the refractory time.
 	 *
 	 * The refractory-counter starts at a value of (0xFF - refractory_time) and is increased every
-	 * clock cycle until its maximum value of 0xFF is reached.
-	 * The reset-holdoff time is configured by comparison with the four LSB of the refractory-
-	 * counter: The mechanism stops the reset as soon as the bits programmed in the reset-holdoff
-	 * mask match the LSB of the refractory-counter and all MSB of the refractory-counter are set.
-	 * Until the end of the programmed refractory time, the circuit does still reject new threshold
-	 * crossings. This combination of still rejecting spikes, but stopping the reset defines the
-	 * reset-holdoff time. For the user it is important that the holdoff can be disabled by
-	 * setting it to the maximum value (0xF). The reset period is (0xF - reset_holdoff) shorter
-	 * than the refractory period.
+	 * clock cycle until its maximum value of 0xFF is reached; this time describes the refractory
+	 * period.
+	 * The reset is not active during the whole refractory period. The time in which the reset is
+	 * not active is called 'reset-holdoff time'
+	 * The time difference between reset and refractory period is configured by comparison of the
+	 * five LSBs of the refractory counter to a mask: the reset stops as soon as the mask matches
+	 * the LSB of the refractory counter and all MSB of the refractory counter are set.
+	 * The mask is composed of a zero as LSB and the four bit reset-holdoff.
+	 *
+	 * Due to the fact that the lowest bit is always set to zero, there is always a period in
+	 * which the reset is not active during the refractory period. This period is minimal if
+	 * the reset-holdoff is maximal.
+	 * In general the reset period is (0x1F - reset_holdoff << 1) clock cycles shorter than the
+	 * refractory period.
 	 *
 	 * Example: The reset is turned off before the end of the refractory period. As the neuron is
 	 * still refractory, no new spike is registered, although the fire signal is still high. Only
-	 * after the end of the refractory period the circuits accepts new fire signals. The difference
-	 * between refractory period and reset duration defines the reset-holdoff period.
+	 * after the end of the refractory period the circuits accepts new fire signals.
 	 *
 	 * Note: Setting a small refractory counter value in combination with a reset
 	 * holdoff will result in glitchy behaviour, as the counter value triggering the
-	 * end of the reset will never be reached if refractory_counter < (15 - reset_holdoff).
+	 * end of the reset will never be reached if refractory_counter < (0x1F - reset_holdoff << 1).
 	 */
 	struct GENPYBIND(inline_base("*")) ResetHoldoff
 	    : public halco::common::detail::RantWrapper<ResetHoldoff, uint_fast8_t, 15, 0>
@@ -280,6 +284,9 @@ public:
 	 * Use case 3 (short): f_clock = 250MHz -> tau_min = 4ns (4µs in bio time)
 	 * @note The reset conductance is limited and thus will not pull down the membrane in 4 ns!
 	 *       The fastest analog "reset time constant" is approx. 0.5 μs.
+	 * @note The reset is released at least one clock cycle before the end of the refractory period.
+	 *       To avoid unexpected behavior the refractory period may not be too small, compare
+	 *       `ResetHoldoff`.
 	 */
 	struct GENPYBIND(inline_base("*")) RefractoryTime
 	    : public halco::common::detail::RantWrapper<RefractoryTime, uint_fast16_t, 255, 0>

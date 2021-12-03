@@ -398,8 +398,7 @@ public:
 		 * Release the reset potential before the refractory time ends.
 		 * This allows a dead time after the reset where no new spike can be recorded
 		 * and the membrane is connected to the leak potential already.
-		 * A value of 15 disables this feature, indicating the reset and refractory periods are
-		 * equal and the neuron can spike again immediately.
+		 * A higher value results in a later release of the reset.
 		 *
 		 * Note: A more detailed description is given with the ResetHoldoff type.
 		 */
