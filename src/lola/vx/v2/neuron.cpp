@@ -651,7 +651,7 @@ void AtomicNeuron::set_from(haldls::vx::v2::NeuronConfig const& neuron_config)
 	readout.enable_buffered_access = neuron_config.get_enable_readout();
 
 	if (neuron_config.get_enable_fire()) {
-		if (!neuron_config.get_enable_strong_fire()) {
+		if (neuron_config.get_enable_strong_fire()) {
 			event_routing.analog_output =
 			    lola::vx::v2::AtomicNeuron::EventRouting::AnalogOutputMode::strong;
 		} else {
