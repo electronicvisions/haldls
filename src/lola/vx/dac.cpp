@@ -6,6 +6,7 @@
 #include "hate/join.h"
 #include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
+#include <stdexcept>
 
 namespace lola::vx {
 
@@ -63,6 +64,43 @@ DACChannelBlock const DACChannelBlock::default_ldo_2 = []() -> DACChannelBlock {
 	return block;
 }();
 
+void DACChannelBlock::set_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord, double voltage)
+{
+	using namespace halco::hicann_dls::vx;
+	double v_reference = 0;
+
+	if (coord == DACChannelOnBoard::i_ref_board ||
+	    coord == DACChannelOnBoard::ana_readout_debug_0 ||
+	    coord == DACChannelOnBoard::ana_readout_debug_1 || coord == DACChannelOnBoard::mux_dac_25)
+		v_reference = 2.5;
+	else if (
+	    coord == DACChannelOnBoard::v_reset || coord == DACChannelOnBoard::v_res_meas ||
+	    coord == DACChannelOnBoard::mux_rfu_0 || coord == DACChannelOnBoard::mux_rfu_1)
+		v_reference = 1.2;
+	else
+		throw std::invalid_argument("set_voltage is only available for DAC channels without LDOs.");
+
+	value[coord] = Value(voltage / v_reference * Value::max);
+}
+
+double DACChannelBlock::get_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord)
+{
+	using namespace halco::hicann_dls::vx;
+	double v_reference = 0;
+
+	if (coord == DACChannelOnBoard::i_ref_board ||
+	    coord == DACChannelOnBoard::ana_readout_debug_0 ||
+	    coord == DACChannelOnBoard::ana_readout_debug_1 || coord == DACChannelOnBoard::mux_dac_25)
+		v_reference = 2.5;
+	else if (
+	    coord == DACChannelOnBoard::v_reset || coord == DACChannelOnBoard::v_res_meas ||
+	    coord == DACChannelOnBoard::mux_rfu_0 || coord == DACChannelOnBoard::mux_rfu_1)
+		v_reference = 1.2;
+	else
+		throw std::invalid_argument("set_voltage is only available for DAC channels without LDOs.");
+
+	return static_cast<double>(value[coord]) / static_cast<double>(Value::max) * v_reference;
+}
 
 DACControlBlock::DACControlBlock() : enable()
 {

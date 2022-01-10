@@ -124,6 +124,15 @@ TEST(DACChannelBlock, General)
 
 	ASSERT_NE(config, config_default);
 	ASSERT_FALSE(config != config_eq);
+
+	// test set_voltage, get_voltage
+	double original_voltage = 1.0;
+	config.set_voltage(DACChannelOnBoard::v_res_meas, original_voltage);
+	ASSERT_EQ(config.value[DACChannelOnBoard::v_res_meas], 3412);
+	double voltage = config.get_voltage(DACChannelOnBoard::v_res_meas);
+	ASSERT_NEAR(
+	    voltage, original_voltage,
+	    0.01); // expect 0.01 V of tolerance due to the discrete DAC settings
 }
 
 TEST(DACChannelBlock, CerealizeCoverage)

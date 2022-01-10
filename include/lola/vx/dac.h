@@ -43,6 +43,22 @@ public:
 	 */
 	static const GENPYBIND(visible) DACChannelBlock default_ldo_2;
 
+	/**
+	 * Setter for DAC values in volts.
+	 *
+	 * @param coord: Coordinate of the DAC channel to configure.
+	 * @param voltage: Voltage in Volt (V) to apply at that channel.
+	 */
+	void set_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord, double voltage);
+
+	/**
+	 * Getter for DAC values in volts.
+	 *
+	 * @param coord: Coordinate of the DAC channel to read.
+	 * @return Voltage in Volt (V) applied at that channel.
+	 */
+	double get_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord);
+
 	bool operator==(DACChannelBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(DACChannelBlock const& other) const SYMBOL_VISIBLE;
 
