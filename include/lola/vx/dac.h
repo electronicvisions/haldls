@@ -49,7 +49,7 @@ public:
 	 * @param coord: Coordinate of the DAC channel to configure.
 	 * @param voltage: Voltage in Volt (V) to apply at that channel.
 	 */
-	void set_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord, double voltage);
+	void set_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord, double voltage) SYMBOL_VISIBLE;
 
 	/**
 	 * Getter for DAC values in volts.
@@ -57,7 +57,7 @@ public:
 	 * @param coord: Coordinate of the DAC channel to read.
 	 * @return Voltage in Volt (V) applied at that channel.
 	 */
-	double get_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord);
+	double get_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord) const SYMBOL_VISIBLE;
 
 	bool operator==(DACChannelBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(DACChannelBlock const& other) const SYMBOL_VISIBLE;

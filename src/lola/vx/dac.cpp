@@ -83,7 +83,7 @@ void DACChannelBlock::set_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord
 	value[coord] = Value(voltage / v_reference * Value::max);
 }
 
-double DACChannelBlock::get_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord)
+double DACChannelBlock::get_voltage(halco::hicann_dls::vx::DACChannelOnBoard coord) const
 {
 	using namespace halco::hicann_dls::vx;
 	double v_reference = 0;
