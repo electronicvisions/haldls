@@ -124,7 +124,8 @@ std::ostream& operator<<(std::ostream& os, PollingOmnibusBlock const& config)
 
 fisch::vx::PollingOmnibusBlock PollingOmnibusBlock::encode() const
 {
-	return fisch::vx::PollingOmnibusBlock(m_enable_expects_equality);
+	return fisch::vx::PollingOmnibusBlock(
+	    fisch::vx::PollingOmnibusBlock::Value(m_enable_expects_equality));
 }
 
 template <class Archive>

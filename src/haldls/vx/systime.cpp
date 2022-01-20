@@ -166,7 +166,7 @@ SystimeSync::write_addresses(coordinate_type const& coord)
 std::array<fisch::vx::SystimeSync, SystimeSync::write_config_size_in_words> SystimeSync::encode()
     const
 {
-	return {fisch::vx::SystimeSync(m_do_sync)};
+	return {fisch::vx::SystimeSync(fisch::vx::SystimeSync::Value(m_do_sync))};
 }
 
 void SystimeSync::decode(

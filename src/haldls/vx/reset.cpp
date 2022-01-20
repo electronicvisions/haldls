@@ -45,7 +45,7 @@ ResetChip::read_addresses(coordinate_type const& /*coord*/)
 
 std::array<fisch::vx::ResetChip, ResetChip::write_config_size_in_words> ResetChip::encode() const
 {
-	return {fisch::vx::ResetChip(m_value)};
+	return {fisch::vx::ResetChip(fisch::vx::ResetChip::Value(m_value))};
 }
 
 void ResetChip::decode(

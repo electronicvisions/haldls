@@ -40,5 +40,5 @@ TEST(PollingOmnibusBlock, Encode)
 	PollingOmnibusBlock config(true);
 
 	auto const encoded = config.encode();
-	EXPECT_EQ(encoded, fisch::vx::PollingOmnibusBlock(true));
+	EXPECT_EQ(encoded, fisch::vx::PollingOmnibusBlock(fisch::vx::PollingOmnibusBlock::Value(true)));
 }
