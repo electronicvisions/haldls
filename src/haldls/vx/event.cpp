@@ -142,7 +142,7 @@ void SpikeLabel::set_synapse_label(SynapseLabelValue const value)
 	    fisch::vx::SpikePack##Num##ToChip, SpikePack##Num##ToChip::write_config_size_in_words>     \
 	    SpikePack##Num##ToChip::encode() const                                                     \
 	{                                                                                              \
-		fisch::vx::SpikePack##Num##ToChip::labels_type ret;                                        \
+		fisch::vx::SpikePack##Num##ToChip::Value ret;                                              \
 		std::transform(                                                                            \
 		    std::begin(m_impl), std::end(m_impl), std::begin(ret),                                 \
 		    [](SpikeLabel const& sl) { return fisch::vx::SpikeLabel{sl}; });                       \
