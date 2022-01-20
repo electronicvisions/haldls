@@ -2,7 +2,9 @@ namespace haldls::vx::detail {
 
 template <>
 struct BackendContainerTrait<lola::vx::ExternalPPUMemoryBlock>
-    : public BackendContainerBase<lola::vx::ExternalPPUMemoryBlock, fisch::vx::Omnibus>
+    : public BackendContainerBase<
+          lola::vx::ExternalPPUMemoryBlock,
+          fisch::vx::word_access_type::Omnibus>
 {};
 
 template <>

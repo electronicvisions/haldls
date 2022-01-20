@@ -98,10 +98,10 @@ public:
 	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
 	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, HicannARQStatus const& config) SYMBOL_VISIBLE;
@@ -123,7 +123,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<HicannARQStatus>
-    : public BackendContainerBase<HicannARQStatus, fisch::vx::Omnibus>
+    : public BackendContainerBase<HicannARQStatus, fisch::vx::word_access_type::Omnibus>
 {};
 
 } // namespace detail

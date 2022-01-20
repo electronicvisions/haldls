@@ -1,7 +1,7 @@
 #include "haldls/vx/readout.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -431,23 +431,24 @@ std::array<WordT, PadMultiplexerConfig::config_size_in_words> PadMultiplexerConf
 	std::array<WordT, PadMultiplexerConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PadMultiplexerConfig::config_size_in_words>
-PadMultiplexerConfig::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PadMultiplexerConfig::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, PadMultiplexerConfig::config_size_in_words>
     PadMultiplexerConfig::encode() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    PadMultiplexerConfig::config_size_in_words>
+PadMultiplexerConfig::encode() const;
 
 template <typename WordT>
 void PadMultiplexerConfig::decode(
     std::array<WordT, PadMultiplexerConfig::config_size_in_words> const& data)
 {
 	std::array<uint32_t, PadMultiplexerConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	PadMultiplexerConfigBitfield bitfield(raw_data);
 
 	m_cadc_v_ramp_mux[halco::hicann_dls::vx::CapMemBlockOnDLS(3)] =
@@ -505,11 +506,14 @@ void PadMultiplexerConfig::decode(
 }
 
 template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
-    std::array<fisch::vx::Omnibus, PadMultiplexerConfig::config_size_in_words> const& words);
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        PadMultiplexerConfig::config_size_in_words> const& words);
 
 template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, PadMultiplexerConfig::config_size_in_words> const&
-        words);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        PadMultiplexerConfig::config_size_in_words> const& words);
 
 template <class Archive>
 void PadMultiplexerConfig::serialize(Archive& ar, std::uint32_t const)
@@ -931,23 +935,24 @@ std::array<WordT, ReadoutSourceSelection::config_size_in_words> ReadoutSourceSel
 	std::array<WordT, ReadoutSourceSelection::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, ReadoutSourceSelection::config_size_in_words>
-ReadoutSourceSelection::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutSourceSelection::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, ReadoutSourceSelection::config_size_in_words>
     ReadoutSourceSelection::encode() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    ReadoutSourceSelection::config_size_in_words>
+ReadoutSourceSelection::encode() const;
 
 template <typename WordT>
 void ReadoutSourceSelection::decode(
     std::array<WordT, ReadoutSourceSelection::config_size_in_words> const& data)
 {
 	std::array<uint32_t, ReadoutSourceSelection::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	ReadoutSourceSelectionBitfield bitfield(raw_data);
 
 	m_buffers[halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection(0)].m_debug_plus =
@@ -1017,11 +1022,14 @@ void ReadoutSourceSelection::decode(
 }
 
 template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
-    std::array<fisch::vx::Omnibus, ReadoutSourceSelection::config_size_in_words> const& words);
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        ReadoutSourceSelection::config_size_in_words> const& words);
 
 template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, ReadoutSourceSelection::config_size_in_words> const&
-        words);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        ReadoutSourceSelection::config_size_in_words> const& words);
 
 template <class Archive>
 void ReadoutSourceSelection::serialize(Archive& ar, std::uint32_t const)

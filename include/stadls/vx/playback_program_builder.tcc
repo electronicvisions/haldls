@@ -7,6 +7,7 @@
 #include <cereal/types/unordered_set.hpp>
 #include <log4cxx/logger.h>
 
+#include "fisch/vx/container_cast.h"
 #include "fisch/vx/playback_program_builder.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/coordinate_to_container.h"
@@ -126,7 +127,7 @@ void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContain
 	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
 		m_builder_impl->write(
 		    halco::hicann_dls::vx::WaitUntilOnFPGA(coord.toEnum()),
-		    fisch::vx::WaitUntil(fisch::vx::WaitUntil::Value(time)));
+		    fisch::vx::WaitUntil(fisch::vx::word_access_type::WaitUntil(time)));
 	} else {
 		m_builder_impl->block_until(coord, time);
 	}
@@ -141,7 +142,7 @@ void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContain
     typename halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier const barrier)
 {
 	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
-		m_builder_impl->write(coord, barrier.encode());
+		m_builder_impl->write(coord, fisch::vx::container_cast(barrier.encode()));
 	} else {
 		m_builder_impl->block_until(coord, barrier);
 	}
@@ -157,7 +158,7 @@ void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContain
     haldls::vx::PollingOmnibusBlock const barrier)
 {
 	if constexpr (std::is_same_v<BuilderStorage, fisch::vx::PlaybackProgramBuilder>) {
-		m_builder_impl->write(coord, barrier.encode());
+		m_builder_impl->write(coord, fisch::vx::container_cast(barrier.encode()));
 	} else {
 		m_builder_impl->block_until(coord, barrier);
 	}
@@ -199,7 +200,9 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToCon
 	    typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
 	    backend_container_type;
 
-	typedef std::vector<typename backend_container_type::coordinate_type> addresses_type;
+	typedef decltype(
+	    fisch::vx::container_cast(std::declval<backend_container_type>())) fisch_container_type;
+	typedef std::vector<typename fisch_container_type::coordinate_type> addresses_type;
 	addresses_type write_addresses;
 	haldls::vx::visit_preorder(
 	    config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
@@ -236,12 +239,29 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToCon
 					reduced_addresses.push_back(write_addresses[i]);
 				}
 			}
-			builder.m_builder_impl->write(reduced_addresses, reduced_words);
+			std::vector<decltype(
+			    fisch::vx::container_cast(std::declval<typename words_type::value_type>()))>
+			    reduced_fisch_containers;
+			std::transform(
+			    reduced_words.begin(), reduced_words.end(),
+			    std::back_inserter(reduced_fisch_containers),
+			    (typename decltype(reduced_fisch_containers)::value_type (*)(
+			        typename decltype(reduced_words)::value_type const&)) &
+			        fisch::vx::container_cast);
+			builder.m_builder_impl->write(reduced_addresses, reduced_fisch_containers);
 		} else {
 			throw std::logic_error("Container type does not support differential write.");
 		}
 	} else {
-		builder.m_builder_impl->write(write_addresses, words);
+		std::vector<decltype(
+		    fisch::vx::container_cast(std::declval<typename words_type::value_type>()))>
+		    fisch_containers;
+		std::transform(
+		    words.begin(), words.end(), std::back_inserter(fisch_containers),
+		    (typename decltype(fisch_containers)::value_type (*)(
+		        typename decltype(words)::value_type const&)) &
+		        fisch::vx::container_cast);
+		builder.m_builder_impl->write(write_addresses, fisch_containers);
 	}
 }
 
@@ -391,7 +411,9 @@ PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToContaine
 			    builder.m_unsupported_targets.insert(T::unsupported_read_targets);
 		    }
 
-		    typedef std::vector<typename backend_container_type::coordinate_type> addresses_type;
+		    typedef decltype(fisch::vx::container_cast(
+		        std::declval<backend_container_type>())) fisch_container_type;
+		    typedef std::vector<typename fisch_container_type::coordinate_type> addresses_type;
 		    addresses_type read_addresses;
 		    {
 			    auto config =

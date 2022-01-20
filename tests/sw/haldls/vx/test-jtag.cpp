@@ -37,19 +37,20 @@ TEST(JTAGIdCode, General)
 
 TEST(JTAGIdCode, Decode)
 {
-	auto good_jtag_id = fisch::vx::JTAGIdCode::Value(0x020B40DD);
-	auto bad_jtag_id = fisch::vx::JTAGIdCode::Value(0x020B40DC); // Marker bit has to be 0b1.
+	auto good_jtag_id = fisch::vx::word_access_type::JTAGIdCode(0x020B40DD);
+	auto bad_jtag_id =
+	    fisch::vx::word_access_type::JTAGIdCode(0x020B40DC); // Marker bit has to be 0b1.
 
 	JTAGIdCode config;
-	std::array<fisch::vx::JTAGIdCode, JTAGIdCode::read_config_size_in_words> data{
-	    fisch::vx::JTAGIdCode(good_jtag_id)};
+	std::array<fisch::vx::word_access_type::JTAGIdCode, JTAGIdCode::read_config_size_in_words> data{
+	    fisch::vx::word_access_type::JTAGIdCode(good_jtag_id)};
 
 	config.decode(data);
 	EXPECT_EQ(0, config.get_version());
 	EXPECT_EQ(8372, config.get_part_number());
 	EXPECT_EQ(110, config.get_manufacturer_id());
 
-	data[0] = fisch::vx::JTAGIdCode(bad_jtag_id);
+	data[0] = fisch::vx::word_access_type::JTAGIdCode(bad_jtag_id);
 	EXPECT_ANY_THROW(config.decode(data));
 }
 

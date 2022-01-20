@@ -52,8 +52,8 @@ template <>
 struct BackendContainerTrait<SynapseDriverSRAMTimingConfig>
     : public BackendContainerBase<
           SynapseDriverSRAMTimingConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

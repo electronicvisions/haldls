@@ -1,7 +1,7 @@
 #include "haldls/vx/phy.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
@@ -392,15 +392,17 @@ PhyConfigFPGA::addresses(coordinate_type const& coord)
 	return {halco::hicann_dls::vx::OmnibusAddress(phy_omnibus_mask + coord.toEnum())};
 }
 
-std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> PhyConfigFPGA::encode() const
+std::array<fisch::vx::word_access_type::Omnibus, PhyConfigFPGA::config_size_in_words>
+PhyConfigFPGA::encode() const
 {
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(pack()))};
+	return {fisch::vx::word_access_type::Omnibus(pack())};
 }
 
 void PhyConfigFPGA::decode(
-    std::array<fisch::vx::Omnibus, PhyConfigFPGA::config_size_in_words> const& data)
+    std::array<fisch::vx::word_access_type::Omnibus, PhyConfigFPGA::config_size_in_words> const&
+        data)
 {
-	unpack(data[0].get());
+	unpack(data[0]);
 }
 
 template <typename Archive>
@@ -446,14 +448,14 @@ PhyConfigChip::read_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::JTAGPhyRegister, PhyConfigChip::write_config_size_in_words>
+std::array<fisch::vx::word_access_type::JTAGPhyRegister, PhyConfigChip::write_config_size_in_words>
 PhyConfigChip::encode() const
 {
-	return {fisch::vx::JTAGPhyRegister(fisch::vx::JTAGPhyRegister::Value(pack()))};
+	return {fisch::vx::word_access_type::JTAGPhyRegister(pack())};
 }
 
 void PhyConfigChip::decode(std::array<
-                           fisch::vx::JTAGPhyRegister,
+                           fisch::vx::word_access_type::JTAGPhyRegister,
                            PhyConfigChip::read_config_size_in_words> const& /*data*/)
 {}
 
@@ -508,7 +510,7 @@ CommonPhyConfigFPGA::addresses(coordinate_type const& /*coord*/)
 	return {halco::hicann_dls::vx::OmnibusAddress(ut_omnibus_mask)};
 }
 
-std::array<fisch::vx::Omnibus, CommonPhyConfigFPGA::config_size_in_words>
+std::array<fisch::vx::word_access_type::Omnibus, CommonPhyConfigFPGA::config_size_in_words>
 CommonPhyConfigFPGA::encode() const
 {
 	hate::bitset<halco::hicann_dls::vx::PhyConfigFPGAOnDLS::size> enable_mask;
@@ -516,13 +518,14 @@ CommonPhyConfigFPGA::encode() const
 		enable_mask.set(phy.toEnum(), m_enable_phy[phy]);
 	}
 
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(static_cast<uint32_t>(enable_mask)))};
+	return {fisch::vx::word_access_type::Omnibus(static_cast<uint32_t>(enable_mask))};
 }
 
-void CommonPhyConfigFPGA::decode(
-    std::array<fisch::vx::Omnibus, CommonPhyConfigFPGA::config_size_in_words> const& data)
+void CommonPhyConfigFPGA::decode(std::array<
+                                 fisch::vx::word_access_type::Omnibus,
+                                 CommonPhyConfigFPGA::config_size_in_words> const& data)
 {
-	hate::bitset<halco::hicann_dls::vx::PhyConfigFPGAOnDLS::size> enable_mask(data.at(0).get());
+	hate::bitset<halco::hicann_dls::vx::PhyConfigFPGAOnDLS::size> enable_mask(data.at(0));
 	for (auto phy : halco::common::iter_all<halco::hicann_dls::vx::PhyConfigFPGAOnDLS>()) {
 		m_enable_phy[phy] = enable_mask.test(phy.toEnum());
 	}
@@ -581,7 +584,9 @@ CommonPhyConfigChip::addresses(coordinate_type const& /*coord*/)
 	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(phy_on_chip_base_address)};
 }
 
-std::array<fisch::vx::OmnibusChipOverJTAG, CommonPhyConfigChip::config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CommonPhyConfigChip::config_size_in_words>
 CommonPhyConfigChip::encode() const
 {
 	hate::bitset<halco::hicann_dls::vx::PhyConfigChipOnDLS::size> enable_mask;
@@ -591,16 +596,14 @@ CommonPhyConfigChip::encode() const
 		    halco::hicann_dls::vx::PhyConfigChipOnDLS::max - phy.toEnum(), m_enable_phy[phy]);
 	}
 
-	return {fisch::vx::OmnibusChipOverJTAG(
-	    fisch::vx::OmnibusChipOverJTAG::Value(static_cast<uint32_t>(enable_mask)))};
+	return {fisch::vx::word_access_type::OmnibusChipOverJTAG(static_cast<uint32_t>(enable_mask))};
 }
 
-void CommonPhyConfigChip::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonPhyConfigChip::config_size_in_words> const&
-        data)
+void CommonPhyConfigChip::decode(std::array<
+                                 fisch::vx::word_access_type::OmnibusChipOverJTAG,
+                                 CommonPhyConfigChip::config_size_in_words> const& data)
 {
-	hate::bitset<halco::hicann_dls::vx::PhyConfigChipOnDLS::size> enable_mask(
-	    data[0].get().value());
+	hate::bitset<halco::hicann_dls::vx::PhyConfigChipOnDLS::size> enable_mask(data[0].value());
 
 	for (auto phy : halco::common::iter_all<halco::hicann_dls::vx::PhyConfigChipOnDLS>()) {
 		// phy enables on chip are reversed compared to on FPGA
@@ -715,19 +718,21 @@ PhyStatus::write_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::Omnibus, PhyStatus::write_config_size_in_words> PhyStatus::encode() const
+std::array<fisch::vx::word_access_type::Omnibus, PhyStatus::write_config_size_in_words>
+PhyStatus::encode() const
 {
 	return {};
 }
 
 void PhyStatus::decode(
-    std::array<fisch::vx::Omnibus, PhyStatus::read_config_size_in_words> const& data)
+    std::array<fisch::vx::word_access_type::Omnibus, PhyStatus::read_config_size_in_words> const&
+        data)
 {
-	m_crc_error_count = CRCErrorCount(data.at(0).get());
-	m_online_time = OnlineTime(data.at(1).get());
-	m_rx_dropped_count = RxDroppedCount(data.at(2).get());
-	m_tx_count = TxCount(data.at(3).get());
-	m_rx_count = RxCount(data.at(4).get());
+	m_crc_error_count = CRCErrorCount(data.at(0));
+	m_online_time = OnlineTime(data.at(1));
+	m_rx_dropped_count = RxDroppedCount(data.at(2));
+	m_tx_count = TxCount(data.at(3));
+	m_rx_count = RxCount(data.at(4));
 }
 
 template <typename Archive>

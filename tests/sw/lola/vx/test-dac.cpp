@@ -3,7 +3,7 @@
 
 #include "lola/vx/v1/dac.h"
 
-#include "fisch/vx/spi.h"
+#include "fisch/vx/word_access/type/spi.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/spi.h"
@@ -63,7 +63,7 @@ TEST(DACControlBlock, CerealizeCoverage)
 TEST(DACControlBlock, EncodeDecode)
 {
 	typedef std::vector<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard> addresses_type;
-	typedef std::vector<fisch::vx::SPIDACControlRegister> words_type;
+	typedef std::vector<fisch::vx::word_access_type::SPIDACControlRegister> words_type;
 
 	DACControlBlock config;
 	for (auto ch : iter_all<DACChannelOnBoard>()) {
@@ -86,13 +86,13 @@ TEST(DACControlBlock, EncodeDecode)
 	        typename addresses_type::value_type(
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::power_down, DACOnBoard(1))};
 	std::array<
-	    fisch::vx::SPIDACControlRegister, DACOnBoard::size* DACControl::write_config_size_in_words>
+	    fisch::vx::word_access_type::SPIDACControlRegister,
+	    DACOnBoard::size* DACControl::write_config_size_in_words>
 	    ref_data = {
-	        fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0b001100)),
-	        fisch::vx::SPIDACControlRegister(
-	            fisch::vx::SPIDACControlRegister::Value(0xff ^ (1u << 2))),
-	        fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0b001100)),
-	        fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0xff))};
+	        fisch::vx::word_access_type::SPIDACControlRegister(0b001100),
+	        fisch::vx::word_access_type::SPIDACControlRegister(0xff ^ (1u << 2)),
+	        fisch::vx::word_access_type::SPIDACControlRegister(0b001100),
+	        fisch::vx::word_access_type::SPIDACControlRegister(0xff)};
 
 	{
 		addresses_type write_addresses;
@@ -160,7 +160,7 @@ TEST(DACChannelBlock, CerealizeCoverage)
 TEST(DACChannelBlock, EncodeDecode)
 {
 	typedef std::vector<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard> addresses_type;
-	typedef std::vector<fisch::vx::SPIDACDataRegister> words_type;
+	typedef std::vector<fisch::vx::word_access_type::SPIDACDataRegister> words_type;
 
 	DACChannelBlock config;
 	for (auto ch : iter_all<DACChannelOnBoard>()) {
@@ -174,12 +174,12 @@ TEST(DACChannelBlock, EncodeDecode)
 		ref_addresses[coord.toEnum()] = coord;
 	}
 	std::array<
-	    fisch::vx::SPIDACDataRegister,
+	    fisch::vx::word_access_type::SPIDACDataRegister,
 	    DACChannelOnBoard::size * DACChannel::write_config_size_in_words>
 	    ref_data;
 	for (auto coord : iter_all<DACChannelOnBoard>()) {
-		ref_data[coord.toEnum()] = fisch::vx::SPIDACDataRegister(
-		    fisch::vx::SPIDACDataRegister::Value(config.value[coord]));
+		ref_data[coord.toEnum()] =
+		    fisch::vx::word_access_type::SPIDACDataRegister(config.value[coord]);
 	}
 
 	{

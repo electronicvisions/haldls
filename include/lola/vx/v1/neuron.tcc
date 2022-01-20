@@ -10,8 +10,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v1::AtomicNeuron>
     : public BackendContainerBase<
           lola::vx::v1::AtomicNeuron,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>

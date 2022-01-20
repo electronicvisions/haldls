@@ -196,8 +196,8 @@ template <>
 struct BackendContainerTrait<v3::ReferenceGeneratorConfig>
     : public BackendContainerBase<
           v3::ReferenceGeneratorConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace haldls::vx::detail

@@ -1,7 +1,7 @@
 #include "haldls/vx/correlation.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -155,15 +155,16 @@ std::array<WordT, CommonCorrelationConfig::config_size_in_words> CommonCorrelati
 	std::array<WordT, CommonCorrelationConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CommonCorrelationConfig::config_size_in_words>
+CommonCorrelationConfig::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonCorrelationConfig::config_size_in_words>
-    CommonCorrelationConfig::encode() const;
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::Omnibus, CommonCorrelationConfig::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, CommonCorrelationConfig::config_size_in_words>
     CommonCorrelationConfig::encode() const;
 
 template <typename WordT>
@@ -171,8 +172,7 @@ void CommonCorrelationConfig::decode(
     std::array<WordT, CommonCorrelationConfig::config_size_in_words> const& data)
 {
 	std::array<uint32_t, CommonCorrelationConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	CommonCorrelationConfigBitfield bitfield(raw_data);
 	m_sense_delay = SenseDelay(bitfield.u.m.sense_delay);
 	m_reset_duration = ResetDuration(bitfield.u.m.reset_duration);
@@ -181,10 +181,13 @@ void CommonCorrelationConfig::decode(
 }
 
 template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonCorrelationConfig::config_size_in_words> const&
-        data);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        CommonCorrelationConfig::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
-    std::array<fisch::vx::Omnibus, CommonCorrelationConfig::config_size_in_words> const& data);
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        CommonCorrelationConfig::config_size_in_words> const& data);
 
 } // namespace vx
 } // namespace haldls

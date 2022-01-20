@@ -137,8 +137,8 @@ template <>
 struct BackendContainerTrait<CommonCorrelationConfig>
     : public BackendContainerBase<
           CommonCorrelationConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

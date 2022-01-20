@@ -1,8 +1,8 @@
 #include "haldls/vx/systime.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
-#include "fisch/vx/systime.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
+#include "fisch/vx/word_access/type/systime.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -85,33 +85,36 @@ std::array<WordT, SystimeSyncBase::config_size_in_words> SystimeSyncBase::encode
 {
 	SystimeSyncBaseBitfield bitfield(m_value);
 
-	return {
-	    WordT(typename WordT::Value(bitfield.u.m.low)),
-	    WordT(typename WordT::Value(bitfield.u.m.high))};
+	return {WordT(bitfield.u.m.low), WordT(bitfield.u.m.high)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, SystimeSyncBase::config_size_in_words>
-    SystimeSyncBase::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, SystimeSyncBase::config_size_in_words>
+    SystimeSyncBase::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SystimeSyncBase::config_size_in_words>
-SystimeSyncBase::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, SystimeSyncBase::config_size_in_words>
+    SystimeSyncBase::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void SystimeSyncBase::decode(std::array<WordT, SystimeSyncBase::config_size_in_words> const& data)
 {
 	SystimeSyncBaseBitfield bitfield;
-	bitfield.u.m.low = data[0].get();
-	bitfield.u.m.high = data[1].get();
+	bitfield.u.m.low = data[0];
+	bitfield.u.m.high = data[1];
 
 	m_value = Value(bitfield.u.raw);
 }
 
-template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, SystimeSyncBase::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void
+SystimeSyncBase::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        SystimeSyncBase::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, SystimeSyncBase::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<fisch::vx::word_access_type::Omnibus, SystimeSyncBase::config_size_in_words> const&
+        data);
 
 template <class Archive>
 void SystimeSyncBase::serialize(Archive& ar, std::uint32_t const)
@@ -163,14 +166,15 @@ SystimeSync::write_addresses(coordinate_type const& coord)
 	return {coord};
 }
 
-std::array<fisch::vx::SystimeSync, SystimeSync::write_config_size_in_words> SystimeSync::encode()
-    const
+std::array<fisch::vx::word_access_type::SystimeSync, SystimeSync::write_config_size_in_words>
+SystimeSync::encode() const
 {
-	return {fisch::vx::SystimeSync(fisch::vx::SystimeSync::Value(m_do_sync))};
+	return {fisch::vx::word_access_type::SystimeSync(m_do_sync)};
 }
 
-void SystimeSync::decode(
-    std::array<fisch::vx::SystimeSync, SystimeSync::read_config_size_in_words> const& /*data*/)
+void SystimeSync::decode(std::array<
+                         fisch::vx::word_access_type::SystimeSync,
+                         SystimeSync::read_config_size_in_words> const& /*data*/)
 {}
 
 template <class Archive>

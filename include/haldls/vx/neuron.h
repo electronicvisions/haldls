@@ -462,16 +462,16 @@ template <>
 struct BackendContainerTrait<CommonNeuronBackendConfig>
     : public BackendContainerBase<
           CommonNeuronBackendConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <typename Coordinates>
 struct BackendContainerTrait<NeuronBackendConfig<Coordinates>>
     : public BackendContainerBase<
           NeuronBackendConfig<Coordinates>,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -521,7 +521,10 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<NeuronReset>
-    : public BackendContainerBase<NeuronReset, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<
+          NeuronReset,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -576,8 +579,8 @@ template <>
 struct BackendContainerTrait<BlockPostPulse>
     : public BackendContainerBase<
           BlockPostPulse,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -659,8 +662,8 @@ template <>
 struct BackendContainerTrait<SpikeCounterRead>
     : public BackendContainerBase<
           SpikeCounterRead,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -713,8 +716,8 @@ template <>
 struct BackendContainerTrait<SpikeCounterReset>
     : public BackendContainerBase<
           SpikeCounterReset,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -753,8 +756,8 @@ template <>
 struct BackendContainerTrait<NeuronSRAMTimingConfig>
     : public BackendContainerBase<
           NeuronSRAMTimingConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -793,8 +796,8 @@ template <>
 struct BackendContainerTrait<NeuronBackendSRAMTimingConfig>
     : public BackendContainerBase<
           NeuronBackendSRAMTimingConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -812,20 +815,22 @@ struct BackendContainerTrait<NeuronBackendSRAMTimingConfig>
 	NeuronBackendConfig<Coordinates>::addresses(coordinate_type const& coord);                     \
                                                                                                    \
 	extern template SYMBOL_VISIBLE std::array<                                                     \
-	    fisch::vx::OmnibusChipOverJTAG, NeuronBackendConfig<Coordinates>::config_size_in_words>    \
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,                                          \
+	    NeuronBackendConfig<Coordinates>::config_size_in_words>                                    \
 	NeuronBackendConfig<Coordinates>::encode() const;                                              \
-	extern template SYMBOL_VISIBLE                                                                 \
-	    std::array<fisch::vx::Omnibus, NeuronBackendConfig<Coordinates>::config_size_in_words>     \
-	    NeuronBackendConfig<Coordinates>::encode() const;                                          \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    fisch::vx::word_access_type::Omnibus,                                                      \
+	    NeuronBackendConfig<Coordinates>::config_size_in_words>                                    \
+	NeuronBackendConfig<Coordinates>::encode() const;                                              \
                                                                                                    \
 	extern template SYMBOL_VISIBLE void NeuronBackendConfig<Coordinates>::decode(                  \
 	    std::array<                                                                                \
-	        fisch::vx::OmnibusChipOverJTAG,                                                        \
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG,                                      \
 	        NeuronBackendConfig<Coordinates>::config_size_in_words> const& data);                  \
 	extern template SYMBOL_VISIBLE void NeuronBackendConfig<Coordinates>::decode(                  \
 	    std::array<                                                                                \
-	        fisch::vx::Omnibus, NeuronBackendConfig<Coordinates>::config_size_in_words> const&     \
-	        data);
+	        fisch::vx::word_access_type::Omnibus,                                                  \
+	        NeuronBackendConfig<Coordinates>::config_size_in_words> const& data);
 
 } // namespace vx
 } // namespace haldls

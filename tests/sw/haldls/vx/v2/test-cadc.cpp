@@ -1,8 +1,8 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/quad.h"
 #include "haldls/vx/omnibus_constants.h"
@@ -14,7 +14,7 @@
 using namespace haldls::vx::v2;
 using namespace halco::hicann_dls::vx::v2;
 using namespace halco::common;
-using namespace fisch::vx;
+using namespace fisch::vx::word_access_type;
 
 typedef std::vector<OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<OmnibusChipOverJTAG> words_type;
@@ -55,8 +55,7 @@ TEST(CADCSampleQuad, EncodeDecode)
 
 	std::array<OmnibusAddress, CADCSampleQuad::read_config_size_in_words> ref_addresses = {
 	    OmnibusAddress{0x02ec'0143ul}};
-	std::array<Omnibus, CADCSampleQuad::read_config_size_in_words> ref_data = {
-	    Omnibus(Omnibus::Value{0x12 << 8})};
+	std::array<Omnibus, CADCSampleQuad::read_config_size_in_words> ref_data = {Omnibus(0x12 << 8)};
 
 	{ // write addresses
 		std::vector<OmnibusAddress> write_addresses;
@@ -120,7 +119,7 @@ TEST(CADCChannelConfig, EncodeDecode)
 	std::array<OmnibusChipOverJTAGAddress, CADCChannelConfig::config_size_in_words> ref_addresses =
 	    {OmnibusChipOverJTAGAddress{0x0240'0807ul}};
 	std::array<OmnibusChipOverJTAG, CADCChannelConfig::config_size_in_words> ref_data = {
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{12 + 128})};
+	    OmnibusChipOverJTAG(12 + 128)};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }

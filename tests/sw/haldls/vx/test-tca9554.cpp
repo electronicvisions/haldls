@@ -5,7 +5,7 @@
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "haldls/vx/i2c.h"
 
-#include "fisch/vx/i2c.h"
+#include "fisch/vx/word_access/type/i2c.h"
 #include "halco/hicann-dls/vx/i2c.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -86,11 +86,12 @@ TEST(TCA9554Config, EncodeDecode)
 	    I2CTCA9554RwRegisterOnBoard(I2CTCA9554RwRegisterOnTCA9554::outputs, coord),
 	    I2CTCA9554RwRegisterOnBoard(I2CTCA9554RwRegisterOnTCA9554::polarity, coord),
 	    I2CTCA9554RwRegisterOnBoard(I2CTCA9554RwRegisterOnTCA9554::config, coord)};
-	std::array<fisch::vx::I2CTCA9554RwRegister, TCA9554Config::config_size_in_words> const
-	    ref_data = {
-	        fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(0b10101010)),
-	        fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(0b01010101)),
-	        fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(0b00000000))};
+	std::array<
+	    fisch::vx::word_access_type::I2CTCA9554RwRegister,
+	    TCA9554Config::config_size_in_words> const ref_data = {
+	    fisch::vx::word_access_type::I2CTCA9554RwRegister(0b10101010),
+	    fisch::vx::word_access_type::I2CTCA9554RwRegister(0b01010101),
+	    fisch::vx::word_access_type::I2CTCA9554RwRegister(0b00000000)};
 
 	{ // test write_addresses
 		std::vector<I2CTCA9554RwRegisterOnBoard> write_addresses;
@@ -109,10 +110,11 @@ TEST(TCA9554Config, EncodeDecode)
 	}
 
 	{ // test data encoding
-		std::vector<fisch::vx::I2CTCA9554RwRegister> data;
+		std::vector<fisch::vx::word_access_type::I2CTCA9554RwRegister> data;
 		visit_preorder(
 		    config, coord.toTCA9554ConfigOnBoard(),
-		    stadls::EncodeVisitor<std::vector<fisch::vx::I2CTCA9554RwRegister>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::I2CTCA9554RwRegister>>{
+		        data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 	}
 
@@ -120,9 +122,9 @@ TEST(TCA9554Config, EncodeDecode)
 		TCA9554Config config_decoded;
 		visit_preorder(
 		    config_decoded, coord.toTCA9554ConfigOnBoard(),
-		    stadls::DecodeVisitor<
-		        std::array<fisch::vx::I2CTCA9554RwRegister, TCA9554Config::config_size_in_words>>{
-		        ref_data});
+		    stadls::DecodeVisitor<std::array<
+		        fisch::vx::word_access_type::I2CTCA9554RwRegister,
+		        TCA9554Config::config_size_in_words>>{ref_data});
 		EXPECT_EQ(config, config_decoded);
 	}
 }
@@ -214,8 +216,9 @@ TEST(TCA9554Inputs, EncodeDecode)
 	// Generate reference addresses and data
 	std::array<I2CTCA9554RoRegisterOnBoard, TCA9554Inputs::config_size_in_words> ref_addresses = {
 	    I2CTCA9554RoRegisterOnBoard(I2CTCA9554RoRegisterOnBoard::inputs, coord)};
-	std::array<fisch::vx::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words> ref_data = {
-	    fisch::vx::I2CTCA9554RoRegister(fisch::vx::I2CTCA9554RoRegister::Value(0b10101010))};
+	std::array<
+	    fisch::vx::word_access_type::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::I2CTCA9554RoRegister(0b10101010)};
 
 	{ // test write_addresses
 		std::vector<I2CTCA9554RoRegisterOnBoard> read_addresses;
@@ -226,10 +229,11 @@ TEST(TCA9554Inputs, EncodeDecode)
 	}
 
 	{ // test data encoding
-		std::vector<fisch::vx::I2CTCA9554RoRegister> data;
+		std::vector<fisch::vx::word_access_type::I2CTCA9554RoRegister> data;
 		visit_preorder(
 		    config, coord.toTCA9554InputsOnBoard(),
-		    stadls::EncodeVisitor<std::vector<fisch::vx::I2CTCA9554RoRegister>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::I2CTCA9554RoRegister>>{
+		        data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 	}
 
@@ -237,9 +241,9 @@ TEST(TCA9554Inputs, EncodeDecode)
 		TCA9554Inputs config_decoded;
 		visit_preorder(
 		    config_decoded, coord.toTCA9554InputsOnBoard(),
-		    stadls::DecodeVisitor<
-		        std::array<fisch::vx::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words>>{
-		        ref_data});
+		    stadls::DecodeVisitor<std::array<
+		        fisch::vx::word_access_type::I2CTCA9554RoRegister,
+		        TCA9554Inputs::config_size_in_words>>{ref_data});
 		EXPECT_EQ(config, config_decoded);
 	}
 }

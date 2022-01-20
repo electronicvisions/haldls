@@ -3,7 +3,7 @@
 
 #include "haldls/vx/madc.h"
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/madc.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
@@ -14,7 +14,7 @@ using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef fisch::vx::OmnibusChipOverJTAG word_type;
+typedef fisch::vx::word_access_type::OmnibusChipOverJTAG word_type;
 typedef std::vector<word_type> words_type;
 
 TEST(MADCControl, General)
@@ -116,8 +116,9 @@ TEST(MADCControl, EncodeDecode)
 	std::array<
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, MADCControl::write_config_size_in_words>
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{0x000c'0000}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, MADCControl::write_config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0b1101001))};
+	std::array<
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG, MADCControl::write_config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(0b1101001)};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -905,7 +906,7 @@ TEST(MADCConfig, EncodeDecode)
 	std::array<word_type, MADCConfig::config_size_in_words> ref_data;
 	std::transform(
 	    ref_data_raw.begin(), ref_data_raw.end(), ref_data.begin(),
-	    [](uint32_t const& w) { return static_cast<word_type>(word_type::Value(w)); });
+	    [](uint32_t const& w) { return word_type(w); });
 
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});

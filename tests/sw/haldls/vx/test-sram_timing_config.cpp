@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/sram_controller.h"
@@ -12,7 +12,7 @@ using namespace haldls::vx;
 using namespace haldls::vx::detail;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
-using namespace fisch::vx;
+using namespace fisch::vx::word_access_type;
 
 typedef std::vector<OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<OmnibusChipOverJTAG> words_type;

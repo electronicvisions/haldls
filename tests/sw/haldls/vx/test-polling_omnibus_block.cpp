@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/block.h"
 #include "haldls/vx/omnibus_constants.h"
@@ -25,10 +25,12 @@ TEST(PollingOmnibusBlockConfig, EncodeDecode)
 	std::array<OmnibusAddress, PollingOmnibusBlockConfig::config_size_in_words> ref_addresses = {
 	    OmnibusAddress{0x8800'0006}, OmnibusAddress{0x8800'0007}, OmnibusAddress{0x8800'0008}};
 
-	std::array<fisch::vx::Omnibus, PollingOmnibusBlockConfig::config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x12345678)),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x12121212)),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x87654321))};
+	std::array<
+	    fisch::vx::word_access_type::Omnibus, PollingOmnibusBlockConfig::config_size_in_words>
+	    ref_data = {
+	        fisch::vx::word_access_type::Omnibus(0x12345678),
+	        fisch::vx::word_access_type::Omnibus(0x12121212),
+	        fisch::vx::word_access_type::Omnibus(0x87654321)};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
@@ -40,5 +42,5 @@ TEST(PollingOmnibusBlock, Encode)
 	PollingOmnibusBlock config(true);
 
 	auto const encoded = config.encode();
-	EXPECT_EQ(encoded, fisch::vx::PollingOmnibusBlock(fisch::vx::PollingOmnibusBlock::Value(true)));
+	EXPECT_EQ(encoded, fisch::vx::word_access_type::PollingOmnibusBlock(true));
 }

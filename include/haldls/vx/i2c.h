@@ -4,7 +4,7 @@
 #include <limits>
 
 #include "fisch/vx/constants.h"
-#include "fisch/vx/i2c.h"
+#include "fisch/vx/word_access/type/i2c.h"
 #include "halco/common/geometry.h"
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
@@ -88,10 +88,11 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	static std::array<halco::hicann_dls::vx::I2CINA219RwRegisterOnBoard, config_size_in_words>
 	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::I2CINA219RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::I2CINA219RwRegister, config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CINA219RwRegister, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::I2CINA219RwRegister, config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -110,7 +111,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<INA219Config>
-    : public BackendContainerBase<INA219Config, fisch::vx::I2CINA219RwRegister>
+    : public BackendContainerBase<INA219Config, fisch::vx::word_access_type::I2CINA219RwRegister>
 {};
 
 } // namespace detail
@@ -247,10 +248,11 @@ public:
 	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::I2CINA219RoRegisterOnBoard, read_config_size_in_words>
 	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::I2CINA219RoRegister, write_config_size_in_words> encode() const
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::I2CINA219RoRegister, read_config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CINA219RoRegister, write_config_size_in_words>
+	encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<
+	            fisch::vx::word_access_type::I2CINA219RoRegister,
+	            read_config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -268,7 +270,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<INA219Status>
-    : public BackendContainerBase<INA219Status, fisch::vx::I2CINA219RoRegister>
+    : public BackendContainerBase<INA219Status, fisch::vx::word_access_type::I2CINA219RoRegister>
 {};
 
 } // namespace detail
@@ -311,10 +313,11 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	static std::array<halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard, config_size_in_words>
 	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::I2CTCA9554RoRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::I2CTCA9554RoRegister, config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CTCA9554RoRegister, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::I2CTCA9554RoRegister, config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -330,7 +333,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<TCA9554Inputs>
-    : public BackendContainerBase<TCA9554Inputs, fisch::vx::I2CTCA9554RoRegister>
+    : public BackendContainerBase<TCA9554Inputs, fisch::vx::word_access_type::I2CTCA9554RoRegister>
 {};
 
 } // namespace detail
@@ -417,10 +420,11 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 3;
 	static std::array<halco::hicann_dls::vx::I2CTCA9554RwRegisterOnBoard, config_size_in_words>
 	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::I2CTCA9554RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::I2CTCA9554RwRegister, config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CTCA9554RwRegister, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::I2CTCA9554RwRegister, config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -438,7 +442,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<TCA9554Config>
-    : public BackendContainerBase<TCA9554Config, fisch::vx::I2CTCA9554RwRegister>
+    : public BackendContainerBase<TCA9554Config, fisch::vx::word_access_type::I2CTCA9554RwRegister>
 {};
 
 } // namespace detail
@@ -491,10 +495,11 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	static std::array<halco::hicann_dls::vx::I2CAD5252RwRegisterOnBoard, config_size_in_words>
 	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::I2CAD5252RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::I2CAD5252RwRegister, config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CAD5252RwRegister, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::I2CAD5252RwRegister, config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -510,7 +515,9 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<AD5252ChannelConfig>
-    : public BackendContainerBase<AD5252ChannelConfig, fisch::vx::I2CAD5252RwRegister>
+    : public BackendContainerBase<
+          AD5252ChannelConfig,
+          fisch::vx::word_access_type::I2CAD5252RwRegister>
 {};
 
 } // namespace detail
@@ -564,10 +571,11 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	static std::array<halco::hicann_dls::vx::I2CAD5252RwRegisterOnBoard, config_size_in_words>
 	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::I2CAD5252RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::I2CAD5252RwRegister, config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CAD5252RwRegister, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::I2CAD5252RwRegister, config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -583,7 +591,9 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<AD5252ChannelConfigPersistent>
-    : public BackendContainerBase<AD5252ChannelConfigPersistent, fisch::vx::I2CAD5252RwRegister>
+    : public BackendContainerBase<
+          AD5252ChannelConfigPersistent,
+          fisch::vx::word_access_type::I2CAD5252RwRegister>
 {};
 
 } // namespace detail
@@ -636,10 +646,11 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	static std::array<halco::hicann_dls::vx::I2CDAC6573RwRegisterOnBoard, config_size_in_words>
 	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::I2CDAC6573RwRegister, config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::I2CDAC6573RwRegister, config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CDAC6573RwRegister, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::I2CDAC6573RwRegister, config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -655,7 +666,9 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<DAC6573ChannelConfig>
-    : public BackendContainerBase<DAC6573ChannelConfig, fisch::vx::I2CDAC6573RwRegister>
+    : public BackendContainerBase<
+          DAC6573ChannelConfig,
+          fisch::vx::word_access_type::I2CDAC6573RwRegister>
 {};
 
 } // namespace detail

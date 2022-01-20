@@ -210,16 +210,16 @@ template <>
 struct BackendContainerTrait<CommonSynramConfig>
     : public BackendContainerBase<
           CommonSynramConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<SynapseBiasSelection>
     : public BackendContainerBase<
           SynapseBiasSelection,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

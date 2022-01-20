@@ -91,8 +91,8 @@ template <>
 struct BackendContainerTrait<CrossbarOutputConfig>
     : public BackendContainerBase<
           CrossbarOutputConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -177,8 +177,8 @@ template <>
 struct BackendContainerTrait<CrossbarInputDropCounter>
     : public BackendContainerBase<
           CrossbarInputDropCounter,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -262,8 +262,8 @@ template <>
 struct BackendContainerTrait<CrossbarOutputEventCounter>
     : public BackendContainerBase<
           CrossbarOutputEventCounter,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -355,7 +355,10 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<CrossbarNode>
-    : public BackendContainerBase<CrossbarNode, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<
+          CrossbarNode,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

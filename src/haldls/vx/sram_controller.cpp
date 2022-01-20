@@ -2,8 +2,8 @@
 #include <iomanip>
 #include <utility>
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -109,22 +109,22 @@ std::array<WordT, SRAMTimingConfig::config_size_in_words> SRAMTimingConfig::enco
 	std::array<WordT, SRAMTimingConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, SRAMTimingConfig::config_size_in_words>
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, SRAMTimingConfig::config_size_in_words>
     SRAMTimingConfig::encode() const;
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SRAMTimingConfig::config_size_in_words>
-SRAMTimingConfig::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, SRAMTimingConfig::config_size_in_words>
+    SRAMTimingConfig::encode() const;
 
 template <typename WordT>
 void SRAMTimingConfig::decode(std::array<WordT, SRAMTimingConfig::config_size_in_words> const& data)
 {
 	std::array<uint32_t, SRAMTimingConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	SRAMTimingConfigBitfield bitfield(raw_data);
 	m_address_setup_time = AddressSetupTime(bitfield.u.m.address_setup_time);
 	m_enable_width = EnableWidth(bitfield.u.m.enable_width);
@@ -132,9 +132,12 @@ void SRAMTimingConfig::decode(std::array<WordT, SRAMTimingConfig::config_size_in
 }
 
 template SYMBOL_VISIBLE void SRAMTimingConfig::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, SRAMTimingConfig::config_size_in_words> const& data);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        SRAMTimingConfig::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void SRAMTimingConfig::decode(
-    std::array<fisch::vx::Omnibus, SRAMTimingConfig::config_size_in_words> const& data);
+    std::array<fisch::vx::word_access_type::Omnibus, SRAMTimingConfig::config_size_in_words> const&
+        data);
 
 } // namespace haldls::vx::detail
 

@@ -3,7 +3,7 @@
 
 #include "haldls/vx/spi.h"
 
-#include "fisch/vx/spi.h"
+#include "fisch/vx/word_access/type/spi.h"
 #include "halco/hicann-dls/vx/spi.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -118,9 +118,10 @@ TEST(ShiftRegister, EncodeDecode)
 	SPIShiftRegisterOnBoard ref_address;
 	std::array<SPIShiftRegisterOnBoard, ShiftRegister::write_config_size_in_words> ref_addresses = {
 	    SPIShiftRegisterOnBoard()};
-	std::array<fisch::vx::SPIShiftRegister, ShiftRegister::write_config_size_in_words> ref_data = {
-	    fisch::vx::SPIShiftRegister(fisch::vx::SPIShiftRegister::Value(
-	        ((3ul << 6) << 16) + ((1ul << 0 | 1ul << 5) << 8) + (1ul << 6)))};
+	std::array<
+	    fisch::vx::word_access_type::SPIShiftRegister, ShiftRegister::write_config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::SPIShiftRegister(
+	        ((3ul << 6) << 16) + ((1ul << 0 | 1ul << 5) << 8) + (1ul << 6))};
 
 	{ // write addresses
 		std::vector<SPIShiftRegisterOnBoard> write_addresses;
@@ -128,8 +129,10 @@ TEST(ShiftRegister, EncodeDecode)
 		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::SPIShiftRegister> data;
-	visit_preorder(config, coord, stadls::EncodeVisitor<std::vector<fisch::vx::SPIShiftRegister>>{data});
+	std::vector<fisch::vx::word_access_type::SPIShiftRegister> data;
+	visit_preorder(
+	    config, coord,
+	    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::SPIShiftRegister>>{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 }
 

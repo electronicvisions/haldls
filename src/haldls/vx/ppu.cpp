@@ -9,8 +9,8 @@
 #include <cereal/types/array.hpp>
 #include <cereal/types/vector.hpp>
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_heap_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -82,27 +82,32 @@ template SYMBOL_VISIBLE
 template <typename WordT>
 std::array<WordT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::encode() const
 {
-	return {{static_cast<WordT>(typename WordT::Value(get_value()))}};
+	return {{static_cast<WordT>(get_value())}};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PPUMemoryWord::config_size_in_words>
-    PPUMemoryWord::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, PPUMemoryWord::config_size_in_words>
+    PPUMemoryWord::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PPUMemoryWord::config_size_in_words>
-PPUMemoryWord::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, PPUMemoryWord::config_size_in_words>
+    PPUMemoryWord::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void PPUMemoryWord::decode(std::array<WordT, PPUMemoryWord::config_size_in_words> const& data)
 {
-	set_value(Value(data[0].get()));
+	set_value(Value(data[0]));
 }
 
-template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, PPUMemoryWord::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void
+PPUMemoryWord::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        PPUMemoryWord::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, PPUMemoryWord::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<fisch::vx::word_access_type::Omnibus, PPUMemoryWord::config_size_in_words> const&
+        data);
 
 template <class Archive>
 void PPUMemoryWord::serialize(Archive& ar, std::uint32_t const)
@@ -554,33 +559,39 @@ std::array<WordT, PPUControlRegister::config_size_in_words> PPUControlRegister::
 	bitfield.u.m.inhibit_reset = m_inhibit_reset;
 	bitfield.u.m.force_clock_on = m_force_clock_on;
 	bitfield.u.m.force_clock_off = m_force_clock_off;
-	return {WordT{typename WordT::Value(bitfield.u.raw)}};
+	return {WordT{bitfield.u.raw}};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PPUControlRegister::config_size_in_words>
-    PPUControlRegister::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    PPUControlRegister::config_size_in_words>
+PPUControlRegister::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PPUControlRegister::config_size_in_words>
-PPUControlRegister::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, PPUControlRegister::config_size_in_words>
+    PPUControlRegister::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void PPUControlRegister::decode(
     std::array<WordT, PPUControlRegister::config_size_in_words> const& data)
 {
-	PPUControlRegisterBitfield bitfield(static_cast<uint32_t>(data[0].get()));
+	PPUControlRegisterBitfield bitfield(static_cast<uint32_t>(data[0]));
 	m_cache_controller_enable = bitfield.u.m.cache_controller_enable;
 	m_inhibit_reset = bitfield.u.m.inhibit_reset;
 	m_force_clock_on = bitfield.u.m.force_clock_on;
 	m_force_clock_off = bitfield.u.m.force_clock_off;
 }
 
-template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, PPUControlRegister::config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+PPUControlRegister::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        PPUControlRegister::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, PPUControlRegister::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        PPUControlRegister::config_size_in_words> const& data);
 
 template <class Archive>
 void PPUControlRegister::serialize(Archive& ar, std::uint32_t const)
@@ -666,27 +677,32 @@ std::array<WordT, PPUStatusRegister::write_config_size_in_words> PPUStatusRegist
 	return {};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PPUStatusRegister::write_config_size_in_words>
-    PPUStatusRegister::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    PPUStatusRegister::write_config_size_in_words>
+PPUStatusRegister::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::Omnibus, PPUStatusRegister::write_config_size_in_words>
-    PPUStatusRegister::encode<fisch::vx::Omnibus>() const;
+    std::array<fisch::vx::word_access_type::Omnibus, PPUStatusRegister::write_config_size_in_words>
+    PPUStatusRegister::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void PPUStatusRegister::decode(
     std::array<WordT, PPUStatusRegister::read_config_size_in_words> const& data)
 {
-	m_sleep = static_cast<bool>(data[0].get());
+	m_sleep = static_cast<bool>(data[0]);
 }
 
-template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, PPUStatusRegister::read_config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+PPUStatusRegister::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        PPUStatusRegister::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, PPUStatusRegister::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        PPUStatusRegister::read_config_size_in_words> const& data);
 
 template <class Archive>
 void PPUStatusRegister::serialize(Archive& ar, std::uint32_t const)

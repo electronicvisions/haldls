@@ -1,6 +1,6 @@
 #include "haldls/vx/jtag.h"
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/common/cerealization_geometry.h"
 #include "haldls/cerealization.tcc"
 
@@ -41,14 +41,15 @@ JTAGClockScaler::read_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::JTAGClockScaler, JTAGClockScaler::write_config_size_in_words>
-JTAGClockScaler::encode() const
+std::
+    array<fisch::vx::word_access_type::JTAGClockScaler, JTAGClockScaler::write_config_size_in_words>
+    JTAGClockScaler::encode() const
 {
-	return {fisch::vx::JTAGClockScaler(fisch::vx::JTAGClockScaler::Value(m_value))};
+	return {fisch::vx::word_access_type::JTAGClockScaler(m_value)};
 }
 
 void JTAGClockScaler::decode(std::array<
-                             fisch::vx::JTAGClockScaler,
+                             fisch::vx::word_access_type::JTAGClockScaler,
                              JTAGClockScaler::read_config_size_in_words> const& /*data*/)
 {}
 
@@ -91,14 +92,15 @@ ResetJTAGTap::read_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::ResetJTAGTap, ResetJTAGTap::write_config_size_in_words> ResetJTAGTap::encode()
-    const
+std::array<fisch::vx::word_access_type::ResetJTAGTap, ResetJTAGTap::write_config_size_in_words>
+ResetJTAGTap::encode() const
 {
-	return {fisch::vx::ResetJTAGTap()};
+	return {fisch::vx::word_access_type::ResetJTAGTap()};
 }
 
-void ResetJTAGTap::decode(
-    std::array<fisch::vx::ResetJTAGTap, ResetJTAGTap::read_config_size_in_words> const& /*data*/)
+void ResetJTAGTap::decode(std::array<
+                          fisch::vx::word_access_type::ResetJTAGTap,
+                          ResetJTAGTap::read_config_size_in_words> const& /*data*/)
 {}
 
 template <class Archive>
@@ -171,7 +173,8 @@ JTAGIdCode::write_addresses(coordinate_type const& /* coord */)
 	return {};
 }
 
-std::array<fisch::vx::JTAGIdCode, JTAGIdCode::write_config_size_in_words> JTAGIdCode::encode() const
+std::array<fisch::vx::word_access_type::JTAGIdCode, JTAGIdCode::write_config_size_in_words>
+JTAGIdCode::encode() const
 {
 	return {};
 }
@@ -182,23 +185,23 @@ struct JTAGIdCodeBitfield
 {
 	union
 	{
-		fisch::vx::JTAGIdCode::Value::value_type word;
+		fisch::vx::word_access_type::JTAGIdCode::value_type word;
 		struct __attribute__((packed))
 		{
-			fisch::vx::JTAGIdCode::Value::value_type marker : 1;
-			fisch::vx::JTAGIdCode::Value::value_type manufacturer_id : 11;
-			fisch::vx::JTAGIdCode::Value::value_type part_number : 16;
-			fisch::vx::JTAGIdCode::Value::value_type version : 4;
+			fisch::vx::word_access_type::JTAGIdCode::value_type marker : 1;
+			fisch::vx::word_access_type::JTAGIdCode::value_type manufacturer_id : 11;
+			fisch::vx::word_access_type::JTAGIdCode::value_type part_number : 16;
+			fisch::vx::word_access_type::JTAGIdCode::value_type version : 4;
 		} m;
 		static_assert(sizeof(word) == sizeof(m), "Sizes of union types should match.");
 	} u;
 
 	JTAGIdCodeBitfield()
 	{
-		u.word = fisch::vx::JTAGIdCode::Value(0);
+		u.word = fisch::vx::word_access_type::JTAGIdCode(0);
 	};
 
-	explicit JTAGIdCodeBitfield(fisch::vx::JTAGIdCode::Value data)
+	explicit JTAGIdCodeBitfield(fisch::vx::word_access_type::JTAGIdCode data)
 	{
 		u.word = data;
 	}
@@ -206,10 +209,11 @@ struct JTAGIdCodeBitfield
 
 } // anonymous namespace
 
-void JTAGIdCode::decode(
-    std::array<fisch::vx::JTAGIdCode, JTAGIdCode::read_config_size_in_words> const& data)
+void JTAGIdCode::decode(std::array<
+                        fisch::vx::word_access_type::JTAGIdCode,
+                        JTAGIdCode::read_config_size_in_words> const& data)
 {
-	JTAGIdCodeBitfield bitfield(data[0].get());
+	JTAGIdCodeBitfield bitfield(data[0]);
 
 	if (!bitfield.u.m.marker) {
 		throw std::runtime_error("JTAG ID marker has been decoded as 0b0. This is an invalid "

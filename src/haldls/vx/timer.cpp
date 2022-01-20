@@ -43,12 +43,16 @@ Timer::read_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::Timer, Timer::write_config_size_in_words> Timer::encode() const
+std::array<fisch::vx::word_access_type::Timer, Timer::write_config_size_in_words> Timer::encode()
+    const
 {
-	return {fisch::vx::Timer{fisch::vx::Timer::Value{m_value.value()}}};
+	return {
+	    fisch::vx::word_access_type::Timer{fisch::vx::word_access_type::Timer{m_value.value()}}};
 }
 
-void Timer::decode(std::array<fisch::vx::Timer, Timer::read_config_size_in_words> const& /*data*/)
+void Timer::decode(std::array<
+                   fisch::vx::word_access_type::Timer,
+                   Timer::read_config_size_in_words> const& /*data*/)
 {}
 
 template <class Archive>

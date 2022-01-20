@@ -131,7 +131,10 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<CADCConfig>
-    : public BackendContainerBase<CADCConfig, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<
+          CADCConfig,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -219,20 +222,22 @@ protected:
 	CADCChannelConfig<Coordinates>::addresses(coordinate_type const& coord);                       \
                                                                                                    \
 	extern template SYMBOL_VISIBLE std::array<                                                     \
-	    fisch::vx::OmnibusChipOverJTAG, CADCChannelConfig<Coordinates>::config_size_in_words>      \
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,                                          \
+	    CADCChannelConfig<Coordinates>::config_size_in_words>                                      \
 	CADCChannelConfig<Coordinates>::encode() const;                                                \
-	extern template SYMBOL_VISIBLE                                                                 \
-	    std::array<fisch::vx::Omnibus, CADCChannelConfig<Coordinates>::config_size_in_words>       \
-	    CADCChannelConfig<Coordinates>::encode() const;                                            \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    fisch::vx::word_access_type::Omnibus,                                                      \
+	    CADCChannelConfig<Coordinates>::config_size_in_words>                                      \
+	CADCChannelConfig<Coordinates>::encode() const;                                                \
                                                                                                    \
 	extern template SYMBOL_VISIBLE void CADCChannelConfig<Coordinates>::decode(                    \
 	    std::array<                                                                                \
-	        fisch::vx::OmnibusChipOverJTAG,                                                        \
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG,                                      \
 	        CADCChannelConfig<Coordinates>::config_size_in_words> const& data);                    \
 	extern template SYMBOL_VISIBLE void CADCChannelConfig<Coordinates>::decode(                    \
 	    std::array<                                                                                \
-	        fisch::vx::Omnibus, CADCChannelConfig<Coordinates>::config_size_in_words> const&       \
-	        data);
+	        fisch::vx::word_access_type::Omnibus,                                                  \
+	        CADCChannelConfig<Coordinates>::config_size_in_words> const& data);
 
 namespace detail {
 
@@ -240,8 +245,8 @@ template <typename Coordinates>
 struct BackendContainerTrait<CADCChannelConfig<Coordinates>>
     : public BackendContainerBase<
           CADCChannelConfig<Coordinates>,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -278,8 +283,8 @@ template <>
 struct BackendContainerTrait<CADCOffsetSRAMTimingConfig>
     : public BackendContainerBase<
           CADCOffsetSRAMTimingConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

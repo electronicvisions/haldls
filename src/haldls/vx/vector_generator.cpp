@@ -2,13 +2,14 @@
 
 #include <string>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/ppu.h"
+#include "hate/join.h"
 
 namespace haldls::vx {
 
@@ -221,7 +222,7 @@ struct VectorGeneratorControlBitfield
 
 } // anonymous namespace
 
-std::array<fisch::vx::Omnibus, VectorGeneratorControl::write_config_size_in_words>
+std::array<fisch::vx::word_access_type::Omnibus, VectorGeneratorControl::write_config_size_in_words>
 VectorGeneratorControl::encode() const
 {
 	VectorGeneratorControlBitfield bitfield;
@@ -259,11 +260,12 @@ VectorGeneratorControl::encode() const
 		default:
 			throw std::logic_error("Encoding of specified Signal not implemented");
 	}
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(bitfield.u.raw[0]))};
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw[0])};
 }
 
-void VectorGeneratorControl::decode(
-    std::array<fisch::vx::Omnibus, VectorGeneratorControl::read_config_size_in_words> const&)
+void VectorGeneratorControl::decode(std::array<
+                                    fisch::vx::word_access_type::Omnibus,
+                                    VectorGeneratorControl::read_config_size_in_words> const&)
 {}
 
 std::ostream& operator<<(std::ostream& os, VectorGeneratorControl const& config)
@@ -394,19 +396,20 @@ VectorGeneratorLUTEntry::addresses(coordinate_type const& coord)
 	    coord.toVectorGeneratorLUTEntryOnVectorGeneratorLUT() + 0x100)};
 }
 
-std::array<fisch::vx::Omnibus, VectorGeneratorLUTEntry::config_size_in_words>
+std::array<fisch::vx::word_access_type::Omnibus, VectorGeneratorLUTEntry::config_size_in_words>
 VectorGeneratorLUTEntry::encode() const
 {
 	VectorGeneratorLUTEntryBitfield bitfield;
 	bitfield.u.m.value = m_value;
 
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(bitfield.u.raw))};
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
 }
 
-void VectorGeneratorLUTEntry::decode(
-    std::array<fisch::vx::Omnibus, VectorGeneratorLUTEntry::config_size_in_words> const& data)
+void VectorGeneratorLUTEntry::decode(std::array<
+                                     fisch::vx::word_access_type::Omnibus,
+                                     VectorGeneratorLUTEntry::config_size_in_words> const& data)
 {
-	VectorGeneratorLUTEntryBitfield bitfield(data[0].get());
+	VectorGeneratorLUTEntryBitfield bitfield(data[0]);
 	m_value = Value(bitfield.u.m.value);
 }
 
@@ -463,17 +466,20 @@ VectorGeneratorNotificationAddress::addresses(coordinate_type const& coord)
 	    vector_generator_base_addresses.at(coord.toEnum()) + 0x1)};
 }
 
-std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::Omnibus,
+    VectorGeneratorNotificationAddress::config_size_in_words>
 VectorGeneratorNotificationAddress::encode() const
 {
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(m_value))};
+	return {fisch::vx::word_access_type::Omnibus(m_value)};
 }
 
 void VectorGeneratorNotificationAddress::decode(
-    std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words> const&
-        data)
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        VectorGeneratorNotificationAddress::config_size_in_words> const& data)
 {
-	m_value = Value(data[0].get().word.value());
+	m_value = Value(data[0].word.value());
 }
 
 std::ostream& operator<<(std::ostream& os, VectorGeneratorNotificationAddress const& config)
@@ -513,14 +519,15 @@ VectorGeneratorTrigger::read_addresses(coordinate_type const&)
 	return {};
 }
 
-std::array<fisch::vx::Omnibus, VectorGeneratorTrigger::write_config_size_in_words>
+std::array<fisch::vx::word_access_type::Omnibus, VectorGeneratorTrigger::write_config_size_in_words>
 VectorGeneratorTrigger::encode() const
 {
-	return {fisch::vx::Omnibus()};
+	return {fisch::vx::word_access_type::Omnibus()};
 }
 
-void VectorGeneratorTrigger::decode(
-    std::array<fisch::vx::Omnibus, VectorGeneratorTrigger::read_config_size_in_words> const&)
+void VectorGeneratorTrigger::decode(std::array<
+                                    fisch::vx::word_access_type::Omnibus,
+                                    VectorGeneratorTrigger::read_config_size_in_words> const&)
 {}
 
 std::ostream& operator<<(std::ostream& os, VectorGeneratorTrigger const&)
@@ -637,8 +644,9 @@ struct VectorGeneratorFIFOWordBitfield
 
 } // namespace
 
-std::array<fisch::vx::Omnibus, VectorGeneratorFIFOWord::write_config_size_in_words>
-VectorGeneratorFIFOWord::encode() const
+std::
+    array<fisch::vx::word_access_type::Omnibus, VectorGeneratorFIFOWord::write_config_size_in_words>
+    VectorGeneratorFIFOWord::encode() const
 {
 	using namespace halco::hicann_dls::vx;
 	VectorGeneratorFIFOWordBitfield bitfield;
@@ -650,14 +658,15 @@ VectorGeneratorFIFOWord::encode() const
 	bitfield.u.m.last_1 = m_last.at(EntryOnQuad(1));
 	bitfield.u.m.last_2 = m_last.at(EntryOnQuad(2));
 	bitfield.u.m.last_3 = m_last.at(EntryOnQuad(3));
-	fisch::vx::Omnibus::Value::ByteEnables enables = {
+	fisch::vx::word_access_type::Omnibus::ByteEnables enables = {
 	    m_enable.at(EntryOnQuad(3)), m_enable.at(EntryOnQuad(2)), m_enable.at(EntryOnQuad(1)),
 	    m_enable.at(EntryOnQuad(0))};
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(bitfield.u.raw, enables))};
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw, enables)};
 }
 
-void VectorGeneratorFIFOWord::decode(
-    std::array<fisch::vx::Omnibus, VectorGeneratorFIFOWord::read_config_size_in_words> const&)
+void VectorGeneratorFIFOWord::decode(std::array<
+                                     fisch::vx::word_access_type::Omnibus,
+                                     VectorGeneratorFIFOWord::read_config_size_in_words> const&)
 {}
 
 std::ostream& operator<<(std::ostream& os, VectorGeneratorFIFOWord const& data)

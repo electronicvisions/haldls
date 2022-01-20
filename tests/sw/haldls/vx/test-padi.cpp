@@ -3,7 +3,7 @@
 
 #include "haldls/vx/padi.h"
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "test-helper.h"
@@ -13,7 +13,7 @@ using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(PADIEvent, General)
 {
@@ -107,9 +107,10 @@ TEST(PADIEvent, EncodeDecode)
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, PADIEvent::write_config_size_in_words>
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{padi_base_addresses[coord] + 0}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, PADIEvent::write_config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusChipOverJTAG(
-	        fisch::vx::OmnibusChipOverJTAG::Value(0b0101 | (13 << 16) | (7 << 22)))};
+	std::array<
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG, PADIEvent::write_config_size_in_words>
+	    ref_data = {
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG(0b0101 | (13 << 16) | (7 << 22))};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -221,9 +222,10 @@ TEST(CommonPADIBusConfig, EncodeDecode)
 	    CommonPADIBusConfig::config_size_in_words>
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{padi_base_addresses[coord] + 1}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words> ref_data =
-	    {fisch::vx::OmnibusChipOverJTAG(
-	        fisch::vx::OmnibusChipOverJTAG::Value(0b1010 | (0b0001 << 4) | (3 << 24)))};
+	std::array<
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words>
+	    ref_data = {
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG(0b1010 | (0b0001 << 4) | (3 << 24))};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -309,9 +311,10 @@ TEST(CommonSTPConfig, EncodeDecode)
 	    CommonSTPConfig::write_config_size_in_words>
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{padi_base_addresses[coord] + 2}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CommonSTPConfig::write_config_size_in_words>
-	    ref_data = {fisch::vx::OmnibusChipOverJTAG(
-	        fisch::vx::OmnibusChipOverJTAG::Value(recovery_speed | (1 << 4)))};
+	std::array<
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+	    CommonSTPConfig::write_config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(recovery_speed | (1 << 4))};
 
 	{ // write addresses
 		addresses_type write_addresses;

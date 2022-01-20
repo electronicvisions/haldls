@@ -1,6 +1,6 @@
 #include "haldls/vx/perftest.h"
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -43,14 +43,16 @@ PerfTest::addresses(coordinate_type const& /*coord*/)
 	return {halco::hicann_dls::vx::OmnibusAddress(perftest_omnibus_mask)};
 }
 
-std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> PerfTest::encode() const
+std::array<fisch::vx::word_access_type::Omnibus, PerfTest::config_size_in_words> PerfTest::encode()
+    const
 {
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(m_enable))};
+	return {fisch::vx::word_access_type::Omnibus(m_enable)};
 }
 
-void PerfTest::decode(std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> const& data)
+void PerfTest::decode(
+    std::array<fisch::vx::word_access_type::Omnibus, PerfTest::config_size_in_words> const& data)
 {
-	m_enable = (data[0].get() & 0x1);
+	m_enable = (data[0] & 0x1);
 }
 
 template <class Archive>
@@ -140,19 +142,20 @@ PerfTestStatus::write_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::Omnibus, PerfTestStatus::write_config_size_in_words> PerfTestStatus::encode()
-    const
+std::array<fisch::vx::word_access_type::Omnibus, PerfTestStatus::write_config_size_in_words>
+PerfTestStatus::encode() const
 {
 	return {};
 }
 
-void PerfTestStatus::decode(
-    std::array<fisch::vx::Omnibus, PerfTestStatus::read_config_size_in_words> const& data)
+void PerfTestStatus::decode(std::array<
+                            fisch::vx::word_access_type::Omnibus,
+                            PerfTestStatus::read_config_size_in_words> const& data)
 {
-	m_sent = Sent(data[0].get());
-	m_received = Received(data[1].get());
-	m_in_order = InOrder(data[2].get());
-	m_error_word = ErrorWord(data[3].get());
+	m_sent = Sent(data[0]);
+	m_received = Received(data[1]);
+	m_in_order = InOrder(data[2]);
+	m_error_word = ErrorWord(data[3]);
 }
 
 template <class Archive>

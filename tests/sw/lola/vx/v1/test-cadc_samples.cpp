@@ -3,7 +3,7 @@
 
 #include "lola/vx/v1/cadc.h"
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -81,7 +81,7 @@ TEST(CADCSamples, CerealizeCoverage)
 TEST(CADCSamples, EncodeDecode)
 {
 	typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
-	typedef std::vector<fisch::vx::Omnibus> words_type;
+	typedef std::vector<fisch::vx::word_access_type::Omnibus> words_type;
 
 	CADCSamplesOnDLS coord;
 
@@ -95,11 +95,10 @@ TEST(CADCSamples, EncodeDecode)
 	    CADCSampleQuad::read_config_size_in_words *
 	    (SynapseQuadColumnOnDLS::size * CADCChannelType::size + 1) * SynramOnDLS::size);
 	for (auto& word : ref_data) {
-		word = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0));
+		word = fisch::vx::word_access_type::Omnibus(0);
 	}
-	ref_data[12] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0xf));
-	ref_data[14 + SynapseQuadColumnOnDLS::size] =
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x10));
+	ref_data[12] = fisch::vx::word_access_type::Omnibus(0xf);
+	ref_data[14 + SynapseQuadColumnOnDLS::size] = fisch::vx::word_access_type::Omnibus(0x10);
 
 	{
 		CADCSampleQuadOnDLS quad_coord_trigger(

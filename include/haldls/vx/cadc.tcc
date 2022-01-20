@@ -1,7 +1,7 @@
 #include "haldls/vx/cadc.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -98,7 +98,7 @@ CADCChannelConfig<Coordinates>::encode() const
 	CADCChannelConfigBitfield bitfield;
 	bitfield.u.m.offset = static_cast<int32_t>(m_offset) + 128;
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
 template <typename Coordinates>
@@ -106,7 +106,7 @@ template <typename WordT>
 void CADCChannelConfig<Coordinates>::decode(
     std::array<WordT, CADCChannelConfig<Coordinates>::config_size_in_words> const& data)
 {
-	CADCChannelConfigBitfield bitfield(data[0].get());
+	CADCChannelConfigBitfield bitfield(data[0]);
 	m_offset = Offset(static_cast<int32_t>(bitfield.u.m.offset) - 128);
 }
 
@@ -124,18 +124,21 @@ void CADCChannelConfig<Coordinates>::decode(
 	CADCChannelConfig<Coordinates>::addresses(coordinate_type const& coord);                       \
                                                                                                    \
 	template SYMBOL_VISIBLE std::array<                                                            \
-	    fisch::vx::OmnibusChipOverJTAG, CADCChannelConfig<Coordinates>::config_size_in_words>      \
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,                                          \
+	    CADCChannelConfig<Coordinates>::config_size_in_words>                                      \
 	CADCChannelConfig<Coordinates>::encode() const;                                                \
-	template std::array<fisch::vx::Omnibus, CADCChannelConfig<Coordinates>::config_size_in_words>  \
+	template std::array<                                                                           \
+	    fisch::vx::word_access_type::Omnibus,                                                      \
+	    CADCChannelConfig<Coordinates>::config_size_in_words>                                      \
 	CADCChannelConfig<Coordinates>::encode() const;                                                \
                                                                                                    \
 	template void CADCChannelConfig<Coordinates>::decode(                                          \
 	    std::array<                                                                                \
-	        fisch::vx::OmnibusChipOverJTAG,                                                        \
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG,                                      \
 	        CADCChannelConfig<Coordinates>::config_size_in_words> const& data);                    \
 	template void CADCChannelConfig<Coordinates>::decode(                                          \
 	    std::array<                                                                                \
-	        fisch::vx::Omnibus, CADCChannelConfig<Coordinates>::config_size_in_words> const&       \
-	        data);
+	        fisch::vx::word_access_type::Omnibus,                                                  \
+	        CADCChannelConfig<Coordinates>::config_size_in_words> const& data);
 
 } // namespace haldls::vx

@@ -2,8 +2,8 @@
 
 #include "haldls/vx/capmem.tcc"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
@@ -250,25 +250,25 @@ std::array<WordT, ReferenceGeneratorConfig::config_size_in_words> ReferenceGener
 	std::array<WordT, ReferenceGeneratorConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, ReferenceGeneratorConfig::config_size_in_words>
-    ReferenceGeneratorConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    ReferenceGeneratorConfig::config_size_in_words>
+ReferenceGeneratorConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::Omnibus, ReferenceGeneratorConfig::config_size_in_words>
-    ReferenceGeneratorConfig::encode<fisch::vx::Omnibus>() const;
+    std::array<fisch::vx::word_access_type::Omnibus, ReferenceGeneratorConfig::config_size_in_words>
+    ReferenceGeneratorConfig::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void ReferenceGeneratorConfig::decode(
     std::array<WordT, ReferenceGeneratorConfig::config_size_in_words> const& data)
 {
 	std::array<uint32_t, ReferenceGeneratorConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	ReferenceGeneratorConfigBitfield bitfield(raw_data);
 
 	m_capmem_amplifier = ReferenceGeneratorConfig::CapMemAmplifier(bitfield.u.m.cm_i_amplifier);
@@ -283,13 +283,16 @@ void ReferenceGeneratorConfig::decode(
 	m_resistor_control = ReferenceGeneratorConfig::ResistorControl(bitfield.u.m.resistor_control);
 }
 
-template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
+template SYMBOL_VISIBLE void
+ReferenceGeneratorConfig::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
     std::array<
-        fisch::vx::OmnibusChipOverJTAG,
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
         ReferenceGeneratorConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, ReferenceGeneratorConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        ReferenceGeneratorConfig::config_size_in_words> const& data);
 
 template <class Archive>
 void ReferenceGeneratorConfig::serialize(Archive& ar, std::uint32_t const)

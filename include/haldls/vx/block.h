@@ -2,7 +2,7 @@
 #include <array>
 #include <ostream>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
@@ -26,7 +26,7 @@ public:
 	    hxcomm::vx::Target::hardware, hxcomm::vx::Target::simulation};
 
 	typedef halco::hicann_dls::vx::OmnibusAddress Address GENPYBIND(visible);
-	typedef fisch::vx::Omnibus::Value::Word Value GENPYBIND(visible);
+	typedef fisch::vx::word_access_type::Omnibus::Word Value GENPYBIND(visible);
 
 	/** Default constructor. */
 	PollingOmnibusBlockConfig() SYMBOL_VISIBLE;
@@ -56,10 +56,10 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 3;
 	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
 	    coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, config_size_in_words> const& data) SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -75,7 +75,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PollingOmnibusBlockConfig>
-    : public BackendContainerBase<PollingOmnibusBlockConfig, fisch::vx::Omnibus>
+    : public BackendContainerBase<PollingOmnibusBlockConfig, fisch::vx::word_access_type::Omnibus>
 {};
 
 } // namespace detail
@@ -123,7 +123,8 @@ public:
 	bool operator==(PollingOmnibusBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PollingOmnibusBlock const& other) const SYMBOL_VISIBLE;
 
-	fisch::vx::PollingOmnibusBlock encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	fisch::vx::word_access_type::PollingOmnibusBlock encode() const SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -137,7 +138,9 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PollingOmnibusBlock>
-    : public BackendContainerBase<PollingOmnibusBlock, fisch::vx::PollingOmnibusBlock>
+    : public BackendContainerBase<
+          PollingOmnibusBlock,
+          fisch::vx::word_access_type::PollingOmnibusBlock>
 {};
 
 } // namespace detail

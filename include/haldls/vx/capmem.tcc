@@ -7,8 +7,8 @@
 #include <utility>
 #include <cereal/types/variant.hpp>
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_heap_array.h"
 #include "halco/common/iter_all.h"
@@ -58,9 +58,9 @@ std::array<WordT, CapMemCell<Coordinates>::config_size_in_words> CapMemCell<Coor
     const
 {
 	if (auto const ptr = std::get_if<DisableRefresh>(&m_value)) {
-		return {WordT(typename WordT::Value(*ptr))};
+		return {WordT(*ptr)};
 	} else {
-		return {WordT(typename WordT::Value(std::get<Value>(m_value)))};
+		return {WordT(std::get<Value>(m_value))};
 	}
 }
 
@@ -69,7 +69,7 @@ template <typename WordT>
 void CapMemCell<Coordinates>::decode(
     std::array<WordT, CapMemCell<Coordinates>::config_size_in_words> const& data)
 {
-	auto value = data[0].get() & DisableRefresh::max;
+	auto value = data[0] & DisableRefresh::max;
 	if (value == DisableRefresh()) {
 		m_value = DisableRefresh();
 	} else {
@@ -116,22 +116,26 @@ void CapMemCell<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 	CapMemCell<Coordinates>::addresses<halco::hicann_dls::vx::OmnibusAddress>(                     \
 	    coordinate_type const& cell);                                                              \
                                                                                                    \
-	template SYMBOL_VISIBLE                                                                        \
-	    std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCell<Coordinates>::config_size_in_words>  \
-	    CapMemCell<Coordinates>::encode<fisch::vx::OmnibusChipOverJTAG>() const;                   \
+	template SYMBOL_VISIBLE std::array<                                                            \
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,                                          \
+	    CapMemCell<Coordinates>::config_size_in_words>                                             \
+	CapMemCell<Coordinates>::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;     \
                                                                                                    \
-	template SYMBOL_VISIBLE                                                                        \
-	    std::array<fisch::vx::Omnibus, CapMemCell<Coordinates>::config_size_in_words>              \
-	    CapMemCell<Coordinates>::encode<fisch::vx::Omnibus>() const;                               \
+	template SYMBOL_VISIBLE std::array<                                                            \
+	    fisch::vx::word_access_type::Omnibus, CapMemCell<Coordinates>::config_size_in_words>       \
+	CapMemCell<Coordinates>::encode<fisch::vx::word_access_type::Omnibus>() const;                 \
                                                                                                    \
-	template SYMBOL_VISIBLE void CapMemCell<Coordinates>::decode<fisch::vx::OmnibusChipOverJTAG>(  \
+	template SYMBOL_VISIBLE void                                                                   \
+	CapMemCell<Coordinates>::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(             \
 	    std::array<                                                                                \
-	        fisch::vx::OmnibusChipOverJTAG, CapMemCell<Coordinates>::config_size_in_words> const&  \
-	        data);                                                                                 \
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG,                                      \
+	        CapMemCell<Coordinates>::config_size_in_words> const& data);                           \
                                                                                                    \
-	template SYMBOL_VISIBLE void CapMemCell<Coordinates>::decode<fisch::vx::Omnibus>(              \
-	    std::array<fisch::vx::Omnibus, CapMemCell<Coordinates>::config_size_in_words> const&       \
-	        data);                                                                                 \
+	template SYMBOL_VISIBLE void                                                                   \
+	CapMemCell<Coordinates>::decode<fisch::vx::word_access_type::Omnibus>(                         \
+	    std::array<                                                                                \
+	        fisch::vx::word_access_type::Omnibus,                                                  \
+	        CapMemCell<Coordinates>::config_size_in_words> const& data);                           \
                                                                                                    \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemCell<Coordinates>)
 
@@ -636,7 +640,7 @@ CapMemBlockConfig<Coordinates>::encode() const
 
 	std::array<WordT, config_size_in_words> ret;
 	std::transform(bitfield.u.raw.cbegin(), bitfield.u.raw.cend(), ret.begin(), [](auto m) {
-		return WordT(typename WordT::Value(m));
+		return WordT(m);
 	});
 
 	return ret;
@@ -648,7 +652,7 @@ void CapMemBlockConfig<Coordinates>::decode(
     std::array<WordT, CapMemBlockConfig<Coordinates>::config_size_in_words> const& data)
 {
 	std::array<uint32_t, config_size_in_words> words;
-	std::transform(data.cbegin(), data.cend(), words.begin(), [](auto m) { return m.get(); });
+	std::transform(data.cbegin(), data.cend(), words.begin(), [](auto m) { return m; });
 
 	CapMemBlockConfigBitfield<Coordinates> bitfield(words);
 	if (bitfield.u.m.hotbit_capmem_row) {
@@ -770,20 +774,22 @@ std::ostream& operator<<(std::ostream& os, CapMemBlockConfigIOutSelect const& co
 	CapMemBlockConfig<Coordinates>::addresses(coordinate_type const& coord);                       \
                                                                                                    \
 	template SYMBOL_VISIBLE std::array<                                                            \
-	    fisch::vx::OmnibusChipOverJTAG, CapMemBlockConfig<Coordinates>::config_size_in_words>      \
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,                                          \
+	    CapMemBlockConfig<Coordinates>::config_size_in_words>                                      \
 	CapMemBlockConfig<Coordinates>::encode() const;                                                \
-	template SYMBOL_VISIBLE                                                                        \
-	    std::array<fisch::vx::Omnibus, CapMemBlockConfig<Coordinates>::config_size_in_words>       \
-	    CapMemBlockConfig<Coordinates>::encode() const;                                            \
+	template SYMBOL_VISIBLE std::array<                                                            \
+	    fisch::vx::word_access_type::Omnibus,                                                      \
+	    CapMemBlockConfig<Coordinates>::config_size_in_words>                                      \
+	CapMemBlockConfig<Coordinates>::encode() const;                                                \
                                                                                                    \
 	template SYMBOL_VISIBLE void CapMemBlockConfig<Coordinates>::decode(                           \
 	    std::array<                                                                                \
-	        fisch::vx::OmnibusChipOverJTAG,                                                        \
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG,                                      \
 	        CapMemBlockConfig<Coordinates>::config_size_in_words> const& data);                    \
 	template SYMBOL_VISIBLE void CapMemBlockConfig<Coordinates>::decode(                           \
 	    std::array<                                                                                \
-	        fisch::vx::Omnibus, CapMemBlockConfig<Coordinates>::config_size_in_words> const&       \
-	        data);                                                                                 \
+	        fisch::vx::word_access_type::Omnibus,                                                  \
+	        CapMemBlockConfig<Coordinates>::config_size_in_words> const& data);                    \
                                                                                                    \
 	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemBlockConfig<Coordinates>)
 

@@ -401,16 +401,16 @@ template <>
 struct BackendContainerTrait<PadMultiplexerConfig>
     : public BackendContainerBase<
           PadMultiplexerConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<ReadoutSourceSelection>
     : public BackendContainerBase<
           ReadoutSourceSelection,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

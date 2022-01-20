@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/vector_generator.h"
@@ -13,7 +13,7 @@ using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
-typedef std::vector<fisch::vx::Omnibus> words_type;
+typedef std::vector<fisch::vx::word_access_type::Omnibus> words_type;
 
 template <>
 struct random_value<VectorGeneratorControl::Source>
@@ -88,9 +88,10 @@ TEST(VectorGeneratorControl, EncodeDecode)
 	    halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorControl::write_config_size_in_words>
 	    ref_addresses = {OmnibusAddress(0x84000000)};
 
-	std::array<fisch::vx::Omnibus, VectorGeneratorControl::write_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(
-	        fisch::vx::Omnibus::Value{(1ul << 8) | (123ul << 24) | (1ul << 0) | (1ul << 3)})};
+	std::array<
+	    fisch::vx::word_access_type::Omnibus, VectorGeneratorControl::write_config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::Omnibus(
+	        (1ul << 8) | (123ul << 24) | (1ul << 0) | (1ul << 3))};
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }
@@ -107,8 +108,8 @@ TEST(VectorGeneratorLUTEntry, EncodeDecode)
 	std::array<halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorLUTEntry::config_size_in_words>
 	    ref_addresses = {OmnibusAddress(0x84000100 + 123)};
 
-	std::array<fisch::vx::Omnibus, VectorGeneratorLUTEntry::config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x123})};
+	std::array<fisch::vx::word_access_type::Omnibus, VectorGeneratorLUTEntry::config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::Omnibus(0x123)};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
@@ -127,8 +128,10 @@ TEST(VectorGeneratorNotificationAddress, EncodeDecode)
 	    VectorGeneratorNotificationAddress::config_size_in_words>
 	    ref_addresses = {OmnibusAddress(0x84000001)};
 
-	std::array<fisch::vx::Omnibus, VectorGeneratorNotificationAddress::config_size_in_words>
-	    ref_data = {fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x12345678})};
+	std::array<
+	    fisch::vx::word_access_type::Omnibus,
+	    VectorGeneratorNotificationAddress::config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::Omnibus(0x12345678)};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
@@ -176,8 +179,9 @@ TEST(VectorGeneratorTrigger, EncodeDecode)
 	    halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorTrigger::write_config_size_in_words>
 	    ref_addresses = {OmnibusAddress(0x84000002)};
 
-	std::array<fisch::vx::Omnibus, VectorGeneratorTrigger::write_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x0})};
+	std::array<
+	    fisch::vx::word_access_type::Omnibus, VectorGeneratorTrigger::write_config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::Omnibus(0x0)};
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }
@@ -206,9 +210,10 @@ TEST(VectorGeneratorFIFOWord, EncodeDecode)
 	    halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorFIFOWord::write_config_size_in_words>
 	    ref_addresses = {OmnibusAddress(0x84000200)};
 
-	std::array<fisch::vx::Omnibus, VectorGeneratorFIFOWord::write_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{
-	        (12ul << 24) + ((1ul << 7) << 16), {false, false, true, true}})};
+	std::array<
+	    fisch::vx::word_access_type::Omnibus, VectorGeneratorFIFOWord::write_config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::Omnibus(
+	        (12ul << 24) + ((1ul << 7) << 16), {false, false, true, true})};
 
 	HALDLS_TEST_ENCODE(config, coord, ref_addresses, ref_data)
 }

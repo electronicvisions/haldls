@@ -1,7 +1,7 @@
 #include "haldls/vx/padi.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -137,25 +137,29 @@ std::array<WordT, PADIEvent::write_config_size_in_words> PADIEvent::encode() con
 	bitfield.u.m.event_address = m_event_address;
 	bitfield.u.m.row_select_address = m_row_select_address;
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PADIEvent::write_config_size_in_words>
-    PADIEvent::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, PADIEvent::write_config_size_in_words>
+    PADIEvent::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, PADIEvent::write_config_size_in_words>
-PADIEvent::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, PADIEvent::write_config_size_in_words>
+    PADIEvent::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void PADIEvent::decode(std::array<WordT, PADIEvent::read_config_size_in_words> const& /* data */)
 {}
 
-template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, PADIEvent::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        PADIEvent::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, PADIEvent::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<fisch::vx::word_access_type::Omnibus, PADIEvent::read_config_size_in_words> const&
+        data);
 
 std::ostream& operator<<(std::ostream& os, PADIEvent const& config)
 {
@@ -312,22 +316,24 @@ std::array<WordT, CommonPADIBusConfig::config_size_in_words> CommonPADIBusConfig
 	bitfield.u.m.dacen_pulse_extension_3 =
 	    m_dacen_pulse_extension[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(3)];
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words>
-    CommonPADIBusConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CommonPADIBusConfig::config_size_in_words>
+CommonPADIBusConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CommonPADIBusConfig::config_size_in_words>
-CommonPADIBusConfig::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, CommonPADIBusConfig::config_size_in_words>
+    CommonPADIBusConfig::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void CommonPADIBusConfig::decode(
     std::array<WordT, CommonPADIBusConfig::config_size_in_words> const& data)
 {
 	CommonPADIBusConfigBitfield bitfield;
-	bitfield.u.raw = data.at(0).get();
+	bitfield.u.raw = data.at(0);
 
 	m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(0)] = bitfield.u.m.enable_spl1_0;
 	m_enable_spl1[halco::hicann_dls::vx::PADIBusOnPADIBusBlock(1)] = bitfield.u.m.enable_spl1_1;
@@ -353,12 +359,16 @@ void CommonPADIBusConfig::decode(
 	    DacenPulseExtension(bitfield.u.m.dacen_pulse_extension_3);
 }
 
-template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonPADIBusConfig::config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+CommonPADIBusConfig::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        CommonPADIBusConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, CommonPADIBusConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        CommonPADIBusConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CommonPADIBusConfig const& config)
 {
@@ -493,27 +503,33 @@ std::array<WordT, CommonSTPConfig::write_config_size_in_words> CommonSTPConfig::
 	bitfield.u.m.enable_recovery_clock = m_enable_recovery_clock;
 	bitfield.u.m.recovery_clock_speed = m_recovery_clock_speed;
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonSTPConfig::write_config_size_in_words>
-    CommonSTPConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CommonSTPConfig::write_config_size_in_words>
+CommonSTPConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CommonSTPConfig::write_config_size_in_words>
-CommonSTPConfig::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, CommonSTPConfig::write_config_size_in_words>
+    CommonSTPConfig::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void CommonSTPConfig::decode(
     std::array<WordT, CommonSTPConfig::read_config_size_in_words> const& /* data */)
 {}
 
-template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonSTPConfig::read_config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+CommonSTPConfig::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        CommonSTPConfig::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, CommonSTPConfig::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        CommonSTPConfig::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CommonSTPConfig const& config)
 {

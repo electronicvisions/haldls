@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/v3/capmem.h"
@@ -13,7 +13,7 @@ using namespace halco::hicann_dls::vx::v3;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(ReferenceGeneratorConfig, General)
 {
@@ -136,10 +136,10 @@ TEST(ReferenceGeneratorConfig, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_EQ(data[0].get(), 0x3000);
-	ASSERT_EQ(data[1].get(), 0x280);
-	ASSERT_EQ(data[2].get(), 0x28);
-	ASSERT_EQ(data[5].get() & 0b0000'1111'1100'0000, 43 << 6); // CapMem block 1 offset
+	ASSERT_EQ(data[0], 0x3000);
+	ASSERT_EQ(data[1], 0x280);
+	ASSERT_EQ(data[2], 0x28);
+	ASSERT_EQ(data[5] & 0b0000'1111'1100'0000, 43 << 6); // CapMem block 1 offset
 
 	// Decode
 	ReferenceGeneratorConfig decoded;

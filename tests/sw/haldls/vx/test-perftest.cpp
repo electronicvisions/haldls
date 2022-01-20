@@ -3,7 +3,7 @@
 
 #include "haldls/vx/perftest.h"
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -13,7 +13,7 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
-typedef std::vector<fisch::vx::Omnibus> words_type;
+typedef std::vector<fisch::vx::word_access_type::Omnibus> words_type;
 
 TEST(PerfTest, General)
 {
@@ -47,8 +47,8 @@ TEST(PerfTest, EncodeDecode)
 
 	OmnibusAddress ref_address(0x8800'8000);
 	std::array<OmnibusAddress, PerfTest::config_size_in_words> ref_addresses = {ref_address};
-	std::array<fisch::vx::Omnibus, PerfTest::config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x1))};
+	std::array<fisch::vx::word_access_type::Omnibus, PerfTest::config_size_in_words> ref_data = {
+	    fisch::vx::word_access_type::Omnibus(0x1)};
 
 	{
 		addresses_type write_addresses;
@@ -137,11 +137,12 @@ TEST(PerfTestStatus, EncodeDecode)
 	    OmnibusAddress(base_address + 1), OmnibusAddress(base_address + 2),
 	    OmnibusAddress(base_address + 3), OmnibusAddress(base_address + 4)};
 
-	std::array<fisch::vx::Omnibus, PerfTestStatus::read_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x123)),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x456)),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x789)),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x010))};
+	std::array<fisch::vx::word_access_type::Omnibus, PerfTestStatus::read_config_size_in_words>
+	    ref_data = {
+	        fisch::vx::word_access_type::Omnibus(0x123),
+	        fisch::vx::word_access_type::Omnibus(0x456),
+	        fisch::vx::word_access_type::Omnibus(0x789),
+	        fisch::vx::word_access_type::Omnibus(0x010)};
 
 	{
 		addresses_type read_addresses;

@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -68,19 +68,20 @@ HicannARQStatus::write_addresses(HicannARQStatus::coordinate_type const& /*coord
 	return {};
 }
 
-std::array<fisch::vx::Omnibus, HicannARQStatus::write_config_size_in_words>
+std::array<fisch::vx::word_access_type::Omnibus, HicannARQStatus::write_config_size_in_words>
 HicannARQStatus::encode() const
 {
 	return {};
 }
 
-void HicannARQStatus::decode(
-    std::array<fisch::vx::Omnibus, HicannARQStatus::read_config_size_in_words> const& data)
+void HicannARQStatus::decode(std::array<
+                             fisch::vx::word_access_type::Omnibus,
+                             HicannARQStatus::read_config_size_in_words> const& data)
 {
-	m_write_count = WriteCount(data.at(0).get());
-	m_tx_count = TxCount(data.at(1).get());
-	m_rx_count = RxCount(data.at(2).get());
-	m_read_count = ReadCount(data.at(3).get());
+	m_write_count = WriteCount(data.at(0));
+	m_tx_count = TxCount(data.at(1));
+	m_rx_count = RxCount(data.at(2));
+	m_read_count = ReadCount(data.at(3));
 }
 
 std::ostream& operator<<(std::ostream& os, HicannARQStatus const& config)

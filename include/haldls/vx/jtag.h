@@ -3,7 +3,7 @@
 #include <iosfwd>
 
 #include "fisch/vx/constants.h"
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "haldls/cerealization.h"
@@ -84,15 +84,16 @@ public:
 	 * Get container config encoded in writable words.
 	 * @return Array of word values
 	 */
-	std::array<fisch::vx::JTAGClockScaler, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::JTAGClockScaler, write_config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	/**
 	 * Decode read words into container config.
 	 * @param data Array of word values
 	 */
-	void decode(std::array<fisch::vx::JTAGClockScaler, read_config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::JTAGClockScaler, read_config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -108,7 +109,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<JTAGClockScaler>
-    : public BackendContainerBase<JTAGClockScaler, fisch::vx::JTAGClockScaler>
+    : public BackendContainerBase<JTAGClockScaler, fisch::vx::word_access_type::JTAGClockScaler>
 {};
 
 } // namespace detail
@@ -138,10 +139,11 @@ public:
 	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::ResetJTAGTapOnDLS, read_config_size_in_words>
 	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::ResetJTAGTap, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::ResetJTAGTap, read_config_size_in_words> const& data)
+	std::array<fisch::vx::word_access_type::ResetJTAGTap, write_config_size_in_words> encode() const
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::ResetJTAGTap, read_config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -155,7 +157,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<ResetJTAGTap>
-    : public BackendContainerBase<ResetJTAGTap, fisch::vx::ResetJTAGTap>
+    : public BackendContainerBase<ResetJTAGTap, fisch::vx::word_access_type::ResetJTAGTap>
 {};
 
 } // namespace detail
@@ -257,9 +259,10 @@ public:
 	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::JTAGIdCodeOnDLS, write_config_size_in_words>
 	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::JTAGIdCode, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::JTAGIdCode, read_config_size_in_words> const& data)
+	std::array<fisch::vx::word_access_type::JTAGIdCode, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::JTAGIdCode, read_config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
@@ -278,7 +281,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<JTAGIdCode>
-    : public BackendContainerBase<JTAGIdCode, fisch::vx::JTAGIdCode>
+    : public BackendContainerBase<JTAGIdCode, fisch::vx::word_access_type::JTAGIdCode>
 {};
 
 } // namespace detail

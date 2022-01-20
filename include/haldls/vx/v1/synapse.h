@@ -635,56 +635,56 @@ template <>
 struct BackendContainerTrait<v1::SynapseWeightQuad>
     : public BackendContainerBase<
           v1::SynapseWeightQuad,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<v1::SynapseLabelQuad>
     : public BackendContainerBase<
           v1::SynapseLabelQuad,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<v1::SynapseCorrelationCalibQuad>
     : public BackendContainerBase<
           v1::SynapseCorrelationCalibQuad,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<v1::SynapseQuad>
     : public BackendContainerBase<
           v1::SynapseQuad,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<v1::ColumnCorrelationQuad>
     : public BackendContainerBase<
           v1::ColumnCorrelationQuad,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<v1::ColumnCurrentQuad>
     : public BackendContainerBase<
           v1::ColumnCurrentQuad,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<v1::CorrelationReset>
     : public BackendContainerBase<
           v1::CorrelationReset,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace haldls::vx::detail

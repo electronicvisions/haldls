@@ -34,10 +34,11 @@ public:
 	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::NullPayloadReadableOnFPGA, write_config_size_in_words>
 	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::NullPayloadReadable, write_config_size_in_words> encode() const
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::NullPayloadReadable, read_config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::NullPayloadReadable, write_config_size_in_words>
+	encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<
+	            fisch::vx::word_access_type::NullPayloadReadable,
+	            read_config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, NullPayloadReadable const& config)
@@ -55,7 +56,9 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<NullPayloadReadable>
-    : public BackendContainerBase<NullPayloadReadable, fisch::vx::NullPayloadReadable>
+    : public BackendContainerBase<
+          NullPayloadReadable,
+          fisch::vx::word_access_type::NullPayloadReadable>
 {};
 
 } // namespace detail

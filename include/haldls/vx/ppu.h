@@ -282,20 +282,26 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PPUMemoryWord>
-    : public BackendContainerBase<PPUMemoryWord, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<
+          PPUMemoryWord,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<PPUMemoryBlock>
     : public BackendContainerBase<
           PPUMemoryBlock,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<PPUMemory>
-    : public BackendContainerBase<PPUMemory, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<
+          PPUMemory,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -349,16 +355,16 @@ template <>
 struct BackendContainerTrait<PPUStatusRegister>
     : public BackendContainerBase<
           PPUStatusRegister,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<PPUControlRegister>
     : public BackendContainerBase<
           PPUControlRegister,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>

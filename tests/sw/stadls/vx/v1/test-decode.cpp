@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "fisch/vx/container_cast.h"
 #include "fisch/vx/traits.h"
 #include "haldls/vx/is_readable.h"
 #include "haldls/vx/v1/container.h"
@@ -33,7 +34,8 @@ typedef hate::type_list<
 			typedef typename haldls::vx::detail::BackendContainerTrait<Type>::default_container    \
 			    word_type;                                                                         \
 			if (haldls::vx::detail::IsReadable<Type>::value &&                                     \
-			    fisch::vx::IsReadable<word_type>::value) {                                         \
+			    fisch::vx::IsReadable<decltype(                                                    \
+			        fisch::vx::container_cast(std::declval<word_type>()))>::value) {               \
 				EXPECT_NE(config, Type());                                                         \
 			}                                                                                      \
 		}                                                                                          \
@@ -47,7 +49,8 @@ typedef hate::type_list<
 			typedef typename haldls::vx::detail::BackendContainerTrait<Type>::default_container    \
 			    word_type;                                                                         \
 			if (haldls::vx::detail::IsReadable<Type>::value &&                                     \
-			    fisch::vx::IsReadable<word_type>::value) {                                         \
+			    fisch::vx::IsReadable<decltype(                                                    \
+			        fisch::vx::container_cast(std::declval<word_type>()))>::value) {               \
 				EXPECT_NE(config, Type());                                                         \
 			}                                                                                      \
 		}                                                                                          \

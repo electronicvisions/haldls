@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/coordinates.h"
 #include "haldls/vx/common.h"
@@ -11,13 +11,13 @@
 #include "haldls/vx/synapse_driver.h"
 #include "test-helper.h"
 
-using namespace fisch::vx;
+using namespace fisch::vx::word_access_type;
 using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(SynapseDriverSRAMTimingConfig, General)
 {
@@ -71,8 +71,7 @@ TEST(SynapseDriverSRAMTimingConfig, EncodeDecode)
 	        OmnibusChipOverJTAGAddress{synapse_driver_bottom_sram_timing_base_address},
 	        OmnibusChipOverJTAGAddress{synapse_driver_bottom_sram_timing_base_address + 1}};
 	std::array<OmnibusChipOverJTAG, SynapseDriverSRAMTimingConfig::config_size_in_words> ref_data =
-	    {OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{100}),
-	     OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{5 | 7 << 4})};
+	    {OmnibusChipOverJTAG(100), OmnibusChipOverJTAG(5 | 7 << 4)};
 
 	{ // write addresses
 		addresses_type write_addresses;

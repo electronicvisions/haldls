@@ -1,7 +1,7 @@
 #include "haldls/vx/v3/synapse_driver.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -357,34 +357,39 @@ std::array<WordT, SynapseDriverConfig::config_size_in_words> SynapseDriverConfig
 	std::array<WordT, SynapseDriverConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseDriverConfig::config_size_in_words>
-    SynapseDriverConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    SynapseDriverConfig::config_size_in_words>
+SynapseDriverConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SynapseDriverConfig::config_size_in_words>
-SynapseDriverConfig::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, SynapseDriverConfig::config_size_in_words>
+    SynapseDriverConfig::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void SynapseDriverConfig::decode(
     std::array<WordT, SynapseDriverConfig::config_size_in_words> const& data)
 {
 	std::array<uint32_t, SynapseDriverConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	SynapseDriverConfigBitfield bitfield(raw_data);
 	from_bitfield(bitfield);
 }
 
-template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseDriverConfig::config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+SynapseDriverConfig::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        SynapseDriverConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, SynapseDriverConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        SynapseDriverConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& mode)
 {

@@ -386,16 +386,16 @@ template <>
 struct BackendContainerTrait<v2::NeuronConfig>
     : public BackendContainerBase<
           v2::NeuronConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
 struct BackendContainerTrait<v2::NeuronResetQuad>
     : public BackendContainerBase<
           v2::NeuronResetQuad,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace haldls::vx::detail

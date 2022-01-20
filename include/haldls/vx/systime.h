@@ -74,8 +74,8 @@ template <>
 struct BackendContainerTrait<SystimeSyncBase>
     : public BackendContainerBase<
           SystimeSyncBase,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -123,9 +123,10 @@ public:
 	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden) SYMBOL_VISIBLE;
 	static std::array<coordinate_type, write_config_size_in_words> write_addresses(
 	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden) SYMBOL_VISIBLE;
-	std::array<fisch::vx::SystimeSync, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden) SYMBOL_VISIBLE;
-	void decode(std::array<fisch::vx::SystimeSync, read_config_size_in_words> const& data)
+	std::array<fisch::vx::word_access_type::SystimeSync, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden) SYMBOL_VISIBLE;
+	void decode(
+	    std::array<fisch::vx::word_access_type::SystimeSync, read_config_size_in_words> const& data)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
@@ -142,7 +143,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<SystimeSync>
-    : public BackendContainerBase<SystimeSync, fisch::vx::SystimeSync>
+    : public BackendContainerBase<SystimeSync, fisch::vx::word_access_type::SystimeSync>
 {};
 
 } // namespace detail

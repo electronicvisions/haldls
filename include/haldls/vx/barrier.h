@@ -36,7 +36,7 @@ public:
 	bool operator==(Barrier const& other) const SYMBOL_VISIBLE;
 	bool operator!=(Barrier const& other) const SYMBOL_VISIBLE;
 
-	fisch::vx::Barrier encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	fisch::vx::word_access_type::Barrier encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, Barrier const& config) SYMBOL_VISIBLE;

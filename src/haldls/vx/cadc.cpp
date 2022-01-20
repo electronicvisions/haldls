@@ -1,7 +1,7 @@
 #include "haldls/vx/cadc.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -125,27 +125,30 @@ std::array<WordT, CADCConfig::config_size_in_words> CADCConfig::encode() const
 	bitfield.u.m.reset_wait = m_reset_wait;
 	bitfield.u.m.dead_time = m_dead_time;
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, CADCConfig::config_size_in_words>
-CADCConfig::encode() const;
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CADCConfig::config_size_in_words>
-CADCConfig::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, CADCConfig::config_size_in_words>
+    CADCConfig::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, CADCConfig::config_size_in_words>
+    CADCConfig::encode() const;
 
 template <typename WordT>
 void CADCConfig::decode(std::array<WordT, CADCConfig::config_size_in_words> const& data)
 {
-	CADCConfigBitfield bitfield(data[0].get());
+	CADCConfigBitfield bitfield(data[0]);
 	m_enable = bitfield.u.m.enable;
 	m_reset_wait = ResetWait(bitfield.u.m.reset_wait);
 	m_dead_time = DeadTime(bitfield.u.m.dead_time);
 }
 
+template SYMBOL_VISIBLE void CADCConfig::decode(std::array<
+                                                fisch::vx::word_access_type::OmnibusChipOverJTAG,
+                                                CADCConfig::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void CADCConfig::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CADCConfig::config_size_in_words> const& data);
-template SYMBOL_VISIBLE void CADCConfig::decode(
-    std::array<fisch::vx::Omnibus, CADCConfig::config_size_in_words> const& data);
+    std::array<fisch::vx::word_access_type::Omnibus, CADCConfig::config_size_in_words> const& data);
 
 
 bool CADCOffsetSRAMTimingConfig::operator==(CADCOffsetSRAMTimingConfig const& other) const

@@ -66,10 +66,10 @@ public:
 	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
 	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -118,10 +118,10 @@ public:
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words> write_addresses(
 	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -167,12 +167,12 @@ public:
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
 	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, config_size_in_words> encode(coordinate_type const& coord) const
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
 	void decode(
 	    coordinate_type const& coord,
-	    std::array<fisch::vx::Omnibus, config_size_in_words> const& data) SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
+	    std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -188,17 +188,17 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<FPGADeviceDNA>
-    : public BackendContainerBase<FPGADeviceDNA, fisch::vx::Omnibus>
+    : public BackendContainerBase<FPGADeviceDNA, fisch::vx::word_access_type::Omnibus>
 {};
 
 template <>
 struct BackendContainerTrait<EventRecordingConfig>
-    : public BackendContainerBase<EventRecordingConfig, fisch::vx::Omnibus>
+    : public BackendContainerBase<EventRecordingConfig, fisch::vx::word_access_type::Omnibus>
 {};
 
 template <>
 struct BackendContainerTrait<ExternalPPUMemoryByte>
-    : public BackendContainerBase<ExternalPPUMemoryByte, fisch::vx::Omnibus>
+    : public BackendContainerBase<ExternalPPUMemoryByte, fisch::vx::word_access_type::Omnibus>
 {};
 
 } // namespace detail

@@ -1,7 +1,7 @@
 #include "haldls/vx/synapse.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
@@ -149,23 +149,24 @@ std::array<WordT, CommonSynramConfig::config_size_in_words> CommonSynramConfig::
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CommonSynramConfig::config_size_in_words>
-CommonSynramConfig::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonSynramConfig::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, CommonSynramConfig::config_size_in_words>
     CommonSynramConfig::encode() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CommonSynramConfig::config_size_in_words>
+CommonSynramConfig::encode() const;
 
 template <typename WordT>
 void CommonSynramConfig::decode(
     std::array<WordT, CommonSynramConfig::config_size_in_words> const& data)
 {
 	std::array<uint32_t, config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 
 	CommonSynramConfigBitfield bitfield(raw_data);
 	m_pc_conf_west = PCConf(bitfield.u.m.pc_conf_west);
@@ -176,10 +177,13 @@ void CommonSynramConfig::decode(
 }
 
 template SYMBOL_VISIBLE void CommonSynramConfig::decode(
-    std::array<fisch::vx::Omnibus, CommonSynramConfig::config_size_in_words> const& data);
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        CommonSynramConfig::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void CommonSynramConfig::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CommonSynramConfig::config_size_in_words> const&
-        data);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        CommonSynramConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CommonSynramConfig const& config)
 {
@@ -387,15 +391,16 @@ std::array<WordT, SynapseBiasSelection::write_config_size_in_words> SynapseBiasS
 	bitfield.u.m.int_output_q2 = m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)];
 	bitfield.u.m.int_output_q3 = m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)];
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::Omnibus, SynapseBiasSelection::write_config_size_in_words>
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::Omnibus, SynapseBiasSelection::write_config_size_in_words>
     SynapseBiasSelection::encode() const;
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseBiasSelection::write_config_size_in_words>
-    SynapseBiasSelection::encode() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    SynapseBiasSelection::write_config_size_in_words>
+SynapseBiasSelection::encode() const;
 
 template <typename WordT>
 void SynapseBiasSelection::decode(
@@ -403,10 +408,12 @@ void SynapseBiasSelection::decode(
 {}
 
 template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
-    std::array<fisch::vx::Omnibus, SynapseBiasSelection::read_config_size_in_words> const& words);
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        SynapseBiasSelection::read_config_size_in_words> const& words);
 template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
     std::array<
-        fisch::vx::OmnibusChipOverJTAG,
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
         SynapseBiasSelection::read_config_size_in_words> const& words);
 
 template <class Archive>

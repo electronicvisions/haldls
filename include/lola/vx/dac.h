@@ -104,12 +104,16 @@ namespace haldls::vx::detail {
 
 template <>
 struct BackendContainerTrait<lola::vx::DACChannelBlock>
-    : public BackendContainerBase<lola::vx::DACChannelBlock, fisch::vx::SPIDACDataRegister>
+    : public BackendContainerBase<
+          lola::vx::DACChannelBlock,
+          fisch::vx::word_access_type::SPIDACDataRegister>
 {};
 
 template <>
 struct BackendContainerTrait<lola::vx::DACControlBlock>
-    : public BackendContainerBase<lola::vx::DACControlBlock, fisch::vx::SPIDACControlRegister>
+    : public BackendContainerBase<
+          lola::vx::DACControlBlock,
+          fisch::vx::word_access_type::SPIDACControlRegister>
 {};
 
 template <>

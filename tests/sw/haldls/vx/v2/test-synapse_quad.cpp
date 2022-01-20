@@ -3,8 +3,8 @@
 
 #include "haldls/vx/v2/synapse.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/v2/omnibus.h"
 #include "halco/hicann-dls/vx/v2/quad.h"
 #include "haldls/vx/v2/common.h"
@@ -17,7 +17,7 @@ using namespace halco::hicann_dls::vx::v2;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(SynapseQuad, General)
 {
@@ -102,9 +102,9 @@ TEST(SynapseQuad, EncodeDecode)
 	std::array<halco::hicann_dls::vx::OmnibusAddress, SynapseQuad::config_size_in_words>
 	    ref_addresses = {{halco::hicann_dls::vx::OmnibusAddress(0x02cf'0083),
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02cf'00c3)}};
-	std::array<fisch::vx::Omnibus, SynapseQuad::config_size_in_words> ref_data = {
-	    {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x00B7'0000)),
-	     fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x007F'0000))}};
+	std::array<fisch::vx::word_access_type::Omnibus, SynapseQuad::config_size_in_words> ref_data = {
+	    {fisch::vx::word_access_type::Omnibus(0x00B7'0000),
+	     fisch::vx::word_access_type::Omnibus(0x007F'0000)}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;
@@ -124,16 +124,17 @@ TEST(SynapseQuad, EncodeDecode)
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::Omnibus> data;
+	std::vector<fisch::vx::word_access_type::Omnibus> data;
 	visit_preorder(
-	    synapse_block, block_coord, stadls::EncodeVisitor<std::vector<fisch::vx::Omnibus> >{data});
+	    synapse_block, block_coord,
+	    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::Omnibus> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	SynapseQuad block_copy;
 	ASSERT_NE(synapse_block, block_copy);
 	visit_preorder(
 	    block_copy, block_coord,
-	    stadls::DecodeVisitor<std::vector<fisch::vx::Omnibus> >{std::move(data)});
+	    stadls::DecodeVisitor<std::vector<fisch::vx::word_access_type::Omnibus> >{std::move(data)});
 	ASSERT_EQ(synapse_block, block_copy);
 }
 
@@ -212,7 +213,7 @@ TEST(CorrelationReset, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_EQ(data[0].get(), 0x0);
+	ASSERT_EQ(data[0], 0x0);
 	ASSERT_EQ(data.size(), CorrelationReset::write_config_size_in_words);
 }
 

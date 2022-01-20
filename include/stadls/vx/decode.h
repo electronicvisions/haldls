@@ -3,6 +3,7 @@
 #include <random>
 
 #include "fisch/vx/container.h"
+#include "fisch/vx/container_cast.h"
 #include "fisch/vx/fill.h"
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/ppu.h"
@@ -53,7 +54,9 @@ size_t count_decoding_words(T const& config)
 {
 	using namespace halco::hicann_dls::vx;
 	typedef typename haldls::vx::detail::BackendContainerTrait<T>::default_container word_type;
-	typedef std::vector<typename word_type::coordinate_type> addresses_type;
+	typedef std::vector<typename decltype(
+	    fisch::vx::container_cast(std::declval<word_type>()))::coordinate_type>
+	    addresses_type;
 	addresses_type addresses;
 
 	auto const coord = get_coord(config);
@@ -86,7 +89,9 @@ inline void decode_random(std::mt19937& gen, T& config)
 
 	// randomize word content
 	for (auto& word : words) {
-		word = fisch::vx::fill_random<word_type>(gen);
+		word = fisch::vx::container_cast(
+		    fisch::vx::fill_random<decltype(fisch::vx::container_cast(std::declval<word_type>()))>(
+		        gen));
 	}
 	// decode words into container
 	haldls::vx::visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(words)});
@@ -110,7 +115,8 @@ inline void decode_ones(T& config)
 
 	// fill words
 	for (auto& word : words) {
-		word = fisch::vx::fill_ones<word_type>();
+		word = fisch::vx::container_cast(
+		    fisch::vx::fill_ones<decltype(fisch::vx::container_cast(std::declval<word_type>()))>());
 	}
 	// decode words into container
 	haldls::vx::visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(words)});
@@ -129,8 +135,9 @@ inline void decode_random(std::mt19937& gen, haldls::vx::JTAGIdCode& config)
 	// Ensure marker-bit is set to 1, thereby form a valid JTAG ID
 	auto random_jtag_id_word = random_word(gen) | 1u;
 
-	std::array<fisch::vx::JTAGIdCode, haldls::vx::JTAGIdCode::read_config_size_in_words> data{
-	    fisch::vx::JTAGIdCode(fisch::vx::JTAGIdCode::Value(random_jtag_id_word))};
+	std::array<
+	    fisch::vx::word_access_type::JTAGIdCode, haldls::vx::JTAGIdCode::read_config_size_in_words>
+	    data{fisch::vx::word_access_type::JTAGIdCode(random_jtag_id_word)};
 
 	config.decode(data);
 }

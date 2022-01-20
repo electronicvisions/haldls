@@ -1,7 +1,7 @@
 #include "haldls/vx/background.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -179,27 +179,26 @@ std::array<WordT, BackgroundSpikeSource::config_size_in_words> BackgroundSpikeSo
 	bitfield.u.m.mask = m_mask;
 	bitfield.u.m.neuron_label = m_neuron_label;
 
-	return {
-	    WordT(typename WordT::Value(bitfield.u.raw[1])),
-	    WordT(typename WordT::Value(bitfield.u.raw[2])),
-	    WordT(typename WordT::Value(bitfield.u.raw[0]))};
+	return {WordT(bitfield.u.raw[1]), WordT(bitfield.u.raw[2]), WordT(bitfield.u.raw[0])};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, BackgroundSpikeSource::config_size_in_words>
-    BackgroundSpikeSource::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    BackgroundSpikeSource::config_size_in_words>
+BackgroundSpikeSource::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, BackgroundSpikeSource::config_size_in_words>
-BackgroundSpikeSource::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, BackgroundSpikeSource::config_size_in_words>
+    BackgroundSpikeSource::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void BackgroundSpikeSource::decode(
     std::array<WordT, BackgroundSpikeSource::config_size_in_words> const& data)
 {
 	BackgroundSpikeSourceBitfield bitfield;
-	bitfield.u.raw[0] = data.at(2).get();
-	bitfield.u.raw[1] = data.at(0).get();
-	bitfield.u.raw[2] = data.at(1).get();
+	bitfield.u.raw[0] = data.at(2);
+	bitfield.u.raw[1] = data.at(0);
+	bitfield.u.raw[2] = data.at(1);
 
 	m_enable = bitfield.u.m.enable;
 	m_enable_random = bitfield.u.m.enable_random;
@@ -210,12 +209,16 @@ void BackgroundSpikeSource::decode(
 	m_neuron_label = halco::hicann_dls::vx::NeuronLabel(bitfield.u.m.neuron_label);
 }
 
-template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, BackgroundSpikeSource::config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+BackgroundSpikeSource::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        BackgroundSpikeSource::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, BackgroundSpikeSource::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void BackgroundSpikeSource::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        BackgroundSpikeSource::config_size_in_words> const& data);
 
 template <class Archive>
 void BackgroundSpikeSource::serialize(Archive& ar, std::uint32_t const)

@@ -1,6 +1,7 @@
 #pragma once
-#include "fisch/vx/container.h"
+#include "fisch/vx/container_cast.h"
 #include "fisch/vx/traits.h"
+#include "fisch/vx/word_access_type.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"
 #include "hate/visibility.h"
@@ -27,8 +28,8 @@ enum class GENPYBIND(visible) Backend
 };
 
 typedef hate::type_list<
-#define PLAYBACK_CONTAINER(Name, Type) Type,
-#define LAST_PLAYBACK_CONTAINER(Name, Type) Type
+#define PLAYBACK_CONTAINER(Name, Type) fisch::vx::word_access_type::Name,
+#define LAST_PLAYBACK_CONTAINER(Name, Type) fisch::vx::word_access_type::Name
 #include "fisch/vx/container.def"
     >
     BackendContainerList;
@@ -71,7 +72,8 @@ template <typename... Ts>
 struct gen_is_read_and_writeable_lookup_table<hate::type_list<Ts...>>
 {
 	constexpr static std::array<bool, sizeof...(Ts)> value = {
-	    (fisch::vx::IsReadable<Ts>::value && fisch::vx::IsWritable<Ts>::value)...};
+	    (fisch::vx::IsReadable<decltype(fisch::vx::container_cast(std::declval<Ts>()))>::value &&
+	     fisch::vx::IsWritable<decltype(fisch::vx::container_cast(std::declval<Ts>()))>::value)...};
 };
 
 /**

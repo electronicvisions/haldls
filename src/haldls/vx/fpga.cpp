@@ -2,7 +2,7 @@
 
 #include <iomanip>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/quad.h"
@@ -78,18 +78,19 @@ struct FPGADeviceDNABitfield
 
 } // namespace
 
-std::array<fisch::vx::Omnibus, FPGADeviceDNA::write_config_size_in_words> FPGADeviceDNA::encode()
-    const
+std::array<fisch::vx::word_access_type::Omnibus, FPGADeviceDNA::write_config_size_in_words>
+FPGADeviceDNA::encode() const
 {
 	return {};
 }
 
-void FPGADeviceDNA::decode(
-    std::array<fisch::vx::Omnibus, FPGADeviceDNA::read_config_size_in_words> const& data)
+void FPGADeviceDNA::decode(std::array<
+                           fisch::vx::word_access_type::Omnibus,
+                           FPGADeviceDNA::read_config_size_in_words> const& data)
 {
 	FPGADeviceDNABitfield bitfield;
-	bitfield.u.m.low = data[1].get();
-	bitfield.u.m.high = data[0].get();
+	bitfield.u.m.low = data[1];
+	bitfield.u.m.high = data[0];
 
 	m_value = Value(bitfield.u.raw);
 }
@@ -167,22 +168,23 @@ struct EventRecordingConfigBitfield
 
 } // namespace
 
-void EventRecordingConfig::decode(
-    std::array<fisch::vx::Omnibus, EventRecordingConfig::read_config_size_in_words> const& data)
+void EventRecordingConfig::decode(std::array<
+                                  fisch::vx::word_access_type::Omnibus,
+                                  EventRecordingConfig::read_config_size_in_words> const& data)
 {
 	EventRecordingConfigBitfield bitfield;
-	bitfield.u.m.enable_event_recording = data[0].get();
+	bitfield.u.m.enable_event_recording = data[0];
 
 	m_enable_event_recording = bitfield.u.m.enable_event_recording;
 }
 
-std::array<fisch::vx::Omnibus, EventRecordingConfig::write_config_size_in_words>
+std::array<fisch::vx::word_access_type::Omnibus, EventRecordingConfig::write_config_size_in_words>
 EventRecordingConfig::encode() const
 {
 	EventRecordingConfigBitfield bitfield;
 	bitfield.u.m.enable_event_recording = m_enable_event_recording;
 
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(static_cast<uint32_t>(bitfield.u.raw)))};
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
 }
 
 template <class Archive>
@@ -238,22 +240,24 @@ ExternalPPUMemoryByte::addresses(coordinate_type const& coord)
 	    external_ppu_memory_base_address + (coord.toEnum() / sizeof(uint32_t)))};
 }
 
-std::array<fisch::vx::Omnibus, ExternalPPUMemoryByte::config_size_in_words>
+std::array<fisch::vx::word_access_type::Omnibus, ExternalPPUMemoryByte::config_size_in_words>
 ExternalPPUMemoryByte::encode(coordinate_type const& coord) const
 {
 	auto const byte_in_word = (sizeof(uint32_t) - 1) - (coord.toEnum() % sizeof(uint32_t));
 	uint32_t const raw_value = static_cast<uint32_t>(m_value) << (byte_in_word * CHAR_BIT);
-	fisch::vx::Omnibus::Value::ByteEnables byte_enables{};
+	fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables{};
 	byte_enables[byte_in_word] = true;
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(raw_value, byte_enables))};
+	return {fisch::vx::word_access_type::Omnibus(raw_value, byte_enables)};
 }
 
 void ExternalPPUMemoryByte::decode(
     coordinate_type const& coord,
-    std::array<fisch::vx::Omnibus, ExternalPPUMemoryByte::config_size_in_words> const& data)
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        ExternalPPUMemoryByte::config_size_in_words> const& data)
 {
 	auto const byte_in_word = (sizeof(uint32_t) - 1) - (coord.toEnum() % sizeof(uint32_t));
-	m_value = Value((data[0].get() >> (byte_in_word * CHAR_BIT)) & 0xff);
+	m_value = Value((data[0] >> (byte_in_word * CHAR_BIT)) & 0xff);
 }
 
 template <typename Archive>

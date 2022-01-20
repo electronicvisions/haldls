@@ -1,7 +1,7 @@
 #include "haldls/vx/routing_crossbar.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
@@ -119,21 +119,23 @@ std::array<WordT, CrossbarOutputConfig::config_size_in_words> CrossbarOutputConf
 	}
 	bitfield.u.m.enable_event_counter = static_cast<uint32_t>(enable_event_counter);
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputConfig::config_size_in_words>
-    CrossbarOutputConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CrossbarOutputConfig::config_size_in_words>
+CrossbarOutputConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CrossbarOutputConfig::config_size_in_words>
-CrossbarOutputConfig::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, CrossbarOutputConfig::config_size_in_words>
+    CrossbarOutputConfig::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void CrossbarOutputConfig::decode(
     std::array<WordT, CrossbarOutputConfig::config_size_in_words> const& data)
 {
-	CrossbarOutputConfigBitfield bitfield(data.at(0).get());
+	CrossbarOutputConfigBitfield bitfield(data.at(0));
 
 	hate::bitset<halco::hicann_dls::vx::CrossbarL2OutputOnDLS::size> enable_slow(
 	    bitfield.u.m.enable_slow);
@@ -148,12 +150,16 @@ void CrossbarOutputConfig::decode(
 	}
 }
 
-template SYMBOL_VISIBLE void CrossbarOutputConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputConfig::config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+CrossbarOutputConfig::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        CrossbarOutputConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void CrossbarOutputConfig::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, CrossbarOutputConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CrossbarOutputConfig::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        CrossbarOutputConfig::config_size_in_words> const& data);
 
 template <class Archive>
 void CrossbarOutputConfig::serialize(Archive& ar, std::uint32_t const)
@@ -239,26 +245,30 @@ CrossbarInputDropCounter::encode() const
 	return {};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarInputDropCounter::write_config_size_in_words>
-    CrossbarInputDropCounter::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CrossbarInputDropCounter::write_config_size_in_words>
+CrossbarInputDropCounter::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::Omnibus, CrossbarInputDropCounter::write_config_size_in_words>
-    CrossbarInputDropCounter::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::Omnibus,
+    CrossbarInputDropCounter::write_config_size_in_words>
+CrossbarInputDropCounter::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void CrossbarInputDropCounter::decode(
     std::array<WordT, CrossbarInputDropCounter::read_config_size_in_words> const& data)
 {
-	m_value = Value(data.at(0).get() & Value::max);
+	m_value = Value(data.at(0) & Value::max);
 }
 
-template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void
+CrossbarInputDropCounter::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, read_config_size_in_words> const&
+        data);
 
-template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CrossbarInputDropCounter::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const& data);
 
 template <class Archive>
 void CrossbarInputDropCounter::serialize(Archive& ar, std::uint32_t const)
@@ -343,29 +353,34 @@ CrossbarOutputEventCounter::encode() const
 	return {};
 }
 
-template SYMBOL_VISIBLE std::
-    array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputEventCounter::write_config_size_in_words>
-    CrossbarOutputEventCounter::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CrossbarOutputEventCounter::write_config_size_in_words>
+CrossbarOutputEventCounter::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::Omnibus, CrossbarOutputEventCounter::write_config_size_in_words>
-    CrossbarOutputEventCounter::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::Omnibus,
+    CrossbarOutputEventCounter::write_config_size_in_words>
+CrossbarOutputEventCounter::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void CrossbarOutputEventCounter::decode(
     std::array<WordT, CrossbarOutputEventCounter::read_config_size_in_words> const& data)
 {
-	m_value = Value(data.at(0).get() & Value::max);
+	m_value = Value(data.at(0) & Value::max);
 }
 
-template SYMBOL_VISIBLE void CrossbarOutputEventCounter::decode<fisch::vx::OmnibusChipOverJTAG>(
+template SYMBOL_VISIBLE void
+CrossbarOutputEventCounter::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
     std::array<
-        fisch::vx::OmnibusChipOverJTAG,
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
         CrossbarOutputEventCounter::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void CrossbarOutputEventCounter::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, CrossbarOutputEventCounter::read_config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+CrossbarOutputEventCounter::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        CrossbarOutputEventCounter::read_config_size_in_words> const& data);
 
 template <class Archive>
 void CrossbarOutputEventCounter::serialize(Archive& ar, std::uint32_t const)
@@ -484,30 +499,34 @@ std::array<WordT, CrossbarNode::config_size_in_words> CrossbarNode::encode() con
 	bitfield.u.m.target = m_target;
 	bitfield.u.m.enable_drop_counter = m_enable_drop_counter;
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::config_size_in_words>
-    CrossbarNode::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, CrossbarNode::config_size_in_words>
+    CrossbarNode::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CrossbarNode::config_size_in_words>
-CrossbarNode::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, CrossbarNode::config_size_in_words>
+    CrossbarNode::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void CrossbarNode::decode(std::array<WordT, CrossbarNode::config_size_in_words> const& data)
 {
-	CrossbarNodeBitfield bitfield(data.at(0).get());
+	CrossbarNodeBitfield bitfield(data.at(0));
 	m_mask = neuron_label_type(bitfield.u.m.mask);
 	m_target = neuron_label_type(bitfield.u.m.target);
 	m_enable_drop_counter = bitfield.u.m.enable_drop_counter;
 }
 
-template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        CrossbarNode::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, CrossbarNode::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CrossbarNode::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<fisch::vx::word_access_type::Omnibus, CrossbarNode::config_size_in_words> const&
+        data);
 
 template <class Archive>
 void CrossbarNode::serialize(Archive& ar, std::uint32_t const)

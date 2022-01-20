@@ -3,7 +3,7 @@
 
 #include "haldls/vx/spi.h"
 
-#include "fisch/vx/spi.h"
+#include "fisch/vx/word_access/type/spi.h"
 #include "halco/hicann-dls/vx/spi.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -14,7 +14,7 @@ using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard> addresses_type;
-typedef std::vector<fisch::vx::SPIDACDataRegister> words_type;
+typedef std::vector<fisch::vx::word_access_type::SPIDACDataRegister> words_type;
 
 TEST(DACChannel, General)
 {
@@ -35,8 +35,9 @@ TEST(DACChannel, EncodeDecode)
 	std::array<
 	    halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, DACChannel::write_config_size_in_words>
 	    ref_addresses = {ref_address};
-	std::array<fisch::vx::SPIDACDataRegister, DACChannel::write_config_size_in_words> ref_data = {
-	    {fisch::vx::SPIDACDataRegister(fisch::vx::SPIDACDataRegister::Value(config.get_value()))}};
+	std::array<
+	    fisch::vx::word_access_type::SPIDACDataRegister, DACChannel::write_config_size_in_words>
+	    ref_data = {{fisch::vx::word_access_type::SPIDACDataRegister(config.get_value())}};
 
 	{
 		addresses_type write_addresses;

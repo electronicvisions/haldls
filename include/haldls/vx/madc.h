@@ -119,7 +119,10 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<MADCControl>
-    : public BackendContainerBase<MADCControl, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<
+          MADCControl,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -595,7 +598,10 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<MADCConfig>
-    : public BackendContainerBase<MADCConfig, fisch::vx::Omnibus, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<
+          MADCConfig,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

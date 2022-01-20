@@ -1,6 +1,6 @@
 #include "haldls/vx/null_payload_readable.h"
 
-#include "fisch/vx/null_payload_readable.h"
+#include "fisch/vx/word_access/type/null_payload_readable.h"
 #include "halco/hicann-dls/vx/fpga.h"
 #include "haldls/cerealization.tcc"
 
@@ -23,14 +23,16 @@ NullPayloadReadable::write_addresses(NullPayloadReadable::coordinate_type const&
 	return {};
 }
 
-std::array<fisch::vx::NullPayloadReadable, NullPayloadReadable::write_config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::NullPayloadReadable,
+    NullPayloadReadable::write_config_size_in_words>
 NullPayloadReadable::encode() const
 {
 	return {};
 }
 
 void NullPayloadReadable::decode(std::array<
-                                 fisch::vx::NullPayloadReadable,
+                                 fisch::vx::word_access_type::NullPayloadReadable,
                                  NullPayloadReadable::read_config_size_in_words> const&)
 {}
 

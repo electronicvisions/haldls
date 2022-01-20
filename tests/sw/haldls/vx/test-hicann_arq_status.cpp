@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/arq.h"
 #include "haldls/vx/omnibus_constants.h"
@@ -13,7 +13,7 @@ using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
-typedef std::vector<fisch::vx::Omnibus> words_type;
+typedef std::vector<fisch::vx::word_access_type::Omnibus> words_type;
 
 TEST(HicannARQStatus, General)
 {
@@ -119,11 +119,10 @@ TEST(HicannARQStatus, EncodeDecode)
 	        OmnibusAddress(0x8800c010), OmnibusAddress(0x8800c011), OmnibusAddress(0x8800c012),
 	        OmnibusAddress(0x8800c013)};
 
-	std::array<fisch::vx::Omnibus, HicannARQStatus::read_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x2}),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x4}),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x3}),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value{0x1})};
+	std::array<fisch::vx::word_access_type::Omnibus, HicannARQStatus::read_config_size_in_words>
+	    ref_data = {
+	        fisch::vx::word_access_type::Omnibus(0x2), fisch::vx::word_access_type::Omnibus(0x4),
+	        fisch::vx::word_access_type::Omnibus(0x3), fisch::vx::word_access_type::Omnibus(0x1)};
 
 	{ // read addresses
 		addresses_type read_addresses;
@@ -134,7 +133,8 @@ TEST(HicannARQStatus, EncodeDecode)
 	HicannARQStatus read_config;
 	visit_preorder(
 	    read_config, coord,
-	    stadls::DecodeVisitor<
-	        std::array<fisch::vx::Omnibus, HicannARQStatus::read_config_size_in_words>>{ref_data});
+	    stadls::DecodeVisitor<std::array<
+	        fisch::vx::word_access_type::Omnibus, HicannARQStatus::read_config_size_in_words>>{
+	        ref_data});
 	EXPECT_EQ(config, read_config);
 }

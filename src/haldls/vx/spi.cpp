@@ -1,6 +1,6 @@
 #include "haldls/vx/spi.h"
 
-#include "fisch/vx/spi.h"
+#include "fisch/vx/word_access/type/spi.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
@@ -311,7 +311,7 @@ struct ShiftRegisterBitfield
 
 } // namespace
 
-std::array<fisch::vx::SPIShiftRegister, ShiftRegister::write_config_size_in_words>
+std::array<fisch::vx::word_access_type::SPIShiftRegister, ShiftRegister::write_config_size_in_words>
 ShiftRegister::encode() const
 {
 	ShiftRegisterBitfield bitfield;
@@ -339,11 +339,11 @@ ShiftRegister::encode() const
 	bitfield.u.m.disable_led_7 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::led_7];
 	bitfield.u.m.disable_led_8 = !m_enable_led[halco::hicann_dls::vx::LEDOnBoard::led_8];
 
-	return {fisch::vx::SPIShiftRegister(fisch::vx::SPIShiftRegister::Value(bitfield.u.raw))};
+	return {fisch::vx::word_access_type::SPIShiftRegister(bitfield.u.raw)};
 }
 
 void ShiftRegister::decode(std::array<
-                           fisch::vx::SPIShiftRegister,
+                           fisch::vx::word_access_type::SPIShiftRegister,
                            ShiftRegister::read_config_size_in_words> const& /*data*/)
 {}
 
@@ -403,14 +403,14 @@ DACChannel::read_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::SPIDACDataRegister, DACChannel::write_config_size_in_words>
+std::array<fisch::vx::word_access_type::SPIDACDataRegister, DACChannel::write_config_size_in_words>
 DACChannel::encode() const
 {
-	return {fisch::vx::SPIDACDataRegister(fisch::vx::SPIDACDataRegister::Value(m_value))};
+	return {fisch::vx::word_access_type::SPIDACDataRegister(m_value)};
 }
 
 void DACChannel::decode(std::array<
-                        fisch::vx::SPIDACDataRegister,
+                        fisch::vx::word_access_type::SPIDACDataRegister,
                         DACChannel::read_config_size_in_words> const& /*data*/)
 {}
 
@@ -478,23 +478,26 @@ DACControl::read_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::SPIDACControlRegister, DACControl::write_config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::SPIDACControlRegister,
+    DACControl::write_config_size_in_words>
 DACControl::encode() const
 {
-	auto gain_reference = fisch::vx::SPIDACControlRegister::Value(0b001100);
+	auto gain_reference = fisch::vx::word_access_type::SPIDACControlRegister(0b001100);
 
 	uint32_t power_down_bits = 0;
 	for (auto channel : halco::common::iter_all<halco::hicann_dls::vx::DACChannelOnDAC>()) {
 		power_down_bits |= (static_cast<uint32_t>(!m_enable_channel[channel]) << channel.toEnum());
 	}
-	auto power_down = fisch::vx::SPIDACControlRegister::Value(power_down_bits);
+	auto power_down = fisch::vx::word_access_type::SPIDACControlRegister(power_down_bits);
 
-	return {fisch::vx::SPIDACControlRegister(gain_reference),
-	        fisch::vx::SPIDACControlRegister(power_down)};
+	return {
+	    fisch::vx::word_access_type::SPIDACControlRegister(gain_reference),
+	    fisch::vx::word_access_type::SPIDACControlRegister(power_down)};
 }
 
 void DACControl::decode(std::array<
-                        fisch::vx::SPIDACControlRegister,
+                        fisch::vx::word_access_type::SPIDACControlRegister,
                         DACControl::read_config_size_in_words> const& /*data*/)
 {}
 

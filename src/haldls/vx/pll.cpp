@@ -1,6 +1,6 @@
 #include "haldls/vx/pll.h"
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/jtag.h"
@@ -383,38 +383,29 @@ std::array<WordT, ADPLL::config_size_in_words> ADPLL::encode() const
 	upper_bitfield.u.m.enable = m_enable;
 	upper_bitfield.u.m.use_external_config = m_use_external_config;
 
-	if constexpr (std::is_same<WordT, fisch::vx::JTAGPLLRegister>::value) {
-		fisch::vx::JTAGPLLRegister lower;
-		lower.set(fisch::vx::JTAGPLLRegister::Value(lower_bitfield.u.raw));
-		fisch::vx::JTAGPLLRegister upper;
-		upper.set(fisch::vx::JTAGPLLRegister::Value(upper_bitfield.u.raw));
-		return {lower, upper};
-	} else {
-		return {
-		    fisch::vx::OmnibusChipOverJTAG(
-		        fisch::vx::OmnibusChipOverJTAG::Value(lower_bitfield.u.raw)),
-		    fisch::vx::OmnibusChipOverJTAG(
-		        fisch::vx::OmnibusChipOverJTAG::Value(upper_bitfield.u.raw))};
-	}
+	return {WordT(lower_bitfield.u.raw), WordT(upper_bitfield.u.raw)};
 }
-template SYMBOL_VISIBLE std::array<fisch::vx::JTAGPLLRegister, ADPLL::config_size_in_words>
-ADPLL::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::JTAGPLLRegister, ADPLL::config_size_in_words>
+    ADPLL::encode() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, ADPLL::config_size_in_words>
-ADPLL::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, ADPLL::config_size_in_words>
+    ADPLL::encode() const;
 
 template <>
-void ADPLL::decode(std::array<fisch::vx::JTAGPLLRegister, config_size_in_words> const& /*data*/)
+void ADPLL::decode(
+    std::array<fisch::vx::word_access_type::JTAGPLLRegister, config_size_in_words> const& /*data*/)
 {}
 
 template <typename WordT>
 void ADPLL::decode(std::array<WordT, config_size_in_words> const& data)
 {
 	ADPLLLowerBitfield lower_bitfield;
-	lower_bitfield.u.raw = data[0].get();
+	lower_bitfield.u.raw = data[0];
 
 	ADPLLUpperBitfield upper_bitfield;
-	upper_bitfield.u.raw = data[1].get();
+	upper_bitfield.u.raw = data[1];
 
 	m_loop_filter_int = LoopFilterInt(lower_bitfield.u.m.loop_filter_int);
 	m_loop_filter_prop = LoopFilterProp(lower_bitfield.u.m.loop_filter_prop);
@@ -438,10 +429,10 @@ void ADPLL::decode(std::array<WordT, config_size_in_words> const& data)
 }
 
 template SYMBOL_VISIBLE void ADPLL::decode(
-    std::array<fisch::vx::JTAGPLLRegister, config_size_in_words> const& /*data*/);
+    std::array<fisch::vx::word_access_type::JTAGPLLRegister, config_size_in_words> const& /*data*/);
 
 template SYMBOL_VISIBLE void ADPLL::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& data);
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, config_size_in_words> const& data);
 
 template <typename Archive>
 void ADPLL::serialize(Archive& ar, std::uint32_t const)
@@ -731,26 +722,21 @@ std::array<WordT, PLLClockOutputBlock::config_size_in_words> PLLClockOutputBlock
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(3)].get_select_adpll_output());
 	bitfield.u.m.unused_3 = 0b100;
 
-	if constexpr (std::is_same<WordT, fisch::vx::JTAGPLLRegister>::value) {
-		fisch::vx::JTAGPLLRegister reg;
-		reg.set(fisch::vx::JTAGPLLRegister::Value(bitfield.u.raw));
-		return {reg};
-	} else {
-		return {WordT(typename WordT::Value(bitfield.u.raw))};
-	}
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::JTAGPLLRegister, PLLClockOutputBlock::config_size_in_words>
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::JTAGPLLRegister, PLLClockOutputBlock::config_size_in_words>
     PLLClockOutputBlock::encode() const;
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PLLClockOutputBlock::config_size_in_words>
-    PLLClockOutputBlock::encode() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    PLLClockOutputBlock::config_size_in_words>
+PLLClockOutputBlock::encode() const;
 
 template <>
 void PLLClockOutputBlock::decode(
-    std::array<fisch::vx::JTAGPLLRegister, config_size_in_words> const& /*data*/)
+    std::array<fisch::vx::word_access_type::JTAGPLLRegister, config_size_in_words> const& /*data*/)
 {}
 
 template <typename WordT>
@@ -758,7 +744,7 @@ void PLLClockOutputBlock::decode(std::array<WordT, config_size_in_words> const& 
 {
 	PLLClockOutputBlockBitfield bitfield;
 
-	bitfield.u.raw = data[0].get();
+	bitfield.u.raw = data[0];
 
 	m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(0)].set_enable_output(
 	    bitfield.u.m.enable_output_0);
@@ -798,10 +784,12 @@ void PLLClockOutputBlock::decode(std::array<WordT, config_size_in_words> const& 
 }
 
 template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
-    std::array<fisch::vx::JTAGPLLRegister, config_size_in_words> const& /*data*/);
+    std::array<fisch::vx::word_access_type::JTAGPLLRegister, config_size_in_words> const& /*data*/);
 
 template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        config_size_in_words> const& /*data*/);
 
 template <typename Archive>
 void PLLClockOutputBlock::serialize(Archive& ar, std::uint32_t const)
@@ -950,28 +938,23 @@ std::array<WordT, PLLSelfTest::config_size_in_words> PLLSelfTest::encode() const
 	bitfield.u.m.select_source = m_select_source;
 	bitfield.u.m.check_range = m_check_range;
 	bitfield.u.m.check_value = m_check_value;
-	if constexpr (std::is_same<WordT, fisch::vx::JTAGPLLRegister>::value) {
-		fisch::vx::JTAGPLLRegister reg;
-		reg.set(fisch::vx::JTAGPLLRegister::Value(bitfield.u.raw));
-		return {reg};
-	} else {
-		return {WordT(typename WordT::Value(bitfield.u.raw))};
-	}
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::JTAGPLLRegister, PLLSelfTest::config_size_in_words>
-PLLSelfTest::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::JTAGPLLRegister, PLLSelfTest::config_size_in_words>
+    PLLSelfTest::encode() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTest::config_size_in_words>
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, PLLSelfTest::config_size_in_words>
     PLLSelfTest::encode() const;
 
 template <typename WordT>
 void PLLSelfTest::decode(std::array<WordT, config_size_in_words> const& data)
 {
-	if constexpr (!std::is_same<WordT, fisch::vx::JTAGPLLRegister>::value) {
+	if constexpr (!std::is_same<WordT, fisch::vx::word_access_type::JTAGPLLRegister>::value) {
 		PLLSelfTestBitfield bitfield;
-		bitfield.u.raw = data[0].get();
+		bitfield.u.raw = data[0];
 
 		m_clock_enable = bitfield.u.m.clock_enable;
 		m_pre_scaler_p = PreScalerP(bitfield.u.m.pre_scaler_p);
@@ -982,10 +965,11 @@ void PLLSelfTest::decode(std::array<WordT, config_size_in_words> const& data)
 }
 
 template SYMBOL_VISIBLE void PLLSelfTest::decode(
-    std::array<fisch::vx::JTAGPLLRegister, config_size_in_words> const& /*data*/);
+    std::array<fisch::vx::word_access_type::JTAGPLLRegister, config_size_in_words> const& /*data*/);
 
-template SYMBOL_VISIBLE void PLLSelfTest::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, config_size_in_words> const& /*data*/);
+template SYMBOL_VISIBLE void PLLSelfTest::decode(std::array<
+                                                 fisch::vx::word_access_type::OmnibusChipOverJTAG,
+                                                 config_size_in_words> const& /*data*/);
 
 template <typename Archive>
 void PLLSelfTest::serialize(Archive& ar, std::uint32_t const)
@@ -1094,15 +1078,16 @@ std::array<WordT, PLLSelfTestStatus::write_config_size_in_words> PLLSelfTestStat
 	return {};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, PLLSelfTestStatus::write_config_size_in_words>
-    PLLSelfTestStatus::encode() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    PLLSelfTestStatus::write_config_size_in_words>
+PLLSelfTestStatus::encode() const;
 
 template <typename WordT>
 void PLLSelfTestStatus::decode(std::array<WordT, read_config_size_in_words> const& data)
 {
 	PLLSelfTestStatusBitfield bitfield;
-	bitfield.u.raw = data[0].get();
+	bitfield.u.raw = data[0];
 
 	m_finished = bitfield.u.m.finished;
 	m_success = bitfield.u.m.success;
@@ -1110,7 +1095,9 @@ void PLLSelfTestStatus::decode(std::array<WordT, read_config_size_in_words> cons
 }
 
 template SYMBOL_VISIBLE void PLLSelfTestStatus::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, read_config_size_in_words> const& /*data*/);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        read_config_size_in_words> const& /*data*/);
 
 template <typename Archive>
 void PLLSelfTestStatus::serialize(Archive& ar, std::uint32_t const)

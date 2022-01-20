@@ -357,8 +357,8 @@ template <>
 struct BackendContainerTrait<ADPLL>
     : public BackendContainerBase<
           ADPLL,
-          fisch::vx::JTAGPLLRegister,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::JTAGPLLRegister,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -506,8 +506,8 @@ template <>
 struct BackendContainerTrait<PLLClockOutputBlock>
     : public BackendContainerBase<
           PLLClockOutputBlock,
-          fisch::vx::JTAGPLLRegister,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::JTAGPLLRegister,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -637,8 +637,8 @@ template <>
 struct BackendContainerTrait<PLLSelfTest>
     : public BackendContainerBase<
           PLLSelfTest,
-          fisch::vx::JTAGPLLRegister,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::JTAGPLLRegister,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail
@@ -728,7 +728,9 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<PLLSelfTestStatus>
-    : public BackendContainerBase<PLLSelfTestStatus, fisch::vx::OmnibusChipOverJTAG>
+    : public BackendContainerBase<
+          PLLSelfTestStatus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace detail

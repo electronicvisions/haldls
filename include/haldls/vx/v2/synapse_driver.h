@@ -275,8 +275,8 @@ template <>
 struct BackendContainerTrait<v2::SynapseDriverConfig>
     : public BackendContainerBase<
           v2::SynapseDriverConfig,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 } // namespace haldls::vx::detail

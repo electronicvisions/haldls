@@ -2,8 +2,8 @@
 
 #include "haldls/vx/cadc.tcc"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -103,16 +103,17 @@ CADCSampleQuad::write_addresses(coordinate_type const& /* coord */)
 	return {};
 }
 
-std::array<fisch::vx::Omnibus, CADCSampleQuad::write_config_size_in_words> CADCSampleQuad::encode()
-    const
+std::array<fisch::vx::word_access_type::Omnibus, CADCSampleQuad::write_config_size_in_words>
+CADCSampleQuad::encode() const
 {
 	return {};
 }
 
-void CADCSampleQuad::decode(
-    std::array<fisch::vx::Omnibus, CADCSampleQuad::read_config_size_in_words> const& data)
+void CADCSampleQuad::decode(std::array<
+                            fisch::vx::word_access_type::Omnibus,
+                            CADCSampleQuad::read_config_size_in_words> const& data)
 {
-	CADCSampleQuadBitfield bitfield(data[0].get());
+	CADCSampleQuadBitfield bitfield(data[0]);
 	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(0)) = Value(bitfield.u.m.sample_0);
 	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(1)) = Value(bitfield.u.m.sample_1);
 	m_samples.at(halco::hicann_dls::vx::EntryOnQuad(2)) = Value(bitfield.u.m.sample_2);

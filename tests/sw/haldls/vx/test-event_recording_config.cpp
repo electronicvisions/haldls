@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/fpga.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
@@ -13,7 +13,7 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
-typedef std::vector<fisch::vx::Omnibus> words_type;
+typedef std::vector<fisch::vx::word_access_type::Omnibus> words_type;
 
 TEST(EventRecordingConfig, General)
 {
@@ -43,7 +43,7 @@ TEST(EventRecordingConfig, General)
 
 TEST(EventRecordingConfig, EncodeDecode)
 {
-	typedef std::vector<fisch::vx::Omnibus::coordinate_type> addresses_type;
+	typedef std::vector<halco::hicann_dls::vx::OmnibusAddress> addresses_type;
 
 	EventRecordingConfig config;
 	config.set_enable_event_recording(true);
@@ -51,13 +51,13 @@ TEST(EventRecordingConfig, EncodeDecode)
 	EventRecordingConfigOnFPGA coord;
 
 	std::array<
-	    typename fisch::vx::Omnibus::coordinate_type,
+	    typename halco::hicann_dls::vx::OmnibusAddress,
 	    EventRecordingConfig::read_config_size_in_words>
-	    ref_read_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8800'0005ul}};
+	    ref_read_addresses = {typename halco::hicann_dls::vx::OmnibusAddress{0x8800'0005ul}};
 	std::array<
-	    typename fisch::vx::Omnibus::coordinate_type,
+	    typename halco::hicann_dls::vx::OmnibusAddress,
 	    EventRecordingConfig::write_config_size_in_words>
-	    ref_write_addresses = {typename fisch::vx::Omnibus::coordinate_type{0x8800'0005ul}};
+	    ref_write_addresses = {typename halco::hicann_dls::vx::OmnibusAddress{0x8800'0005ul}};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -74,7 +74,7 @@ TEST(EventRecordingConfig, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_TRUE(data.at(0).get() == 1);
+	ASSERT_TRUE(data.at(0) == 1);
 
 	// Decode back
 	EventRecordingConfig config_copy;

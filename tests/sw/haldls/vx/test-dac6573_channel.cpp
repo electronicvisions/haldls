@@ -5,7 +5,7 @@
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "haldls/vx/i2c.h"
 
-#include "fisch/vx/i2c.h"
+#include "fisch/vx/word_access/type/i2c.h"
 #include "halco/hicann-dls/vx/i2c.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -53,8 +53,10 @@ TEST(DAC6573ChannelConfig, EncodeDecode)
 	std::array<I2CDAC6573RwRegisterOnBoard, DAC6573ChannelConfig::config_size_in_words>
 	    ref_addresses = {I2CDAC6573RwRegisterOnBoard(
 	        coord.toDAC6573ChannelOnDAC6573(), coord.toDAC6573OnBoard())};
-	std::array<fisch::vx::I2CDAC6573RwRegister, DAC6573ChannelConfig::config_size_in_words>
-	    ref_data = {fisch::vx::I2CDAC6573RwRegister(fisch::vx::I2CDAC6573RwRegister::Value(987))};
+	std::array<
+	    fisch::vx::word_access_type::I2CDAC6573RwRegister,
+	    DAC6573ChannelConfig::config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::I2CDAC6573RwRegister(987)};
 
 	{ // test write_addresses
 		std::vector<I2CDAC6573RwRegisterOnBoard> write_addresses;
@@ -65,10 +67,11 @@ TEST(DAC6573ChannelConfig, EncodeDecode)
 	}
 
 	{ // test data encoding
-		std::vector<fisch::vx::I2CDAC6573RwRegister> data;
+		std::vector<fisch::vx::word_access_type::I2CDAC6573RwRegister> data;
 		visit_preorder(
 		    config, coord,
-		    stadls::EncodeVisitor<std::vector<fisch::vx::I2CDAC6573RwRegister>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::I2CDAC6573RwRegister>>{
+		        data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 	}
 
@@ -77,8 +80,8 @@ TEST(DAC6573ChannelConfig, EncodeDecode)
 		visit_preorder(
 		    config_decoded, coord,
 		    stadls::DecodeVisitor<std::array<
-		        fisch::vx::I2CDAC6573RwRegister, DAC6573ChannelConfig::config_size_in_words>>{
-		        ref_data});
+		        fisch::vx::word_access_type::I2CDAC6573RwRegister,
+		        DAC6573ChannelConfig::config_size_in_words>>{ref_data});
 		EXPECT_EQ(config, config_decoded);
 	}
 }

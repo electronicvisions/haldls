@@ -74,10 +74,10 @@ public:
 	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
 	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Omnibus, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Omnibus, read_config_size_in_words> const& data)
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 protected:
 	friend class cereal::access;
@@ -93,7 +93,7 @@ namespace haldls::vx::detail {
 
 template <>
 struct BackendContainerTrait<v2::CADCSampleQuad>
-    : public BackendContainerBase<v2::CADCSampleQuad, fisch::vx::Omnibus>
+    : public BackendContainerBase<v2::CADCSampleQuad, fisch::vx::word_access_type::Omnibus>
 {};
 
 } // namespace haldls::vx::detail

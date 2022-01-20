@@ -1,7 +1,7 @@
 #include "haldls/vx/madc.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -172,26 +172,30 @@ std::array<WordT, MADCControl::write_config_size_in_words> MADCControl::encode()
 	bitfield.u.m.start_recording = m_start_recording;
 	bitfield.u.m.wake_up = m_wake_up;
 
-	return {WordT(typename WordT::Value(bitfield.u.raw))};
+	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, MADCControl::write_config_size_in_words>
-    MADCControl::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, MADCControl::write_config_size_in_words>
+    MADCControl::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, MADCControl::write_config_size_in_words>
-MADCControl::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, MADCControl::write_config_size_in_words>
+    MADCControl::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void MADCControl::decode(
     std::array<WordT, MADCControl::read_config_size_in_words> const& /* data */)
 {}
 
-template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, MADCControl::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        MADCControl::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, MADCControl::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<fisch::vx::word_access_type::Omnibus, MADCControl::read_config_size_in_words> const&
+        data);
 
 std::ostream& operator<<(std::ostream& os, MADCControl const& config)
 {
@@ -782,22 +786,23 @@ std::array<WordT, MADCConfig::config_size_in_words> MADCConfig::encode() const
 	std::array<WordT, MADCConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::OmnibusChipOverJTAG, MADCConfig::config_size_in_words>
-MADCConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, MADCConfig::config_size_in_words>
+    MADCConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, MADCConfig::config_size_in_words>
-MADCConfig::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, MADCConfig::config_size_in_words>
+    MADCConfig::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void MADCConfig::decode(std::array<WordT, MADCConfig::config_size_in_words> const& data)
 {
 	std::array<uint32_t, MADCConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	MADCConfigBitfield bitfield(raw_data);
 
 	m_active_mux_initially_selected_input =
@@ -847,11 +852,13 @@ void MADCConfig::decode(std::array<WordT, MADCConfig::config_size_in_words> cons
 	    bitfield.u.m.connect_iconv_synapse_x;
 }
 
-template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, MADCConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        MADCConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, MADCConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<fisch::vx::word_access_type::Omnibus, MADCConfig::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, MADCConfig const& config)
 {

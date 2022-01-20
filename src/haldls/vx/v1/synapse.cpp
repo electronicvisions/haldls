@@ -1,7 +1,7 @@
 #include "haldls/vx/v1/synapse.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
@@ -128,14 +128,15 @@ std::array<WordT, SynapseWeightQuad::config_size_in_words> SynapseWeightQuad::en
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SynapseWeightQuad::config_size_in_words>
-SynapseWeightQuad::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseWeightQuad::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, SynapseWeightQuad::config_size_in_words>
+    SynapseWeightQuad::encode() const;
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, SynapseWeightQuad::config_size_in_words>
     SynapseWeightQuad::encode() const;
 
 template <typename WordT>
@@ -144,8 +145,7 @@ void SynapseWeightQuad::decode(
 {
 	using namespace halco::hicann_dls::vx::v1;
 	std::array<uint32_t, config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 
 	SynapseWeightQuadBitfield bitfield(raw_data);
 
@@ -156,10 +156,12 @@ void SynapseWeightQuad::decode(
 }
 
 template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
-    std::array<fisch::vx::Omnibus, SynapseWeightQuad::config_size_in_words> const& data);
-template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseWeightQuad::config_size_in_words> const&
+    std::array<fisch::vx::word_access_type::Omnibus, SynapseWeightQuad::config_size_in_words> const&
         data);
+template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        SynapseWeightQuad::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, SynapseWeightQuad const& config)
 {
@@ -273,14 +275,15 @@ std::array<WordT, SynapseLabelQuad::config_size_in_words> SynapseLabelQuad::enco
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SynapseLabelQuad::config_size_in_words>
-SynapseLabelQuad::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseLabelQuad::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, SynapseLabelQuad::config_size_in_words>
+    SynapseLabelQuad::encode() const;
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, SynapseLabelQuad::config_size_in_words>
     SynapseLabelQuad::encode() const;
 
 template <typename WordT>
@@ -288,8 +291,7 @@ void SynapseLabelQuad::decode(std::array<WordT, SynapseLabelQuad::config_size_in
 {
 	using namespace halco::hicann_dls::vx::v1;
 	std::array<uint32_t, config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 
 	SynapseLabelQuadBitfield bitfield(raw_data);
 
@@ -300,9 +302,12 @@ void SynapseLabelQuad::decode(std::array<WordT, SynapseLabelQuad::config_size_in
 }
 
 template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
-    std::array<fisch::vx::Omnibus, SynapseLabelQuad::config_size_in_words> const& data);
+    std::array<fisch::vx::word_access_type::Omnibus, SynapseLabelQuad::config_size_in_words> const&
+        data);
 template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseLabelQuad::config_size_in_words> const& data);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        SynapseLabelQuad::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, SynapseLabelQuad const& config)
 {
@@ -451,16 +456,17 @@ SynapseCorrelationCalibQuad::encode() const
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::Omnibus, SynapseCorrelationCalibQuad::config_size_in_words>
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::Omnibus, SynapseCorrelationCalibQuad::config_size_in_words>
     SynapseCorrelationCalibQuad::encode() const;
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseCorrelationCalibQuad::config_size_in_words>
-    SynapseCorrelationCalibQuad::encode() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    SynapseCorrelationCalibQuad::config_size_in_words>
+SynapseCorrelationCalibQuad::encode() const;
 
 template <typename WordT>
 void SynapseCorrelationCalibQuad::decode(
@@ -468,8 +474,7 @@ void SynapseCorrelationCalibQuad::decode(
 {
 	using namespace halco::hicann_dls::vx::v1;
 	std::array<uint32_t, config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 
 	SynapseCorrelationCalibQuadBitfield bitfield(raw_data);
 
@@ -487,10 +492,12 @@ void SynapseCorrelationCalibQuad::decode(
 }
 
 template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
-    std::array<fisch::vx::Omnibus, SynapseCorrelationCalibQuad::config_size_in_words> const& data);
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        SynapseCorrelationCalibQuad::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
     std::array<
-        fisch::vx::OmnibusChipOverJTAG,
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
         SynapseCorrelationCalibQuad::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibQuad const& config)
@@ -662,14 +669,15 @@ std::array<WordT, SynapseQuad::config_size_in_words> SynapseQuad::encode() const
 	std::array<WordT, config_size_in_words> data;
 	std::transform(
 	    bitfield.u.raw.begin(), bitfield.u.raw.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, SynapseQuad::config_size_in_words>
-SynapseQuad::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseQuad::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, SynapseQuad::config_size_in_words>
+    SynapseQuad::encode() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, SynapseQuad::config_size_in_words>
     SynapseQuad::encode() const;
 
 template <typename WordT>
@@ -677,8 +685,7 @@ void SynapseQuad::decode(std::array<WordT, SynapseQuad::config_size_in_words> co
 {
 	using namespace halco::hicann_dls::vx::v1;
 	std::array<uint32_t, config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 
 	SynapseQuadBitfield bitfield(raw_data);
 
@@ -699,9 +706,11 @@ void SynapseQuad::decode(std::array<WordT, SynapseQuad::config_size_in_words> co
 }
 
 template SYMBOL_VISIBLE void SynapseQuad::decode(
-    std::array<fisch::vx::Omnibus, SynapseQuad::config_size_in_words> const& data);
-template SYMBOL_VISIBLE void SynapseQuad::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, SynapseQuad::config_size_in_words> const& data);
+    std::array<fisch::vx::word_access_type::Omnibus, SynapseQuad::config_size_in_words> const&
+        data);
+template SYMBOL_VISIBLE void SynapseQuad::decode(std::array<
+                                                 fisch::vx::word_access_type::OmnibusChipOverJTAG,
+                                                 SynapseQuad::config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, SynapseQuad const& config)
 {
@@ -1047,25 +1056,24 @@ std::array<WordT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelation
 #undef CORRELATION_ENCODE
 
 	return {
-	    WordT(typename WordT::Value(bitfield.u.raw[0])),
-	    WordT(typename WordT::Value(bitfield.u.raw[1])),
-	    WordT(typename WordT::Value(bitfield.u.raw[2])),
-	    WordT(typename WordT::Value(bitfield.u.raw[3]))};
+	    WordT(bitfield.u.raw[0]), WordT(bitfield.u.raw[1]), WordT(bitfield.u.raw[2]),
+	    WordT(bitfield.u.raw[3])};
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words>
-ColumnCorrelationQuad::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCorrelationQuad::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, ColumnCorrelationQuad::config_size_in_words>
     ColumnCorrelationQuad::encode() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    ColumnCorrelationQuad::config_size_in_words>
+ColumnCorrelationQuad::encode() const;
 
 template <typename WordT>
 void ColumnCorrelationQuad::decode(
     std::array<WordT, ColumnCorrelationQuad::config_size_in_words> const& data)
 {
 	using namespace halco::hicann_dls::vx::v1;
-	ColumnCorrelationQuadBitfield bitfield(
-	    {data[0].get(), data[1].get(), data[2].get(), data[3].get()});
+	ColumnCorrelationQuadBitfield bitfield({data[0], data[1], data[2], data[3]});
 
 #define CORRELATION_DECODE(index)                                                                  \
 	{                                                                                              \
@@ -1089,10 +1097,13 @@ void ColumnCorrelationQuad::decode(
 }
 
 template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
-    std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words> const& data);
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        ColumnCorrelationQuad::config_size_in_words> const& data);
 template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCorrelationQuad::config_size_in_words> const&
-        data);
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        ColumnCorrelationQuad::config_size_in_words> const& data);
 
 template <class Archive>
 void ColumnCorrelationQuad::serialize(Archive& ar, std::uint32_t const)
@@ -1309,15 +1320,14 @@ std::array<WordT, ColumnCurrentQuad::config_size_in_words> ColumnCurrentQuad::en
 	CURRENT_ENCODE(3);
 #undef CURRENT_ENCODE
 
-	return {
-	    WordT(typename WordT::Value(bitfield.u.raw[0])),
-	    WordT(typename WordT::Value(bitfield.u.raw[1]))};
+	return {WordT(bitfield.u.raw[0]), WordT(bitfield.u.raw[1])};
 }
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, ColumnCurrentQuad::config_size_in_words>
-ColumnCurrentQuad::encode() const;
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCurrentQuad::config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, ColumnCurrentQuad::config_size_in_words>
+    ColumnCurrentQuad::encode() const;
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, ColumnCurrentQuad::config_size_in_words>
     ColumnCurrentQuad::encode() const;
 
 template <typename WordT>
@@ -1325,7 +1335,7 @@ void ColumnCurrentQuad::decode(
     std::array<WordT, ColumnCurrentQuad::config_size_in_words> const& data)
 {
 	using namespace halco::hicann_dls::vx::v1;
-	ColumnCurrentQuadBitfield bitfield({data[0].get(), data[1].get()});
+	ColumnCurrentQuadBitfield bitfield({data[0], data[1]});
 
 #define CURRENT_DECODE(index)                                                                      \
 	{                                                                                              \
@@ -1347,10 +1357,12 @@ void ColumnCurrentQuad::decode(
 }
 
 template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
-    std::array<fisch::vx::Omnibus, ColumnCurrentQuad::config_size_in_words> const& data);
-template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
-    std::array<fisch::vx::OmnibusChipOverJTAG, ColumnCurrentQuad::config_size_in_words> const&
+    std::array<fisch::vx::word_access_type::Omnibus, ColumnCurrentQuad::config_size_in_words> const&
         data);
+template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        ColumnCurrentQuad::config_size_in_words> const& data);
 
 template <class Archive>
 void ColumnCurrentQuad::serialize(Archive& ar, std::uint32_t const)
@@ -1409,23 +1421,29 @@ std::array<WordT, CorrelationReset::write_config_size_in_words> CorrelationReset
 	return {WordT()};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, CorrelationReset::write_config_size_in_words>
-    CorrelationReset::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    CorrelationReset::write_config_size_in_words>
+CorrelationReset::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, CorrelationReset::write_config_size_in_words>
-CorrelationReset::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, CorrelationReset::write_config_size_in_words>
+    CorrelationReset::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void CorrelationReset::decode(std::array<WordT, CorrelationReset::read_config_size_in_words> const&)
 {}
 
-template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, CorrelationReset::read_config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+CorrelationReset::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        CorrelationReset::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, CorrelationReset::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        CorrelationReset::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, CorrelationReset const&)
 {

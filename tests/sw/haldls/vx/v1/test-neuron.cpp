@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/v1/omnibus.h"
 #include "halco/hicann-dls/vx/v1/quad.h"
 #include "halco/hicann-dls/vx/v1/synapse.h"
@@ -17,7 +17,7 @@ using namespace halco::hicann_dls::vx::v1;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(NeuronConfig, General)
 {
@@ -190,10 +190,10 @@ TEST(NeuronConfig, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_TRUE(data[1].get() & 0b10000);            // en_readout_amp
-	ASSERT_TRUE(data[5].get() & 0b0000001);          // connect_somata
-	ASSERT_FALSE(data[4].get() & 0b100000);          // en_synin_exc
-	ASSERT_EQ(data[1].get() & 0b1100000, 0b1100000); // readout_select
+	ASSERT_TRUE(data[1] & 0b10000);            // en_readout_amp
+	ASSERT_TRUE(data[5] & 0b0000001);          // connect_somata
+	ASSERT_FALSE(data[4] & 0b100000);          // en_synin_exc
+	ASSERT_EQ(data[1] & 0b1100000, 0b1100000); // readout_select
 
 	// Decode back
 	NeuronConfig config_copy;
@@ -251,7 +251,7 @@ TEST(NeuronResetQuad, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_EQ(data[0].get(), 0x0);
+	ASSERT_EQ(data[0], 0x0);
 }
 
 TEST(NeuronResetQuad, CerealizeCoverage)
@@ -380,11 +380,11 @@ TEST(NeuronBackendConfig, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_TRUE(data[3].get() & 0b1000);               // connect_fire_to_right
-	ASSERT_TRUE(data[3].get() & 0b10000);              // en_spike_out
-	ASSERT_EQ((data[0].get() & 0b00111111), 0b111110); // address_out 6 MSBs
-	ASSERT_EQ((data[1].get() & 0b00110000), 0b00);     // address_out 2 LSBs
-	ASSERT_TRUE(data[2].get() & 0b1000000);            // en_adapt_pulse
+	ASSERT_TRUE(data[3] & 0b1000);               // connect_fire_to_right
+	ASSERT_TRUE(data[3] & 0b10000);              // en_spike_out
+	ASSERT_EQ((data[0] & 0b00111111), 0b111110); // address_out 6 MSBs
+	ASSERT_EQ((data[1] & 0b00110000), 0b00);     // address_out 2 LSBs
+	ASSERT_TRUE(data[2] & 0b1000000);            // en_adapt_pulse
 
 	// Decode back
 	NeuronBackendConfig config_copy;

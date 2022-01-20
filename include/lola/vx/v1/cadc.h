@@ -83,12 +83,12 @@ namespace haldls::vx::detail {
 
 template <>
 struct BackendContainerTrait<lola::vx::v1::CADCSampleRow>
-    : public BackendContainerBase<lola::vx::v1::CADCSampleRow, fisch::vx::Omnibus>
+    : public BackendContainerBase<lola::vx::v1::CADCSampleRow, fisch::vx::word_access_type::Omnibus>
 {};
 
 template <>
 struct BackendContainerTrait<lola::vx::v1::CADCSamples>
-    : public BackendContainerBase<lola::vx::v1::CADCSamples, fisch::vx::Omnibus>
+    : public BackendContainerBase<lola::vx::v1::CADCSamples, fisch::vx::word_access_type::Omnibus>
 {};
 
 template <>

@@ -507,24 +507,24 @@ template <typename Coordinates>
 struct BackendContainerTrait<CapMemBlockConfig<Coordinates>>
     : public BackendContainerBase<
           CapMemBlockConfig<Coordinates>,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <typename Coordinates>
 struct BackendContainerTrait<CapMemBlock<Coordinates>>
     : public BackendContainerBase<
           CapMemBlock<Coordinates>,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <typename Coordinates>
 struct BackendContainerTrait<CapMemCell<Coordinates>>
     : public BackendContainerBase<
           CapMemCell<Coordinates>,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <typename Coordinates>
@@ -564,20 +564,23 @@ struct VisitPreorderImpl<CapMemBlock<Coordinates>>
 	    halco::hicann_dls::vx::OmnibusAddress, CapMemCell<Coordinates>::config_size_in_words>      \
 	CapMemCell<Coordinates>::addresses<halco::hicann_dls::vx::OmnibusAddress>(                     \
 	    coordinate_type const& cell);                                                              \
-	extern template SYMBOL_VISIBLE                                                                 \
-	    std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCell<Coordinates>::config_size_in_words>  \
-	    CapMemCell<Coordinates>::encode<fisch::vx::OmnibusChipOverJTAG>() const;                   \
-	extern template SYMBOL_VISIBLE                                                                 \
-	    std::array<fisch::vx::Omnibus, CapMemCell<Coordinates>::config_size_in_words>              \
-	    CapMemCell<Coordinates>::encode<fisch::vx::Omnibus>() const;                               \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,                                          \
+	    CapMemCell<Coordinates>::config_size_in_words>                                             \
+	CapMemCell<Coordinates>::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;     \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    fisch::vx::word_access_type::Omnibus, CapMemCell<Coordinates>::config_size_in_words>       \
+	CapMemCell<Coordinates>::encode<fisch::vx::word_access_type::Omnibus>() const;                 \
 	extern template SYMBOL_VISIBLE void                                                            \
-	CapMemCell<Coordinates>::decode<fisch::vx::OmnibusChipOverJTAG>(                               \
+	CapMemCell<Coordinates>::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(             \
 	    std::array<                                                                                \
-	        fisch::vx::OmnibusChipOverJTAG, CapMemCell<Coordinates>::config_size_in_words> const&  \
-	        data);                                                                                 \
-	extern template SYMBOL_VISIBLE void CapMemCell<Coordinates>::decode<fisch::vx::Omnibus>(       \
-	    std::array<fisch::vx::Omnibus, CapMemCell<Coordinates>::config_size_in_words> const&       \
-	        data);                                                                                 \
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG,                                      \
+	        CapMemCell<Coordinates>::config_size_in_words> const& data);                           \
+	extern template SYMBOL_VISIBLE void                                                            \
+	CapMemCell<Coordinates>::decode<fisch::vx::word_access_type::Omnibus>(                         \
+	    std::array<                                                                                \
+	        fisch::vx::word_access_type::Omnibus,                                                  \
+	        CapMemCell<Coordinates>::config_size_in_words> const& data);                           \
                                                                                                    \
 	extern template SYMBOL_VISIBLE std::array<                                                     \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \
@@ -594,19 +597,21 @@ struct VisitPreorderImpl<CapMemBlock<Coordinates>>
 	    CapMemBlockConfig<Coordinates>::config_size_in_words>                                      \
 	CapMemBlockConfig<Coordinates>::addresses(coordinate_type const& coord);                       \
 	extern template SYMBOL_VISIBLE std::array<                                                     \
-	    fisch::vx::OmnibusChipOverJTAG, CapMemBlockConfig<Coordinates>::config_size_in_words>      \
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,                                          \
+	    CapMemBlockConfig<Coordinates>::config_size_in_words>                                      \
 	CapMemBlockConfig<Coordinates>::encode() const;                                                \
-	extern template SYMBOL_VISIBLE                                                                 \
-	    std::array<fisch::vx::Omnibus, CapMemBlockConfig<Coordinates>::config_size_in_words>       \
-	    CapMemBlockConfig<Coordinates>::encode() const;                                            \
+	extern template SYMBOL_VISIBLE std::array<                                                     \
+	    fisch::vx::word_access_type::Omnibus,                                                      \
+	    CapMemBlockConfig<Coordinates>::config_size_in_words>                                      \
+	CapMemBlockConfig<Coordinates>::encode() const;                                                \
 	extern template SYMBOL_VISIBLE void CapMemBlockConfig<Coordinates>::decode(                    \
 	    std::array<                                                                                \
-	        fisch::vx::OmnibusChipOverJTAG,                                                        \
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG,                                      \
 	        CapMemBlockConfig<Coordinates>::config_size_in_words> const& data);                    \
 	extern template SYMBOL_VISIBLE void CapMemBlockConfig<Coordinates>::decode(                    \
 	    std::array<                                                                                \
-	        fisch::vx::Omnibus, CapMemBlockConfig<Coordinates>::config_size_in_words> const&       \
-	        data);
+	        fisch::vx::word_access_type::Omnibus,                                                  \
+	        CapMemBlockConfig<Coordinates>::config_size_in_words> const& data);
 
 } // namespace vx
 } // namespace haldls

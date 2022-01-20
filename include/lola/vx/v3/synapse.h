@@ -360,8 +360,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::SynapseWeightRow>
     : public BackendContainerBase<
           lola::vx::v3::SynapseWeightRow,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -407,8 +407,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::SynapseLabelRow>
     : public BackendContainerBase<
           lola::vx::v3::SynapseLabelRow,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -454,8 +454,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::SynapseCorrelationCalibRow>
     : public BackendContainerBase<
           lola::vx::v3::SynapseCorrelationCalibRow,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -503,8 +503,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::SynapseRow>
     : public BackendContainerBase<
           lola::vx::v3::SynapseRow,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -556,8 +556,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::SynapseWeightMatrix>
     : public BackendContainerBase<
           lola::vx::v3::SynapseWeightMatrix,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -603,8 +603,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::SynapseLabelMatrix>
     : public BackendContainerBase<
           lola::vx::v3::SynapseLabelMatrix,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -650,8 +650,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::SynapseCorrelationCalibMatrix>
     : public BackendContainerBase<
           lola::vx::v3::SynapseCorrelationCalibMatrix,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -700,8 +700,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::SynapseMatrix>
     : public BackendContainerBase<
           lola::vx::v3::SynapseMatrix,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>
@@ -751,8 +751,8 @@ template <>
 struct BackendContainerTrait<lola::vx::v3::CorrelationResetRow>
     : public BackendContainerBase<
           lola::vx::v3::CorrelationResetRow,
-          fisch::vx::Omnibus,
-          fisch::vx::OmnibusChipOverJTAG>
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
 {};
 
 template <>

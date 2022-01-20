@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "fisch/vx/barrier.h"
+#include "fisch/vx/word_access/type/barrier.h"
 #include "halco/hicann-dls/vx/barrier.h"
 #include "haldls/cerealization.tcc"
 
@@ -38,11 +38,11 @@ void Barrier::set_enable_systime(bool const value)
 	m_enable_systime = value;
 }
 
-fisch::vx::Barrier Barrier::encode() const
+fisch::vx::word_access_type::Barrier Barrier::encode() const
 {
-	return fisch::vx::Barrier(fisch::vx::Barrier::Value(
+	return fisch::vx::word_access_type::Barrier(
 	    static_cast<uintmax_t>(m_enable_omnibus) | (static_cast<uintmax_t>(m_enable_jtag) << 1) |
-	    (static_cast<uintmax_t>(m_enable_systime) << 2)));
+	    (static_cast<uintmax_t>(m_enable_systime) << 2));
 }
 
 std::ostream& operator<<(std::ostream& os, Barrier const& config)

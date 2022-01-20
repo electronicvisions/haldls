@@ -5,7 +5,7 @@
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "haldls/vx/i2c.h"
 
-#include "fisch/vx/i2c.h"
+#include "fisch/vx/word_access/type/i2c.h"
 #include "halco/hicann-dls/vx/i2c.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -53,8 +53,9 @@ TEST(AD5252ChannelConfig, EncodeDecode)
 	std::array<I2CAD5252RwRegisterOnBoard, AD5252ChannelConfig::config_size_in_words>
 	    ref_addresses = {
 	        I2CAD5252RwRegisterOnBoard(I2CAD5252RwRegisterOnAD5252Channel::rdac_volatile, coord)};
-	std::array<fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfig::config_size_in_words> ref_data =
-	    {fisch::vx::I2CAD5252RwRegister(fisch::vx::I2CAD5252RwRegister::Value(0x70))};
+	std::array<
+	    fisch::vx::word_access_type::I2CAD5252RwRegister, AD5252ChannelConfig::config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::I2CAD5252RwRegister(0x70)};
 
 	{ // test write_addresses
 		std::vector<I2CAD5252RwRegisterOnBoard> write_addresses;
@@ -65,10 +66,11 @@ TEST(AD5252ChannelConfig, EncodeDecode)
 	}
 
 	{ // test data encoding
-		std::vector<fisch::vx::I2CAD5252RwRegister> data;
+		std::vector<fisch::vx::word_access_type::I2CAD5252RwRegister> data;
 		visit_preorder(
 		    config, coord.toAD5252ChannelConfigOnBoard(),
-		    stadls::EncodeVisitor<std::vector<fisch::vx::I2CAD5252RwRegister>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::I2CAD5252RwRegister>>{
+		        data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 	}
 
@@ -77,8 +79,8 @@ TEST(AD5252ChannelConfig, EncodeDecode)
 		visit_preorder(
 		    config_decoded, coord.toAD5252ChannelConfigOnBoard(),
 		    stadls::DecodeVisitor<std::array<
-		        fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfig::config_size_in_words>>{
-		        ref_data});
+		        fisch::vx::word_access_type::I2CAD5252RwRegister,
+		        AD5252ChannelConfig::config_size_in_words>>{ref_data});
 		EXPECT_EQ(config, config_decoded);
 	}
 }
@@ -142,8 +144,10 @@ TEST(AD5252ChannelConfigPersistent, EncodeDecode)
 	std::array<I2CAD5252RwRegisterOnBoard, AD5252ChannelConfigPersistent::config_size_in_words>
 	    ref_addresses = {I2CAD5252RwRegisterOnBoard(
 	        I2CAD5252RwRegisterOnAD5252Channel::eemem_persistent, coord)};
-	std::array<fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfigPersistent::config_size_in_words>
-	    ref_data = {fisch::vx::I2CAD5252RwRegister(fisch::vx::I2CAD5252RwRegister::Value(0x70))};
+	std::array<
+	    fisch::vx::word_access_type::I2CAD5252RwRegister,
+	    AD5252ChannelConfigPersistent::config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::I2CAD5252RwRegister(0x70)};
 
 	{ // test write_addresses
 		std::vector<I2CAD5252RwRegisterOnBoard> write_addresses;
@@ -154,10 +158,11 @@ TEST(AD5252ChannelConfigPersistent, EncodeDecode)
 	}
 
 	{ // test data encoding
-		std::vector<fisch::vx::I2CAD5252RwRegister> data;
+		std::vector<fisch::vx::word_access_type::I2CAD5252RwRegister> data;
 		visit_preorder(
 		    config, coord.toAD5252ChannelConfigPersistentOnBoard(),
-		    stadls::EncodeVisitor<std::vector<fisch::vx::I2CAD5252RwRegister>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::I2CAD5252RwRegister>>{
+		        data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 	}
 
@@ -166,7 +171,7 @@ TEST(AD5252ChannelConfigPersistent, EncodeDecode)
 		visit_preorder(
 		    config_decoded, coord.toAD5252ChannelConfigPersistentOnBoard(),
 		    stadls::DecodeVisitor<std::array<
-		        fisch::vx::I2CAD5252RwRegister,
+		        fisch::vx::word_access_type::I2CAD5252RwRegister,
 		        AD5252ChannelConfigPersistent::config_size_in_words>>{ref_data});
 		EXPECT_EQ(config, config_decoded);
 	}

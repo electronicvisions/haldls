@@ -50,10 +50,10 @@ public:
 	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::ResetChipOnDLS, read_config_size_in_words>
 	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::ResetChip, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::ResetChip, read_config_size_in_words> const& data)
+	std::array<fisch::vx::word_access_type::ResetChip, write_config_size_in_words> encode() const
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::ResetChip, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -69,7 +69,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<ResetChip>
-    : public BackendContainerBase<ResetChip, fisch::vx::ResetChip>
+    : public BackendContainerBase<ResetChip, fisch::vx::word_access_type::ResetChip>
 {};
 
 } // namespace detail

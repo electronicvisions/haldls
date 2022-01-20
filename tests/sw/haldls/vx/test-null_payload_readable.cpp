@@ -3,7 +3,7 @@
 
 #include "haldls/vx/null_payload_readable.h"
 
-#include "fisch/vx/null_payload_readable.h"
+#include "fisch/vx/word_access/type/null_payload_readable.h"
 #include "halco/hicann-dls/vx/fpga.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/common.h"
@@ -13,7 +13,7 @@ using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 
 typedef std::vector<NullPayloadReadableOnFPGA> addresses_type;
-typedef std::vector<fisch::vx::NullPayloadReadable> words_type;
+typedef std::vector<fisch::vx::word_access_type::NullPayloadReadable> words_type;
 
 TEST(NullPayloadReadable, General)
 {
@@ -35,7 +35,9 @@ TEST(NullPayloadReadable, EncodeDecode)
 	    ref_read_addresses = {NullPayloadReadableOnFPGA()};
 	std::array<NullPayloadReadableOnFPGA, NullPayloadReadable::write_config_size_in_words>
 	    ref_write_addresses = {};
-	std::array<fisch::vx::NullPayloadReadable, NullPayloadReadable::write_config_size_in_words>
+	std::array<
+	    fisch::vx::word_access_type::NullPayloadReadable,
+	    NullPayloadReadable::write_config_size_in_words>
 	    ref_write_data = {};
 
 	{ // write addresses

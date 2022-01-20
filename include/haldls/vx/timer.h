@@ -2,7 +2,7 @@
 #include <array>
 #include <iosfwd>
 
-#include "fisch/vx/timer.h"
+#include "fisch/vx/word_access/type/timer.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/timing.h"
 #include "haldls/cerealization.h"
@@ -55,10 +55,10 @@ public:
 	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::TimerOnDLS, read_config_size_in_words> read_addresses(
 	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::Timer, write_config_size_in_words> encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::Timer, read_config_size_in_words> const& data) SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Timer, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Timer, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -73,7 +73,8 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE(Timer)
 namespace detail {
 
 template <>
-struct BackendContainerTrait<Timer> : public BackendContainerBase<Timer, fisch::vx::Timer>
+struct BackendContainerTrait<Timer>
+    : public BackendContainerBase<Timer, fisch::vx::word_access_type::Timer>
 {};
 
 } // namespace detail

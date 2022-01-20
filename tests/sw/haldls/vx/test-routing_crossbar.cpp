@@ -3,7 +3,7 @@
 
 #include "haldls/vx/routing_crossbar.h"
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "test-helper.h"
@@ -13,7 +13,7 @@ using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(CrossbarOutputConfig, General)
 {
@@ -104,9 +104,11 @@ TEST(CrossbarOutputConfig, EncodeDecode)
 	    CrossbarOutputConfig::config_size_in_words>
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{crossbar_out_mux_base_address}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarOutputConfig::config_size_in_words>
-	    ref_data = {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(
-	        (1ul << 2) | (1ul << (7 + CrossbarL2OutputOnDLS::size))))};
+	std::array<
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+	    CrossbarOutputConfig::config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(
+	        (1ul << 2) | (1ul << (7 + CrossbarL2OutputOnDLS::size)))};
 
 	{ // write addresses
 		addresses_type addresses;
@@ -149,8 +151,10 @@ TEST(CrossbarInputDropCounter, EncodeDecode)
 	    CrossbarInputDropCounter::read_config_size_in_words>
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{
 	        crossbar_input_drop_counter_base_address + coord.toEnum()}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarInputDropCounter::read_config_size_in_words>
-	    ref_data = {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(val))};
+	std::array<
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+	    CrossbarInputDropCounter::read_config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(val)};
 
 	{ // read addresses
 		addresses_type addresses;
@@ -193,8 +197,9 @@ TEST(CrossbarOutputEventCounter, EncodeDecode)
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{
 	        crossbar_output_event_counter_base_address + coord.toEnum()}};
 	std::array<
-	    fisch::vx::OmnibusChipOverJTAG, CrossbarOutputEventCounter::read_config_size_in_words>
-	    ref_data = {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(val))};
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+	    CrossbarOutputEventCounter::read_config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(val)};
 
 	{ // read addresses
 		addresses_type addresses;
@@ -279,9 +284,9 @@ TEST(CrossbarNode, EncodeDecode)
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CrossbarNode::config_size_in_words>
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{
 	        crossbar_node_base_address + coord.toEnum()}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CrossbarNode::config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusChipOverJTAG(
-	        fisch::vx::OmnibusChipOverJTAG::Value(8ul | (9ul << 16) | (1ul << 31)))};
+	std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, CrossbarNode::config_size_in_words>
+	    ref_data = {
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG(8ul | (9ul << 16) | (1ul << 31))};
 
 	{ // write addresses
 		addresses_type addresses;

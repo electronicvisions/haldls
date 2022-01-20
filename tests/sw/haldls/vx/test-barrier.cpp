@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/barrier.h"
+#include "fisch/vx/word_access/type/barrier.h"
 #include "halco/hicann-dls/vx/barrier.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/barrier.h"
@@ -16,5 +16,5 @@ TEST(Barrier, Encode)
 	Barrier config;
 	config.set_enable_omnibus(false);
 
-	EXPECT_EQ(config.encode().get(), 0x6);
+	EXPECT_EQ(config.encode(), 0x6);
 }

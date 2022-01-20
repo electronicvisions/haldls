@@ -1,6 +1,6 @@
 #include "haldls/vx/block.h"
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -67,20 +67,22 @@ PollingOmnibusBlockConfig::addresses(coordinate_type const& /*coord*/)
 	    halco::hicann_dls::vx::OmnibusAddress(executor_omnibus_mask + 8)};
 }
 
-std::array<fisch::vx::Omnibus, PollingOmnibusBlockConfig::config_size_in_words>
+std::array<fisch::vx::word_access_type::Omnibus, PollingOmnibusBlockConfig::config_size_in_words>
 PollingOmnibusBlockConfig::encode() const
 {
-	return {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(m_address)),
-	        fisch::vx::Omnibus(fisch::vx::Omnibus::Value(m_target)),
-	        fisch::vx::Omnibus(fisch::vx::Omnibus::Value(m_mask))};
+	return {
+	    fisch::vx::word_access_type::Omnibus(fisch::vx::word_access_type::Omnibus(m_address)),
+	    fisch::vx::word_access_type::Omnibus(fisch::vx::word_access_type::Omnibus(m_target)),
+	    fisch::vx::word_access_type::Omnibus(fisch::vx::word_access_type::Omnibus(m_mask))};
 }
 
-void PollingOmnibusBlockConfig::decode(
-    std::array<fisch::vx::Omnibus, PollingOmnibusBlockConfig::config_size_in_words> const& data)
+void PollingOmnibusBlockConfig::decode(std::array<
+                                       fisch::vx::word_access_type::Omnibus,
+                                       PollingOmnibusBlockConfig::config_size_in_words> const& data)
 {
-	m_address = Address(data[0].get());
-	m_target = Value(data[1].get());
-	m_mask = Value(data[2].get());
+	m_address = Address(data[0]);
+	m_target = Value(data[1]);
+	m_mask = Value(data[2]);
 }
 
 template <class Archive>
@@ -122,10 +124,9 @@ std::ostream& operator<<(std::ostream& os, PollingOmnibusBlock const& config)
 	return (os << config.encode());
 }
 
-fisch::vx::PollingOmnibusBlock PollingOmnibusBlock::encode() const
+fisch::vx::word_access_type::PollingOmnibusBlock PollingOmnibusBlock::encode() const
 {
-	return fisch::vx::PollingOmnibusBlock(
-	    fisch::vx::PollingOmnibusBlock::Value(m_enable_expects_equality));
+	return fisch::vx::word_access_type::PollingOmnibusBlock(m_enable_expects_equality);
 }
 
 template <class Archive>

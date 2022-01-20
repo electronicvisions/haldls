@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/v1/coordinates.h"
 #include "haldls/vx/common.h"
@@ -16,7 +16,7 @@ using namespace halco::hicann_dls::vx::v1;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(SynapseDriverConfig, General)
 {
@@ -132,10 +132,10 @@ TEST(SynapseDriverConfig, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_EQ(data[1].get() & 0b00001111, 14);       // recovery (bits reversed)
-	ASSERT_TRUE(data[0].get() & 0b0000000100000000); // en_receiver
-	ASSERT_TRUE(data[1].get() & 0b0000000000100000); // en_exc_top
-	ASSERT_TRUE(data[2].get() & 0b0000000000000010); // en_readout
+	ASSERT_EQ(data[1] & 0b00001111, 14);       // recovery (bits reversed)
+	ASSERT_TRUE(data[0] & 0b0000000100000000); // en_receiver
+	ASSERT_TRUE(data[1] & 0b0000000000100000); // en_exc_top
+	ASSERT_TRUE(data[2] & 0b0000000000000010); // en_readout
 
 	// Decode back
 	SynapseDriverConfig config_copy;

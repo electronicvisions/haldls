@@ -3,7 +3,7 @@
 
 #include "haldls/vx/spi.h"
 
-#include "fisch/vx/spi.h"
+#include "fisch/vx/word_access/type/spi.h"
 #include "halco/hicann-dls/vx/spi.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -14,7 +14,7 @@ using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard> addresses_type;
-typedef std::vector<fisch::vx::SPIDACControlRegister> words_type;
+typedef std::vector<fisch::vx::word_access_type::SPIDACControlRegister> words_type;
 
 TEST(DACControl, General)
 {
@@ -55,10 +55,11 @@ TEST(DACControl, EncodeDecode)
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::gain_reference, coord),
 	        typename addresses_type::value_type(
 	            halco::hicann_dls::vx::SPIDACControlRegisterOnDAC::power_down, coord)};
-	std::array<fisch::vx::SPIDACControlRegister, DACControl::write_config_size_in_words> ref_data =
-	    {fisch::vx::SPIDACControlRegister(fisch::vx::SPIDACControlRegister::Value(0b001100)),
-	     fisch::vx::SPIDACControlRegister(
-	         fisch::vx::SPIDACControlRegister::Value(0xff ^ (1u << 2)))};
+	std::array<
+	    fisch::vx::word_access_type::SPIDACControlRegister, DACControl::write_config_size_in_words>
+	    ref_data = {
+	        fisch::vx::word_access_type::SPIDACControlRegister(0b001100),
+	        fisch::vx::word_access_type::SPIDACControlRegister(0xff ^ (1u << 2))};
 
 	{
 		addresses_type write_addresses;

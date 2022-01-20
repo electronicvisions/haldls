@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/readout.h"
@@ -12,7 +12,7 @@ using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(ReadoutSourceSelection, General)
 {
@@ -150,8 +150,8 @@ TEST(ReadoutSourceSelection, EncodeDecode)
 	// Encode default
 	words_type default_data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{default_data});
-	EXPECT_EQ(default_data[0].get(), 0x0);
-	EXPECT_EQ(default_data[1].get(), 0x0);
+	EXPECT_EQ(default_data[0], 0x0);
+	EXPECT_EQ(default_data[1], 0x0);
 
 	// Encode some connections
 	auto buffer_0 = config.get_buffer(SourceMultiplexerOnReadoutSourceSelection(0));
@@ -178,8 +178,8 @@ TEST(ReadoutSourceSelection, EncodeDecode)
 
 	words_type data;
 	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
-	EXPECT_EQ(data[0].get(), 0x228);
-	EXPECT_EQ(data[1].get(), 0x2005);
+	EXPECT_EQ(data[0], 0x228);
+	EXPECT_EQ(data[1], 0x2005);
 
 	// Decode
 	ReadoutSourceSelection decoded;

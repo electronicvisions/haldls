@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
@@ -10,13 +10,13 @@
 #include "haldls/vx/omnibus_constants.h"
 #include "test-helper.h"
 
-using namespace fisch::vx;
+using namespace fisch::vx::word_access_type;
 using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
 
 typedef std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> addresses_type;
-typedef std::vector<fisch::vx::OmnibusChipOverJTAG> words_type;
+typedef std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> words_type;
 
 TEST(CommonNeuronBackendConfig, General)
 {
@@ -118,24 +118,18 @@ TEST(CommonNeuronBackendConfig, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, backend_coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_FALSE(data[0].get() & 0b1);                                 // en_event_regs
-	ASSERT_TRUE(data[0].get() & 0b10);                                 // force_reset
-	ASSERT_TRUE(data[0].get() & 0b100);                                // en_clocks
-	ASSERT_TRUE((data[0].get() & 0b1111'0000) == (3 << 4));            // clock_scale_slow
-	ASSERT_TRUE((data[0].get() & 0b1111'0000'0000) == (7 << 8));       // clock_scale_fast
-	ASSERT_TRUE((data[0].get() & 0b1111'0000'0000'0000) == (13 << 12)); // sample_pos_edge
-	ASSERT_TRUE(
-	    (data[0].get() & 0b1111'0000'0000'0000'0000) == (4 << 16)); // clock_scale_adapt_pulse
-	ASSERT_TRUE(
-	    (data[0].get() & 0b1111'0000'0000'0000'0000'0000) == (8 << 20)); // clock_scale_post_pulse
-	ASSERT_TRUE(
-	    (data[1].get() & 0xFF) == (unsigned int)(186 << 0));          // wait_global_post_pulse
-	ASSERT_TRUE(
-	    (data[1].get() & 0xFF00) == (unsigned int)(220 << 8));        // wait_spike_counter_reset
-	ASSERT_TRUE(
-	    (data[1].get() & 0xFF0000) == (unsigned int)(13 << 16));      // wait_spike_counter_read
-	ASSERT_TRUE(
-	    (data[1].get() & 0xFF000000) == (unsigned int)(237 << 24));   // wait_fire_neuron
+	ASSERT_FALSE(data[0] & 0b1);                                      // en_event_regs
+	ASSERT_TRUE(data[0] & 0b10);                                      // force_reset
+	ASSERT_TRUE(data[0] & 0b100);                                     // en_clocks
+	ASSERT_TRUE((data[0] & 0b1111'0000) == (3 << 4));                 // clock_scale_slow
+	ASSERT_TRUE((data[0] & 0b1111'0000'0000) == (7 << 8));            // clock_scale_fast
+	ASSERT_TRUE((data[0] & 0b1111'0000'0000'0000) == (13 << 12));     // sample_pos_edge
+	ASSERT_TRUE((data[0] & 0b1111'0000'0000'0000'0000) == (4 << 16)); // clock_scale_adapt_pulse
+	ASSERT_TRUE((data[0] & 0b1111'0000'0000'0000'0000'0000) == (8 << 20)); // clock_scale_post_pulse
+	ASSERT_TRUE((data[1] & 0xFF) == (unsigned int) (186 << 0));            // wait_global_post_pulse
+	ASSERT_TRUE((data[1] & 0xFF00) == (unsigned int) (220 << 8));      // wait_spike_counter_reset
+	ASSERT_TRUE((data[1] & 0xFF0000) == (unsigned int) (13 << 16));    // wait_spike_counter_read
+	ASSERT_TRUE((data[1] & 0xFF000000) == (unsigned int) (237 << 24)); // wait_fire_neuron
 
 	// Decode back
 	CommonNeuronBackendConfig config_copy;
@@ -202,7 +196,7 @@ TEST(NeuronReset, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_EQ(data[0].get(), 0x0);
+	ASSERT_EQ(data[0], 0x0);
 }
 
 TEST(NeuronReset, CerealizeCoverage)
@@ -250,7 +244,7 @@ TEST(BlockPostPulse, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_EQ(data[0].get(), 0x0);
+	ASSERT_EQ(data[0], 0x0);
 }
 
 TEST(BlockPostPulse, CerealizeCoverage)
@@ -305,8 +299,7 @@ TEST(SpikeCounterRead, EncodeDecode)
 	}
 
 	// Decode
-	words_type data = {
-	    fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x164))};
+	words_type data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(0x164)};
 	SpikeCounterRead config_copy;
 	ASSERT_NE(config, config_copy);
 	visit_preorder(config_copy, neuron_coord, stadls::DecodeVisitor<words_type>{std::move(data)});
@@ -361,7 +354,7 @@ TEST(SpikeCounterReset, EncodeDecode)
 	// Encode
 	words_type data;
 	visit_preorder(config, neuron_coord, stadls::EncodeVisitor<words_type>{data});
-	ASSERT_EQ(data[0].get(), 0x0);
+	ASSERT_EQ(data[0], 0x0);
 }
 
 TEST(SpikeCounterReset, CerealizeCoverage)
@@ -431,8 +424,7 @@ TEST(NeuronSRAMTimingConfig, EncodeDecode)
 	    ref_addresses = {OmnibusChipOverJTAGAddress{neuron_ne_sram_timing_base_address},
 	                     OmnibusChipOverJTAGAddress{neuron_ne_sram_timing_base_address + 1}};
 	std::array<OmnibusChipOverJTAG, NeuronSRAMTimingConfig::config_size_in_words> ref_data = {
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{100}),
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{5 | 7 << 4})};
+	    OmnibusChipOverJTAG(100), OmnibusChipOverJTAG(5 | 7 << 4)};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -541,8 +533,7 @@ TEST(NeuronBackendSRAMTimingConfig, EncodeDecode)
 	        OmnibusChipOverJTAGAddress{neuron_backend_east_sram_timing_base_address},
 	        OmnibusChipOverJTAGAddress{neuron_backend_east_sram_timing_base_address + 1}};
 	std::array<OmnibusChipOverJTAG, NeuronBackendSRAMTimingConfig::config_size_in_words> ref_data =
-	    {OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{100}),
-	     OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{5 | 7 << 4})};
+	    {OmnibusChipOverJTAG(100), OmnibusChipOverJTAG(5 | 7 << 4)};
 
 	{ // write addresses
 		addresses_type write_addresses;

@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/v3/capmem.h"
@@ -65,8 +65,8 @@ TEST(CapMemCell, EncodeDecode)
 	std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CapMemCell::config_size_in_words>
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{capmem_nw_sram_base_address}};
-	std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCell::config_size_in_words> ref_data = {
-	    fisch::vx::OmnibusChipOverJTAG(static_cast<fisch::vx::OmnibusChipOverJTAG::Value>(val))};
+	std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, CapMemCell::config_size_in_words>
+	    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(val)};
 
 	HALDLS_TEST_ENCODE_DECODE(cell, coord, ref_addresses, ref_data)
 }
@@ -105,7 +105,8 @@ TEST(CapMemBlock, EncodeDecode)
 	CapMemBlockOnDLS block_coord(0);
 	std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CapMemCellOnCapMemBlock::size>
 	    ref_addresses;
-	std::array<fisch::vx::OmnibusChipOverJTAG, CapMemCellOnCapMemBlock::size> ref_data;
+	std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, CapMemCellOnCapMemBlock::size>
+	    ref_data;
 
 	// Fill block with random data
 	for (auto column : halco::common::iter_all<CapMemColumnOnCapMemBlock>()) {
@@ -113,8 +114,7 @@ TEST(CapMemBlock, EncodeDecode)
 			auto const val = draw_ranged_non_default_value<typename CapMemCell::Value>();
 			block.set_cell(CapMemCellOnDLS(CapMemCellOnCapMemBlock(column, row), block_coord), val);
 			ref_data[CapMemCellOnCapMemBlock(column, row).toEnum()] =
-			    fisch::vx::OmnibusChipOverJTAG(
-			        static_cast<fisch::vx::OmnibusChipOverJTAG::Value>(val));
+			    fisch::vx::word_access_type::OmnibusChipOverJTAG(val);
 		}
 	}
 
@@ -228,18 +228,18 @@ TEST(CapMemBlockConfig, EncodeDecode)
 	     OmnibusChipOverJTAGAddress(0x0014'4008), OmnibusChipOverJTAGAddress(0x0014'4009)}};
 	EXPECT_EQ(ref_addresses, config.addresses<OmnibusChipOverJTAGAddress>(coord));
 
-	std::array<fisch::vx::OmnibusChipOverJTAG, 10> ref_data = {
-	    {fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x800000)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0xa)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x2)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x000089A9)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x17)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x2)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x66270010)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x000F007B)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x000D0086)),
-	     fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(0x12))}};
-	EXPECT_EQ(ref_data, config.encode<fisch::vx::OmnibusChipOverJTAG>());
+	std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, 10> ref_data = {
+	    {fisch::vx::word_access_type::OmnibusChipOverJTAG(0x800000),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0xa),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0x2),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0x000089A9),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0x17),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0x2),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0x66270010),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0x000F007B),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0x000D0086),
+	     fisch::vx::word_access_type::OmnibusChipOverJTAG(0x12)}};
+	EXPECT_EQ(ref_data, config.encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>());
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }

@@ -1,6 +1,7 @@
 #include "stadls/vx/playback_program.h"
 
 #include "fisch/vx/container.h"
+#include "fisch/vx/container_cast.h"
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/coordinate_to_container.h"
@@ -24,10 +25,19 @@ T PlaybackProgram::ContainerTicket<T>::get() const
 	return boost::apply_visitor(
 	    [this](auto&& ticket_impl) -> T {
 		    auto data = ticket_impl.get();
+		    std::vector<decltype(
+		        fisch::vx::container_cast(std::declval<typename decltype(data)::value_type>()))>
+		        data_values;
+		    std::transform(
+		        data.begin(), data.end(), std::back_inserter(data_values),
+		        (typename decltype(data_values)::value_type (*)(
+		            typename decltype(data)::value_type const&)) &
+		            fisch::vx::container_cast);
 		    auto config =
 		        haldls::vx::detail::coordinate_to_container<decltype(m_coord), T>(m_coord);
 		    haldls::vx::visit_preorder(
-		        config, m_coord, stadls::DecodeVisitor<decltype(data)>{std::move(data)});
+		        config, m_coord,
+		        stadls::DecodeVisitor<decltype(data_values)>{std::move(data_values)});
 		    return config;
 	    },
 	    m_ticket_impl);

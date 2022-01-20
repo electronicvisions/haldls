@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/v3/coordinates.h"
 #include "haldls/vx/v3/arq.h"
 #include "haldls/vx/v3/barrier.h"

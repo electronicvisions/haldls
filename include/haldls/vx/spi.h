@@ -237,10 +237,11 @@ public:
 	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::SPIShiftRegisterOnBoard, read_config_size_in_words>
 	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::SPIShiftRegister, write_config_size_in_words> encode() const
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::SPIShiftRegister, read_config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::SPIShiftRegister, write_config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::SPIShiftRegister, read_config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -273,7 +274,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<ShiftRegister>
-    : public BackendContainerBase<ShiftRegister, fisch::vx::SPIShiftRegister>
+    : public BackendContainerBase<ShiftRegister, fisch::vx::word_access_type::SPIShiftRegister>
 {};
 
 } // namespace detail
@@ -329,10 +330,11 @@ public:
 	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
 	static std::array<halco::hicann_dls::vx::SPIDACDataRegisterOnBoard, read_config_size_in_words>
 	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::SPIDACDataRegister, write_config_size_in_words> encode() const
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::SPIDACDataRegister, read_config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::SPIDACDataRegister, write_config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<
+	            fisch::vx::word_access_type::SPIDACDataRegister,
+	            read_config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -348,7 +350,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<DACChannel>
-    : public BackendContainerBase<DACChannel, fisch::vx::SPIDACDataRegister>
+    : public BackendContainerBase<DACChannel, fisch::vx::word_access_type::SPIDACDataRegister>
 {};
 
 } // namespace detail
@@ -396,10 +398,11 @@ public:
 	static std::
 	    array<halco::hicann_dls::vx::SPIDACControlRegisterOnBoard, read_config_size_in_words>
 	    read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::SPIDACControlRegister, write_config_size_in_words> encode() const
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
-	void decode(std::array<fisch::vx::SPIDACControlRegister, read_config_size_in_words> const& data)
-	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::SPIDACControlRegister, write_config_size_in_words>
+	encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<
+	            fisch::vx::word_access_type::SPIDACControlRegister,
+	            read_config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend class cereal::access;
@@ -415,7 +418,7 @@ namespace detail {
 
 template <>
 struct BackendContainerTrait<DACControl>
-    : public BackendContainerBase<DACControl, fisch::vx::SPIDACControlRegister>
+    : public BackendContainerBase<DACControl, fisch::vx::word_access_type::SPIDACControlRegister>
 {};
 
 } // namespace detail

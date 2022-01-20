@@ -1,7 +1,7 @@
 #include "haldls/vx/neuron.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
@@ -321,7 +321,7 @@ NeuronBackendConfig<Coordinates>::encode() const
 	std::array<WordT, NeuronBackendConfig<Coordinates>::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
@@ -331,8 +331,7 @@ void NeuronBackendConfig<Coordinates>::decode(
     std::array<WordT, NeuronBackendConfig<Coordinates>::config_size_in_words> const& data)
 {
 	std::array<uint32_t, NeuronBackendConfig<Coordinates>::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	NeuronBackendConfigBitfield<Coordinates> bitfield(raw_data);
 	// bits of address out are inverted
 	m_address_out = NeuronBackendConfig<Coordinates>::AddressOut(
@@ -411,22 +410,26 @@ void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t cons
 	template class NeuronBackendConfig<Coordinates>;                                               \
                                                                                                    \
 	template std::array<                                                                           \
-	    fisch::vx::OmnibusChipOverJTAG, NeuronBackendConfig<Coordinates>::config_size_in_words>    \
-	NeuronBackendConfig<Coordinates>::encode<fisch::vx::OmnibusChipOverJTAG>() const;              \
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,                                          \
+	    NeuronBackendConfig<Coordinates>::config_size_in_words>                                    \
+	NeuronBackendConfig<Coordinates>::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>()   \
+	    const;                                                                                     \
                                                                                                    \
 	template std::array<                                                                           \
-	    fisch::vx::Omnibus, NeuronBackendConfig<Coordinates>::config_size_in_words>                \
-	NeuronBackendConfig<Coordinates>::encode<fisch::vx::Omnibus>() const;                          \
+	    fisch::vx::word_access_type::Omnibus,                                                      \
+	    NeuronBackendConfig<Coordinates>::config_size_in_words>                                    \
+	NeuronBackendConfig<Coordinates>::encode<fisch::vx::word_access_type::Omnibus>() const;        \
                                                                                                    \
-	template void NeuronBackendConfig<Coordinates>::decode<fisch::vx::OmnibusChipOverJTAG>(        \
+	template void                                                                                  \
+	NeuronBackendConfig<Coordinates>::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(    \
 	    std::array<                                                                                \
-	        fisch::vx::OmnibusChipOverJTAG,                                                        \
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG,                                      \
 	        NeuronBackendConfig<Coordinates>::config_size_in_words> const& data);                  \
                                                                                                    \
-	template void NeuronBackendConfig<Coordinates>::decode<fisch::vx::Omnibus>(                    \
+	template void NeuronBackendConfig<Coordinates>::decode<fisch::vx::word_access_type::Omnibus>(  \
 	    std::array<                                                                                \
-	        fisch::vx::Omnibus, NeuronBackendConfig<Coordinates>::config_size_in_words> const&     \
-	        data);                                                                                 \
+	        fisch::vx::word_access_type::Omnibus,                                                  \
+	        NeuronBackendConfig<Coordinates>::config_size_in_words> const& data);                  \
                                                                                                    \
 	template std::array<                                                                           \
 	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,                                         \

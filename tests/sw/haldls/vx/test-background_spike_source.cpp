@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/background.h"
 #include "haldls/vx/omnibus_constants.h"
@@ -31,13 +31,15 @@ TEST(BackgroundSpikeSource, EncodeDecode)
 	                     OmnibusChipOverJTAGAddress{0x130001 + coord.toEnum() * 3 + 2},
 	                     OmnibusChipOverJTAGAddress{0x130001 + coord.toEnum() * 3 + 0}};
 
-	std::array<fisch::vx::OmnibusChipOverJTAG, BackgroundSpikeSource::config_size_in_words>
+	std::array<
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+	    BackgroundSpikeSource::config_size_in_words>
 	    ref_data = {
-	        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(14ul)), // seed
-	        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(
-	            15ul | (13ul << 8) | (16ul << 16))), // rate, mask, neuron_label
-	        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(
-	            1ul | (12ul << 16)))}; // period, enable, enable_random, written last
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG(14ul), // seed
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG(
+	            15ul | (13ul << 8) | (16ul << 16)), // rate, mask, neuron_label
+	        fisch::vx::word_access_type::OmnibusChipOverJTAG(
+	            1ul | (12ul << 16))}; // period, enable, enable_random, written last
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }

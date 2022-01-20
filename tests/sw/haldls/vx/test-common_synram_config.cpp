@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/synapse.h"
 #include "stadls/visitors.h"
@@ -79,14 +79,16 @@ TEST(CommonSynramConfig, EncodeDecode)
 		    ref_addresses = {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x0200'0000),
 		                     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x0200'0001),
 		                     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(0x0200'0002)};
-		std::array<fisch::vx::OmnibusChipOverJTAG, CommonSynramConfig::config_size_in_words>
+		std::array<
+		    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+		    CommonSynramConfig::config_size_in_words>
 		    ref_data = {
-		        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(
-		            config.get_pc_conf_west().value() | (config.get_pc_conf_east().value() << 4))),
-		        fisch::vx::OmnibusChipOverJTAG(fisch::vx::OmnibusChipOverJTAG::Value(
-		            config.get_w_conf_west().value() | (config.get_w_conf_east().value() << 8))),
-		        fisch::vx::OmnibusChipOverJTAG(
-		            fisch::vx::OmnibusChipOverJTAG::Value(config.get_wait_ctr_clear().value()))};
+		        fisch::vx::word_access_type::OmnibusChipOverJTAG(
+		            config.get_pc_conf_west().value() | (config.get_pc_conf_east().value() << 4)),
+		        fisch::vx::word_access_type::OmnibusChipOverJTAG(
+		            config.get_w_conf_west().value() | (config.get_w_conf_east().value() << 8)),
+		        fisch::vx::word_access_type::OmnibusChipOverJTAG(
+		            config.get_wait_ctr_clear().value())};
 
 		{ // write addresses
 			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> write_addresses;
@@ -108,16 +110,18 @@ TEST(CommonSynramConfig, EncodeDecode)
 			EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 		}
 
-		std::vector<fisch::vx::OmnibusChipOverJTAG> data;
+		std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG> data;
 		visit_preorder(
 		    config, coord,
-		    stadls::EncodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>{data});
+		    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG>>{
+		        data});
 		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 		CommonSynramConfig config_2;
 		visit_preorder(
 		    config_2, coord,
-		    stadls::DecodeVisitor<std::vector<fisch::vx::OmnibusChipOverJTAG>>(data));
+		    stadls::DecodeVisitor<std::vector<fisch::vx::word_access_type::OmnibusChipOverJTAG>>(
+		        data));
 		EXPECT_EQ(config, config_2);
 	}
 }

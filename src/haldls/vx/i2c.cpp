@@ -1,6 +1,6 @@
 #include "haldls/vx/i2c.h"
 
-#include "fisch/vx/i2c.h"
+#include "fisch/vx/word_access/type/i2c.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
@@ -8,6 +8,7 @@
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "halco/hicann-dls/vx/xboard.h"
 #include "haldls/cerealization.tcc"
+#include "hate/type_index.h"
 
 namespace haldls::vx {
 
@@ -148,7 +149,7 @@ struct INA219ConfigBitfield
 
 } // namespace
 
-std::array<fisch::vx::I2CINA219RwRegister, INA219Config::config_size_in_words>
+std::array<fisch::vx::word_access_type::I2CINA219RwRegister, INA219Config::config_size_in_words>
 INA219Config::encode() const
 {
 	INA219ConfigBitfield bitfield;
@@ -159,13 +160,14 @@ INA219Config::encode() const
 	bitfield.u.m.bus_voltage_range = 0b0 /* 16V */;
 	bitfield.u.m.reset = 0;
 
-	return {fisch::vx::I2CINA219RwRegister(fisch::vx::I2CINA219RwRegister::Value(bitfield.u.raw))};
+	return {fisch::vx::word_access_type::I2CINA219RwRegister(bitfield.u.raw)};
 }
 
-void INA219Config::decode(
-    std::array<fisch::vx::I2CINA219RwRegister, INA219Config::config_size_in_words> const& data)
+void INA219Config::decode(std::array<
+                          fisch::vx::word_access_type::I2CINA219RwRegister,
+                          INA219Config::config_size_in_words> const& data)
 {
-	INA219ConfigBitfield bitfield(data[0].get());
+	INA219ConfigBitfield bitfield(data[0]);
 	m_shunt_adc_mode = ADCMode(bitfield.u.m.shunt_adc_mode);
 	m_bus_adc_mode = ADCMode(bitfield.u.m.bus_adc_mode);
 }
@@ -279,17 +281,20 @@ INA219Status::write_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::I2CINA219RoRegister, INA219Status::write_config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::I2CINA219RoRegister,
+    INA219Status::write_config_size_in_words>
 INA219Status::encode() const
 {
 	return {};
 }
 
-void INA219Status::decode(
-    std::array<fisch::vx::I2CINA219RoRegister, INA219Status::read_config_size_in_words> const& data)
+void INA219Status::decode(std::array<
+                          fisch::vx::word_access_type::I2CINA219RoRegister,
+                          INA219Status::read_config_size_in_words> const& data)
 {
-	auto const bus = data[0].get();
-	auto const shunt = data[1].get();
+	auto const bus = data[0];
+	auto const shunt = data[1];
 
 	m_bus_voltage_overflow = bus & 0b1;
 	m_bus_voltage = BusVoltage(bus >> 3);
@@ -377,17 +382,18 @@ TCA9554Inputs::addresses(coordinate_type const& coord)
 	    halco::hicann_dls::vx::I2CTCA9554RoRegisterOnTCA9554::inputs, coord.toTCA9554OnBoard())};
 }
 
-std::array<fisch::vx::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words>
+std::array<fisch::vx::word_access_type::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words>
 TCA9554Inputs::encode() const
 {
-	return {fisch::vx::I2CTCA9554RoRegister(
-	    fisch::vx::I2CTCA9554RoRegister::Value(TypedBoolArrayToUint8Conversion(m_input).raw))};
+	return {fisch::vx::word_access_type::I2CTCA9554RoRegister(
+	    TypedBoolArrayToUint8Conversion(m_input).raw)};
 }
 
-void TCA9554Inputs::decode(
-    std::array<fisch::vx::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words> const& data)
+void TCA9554Inputs::decode(std::array<
+                           fisch::vx::word_access_type::I2CTCA9554RoRegister,
+                           TCA9554Inputs::config_size_in_words> const& data)
 {
-	m_input = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0].get()).to_array();
+	m_input = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0]).to_array();
 }
 
 std::ostream& operator<<(std::ostream& os, TCA9554Inputs const& config)
@@ -470,23 +476,25 @@ TCA9554Config::addresses(coordinate_type const& coord)
 }
 
 
-std::array<fisch::vx::I2CTCA9554RwRegister, TCA9554Config::config_size_in_words>
+std::array<fisch::vx::word_access_type::I2CTCA9554RwRegister, TCA9554Config::config_size_in_words>
 TCA9554Config::encode() const
 {
-	return {fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(
-	            TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(m_output).raw)),
-	        fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(
-	            TypedBoolArrayToUint8Conversion<ChannelsPolarityArray>(m_polarity).raw)),
-	        fisch::vx::I2CTCA9554RwRegister(fisch::vx::I2CTCA9554RwRegister::Value(
-	            TypedBoolArrayToUint8Conversion<ChannelsModeArray>(m_mode).raw))};
+	return {
+	    fisch::vx::word_access_type::I2CTCA9554RwRegister(
+	        TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(m_output).raw),
+	    fisch::vx::word_access_type::I2CTCA9554RwRegister(
+	        TypedBoolArrayToUint8Conversion<ChannelsPolarityArray>(m_polarity).raw),
+	    fisch::vx::word_access_type::I2CTCA9554RwRegister(
+	        TypedBoolArrayToUint8Conversion<ChannelsModeArray>(m_mode).raw)};
 }
 
-void TCA9554Config::decode(
-    std::array<fisch::vx::I2CTCA9554RwRegister, TCA9554Config::config_size_in_words> const& data)
+void TCA9554Config::decode(std::array<
+                           fisch::vx::word_access_type::I2CTCA9554RwRegister,
+                           TCA9554Config::config_size_in_words> const& data)
 {
-	m_output = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0].get()).to_array();
-	m_polarity = TypedBoolArrayToUint8Conversion<ChannelsPolarityArray>(data[1].get()).to_array();
-	m_mode = TypedBoolArrayToUint8Conversion<ChannelsModeArray>(data[2].get()).to_array();
+	m_output = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0]).to_array();
+	m_polarity = TypedBoolArrayToUint8Conversion<ChannelsPolarityArray>(data[1]).to_array();
+	m_mode = TypedBoolArrayToUint8Conversion<ChannelsModeArray>(data[2]).to_array();
 }
 
 std::ostream& operator<<(std::ostream& os, TCA9554Config const& config)
@@ -555,17 +563,19 @@ AD5252ChannelConfig::addresses(coordinate_type const& coord)
 	    halco::hicann_dls::vx::I2CAD5252RwRegisterOnAD5252Channel::rdac_volatile,
 	    coord.toAD5252ChannelOnBoard())};
 }
-std::array<fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfig::config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::I2CAD5252RwRegister,
+    AD5252ChannelConfig::config_size_in_words>
 AD5252ChannelConfig::encode() const
 {
-	return {fisch::vx::I2CAD5252RwRegister(fisch::vx::I2CAD5252RwRegister::Value(m_value))};
+	return {fisch::vx::word_access_type::I2CAD5252RwRegister(m_value)};
 }
 
-void AD5252ChannelConfig::decode(
-    std::array<fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfig::config_size_in_words> const&
-        data)
+void AD5252ChannelConfig::decode(std::array<
+                                 fisch::vx::word_access_type::I2CAD5252RwRegister,
+                                 AD5252ChannelConfig::config_size_in_words> const& data)
 {
-	m_value = WiperSetting(data[0].get());
+	m_value = WiperSetting(data[0]);
 }
 
 std::ostream& operator<<(std::ostream& os, AD5252ChannelConfig const& config)
@@ -613,18 +623,20 @@ AD5252ChannelConfigPersistent::addresses(coordinate_type const& coord)
 	    halco::hicann_dls::vx::I2CAD5252RwRegisterOnAD5252Channel::eemem_persistent,
 	    coord.toAD5252ChannelOnBoard())};
 }
-std::array<fisch::vx::I2CAD5252RwRegister, AD5252ChannelConfigPersistent::config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::I2CAD5252RwRegister,
+    AD5252ChannelConfigPersistent::config_size_in_words>
 AD5252ChannelConfigPersistent::encode() const
 {
-	return {fisch::vx::I2CAD5252RwRegister(fisch::vx::I2CAD5252RwRegister::Value(m_value))};
+	return {fisch::vx::word_access_type::I2CAD5252RwRegister(m_value)};
 }
 
 void AD5252ChannelConfigPersistent::decode(
     std::array<
-        fisch::vx::I2CAD5252RwRegister,
+        fisch::vx::word_access_type::I2CAD5252RwRegister,
         AD5252ChannelConfigPersistent::config_size_in_words> const& data)
 {
-	m_value = WiperSetting(data[0].get());
+	m_value = WiperSetting(data[0]);
 }
 
 std::ostream& operator<<(std::ostream& os, AD5252ChannelConfigPersistent const& config)
@@ -670,16 +682,18 @@ DAC6573ChannelConfig::addresses(coordinate_type const& coord)
 	    coord.toDAC6573ChannelOnDAC6573(), coord.toDAC6573OnBoard())};
 }
 
-std::array<fisch::vx::I2CDAC6573RwRegister, DAC6573ChannelConfig::config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::I2CDAC6573RwRegister,
+    DAC6573ChannelConfig::config_size_in_words>
 DAC6573ChannelConfig::encode() const
 {
-	return {fisch::vx::I2CDAC6573RwRegister(fisch::vx::I2CDAC6573RwRegister::Value(m_value))};
+	return {fisch::vx::word_access_type::I2CDAC6573RwRegister(m_value)};
 }
 
 void DAC6573ChannelConfig::decode(
-    std::array<fisch::vx::I2CDAC6573RwRegister, config_size_in_words> const& data)
+    std::array<fisch::vx::word_access_type::I2CDAC6573RwRegister, config_size_in_words> const& data)
 {
-	m_value = Value(data[0].get());
+	m_value = Value(data[0]);
 }
 
 std::ostream& operator<<(std::ostream& os, DAC6573ChannelConfig const& config)

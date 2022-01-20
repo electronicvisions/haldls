@@ -7,6 +7,7 @@
 
 #include <boost/variant.hpp>
 
+#include "fisch/vx/container_cast.h"
 #include "fisch/vx/container_ticket.h"
 #include "fisch/vx/playback_program.h"
 #include "haldls/vx/common.h"
@@ -37,7 +38,9 @@ struct to_ticket_variant;
 template <typename... BackendContainer>
 struct to_ticket_variant<hate::type_list<BackendContainer...>>
 {
-	typedef boost::variant<fisch::vx::ContainerTicket<BackendContainer>...> type;
+	typedef boost::variant<fisch::vx::ContainerTicket<decltype(
+	    fisch::vx::container_cast(std::declval<BackendContainer>()))>...>
+	    type;
 };
 
 } // namespace detail

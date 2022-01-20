@@ -1,7 +1,7 @@
 #include "haldls/vx/reset.h"
 
 
-#include "fisch/vx/reset.h"
+#include "fisch/vx/word_access/type/reset.h"
 #include "haldls/cerealization.tcc"
 
 namespace haldls::vx {
@@ -43,13 +43,15 @@ ResetChip::read_addresses(coordinate_type const& /*coord*/)
 	return {};
 }
 
-std::array<fisch::vx::ResetChip, ResetChip::write_config_size_in_words> ResetChip::encode() const
+std::array<fisch::vx::word_access_type::ResetChip, ResetChip::write_config_size_in_words>
+ResetChip::encode() const
 {
-	return {fisch::vx::ResetChip(fisch::vx::ResetChip::Value(m_value))};
+	return {fisch::vx::word_access_type::ResetChip(m_value)};
 }
 
-void ResetChip::decode(
-    std::array<fisch::vx::ResetChip, ResetChip::read_config_size_in_words> const& /*data*/)
+void ResetChip::decode(std::array<
+                       fisch::vx::word_access_type::ResetChip,
+                       ResetChip::read_config_size_in_words> const& /*data*/)
 {}
 
 template <class Archive>

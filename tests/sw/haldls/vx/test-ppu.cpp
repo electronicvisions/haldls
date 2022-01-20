@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/ppu.h"
 #include "stadls/visitors.h"
@@ -10,7 +10,7 @@
 using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
-using namespace fisch::vx;
+using namespace fisch::vx::word_access_type;
 
 typedef std::vector<OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<OmnibusChipOverJTAG> words_type;
@@ -37,7 +37,7 @@ TEST(PPUMemoryWord, EncodeDecode)
 	std::array<OmnibusChipOverJTAGAddress, PPUMemoryWord::config_size_in_words> ref_addresses = {
 	    OmnibusChipOverJTAGAddress{0x02800123ul}};
 	std::array<OmnibusChipOverJTAG, PPUMemoryWord::config_size_in_words> ref_data = {
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{555ul})};
+	    OmnibusChipOverJTAG(555ul)};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -180,8 +180,8 @@ TEST(PPUMemoryBlock, EncodeDecode)
 
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
 		ref_addresses[ii] = static_cast<OmnibusChipOverJTAGAddress>(0x02800000 + min.toEnum() + ii);
-		ref_data[ii] = OmnibusChipOverJTAG(static_cast<OmnibusChipOverJTAG::Value>(50 + ii));
-		memory[ii].set_value(PPUMemoryWord::Value(ref_data[ii].get()));
+		ref_data[ii] = OmnibusChipOverJTAG(50 + ii);
+		memory[ii].set_value(PPUMemoryWord::Value(ref_data[ii]));
 	}
 
 	config.set_words(memory);
@@ -357,8 +357,8 @@ TEST(PPUMemory, EncodeDecode)
 
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
 		ref_addresses[ii] = static_cast<OmnibusChipOverJTAGAddress>(0x02800000 + ii);
-		ref_data[ii] = OmnibusChipOverJTAG(static_cast<OmnibusChipOverJTAG::Value>(50 + ii));
-		memory[PPUMemoryWordOnPPU(ii)].set_value(PPUMemoryWord::Value(ref_data[ii].get()));
+		ref_data[ii] = OmnibusChipOverJTAG(50 + ii);
+		memory[PPUMemoryWordOnPPU(ii)].set_value(PPUMemoryWord::Value(ref_data[ii]));
 	}
 
 	config.set_words(memory);
@@ -472,7 +472,7 @@ TEST(PPUControlRegister, EncodeDecode)
 	std::array<OmnibusChipOverJTAGAddress, PPUControlRegister::config_size_in_words> ref_addresses =
 	    {OmnibusChipOverJTAGAddress{0x2a00000}};
 	std::array<OmnibusChipOverJTAG, PPUControlRegister::config_size_in_words> ref_data = {
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{0b1101ul})};
+	    OmnibusChipOverJTAG(0b1101ul)};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -536,7 +536,7 @@ TEST(PPUStatusRegister, EncodeDecode)
 	}
 
 	words_type data;
-	data.push_back(OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{0b0ul}));
+	data.push_back(OmnibusChipOverJTAG(0b0ul));
 
 	PPUStatusRegister config_copy;
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
@@ -544,7 +544,7 @@ TEST(PPUStatusRegister, EncodeDecode)
 	ASSERT_FALSE(config_copy.get_sleep());
 
 	data.clear();
-	data.push_back(OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{0b1ul}));
+	data.push_back(OmnibusChipOverJTAG(0b1ul));
 	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
 	ASSERT_TRUE(config_copy.get_sleep());
 }
@@ -553,7 +553,7 @@ TEST(PPUStatusRegister, CerealizeCoverage)
 {
 	PPUStatusRegister obj1, obj2;
 	std::array<OmnibusChipOverJTAG, PPUStatusRegister::read_config_size_in_words> data = {
-	    {OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value(rand()))}};
+	    {OmnibusChipOverJTAG(rand())}};
 	obj1.decode(data);
 
 	std::ostringstream ostream;

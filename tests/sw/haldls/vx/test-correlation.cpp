@@ -3,7 +3,7 @@
 
 #include "haldls/vx/correlation.h"
 
-#include "fisch/vx/jtag.h"
+#include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -12,7 +12,7 @@
 using namespace haldls::vx;
 using namespace halco::hicann_dls::vx;
 using namespace halco::common;
-using namespace fisch::vx;
+using namespace fisch::vx::word_access_type;
 
 typedef std::vector<OmnibusChipOverJTAGAddress> addresses_type;
 typedef std::vector<OmnibusChipOverJTAG> words_type;
@@ -76,10 +76,8 @@ TEST(CommonCorrelationConfig, EncodeDecode)
 	        OmnibusChipOverJTAGAddress{0x0320'0000ul}, OmnibusChipOverJTAGAddress{0x0320'0001ul},
 	        OmnibusChipOverJTAGAddress{0x0320'0002ul}, OmnibusChipOverJTAGAddress{0x0320'0003ul}};
 	std::array<OmnibusChipOverJTAG, CommonCorrelationConfig::config_size_in_words> ref_data = {
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{100}),
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{500}),
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{30}),
-	    OmnibusChipOverJTAG(OmnibusChipOverJTAG::Value{1})};
+	    OmnibusChipOverJTAG(100), OmnibusChipOverJTAG(500), OmnibusChipOverJTAG(30),
+	    OmnibusChipOverJTAG(1)};
 
 	{ // write addresses
 		addresses_type write_addresses;

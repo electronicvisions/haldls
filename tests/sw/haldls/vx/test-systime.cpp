@@ -1,9 +1,10 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
-#include "fisch/vx/systime.h"
+#include "fisch/vx/container_cast.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
+#include "fisch/vx/word_access/type/systime.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/systime.h"
 #include "stadls/visitors.h"
@@ -45,7 +46,9 @@ TEST(SystimeSyncBase, General)
 template <typename WordT>
 void test_encode_decode()
 {
-	typedef std::vector<typename WordT::coordinate_type> addresses_type;
+	typedef std::vector<typename decltype(
+	    fisch::vx::container_cast(std::declval<WordT>()))::coordinate_type>
+	    addresses_type;
 
 	SystimeSyncBase config;
 
@@ -53,11 +56,11 @@ void test_encode_decode()
 
 	SystimeSyncBaseOnDLS coord;
 
-	std::array<typename WordT::coordinate_type, SystimeSyncBase::config_size_in_words>
-	    ref_addresses = {typename WordT::coordinate_type{0x0ul},
-	                     typename WordT::coordinate_type{0x1ul}};
+	std::array<typename addresses_type::value_type, SystimeSyncBase::config_size_in_words>
+	    ref_addresses = {
+	        typename addresses_type::value_type{0x0ul}, typename addresses_type::value_type{0x1ul}};
 	std::array<WordT, SystimeSyncBase::config_size_in_words> ref_data = {
-	    WordT(typename WordT::Value{0x22b}), WordT(typename WordT::Value(0x100))};
+	    WordT(0x22b), WordT(0x100)};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -83,12 +86,12 @@ void test_encode_decode()
 
 TEST(SystimeSyncBase, EncodeDecode_Omnibus)
 {
-	test_encode_decode<fisch::vx::Omnibus>();
+	test_encode_decode<fisch::vx::word_access_type::Omnibus>();
 }
 
 TEST(SystimeSyncBase, EncodeDecode_OmnibusChipOverJTAG)
 {
-	test_encode_decode<fisch::vx::OmnibusChipOverJTAG>();
+	test_encode_decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>();
 }
 
 TEST(SystimeSyncBase, CerealizeCoverage)

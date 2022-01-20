@@ -139,19 +139,20 @@ void SpikeLabel::set_synapse_label(SynapseLabelValue const value)
 	}                                                                                              \
                                                                                                    \
 	std::array<                                                                                    \
-	    fisch::vx::SpikePack##Num##ToChip, SpikePack##Num##ToChip::write_config_size_in_words>     \
+	    fisch::vx::word_access_type::SpikePack##Num##ToChip,                                       \
+	    SpikePack##Num##ToChip::write_config_size_in_words>                                        \
 	    SpikePack##Num##ToChip::encode() const                                                     \
 	{                                                                                              \
-		fisch::vx::SpikePack##Num##ToChip::Value ret;                                              \
+		fisch::vx::word_access_type::SpikePack##Num##ToChip ret;                                   \
 		std::transform(                                                                            \
 		    std::begin(m_impl), std::end(m_impl), std::begin(ret),                                 \
-		    [](SpikeLabel const& sl) { return fisch::vx::SpikeLabel{sl}; });                       \
-		return {fisch::vx::SpikePack##Num##ToChip{ret}};                                           \
+		    [](SpikeLabel const& sl) { return fisch::vx::word_access_type::SpikeLabel{sl}; });     \
+		return {ret};                                                                              \
 	}                                                                                              \
                                                                                                    \
-	void SpikePack##Num##ToChip::decode(                                                           \
-	    std::array<                                                                                \
-	        fisch::vx::SpikePack##Num##ToChip, read_config_size_in_words> const& /* data */)       \
+	void SpikePack##Num##ToChip::decode(std::array<                                                \
+	                                    fisch::vx::word_access_type::SpikePack##Num##ToChip,       \
+	                                    read_config_size_in_words> const& /* data */)              \
 	{}                                                                                             \
                                                                                                    \
 	template <typename Archive>                                                                    \

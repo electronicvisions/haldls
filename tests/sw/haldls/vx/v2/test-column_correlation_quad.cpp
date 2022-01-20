@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/v2/quad.h"
 #include "haldls/vx/v2/synapse.h"
@@ -147,11 +147,12 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02cf'80c3),
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02c0'4003),
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02c4'4003)}};
-	std::array<fisch::vx::Omnibus, ColumnCorrelationQuad::config_size_in_words> ref_data = {
-	    {fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x0040'0000)),
-	     fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x0080'0000)),
-	     fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x0000'0000)),
-	     fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x0020'0000))}};
+	std::array<fisch::vx::word_access_type::Omnibus, ColumnCorrelationQuad::config_size_in_words>
+	    ref_data = {
+	        {fisch::vx::word_access_type::Omnibus(0x0040'0000),
+	         fisch::vx::word_access_type::Omnibus(0x0080'0000),
+	         fisch::vx::word_access_type::Omnibus(0x0000'0000),
+	         fisch::vx::word_access_type::Omnibus(0x0020'0000)}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;
@@ -171,17 +172,17 @@ TEST(ColumnCorrelationQuad, EncodeDecode)
 		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
 	}
 
-	std::vector<fisch::vx::Omnibus> data;
+	std::vector<fisch::vx::word_access_type::Omnibus> data;
 	visit_preorder(
 	    correlation_switch_block, block_coord,
-	    stadls::EncodeVisitor<std::vector<fisch::vx::Omnibus> >{data});
+	    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::Omnibus> >{data});
 	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
 
 	ColumnCorrelationQuad block_copy;
 	ASSERT_NE(correlation_switch_block, block_copy);
 	visit_preorder(
 	    block_copy, block_coord,
-	    stadls::DecodeVisitor<std::vector<fisch::vx::Omnibus> >{std::move(data)});
+	    stadls::DecodeVisitor<std::vector<fisch::vx::word_access_type::Omnibus> >{std::move(data)});
 	ASSERT_EQ(correlation_switch_block, block_copy);
 }
 

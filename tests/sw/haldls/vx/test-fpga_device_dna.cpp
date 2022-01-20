@@ -3,7 +3,7 @@
 
 #include "haldls/vx/fpga.h"
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -44,7 +44,7 @@ TEST(FPGADeviceDNA, General)
 
 TEST(FPGADeviceDNA, EncodeDecode)
 {
-	typedef std::vector<fisch::vx::Omnibus::coordinate_type> addresses_type;
+	typedef std::vector<OmnibusAddress> addresses_type;
 
 	FPGADeviceDNA config;
 
@@ -52,17 +52,13 @@ TEST(FPGADeviceDNA, EncodeDecode)
 
 	FPGADeviceDNAOnFPGA coord;
 
-	std::array<
-	    typename fisch::vx::Omnibus::coordinate_type, FPGADeviceDNA::read_config_size_in_words>
-	    ref_read_addresses = {
-	        typename fisch::vx::Omnibus::coordinate_type{0x8800'0003ul},
-	        typename fisch::vx::Omnibus::coordinate_type{0x8800'0004ul}};
-	std::array<
-	    typename fisch::vx::Omnibus::coordinate_type, FPGADeviceDNA::write_config_size_in_words>
-	    ref_write_addresses = {};
-	std::array<fisch::vx::Omnibus, FPGADeviceDNA::read_config_size_in_words> ref_data = {
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x100)),
-	    fisch::vx::Omnibus(fisch::vx::Omnibus::Value(0x22b))};
+	std::array<OmnibusAddress, FPGADeviceDNA::read_config_size_in_words> ref_read_addresses = {
+	    OmnibusAddress{0x8800'0003ul}, OmnibusAddress{0x8800'0004ul}};
+	std::array<OmnibusAddress, FPGADeviceDNA::write_config_size_in_words> ref_write_addresses = {};
+	std::array<fisch::vx::word_access_type::Omnibus, FPGADeviceDNA::read_config_size_in_words>
+	    ref_data = {
+	        fisch::vx::word_access_type::Omnibus(0x100),
+	        fisch::vx::word_access_type::Omnibus(0x22b)};
 
 	{ // write addresses
 		addresses_type write_addresses;
@@ -78,11 +74,12 @@ TEST(FPGADeviceDNA, EncodeDecode)
 
 	FPGADeviceDNA config_copy;
 	ASSERT_NE(config, config_copy);
-	std::vector<fisch::vx::Omnibus> data(FPGADeviceDNA::read_config_size_in_words);
+	std::vector<fisch::vx::word_access_type::Omnibus> data(
+	    FPGADeviceDNA::read_config_size_in_words);
 	std::copy(ref_data.cbegin(), ref_data.cend(), data.begin());
 	visit_preorder(
 	    config_copy, coord,
-	    stadls::DecodeVisitor<std::vector<fisch::vx::Omnibus>>{std::move(data)});
+	    stadls::DecodeVisitor<std::vector<fisch::vx::word_access_type::Omnibus>>{std::move(data)});
 	ASSERT_EQ(config, config_copy);
 }
 

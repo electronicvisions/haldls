@@ -1,7 +1,7 @@
 #include "haldls/vx/v3/neuron.h"
 
-#include "fisch/vx/jtag.h"
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/jtag.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.tcc"
@@ -537,23 +537,23 @@ std::array<WordT, NeuronConfig::config_size_in_words> NeuronConfig::encode() con
 	std::array<WordT, NeuronConfig::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
-	    [](uint32_t const& w) { return static_cast<WordT>(typename WordT::Value(w)); });
+	    [](uint32_t const& w) { return static_cast<WordT>(w); });
 	return data;
 }
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronConfig::config_size_in_words>
-    NeuronConfig::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+    std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, NeuronConfig::config_size_in_words>
+    NeuronConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, NeuronConfig::config_size_in_words>
-NeuronConfig::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, NeuronConfig::config_size_in_words>
+    NeuronConfig::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> const& data)
 {
 	std::array<uint32_t, NeuronConfig::config_size_in_words> raw_data;
-	std::transform(
-	    data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w.get(); });
+	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	NeuronConfigBitfield bitfield(raw_data);
 	m_en_comp_cond_div = bitfield.u.m.en_comp_cond_div;
 	m_en_comp_cond_mul = bitfield.u.m.en_comp_cond_mul;
@@ -593,11 +593,14 @@ void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> 
 	m_en_pause = bitfield.u.m.en_pause;
 }
 
-template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        NeuronConfig::config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, NeuronConfig::config_size_in_words> const& data);
+template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<fisch::vx::word_access_type::Omnibus, NeuronConfig::config_size_in_words> const&
+        data);
 
 std::ostream& operator<<(std::ostream& os, NeuronConfig::ReadoutSource const& config)
 {
@@ -813,23 +816,29 @@ std::array<WordT, NeuronResetQuad::write_config_size_in_words> NeuronResetQuad::
 	return {WordT()};
 }
 
-template SYMBOL_VISIBLE
-    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronResetQuad::write_config_size_in_words>
-    NeuronResetQuad::encode<fisch::vx::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::array<
+    fisch::vx::word_access_type::OmnibusChipOverJTAG,
+    NeuronResetQuad::write_config_size_in_words>
+NeuronResetQuad::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
-template SYMBOL_VISIBLE std::array<fisch::vx::Omnibus, NeuronResetQuad::write_config_size_in_words>
-NeuronResetQuad::encode<fisch::vx::Omnibus>() const;
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, NeuronResetQuad::write_config_size_in_words>
+    NeuronResetQuad::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
 void NeuronResetQuad::decode(std::array<WordT, NeuronResetQuad::read_config_size_in_words> const&)
 {}
 
-template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::OmnibusChipOverJTAG>(
-    std::array<fisch::vx::OmnibusChipOverJTAG, NeuronResetQuad::read_config_size_in_words> const&
-        data);
+template SYMBOL_VISIBLE void
+NeuronResetQuad::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
+    std::array<
+        fisch::vx::word_access_type::OmnibusChipOverJTAG,
+        NeuronResetQuad::read_config_size_in_words> const& data);
 
-template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::Omnibus>(
-    std::array<fisch::vx::Omnibus, NeuronResetQuad::read_config_size_in_words> const& data);
+template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::word_access_type::Omnibus>(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        NeuronResetQuad::read_config_size_in_words> const& data);
 
 std::ostream& operator<<(std::ostream& os, NeuronResetQuad const&)
 {

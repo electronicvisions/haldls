@@ -5,7 +5,7 @@
 
 #include "lola/vx/ppu.h"
 
-#include "fisch/vx/omnibus.h"
+#include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
@@ -108,7 +108,7 @@ TEST(ExternalPPUMemoryBlock, EncodeDecode)
 	ExternalPPUMemoryBlock::bytes_type memory(config.size());
 
 	std::array<OmnibusAddress, 9> ref_addresses;
-	std::array<fisch::vx::Omnibus, 9> ref_data;
+	std::array<fisch::vx::word_access_type::Omnibus, 9> ref_data;
 
 	ASSERT_EQ(ref_addresses.size(), memory.size());
 	ASSERT_EQ(ref_data.size(), memory.size());
@@ -117,19 +117,19 @@ TEST(ExternalPPUMemoryBlock, EncodeDecode)
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
 		ref_addresses[ii] =
 		    static_cast<OmnibusAddress>(0x8000'0000 + ((min.toEnum() + ii) / sizeof(uint32_t)));
-		fisch::vx::Omnibus::Value::ByteEnables byte_enables{};
+		fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables{};
 		byte_enables[(sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))] = true;
-		ref_data[ii] = fisch::vx::Omnibus(fisch::vx::Omnibus::Value(
+		ref_data[ii] = fisch::vx::word_access_type::Omnibus(
 		    (50 + ii)
 		        << (((sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))) * CHAR_BIT),
-		    byte_enables));
+		    byte_enables);
 		memory[ii].set_value(ExternalPPUMemoryByte::Value(50 + ii));
 	}
 
 	config.set_bytes(memory);
 
 	typedef std::vector<OmnibusAddress> addresses_type;
-	typedef std::vector<fisch::vx::Omnibus> words_type;
+	typedef std::vector<fisch::vx::word_access_type::Omnibus> words_type;
 	{ // write addresses
 		addresses_type write_addresses;
 		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
