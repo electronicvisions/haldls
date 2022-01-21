@@ -4,6 +4,7 @@
 
 #include "halco/common/iter_sparse.h"
 #include "halco/hicann-dls/vx/v1/coordinates.h"
+#include "haldls/vx/is_read_and_writable.h"
 #include "haldls/vx/is_writereadable.h"
 #include "haldls/vx/v1/barrier.h"
 #include "haldls/vx/v1/container.h"
