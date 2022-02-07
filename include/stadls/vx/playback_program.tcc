@@ -3,9 +3,12 @@
 #include "fisch/vx/container.h"
 #include "fisch/vx/container_cast.h"
 #include "fisch/vx/playback_program.h"
+#include "haldls/cerealization.tcc"
 #include "haldls/vx/common.h"
 #include "haldls/vx/coordinate_to_container.h"
 #include "stadls/visitors.h"
+#include <cereal/types/memory.hpp>
+#include <cereal/types/unordered_set.hpp>
 
 namespace stadls::vx {
 
@@ -120,6 +123,13 @@ bool PlaybackProgram::operator==(PlaybackProgram const& other) const
 bool PlaybackProgram::operator!=(PlaybackProgram const& other) const
 {
 	return !(*this == other);
+}
+
+template <typename Archive>
+void PlaybackProgram::serialize(Archive& ar, uint32_t)
+{
+	ar(CEREAL_NVP(m_program_impl));
+	ar(CEREAL_NVP(m_unsupported_targets));
 }
 
 } // namespace stadls::vx

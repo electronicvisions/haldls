@@ -11,3 +11,5 @@
 #include "haldls/vx/v2/container.def"
 #pragma pop_macro("PLAYBACK_CONTAINER")
 #include "lola/vx/v2/container.def"
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::PlaybackProgram);

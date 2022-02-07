@@ -27,3 +27,5 @@ namespace stadls::vx::v1 GENPYBIND_TAG_STADLS_VX_V1 {
 using PlaybackProgram GENPYBIND(visible) = stadls::vx::PlaybackProgram;
 
 } // namespace stadls::vx::v1
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v1::PlaybackProgram);

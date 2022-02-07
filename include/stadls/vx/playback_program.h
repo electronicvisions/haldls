@@ -10,6 +10,7 @@
 #include "fisch/vx/container_cast.h"
 #include "fisch/vx/container_ticket.h"
 #include "fisch/vx/playback_program.h"
+#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/event.h"
 #include "hate/type_list.h"
@@ -250,6 +251,10 @@ public:
 	})
 
 private:
+	friend struct cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, uint32_t);
+
 	template <typename, typename, template <typename> class>
 	friend class stadls::vx::detail::PlaybackProgramBuilderAdapter;
 
