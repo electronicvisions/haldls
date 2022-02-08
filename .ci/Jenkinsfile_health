@@ -107,6 +107,7 @@ try {
 			withCcache() {
 				wafDefaultPipeline(container: [app: "dls-core"],
 				                   projects: ["haldls"],
+				                   configureInstallOptions: "--build-profile=ci",
 				                   notificationChannel: "#jenkins-trashbin")
 			}
 

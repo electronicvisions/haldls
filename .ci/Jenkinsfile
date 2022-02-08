@@ -16,7 +16,7 @@ try {
 
 	Map<String, Object> pipelineNoDeploymentOptions = [
 		container              : [app: "dls-core"],
-		configureInstallOptions: "--build-profile=release"
+		configureInstallOptions: "--build-profile=ci"
 	] << commonPipelineOptions
 
 	// Additional options for hardware testing in "no deployment" and not triggered by Gerrit case
