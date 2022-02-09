@@ -29,6 +29,7 @@ PLAYBACK_CONTAINER(SynapseLabelRow, lola::vx::v1::SynapseLabelRow)
 PLAYBACK_CONTAINER(SynapseCorrelationCalibRow, lola::vx::v1::SynapseCorrelationCalibRow)
 PLAYBACK_CONTAINER(AtomicNeuron, lola::vx::v1::AtomicNeuron)
 PLAYBACK_CONTAINER(ExternalPPUMemoryBlock, lola::vx::v1::ExternalPPUMemoryBlock)
+PLAYBACK_CONTAINER(MemoryTiming, lola::vx::v1::MemoryTiming)
 LAST_PLAYBACK_CONTAINER(SynapseRow, lola::vx::v1::SynapseRow)
 
 #undef PLAYBACK_CONTAINER
