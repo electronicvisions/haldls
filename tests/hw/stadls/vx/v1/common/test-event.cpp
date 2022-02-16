@@ -49,7 +49,7 @@ using namespace stadls::vx::v1;
                                                                                                    \
 		for (auto spike : spikes) {                                                                \
 			auto it = std::find(                                                                   \
-			    to_fpga_spike_labels.cbegin(), to_fpga_spike_labels.cend(), spike.get_label());    \
+			    to_fpga_spike_labels.cbegin(), to_fpga_spike_labels.cend(), spike.label);          \
 			EXPECT_TRUE(it != to_fpga_spike_labels.cend()) << "Received spike not sent.";          \
 		}                                                                                          \
 	}

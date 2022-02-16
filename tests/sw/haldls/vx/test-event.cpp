@@ -79,20 +79,20 @@ TEST(SpikeFromChip, General)
 
 	{
 		SpikeLabel const value(12);
-		config.set_label(value);
-		EXPECT_EQ(config.get_label(), value);
+		config.label = value;
+		EXPECT_EQ(config.label, value);
 	}
 
 	{
 		FPGATime const value(3);
-		config.set_fpga_time(value);
-		EXPECT_EQ(config.get_fpga_time(), value);
+		config.fpga_time = value;
+		EXPECT_EQ(config.fpga_time, value);
 	}
 
 	{
 		ChipTime const value(3);
-		config.set_chip_time(value);
-		EXPECT_EQ(config.get_chip_time(), value);
+		config.chip_time = value;
+		EXPECT_EQ(config.chip_time, value);
 	}
 
 	EXPECT_NE(config, other_config);
@@ -115,9 +115,9 @@ TEST(SpikeFromChip, CerealizeCoverage)
 {
 	SpikeFromChip obj1, obj2;
 
-	obj1.set_label(SpikeLabel(12));
-	obj1.set_fpga_time(FPGATime(3));
-	obj1.set_chip_time(ChipTime(6));
+	obj1.label = SpikeLabel(12);
+	obj1.fpga_time = FPGATime(3);
+	obj1.chip_time = ChipTime(6);
 
 	std::ostringstream ostream;
 	{

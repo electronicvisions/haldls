@@ -71,7 +71,7 @@ void test_background_spike_source_regular(
 	expected_labels_count.fill(0);
 	for (auto spike : spikes) {
 		for (auto source_coord : iter_all<BackgroundSpikeSourceOnDLS>()) {
-			if (expected_labels[source_coord] == spike.get_label()) {
+			if (expected_labels[source_coord] == spike.label) {
 				expected_labels_count[source_coord] += 1;
 			}
 		}

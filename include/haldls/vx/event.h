@@ -171,7 +171,7 @@ class GENPYBIND(visible) SpikeFromChip
 {
 public:
 	/** Default constructor. */
-	SpikeFromChip() SYMBOL_VISIBLE;
+	SpikeFromChip() = default;
 
 	/**
 	 * Construct spike from chip via a label, FPGA and chip time information.
@@ -179,56 +179,32 @@ public:
 	 * @param fpga_time FPGATime to use
 	 * @param chip_time ChipTime to use
 	 */
-	SpikeFromChip(SpikeLabel const& label, FPGATime const& fpga_time, ChipTime const& chip_time)
-	    SYMBOL_VISIBLE;
+	SpikeFromChip(SpikeLabel const& label, FPGATime const& fpga_time, ChipTime const& chip_time) :
+	    label(label), fpga_time(fpga_time), chip_time(chip_time)
+	{}
 
 	/**
 	 * Construct a spike from chip from the data respresentation.
 	 * @param data Data to use
 	 */
-	SpikeFromChip(fisch::vx::SpikeFromChip const& data) SYMBOL_VISIBLE;
+	SpikeFromChip(fisch::vx::SpikeFromChip const& data) :
+	    label(data.label), fpga_time(data.fpga_time), chip_time(data.chip_time)
+	{}
 
 	/**
-	 * Get spike label.
-	 * @return SpikeLabel value
+	 * Spike label.
 	 */
-	GENPYBIND(getter_for(label))
-	SpikeLabel get_label() const SYMBOL_VISIBLE;
+	SpikeLabel label;
 
 	/**
-	 * Set spike label.
-	 * @param value SpikeLabel value to set
+	 * FPGA time.
 	 */
-	GENPYBIND(setter_for(label))
-	void set_label(SpikeLabel value) SYMBOL_VISIBLE;
+	FPGATime fpga_time;
 
 	/**
-	 * Get FPGA time.
-	 * @return FPGATime value
+	 * Chip time.
 	 */
-	GENPYBIND(getter_for(fpga_time))
-	FPGATime get_fpga_time() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set FPGA time.
-	 * @param value FPGATime value to set
-	 */
-	GENPYBIND(setter_for(fpga_time))
-	void set_fpga_time(FPGATime value) SYMBOL_VISIBLE;
-
-	/**
-	 * Get chip time.
-	 * @return ChipTime value
-	 */
-	GENPYBIND(getter_for(chip_time))
-	ChipTime get_chip_time() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set chip time.
-	 * @param value ChipTime value to set
-	 */
-	GENPYBIND(setter_for(chip_time))
-	void set_chip_time(ChipTime value) SYMBOL_VISIBLE;
+	ChipTime chip_time;
 
 	bool operator==(SpikeFromChip const& other) const SYMBOL_VISIBLE;
 	bool operator!=(SpikeFromChip const& other) const SYMBOL_VISIBLE;
@@ -240,10 +216,6 @@ private:
 	friend class cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
-
-	SpikeLabel m_label;
-	FPGATime m_fpga_time;
-	ChipTime m_chip_time;
 
 public:
 	friend struct detail::SpikeFromChipChecker;
@@ -261,13 +233,20 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeFromChip)
 namespace detail {
 
 struct SpikeFromChipChecker {
-	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType::label) == sizeof(SpikeFromChip::m_label));
-	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType::fpga_time) == sizeof(SpikeFromChip::m_fpga_time));
-	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType::chip_time) == sizeof(SpikeFromChip::m_chip_time));
+	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType::label) == sizeof(SpikeFromChip::label));
+	static_assert(
+	    sizeof(SpikeFromChip::SpikeFromChipDType::fpga_time) == sizeof(SpikeFromChip::fpga_time));
+	static_assert(
+	    sizeof(SpikeFromChip::SpikeFromChipDType::chip_time) == sizeof(SpikeFromChip::chip_time));
 	static_assert(sizeof(SpikeFromChip::SpikeFromChipDType) == sizeof(SpikeFromChip));
-	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, label)     == offsetof(SpikeFromChip, m_label));
-	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, fpga_time) == offsetof(SpikeFromChip, m_fpga_time));
-	static_assert(offsetof(SpikeFromChip::SpikeFromChipDType, chip_time) == offsetof(SpikeFromChip, m_chip_time));
+	static_assert(
+	    offsetof(SpikeFromChip::SpikeFromChipDType, label) == offsetof(SpikeFromChip, label));
+	static_assert(
+	    offsetof(SpikeFromChip::SpikeFromChipDType, fpga_time) ==
+	    offsetof(SpikeFromChip, fpga_time));
+	static_assert(
+	    offsetof(SpikeFromChip::SpikeFromChipDType, chip_time) ==
+	    offsetof(SpikeFromChip, chip_time));
 };
 
 } // namespace detail
@@ -296,7 +275,7 @@ public:
 	    GENPYBIND(opaque(false));
 
 	/** Default constructor. */
-	MADCSampleFromChip() SYMBOL_VISIBLE;
+	MADCSampleFromChip() = default;
 
 	/**
 	 * Construct MADC sample from chip via a value, FPGA and chip time information.
@@ -309,69 +288,37 @@ public:
 	    Value const& value,
 	    Channel const& channel,
 	    FPGATime const& fpga_time,
-	    ChipTime const& chip_time) SYMBOL_VISIBLE;
+	    ChipTime const& chip_time) :
+	    value(value), channel(channel), fpga_time(fpga_time), chip_time(chip_time)
+	{}
 
 	/**
 	 * Construct an MADC sample from the data representation.
 	 * @param data Data to use
 	 */
-	MADCSampleFromChip(fisch::vx::MADCSampleFromChip const& data) SYMBOL_VISIBLE;
+	MADCSampleFromChip(fisch::vx::MADCSampleFromChip const& data) :
+	    value(data.value), fpga_time(data.fpga_time), chip_time(data.chip_time)
+	{}
 
 	/**
-	 * Get sample value.
-	 * @return Value value
+	 * Sample value.
 	 */
-	GENPYBIND(getter_for(value))
-	Value get_value() const SYMBOL_VISIBLE;
+	Value value;
 
 	/**
-	 * Set sample value.
-	 * @param value Value sample value to set
+	 * Channel from which this sample was obtained.
 	 */
-	GENPYBIND(setter_for(value))
-	void set_value(Value value) SYMBOL_VISIBLE;
+	Channel channel;
 
 	/**
-	 * Get channel from which this sample was obtained.
-	 * @return Channel channel
+	 * FPGA time.
 	 */
-	GENPYBIND(getter_for(channel))
-	Channel get_channel() const SYMBOL_VISIBLE;
+	FPGATime fpga_time;
 
 	/**
-	 * Set channel from which this sample was obtained.
-	 * @param channel Channel to set
+	 * Chip time.
 	 */
-	GENPYBIND(setter_for(channel))
-	void set_channel(Channel channel) SYMBOL_VISIBLE;
-
-	/**
-	 * Get FPGA time.
-	 * @return FPGATime value
-	 */
-	GENPYBIND(getter_for(fpga_time))
-	FPGATime get_fpga_time() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set FPGA time.
-	 * @param value FPGATime value to set
-	 */
-	GENPYBIND(setter_for(fpga_time))
-	void set_fpga_time(FPGATime value) SYMBOL_VISIBLE;
-
-	/**
-	 * Get chip time.
-	 * @return ChipTime value
-	 */
-	GENPYBIND(getter_for(chip_time))
-	ChipTime get_chip_time() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set chip time.
-	 * @param value ChipTime value to set
-	 */
-	GENPYBIND(setter_for(chip_time))
-	void set_chip_time(ChipTime value) SYMBOL_VISIBLE;
+	ChipTime chip_time;
 
 	bool operator==(MADCSampleFromChip const& other) const SYMBOL_VISIBLE;
 	bool operator!=(MADCSampleFromChip const& other) const SYMBOL_VISIBLE;
@@ -384,11 +331,6 @@ private:
 	friend class cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
-
-	Value m_value;
-	Channel m_channel;
-	FPGATime m_fpga_time;
-	ChipTime m_chip_time;
 
 public:
 	friend struct detail::MADCSampleFromChipChecker;
@@ -410,30 +352,30 @@ struct MADCSampleFromChipChecker
 {
 	static_assert(
 	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::value) ==
-	    sizeof(MADCSampleFromChip::m_value));
+	    sizeof(MADCSampleFromChip::value));
 	static_assert(
 	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::channel) ==
-	    sizeof(MADCSampleFromChip::m_channel));
+	    sizeof(MADCSampleFromChip::channel));
 	static_assert(
 	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::fpga_time) ==
-	    sizeof(MADCSampleFromChip::m_fpga_time));
+	    sizeof(MADCSampleFromChip::fpga_time));
 	static_assert(
 	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::chip_time) ==
-	    sizeof(MADCSampleFromChip::m_chip_time));
+	    sizeof(MADCSampleFromChip::chip_time));
 	static_assert(
 	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType) == sizeof(MADCSampleFromChip));
 	static_assert(
 	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, value) ==
-	    offsetof(MADCSampleFromChip, m_value));
+	    offsetof(MADCSampleFromChip, value));
 	static_assert(
 	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, channel) ==
-	    offsetof(MADCSampleFromChip, m_channel));
+	    offsetof(MADCSampleFromChip, channel));
 	static_assert(
 	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, fpga_time) ==
-	    offsetof(MADCSampleFromChip, m_fpga_time));
+	    offsetof(MADCSampleFromChip, fpga_time));
 	static_assert(
 	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, chip_time) ==
-	    offsetof(MADCSampleFromChip, m_chip_time));
+	    offsetof(MADCSampleFromChip, chip_time));
 };
 
 } // namespace detail
