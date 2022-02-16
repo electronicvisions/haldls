@@ -67,28 +67,21 @@ typename PlaybackProgram::fpga_time_type PlaybackProgram::ContainerTicket<T>::ge
 
 typename PlaybackProgram::spikes_type PlaybackProgram::get_spikes() const
 {
-	spikes_type spikes;
 	auto const& spikes_impl = m_program_impl->get_spikes();
-	std::copy(spikes_impl.begin(), spikes_impl.end(), std::back_inserter(spikes));
-	return spikes;
+	return spikes_type(spikes_impl.begin(), spikes_impl.end());
 }
 
 typename PlaybackProgram::madc_samples_type PlaybackProgram::get_madc_samples() const
 {
-	madc_samples_type samples;
 	auto const& samples_impl = m_program_impl->get_madc_samples();
-	std::copy(samples_impl.begin(), samples_impl.end(), std::back_inserter(samples));
-	return samples;
+	return madc_samples_type(samples_impl.begin(), samples_impl.end());
 }
 
 typename PlaybackProgram::highspeed_link_notifications_type
 PlaybackProgram::get_highspeed_link_notifications() const
 {
-	highspeed_link_notifications_type notifications;
 	auto const& notifications_impl = m_program_impl->get_highspeed_link_notifications();
-	std::copy(
-	    notifications_impl.begin(), notifications_impl.end(), std::back_inserter(notifications));
-	return notifications;
+	return highspeed_link_notifications_type(notifications_impl.begin(), notifications_impl.end());
 }
 
 typename PlaybackProgram::spike_pack_counts_type const& PlaybackProgram::get_spikes_pack_counts()
