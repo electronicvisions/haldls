@@ -185,7 +185,7 @@ public:
 	 * Construct a spike from chip from the data respresentation.
 	 * @param data Data to use
 	 */
-	SpikeFromChip(fisch::vx::SpikeFromChipEvent const& data) SYMBOL_VISIBLE;
+	SpikeFromChip(fisch::vx::SpikeFromChip const& data) SYMBOL_VISIBLE;
 
 	/**
 	 * Get spike label.
@@ -306,7 +306,7 @@ public:
 	 * Construct an MADC sample from the data representation.
 	 * @param data Data to use
 	 */
-	MADCSampleFromChip(fisch::vx::MADCSampleFromChipEvent const& data) SYMBOL_VISIBLE;
+	MADCSampleFromChip(fisch::vx::MADCSampleFromChip const& data) SYMBOL_VISIBLE;
 
 	/**
 	 * Get sample value.

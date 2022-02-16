@@ -185,7 +185,7 @@ SpikeFromChip::SpikeFromChip(
     m_chip_time(chip_time)
 {}
 
-SpikeFromChip::SpikeFromChip(fisch::vx::SpikeFromChipEvent const& data) :
+SpikeFromChip::SpikeFromChip(fisch::vx::SpikeFromChip const& data) :
     m_label(data.get_label()), m_fpga_time(data.get_fpga_time()), m_chip_time(data.get_chip_time())
 {}
 
@@ -255,7 +255,7 @@ MADCSampleFromChip::MADCSampleFromChip(
     m_value(value), m_fpga_time(fpga_time), m_chip_time(chip_time)
 {}
 
-MADCSampleFromChip::MADCSampleFromChip(fisch::vx::MADCSampleFromChipEvent const& data) :
+MADCSampleFromChip::MADCSampleFromChip(fisch::vx::MADCSampleFromChip const& data) :
     m_value(data.get_value()), m_fpga_time(data.get_fpga_time()), m_chip_time(data.get_chip_time())
 {}
 
