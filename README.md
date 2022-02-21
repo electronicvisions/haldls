@@ -31,33 +31,38 @@ To build this project from public resources, adhere to the following guide:
 shopt -s expand_aliases
 alias c="singularity exec --app dls-core /containers/stable/latest"
 
-# 2) Prepare a fresh workspace and change directory into it
+# 2) Add the cross-compiler and toolchain for the embedded processor to your environment
+#    If you don't have access to the module, you may build it as noted here:
+#    https://github.com/electronicvisions/oppulance
+module load ppu-toolchain
+
+# 3) Prepare a fresh workspace and change directory into it
 mkdir workspace && cd workspace
 
-# 3) Fetch a current copy of the symwaf2ic build tool
+# 4) Fetch a current copy of the symwaf2ic build tool
 git clone https://github.com/electronicvisions/waf -b symwaf2ic symwaf2ic
 
-# 4) Build symwaf2ic
+# 5) Build symwaf2ic
 c make -C symwaf2ic
 ln -s symwaf2ic/waf
 
-# 5) Setup your workspace and clone all dependencies (--clone-depth=1 to skip history)
+# 6) Setup your workspace and clone all dependencies (--clone-depth=1 to skip history)
 c ./waf setup --repo-db-url=https://github.com/electronicvisions/projects --project=haldls
 
-# 6) Build the project
+# 7) Build the project
 #    Adjust -j1 to your own needs, beware that high parallelism will lead to high memory consumption!
 c ./waf configure
 c ./waf build -j1
 
-# 7) Install the project to ./bin and ./lib
+# 8) Install the project to ./bin and ./lib
 c ./waf install
 
-# 8) If you run programs outside waf, you'll need to add ./lib and ./bin to your path specifications
+# 9) If you run programs outside waf, you'll need to add ./lib and ./bin to your path specifications
 export SINGULARITYENV_PREPEND_PATH=`pwd`/bin:$SINGULARITYENV_PREPEND_PATH
 export SINGULARITYENV_LD_LIBRARY_PATH=`pwd`/lib:$SINGULARITYENV_LD_LIBRARY_PATH
 export PYTHONPATH=`pwd`/lib:$PYTHONPATH
 
-# 9) You can now run any program, e.g. plain unit tests
+# 10) You can now run any program, e.g. plain unit tests
 c ./bin/stadls_swtest_vx_v1
 ```
 
