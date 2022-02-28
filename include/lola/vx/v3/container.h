@@ -1,5 +1,6 @@
 #pragma once
 #include "lola/vx/v3/cadc.h"
+#include "lola/vx/v3/capmem.h"
 #include "lola/vx/v3/dac.h"
 #include "lola/vx/v3/memory_timing.h"
 #include "lola/vx/v3/neuron.h"

@@ -12,6 +12,7 @@
  */
 
 PLAYBACK_CONTAINER(Crossbar, lola::vx::v1::Crossbar)
+PLAYBACK_CONTAINER(CapMem, lola::vx::v1::CapMem)
 PLAYBACK_CONTAINER(DACControlBlock, lola::vx::v1::DACControlBlock)
 PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::v1::DACChannelBlock)
 PLAYBACK_CONTAINER(CADCReadoutChain, lola::vx::v1::CADCReadoutChain)

@@ -1,4 +1,4 @@
 #pragma once
 #define CHIP_REVISION 1
-#include "stadls/vx/decode.h"
+#include "lola/vx/capmem.h"
 #undef CHIP_REVISION

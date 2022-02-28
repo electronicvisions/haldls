@@ -104,7 +104,7 @@ public:
 	typedef halco::common::typed_array<
 	    haldls::vx::v1::CapMemBlockConfig,
 	    halco::hicann_dls::vx::v1::CapMemBlockConfigOnDLS>
-	    capmem_block_config_type GENPYBIND(opaque(false));
+	    capmem_block_config_type GENPYBIND(visible);
 	capmem_block_config_type capmem_block_config;
 
 	/** Set initial CapMem config.
