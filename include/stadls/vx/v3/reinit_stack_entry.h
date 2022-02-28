@@ -2,7 +2,7 @@
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/reinit_stack_entry.h"
 
-namespace stadls::vx::v3 GENPYBIND_TAG_STADLS_VX_V1 {
+namespace stadls::vx::v3 GENPYBIND_TAG_STADLS_VX_V3 {
 
 typedef stadls::vx::ReinitStackEntry ReinitStackEntry;
 
