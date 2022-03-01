@@ -8,3 +8,4 @@
 #include "lola/vx/v3/routing_crossbar.h"
 #include "lola/vx/v3/synapse.h"
 #include "lola/vx/v3/synapse_block.h"
+#include "lola/vx/v3/synapse_driver.h"

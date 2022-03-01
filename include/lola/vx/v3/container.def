@@ -12,6 +12,7 @@
  */
 
 PLAYBACK_CONTAINER(AtomicNeuron, lola::vx::v3::AtomicNeuron)
+PLAYBACK_CONTAINER(SynapseDriverBlock, lola::vx::v3::SynapseDriverBlock)
 PLAYBACK_CONTAINER(Crossbar, lola::vx::v3::Crossbar)
 PLAYBACK_CONTAINER(CapMem, lola::vx::v3::CapMem)
 PLAYBACK_CONTAINER(DACControlBlock, lola::vx::v3::DACControlBlock)
