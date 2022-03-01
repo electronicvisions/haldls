@@ -5,6 +5,7 @@
 #include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/traits.h"
+#include "haldls/vx/v1/capmem.h"
 #include "haldls/vx/v1/synapse.h"
 #include "hate/visibility.h"
 #include "lola/vx/cerealization.h"
@@ -379,6 +380,7 @@ public:
 private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<SynapseMatrix>;
 };
+
 
 /**
  * Reset correlation capacitors in all quads of a given row on synram.

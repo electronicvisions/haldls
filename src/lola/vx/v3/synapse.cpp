@@ -339,3 +339,7 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseLabelMatrix)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseCorrelationCalibMatrix)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseMatrix)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::CorrelationResetRow)
+
+#define CHIP_REVISION 3
+#include "lola/vx/synapse_block_impl.tcc"
+#undef CHIP_REVISION

@@ -7,3 +7,4 @@
 #include "lola/vx/v2/ppu.h"
 #include "lola/vx/v2/routing_crossbar.h"
 #include "lola/vx/v2/synapse.h"
+#include "lola/vx/v2/synapse_block.h"
