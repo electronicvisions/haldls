@@ -3,6 +3,7 @@
 #include "stadls/vx/decode.h"
 #undef CHIP_REVISION
 
+#include "lola/vx/v1/chip.h"
 #include "lola/vx/v1/neuron.h"
 
 namespace stadls::vx {
@@ -80,6 +81,43 @@ inline void decode_random(std::mt19937& gen, lola::vx::v1::NeuronBlock& config)
 
 	// decode words into container
 	haldls::vx::visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(words)});
+}
+
+template <>
+inline void decode_random(std::mt19937& gen, lola::vx::v1::Chip& config)
+{
+	using namespace halco::hicann_dls::vx::v1;
+	using namespace halco::common;
+
+	decode_random(gen, config.memory_timing);
+	decode_random(gen, config.crossbar);
+
+	for (auto const c : iter_all<BackgroundSpikeSourceOnDLS>()) {
+		decode_random(gen, config.background_spike_sources[c]);
+	}
+
+	decode_random(gen, config.capmem);
+
+	for (auto const c : iter_all<SynapseDriverBlockOnDLS>()) {
+		decode_random(gen, config.synapse_driver_blocks[c]);
+	}
+
+	for (auto const c : iter_all<SynapseBlockOnDLS>()) {
+		decode_random(gen, config.synapse_blocks[c]);
+	}
+
+	decode_random(gen, config.neuron_block);
+	for (auto const c : iter_all<CADCOnDLS>()) {
+		decode_random(gen, config.cadc_readout_chains[c]);
+	}
+
+	decode_random(gen, config.readout_chain);
+
+	for (auto const c : iter_all<PPUMemoryOnDLS>()) {
+		decode_random(gen, config.ppu_memory[c]);
+	}
+
+	decode_random(gen, config.external_ppu_memory);
 }
 
 } // namespace stadls::vx

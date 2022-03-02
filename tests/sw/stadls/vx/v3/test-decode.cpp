@@ -16,6 +16,7 @@ typedef hate::type_list<
 
 typedef hate::type_list<
     lola::vx::v3::AtomicNeuron,
+    lola::vx::v3::Chip,
     haldls::vx::SynapseBiasSelection,
     lola::vx::v3::CapMem,
     haldls::vx::NullPayloadReadable,

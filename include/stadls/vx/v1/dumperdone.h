@@ -73,6 +73,23 @@ private:
 	void serialize(Archive& ar, std::uint32_t);
 };
 
+
+/**
+ * Convert the dumper result to a Chip config.
+ * This conversion is not bijective.
+ * @param dumperdone Dumper result
+ */
+lola::vx::v1::Chip GENPYBIND(visible) convert_to_chip(DumperDone const& dumperdone) SYMBOL_VISIBLE;
+
+/**
+ * Convert the dumper result to a Chip config.
+ * This conversion is not bijective.
+ * @param dumperdone Dumper result
+ * @param previous Optional previous ChipConfig to apply changes to
+ */
+lola::vx::v1::Chip GENPYBIND(visible) convert_to_chip(
+    DumperDone const& dumperdone, lola::vx::v1::Chip const& previous) SYMBOL_VISIBLE;
+
 } // namespace v1
 
 GENPYBIND_MANUAL({

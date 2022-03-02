@@ -255,7 +255,7 @@ def build(bld):
             use = [f'lola_vx_v{hx_version}', 'GTEST', 'haldls_test_common_inc'],
             install_path = '${PREFIX}/bin',
             defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
-            test_timeout=60
+            test_timeout=120
         )
 
         bld(
