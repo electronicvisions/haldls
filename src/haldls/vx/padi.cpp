@@ -474,45 +474,24 @@ void CommonSTPConfig::set_recovery_clock_speed(CommonSTPConfig::RecoveryClockSpe
 }
 
 template <typename AddressT>
-std::array<AddressT, CommonSTPConfig::write_config_size_in_words> CommonSTPConfig::write_addresses(
-	coordinate_type const& coord)
+std::array<AddressT, CommonSTPConfig::config_size_in_words> CommonSTPConfig::addresses(
+    coordinate_type const& coord)
 {
 	auto const base_address = padi_base_addresses.at(coord);
 	return {AddressT(base_address + 2)};
 }
 
-template SYMBOL_VISIBLE std::array<
-	halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-	CommonSTPConfig::write_config_size_in_words>
-CommonSTPConfig::write_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-	coordinate_type const& coord);
-
-template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusAddress, CommonSTPConfig::write_config_size_in_words>
-    CommonSTPConfig::write_addresses<halco::hicann_dls::vx::OmnibusAddress>(
+template SYMBOL_VISIBLE std::
+    array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CommonSTPConfig::config_size_in_words>
+    CommonSTPConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
         coordinate_type const& coord);
 
-
-template <typename AddressT>
-std::array<AddressT, CommonSTPConfig::read_config_size_in_words> CommonSTPConfig::read_addresses(
-	coordinate_type const& /* coord */)
-{
-	return {};
-}
-
-template SYMBOL_VISIBLE std::array<
-	halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-	CommonSTPConfig::read_config_size_in_words>
-CommonSTPConfig::read_addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-	coordinate_type const& coord);
-
 template SYMBOL_VISIBLE
-    std::array<halco::hicann_dls::vx::OmnibusAddress, CommonSTPConfig::read_config_size_in_words>
-    CommonSTPConfig::read_addresses<halco::hicann_dls::vx::OmnibusAddress>(
-        coordinate_type const& coord);
+    std::array<halco::hicann_dls::vx::OmnibusAddress, CommonSTPConfig::config_size_in_words>
+    CommonSTPConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& coord);
 
 template <typename WordT>
-std::array<WordT, CommonSTPConfig::write_config_size_in_words> CommonSTPConfig::encode() const
+std::array<WordT, CommonSTPConfig::config_size_in_words> CommonSTPConfig::encode() const
 {
 	CommonSTPConfigBitfield bitfield;
 
@@ -522,30 +501,32 @@ std::array<WordT, CommonSTPConfig::write_config_size_in_words> CommonSTPConfig::
 	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE std::array<
-    fisch::vx::word_access_type::OmnibusChipOverJTAG,
-    CommonSTPConfig::write_config_size_in_words>
-CommonSTPConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
+template SYMBOL_VISIBLE std::
+    array<fisch::vx::word_access_type::OmnibusChipOverJTAG, CommonSTPConfig::config_size_in_words>
+    CommonSTPConfig::encode<fisch::vx::word_access_type::OmnibusChipOverJTAG>() const;
 
 template SYMBOL_VISIBLE
-    std::array<fisch::vx::word_access_type::Omnibus, CommonSTPConfig::write_config_size_in_words>
+    std::array<fisch::vx::word_access_type::Omnibus, CommonSTPConfig::config_size_in_words>
     CommonSTPConfig::encode<fisch::vx::word_access_type::Omnibus>() const;
 
 template <typename WordT>
-void CommonSTPConfig::decode(
-    std::array<WordT, CommonSTPConfig::read_config_size_in_words> const& /* data */)
-{}
+void CommonSTPConfig::decode(std::array<WordT, CommonSTPConfig::config_size_in_words> const& data)
+{
+	CommonSTPConfigBitfield bitfield(data.at(0));
+
+	m_enable_recovery_clock = bitfield.u.m.enable_recovery_clock;
+	m_recovery_clock_speed = RecoveryClockSpeed(bitfield.u.m.recovery_clock_speed);
+}
 
 template SYMBOL_VISIBLE void
 CommonSTPConfig::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
     std::array<
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
-        CommonSTPConfig::read_config_size_in_words> const& data);
+        CommonSTPConfig::config_size_in_words> const& data);
 
 template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::word_access_type::Omnibus>(
-    std::array<
-        fisch::vx::word_access_type::Omnibus,
-        CommonSTPConfig::read_config_size_in_words> const& data);
+    std::array<fisch::vx::word_access_type::Omnibus, CommonSTPConfig::config_size_in_words> const&
+        data);
 
 std::ostream& operator<<(std::ostream& os, CommonSTPConfig const& config)
 {

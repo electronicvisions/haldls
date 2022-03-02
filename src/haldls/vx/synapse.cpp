@@ -305,36 +305,21 @@ std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
 }
 
 template <typename AddressT>
-std::array<AddressT, SynapseBiasSelection::write_config_size_in_words>
-SynapseBiasSelection::write_addresses(coordinate_type const& /*coord*/)
+std::array<AddressT, SynapseBiasSelection::config_size_in_words> SynapseBiasSelection::addresses(
+    coordinate_type const& /*coord*/)
 {
 	return {AddressT(anncore_center_base_address)};
 }
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusAddress, SynapseBiasSelection::write_config_size_in_words>
-    SynapseBiasSelection::write_addresses(coordinate_type const& coord);
+template SYMBOL_VISIBLE
+    std::array<halco::hicann_dls::vx::OmnibusAddress, SynapseBiasSelection::config_size_in_words>
+    SynapseBiasSelection::addresses(coordinate_type const& coord);
 
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    SynapseBiasSelection::write_config_size_in_words>
-SynapseBiasSelection::write_addresses(coordinate_type const& coord);
+    SynapseBiasSelection::config_size_in_words>
+SynapseBiasSelection::addresses(coordinate_type const& coord);
 
-template <typename AddressT>
-std::array<AddressT, SynapseBiasSelection::read_config_size_in_words>
-SynapseBiasSelection::read_addresses(coordinate_type const& /*coord*/)
-{
-	return {};
-}
-
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::OmnibusAddress, SynapseBiasSelection::read_config_size_in_words>
-    SynapseBiasSelection::read_addresses(coordinate_type const& coord);
-
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    SynapseBiasSelection::read_config_size_in_words>
-SynapseBiasSelection::read_addresses(coordinate_type const& coord);
 namespace {
 
 struct SynapseBiasSelectionBitfield
@@ -378,8 +363,7 @@ struct SynapseBiasSelectionBitfield
 } // anonymous namespace
 
 template <typename WordT>
-std::array<WordT, SynapseBiasSelection::write_config_size_in_words> SynapseBiasSelection::encode()
-    const
+std::array<WordT, SynapseBiasSelection::config_size_in_words> SynapseBiasSelection::encode() const
 {
 	SynapseBiasSelectionBitfield bitfield;
 
@@ -406,27 +390,49 @@ std::array<WordT, SynapseBiasSelection::write_config_size_in_words> SynapseBiasS
 	return {WordT(bitfield.u.raw)};
 }
 
-template SYMBOL_VISIBLE std::
-    array<fisch::vx::word_access_type::Omnibus, SynapseBiasSelection::write_config_size_in_words>
+template SYMBOL_VISIBLE
+    std::array<fisch::vx::word_access_type::Omnibus, SynapseBiasSelection::config_size_in_words>
     SynapseBiasSelection::encode() const;
 template SYMBOL_VISIBLE std::array<
     fisch::vx::word_access_type::OmnibusChipOverJTAG,
-    SynapseBiasSelection::write_config_size_in_words>
+    SynapseBiasSelection::config_size_in_words>
 SynapseBiasSelection::encode() const;
 
 template <typename WordT>
 void SynapseBiasSelection::decode(
-    std::array<WordT, SynapseBiasSelection::read_config_size_in_words> const& /*words*/)
-{}
+    std::array<WordT, SynapseBiasSelection::config_size_in_words> const& words)
+{
+	SynapseBiasSelectionBitfield bitfield(words.at(0));
+
+	m_int_dac_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(0)] = bitfield.u.m.int_dac_q0;
+	m_int_dac_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(1)] = bitfield.u.m.int_dac_q1;
+	m_int_dac_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)] = bitfield.u.m.int_dac_q2;
+	m_int_dac_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)] = bitfield.u.m.int_dac_q3;
+
+	m_int_ramp_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(0)] = bitfield.u.m.int_ramp_q0;
+	m_int_ramp_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(1)] = bitfield.u.m.int_ramp_q1;
+	m_int_ramp_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)] = bitfield.u.m.int_ramp_q2;
+	m_int_ramp_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)] = bitfield.u.m.int_ramp_q3;
+
+	m_int_store_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(0)] = bitfield.u.m.int_store_q0;
+	m_int_store_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(1)] = bitfield.u.m.int_store_q1;
+	m_int_store_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)] = bitfield.u.m.int_store_q2;
+	m_int_store_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)] = bitfield.u.m.int_store_q3;
+
+	m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(0)] = bitfield.u.m.int_output_q0;
+	m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(1)] = bitfield.u.m.int_output_q1;
+	m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(2)] = bitfield.u.m.int_output_q2;
+	m_int_output_bias[halco::hicann_dls::vx::CapMemBlockOnDLS(3)] = bitfield.u.m.int_output_q3;
+}
 
 template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
     std::array<
         fisch::vx::word_access_type::Omnibus,
-        SynapseBiasSelection::read_config_size_in_words> const& words);
+        SynapseBiasSelection::config_size_in_words> const& words);
 template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
     std::array<
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
-        SynapseBiasSelection::read_config_size_in_words> const& words);
+        SynapseBiasSelection::config_size_in_words> const& words);
 
 #ifndef __ppu__
 template <class Archive>

@@ -12,6 +12,10 @@
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
+#ifndef __ppu__
+#include "hxcomm/vx/target.h"
+#endif
+
 namespace fisch::vx {
 class Omnibus;
 class OmnibusChipOverJTAG;
@@ -135,6 +139,10 @@ class GENPYBIND(visible) SynapseBiasSelection
 public:
 	typedef halco::hicann_dls::vx::SynapseBiasSelectionOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::hardware, hxcomm::vx::Target::simulation};
+#endif
 
 	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::CapMemBlockOnDLS>
 	    bias_selection_type GENPYBIND(opaque, expose_as(_bias_selection_type));
@@ -173,22 +181,17 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
 	    SYMBOL_VISIBLE;
 
-	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
-	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 
 	template <typename AddressT>
-	static std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-
-	template <typename AddressT>
-	static std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	template <typename WordT>
-	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	template <typename WordT>
-	void decode(std::array<WordT, read_config_size_in_words> const& words) SYMBOL_VISIBLE
+	void decode(std::array<WordT, config_size_in_words> const& words) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 private:

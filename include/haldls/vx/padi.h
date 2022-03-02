@@ -263,6 +263,10 @@ class GENPYBIND(visible) CommonSTPConfig : public DifferentialWriteTrait
 public:
 	typedef halco::hicann_dls::vx::CommonSTPConfigOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::hardware, hxcomm::vx::Target::simulation};
+#endif
 
 	struct GENPYBIND(inline_base("*")) RecoveryClockSpeed
 	    : public halco::common::detail::RantWrapper<RecoveryClockSpeed, uint_fast16_t, 15, 0>
@@ -292,18 +296,14 @@ public:
 	bool operator==(CommonSTPConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(CommonSTPConfig const& other) const SYMBOL_VISIBLE;
 
-	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
-	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 0;
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
-	static std::array<AddressT, read_config_size_in_words> read_addresses(
-	    coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	template <typename AddressT>
-	static std::array<AddressT, write_config_size_in_words> write_addresses(
-	    coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& coord)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
-	std::array<WordT, write_config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
 	template <typename WordT>
-	void decode(std::array<WordT, read_config_size_in_words> const& data) SYMBOL_VISIBLE
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
 	    GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)

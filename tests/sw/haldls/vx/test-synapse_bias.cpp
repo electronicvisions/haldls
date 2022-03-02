@@ -72,7 +72,7 @@ TEST(SynapseBiasSelection, EncodeDecode)
 
 	auto coord = typename SynapseBiasSelection::coordinate_type();
 
-	std::array<OmnibusChipOverJTAGAddress, SynapseBiasSelection::write_config_size_in_words>
+	std::array<OmnibusChipOverJTAGAddress, SynapseBiasSelection::config_size_in_words>
 	    ref_addresses = {OmnibusChipOverJTAGAddress{0x100000}};
 
 	{ // check if write addresses are correct

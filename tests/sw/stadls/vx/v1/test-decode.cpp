@@ -17,6 +17,7 @@ typedef hate::type_list<
 
 typedef hate::type_list<
     lola::vx::v1::AtomicNeuron,
+    haldls::vx::SynapseBiasSelection,
     haldls::vx::NullPayloadReadable,
     haldls::vx::CommonPhyConfigChip,
     haldls::vx::CommonPhyConfigFPGA,

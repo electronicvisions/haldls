@@ -307,13 +307,11 @@ TEST(CommonSTPConfig, EncodeDecode)
 	CommonSTPConfigOnDLS coord(CommonSTPConfigOnDLS::top);
 
 	std::array<
-	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-	    CommonSTPConfig::write_config_size_in_words>
+	    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, CommonSTPConfig::config_size_in_words>
 	    ref_addresses = {
 	        halco::hicann_dls::vx::OmnibusChipOverJTAGAddress{padi_base_addresses[coord] + 2}};
 	std::array<
-	    fisch::vx::word_access_type::OmnibusChipOverJTAG,
-	    CommonSTPConfig::write_config_size_in_words>
+	    fisch::vx::word_access_type::OmnibusChipOverJTAG, CommonSTPConfig::config_size_in_words>
 	    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(recovery_speed | (1 << 4))};
 
 	{ // write addresses
