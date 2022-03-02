@@ -712,6 +712,63 @@ void AtomicNeuron::set_from(haldls::vx::v2::NeuronBackendConfig const& neuron_ba
 	bayesian.enable_1 = neuron_backend_config.get_enable_bayesian_1();
 }
 
+
+NeuronBlock::NeuronBlock() :
+    atomic_neurons(),
+    backends(),
+    current_rows(),
+    v_bias_casc_n(),
+    i_bias_readout_amp(),
+    i_bias_leak_source_follower(),
+    i_bias_threshold_comparator()
+{}
+
+bool NeuronBlock::operator==(NeuronBlock const& other) const
+{
+	return equal(*this, other);
+}
+
+bool NeuronBlock::operator!=(NeuronBlock const& other) const
+{
+	return unequal(*this, other);
+}
+
+std::ostream& operator<<(std::ostream& os, NeuronBlock const& config)
+{
+	using namespace halco::hicann_dls::vx::v2;
+	using namespace halco::common;
+	os << "NeuronBlock(\n";
+	for (auto const an : iter_all<AtomicNeuronOnDLS>()) {
+		std::stringstream sss;
+		sss << config.atomic_neurons[an];
+		os << an << ":\n";
+		os << hate::indent(sss.str(), "\t") << "\n";
+	}
+	for (auto const block : iter_all<CommonNeuronBackendConfigOnDLS>()) {
+		std::stringstream sss;
+		sss << config.backends[block];
+		os << block << ":\n";
+		os << hate::indent(sss.str(), "\t") << "\n";
+	}
+	for (auto const row : iter_all<ColumnCurrentRowOnDLS>()) {
+		std::stringstream sss;
+		sss << config.current_rows[row];
+		os << row << ":\n";
+		os << hate::indent(sss.str(), "\t") << "\n";
+	}
+	for (auto const block : iter_all<CapMemBlockOnDLS>()) {
+		os << block << ":\n";
+		os << "\tv_bias_casc_n: " << config.v_bias_casc_n[block] << "\n";
+		os << "\ti_bias_readout_amp: " << config.i_bias_readout_amp[block] << "\n";
+		os << "\ti_bias_leak_source_follower: " << config.i_bias_leak_source_follower[block]
+		   << "\n";
+		os << "\ti_bias_threshold_comparator: " << config.i_bias_threshold_comparator[block]
+		   << "\n";
+	}
+	os << ")";
+	return os;
+}
+
 } // namespace lola::vx::v2
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::AtomicNeuron::SynapticInput)
@@ -728,3 +785,4 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::AtomicNeuron::EventRout
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::AtomicNeuron::RefractoryPeriod)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::AtomicNeuron::Bayesian)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::AtomicNeuron)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v2::NeuronBlock)

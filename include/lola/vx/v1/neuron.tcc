@@ -274,6 +274,67 @@ struct VisitPreorderImpl<lola::vx::v1::AtomicNeuron>
 	}
 };
 
+
+template <>
+struct BackendContainerTrait<lola::vx::v1::NeuronBlock>
+    : public BackendContainerBase<
+          lola::vx::v1::NeuronBlock,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
+{};
+
+template <>
+struct VisitPreorderImpl<lola::vx::v1::NeuronBlock>
+{
+	template <typename ContainerT, typename VisitorT>
+	static void call(
+	    ContainerT& config,
+	    lola::vx::v1::NeuronBlock::coordinate_type const& coord,
+	    VisitorT&& visitor)
+	{
+		using halco::common::iter_all;
+		using namespace halco::hicann_dls::vx::v1;
+
+		visitor(coord, config);
+
+		for (auto const an : iter_all<AtomicNeuronOnDLS>()) {
+			visit_preorder(config.atomic_neurons[an], an, visitor);
+		}
+
+		for (auto const block : iter_all<CommonNeuronBackendConfigOnDLS>()) {
+			visit_preorder(config.backends[block], block, visitor);
+		}
+
+		for (auto const row : iter_all<ColumnCurrentRowOnDLS>()) {
+			visit_preorder(config.current_rows[row], row, visitor);
+		}
+
+		for (auto const block : iter_all<CapMemBlockOnDLS>()) {
+			haldls::vx::v1::CapMemCell i_bias_synin_sd_exc(config.i_bias_synin_sd_exc[block]);
+			haldls::vx::v1::CapMemCell i_bias_synin_sd_inh(config.i_bias_synin_sd_inh[block]);
+			haldls::vx::v1::CapMemCell i_bias_threshold_comparator(
+			    config.i_bias_threshold_comparator[block]);
+			visit_preorder(
+			    i_bias_synin_sd_exc,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::neuron_i_bias_synin_sd_exc, block),
+			    visitor);
+			visit_preorder(
+			    i_bias_synin_sd_inh,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::neuron_i_bias_synin_sd_inh, block),
+			    visitor);
+			visit_preorder(
+			    i_bias_threshold_comparator,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::neuron_i_bias_threshold_comparator, block),
+			    visitor);
+			if constexpr (!std::is_same<ContainerT, lola::vx::v1::NeuronBlock const>::value) {
+				config.i_bias_synin_sd_exc[block] = i_bias_synin_sd_exc.get_value();
+				config.i_bias_synin_sd_inh[block] = i_bias_synin_sd_inh.get_value();
+				config.i_bias_threshold_comparator[block] = i_bias_threshold_comparator.get_value();
+			}
+		}
+	}
+};
+
 } // namespace haldls::vx::detail
 
 BOOST_HANA_ADAPT_STRUCT(
@@ -374,6 +435,17 @@ BOOST_HANA_ADAPT_STRUCT(
     event_routing,
     readout);
 
+
+BOOST_HANA_ADAPT_STRUCT(
+    lola::vx::v1::NeuronBlock,
+    atomic_neurons,
+    backends,
+    current_rows,
+    i_bias_synin_sd_exc,
+    i_bias_synin_sd_inh,
+    i_bias_threshold_comparator);
+
+
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::SynapticInput)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::LeakReset::Leak)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::LeakReset::Reset)
@@ -389,3 +461,4 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::EventRoutin
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::RefractoryPeriod)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron::Bayesian)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::AtomicNeuron)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v1::NeuronBlock)

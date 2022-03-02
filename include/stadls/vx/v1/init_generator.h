@@ -167,7 +167,7 @@ public:
 	typedef halco::common::typed_array<
 	    haldls::vx::CommonNeuronBackendConfig,
 	    halco::hicann_dls::vx::v1::CommonNeuronBackendConfigOnDLS>
-	    common_neuron_backend_config_type GENPYBIND(opaque(false));
+	    common_neuron_backend_config_type GENPYBIND(visible);
 	common_neuron_backend_config_type common_neuron_backend_config;
 
 	/** Set ColumnCorrelationQuad/Switch connections. */

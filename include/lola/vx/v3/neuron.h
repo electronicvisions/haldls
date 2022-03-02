@@ -3,6 +3,7 @@
 #include "haldls/vx/v3/neuron.h"
 #include "hate/visibility.h"
 #include "lola/vx/genpybind.h"
+#include "lola/vx/v3/synapse.h"
 
 namespace lola::vx::v3 GENPYBIND_TAG_LOLA_VX_V3 {
 
@@ -507,6 +508,83 @@ public:
 
 private:
 	friend class haldls::vx::detail::VisitPreorderImpl<AtomicNeuron>;
+};
+
+
+/**
+ * Neuron block of all neurons on one chip including switches to synapses and global parameters.
+ */
+class GENPYBIND(visible) NeuronBlock
+{
+public:
+	typedef haldls::vx::v3::CapMemCell::Value AnalogValue GENPYBIND(visible);
+	typedef haldls::vx::v3::CapMemCell::DisableRefresh AnalogDisableRefresh GENPYBIND(visible);
+	typedef haldls::vx::v3::CapMemCell::value_type AnalogValueVariant;
+
+	typedef halco::hicann_dls::vx::v3::NeuronBlockOnDLS coordinate_type;
+	typedef std::false_type has_local_data;
+
+	NeuronBlock() SYMBOL_VISIBLE;
+
+	typedef halco::common::
+	    typed_heap_array<AtomicNeuron, halco::hicann_dls::vx::v3::AtomicNeuronOnDLS>
+	        AtomicNeurons GENPYBIND(opaque(false));
+	/**
+	 * Array of all neuron circuits.
+	 */
+	AtomicNeurons atomic_neurons;
+
+	typedef halco::common::typed_array<
+	    haldls::vx::v3::CommonNeuronBackendConfig,
+	    halco::hicann_dls::vx::v3::CommonNeuronBackendConfigOnDLS>
+	    Backends GENPYBIND(opaque(false));
+
+	/**
+	 * Block-wise digital backend configuration.
+	 */
+	Backends backends;
+
+	typedef halco::common::typed_array<
+	    lola::vx::v3::ColumnCurrentRow,
+	    halco::hicann_dls::vx::v3::ColumnCurrentRowOnDLS>
+	    CurrentRows GENPYBIND(opaque(false));
+
+	/**
+	 * Switch-rows to synapse arrays.
+	 */
+	CurrentRows current_rows;
+
+	typedef halco::common::
+	    typed_array<AnalogValueVariant, halco::hicann_dls::vx::v3::CapMemBlockOnDLS>
+	        AnalogValues;
+	/**
+	 * Cascode bias potential for various OTAs within the neuron.
+	 */
+	AnalogValues v_bias_casc_n;
+
+	/**
+	 * Bias current for the neuron's readout amplifier.
+	 */
+	AnalogValues i_bias_readout_amp;
+
+	/**
+	 * Bias current for the leak/reset input voltage drop source follower.
+	 */
+	AnalogValues i_bias_leak_source_follower;
+
+	/**
+	 * Bias current for the threshold comparator.
+	 */
+	AnalogValues i_bias_threshold_comparator;
+
+	bool operator==(NeuronBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(NeuronBlock const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, NeuronBlock const& config) SYMBOL_VISIBLE;
+
+private:
+	friend class haldls::vx::detail::VisitPreorderImpl<NeuronBlock>;
 };
 
 } // namespace lola::vx::v3

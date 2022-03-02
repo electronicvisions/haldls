@@ -11,6 +11,7 @@
  *       stadls::vx::v3::Dumper and stadls::vx::v3::DumperDone in `src/stadls/vx/v3/dumper.cpp`.
  */
 
+PLAYBACK_CONTAINER(NeuronBlock, lola::vx::v3::NeuronBlock)
 PLAYBACK_CONTAINER(AtomicNeuron, lola::vx::v3::AtomicNeuron)
 PLAYBACK_CONTAINER(SynapseDriverBlock, lola::vx::v3::SynapseDriverBlock)
 PLAYBACK_CONTAINER(Crossbar, lola::vx::v3::Crossbar)

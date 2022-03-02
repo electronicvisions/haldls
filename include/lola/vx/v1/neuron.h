@@ -1,8 +1,11 @@
 #pragma once
+#include "halco/common/typed_array.h"
+#include "halco/common/typed_heap_array.h"
 #include "haldls/vx/v1/capmem.h"
 #include "haldls/vx/v1/neuron.h"
 #include "hate/visibility.h"
 #include "lola/vx/genpybind.h"
+#include "lola/vx/v1/synapse.h"
 
 namespace lola::vx::v1 GENPYBIND_TAG_LOLA_VX_V1 {
 
@@ -508,6 +511,78 @@ public:
 
 private:
 	friend class haldls::vx::detail::VisitPreorderImpl<AtomicNeuron>;
+};
+
+
+/**
+ * Neuron block of all neurons on one chip including switches to synapses and global parameters.
+ */
+class GENPYBIND(visible) NeuronBlock
+{
+public:
+	typedef haldls::vx::v1::CapMemCell::Value AnalogValue GENPYBIND(visible);
+	typedef haldls::vx::v1::CapMemCell::DisableRefresh AnalogDisableRefresh GENPYBIND(visible);
+	typedef haldls::vx::v1::CapMemCell::value_type AnalogValueVariant;
+
+	typedef halco::hicann_dls::vx::v1::NeuronBlockOnDLS coordinate_type;
+	typedef std::false_type has_local_data;
+
+	NeuronBlock() SYMBOL_VISIBLE;
+
+	typedef halco::common::
+	    typed_heap_array<AtomicNeuron, halco::hicann_dls::vx::v1::AtomicNeuronOnDLS>
+	        AtomicNeurons GENPYBIND(opaque(false));
+	/**
+	 * Array of all neuron circuits.
+	 */
+	AtomicNeurons atomic_neurons;
+
+	typedef halco::common::typed_array<
+	    haldls::vx::v1::CommonNeuronBackendConfig,
+	    halco::hicann_dls::vx::v1::CommonNeuronBackendConfigOnDLS>
+	    Backends GENPYBIND(opaque(false));
+
+	/**
+	 * Block-wise digital backend configuration.
+	 */
+	Backends backends;
+
+	typedef halco::common::typed_array<
+	    lola::vx::v1::ColumnCurrentRow,
+	    halco::hicann_dls::vx::v1::ColumnCurrentRowOnDLS>
+	    CurrentRows GENPYBIND(opaque(false));
+
+	/**
+	 * Switch-rows to synapse arrays.
+	 */
+	CurrentRows current_rows;
+
+	typedef halco::common::
+	    typed_array<AnalogValueVariant, halco::hicann_dls::vx::v1::CapMemBlockOnDLS>
+	        AnalogValues;
+	/**
+	 * Source degeneration bias for the excitatory synaptic input OTA.
+	 */
+	AnalogValues i_bias_synin_sd_exc;
+
+	/**
+	 * Source degeneration bias for the inhibitory synaptic input OTA.
+	 */
+	AnalogValues i_bias_synin_sd_inh;
+
+	/**
+	 * Bias current for the threshold comparator.
+	 */
+	AnalogValues i_bias_threshold_comparator;
+
+	bool operator==(NeuronBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(NeuronBlock const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, NeuronBlock const& config) SYMBOL_VISIBLE;
+
+private:
+	friend class haldls::vx::detail::VisitPreorderImpl<NeuronBlock>;
 };
 
 } // namespace lola::vx::v1

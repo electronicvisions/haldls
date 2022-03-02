@@ -47,4 +47,39 @@ inline void decode_random(std::mt19937& gen, lola::vx::v1::AtomicNeuron& config)
 	haldls::vx::visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(words)});
 }
 
+template <>
+inline void decode_random(std::mt19937& gen, lola::vx::v1::NeuronBlock& config)
+{
+	typedef haldls::vx::detail::BackendContainerTrait<lola::vx::v1::NeuronBlock>::default_container
+	    word_type;
+	typedef std::vector<word_type> words_type;
+
+	words_type words(detail::count_decoding_words(config));
+
+	auto const coord = detail::get_coord(config);
+
+	// randomize word content
+	for (auto& word : words) {
+		word = fisch::vx::container_cast(
+		    fisch::vx::fill_random<decltype(fisch::vx::container_cast(std::declval<word_type>()))>(
+		        gen));
+	}
+
+	// overwrite AtomicNeuron words
+	for (size_t i = 0; auto& an : config.atomic_neurons) {
+		decode_random(gen, an);
+		words_type an_words;
+		haldls::vx::visit_preorder(
+		    an, halco::hicann_dls::vx::v1::AtomicNeuronOnDLS(halco::common::Enum(i)),
+		    stadls::EncodeVisitor<words_type>{an_words});
+		for (size_t j = 0; j < an_words.size(); ++j) {
+			words.at(i * an_words.size() + j) = an_words.at(j);
+		}
+		i++;
+	}
+
+	// decode words into container
+	haldls::vx::visit_preorder(config, coord, stadls::DecodeVisitor<words_type>{std::move(words)});
+}
+
 } // namespace stadls::vx

@@ -14,6 +14,7 @@
 PLAYBACK_CONTAINER(SynapseDriverBlock, lola::vx::v2::SynapseDriverBlock)
 PLAYBACK_CONTAINER(Crossbar, lola::vx::v2::Crossbar)
 PLAYBACK_CONTAINER(CapMem, lola::vx::v2::CapMem)
+PLAYBACK_CONTAINER(NeuronBlock, lola::vx::v2::NeuronBlock)
 PLAYBACK_CONTAINER(AtomicNeuron, lola::vx::v2::AtomicNeuron)
 PLAYBACK_CONTAINER(DACControlBlock, lola::vx::v2::DACControlBlock)
 PLAYBACK_CONTAINER(DACChannelBlock, lola::vx::v2::DACChannelBlock)
