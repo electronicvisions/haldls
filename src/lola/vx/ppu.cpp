@@ -148,6 +148,81 @@ std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryBlock const& config)
 }
 
 
+ExternalPPUMemory::ExternalPPUMemory() : bytes() {}
+
+ExternalPPUMemoryBlock ExternalPPUMemory::get_subblock(size_t begin, size_type length) const
+{
+	if (begin + length > bytes.size()) {
+		std::stringstream ss;
+		ss << "subblock from index " << begin << " of size " << length
+		   << " larger than block size of " << bytes.size();
+		throw std::out_of_range(ss.str());
+	}
+	ExternalPPUMemoryBlock subblock(length);
+	for (size_t i = 0; i < length; ++i) {
+		subblock.at(i) = bytes[halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(i + begin)];
+	}
+	return subblock;
+}
+
+void ExternalPPUMemory::set_subblock(size_t begin, ExternalPPUMemoryBlock const& subblock)
+{
+	if (begin + subblock.size() > bytes.size()) {
+		std::stringstream ss;
+		ss << "subblock from index " << begin << " of size " << subblock.size()
+		   << " larger than block size of " << bytes.size();
+		throw std::out_of_range(ss.str());
+	}
+	for (size_t i = 0; i < subblock.size(); ++i) {
+		bytes[halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(i + begin)] = subblock.at(i);
+	}
+}
+
+bool ExternalPPUMemory::operator==(ExternalPPUMemory const& other) const
+{
+	return (bytes == other.bytes);
+}
+
+bool ExternalPPUMemory::operator!=(ExternalPPUMemory const& other) const
+{
+	return !(*this == other);
+}
+
+std::string ExternalPPUMemory::to_string() const
+{
+	std::stringstream ss;
+	for (auto x : bytes) {
+		auto const c = x.get_value().value();
+		// Return if null byte is found
+		if (c == 0) {
+			return ss.str();
+		}
+
+		// discard non-printable characters
+		if (isprint(c) or isspace(c)) {
+			ss << *reinterpret_cast<char const*>(&c);
+		}
+	}
+	return ss.str();
+}
+
+template <class Archive>
+void ExternalPPUMemory::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(bytes));
+}
+
+std::ostream& operator<<(std::ostream& os, ExternalPPUMemory const& config)
+{
+	os << "ExternalPPUMemory(" << std::endl;
+	for (auto const& byte : config.bytes) {
+		os << "\t" << byte << std::endl;
+	}
+	os << ")";
+	return os;
+}
+
+
 PPUProgram::Symbol::Symbol() : type(Type::other), coordinate() {}
 
 PPUProgram::Symbol::Symbol(
@@ -344,4 +419,6 @@ PPUElfFile::~PPUElfFile()
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::PPUProgram::Symbol)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(lola::vx::ExternalPPUMemoryBlock)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(lola::vx::ExternalPPUMemory)
 CEREAL_CLASS_VERSION(lola::vx::ExternalPPUMemoryBlock, 0)
+CEREAL_CLASS_VERSION(lola::vx::ExternalPPUMemory, 0)

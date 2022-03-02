@@ -228,3 +228,168 @@ TEST(ExternalPPUMemoryBlock, to_string)
 		EXPECT_NO_THROW(block.to_string());
 	}
 }
+
+
+TEST(ExternalPPUMemory, Subblock)
+{
+	ExternalPPUMemory block;
+
+	EXPECT_THROW(
+	    block.get_subblock(ExternalPPUMemoryBlockSize::size, ExternalPPUMemoryBlockSize(1)),
+	    std::out_of_range);
+	EXPECT_THROW(
+	    block.get_subblock(1, ExternalPPUMemoryBlockSize(ExternalPPUMemoryBlockSize::max)),
+	    std::out_of_range);
+
+	ASSERT_EQ(block.get_subblock(0, ExternalPPUMemoryBlockSize(3)).size(), 3);
+
+	ExternalPPUMemoryBlock other(ExternalPPUMemoryBlockSize(3));
+	for (size_t i = 0; i < other.size(); ++i) {
+		other.at(i) = ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(1));
+	}
+
+	EXPECT_THROW(
+	    block.set_subblock(ExternalPPUMemoryBlockSize::size - 2, other), std::out_of_range);
+
+	block.set_subblock(2, other);
+
+	ExternalPPUMemory expect;
+	ASSERT_EQ(
+	    expect.bytes.at(ExternalPPUMemoryByteOnFPGA(2)),
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0)));
+	ASSERT_EQ(
+	    expect.bytes.at(ExternalPPUMemoryByteOnFPGA(3)),
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0)));
+	ASSERT_EQ(
+	    expect.bytes.at(ExternalPPUMemoryByteOnFPGA(4)),
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0)));
+	expect.bytes.at(ExternalPPUMemoryByteOnFPGA(2)) =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(1));
+	expect.bytes.at(ExternalPPUMemoryByteOnFPGA(3)) =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(1));
+	expect.bytes.at(ExternalPPUMemoryByteOnFPGA(4)) =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(1));
+
+	ASSERT_EQ(block, expect);
+}
+
+TEST(ExternalPPUMemory, EncodeDecode)
+{
+	ExternalPPUMemoryOnFPGA const coord;
+	ExternalPPUMemory config;
+
+	std::array<OmnibusAddress, ExternalPPUMemoryBlockSize::size> ref_addresses;
+	std::array<fisch::vx::word_access_type::Omnibus, ExternalPPUMemoryBlockSize::size> ref_data;
+
+	ASSERT_EQ(ref_addresses.size(), config.bytes.size());
+	ASSERT_EQ(ref_data.size(), config.bytes.size());
+
+	for (size_t ii = 0; ii < config.bytes.size(); ++ii) {
+		ref_addresses[ii] = static_cast<OmnibusAddress>(0x8000'0000 + (ii / sizeof(uint32_t)));
+		fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables{};
+		byte_enables[(sizeof(uint32_t) - 1) - (ii % sizeof(uint32_t))] = true;
+		ref_data[ii] = fisch::vx::word_access_type::Omnibus(
+		    ((50 + ii) % ExternalPPUMemoryByte::Value::size)
+		        << (((sizeof(uint32_t) - 1) - (ii % sizeof(uint32_t))) * CHAR_BIT),
+		    byte_enables);
+		config.bytes[ExternalPPUMemoryByteOnFPGA(ii)].set_value(
+		    ExternalPPUMemoryByte::Value((50 + ii) % ExternalPPUMemoryByte::Value::size));
+	}
+
+	typedef std::vector<OmnibusAddress> addresses_type;
+	typedef std::vector<fisch::vx::word_access_type::Omnibus> words_type;
+	{ // write addresses
+		addresses_type write_addresses;
+		visit_preorder(config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
+		EXPECT_THAT(write_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	{ // read addresses
+		addresses_type read_addresses;
+		visit_preorder(config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
+		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
+	}
+
+	words_type data;
+
+	visit_preorder(config, coord, stadls::EncodeVisitor<words_type>{data});
+	EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
+
+	ExternalPPUMemory config_copy;
+	ASSERT_NE(config, config_copy);
+	visit_preorder(config_copy, coord, stadls::DecodeVisitor<words_type>{std::move(data)});
+	ASSERT_EQ(config, config_copy);
+}
+
+TEST(ExternalPPUMemory, CerealizeCoverage)
+{
+	ExternalPPUMemory obj1, obj2;
+	for (auto& byte : obj1.bytes) {
+		byte =
+		    ExternalPPUMemoryByte(draw_ranged_non_default_value<ExternalPPUMemoryByte::Value>(0));
+	}
+
+	std::ostringstream ostream;
+	{
+		cereal::JSONOutputArchive oa(ostream);
+		oa(obj1);
+	}
+
+	std::istringstream istream(ostream.str());
+	{
+		cereal::JSONInputArchive ia(istream);
+		ia(obj2);
+	}
+	ASSERT_EQ(obj1, obj2);
+}
+
+TEST(ExternalPPUMemory, to_string)
+{
+	static std::mt19937 random_generator(123456789);
+	ExternalPPUMemory block;
+
+	// Encoded "Hello World!\0Hel"
+	block.bytes[ExternalPPUMemoryByteOnFPGA(0)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x48));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(1)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x65));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(2)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x6c));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(3)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x6c));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(4)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x6f));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(5)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x20));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(6)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x57));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(7)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x6f));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(8)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x72));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(9)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x6c));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(10)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x64));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(11)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x21));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(12)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x00));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(13)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x48));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(14)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x65));
+	block.bytes[ExternalPPUMemoryByteOnFPGA(15)] =
+	    ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(0x6c));
+	ASSERT_EQ(block.to_string(), "Hello World!");
+
+	// test random memory contents
+	std::uniform_int_distribution<std::mt19937::result_type> dist(
+	    ExternalPPUMemoryByte::Value::min, ExternalPPUMemoryByte::Value::max);
+	for (unsigned int i = 0; i < 10000; ++i) {
+		for (auto& byte : block.bytes) {
+			byte = ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value(dist(random_generator)));
+		}
+		EXPECT_NO_THROW(block.to_string());
+	}
+}

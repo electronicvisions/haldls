@@ -32,6 +32,7 @@ PLAYBACK_CONTAINER(SynapseWeightRow, lola::vx::v3::SynapseWeightRow)
 PLAYBACK_CONTAINER(SynapseLabelRow, lola::vx::v3::SynapseLabelRow)
 PLAYBACK_CONTAINER(SynapseCorrelationCalibRow, lola::vx::v3::SynapseCorrelationCalibRow)
 PLAYBACK_CONTAINER(ExternalPPUMemoryBlock, lola::vx::v3::ExternalPPUMemoryBlock)
+PLAYBACK_CONTAINER(ExternalPPUMemory, lola::vx::v3::ExternalPPUMemory)
 PLAYBACK_CONTAINER(MemoryTiming, lola::vx::v3::MemoryTiming)
 LAST_PLAYBACK_CONTAINER(SynapseRow, lola::vx::v3::SynapseRow)
 

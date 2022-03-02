@@ -1,4 +1,5 @@
 #pragma once
+#include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/coordinates.h"
 #include "haldls/cerealization.h"
 #include "hate/visibility.h"
@@ -64,6 +65,52 @@ private:
 
 	bytes_type m_bytes;
 };
+
+
+/**
+ * Complete external PPU memory.
+ */
+class GENPYBIND(visible) ExternalPPUMemory
+{
+public:
+	typedef halco::hicann_dls::vx::ExternalPPUMemoryOnFPGA coordinate_type;
+	typedef std::false_type has_local_data;
+
+	typedef halco::common::typed_heap_array<
+	    haldls::vx::ExternalPPUMemoryByte,
+	    halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA>
+	    Bytes GENPYBIND(opaque);
+
+	typedef halco::hicann_dls::vx::ExternalPPUMemoryBlockSize size_type;
+
+	ExternalPPUMemory() SYMBOL_VISIBLE;
+
+	Bytes bytes;
+
+	ExternalPPUMemoryBlock get_subblock(size_t begin, size_type length) const SYMBOL_VISIBLE;
+	void set_subblock(size_t begin, ExternalPPUMemoryBlock const& subblock) SYMBOL_VISIBLE;
+
+	bool operator==(ExternalPPUMemory const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExternalPPUMemory const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExternalPPUMemory const& config)
+	    SYMBOL_VISIBLE;
+
+	/**
+	 * Print words as string discarding non-printable characters.
+	 * @return Printable characters as string
+	 */
+	std::string to_string() const SYMBOL_VISIBLE;
+
+	friend haldls::vx::detail::VisitPreorderImpl<ExternalPPUMemory>;
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t const version);
+};
+
 
 class GENPYBIND(visible) PPUProgram
 {
