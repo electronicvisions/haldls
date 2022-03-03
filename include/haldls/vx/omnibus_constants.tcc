@@ -77,10 +77,10 @@ constexpr std::array<uint32_t, 4> neuron_sram_base_addresses = {
     neuron_nw_sram_base_address, neuron_ne_sram_base_address, neuron_sw_sram_base_address,
     neuron_se_sram_base_address};
 
-constexpr uint32_t neuron_nw_sram_timing_base_address{neuron_nw_sram_base_address | 0x82};
-constexpr uint32_t neuron_ne_sram_timing_base_address{neuron_ne_sram_base_address | 0x82};
-constexpr uint32_t neuron_sw_sram_timing_base_address{neuron_sw_sram_base_address | 0x82};
-constexpr uint32_t neuron_se_sram_timing_base_address{neuron_se_sram_base_address | 0x82};
+constexpr uint32_t neuron_nw_sram_timing_base_address{neuron_nw_sram_base_address | 0x402};
+constexpr uint32_t neuron_ne_sram_timing_base_address{neuron_ne_sram_base_address | 0x402};
+constexpr uint32_t neuron_sw_sram_timing_base_address{neuron_sw_sram_base_address | 0x402};
+constexpr uint32_t neuron_se_sram_timing_base_address{neuron_se_sram_base_address | 0x402};
 constexpr std::array<uint32_t, 4> neuron_sram_timing_base_addresses = {
     neuron_nw_sram_timing_base_address, neuron_ne_sram_timing_base_address,
     neuron_sw_sram_timing_base_address, neuron_se_sram_timing_base_address};
@@ -138,9 +138,9 @@ constexpr std::array<uint32_t, 2> correlation_reset_base_addresses = {
 constexpr uint32_t neuron_backend_west_sram_base_address{0x1a'1000};
 constexpr uint32_t neuron_backend_east_sram_base_address{0x1a'9000};
 constexpr uint32_t neuron_backend_west_sram_timing_base_address{
-    neuron_backend_west_sram_base_address | 0x102};
+    neuron_backend_west_sram_base_address | 0x402};
 constexpr uint32_t neuron_backend_east_sram_timing_base_address{
-    neuron_backend_east_sram_base_address | 0x102};
+    neuron_backend_east_sram_base_address | 0x402};
 
 constexpr uint32_t neuron_backend_west_register_base_address{0x1a'1800};
 constexpr uint32_t neuron_backend_east_register_base_address{0x1a'9800};
