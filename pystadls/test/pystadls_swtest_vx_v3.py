@@ -7,7 +7,7 @@ from pyhalco_common import iter_all
 import pyhalco_hicann_dls_vx_v3 as halco
 import pyhaldls_vx_v3 as haldls
 import pystadls_vx_v3 as stadls
-import pyfisch_vx as fisch
+import pyfisch_vx_v3 as fisch
 
 
 class TestPystadlsVxV3(unittest.TestCase):

@@ -12,7 +12,7 @@ GENPYBIND_TAG_HALDLS_VX_V1
 GENPYBIND_MANUAL({
 	parent.attr("__variant__") = "pybind11";
 	parent->py::module::import("pyhalco_hicann_dls_vx_v1");
-	parent->py::module::import("pyfisch_vx");
+	parent->py::module::import("pyfisch_vx_v1");
 })
 
 #include "haldls/cerealization.h"
