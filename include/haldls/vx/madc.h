@@ -483,10 +483,10 @@ public:
 	 * Caution: the respective properties are called `fmc_2_quadrant`, `fmc_act_mux`,
 	 *   `fmc_debug`, and `fmc_to_vga`.
 	 */
-	GENPYBIND(getter_for(signal_selection_connect_iconv))
-	bool get_signal_selection_connect_iconv() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(signal_selection_connect_iconv))
-	void set_signal_selection_connect_iconv(bool const value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(signal_selection_connect_current_meter))
+	bool get_signal_selection_connect_current_meter() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(signal_selection_connect_current_meter))
+	void set_signal_selection_connect_current_meter(bool const value) SYMBOL_VISIBLE;
 
 	GENPYBIND(getter_for(signal_selection_connect_active_mux))
 	bool get_signal_selection_connect_active_mux() const SYMBOL_VISIBLE;
@@ -583,7 +583,7 @@ private:
 	MADCClockScaleValue m_madc_clock_scale_value;
 	bool m_enable_active_mux_amplifiers;
 	hemisphere_type m_enable_pseudo_differential_reference;
-	bool m_signal_selection_connect_iconv;
+	bool m_signal_selection_connect_current_meter;
 	bool m_signal_selection_connect_active_mux;
 	bool m_signal_selection_connect_debug;
 	bool m_signal_selection_connect_preamp;

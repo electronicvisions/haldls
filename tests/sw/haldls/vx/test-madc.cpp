@@ -341,9 +341,9 @@ TEST(MADCConfig, General)
 	}
 
 	{
-		bool value_in = !config.get_signal_selection_connect_iconv();
-		config.set_signal_selection_connect_iconv(value_in);
-		bool value_out = config.get_signal_selection_connect_iconv();
+		bool value_in = !config.get_signal_selection_connect_current_meter();
+		config.set_signal_selection_connect_current_meter(value_in);
+		bool value_out = config.get_signal_selection_connect_current_meter();
 		EXPECT_EQ(value_in, value_out);
 	}
 
@@ -559,8 +559,8 @@ TEST(MADCConfig, CerealizeCoverage)
 	}
 
 	{
-		bool value_in = !c1.get_signal_selection_connect_iconv();
-		c1.set_signal_selection_connect_iconv(value_in);
+		bool value_in = !c1.get_signal_selection_connect_current_meter();
+		c1.set_signal_selection_connect_current_meter(value_in);
 	}
 
 	{
@@ -825,8 +825,8 @@ TEST(MADCConfig, EncodeDecode)
 	}
 
 	{
-		bool value_in = !config.get_signal_selection_connect_iconv();
-		config.set_signal_selection_connect_iconv(value_in);
+		bool value_in = !config.get_signal_selection_connect_current_meter();
+		config.set_signal_selection_connect_current_meter(value_in);
 
 		ref_data_raw[9] |= value_in << 3;
 	}

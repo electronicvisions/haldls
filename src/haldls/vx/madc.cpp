@@ -281,7 +281,7 @@ MADCConfig::MADCConfig() :
     m_madc_clock_scale_value(MADCClockScaleValue()),
     m_enable_active_mux_amplifiers(true),
     m_enable_pseudo_differential_reference(hemisphere_type()),
-    m_signal_selection_connect_iconv(false),
+    m_signal_selection_connect_current_meter(false),
     m_signal_selection_connect_active_mux(true),
     m_signal_selection_connect_debug(false),
     m_signal_selection_connect_preamp(true),
@@ -541,14 +541,14 @@ void MADCConfig::set_enable_pseudo_differential_reference(hemisphere_type const&
 	m_enable_pseudo_differential_reference = value;
 }
 
-bool MADCConfig::get_signal_selection_connect_iconv() const
+bool MADCConfig::get_signal_selection_connect_current_meter() const
 {
-	return m_signal_selection_connect_iconv;
+	return m_signal_selection_connect_current_meter;
 }
 
-void MADCConfig::set_signal_selection_connect_iconv(bool const value)
+void MADCConfig::set_signal_selection_connect_current_meter(bool const value)
 {
-	m_signal_selection_connect_iconv = value;
+	m_signal_selection_connect_current_meter = value;
 }
 
 bool MADCConfig::get_signal_selection_connect_active_mux() const
@@ -717,7 +717,7 @@ struct MADCConfigBitfield
 			(uint32_t enable_active_mux_amplifiers           :  1; /*       0 */ ) \
 			(uint32_t enable_pseudo_differential_reference_n :  1; /*       1 */ ) \
 			(uint32_t enable_pseudo_differential_reference_s :  1; /*       2 */ ) \
-			(uint32_t signal_selection_connect_iconv         :  1; /*       3 */ ) \
+			(uint32_t signal_selection_connect_current_meter :  1; /*       3 */ ) \
 			(uint32_t signal_selection_connect_active_mux    :  1; /*       4 */ ) \
 			(uint32_t signal_selection_connect_debug         :  1; /*       5 */ ) \
 			(uint32_t signal_selection_connect_preamp        :  1; /*       6 */ ) \
@@ -781,7 +781,7 @@ std::array<WordT, MADCConfig::config_size_in_words> MADCConfig::encode() const
 	    m_enable_pseudo_differential_reference[halco::hicann_dls::vx::HemisphereOnDLS(0)];
 	bitfield.u.m.enable_pseudo_differential_reference_s =
 	    m_enable_pseudo_differential_reference[halco::hicann_dls::vx::HemisphereOnDLS(1)];
-	bitfield.u.m.signal_selection_connect_iconv = m_signal_selection_connect_iconv;
+	bitfield.u.m.signal_selection_connect_current_meter = m_signal_selection_connect_current_meter;
 	bitfield.u.m.signal_selection_connect_active_mux = m_signal_selection_connect_active_mux;
 	bitfield.u.m.signal_selection_connect_debug = m_signal_selection_connect_debug;
 	bitfield.u.m.signal_selection_connect_preamp = m_signal_selection_connect_preamp;
@@ -849,7 +849,7 @@ void MADCConfig::decode(std::array<WordT, MADCConfig::config_size_in_words> cons
 	    bitfield.u.m.enable_pseudo_differential_reference_n;
 	m_enable_pseudo_differential_reference[halco::hicann_dls::vx::HemisphereOnDLS(1)] =
 	    bitfield.u.m.enable_pseudo_differential_reference_s;
-	m_signal_selection_connect_iconv = bitfield.u.m.signal_selection_connect_iconv;
+	m_signal_selection_connect_current_meter = bitfield.u.m.signal_selection_connect_current_meter;
 	m_signal_selection_connect_active_mux = bitfield.u.m.signal_selection_connect_active_mux;
 	m_signal_selection_connect_debug = bitfield.u.m.signal_selection_connect_debug;
 	m_signal_selection_connect_preamp = bitfield.u.m.signal_selection_connect_preamp;
@@ -877,42 +877,42 @@ std::ostream& operator<<(std::ostream& os, MADCConfig const& config)
 	std::stringstream ss;
 	ss << "MADCConfig(\n" << std::boolalpha;
 	// clang-format off
-	ss << "\tactive_mux_initially_selected_input:  \t" << config.m_active_mux_initially_selected_input << "\n"
-	   << "\tactive_mux_input_select_length:       \t" << config.m_active_mux_input_select_length << "\n"
-	   << "\tsample_duration_adjust:               \t" << config.m_sample_duration_adjust << "\n"
-	   << "\tenable_sar_reset_on_fall:             \t" << config.m_enable_sar_reset_on_fall << "\n"
-	   << "\tsar_reset_wait:                       \t" << config.m_sar_reset_wait << "\n"
-	   << "\tsar_reset_length:                     \t" << config.m_sar_reset_length << "\n"
-	   << "\tpowerup_wait_value:                   \t" << config.m_powerup_wait_value << "\n"
-	   << "\tconversion_cycles_offset:             \t" << config.m_conversion_cycles_offset << "\n"
-	   << "\tcalibration_wait_value:               \t" << config.m_calibration_wait_value << "\n"
-	   << "\tenable_calibration:                   \t" << config.m_enable_calibration << "\n"
-	   << "\tnumber_of_samples:                    \t" << config.m_number_of_samples << "\n"
-	   << "\tpreamp_sampling_window_start:         \t" << config.m_preamp_sampling_window_start << "\n"
-	   << "\tpreamp_sampling_window_end:           \t" << config.m_preamp_sampling_window_end << "\n"
-	   << "\ticonv_sampling_window_start:          \t" << config.m_iconv_sampling_window_start << "\n"
-	   << "\ticonv_sampling_window_end:            \t" << config.m_iconv_sampling_window_end << "\n"
-	   << "\tsample_on_positive_edge:              \t" << config.m_sample_on_positive_edge << "\n"
-	   << "\tenable_dummy_data:                    \t" << config.m_enable_dummy_data << "\n"
-	   << "\tconnect_preamp_to_madc:               \t" << config.m_connect_preamp_to_madc << "\n"
-	   << "\tconnect_pads_to_madc:                 \t" << config.m_connect_pads_to_madc << "\n"
-	   << "\tconnect_preamp_to_pads:               \t" << config.m_connect_preamp_to_pads << "\n"
-	   << "\tpreamp_gain_capacitor_size:           \t" << config.m_preamp_gain_capacitor_size << "\n"
-	   << "\tenable_madc_clock_scaling:            \t" << config.m_enable_madc_clock_scaling << "\n"
-	   << "\tmadc_clock_scale_value:               \t" << config.m_madc_clock_scale_value << "\n"
-	   << "\tenable_active_mux_amplifiers:         \t" << config.m_enable_active_mux_amplifiers << "\n"
-	   << "\tenable_pseudo_differential_reference: \t[";
+	ss << "\tactive_mux_initially_selected_input:   \t" << config.m_active_mux_initially_selected_input << "\n"
+	   << "\tactive_mux_input_select_length:        \t" << config.m_active_mux_input_select_length << "\n"
+	   << "\tsample_duration_adjust:                \t" << config.m_sample_duration_adjust << "\n"
+	   << "\tenable_sar_reset_on_fall:              \t" << config.m_enable_sar_reset_on_fall << "\n"
+	   << "\tsar_reset_wait:                        \t" << config.m_sar_reset_wait << "\n"
+	   << "\tsar_reset_length:                      \t" << config.m_sar_reset_length << "\n"
+	   << "\tpowerup_wait_value:                    \t" << config.m_powerup_wait_value << "\n"
+	   << "\tconversion_cycles_offset:              \t" << config.m_conversion_cycles_offset << "\n"
+	   << "\tcalibration_wait_value:                \t" << config.m_calibration_wait_value << "\n"
+	   << "\tenable_calibration:                    \t" << config.m_enable_calibration << "\n"
+	   << "\tnumber_of_samples:                     \t" << config.m_number_of_samples << "\n"
+	   << "\tpreamp_sampling_window_start:          \t" << config.m_preamp_sampling_window_start << "\n"
+	   << "\tpreamp_sampling_window_end:            \t" << config.m_preamp_sampling_window_end << "\n"
+	   << "\ticonv_sampling_window_start:           \t" << config.m_iconv_sampling_window_start << "\n"
+	   << "\ticonv_sampling_window_end:             \t" << config.m_iconv_sampling_window_end << "\n"
+	   << "\tsample_on_positive_edge:               \t" << config.m_sample_on_positive_edge << "\n"
+	   << "\tenable_dummy_data:                     \t" << config.m_enable_dummy_data << "\n"
+	   << "\tconnect_preamp_to_madc:                \t" << config.m_connect_preamp_to_madc << "\n"
+	   << "\tconnect_pads_to_madc:                  \t" << config.m_connect_pads_to_madc << "\n"
+	   << "\tconnect_preamp_to_pads:                \t" << config.m_connect_preamp_to_pads << "\n"
+	   << "\tpreamp_gain_capacitor_size:            \t" << config.m_preamp_gain_capacitor_size << "\n"
+	   << "\tenable_madc_clock_scaling:             \t" << config.m_enable_madc_clock_scaling << "\n"
+	   << "\tmadc_clock_scale_value:                \t" << config.m_madc_clock_scale_value << "\n"
+	   << "\tenable_active_mux_amplifiers:          \t" << config.m_enable_active_mux_amplifiers << "\n"
+	   << "\tenable_pseudo_differential_reference:  \t[";
 	hate::join(ss, config.m_enable_pseudo_differential_reference.begin(), config.m_enable_pseudo_differential_reference.end(), ", ");
 	ss << "]\n"
-	   << "\tsignal_selection_connect_iconv:       \t" << config.m_signal_selection_connect_iconv << "\n"
-	   << "\tsignal_selection_connect_active_mux:  \t" << config.m_signal_selection_connect_active_mux << "\n"
-	   << "\tsignal_selection_connect_debug:       \t" << config.m_signal_selection_connect_debug << "\n"
-	   << "\tsignal_selection_connect_preamp:      \t" << config.m_signal_selection_connect_preamp << "\n"
-	   << "\tenable_iconv_amplifier:               \t" << config.m_enable_iconv_amplifier << "\n"
-	   << "\tconnect_iconv_neuron                  \t[";
+	   << "\tsignal_selection_connect_current_meter:\t" << config.m_signal_selection_connect_current_meter << "\n"
+	   << "\tsignal_selection_connect_active_mux:   \t" << config.m_signal_selection_connect_active_mux << "\n"
+	   << "\tsignal_selection_connect_debug:        \t" << config.m_signal_selection_connect_debug << "\n"
+	   << "\tsignal_selection_connect_preamp:       \t" << config.m_signal_selection_connect_preamp << "\n"
+	   << "\tenable_iconv_amplifier:                \t" << config.m_enable_iconv_amplifier << "\n"
+	   << "\tconnect_iconv_neuron                   \t[";
 	hate::join(ss, config.m_connect_iconv_neuron.begin(), config.m_connect_iconv_neuron.end(), ", ");
 	ss << "]\n"
-	   << "\tconnect_iconv_synapse:                \t[inhibitory: "
+	   << "\tconnect_iconv_synapse:                 \t[inhibitory: "
 	   << config.m_connect_iconv_synapse[halco::hicann_dls::vx::SynapticInputOnNeuron::inhibitory]
 	   << ", excitatory: "
 	   << config.m_connect_iconv_synapse[halco::hicann_dls::vx::SynapticInputOnNeuron::excitatory]
@@ -950,7 +950,8 @@ bool MADCConfig::operator==(MADCConfig const& other) const
 	    m_madc_clock_scale_value == other.m_madc_clock_scale_value &&
 	    m_enable_active_mux_amplifiers == other.m_enable_active_mux_amplifiers &&
 	    m_enable_pseudo_differential_reference == other.m_enable_pseudo_differential_reference &&
-	    m_signal_selection_connect_iconv == other.m_signal_selection_connect_iconv &&
+	    m_signal_selection_connect_current_meter ==
+	        other.m_signal_selection_connect_current_meter &&
 	    m_signal_selection_connect_active_mux == other.m_signal_selection_connect_active_mux &&
 	    m_signal_selection_connect_debug == other.m_signal_selection_connect_debug &&
 	    m_signal_selection_connect_preamp == other.m_signal_selection_connect_preamp &&
@@ -993,7 +994,7 @@ void MADCConfig::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_madc_clock_scale_value));
 	ar(CEREAL_NVP(m_enable_active_mux_amplifiers));
 	ar(CEREAL_NVP(m_enable_pseudo_differential_reference));
-	ar(CEREAL_NVP(m_signal_selection_connect_iconv));
+	ar(CEREAL_NVP(m_signal_selection_connect_current_meter));
 	ar(CEREAL_NVP(m_signal_selection_connect_active_mux));
 	ar(CEREAL_NVP(m_signal_selection_connect_debug));
 	ar(CEREAL_NVP(m_signal_selection_connect_preamp));
