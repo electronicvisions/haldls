@@ -9,7 +9,6 @@
 #include <random>
 
 typedef hate::type_list<
-    lola::vx::v3::AtomicNeuron,
     haldls::vx::NullPayloadReadable,
     haldls::vx::INA219Status,
     haldls::vx::VectorGeneratorControl>
