@@ -140,7 +140,7 @@ constexpr uint32_t neuron_backend_east_sram_base_address{0x1a'9000};
 constexpr uint32_t neuron_backend_west_sram_timing_base_address{
     neuron_backend_west_sram_base_address | 0x102};
 constexpr uint32_t neuron_backend_east_sram_timing_base_address{
-    neuron_backend_west_sram_base_address | 0x102};
+    neuron_backend_east_sram_base_address | 0x102};
 
 constexpr uint32_t neuron_backend_west_register_base_address{0x1a'1800};
 constexpr uint32_t neuron_backend_east_register_base_address{0x1a'9800};
