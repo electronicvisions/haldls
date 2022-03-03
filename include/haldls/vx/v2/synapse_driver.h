@@ -23,7 +23,7 @@ public:
 	typedef std::true_type is_leaf_node;
 #ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
-	    hxcomm::vx::Target::simulation, hxcomm::vx::Target::hardware};
+	    hxcomm::vx::Target::simulation};
 #endif
 
 	struct GENPYBIND(inline_base("*")) Utilization
