@@ -91,9 +91,9 @@ constexpr std::array<uint32_t, 2> synapse_driver_sram_base_addresses = {
     synapse_driver_top_sram_base_address, synapse_driver_bottom_sram_base_address};
 
 constexpr uint32_t synapse_driver_top_sram_timing_base_address{
-    synapse_driver_top_sram_base_address | 0x82};
+    synapse_driver_top_sram_base_address | 0x202};
 constexpr uint32_t synapse_driver_bottom_sram_timing_base_address{
-    synapse_driver_bottom_sram_base_address | 0x82};
+    synapse_driver_bottom_sram_base_address | 0x202};
 constexpr std::array<uint32_t, 2> synapse_driver_sram_timing_base_addresses = {
     synapse_driver_top_sram_timing_base_address, synapse_driver_bottom_sram_timing_base_address};
 
