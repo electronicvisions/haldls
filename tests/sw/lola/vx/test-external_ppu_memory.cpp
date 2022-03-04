@@ -101,29 +101,26 @@ TEST(ExternalPPUMemoryBlock, Subblock)
 
 TEST(ExternalPPUMemoryBlock, EncodeDecode)
 {
-	auto const min = ExternalPPUMemoryByteOnFPGA(42);
+	auto const min = ExternalPPUMemoryByteOnFPGA(43);
 	auto const max = ExternalPPUMemoryByteOnFPGA(50);
 	auto const coord = ExternalPPUMemoryBlockOnFPGA(min, max);
 	ExternalPPUMemoryBlock config(coord.toExternalPPUMemoryBlockSize());
 	ExternalPPUMemoryBlock::bytes_type memory(config.size());
 
-	std::array<OmnibusAddress, 9> ref_addresses;
-	std::array<fisch::vx::word_access_type::Omnibus, 9> ref_data;
+	std::array<OmnibusAddress, 3> ref_addresses;
+	std::array<fisch::vx::word_access_type::Omnibus, 3> ref_data;
 
-	ASSERT_EQ(ref_addresses.size(), memory.size());
-	ASSERT_EQ(ref_data.size(), memory.size());
-
-
+	ref_addresses[0] = OmnibusAddress(0x8000'0000 + (min.toEnum() / sizeof(uint32_t)) + 0);
+	ref_addresses[1] = OmnibusAddress(0x8000'0000 + (min.toEnum() / sizeof(uint32_t)) + 1);
+	ref_addresses[2] = OmnibusAddress(0x8000'0000 + (min.toEnum() / sizeof(uint32_t)) + 2);
+	ref_data[0] =
+	    fisch::vx::word_access_type::Omnibus(0x00000001, std::array{true, false, false, false});
+	ref_data[1] =
+	    fisch::vx::word_access_type::Omnibus(0x02030405, std::array{true, true, true, true});
+	ref_data[2] =
+	    fisch::vx::word_access_type::Omnibus(0x06070800, std::array{false, true, true, true});
 	for (size_t ii = 0; ii < memory.size(); ++ii) {
-		ref_addresses[ii] =
-		    static_cast<OmnibusAddress>(0x8000'0000 + ((min.toEnum() + ii) / sizeof(uint32_t)));
-		fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables{};
-		byte_enables[(sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))] = true;
-		ref_data[ii] = fisch::vx::word_access_type::Omnibus(
-		    (50 + ii)
-		        << (((sizeof(uint32_t) - 1) - ((min.toEnum() + ii) % sizeof(uint32_t))) * CHAR_BIT),
-		    byte_enables);
-		memory[ii].set_value(ExternalPPUMemoryByte::Value(50 + ii));
+		memory[ii].set_value(ExternalPPUMemoryByte::Value(0x1 + ii));
 	}
 
 	config.set_bytes(memory);
@@ -172,8 +169,8 @@ TEST(ExternalPPUMemoryBlock, CerealizeCoverage)
 	ExternalPPUMemoryBlock obj1, obj2;
 	auto data = obj1.get_bytes();
 	for (auto& byte : data) {
-		byte =
-		    ExternalPPUMemoryByte(draw_ranged_non_default_value<ExternalPPUMemoryByte::Value>(0));
+		byte = ExternalPPUMemoryByte(
+		    draw_non_default_value<ExternalPPUMemoryByte::Value>(ExternalPPUMemoryByte::Value(0)));
 	}
 	obj1.set_bytes(data);
 
@@ -278,22 +275,25 @@ TEST(ExternalPPUMemory, EncodeDecode)
 	ExternalPPUMemoryOnFPGA const coord;
 	ExternalPPUMemory config;
 
-	std::array<OmnibusAddress, ExternalPPUMemoryBlockSize::size> ref_addresses;
-	std::array<fisch::vx::word_access_type::Omnibus, ExternalPPUMemoryBlockSize::size> ref_data;
+	std::array<OmnibusAddress, ExternalPPUMemoryQuadOnFPGA::size> ref_addresses;
+	std::array<fisch::vx::word_access_type::Omnibus, ExternalPPUMemoryQuadOnFPGA::size> ref_data;
 
-	ASSERT_EQ(ref_addresses.size(), config.bytes.size());
-	ASSERT_EQ(ref_data.size(), config.bytes.size());
+	ASSERT_EQ(ref_addresses.size(), config.bytes.size() / sizeof(uint32_t));
+	ASSERT_EQ(ref_data.size(), config.bytes.size() / sizeof(uint32_t));
 
-	for (size_t ii = 0; ii < config.bytes.size(); ++ii) {
-		ref_addresses[ii] = static_cast<OmnibusAddress>(0x8000'0000 + (ii / sizeof(uint32_t)));
-		fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables{};
-		byte_enables[(sizeof(uint32_t) - 1) - (ii % sizeof(uint32_t))] = true;
-		ref_data[ii] = fisch::vx::word_access_type::Omnibus(
-		    ((50 + ii) % ExternalPPUMemoryByte::Value::size)
-		        << (((sizeof(uint32_t) - 1) - (ii % sizeof(uint32_t))) * CHAR_BIT),
-		    byte_enables);
-		config.bytes[ExternalPPUMemoryByteOnFPGA(ii)].set_value(
-		    ExternalPPUMemoryByte::Value((50 + ii) % ExternalPPUMemoryByte::Value::size));
+	for (size_t i = 0; i < ref_data.size(); ++i) {
+		ref_addresses[i] = OmnibusAddress(0x8000'0000 + i);
+		ref_data[i] = fisch::vx::word_access_type::Omnibus(
+		    ((i % 256) << 24) | (((i + 1) % 256) << 16) | (((i + 2) % 256) << 8) | ((i + 3) % 256),
+		    std::array{true, true, true, true});
+		config.bytes[ExternalPPUMemoryByteOnFPGA(4 * i + 0)].set_value(
+		    ExternalPPUMemoryByte::Value((i + 0) % 256));
+		config.bytes[ExternalPPUMemoryByteOnFPGA(4 * i + 1)].set_value(
+		    ExternalPPUMemoryByte::Value((i + 1) % 256));
+		config.bytes[ExternalPPUMemoryByteOnFPGA(4 * i + 2)].set_value(
+		    ExternalPPUMemoryByte::Value((i + 2) % 256));
+		config.bytes[ExternalPPUMemoryByteOnFPGA(4 * i + 3)].set_value(
+		    ExternalPPUMemoryByte::Value((i + 3) % 256));
 	}
 
 	typedef std::vector<OmnibusAddress> addresses_type;
@@ -325,8 +325,8 @@ TEST(ExternalPPUMemory, CerealizeCoverage)
 {
 	ExternalPPUMemory obj1, obj2;
 	for (auto& byte : obj1.bytes) {
-		byte =
-		    ExternalPPUMemoryByte(draw_ranged_non_default_value<ExternalPPUMemoryByte::Value>(0));
+		byte = ExternalPPUMemoryByte(
+		    draw_non_default_value<ExternalPPUMemoryByte::Value>(ExternalPPUMemoryByte::Value(0)));
 	}
 
 	std::ostringstream ostream;

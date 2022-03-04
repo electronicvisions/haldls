@@ -3,8 +3,11 @@
 #include <iosfwd>
 
 #include "halco/common/geometry.h"
+#include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/fpga.h"
+#include "halco/hicann-dls/vx/quad.h"
 #include "haldls/cerealization.h"
+#include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
@@ -12,6 +15,11 @@
 namespace halco::hicann_dls::vx {
 class OmnibusAddress;
 } // namespace halco::hicann_dls::vx
+
+namespace lola::vx {
+struct ExternalPPUMemoryBlock;
+struct ExternalPPUMemory;
+} // namespace lola::vx
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
@@ -140,9 +148,9 @@ public:
 	typedef std::true_type is_leaf_node;
 
 	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::RantWrapper<Value, uint_fast16_t, 0xff, 0>
+	    : public halco::common::detail::BaseType<Value, uint8_t>
 	{
-		constexpr explicit Value(uintmax_t const val = 0) : rant_t(val) {}
+		constexpr explicit Value(uintmax_t const val = 0) : base_t(val) {}
 	};
 
 	typedef uint8_t raw_type;
@@ -150,7 +158,7 @@ public:
 	static_assert(
 	    static_cast<raw_type>(-1) == Value::max, "raw_type size does not match Value type.");
 
-	explicit ExternalPPUMemoryByte(Value value = Value()) SYMBOL_VISIBLE;
+	explicit ExternalPPUMemoryByte(Value value = Value()) : m_value(value) {}
 
 	GENPYBIND(getter_for(value))
 	Value get_value() const SYMBOL_VISIBLE;
@@ -179,10 +187,65 @@ private:
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t);
 
+	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUMemoryBlock>;
+	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUMemory>;
 	Value m_value;
 };
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryByte)
+
+class GENPYBIND(visible) ExternalPPUMemoryQuad
+{
+public:
+	typedef halco::hicann_dls::vx::ExternalPPUMemoryQuadOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	typedef ExternalPPUMemoryByte::Value Value GENPYBIND(visible);
+
+	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> Quad
+	    GENPYBIND(opaque(false));
+	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::EntryOnQuad> Enables
+	    GENPYBIND(opaque(false));
+
+	ExternalPPUMemoryQuad() SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(quad))
+	Quad const& get_quad() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(quad))
+	void set_quad(Quad const& quad) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enables))
+	Enables const& get_enables() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enables))
+	void set_enables(Enables const& enables) SYMBOL_VISIBLE;
+
+	bool operator==(ExternalPPUMemoryQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExternalPPUMemoryQuad const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryQuad const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	void serialize(Archive& ar, std::uint32_t);
+
+	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUMemoryBlock>;
+	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUMemory>;
+	Quad m_quad;
+	Enables m_enables;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryQuad)
 
 namespace detail {
 
@@ -199,6 +262,11 @@ struct BackendContainerTrait<EventRecordingConfig>
 template <>
 struct BackendContainerTrait<ExternalPPUMemoryByte>
     : public BackendContainerBase<ExternalPPUMemoryByte, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<ExternalPPUMemoryQuad>
+    : public BackendContainerBase<ExternalPPUMemoryQuad, fisch::vx::word_access_type::Omnibus>
 {};
 
 } // namespace detail

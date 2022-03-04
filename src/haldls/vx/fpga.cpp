@@ -4,10 +4,13 @@
 
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/quad.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
+#include "hate/join.h"
 #include "hate/math.h"
 
 namespace haldls {
@@ -196,10 +199,6 @@ void EventRecordingConfig::serialize(Archive& ar, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventRecordingConfig)
 
 
-ExternalPPUMemoryByte::ExternalPPUMemoryByte(ExternalPPUMemoryByte::Value const value) :
-    m_value(value)
-{}
-
 ExternalPPUMemoryByte::Value ExternalPPUMemoryByte::get_value() const
 {
 	return m_value;
@@ -268,9 +267,134 @@ void ExternalPPUMemoryByte::serialize(Archive& ar, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryByte)
 
+ExternalPPUMemoryQuad::ExternalPPUMemoryQuad() : m_quad(), m_enables({true, true, true, true}) {}
+
+ExternalPPUMemoryQuad::Quad const& ExternalPPUMemoryQuad::get_quad() const
+{
+	return m_quad;
+}
+
+void ExternalPPUMemoryQuad::set_quad(ExternalPPUMemoryQuad::Quad const& quad)
+{
+	m_quad = quad;
+}
+
+ExternalPPUMemoryQuad::Enables const& ExternalPPUMemoryQuad::get_enables() const
+{
+	return m_enables;
+}
+
+void ExternalPPUMemoryQuad::set_enables(ExternalPPUMemoryQuad::Enables const& enables)
+{
+	m_enables = enables;
+}
+
+bool ExternalPPUMemoryQuad::operator==(ExternalPPUMemoryQuad const& other) const
+{
+	return (m_quad == other.m_quad) && (m_enables == other.m_enables);
+}
+
+bool ExternalPPUMemoryQuad::operator!=(ExternalPPUMemoryQuad const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryQuad const& config)
+{
+	using namespace hate::math;
+	std::stringstream out;
+	out << "ExternalPPUMemoryQuad(\n";
+	out << "\t quad: [" << hate::join_string(config.m_quad.begin(), config.m_quad.end(), ", ")
+	    << "]\n";
+	out << "\t enables: ["
+	    << hate::join_string(config.m_enables.begin(), config.m_enables.end(), ", ") << "]\n";
+	os << out.str() << ")";
+	return os;
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, ExternalPPUMemoryQuad::config_size_in_words>
+ExternalPPUMemoryQuad::addresses(coordinate_type const& coord)
+{
+	return {
+	    halco::hicann_dls::vx::OmnibusAddress(external_ppu_memory_base_address + coord.toEnum())};
+}
+
+namespace {
+
+struct ExternalPPUMemoryQuadBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t byte_3 : 8;
+			uint32_t byte_2 : 8;
+			uint32_t byte_1 : 8;
+			uint32_t byte_0 : 8;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExternalPPUMemoryQuadBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	ExternalPPUMemoryQuadBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<fisch::vx::word_access_type::Omnibus, ExternalPPUMemoryQuad::config_size_in_words>
+ExternalPPUMemoryQuad::encode() const
+{
+	static_assert(
+	    std::tuple_size<fisch::vx::word_access_type::Omnibus::ByteEnables>::value ==
+	    std::tuple_size<Enables>::value);
+	fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables;
+	std::copy(m_enables.begin(), m_enables.end(), byte_enables.rbegin());
+
+	ExternalPPUMemoryQuadBitfield bitfield;
+	bitfield.u.m.byte_0 = m_quad[halco::hicann_dls::vx::EntryOnQuad(0)];
+	bitfield.u.m.byte_1 = m_quad[halco::hicann_dls::vx::EntryOnQuad(1)];
+	bitfield.u.m.byte_2 = m_quad[halco::hicann_dls::vx::EntryOnQuad(2)];
+	bitfield.u.m.byte_3 = m_quad[halco::hicann_dls::vx::EntryOnQuad(3)];
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw, byte_enables)};
+}
+
+void ExternalPPUMemoryQuad::decode(std::array<
+                                   fisch::vx::word_access_type::Omnibus,
+                                   ExternalPPUMemoryQuad::config_size_in_words> const& data)
+{
+	static_assert(
+	    std::tuple_size<fisch::vx::word_access_type::Omnibus::ByteEnables>::value ==
+	    std::tuple_size<Enables>::value);
+	std::copy(data[0].byte_enables.begin(), data[0].byte_enables.end(), m_enables.rbegin());
+	ExternalPPUMemoryQuadBitfield bitfield(data[0]);
+	m_quad[halco::hicann_dls::vx::EntryOnQuad(0)] = Value(bitfield.u.m.byte_0);
+	m_quad[halco::hicann_dls::vx::EntryOnQuad(1)] = Value(bitfield.u.m.byte_1);
+	m_quad[halco::hicann_dls::vx::EntryOnQuad(2)] = Value(bitfield.u.m.byte_2);
+	m_quad[halco::hicann_dls::vx::EntryOnQuad(3)] = Value(bitfield.u.m.byte_3);
+}
+
+template <typename Archive>
+void ExternalPPUMemoryQuad::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_quad));
+	ar(CEREAL_NVP(m_enables));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryQuad)
+
 } // namespace vx
 } // namespace haldls
 
 CEREAL_CLASS_VERSION(haldls::vx::FPGADeviceDNA, 0)
 CEREAL_CLASS_VERSION(haldls::vx::EventRecordingConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryByte, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryQuad, 0)
