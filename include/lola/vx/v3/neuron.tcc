@@ -38,12 +38,12 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 		visit_preorder(neuron_config, coord.toNeuronConfigOnDLS(), visitor);
 
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_exc_tau(config.excitatory_input.i_bias_tau);
-		haldls::vx::v3::CapMemCell cell_i_bias_synin_exc_drop(config.excitatory_input.i_drop_input);
+		haldls::vx::v3::CapMemCell cell_i_bias_synin_exc_coba(config.excitatory_input.i_bias_coba);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_exc_shift(
 		    config.excitatory_input.i_shift_reference);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_exc_gm(config.excitatory_input.i_bias_gm);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_tau(config.inhibitory_input.i_bias_tau);
-		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_drop(config.inhibitory_input.i_drop_input);
+		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_coba(config.inhibitory_input.i_bias_coba);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_shift(
 		    config.inhibitory_input.i_shift_reference);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_gm(config.inhibitory_input.i_bias_gm);
@@ -66,8 +66,8 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 		    cell_i_bias_synin_exc_tau, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_exc_tau),
 		    visitor);
 		visit_preorder(
-		    cell_i_bias_synin_exc_drop,
-		    to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_exc_drop), visitor);
+		    cell_i_bias_synin_exc_coba,
+		    to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_exc_coba), visitor);
 		visit_preorder(
 		    cell_i_bias_synin_exc_shift,
 		    to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_exc_shift), visitor);
@@ -78,8 +78,8 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 		    cell_i_bias_synin_inh_tau, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_inh_tau),
 		    visitor);
 		visit_preorder(
-		    cell_i_bias_synin_inh_drop,
-		    to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_inh_drop), visitor);
+		    cell_i_bias_synin_inh_coba,
+		    to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_inh_coba), visitor);
 		visit_preorder(
 		    cell_i_bias_synin_inh_shift,
 		    to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_inh_shift), visitor);
@@ -123,11 +123,11 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 
 			config.excitatory_input.i_bias_gm = cell_i_bias_synin_exc_gm.get_value();
 			config.excitatory_input.i_bias_tau = cell_i_bias_synin_exc_tau.get_value();
-			config.excitatory_input.i_drop_input = cell_i_bias_synin_exc_drop.get_value();
+			config.excitatory_input.i_bias_coba = cell_i_bias_synin_exc_coba.get_value();
 			config.excitatory_input.i_shift_reference = cell_i_bias_synin_exc_shift.get_value();
 			config.inhibitory_input.i_bias_gm = cell_i_bias_synin_inh_gm.get_value();
 			config.inhibitory_input.i_bias_tau = cell_i_bias_synin_inh_tau.get_value();
-			config.inhibitory_input.i_drop_input = cell_i_bias_synin_inh_drop.get_value();
+			config.inhibitory_input.i_bias_coba = cell_i_bias_synin_inh_coba.get_value();
 			config.inhibitory_input.i_shift_reference = cell_i_bias_synin_inh_shift.get_value();
 			config.leak.v_leak = cell_v_leak.get_value();
 			config.leak.i_bias = cell_i_bias_leak.get_value();
@@ -153,11 +153,12 @@ BOOST_HANA_ADAPT_STRUCT(
     lola::vx::v3::AtomicNeuron::SynapticInput,
     enable,
     i_bias_tau,
-    i_drop_input,
+    i_bias_coba,
     i_shift_reference,
     i_bias_gm,
-    enable_small_capacitor,
-    enable_high_resistance);
+    enable_small_capacitance,
+    enable_high_resistance,
+    enable_coba_mode);
 
 BOOST_HANA_ADAPT_STRUCT(
     lola::vx::v3::AtomicNeuron::Leak,

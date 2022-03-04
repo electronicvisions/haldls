@@ -188,10 +188,10 @@ class TestPylolaVXV3(unittest.TestCase):
         neuron.excitatory_input.i_bias_tau = value
         self.assertEqual(neuron.excitatory_input.i_bias_tau, value)
 
-        self.assertEqual(neuron.excitatory_input.i_drop_input, 0)
+        self.assertEqual(neuron.excitatory_input.i_bias_coba, 0)
         value = random_ranged(lola.AtomicNeuron.AnalogValue)
-        neuron.excitatory_input.i_drop_input = value
-        self.assertEqual(neuron.excitatory_input.i_drop_input, value)
+        neuron.excitatory_input.i_bias_coba = value
+        self.assertEqual(neuron.excitatory_input.i_bias_coba, value)
 
         self.assertEqual(neuron.excitatory_input.i_shift_reference, 0)
         value = random_ranged(lola.AtomicNeuron.AnalogValue)
@@ -203,13 +203,19 @@ class TestPylolaVXV3(unittest.TestCase):
         neuron.excitatory_input.i_bias_gm = value
         self.assertEqual(neuron.excitatory_input.i_bias_gm, value)
 
-        self.assertEqual(neuron.excitatory_input.enable_small_capacitor, True)
-        neuron.excitatory_input.enable_small_capacitor = False
-        self.assertEqual(neuron.excitatory_input.enable_small_capacitor, False)
+        self.assertEqual(
+            neuron.excitatory_input.enable_small_capacitance, True)
+        neuron.excitatory_input.enable_small_capacitance = False
+        self.assertEqual(
+            neuron.excitatory_input.enable_small_capacitance, False)
 
         self.assertEqual(neuron.excitatory_input.enable_high_resistance, False)
         neuron.excitatory_input.enable_high_resistance = True
         self.assertEqual(neuron.excitatory_input.enable_high_resistance, True)
+
+        self.assertEqual(neuron.excitatory_input.enable_coba_mode, False)
+        neuron.excitatory_input.enable_coba_mode = True
+        self.assertEqual(neuron.excitatory_input.enable_coba_mode, True)
 
     def test_neuron_synaptic_input_inh(self):
         neuron = lola.AtomicNeuron()
@@ -223,10 +229,10 @@ class TestPylolaVXV3(unittest.TestCase):
         neuron.inhibitory_input.i_bias_tau = value
         self.assertEqual(neuron.inhibitory_input.i_bias_tau, value)
 
-        self.assertEqual(neuron.inhibitory_input.i_drop_input, 0)
+        self.assertEqual(neuron.inhibitory_input.i_bias_coba, 0)
         value = random_ranged(lola.AtomicNeuron.AnalogValue)
-        neuron.inhibitory_input.i_drop_input = value
-        self.assertEqual(neuron.inhibitory_input.i_drop_input, value)
+        neuron.inhibitory_input.i_bias_coba = value
+        self.assertEqual(neuron.inhibitory_input.i_bias_coba, value)
 
         self.assertEqual(neuron.inhibitory_input.i_shift_reference, 0)
         value = random_ranged(lola.AtomicNeuron.AnalogValue)
@@ -238,13 +244,19 @@ class TestPylolaVXV3(unittest.TestCase):
         neuron.inhibitory_input.i_bias_gm = value
         self.assertEqual(neuron.inhibitory_input.i_bias_gm, value)
 
-        self.assertEqual(neuron.inhibitory_input.enable_small_capacitor, True)
-        neuron.inhibitory_input.enable_small_capacitor = False
-        self.assertEqual(neuron.inhibitory_input.enable_small_capacitor, False)
+        self.assertEqual(
+            neuron.inhibitory_input.enable_small_capacitance, True)
+        neuron.inhibitory_input.enable_small_capacitance = False
+        self.assertEqual(
+            neuron.inhibitory_input.enable_small_capacitance, False)
 
         self.assertEqual(neuron.inhibitory_input.enable_high_resistance, False)
         neuron.inhibitory_input.enable_high_resistance = True
         self.assertEqual(neuron.inhibitory_input.enable_high_resistance, True)
+
+        self.assertEqual(neuron.inhibitory_input.enable_coba_mode, False)
+        neuron.inhibitory_input.enable_coba_mode = True
+        self.assertEqual(neuron.inhibitory_input.enable_coba_mode, True)
 
     def test_neuron_leak(self):
         neuron = lola.AtomicNeuron()

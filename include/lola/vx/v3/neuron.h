@@ -30,10 +30,11 @@ public:
 		AnalogValueVariant i_bias_tau;
 
 		/**
-		 * Bias current for the source follower controlling the drop of the
-		 * voltage on the synaptic line before the OTA's input.
+		 * Bias current for the conductance based mode of the synaptic input.
+		 * Scales the conductivity at a given difference between membrane and
+		 * reversal potential.
 		 */
-		AnalogValueVariant i_drop_input;
+		AnalogValueVariant i_bias_coba;
 
 		/**
 		 * Bias current for the source follower controlling the reference voltage for the
@@ -44,11 +45,16 @@ public:
 		/** Bias current of synaptic input OTA for current-based input. */
 		AnalogValueVariant i_bias_gm;
 
-		/** Enable use of small capacitor connected to the line in the synapse array. */
-		bool enable_small_capacitor;
+		/** Enable small capacitance mode of the synaptic input.
+		 * This disconnects the capacitor connected to the line in the synapse array,
+		 * using only parasitic capacitance of the line. */
+		bool enable_small_capacitance;
 
 		/** Enable high resistance mode controlling the time constant. */
 		bool enable_high_resistance;
+
+		/** Switch synaptic input from CUBA to COBA mode. */
+		bool enable_coba_mode;
 
 		bool operator==(SynapticInput const& other) const SYMBOL_VISIBLE;
 		bool operator!=(SynapticInput const& other) const SYMBOL_VISIBLE;

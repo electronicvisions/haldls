@@ -10,11 +10,12 @@ namespace lola::vx::v3 {
 AtomicNeuron::SynapticInput::SynapticInput() :
     enable(false),
     i_bias_tau(),
-    i_drop_input(),
+    i_bias_coba(),
     i_shift_reference(),
     i_bias_gm(),
-    enable_small_capacitor(true),
-    enable_high_resistance(false)
+    enable_small_capacitance(true),
+    enable_high_resistance(false),
+    enable_coba_mode(false)
 {}
 
 bool AtomicNeuron::SynapticInput::operator==(SynapticInput const& other) const
@@ -31,13 +32,14 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::SynapticInput const& co
 {
 	std::stringstream ss;
 	ss << "SynapticInput(\n"
-	   << "\tenable:                 " << std::boolalpha << config.enable << "\n"
-	   << "\ti_bias_tau:             " << config.i_bias_tau << "\n"
-	   << "\ti_drop_input:           " << config.i_drop_input << "\n"
-	   << "\ti_shift_reference:      " << config.i_shift_reference << "\n"
-	   << "\ti_bias_gm:              " << config.i_bias_gm << "\n"
-	   << "\tenable_small_capacitor: " << config.enable_small_capacitor << "\n"
-	   << "\tenable_high_resistance: " << config.enable_high_resistance << "\n)";
+	   << "\tenable:                   " << std::boolalpha << config.enable << "\n"
+	   << "\ti_bias_tau:               " << config.i_bias_tau << "\n"
+	   << "\ti_shift_reference:        " << config.i_shift_reference << "\n"
+	   << "\ti_bias_gm:                " << config.i_bias_gm << "\n"
+	   << "\ti_bias_coba:              " << config.i_bias_coba << "\n"
+	   << "\tenable_small_capacitance: " << config.enable_small_capacitance << "\n"
+	   << "\tenable_high_resistance:   " << config.enable_high_resistance << "\n)"
+	   << "\tenable_coba_mode:         " << config.enable_coba_mode << "\n)";
 	os << ss.str();
 	return os;
 }
@@ -532,15 +534,18 @@ AtomicNeuron::operator haldls::vx::v3::NeuronConfig() const
 	neuron_config.set_enable_synaptic_input_excitatory(excitatory_input.enable);
 	neuron_config.set_enable_synaptic_input_inhibitory(inhibitory_input.enable);
 
-	neuron_config.set_enable_synaptic_input_excitatory_small_capacitor(
-	    excitatory_input.enable_small_capacitor);
-	neuron_config.set_enable_synaptic_input_inhibitory_small_capacitor(
-	    inhibitory_input.enable_small_capacitor);
+	neuron_config.set_enable_synaptic_input_excitatory_small_capacitance(
+	    excitatory_input.enable_small_capacitance);
+	neuron_config.set_enable_synaptic_input_inhibitory_small_capacitance(
+	    inhibitory_input.enable_small_capacitance);
 
 	neuron_config.set_enable_synaptic_input_excitatory_high_resistance(
 	    excitatory_input.enable_high_resistance);
 	neuron_config.set_enable_synaptic_input_inhibitory_high_resistance(
 	    inhibitory_input.enable_high_resistance);
+
+	neuron_config.set_enable_synaptic_input_excitatory_coba_mode(excitatory_input.enable_coba_mode);
+	neuron_config.set_enable_synaptic_input_inhibitory_coba_mode(inhibitory_input.enable_coba_mode);
 
 	neuron_config.set_enable_leak_degeneration(leak.enable_degeneration);
 	neuron_config.set_enable_leak_division(leak.enable_division);
@@ -600,15 +605,20 @@ void AtomicNeuron::set_from(haldls::vx::v3::NeuronConfig const& neuron_config)
 	excitatory_input.enable = neuron_config.get_enable_synaptic_input_excitatory();
 	inhibitory_input.enable = neuron_config.get_enable_synaptic_input_inhibitory();
 
-	excitatory_input.enable_small_capacitor =
-	    neuron_config.get_enable_synaptic_input_excitatory_small_capacitor();
-	inhibitory_input.enable_small_capacitor =
-	    neuron_config.get_enable_synaptic_input_inhibitory_small_capacitor();
+	excitatory_input.enable_small_capacitance =
+	    neuron_config.get_enable_synaptic_input_excitatory_small_capacitance();
+	inhibitory_input.enable_small_capacitance =
+	    neuron_config.get_enable_synaptic_input_inhibitory_small_capacitance();
 
 	excitatory_input.enable_high_resistance =
 	    neuron_config.get_enable_synaptic_input_excitatory_high_resistance();
 	inhibitory_input.enable_high_resistance =
 	    neuron_config.get_enable_synaptic_input_inhibitory_high_resistance();
+
+	excitatory_input.enable_coba_mode =
+	    neuron_config.get_enable_synaptic_input_excitatory_coba_mode();
+	inhibitory_input.enable_coba_mode =
+	    neuron_config.get_enable_synaptic_input_inhibitory_coba_mode();
 
 	leak.enable_degeneration = neuron_config.get_enable_leak_degeneration();
 	leak.enable_division = neuron_config.get_enable_leak_division();

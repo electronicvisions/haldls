@@ -138,17 +138,33 @@ public:
 	GENPYBIND(setter_for(enable_synaptic_input_inhibitory))
 	void set_enable_synaptic_input_inhibitory(bool value) SYMBOL_VISIBLE;
 
-	// enable small capacitor at excitatory synaptic input
-	GENPYBIND(getter_for(enable_synaptic_input_excitatory_small_capacitor))
-	bool get_enable_synaptic_input_excitatory_small_capacitor() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_synaptic_input_excitatory_small_capacitor))
-	void set_enable_synaptic_input_excitatory_small_capacitor(bool value) SYMBOL_VISIBLE;
+	// set exc. synaptic input from CUBA to COBA mode.
+	GENPYBIND(getter_for(enable_synaptic_input_excitatory_coba_mode))
+	bool get_enable_synaptic_input_excitatory_coba_mode() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_synaptic_input_excitatory_coba_mode))
+	void set_enable_synaptic_input_excitatory_coba_mode(bool value) SYMBOL_VISIBLE;
 
-	// enable small capacitor at inhibitory synaptic input
-	GENPYBIND(getter_for(enable_synaptic_input_inhibitory_small_capacitor))
-	bool get_enable_synaptic_input_inhibitory_small_capacitor() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_synaptic_input_inhibitory_small_capacitor))
-	void set_enable_synaptic_input_inhibitory_small_capacitor(bool value) SYMBOL_VISIBLE;
+	// set inh. synaptic input from CUBA to COBA mode.
+	GENPYBIND(getter_for(enable_synaptic_input_inhibitory_coba_mode))
+	bool get_enable_synaptic_input_inhibitory_coba_mode() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_synaptic_input_inhibitory_coba_mode))
+	void set_enable_synaptic_input_inhibitory_coba_mode(bool value) SYMBOL_VISIBLE;
+
+	// enable small capacitance mode at excitatory synaptic input:
+	// This disconnects the capacitor from the synaptic input line and leaves
+	// only the parasitic capacitance of the line.
+	GENPYBIND(getter_for(enable_synaptic_input_excitatory_small_capacitance))
+	bool get_enable_synaptic_input_excitatory_small_capacitance() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_synaptic_input_excitatory_small_capacitance))
+	void set_enable_synaptic_input_excitatory_small_capacitance(bool value) SYMBOL_VISIBLE;
+
+	// enable small capacitance mode at inhibitory synaptic input:
+	// This disconnects the capacitor from the synaptic input line and leaves
+	// only the parasitic capacitance of the line.
+	GENPYBIND(getter_for(enable_synaptic_input_inhibitory_small_capacitance))
+	bool get_enable_synaptic_input_inhibitory_small_capacitance() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enable_synaptic_input_inhibitory_small_capacitance))
+	void set_enable_synaptic_input_inhibitory_small_capacitance(bool value) SYMBOL_VISIBLE;
 
 	// enable high resistance mode for excitatory synaptic input
 	GENPYBIND(getter_for(enable_synaptic_input_excitatory_high_resistance))
@@ -315,6 +331,8 @@ private:
 	bool m_en_thresh_comp;
 	bool m_en_synin_inh;
 	bool m_en_synin_exc;
+	bool m_en_synin_inh_coba;
+	bool m_en_synin_exc_coba;
 	bool m_en_synin_exc_small_cap;
 	bool m_en_synin_inh_small_cap;
 	bool m_en_synin_exc_high_res;

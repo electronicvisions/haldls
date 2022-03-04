@@ -71,17 +71,25 @@ TEST(NeuronConfig, General)
 	config.set_enable_synaptic_input_inhibitory(value);
 	ASSERT_EQ(config.get_enable_synaptic_input_inhibitory(), value);
 
-	value = !config.get_enable_synaptic_input_inhibitory_small_capacitor();
-	config.set_enable_synaptic_input_inhibitory_small_capacitor(value);
-	ASSERT_EQ(config.get_enable_synaptic_input_inhibitory_small_capacitor(), value);
+	value = !config.get_enable_synaptic_input_excitatory_coba_mode();
+	config.set_enable_synaptic_input_excitatory_coba_mode(value);
+	ASSERT_EQ(config.get_enable_synaptic_input_excitatory_coba_mode(), value);
 
-	value = !config.get_enable_synaptic_input_inhibitory_small_capacitor();
-	config.set_enable_synaptic_input_inhibitory_small_capacitor(value);
-	ASSERT_EQ(config.get_enable_synaptic_input_inhibitory_small_capacitor(), value);
+	value = !config.get_enable_synaptic_input_inhibitory_coba_mode();
+	config.set_enable_synaptic_input_inhibitory_coba_mode(value);
+	ASSERT_EQ(config.get_enable_synaptic_input_inhibitory_coba_mode(), value);
 
-	value = !config.get_enable_synaptic_input_inhibitory_high_resistance();
-	config.set_enable_synaptic_input_inhibitory_high_resistance(value);
-	ASSERT_EQ(config.get_enable_synaptic_input_inhibitory_high_resistance(), value);
+	value = !config.get_enable_synaptic_input_excitatory_small_capacitance();
+	config.set_enable_synaptic_input_excitatory_small_capacitance(value);
+	ASSERT_EQ(config.get_enable_synaptic_input_excitatory_small_capacitance(), value);
+
+	value = !config.get_enable_synaptic_input_inhibitory_small_capacitance();
+	config.set_enable_synaptic_input_inhibitory_small_capacitance(value);
+	ASSERT_EQ(config.get_enable_synaptic_input_inhibitory_small_capacitance(), value);
+
+	value = !config.get_enable_synaptic_input_excitatory_high_resistance();
+	config.set_enable_synaptic_input_excitatory_high_resistance(value);
+	ASSERT_EQ(config.get_enable_synaptic_input_excitatory_high_resistance(), value);
 
 	value = !config.get_enable_synaptic_input_inhibitory_high_resistance();
 	config.set_enable_synaptic_input_inhibitory_high_resistance(value);

@@ -36,8 +36,10 @@ NeuronConfig::NeuronConfig() :
     m_en_thresh_comp(false),
     m_en_synin_inh(false),
     m_en_synin_exc(false),
-    m_en_synin_exc_small_cap(true),
-    m_en_synin_inh_small_cap(true),
+    m_en_synin_inh_coba(false),
+    m_en_synin_exc_coba(false),
+    m_en_synin_exc_small_cap(false),
+    m_en_synin_inh_small_cap(false),
     m_en_synin_exc_high_res(false),
     m_en_synin_inh_high_res(false),
     m_en_byp_inh(false),
@@ -83,18 +85,18 @@ struct NeuronConfigBitfield
 			(uint32_t                        : 25; /* 7-31 ; 2    */ ) \
 			                                                           \
 			(uint32_t                        :  1; /* 0    ; 3    */ ) \
-			(uint32_t en_exp                 :  1; /* 1    ; 3    */ ) \
-			(uint32_t                        :  1; /* 2    ; 3    */ ) \
+			(uint32_t en_synin_coba_inh      :  1; /* 1    ; 3    */ ) \
+			(uint32_t en_synin_coba_exc      :  1; /* 2    ; 3    */ ) \
 			(uint32_t en_unbuf_access        :  1; /* 3    ; 3    */ ) \
 			(uint32_t en_readout_amp         :  1; /* 4    ; 3    */ ) \
 			(uint32_t readout_select         :  2; /* 5-6  ; 3    */ ) \
 			(uint32_t en_readout             :  1; /* 7    ; 3    */ ) \
 			(uint32_t                        : 24; /* 8-31 ; 3    */ ) \
 			                                                           \
-			(uint32_t invert_adapt_a         :  1; /* 0    ; 4    */ ) \
-			(uint32_t invert_adapt_b         :  1; /* 1    ; 4    */ ) \
+			(uint32_t invert_adapt_b         :  1; /* 0    ; 4    */ ) \
+			(uint32_t invert_adapt_a         :  1; /* 1    ; 4    */ ) \
 			(uint32_t en_adapt               :  1; /* 2    ; 4    */ ) \
-			(uint32_t                        :  1; /* 3    ; 4    */ ) \
+			(uint32_t en_exp                 :  1; /* 3    ; 4    */ ) \
 			(uint32_t en_synin_inh_small_cap :  1; /* 4    ; 4    */ ) \
 			(uint32_t en_synin_exc_small_cap :  1; /* 5    ; 4    */ ) \
 			(uint32_t en_synin_inh_high_res  :  1; /* 6    ; 4    */ ) \
@@ -250,6 +252,7 @@ void NeuronConfig::set_enable_synaptic_input_excitatory(bool const value)
 {
 	m_en_synin_exc = value;
 }
+
 bool NeuronConfig::get_enable_synaptic_input_inhibitory() const
 {
 	return m_en_synin_inh;
@@ -259,22 +262,42 @@ void NeuronConfig::set_enable_synaptic_input_inhibitory(bool const value)
 	m_en_synin_inh = value;
 }
 
-bool NeuronConfig::get_enable_synaptic_input_excitatory_small_capacitor() const
+bool NeuronConfig::get_enable_synaptic_input_excitatory_coba_mode() const
+{
+	return m_en_synin_exc_coba;
+}
+
+void NeuronConfig::set_enable_synaptic_input_excitatory_coba_mode(bool const value)
+{
+	m_en_synin_exc_coba = value;
+}
+
+bool NeuronConfig::get_enable_synaptic_input_inhibitory_coba_mode() const
+{
+	return m_en_synin_inh_coba;
+}
+
+void NeuronConfig::set_enable_synaptic_input_inhibitory_coba_mode(bool const value)
+{
+	m_en_synin_inh_coba = value;
+}
+
+bool NeuronConfig::get_enable_synaptic_input_excitatory_small_capacitance() const
 {
 	return m_en_synin_exc_small_cap;
 }
 
-void NeuronConfig::set_enable_synaptic_input_excitatory_small_capacitor(bool const value)
+void NeuronConfig::set_enable_synaptic_input_excitatory_small_capacitance(bool const value)
 {
 	m_en_synin_exc_small_cap = value;
 }
 
-bool NeuronConfig::get_enable_synaptic_input_inhibitory_small_capacitor() const
+bool NeuronConfig::get_enable_synaptic_input_inhibitory_small_capacitance() const
 {
 	return m_en_synin_inh_small_cap;
 }
 
-void NeuronConfig::set_enable_synaptic_input_inhibitory_small_capacitor(bool const value)
+void NeuronConfig::set_enable_synaptic_input_inhibitory_small_capacitance(bool const value)
 {
 	m_en_synin_inh_small_cap = value;
 }
@@ -521,6 +544,8 @@ std::array<WordT, NeuronConfig::config_size_in_words> NeuronConfig::encode() con
 	bitfield.u.m.en_thresh_comp = m_en_thresh_comp;
 	bitfield.u.m.en_synin_inh = m_en_synin_inh;
 	bitfield.u.m.en_synin_exc = m_en_synin_exc;
+	bitfield.u.m.en_synin_coba_inh = m_en_synin_inh_coba;
+	bitfield.u.m.en_synin_coba_exc = m_en_synin_exc_coba;
 	bitfield.u.m.en_synin_inh_small_cap = m_en_synin_inh_small_cap;
 	bitfield.u.m.en_synin_exc_small_cap = m_en_synin_exc_small_cap;
 	bitfield.u.m.en_synin_inh_high_res = m_en_synin_inh_high_res;
@@ -660,8 +685,10 @@ std::ostream& operator<<(std::ostream& os, NeuronConfig const& config)
 	   << "\tenable_threshold_comparator:                      \t" << config.m_en_thresh_comp << "\n"
 	   << "\tenable_synaptic_input_inhibitory:                 \t" << config.m_en_synin_inh << "\n"
 	   << "\tenable_synaptic_input_excitatory:                 \t" << config.m_en_synin_exc << "\n"
-	   << "\tenable_synaptic_input_inhibitory_small_capacitor: \t" << config.m_en_synin_inh_small_cap << "\n"
-	   << "\tenable_synaptic_input_excitatory_small_capacitor: \t" << config.m_en_synin_exc_small_cap << "\n"
+	   << "\tenable_synaptic_input_inhibitory_coba_mode:       \t" << config.m_en_synin_inh_coba << "\n"
+	   << "\tenable_synaptic_input_excitatory_coba_mode:       \t" << config.m_en_synin_exc_coba << "\n"
+	   << "\tenable_synaptic_input_inhibitory_small_capacitance:\t" << config.m_en_synin_inh_small_cap << "\n"
+	   << "\tenable_synaptic_input_excitatory_small_capacitance:\t" << config.m_en_synin_exc_small_cap << "\n"
 	   << "\tenable_synaptic_input_inhibitory_high_resistance: \t" << config.m_en_synin_inh_high_res << "\n"
 	   << "\tenable_synaptic_input_excitatory_high_resistance: \t" << config.m_en_synin_exc_high_res << "\n"
 	   << "\tenable_bypass_inhibitory:                         \t" << config.m_en_byp_inh << "\n"
@@ -703,8 +730,12 @@ bool NeuronConfig::operator==(NeuronConfig const& other) const
 	    m_en_thresh_comp == other.get_enable_threshold_comparator() &&
 	    m_en_synin_inh == other.get_enable_synaptic_input_inhibitory() &&
 	    m_en_synin_exc == other.get_enable_synaptic_input_excitatory() &&
-	    m_en_synin_inh_small_cap == other.get_enable_synaptic_input_inhibitory_small_capacitor() &&
-	    m_en_synin_exc_small_cap == other.get_enable_synaptic_input_excitatory_small_capacitor() &&
+	    m_en_synin_inh_coba == other.get_enable_synaptic_input_inhibitory_coba_mode() &&
+	    m_en_synin_exc_coba == other.get_enable_synaptic_input_excitatory_coba_mode() &&
+	    m_en_synin_inh_small_cap ==
+	        other.get_enable_synaptic_input_inhibitory_small_capacitance() &&
+	    m_en_synin_exc_small_cap ==
+	        other.get_enable_synaptic_input_excitatory_small_capacitance() &&
 	    m_en_synin_inh_high_res == other.get_enable_synaptic_input_inhibitory_high_resistance() &&
 	    m_en_synin_exc_high_res == other.get_enable_synaptic_input_excitatory_high_resistance() &&
 	    m_en_byp_inh == other.get_enable_bypass_inhibitory() &&
@@ -749,6 +780,8 @@ void NeuronConfig::serialize(Archive& ar, std::uint32_t const version)
 	ar(CEREAL_NVP(m_en_thresh_comp));
 	ar(CEREAL_NVP(m_en_synin_inh));
 	ar(CEREAL_NVP(m_en_synin_exc));
+	ar(CEREAL_NVP(m_en_synin_inh_coba));
+	ar(CEREAL_NVP(m_en_synin_exc_coba));
 	ar(CEREAL_NVP(m_en_synin_inh_small_cap));
 	ar(CEREAL_NVP(m_en_synin_exc_small_cap));
 	ar(CEREAL_NVP(m_en_synin_inh_high_res));
@@ -883,6 +916,6 @@ void NeuronResetQuad::serialize(Archive&, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::NeuronConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::NeuronResetQuad)
 CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronBackendConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronConfig, 2)
+CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronResetQuad, 0)
 #endif
