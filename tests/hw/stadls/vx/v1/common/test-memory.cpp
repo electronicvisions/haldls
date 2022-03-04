@@ -142,7 +142,8 @@ TYPED_TEST_SUITE(
  */
 TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 {
-	if constexpr (hate::is_in_type_list<TypeParam, WriteTestsDisabledContainers>::value) {
+	if constexpr (hate::is_in_type_list<
+	                  typename TypeParam::first_type, WriteTestsDisabledContainers>::value) {
 		GTEST_SKIP() << "Test is manually disabled for this container.";
 	}
 
