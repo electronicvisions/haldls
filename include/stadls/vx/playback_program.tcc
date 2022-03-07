@@ -28,6 +28,7 @@ T PlaybackProgram::ContainerTicket<T>::get() const
 		    std::vector<decltype(
 		        fisch::vx::container_cast(std::declval<typename decltype(data)::value_type>()))>
 		        data_values;
+		    data_values.reserve(data.size());
 		    std::transform(
 		        data.begin(), data.end(), std::back_inserter(data_values),
 		        (typename decltype(data_values)::value_type (*)(
