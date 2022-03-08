@@ -227,7 +227,8 @@ public:
 
 	GENPYBIND_MANUAL({
 		PYBIND11_NUMPY_DTYPE(
-		    haldls::vx::MADCSampleFromChip::MADCSampleFromChipDType, value, fpga_time, chip_time);
+		    haldls::vx::MADCSampleFromChip::MADCSampleFromChipDType, value, channel, fpga_time,
+		    chip_time);
 
 		// expose madc_samples_type with pybinds11 STL vector thingy
 		pybind11::bind_vector<stadls::vx::PlaybackProgram::madc_samples_type>(

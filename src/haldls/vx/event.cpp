@@ -248,15 +248,21 @@ void SpikeFromChip::serialize(Archive& ar, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeFromChip)
 
 
-MADCSampleFromChip::MADCSampleFromChip() : m_value(), m_fpga_time(), m_chip_time() {}
+MADCSampleFromChip::MADCSampleFromChip() : m_value(), m_channel(), m_fpga_time(), m_chip_time() {}
 
 MADCSampleFromChip::MADCSampleFromChip(
-    Value const& value, FPGATime const& fpga_time, ChipTime const& chip_time) :
-    m_value(value), m_fpga_time(fpga_time), m_chip_time(chip_time)
+    Value const& value,
+    Channel const& channel,
+    FPGATime const& fpga_time,
+    ChipTime const& chip_time) :
+    m_value(value), m_channel(channel), m_fpga_time(fpga_time), m_chip_time(chip_time)
 {}
 
 MADCSampleFromChip::MADCSampleFromChip(fisch::vx::MADCSampleFromChip const& data) :
-    m_value(data.value), m_fpga_time(data.fpga_time), m_chip_time(data.chip_time)
+    m_value(data.value),
+    m_channel(data.channel),
+    m_fpga_time(data.fpga_time),
+    m_chip_time(data.chip_time)
 {}
 
 MADCSampleFromChip::Value MADCSampleFromChip::get_value() const
@@ -267,6 +273,16 @@ MADCSampleFromChip::Value MADCSampleFromChip::get_value() const
 void MADCSampleFromChip::set_value(MADCSampleFromChip::Value const value)
 {
 	m_value = value;
+}
+
+MADCSampleFromChip::Channel MADCSampleFromChip::get_channel() const
+{
+	return m_channel;
+}
+
+void MADCSampleFromChip::set_channel(MADCSampleFromChip::Channel const channel)
+{
+	m_channel = channel;
 }
 
 FPGATime MADCSampleFromChip::get_fpga_time() const
@@ -291,8 +307,8 @@ void MADCSampleFromChip::set_chip_time(ChipTime const value)
 
 bool MADCSampleFromChip::operator==(MADCSampleFromChip const& other) const
 {
-	return m_value == other.m_value && m_fpga_time == other.m_fpga_time &&
-	       m_chip_time == other.m_chip_time;
+	return m_value == other.m_value && m_channel == other.m_channel &&
+	       m_fpga_time == other.m_fpga_time && m_chip_time == other.m_chip_time;
 }
 
 bool MADCSampleFromChip::operator!=(MADCSampleFromChip const& other) const
@@ -303,14 +319,15 @@ bool MADCSampleFromChip::operator!=(MADCSampleFromChip const& other) const
 std::ostream& operator<<(std::ostream& os, MADCSampleFromChip const& sample)
 {
 	return (
-	    os << "MADCSampleFromChip(" << sample.m_value << ", " << sample.m_fpga_time << ", "
-	       << sample.m_chip_time << ")");
+	    os << "MADCSampleFromChip(" << sample.m_value << ", " << sample.m_channel << ", "
+	       << sample.m_fpga_time << ", " << sample.m_chip_time << ")");
 }
 
 template <typename Archive>
 void MADCSampleFromChip::serialize(Archive& ar, std::uint32_t const)
 {
 	ar(CEREAL_NVP(m_value));
+	ar(CEREAL_NVP(m_channel));
 	ar(CEREAL_NVP(m_fpga_time));
 	ar(CEREAL_NVP(m_chip_time));
 }

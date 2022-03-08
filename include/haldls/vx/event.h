@@ -3,6 +3,7 @@
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/event.h"
 #include "halco/hicann-dls/vx/highspeed_link.h"
+#include "halco/hicann-dls/vx/readout.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
@@ -285,10 +286,14 @@ class GENPYBIND(visible) MADCSampleFromChip
 public:
 	/** Sample value. */
 	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::RantWrapper<Value, uintmax_t, 0x3fff, 0>
+	    : public halco::common::detail::RantWrapper<Value, uint16_t, 0x3ff, 0>
 	{
 		constexpr explicit Value(uintmax_t const val = 0) : rant_t(val) {}
 	};
+
+	/** Channel selected on the active multiplexer for which this sample was acquired. */
+	typedef halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection Channel
+	    GENPYBIND(opaque(false));
 
 	/** Default constructor. */
 	MADCSampleFromChip() SYMBOL_VISIBLE;
@@ -296,11 +301,15 @@ public:
 	/**
 	 * Construct MADC sample from chip via a value, FPGA and chip time information.
 	 * @param value sample value to use
+	 * @param channel channel from which the value was sampled
 	 * @param fpga_time FPGATime to use
 	 * @param chip_time ChipTime to use
 	 */
-	MADCSampleFromChip(Value const& value, FPGATime const& fpga_time, ChipTime const& chip_time)
-	    SYMBOL_VISIBLE;
+	MADCSampleFromChip(
+	    Value const& value,
+	    Channel const& channel,
+	    FPGATime const& fpga_time,
+	    ChipTime const& chip_time) SYMBOL_VISIBLE;
 
 	/**
 	 * Construct an MADC sample from the data representation.
@@ -321,6 +330,20 @@ public:
 	 */
 	GENPYBIND(setter_for(value))
 	void set_value(Value value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get channel from which this sample was obtained.
+	 * @return Channel channel
+	 */
+	GENPYBIND(getter_for(channel))
+	Channel get_channel() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set channel from which this sample was obtained.
+	 * @param channel Channel to set
+	 */
+	GENPYBIND(setter_for(channel))
+	void set_channel(Channel channel) SYMBOL_VISIBLE;
 
 	/**
 	 * Get FPGA time.
@@ -363,6 +386,7 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version);
 
 	Value m_value;
+	Channel m_channel;
 	FPGATime m_fpga_time;
 	ChipTime m_chip_time;
 
@@ -371,7 +395,8 @@ public:
 	// packing of structs and pods seems different
 	struct __attribute__((packed)) GENPYBIND(hidden) MADCSampleFromChipDType
 	{
-		uintmax_t value;
+		uint16_t value;
+		uint8_t channel;
 		uint64_t fpga_time;
 		uint64_t chip_time;
 	};
@@ -387,6 +412,9 @@ struct MADCSampleFromChipChecker
 	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::value) ==
 	    sizeof(MADCSampleFromChip::m_value));
 	static_assert(
+	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::channel) ==
+	    sizeof(MADCSampleFromChip::m_channel));
+	static_assert(
 	    sizeof(MADCSampleFromChip::MADCSampleFromChipDType::fpga_time) ==
 	    sizeof(MADCSampleFromChip::m_fpga_time));
 	static_assert(
@@ -397,6 +425,9 @@ struct MADCSampleFromChipChecker
 	static_assert(
 	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, value) ==
 	    offsetof(MADCSampleFromChip, m_value));
+	static_assert(
+	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, channel) ==
+	    offsetof(MADCSampleFromChip, m_channel));
 	static_assert(
 	    offsetof(MADCSampleFromChip::MADCSampleFromChipDType, fpga_time) ==
 	    offsetof(MADCSampleFromChip, m_fpga_time));
