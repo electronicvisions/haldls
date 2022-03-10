@@ -99,13 +99,21 @@ def build(bld):
             raise BuildError("Environment variable 'SIMULATED_CHIP_REVISION' "
                              "not set or cannot be casted to integer.")
         bld.env.CURRENT_SETUP = dict(chip_revision=chip_revision)
-    elif "SLURM_HWDB_ENTRIES" in os.environ:
+    elif "SLURM_HWDB_YAML" in os.environ:
         bld.env.TEST_TARGET = TestTarget.HARDWARE
         slurm_licenses = os.environ.get("SLURM_HARDWARE_LICENSES")
-        hwdb_entries = os.environ.get("SLURM_HWDB_ENTRIES")
+        hwdb_entries = os.environ.get("SLURM_HWDB_YAML")
         fpga_id = int(re.match(r"W(?P<wafer>\d+)F(?P<fpga>\d+)",
                                slurm_licenses)["fpga"])
-        bld.env.CURRENT_SETUP = yaml.full_load(hwdb_entries)["fpgas"][fpga_id]
+        fpgas = yaml.full_load(hwdb_entries)["fpgas"]
+        fpga = None
+        for entry in fpgas:
+            if entry["fpga"] == fpga_id:
+                fpga = entry
+                break
+        if not fpga:
+            raise BuildError("FPGA not found in hwdb")
+        bld.env.CURRENT_SETUP = fpga
     else:
         bld.env.TEST_TARGET = TestTarget.SOFTWARE_ONLY
         bld.env.CURRENT_SETUP = dict(chip_revision=None)
