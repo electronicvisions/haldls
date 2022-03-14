@@ -141,12 +141,12 @@ struct NeuronConfigBitfield
 
 	NeuronConfigBitfield(std::array<uint32_t, NeuronConfig::config_size_in_words> data)
 	{
-		u.words[0] = data[0] & 0b0111'1111u;
-		u.words[1] = data[1] & 0b1111'1011u;
-		u.words[2] = data[2] & 0b1111'0111u;
-		u.words[3] = data[3] & 0b1111'1111u;
-		u.words[4] = data[4] & 0b1111'1101u;
-		u.words[5] = data[5] & 0b1111'1111u;
+		u.words[0] = data[0];
+		u.words[1] = data[1];
+		u.words[2] = data[2];
+		u.words[3] = data[3];
+		u.words[4] = data[4];
+		u.words[5] = data[5];
 	}
 };
 
@@ -607,6 +607,8 @@ void NeuronConfig::decode(std::array<WordT, NeuronConfig::config_size_in_words> 
 	m_en_synin_exc_small_cap = bitfield.u.m.en_synin_exc_small_cap;
 	m_en_synin_inh_high_res = bitfield.u.m.en_synin_inh_high_res;
 	m_en_synin_exc_high_res = bitfield.u.m.en_synin_exc_high_res;
+	m_en_synin_exc_coba = bitfield.u.m.en_synin_coba_exc;
+	m_en_synin_inh_coba = bitfield.u.m.en_synin_coba_inh;
 	m_en_byp_inh = bitfield.u.m.en_byp_inh;
 	m_en_byp_exc = bitfield.u.m.en_byp_exc;
 	m_en_mem_off = bitfield.u.m.en_mem_off;
