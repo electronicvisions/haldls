@@ -224,6 +224,7 @@ def build(bld):
             use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST'],
             install_path = '${PREFIX}/bin',
             linkflags = ['-lboost_program_options-mt'],
+            test_timeout = 240,
         )
 
         bld(

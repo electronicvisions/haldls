@@ -128,14 +128,16 @@ lola::vx::v1::Chip convert_to_chip_impl(
 
 	// check that memory doesn't contain configuration not present in chip
 	{
-		bool has_complete_coverage = true;
-		std::set<address_type> addresses_set(addresses.begin(), addresses.end());
+		addresses_type addresses_sorted(addresses);
+		std::sort(addresses_sorted.begin(), addresses_sorted.end());
+		addresses_type memory_addresses_sorted;
+		memory_addresses_sorted.reserve(memory.size());
 		for (auto const& [address, _] : memory) {
-			if (!addresses_set.contains(address)) {
-				has_complete_coverage = false;
-			}
+			memory_addresses_sorted.push_back(address);
 		}
-		if (!has_complete_coverage) {
+		if (!std::includes(
+		        addresses_sorted.begin(), addresses_sorted.end(), memory_addresses_sorted.begin(),
+		        memory_addresses_sorted.end())) {
 			static auto logger = log4cxx::Logger::getLogger("stadls.convert_to_chip");
 			LOG4CXX_WARN(
 			    logger,
