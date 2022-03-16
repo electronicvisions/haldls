@@ -152,44 +152,45 @@ def build(bld):
             uselib = 'HALDLS_LIBRARIES',
         )
 
-        ppu_build_source = [
-            'src/haldls/vx/padi.cpp',
-            'src/haldls/vx/padi.cpp',
-            'src/haldls/vx/pll.cpp',
-            'src/haldls/vx/phy.cpp',
-            'src/haldls/vx/background.cpp',
-            'src/haldls/vx/routing_crossbar.cpp',
-            'src/haldls/vx/madc.cpp',
-            'src/haldls/vx/readout.cpp',
-            f'src/haldls/vx/v{hx_version}/correlation.cpp',
-            'src/haldls/vx/ppu.cpp',
-            f'src/haldls/vx/v{hx_version}/capmem.cpp',
-            'src/haldls/vx/synapse.cpp',
-            f'src/haldls/vx/v{hx_version}/synapse.cpp',
-            'src/haldls/vx/cadc.cpp',
-            f'src/haldls/vx/v{hx_version}/cadc.cpp',
-            'src/haldls/vx/synapse_driver.cpp',
-            f'src/haldls/vx/v{hx_version}/synapse_driver.cpp',
-            'src/haldls/vx/systime.cpp',
-            'src/haldls/vx/neuron.cpp',
-            f'src/haldls/vx/v{hx_version}/neuron.cpp',
-        ]
-
-        if hx_version == 1:
-            ppu_build_source += [
-                f'src/haldls/vx/v{hx_version}/address_transformation.cpp',
+        if bld.env.have_ppu_toolchain:
+            ppu_build_source = [
+                'src/haldls/vx/padi.cpp',
+                'src/haldls/vx/padi.cpp',
+                'src/haldls/vx/pll.cpp',
+                'src/haldls/vx/phy.cpp',
+                'src/haldls/vx/background.cpp',
+                'src/haldls/vx/routing_crossbar.cpp',
+                'src/haldls/vx/madc.cpp',
+                'src/haldls/vx/readout.cpp',
+                f'src/haldls/vx/v{hx_version}/correlation.cpp',
+                'src/haldls/vx/ppu.cpp',
+                f'src/haldls/vx/v{hx_version}/capmem.cpp',
+                'src/haldls/vx/synapse.cpp',
+                f'src/haldls/vx/v{hx_version}/synapse.cpp',
+                'src/haldls/vx/cadc.cpp',
+                f'src/haldls/vx/v{hx_version}/cadc.cpp',
+                'src/haldls/vx/synapse_driver.cpp',
+                f'src/haldls/vx/v{hx_version}/synapse_driver.cpp',
+                'src/haldls/vx/systime.cpp',
+                'src/haldls/vx/neuron.cpp',
+                f'src/haldls/vx/v{hx_version}/neuron.cpp',
             ]
 
-        bld(
-            target = f'haldls_ppu_vx_v{hx_version}',
-            source = ppu_build_source,
-            install_path = '${PREFIX}/lib/ppu',
-            features = 'cxx cxxstlib',
-            use = ['haldls_inc', f'halco_hicann_dls_ppu_vx_v{hx_version}', 'fisch_ppu_vx', 'hate_inc'],
-            uselib = 'HALDLS_LIBRARIES',
-            env = bld.all_envs[f'nux_vx_v{hx_version}'],
-            linkflags = '-Wl,-z,defs',
-        )
+            if hx_version == 1:
+                ppu_build_source += [
+                    f'src/haldls/vx/v{hx_version}/address_transformation.cpp',
+                ]
+
+            bld(
+                target = f'haldls_ppu_vx_v{hx_version}',
+                source = ppu_build_source,
+                install_path = '${PREFIX}/lib/ppu',
+                features = 'cxx cxxstlib',
+                use = ['haldls_inc', f'halco_hicann_dls_ppu_vx_v{hx_version}', 'fisch_ppu_vx', 'hate_inc'],
+                uselib = 'HALDLS_LIBRARIES',
+                env = bld.all_envs[f'nux_vx_v{hx_version}'],
+                linkflags = '-Wl,-z,defs',
+            )
 
         bld(
             target = f'stadls_vx_v{hx_version}',
@@ -234,16 +235,17 @@ def build(bld):
             install_path = '${PREFIX}/bin',
         )
 
-        bld(
-            target = f'stadls_hwtest_ppu_vx_v{hx_version}',
-            features = 'cxx cxxprogram',
-            source = [
-                'tests/hw/stadls/vx/common/test-systime_sync_base_ppu.cpp',
-            ],
-            use = [f'nux_inc_vx_v{hx_version}', f'haldls_ppu_vx_v{hx_version}', 'haldls_test_common_inc', f'nux_vx_v{hx_version}', f'nux_runtime_vx_v{hx_version}'],
-            install_path = '${PREFIX}/bin/ppu/tests',
-            env = bld.all_envs[f'nux_vx_v{hx_version}'],
-        )
+        if bld.env.have_ppu_toolchain:
+            bld(
+                target = f'stadls_hwtest_ppu_vx_v{hx_version}',
+                features = 'cxx cxxprogram',
+                source = [
+                    'tests/hw/stadls/vx/common/test-systime_sync_base_ppu.cpp',
+                ],
+                use = [f'nux_inc_vx_v{hx_version}', f'haldls_ppu_vx_v{hx_version}', 'haldls_test_common_inc', f'nux_vx_v{hx_version}', f'nux_runtime_vx_v{hx_version}'],
+                install_path = '${PREFIX}/bin/ppu/tests',
+                env = bld.all_envs[f'nux_vx_v{hx_version}'],
+            )
 
         bld(
             target = f'lola_swtest_vx_v{hx_version}',
