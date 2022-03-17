@@ -6,6 +6,10 @@
 #include <iosfwd>
 #include <cereal/macros.hpp>
 
+#if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
+#include <pybind11/pybind11.h>
+#endif
+
 namespace cereal {
 
 class access;
