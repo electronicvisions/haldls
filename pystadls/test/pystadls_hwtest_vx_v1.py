@@ -162,7 +162,8 @@ class HwTestPystadlsVxV1(unittest.TestCase):
             "Too few MADC samples recorded.")
 
         expected_dtype = numpy.dtype([
-            ('value', numpy.uint64),
+            ('value', numpy.uint16),
+            ('channel', numpy.uint8),
             ('fpga_time', numpy.uint64),
             ('chip_time', numpy.uint64)
         ])
