@@ -15,6 +15,7 @@ public:
 	ReinitStackEntry(Connection& connection);
 	ReinitStackEntry(ReinitStackEntry const&) = delete;
 	ReinitStackEntry(ReinitStackEntry&&) = default;
+	ReinitStackEntry& operator=(ReinitStackEntry&&) = default;
 	~ReinitStackEntry() SYMBOL_VISIBLE;
 
 	void set(PlaybackProgram const& pbmem, bool enforce = true) SYMBOL_VISIBLE;
