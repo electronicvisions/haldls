@@ -581,6 +581,88 @@ public:
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, NeuronBlock const& config) SYMBOL_VISIBLE;
 
+	// TODO (Issue 3622): Manual wrapping is necessary due to genpybind forgetting full
+	// qualification
+	GENPYBIND_MANUAL({
+		auto av = parent->py::template class_<::lola::vx::v1::NeuronBlock::AnalogValues>(
+		    parent, "AnalogValues");
+		av.def(
+		    "fill", &::lola::vx::v1::NeuronBlock::AnalogValues::fill, "", parent->py::arg("val"));
+		{
+			typedef ::lola::vx::v1::NeuronBlock::AnalogValues::reference (
+			    ::lola::vx::v1::NeuronBlock::AnalogValues::*genpybind_at_type)(
+			    const ::lola::vx::v1::NeuronBlock::AnalogValues::key_type&);
+			av.def(
+			    "at", (genpybind_at_type) & ::lola::vx::v1::NeuronBlock::AnalogValues::at, "",
+			    parent->py::arg("key"));
+		}
+		{
+			typedef ::lola::vx::v1::NeuronBlock::AnalogValues::const_reference (
+			    ::lola::vx::v1::NeuronBlock::AnalogValues::*genpybind_at_type)(
+			    const ::lola::vx::v1::NeuronBlock::AnalogValues::key_type&) const;
+			av.def(
+			    "at", (genpybind_at_type) & ::lola::vx::v1::NeuronBlock::AnalogValues::at, "",
+			    parent->py::arg("key"));
+		}
+		{
+			typedef ::lola::vx::v1::NeuronBlock::AnalogValues::reference (
+			    ::lola::vx::v1::NeuronBlock::AnalogValues::*genpybind_front_type)();
+			av.def(
+			    "front", (genpybind_front_type) & ::lola::vx::v1::NeuronBlock::AnalogValues::front,
+			    "");
+		}
+		{
+			typedef ::lola::vx::v1::NeuronBlock::AnalogValues::const_reference (
+			    ::lola::vx::v1::NeuronBlock::AnalogValues::*genpybind_front_type)() const;
+			av.def(
+			    "front", (genpybind_front_type) & ::lola::vx::v1::NeuronBlock::AnalogValues::front,
+			    "");
+		}
+		{
+			typedef ::lola::vx::v1::NeuronBlock::AnalogValues::reference (
+			    ::lola::vx::v1::NeuronBlock::AnalogValues::*genpybind_back_type)();
+			av.def(
+			    "back", (genpybind_back_type) & ::lola::vx::v1::NeuronBlock::AnalogValues::back,
+			    "");
+		}
+		{
+			typedef ::lola::vx::v1::NeuronBlock::AnalogValues::const_reference (
+			    ::lola::vx::v1::NeuronBlock::AnalogValues::*genpybind_back_type)() const;
+			av.def(
+			    "back", (genpybind_back_type) & ::lola::vx::v1::NeuronBlock::AnalogValues::back,
+			    "");
+		}
+		av.def(
+		    "__getitem__", &::lola::vx::v1::NeuronBlock::AnalogValues::get, "",
+		    parent->py::arg("key"), parent->py::return_value_policy::reference);
+		av.def(
+		    "__setitem__", &::lola::vx::v1::NeuronBlock::AnalogValues::set, "",
+		    parent->py::arg("key"), parent->py::arg("value"));
+		av.def(
+		    "__iter__",
+		    [av](::lola::vx::v1::NeuronBlock::AnalogValues& self) {
+			    return pybind11::make_iterator(self);
+		    },
+		    parent->py::template keep_alive<0, 1>());
+
+		av.def("to_numpy", [](::lola::vx::v1::NeuronBlock::AnalogValues const& self) {
+			return ::halco::common::detail::to_numpy(self);
+		});
+		av.def(
+		    "from_numpy",
+		    [](::lola::vx::v1::NeuronBlock::AnalogValues& self, pybind11::array const& array) {
+			    ::halco::common::detail::from_numpy(self, array);
+		    });
+		av.def(parent->py::template init<const ::lola::vx::v1::NeuronBlock::AnalogValues&>(), "");
+		av.def(parent->py::template init<>(), "");
+		av.def_property_readonly(
+		    "size", parent->py::cpp_function(&::lola::vx::v1::NeuronBlock::AnalogValues::size));
+		av.def_property_readonly(
+		    "max_size",
+		    parent->py::cpp_function(&::lola::vx::v1::NeuronBlock::AnalogValues::max_size));
+		av.def_property_readonly(
+		    "empty", parent->py::cpp_function(&::lola::vx::v1::NeuronBlock::AnalogValues::empty));
+	})
 private:
 	friend class haldls::vx::detail::VisitPreorderImpl<NeuronBlock>;
 };
