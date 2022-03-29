@@ -6,6 +6,7 @@
 #include "haldls/vx/v1/cadc.h"
 #include "haldls/vx/v1/capmem.h"
 #include "haldls/vx/v1/correlation.h"
+#include "haldls/vx/v1/current_dac.h"
 #include "haldls/vx/v1/event.h"
 #include "haldls/vx/v1/fpga.h"
 #include "haldls/vx/v1/i2c.h"
