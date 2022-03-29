@@ -16,7 +16,8 @@ GENPYBIND_MANUAL({
 
 	wrapped.def("pop", &ReinitStackEntry::pop);
 	wrapped.def(
-	    "set", &ReinitStackEntry::set, pybind11::arg("pbmem"), pybind11::arg("enforce") = true);
+	    "set", &ReinitStackEntry::set, pybind11::arg("pbmem_request"),
+	    pybind11::arg("pbmem_snapshot") = std::nullopt, pybind11::arg("enforce") = true);
 })
 
 } // namespace stadls::vx::v3

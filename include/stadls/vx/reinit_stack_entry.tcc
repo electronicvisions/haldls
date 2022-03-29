@@ -1,7 +1,6 @@
 #include "stadls/vx/reinit_stack_entry.h"
 
 #include "fisch/vx/reinit_stack_entry.h"
-#include "stadls/vx/playback_program.h"
 
 namespace stadls::vx {
 
