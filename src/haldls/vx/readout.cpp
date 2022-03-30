@@ -262,6 +262,11 @@ std::ostream& operator<<(std::ostream& os, PadMultiplexerConfig const& config)
 	ss << "]\n";
 	ss << "\tcapmem_i_out_mux_to_capmem_intermediate_mux:        \t"
 	   << config.m_capmem_i_out_mux_to_inter << "\n";
+	ss << "\tcapmem_v_out_mux:                                   \t[";
+	hate::join(ss, config.m_capmem_v_out_mux.begin(), config.m_capmem_v_out_mux.end(), ", ");
+	ss << "]\n";
+	ss << "\tcapmem_v_out_mux_to_capmem_intermediate_mux:        \t"
+	   << config.m_capmem_v_out_mux_to_inter << "\n";
 	ss << "\tcapmem_intermediate_mux_to_pad:                     \t"
 	   << config.m_capmem_inter_mux_to_pad << "\n";
 	ss << "\tcapmem_v_ref_mux:                                   \t[";
