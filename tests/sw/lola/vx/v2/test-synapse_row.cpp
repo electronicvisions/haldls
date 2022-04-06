@@ -86,7 +86,6 @@ TEST(SynapseRow, CerealizeCoverage)
 	}
 
 	std::istringstream istream(ostream.str());
-	std::cout << ostream.str() << std::endl;
 	{
 		cereal::JSONInputArchive ia(istream);
 		ia(obj2);
