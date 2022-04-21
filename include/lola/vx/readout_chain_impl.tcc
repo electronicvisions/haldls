@@ -226,7 +226,7 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::MADCDebugCrossbar const
 }
 
 ReadoutChain::MADC::MADC() :
-    sample_duration_adjust(false),
+    sample_duration_adjust(SampleDurationAdjust()),
     enable_sar_reset_on_fall(false),
     sar_reset_wait(),
     sar_reset_length(),
