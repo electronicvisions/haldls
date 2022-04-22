@@ -76,7 +76,8 @@ def build(bld):
             genpybind_tags=['stadls_vx', f'stadls_vx_v{hx_version}'],
             features='genpybind cxx cxxshlib pyext apply_semaphore',
             use=[f'stadls_vx_v{hx_version}', f'pyhalco_hicann_dls_vx_v{hx_version}',
-                 f'pyhaldls_vx_v{hx_version}', f'pystadls_vx_v{hx_version}_obj', 'pyhxcomm_vx'],
+                 f'pyhaldls_vx_v{hx_version}', f'pylola_vx_v{hx_version}',
+                 f'pystadls_vx_v{hx_version}_obj', 'pyhxcomm_vx'],
             install_path='${PREFIX}/lib',
             semaphore=bld.env['stadls_semaphore'],
         )
