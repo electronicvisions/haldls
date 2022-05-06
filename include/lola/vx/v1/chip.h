@@ -111,6 +111,10 @@ public:
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, Chip const& config) SYMBOL_VISIBLE;
 
+	/**
+	 * Default instance for neuron bypass.
+	 */
+	static const SYMBOL_VISIBLE Chip default_neuron_bypass;
 
 private:
 	friend haldls::vx::detail::VisitPreorderImpl<Chip>;
