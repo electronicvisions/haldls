@@ -648,22 +648,22 @@ struct PLLClockOutputBlockBitfield
 			(uint32_t enable_bypass_0       : 1;) \
 			(uint32_t select_adpll_0        : 1;) \
 			(uint32_t select_output_adpll_0 : 2;) \
-			(uint32_t unused_0              : 3;) \
+			(uint32_t /* unused */          : 3;) \
 			(uint32_t enable_output_1       : 1;) \
 			(uint32_t enable_bypass_1       : 1;) \
 			(uint32_t select_adpll_1        : 1;) \
 			(uint32_t select_output_adpll_1 : 2;) \
-			(uint32_t unused_1              : 3;) \
+			(uint32_t /* unused */          : 3;) \
 			(uint32_t enable_output_2       : 1;) \
 			(uint32_t enable_bypass_2       : 1;) \
 			(uint32_t select_adpll_2        : 1;) \
 			(uint32_t select_output_adpll_2 : 2;) \
-			(uint32_t unused_2              : 3;) \
+			(uint32_t /* unused */          : 3;) \
 			(uint32_t enable_output_3       : 1;) \
 			(uint32_t enable_bypass_3       : 1;) \
 			(uint32_t select_adpll_3        : 1;) \
 			(uint32_t select_output_adpll_3 : 2;) \
-			(uint32_t unused_3              : 3;)
+			(uint32_t /* unused */          : 3;)
 			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
 #undef BITFIELD
 		} m;
@@ -716,7 +716,7 @@ std::array<WordT, PLLClockOutputBlock::config_size_in_words> PLLClockOutputBlock
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(0)].get_select_adpll();
 	bitfield.u.m.select_output_adpll_0 = static_cast<uint32_t>(
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(0)].get_select_adpll_output());
-	bitfield.u.m.unused_0 = 0b100;
+
 	bitfield.u.m.enable_output_1 =
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(1)].get_enable_output();
 	bitfield.u.m.enable_bypass_1 =
@@ -725,7 +725,6 @@ std::array<WordT, PLLClockOutputBlock::config_size_in_words> PLLClockOutputBlock
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(1)].get_select_adpll();
 	bitfield.u.m.select_output_adpll_1 = static_cast<uint32_t>(
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(1)].get_select_adpll_output());
-	bitfield.u.m.unused_1 = 0b100;
 
 	bitfield.u.m.enable_output_2 =
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(2)].get_enable_output();
@@ -735,7 +734,6 @@ std::array<WordT, PLLClockOutputBlock::config_size_in_words> PLLClockOutputBlock
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(2)].get_select_adpll();
 	bitfield.u.m.select_output_adpll_2 = static_cast<uint32_t>(
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(2)].get_select_adpll_output());
-	bitfield.u.m.unused_2 = 0b100;
 
 	bitfield.u.m.enable_output_3 =
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(3)].get_enable_output();
@@ -745,7 +743,6 @@ std::array<WordT, PLLClockOutputBlock::config_size_in_words> PLLClockOutputBlock
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(3)].get_select_adpll();
 	bitfield.u.m.select_output_adpll_3 = static_cast<uint32_t>(
 	    m_output[halco::hicann_dls::vx::PLLClockOutputOnDLS(3)].get_select_adpll_output());
-	bitfield.u.m.unused_3 = 0b100;
 
 	return {WordT(bitfield.u.raw)};
 }

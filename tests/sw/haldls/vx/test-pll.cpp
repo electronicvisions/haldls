@@ -285,7 +285,7 @@ TEST(PLLClockOutputBlock, EncodeDecode)
 		    JTAGPLLRegisterOnDLS(4)};
 		std::array<
 		    fisch::vx::word_access_type::JTAGPLLRegister, PLLClockOutputBlock::config_size_in_words>
-		    ref_data = {fisch::vx::word_access_type::JTAGPLLRegister(0x918d8181)};
+		    ref_data = {fisch::vx::word_access_type::JTAGPLLRegister(0x110d0101)};
 
 		{ // write addresses
 			std::vector<JTAGPLLRegisterOnDLS> write_addresses;
@@ -313,7 +313,7 @@ TEST(PLLClockOutputBlock, EncodeDecode)
 		std::array<
 		    fisch::vx::word_access_type::OmnibusChipOverJTAG,
 		    PLLClockOutputBlock::config_size_in_words>
-		    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(0x918d8183)};
+		    ref_data = {fisch::vx::word_access_type::OmnibusChipOverJTAG(0x110d0103)};
 
 		{ // write addresses
 			std::vector<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress> write_addresses;
