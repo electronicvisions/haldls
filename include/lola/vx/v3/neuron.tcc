@@ -189,6 +189,7 @@ struct VisitPreorderImpl<lola::vx::v3::NeuronBlock>
 			    config.i_bias_leak_source_follower[block]);
 			haldls::vx::v3::CapMemCell i_bias_threshold_comparator(
 			    config.i_bias_threshold_comparator[block]);
+			haldls::vx::v3::CapMemCell i_bias_synin_drop(config.i_bias_synin_drop[block]);
 			visit_preorder(
 			    v_bias_casc_n,
 			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::neuron_v_bias_casc_n, block), visitor);
@@ -204,11 +205,16 @@ struct VisitPreorderImpl<lola::vx::v3::NeuronBlock>
 			    i_bias_threshold_comparator,
 			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::neuron_i_bias_spike_comparator, block),
 			    visitor);
+			visit_preorder(
+			    i_bias_synin_drop,
+			    CapMemCellOnDLS(CapMemCellOnCapMemBlock::neuron_i_bias_synin_drop, block),
+			    visitor);
 			if constexpr (!std::is_same<ContainerT, lola::vx::v3::NeuronBlock const>::value) {
 				config.v_bias_casc_n[block] = v_bias_casc_n.get_value();
 				config.i_bias_readout_amp[block] = i_bias_readout_amp.get_value();
 				config.i_bias_leak_source_follower[block] = i_bias_leak_source_follower.get_value();
 				config.i_bias_threshold_comparator[block] = i_bias_threshold_comparator.get_value();
+				config.i_bias_synin_drop[block] = i_bias_synin_drop.get_value();
 			}
 		}
 	}
@@ -334,7 +340,8 @@ BOOST_HANA_ADAPT_STRUCT(
     v_bias_casc_n,
     i_bias_readout_amp,
     i_bias_leak_source_follower,
-    i_bias_threshold_comparator);
+    i_bias_threshold_comparator,
+    i_bias_synin_drop);
 
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::SynapticInput)

@@ -577,6 +577,12 @@ public:
 	 */
 	AnalogValues i_bias_threshold_comparator{AnalogValue{200}};
 
+	/**
+	 * Bias current for the source follower controlling the drop of the
+	 * voltage on the synaptic line before the OTA's input.
+	 */
+	AnalogValues i_bias_synin_drop{AnalogValue{300}};
+
 	bool operator==(NeuronBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(NeuronBlock const& other) const SYMBOL_VISIBLE;
 
