@@ -29,5 +29,5 @@ TEST(FPGADeviceDNA, Read)
 	EXPECT_NO_THROW(ticket.get());
 
 	// FIXME: Issue #3376 hardcoded ID for wafer 62
-	EXPECT_EQ(ticket.get(), FPGADeviceDNA(FPGADeviceDNA::Value(0x74'1d25'8805'1664ull)));
+	EXPECT_EQ(ticket.get(), FPGADeviceDNA(FPGADeviceDNA::Value(0x4c'd140'2349'705cull)));
 }
