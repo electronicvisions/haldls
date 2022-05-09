@@ -554,22 +554,22 @@ public:
 	/**
 	 * Cascode bias potential for various OTAs within the neuron.
 	 */
-	AnalogValues v_bias_casc_n;
+	AnalogValues v_bias_casc_n{AnalogValue{250}};
 
 	/**
 	 * Bias current for the neuron's readout amplifier.
 	 */
-	AnalogValues i_bias_readout_amp;
+	AnalogValues i_bias_readout_amp{AnalogValue{110}};
 
 	/**
 	 * Bias current for the leak/reset input voltage drop source follower.
 	 */
-	AnalogValues i_bias_leak_source_follower;
+	AnalogValues i_bias_leak_source_follower{AnalogValue{100}};
 
 	/**
 	 * Bias current for the threshold comparator.
 	 */
-	AnalogValues i_bias_threshold_comparator;
+	AnalogValues i_bias_threshold_comparator{AnalogValue{200}};
 
 	bool operator==(NeuronBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(NeuronBlock const& other) const SYMBOL_VISIBLE;
