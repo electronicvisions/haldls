@@ -46,6 +46,9 @@ public:
 		/** Bias current of synaptic input OTA for current-based input. */
 		AnalogValueVariant i_bias_gm;
 
+		/** Reversal potential of the COBA based synaptic input */
+		AnalogValueVariant v_rev_coba;
+
 		/** Enable small capacitance mode of the synaptic input.
 		 * This disconnects the capacitor connected to the line in the synapse array,
 		 * using only parasitic capacitance of the line. */

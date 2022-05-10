@@ -42,11 +42,13 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_exc_shift(
 		    config.excitatory_input.i_shift_reference);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_exc_gm(config.excitatory_input.i_bias_gm);
+		haldls::vx::v3::CapMemCell cell_e_synin_exc_rev(config.excitatory_input.v_rev_coba);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_tau(config.inhibitory_input.i_bias_tau);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_coba(config.inhibitory_input.i_bias_coba);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_shift(
 		    config.inhibitory_input.i_shift_reference);
 		haldls::vx::v3::CapMemCell cell_i_bias_synin_inh_gm(config.inhibitory_input.i_bias_gm);
+		haldls::vx::v3::CapMemCell cell_e_synin_inh_rev(config.inhibitory_input.v_rev_coba);
 		haldls::vx::v3::CapMemCell cell_v_leak(config.leak.v_leak);
 		haldls::vx::v3::CapMemCell cell_i_bias_leak(config.leak.i_bias);
 		haldls::vx::v3::CapMemCell cell_v_reset(config.reset.v_reset);
@@ -75,6 +77,9 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 		    cell_i_bias_synin_exc_gm, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_exc_gm),
 		    visitor);
 		visit_preorder(
+		    cell_e_synin_exc_rev, to_capmem_cell(CapMemRowOnCapMemBlock::e_synin_exc_rev),
+		    visitor);
+		visit_preorder(
 		    cell_i_bias_synin_inh_tau, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_inh_tau),
 		    visitor);
 		visit_preorder(
@@ -85,6 +90,9 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 		    to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_inh_shift), visitor);
 		visit_preorder(
 		    cell_i_bias_synin_inh_gm, to_capmem_cell(CapMemRowOnCapMemBlock::i_bias_synin_inh_gm),
+		    visitor);
+		visit_preorder(
+		    cell_e_synin_inh_rev, to_capmem_cell(CapMemRowOnCapMemBlock::e_synin_inh_rev),
 		    visitor);
 		visit_preorder(cell_v_leak, to_capmem_cell(CapMemRowOnCapMemBlock::v_leak), visitor);
 		visit_preorder(
@@ -125,10 +133,12 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 			config.excitatory_input.i_bias_tau = cell_i_bias_synin_exc_tau.get_value();
 			config.excitatory_input.i_bias_coba = cell_i_bias_synin_exc_coba.get_value();
 			config.excitatory_input.i_shift_reference = cell_i_bias_synin_exc_shift.get_value();
+			config.excitatory_input.v_rev_coba = cell_e_synin_exc_rev.get_value();
 			config.inhibitory_input.i_bias_gm = cell_i_bias_synin_inh_gm.get_value();
 			config.inhibitory_input.i_bias_tau = cell_i_bias_synin_inh_tau.get_value();
 			config.inhibitory_input.i_bias_coba = cell_i_bias_synin_inh_coba.get_value();
 			config.inhibitory_input.i_shift_reference = cell_i_bias_synin_inh_shift.get_value();
+			config.inhibitory_input.v_rev_coba = cell_e_synin_inh_rev.get_value();
 			config.leak.v_leak = cell_v_leak.get_value();
 			config.leak.i_bias = cell_i_bias_leak.get_value();
 			config.reset.v_reset = cell_v_reset.get_value();
@@ -229,6 +239,7 @@ BOOST_HANA_ADAPT_STRUCT(
     i_bias_coba,
     i_shift_reference,
     i_bias_gm,
+    v_rev_coba,
     enable_small_capacitance,
     enable_high_resistance,
     enable_coba_mode);
