@@ -88,10 +88,6 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::BufferToPadT const& con
 	return os;
 }
 
-ReadoutChain::DynamicMux::DynamicMux() :
-    enable_amplifiers(true), initially_selected_input(), input_select_length(), i_bias()
-{}
-
 bool ReadoutChain::DynamicMux::operator==(DynamicMux const& other) const
 {
 	return equal(*this, other);
@@ -113,10 +109,6 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::DynamicMux const& confi
 	os << ss.str();
 	return os;
 }
-
-ReadoutChain::PseudoDifferentialConverter::PseudoDifferentialConverter() :
-    enable_reference({false, false}), v_ref(), buffer_bias()
-{}
 
 bool ReadoutChain::PseudoDifferentialConverter::operator==(
     PseudoDifferentialConverter const& other) const
@@ -173,10 +165,6 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::MADCInputCrossbar const
 	return os;
 }
 
-ReadoutChain::MADCPreamp::MADCPreamp() :
-    gain_cap_size(), sampling_window_start(3), sampling_window_end(8), v_ref(), i_bias()
-{}
-
 bool ReadoutChain::MADCPreamp::operator==(MADCPreamp const& other) const
 {
 	return equal(*this, other);
@@ -225,23 +213,6 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::MADCDebugCrossbar const
 	return os;
 }
 
-ReadoutChain::MADC::MADC() :
-    sample_duration_adjust(SampleDurationAdjust()),
-    enable_sar_reset_on_fall(false),
-    sar_reset_wait(),
-    sar_reset_length(),
-    powerup_wait_value(),
-    conversion_cycles_offset(),
-    enable_calibration(false),
-    calibration_wait_value(),
-    number_of_samples(),
-    sample_on_positive_edge(true),
-    enable_dummy_data(false),
-    enable_madc_clock_scaling(false),
-    clock_scale_value(),
-    in_500na()
-{}
-
 bool ReadoutChain::MADC::operator==(MADC const& other) const
 {
 	return equal(*this, other);
@@ -273,17 +244,6 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::MADC const& config)
 	os << ss.str();
 	return os;
 }
-
-ReadoutChain::SourceMeasureUnit::SourceMeasureUnit() :
-    sampling_window_start(9),
-    sampling_window_end(14),
-    connect_neuron_stimulus({false, false}),
-    connect_synapse_debug({false, false}),
-    test_voltage(),
-    buffer_i_bias(),
-    amp_v_ref(),
-    amp_i_bias()
-{}
 
 bool ReadoutChain::SourceMeasureUnit::operator==(SourceMeasureUnit const& other) const
 {

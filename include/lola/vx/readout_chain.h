@@ -111,7 +111,7 @@ public:
 	 */
 	struct GENPYBIND(visible) DynamicMux
 	{
-		DynamicMux() SYMBOL_VISIBLE;
+		DynamicMux() = default;
 
 		typedef haldls::vx::MADCConfig::ActiveMuxInputSelectLength InputSelectLength
 		    GENPYBIND(visible);
@@ -119,23 +119,23 @@ public:
 		/**
 		 * Enable Mux amplifiers.
 		 */
-		bool enable_amplifiers;
+		bool enable_amplifiers{true};
 
 		/**
 		 * Input channel (one of two multiplexers) to acquire the first batch of samples from.
 		 */
-		InputSelect initially_selected_input;
+		InputSelect initially_selected_input{};
 
 		/**
 		 * Number of samples after which the other input channel is selected. Use 1 to sample both
 		 * channels alternately.
 		 */
-		InputSelectLength input_select_length;
+		InputSelectLength input_select_length{};
 
 		/**
 		 * Bias current for amplifier in dynamic mux.
 		 */
-		AnalogValueVariant i_bias;
+		AnalogValueVariant i_bias{AnalogValue{500}};
 
 		bool operator==(DynamicMux const& other) const SYMBOL_VISIBLE;
 		bool operator!=(DynamicMux const& other) const SYMBOL_VISIBLE;
@@ -154,22 +154,22 @@ public:
 	 */
 	struct GENPYBIND(visible) PseudoDifferentialConverter
 	{
-		PseudoDifferentialConverter() SYMBOL_VISIBLE;
+		PseudoDifferentialConverter() = default;
 
 		/**
 		 * Connect reference to a wire on north or south hemisphere.
 		 */
-		HemisphereType enable_reference;
+		HemisphereType enable_reference{{false, false}};
 
 		/**
 		 * Reference voltage.
 		 */
-		AnalogValueVariant v_ref;
+		AnalogValueVariant v_ref{AnalogValue{400}};
 
 		/**
 		 * Bias current for the buffer providing the reference voltage.
 		 */
-		AnalogValueVariant buffer_bias;
+		AnalogValueVariant buffer_bias{AnalogValue{0}};
 
 		bool operator==(PseudoDifferentialConverter const& other) const SYMBOL_VISIBLE;
 		bool operator!=(PseudoDifferentialConverter const& other) const SYMBOL_VISIBLE;
@@ -221,7 +221,7 @@ public:
 	 */
 	struct GENPYBIND(visible) MADCPreamp
 	{
-		MADCPreamp() SYMBOL_VISIBLE;
+		MADCPreamp() = default;
 
 		typedef haldls::vx::MADCConfig::PreampGainCapacitorSize GainCapacitorSize
 		    GENPYBIND(visible);
@@ -229,27 +229,27 @@ public:
 		/**
 		 * Gain capacitor size.
 		 */
-		GainCapacitorSize gain_cap_size;
+		GainCapacitorSize gain_cap_size{};
 
 		/**
 		 * Start of sampling window.
 		 */
-		SamplingWindowTiming sampling_window_start;
+		SamplingWindowTiming sampling_window_start{3};
 
 		/**
 		 * End of sampling window.
 		 */
-		SamplingWindowTiming sampling_window_end;
+		SamplingWindowTiming sampling_window_end{8};
 
 		/**
 		 * Reference voltage.
 		 */
-		AnalogValueVariant v_ref;
+		AnalogValueVariant v_ref{AnalogValue{400}};
 
 		/**
 		 * Bias current.
 		 */
-		AnalogValueVariant i_bias;
+		AnalogValueVariant i_bias{AnalogValue{500}};
 
 		bool operator==(MADCPreamp const& other) const SYMBOL_VISIBLE;
 		bool operator!=(MADCPreamp const& other) const SYMBOL_VISIBLE;
@@ -294,8 +294,7 @@ public:
 	 */
 	struct GENPYBIND(visible) MADC
 	{
-		MADC() SYMBOL_VISIBLE;
-
+		MADC() = default;
 
 		typedef haldls::vx::MADCConfig::SampleDurationAdjust SampleDurationAdjust
 		    GENPYBIND(visible);
@@ -314,74 +313,74 @@ public:
 		 * This seems to be redundant to `conversion_cycles_offset`. Both settings are summed up in
 		 * hardware.
 		 */
-		SampleDurationAdjust sample_duration_adjust;
+		SampleDurationAdjust sample_duration_adjust{SampleDurationAdjust()};
 
 		/**
 		 * Configuration of the MADC's SAR reset timing.
 		 */
-		bool enable_sar_reset_on_fall;
-		SARResetWait sar_reset_wait;
-		SARResetLength sar_reset_length;
+		bool enable_sar_reset_on_fall{false};
+		SARResetWait sar_reset_wait{};
+		SARResetLength sar_reset_length{};
 
 		/**
 		 * Powerup wait value.
 		 * The MADC remains in the wake up state for a number of MADC clock cycles determined by
 		 * this property before transitioning to the `READY` state (via `ENABLE`).
 		 */
-		PowerupWaitValue powerup_wait_value;
+		PowerupWaitValue powerup_wait_value{};
 
 		/**
 		 * Conversion cycles offset.
 		 * This seems to be redundant to `sample_duration_adjust`. Both settings are summed up in
 		 * hardware.
 		 */
-		ConversionCyclesOffset conversion_cycles_offset;
+		ConversionCyclesOffset conversion_cycles_offset{};
 
 		/**
 		 * Enable built-in calibration of the MADC.
 		 */
-		bool enable_calibration;
+		bool enable_calibration{false};
 
 		/**
 		 * Built-in calibration's timing.
 		 */
-		CalibrationWaitValue calibration_wait_value;
+		CalibrationWaitValue calibration_wait_value{};
 
 		/**
 		 * Number of samples recorded by the MADC.
 		 * The MADC records a fixed number of samples as long as it is not
 		 * configured to sample continuously (c.f. `enable_sample_continously` in MADCControl).
 		 */
-		NumberOfSamples number_of_samples;
+		NumberOfSamples number_of_samples{};
 
 		/*
 		 * Let the MADC sample on the positive clock edge.
 		 */
-		bool sample_on_positive_edge;
+		bool sample_on_positive_edge{true};
 
 		/*
 		 * Enable dummy data generation.
 		 * If enabled, the MADC will stream out the last 10 bit of the sample
 		 * counter value as a test pattern (sawtooth).
 		 */
-		bool enable_dummy_data;
+		bool enable_dummy_data{false};
 
 		/**
 		 * Enable clock scaling.
 		 * The clock is derived from a PLL madc_clk output.
 		 */
-		bool enable_madc_clock_scaling;
+		bool enable_madc_clock_scaling{false};
 
 		/**
 		 * Clock scale value.
 		 * The clock is derived from a PLL madc_clk output.
 		 */
-		ClockScaleValue clock_scale_value;
+		ClockScaleValue clock_scale_value{};
 
 		/**
 		 * 500nA reference current.
 		 */
-		AnalogValueVariant in_500na;
+		AnalogValueVariant in_500na{AnalogValue{500}};
 
 		bool operator==(MADC const& other) const SYMBOL_VISIBLE;
 		bool operator!=(MADC const& other) const SYMBOL_VISIBLE;
@@ -408,47 +407,47 @@ public:
 	 */
 	struct GENPYBIND(visible) SourceMeasureUnit
 	{
-		SourceMeasureUnit() SYMBOL_VISIBLE;
+		SourceMeasureUnit() = default;
 
 		/**
 		 * Start of sampling window.
 		 */
-		SamplingWindowTiming sampling_window_start;
+		SamplingWindowTiming sampling_window_start{9};
 
 		/**
 		 * End of sampling window.
 		 */
-		SamplingWindowTiming sampling_window_end;
+		SamplingWindowTiming sampling_window_end{14};
 
 		/**
 		 * Connect neuron stimulus per hemisphere.
 		 */
-		HemisphereType connect_neuron_stimulus;
+		HemisphereType connect_neuron_stimulus{{false, false}};
 
 		/**
 		 * Connect synapse debug wires.
 		 */
-		SynapseTargetType connect_synapse_debug;
+		SynapseTargetType connect_synapse_debug{{false, false}};
 
 		/**
 		 * Test reference voltage.
 		 */
-		AnalogValueVariant test_voltage;
+		AnalogValueVariant test_voltage{AnalogValue{400}};
 
 		/**
 		 * Buffer bias current.
 		 */
-		AnalogValueVariant buffer_i_bias;
+		AnalogValueVariant buffer_i_bias{};
 
 		/**
 		 * Amplifier reference voltage.
 		 */
-		AnalogValueVariant amp_v_ref;
+		AnalogValueVariant amp_v_ref{AnalogValue{400}};
 
 		/**
 		 * Amplifier bias current.
 		 */
-		AnalogValueVariant amp_i_bias;
+		AnalogValueVariant amp_i_bias{};
 
 		bool operator==(SourceMeasureUnit const& other) const SYMBOL_VISIBLE;
 		bool operator!=(SourceMeasureUnit const& other) const SYMBOL_VISIBLE;
