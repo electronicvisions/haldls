@@ -36,7 +36,7 @@ public:
 	haldls::vx::JTAGClockScaler jtag_clock_scaler;
 
 	/** PLL clock output block setting. */
-	haldls::vx::PLLClockOutputBlock pll_clock_output_block;
+	haldls::vx::v2::PLLClockOutputBlock pll_clock_output_block;
 
 	/** ADPLL setting. */
 	typedef halco::common::typed_array<haldls::vx::ADPLL, halco::hicann_dls::vx::v2::ADPLLOnDLS>
