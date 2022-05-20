@@ -70,7 +70,7 @@ public:
 	    AnalogValues;
 
 	/** DAC bias altering the synaptic strength. */
-	AnalogValues i_bias_dac{AnalogValue{1022}};
+	AnalogValues i_bias_dac{AnalogValue{1022}, AnalogValue{1022}};
 
 	bool operator==(SynapseBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(SynapseBlock const& other) const SYMBOL_VISIBLE;

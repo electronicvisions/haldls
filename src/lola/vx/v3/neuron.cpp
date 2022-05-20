@@ -723,16 +723,6 @@ void AtomicNeuron::set_from(haldls::vx::v3::NeuronBackendConfig const& neuron_ba
 }
 
 
-NeuronBlock::NeuronBlock() :
-    atomic_neurons(),
-    backends(),
-    current_rows(),
-    v_bias_casc_n(),
-    i_bias_readout_amp(),
-    i_bias_leak_source_follower(),
-    i_bias_threshold_comparator()
-{}
-
 bool NeuronBlock::operator==(NeuronBlock const& other) const
 {
 	return equal(*this, other);

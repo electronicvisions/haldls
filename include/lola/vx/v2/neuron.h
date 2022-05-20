@@ -518,7 +518,7 @@ public:
 	typedef halco::hicann_dls::vx::v2::NeuronBlockOnDLS coordinate_type;
 	typedef std::false_type has_local_data;
 
-	NeuronBlock() SYMBOL_VISIBLE;
+	NeuronBlock() = default;
 
 	typedef halco::common::
 	    typed_heap_array<AtomicNeuron, halco::hicann_dls::vx::v2::AtomicNeuronOnDLS>
@@ -526,7 +526,7 @@ public:
 	/**
 	 * Array of all neuron circuits.
 	 */
-	AtomicNeurons atomic_neurons;
+	AtomicNeurons atomic_neurons{};
 
 	typedef halco::common::typed_array<
 	    haldls::vx::v2::CommonNeuronBackendConfig,
@@ -536,7 +536,7 @@ public:
 	/**
 	 * Block-wise digital backend configuration.
 	 */
-	Backends backends;
+	Backends backends{};
 
 	typedef halco::common::typed_array<
 	    lola::vx::v2::ColumnCurrentRow,
@@ -546,7 +546,7 @@ public:
 	/**
 	 * Switch-rows to synapse arrays.
 	 */
-	CurrentRows current_rows;
+	CurrentRows current_rows{};
 
 	typedef halco::common::
 	    typed_array<AnalogValueVariant, halco::hicann_dls::vx::v2::CapMemBlockOnDLS>
@@ -554,22 +554,26 @@ public:
 	/**
 	 * Cascode bias potential for various OTAs within the neuron.
 	 */
-	AnalogValues v_bias_casc_n{AnalogValue{250}};
+	AnalogValues v_bias_casc_n{
+	    AnalogValue{250}, AnalogValue{250}, AnalogValue{250}, AnalogValue{250}};
 
 	/**
 	 * Bias current for the neuron's readout amplifier.
 	 */
-	AnalogValues i_bias_readout_amp{AnalogValue{110}};
+	AnalogValues i_bias_readout_amp{
+	    AnalogValue{110}, AnalogValue{110}, AnalogValue{110}, AnalogValue{110}};
 
 	/**
 	 * Bias current for the leak/reset input voltage drop source follower.
 	 */
-	AnalogValues i_bias_leak_source_follower{AnalogValue{100}};
+	AnalogValues i_bias_leak_source_follower{
+	    AnalogValue{100}, AnalogValue{100}, AnalogValue{100}, AnalogValue{100}};
 
 	/**
 	 * Bias current for the threshold comparator.
 	 */
-	AnalogValues i_bias_threshold_comparator{AnalogValue{200}};
+	AnalogValues i_bias_threshold_comparator{
+	    AnalogValue{200}, AnalogValue{200}, AnalogValue{200}, AnalogValue{200}};
 
 	bool operator==(NeuronBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(NeuronBlock const& other) const SYMBOL_VISIBLE;
