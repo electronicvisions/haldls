@@ -297,7 +297,10 @@ public:
 	 * @param data Data to use
 	 */
 	MADCSampleFromChip(fisch::vx::MADCSampleFromChip const& data) :
-	    value(data.value), fpga_time(data.fpga_time), chip_time(data.chip_time)
+	    value(data.value),
+	    channel(data.channel),
+	    fpga_time(data.fpga_time),
+	    chip_time(data.chip_time)
 	{}
 
 	/**
