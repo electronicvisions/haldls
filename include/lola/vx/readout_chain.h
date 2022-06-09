@@ -27,10 +27,7 @@
 #include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 
-#if CHIP_REVISION == 1
-#define GENPYBIND_TAG_LOLA_VX_VY GENPYBIND_TAG_LOLA_VX_V1
-#define CHIP_REVISION_STR v1
-#elif CHIP_REVISION == 2
+#if CHIP_REVISION == 2
 #define GENPYBIND_TAG_LOLA_VX_VY GENPYBIND_TAG_LOLA_VX_V2
 #define CHIP_REVISION_STR v2
 #elif CHIP_REVISION == 3

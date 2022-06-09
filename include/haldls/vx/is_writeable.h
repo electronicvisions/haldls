@@ -3,10 +3,6 @@
 #include <boost/utility/enable_if.hpp>
 #include "hate/type_list.h"
 
-namespace halco::hicann_dls::vx::v1 {
-struct Coordinates;
-} // namespace halco::hicann_dls::vx::v1
-
 namespace halco::hicann_dls::vx::v2 {
 struct Coordinates;
 } // namespace halco::hicann_dls::vx::v2
@@ -21,12 +17,6 @@ template <typename Coordinates>
 class CapMemBlock;
 class PPUMemoryBlock;
 class PPUMemory;
-
-namespace v1 {
-using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v1::Coordinates>;
-using PPUMemoryBlock = haldls::vx::PPUMemoryBlock;
-using PPUMemory = haldls::vx::PPUMemory;
-} // namespace v1
 
 namespace v2 {
 using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v2::Coordinates>;
@@ -47,24 +37,6 @@ class ExternalPPUMemoryBlock;
 class DACChannelBlock;
 class DACControlBlock;
 } // namespace lola::vx
-
-namespace lola::vx::v1 {
-class AtomicNeuron;
-class CADCSampleRow;
-class CADCSamples;
-class CorrelationResetRow;
-using DACChannelBlock = lola::vx::DACChannelBlock;
-using DACControlBlock = lola::vx::DACControlBlock;
-using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
-class SynapseCorrelationCalibRow;
-class SynapseCorrelationCalibMatrix;
-class SynapseLabelMatrix;
-class SynapseLabelRow;
-class SynapseMatrix;
-class SynapseRow;
-class SynapseWeightMatrix;
-class SynapseWeightRow;
-} // namespace lola::vx::v1
 
 namespace lola::vx::v2 {
 class AtomicNeuron;
@@ -122,22 +94,6 @@ struct IsWriteable<
 };
 
 typedef hate::type_list<
-    v1::PPUMemoryBlock,
-    v1::PPUMemory,
-    v1::CapMemBlock,
-    lola::vx::v1::AtomicNeuron,
-    lola::vx::v1::CorrelationResetRow,
-    lola::vx::v1::DACChannelBlock,
-    lola::vx::v1::DACControlBlock,
-    lola::vx::v1::ExternalPPUMemoryBlock,
-    lola::vx::v1::SynapseRow,
-    lola::vx::v1::SynapseMatrix,
-    lola::vx::v1::SynapseWeightMatrix,
-    lola::vx::v1::SynapseLabelMatrix,
-    lola::vx::v1::SynapseCorrelationCalibMatrix,
-    lola::vx::v1::SynapseWeightRow,
-    lola::vx::v1::SynapseLabelRow,
-    lola::vx::v1::SynapseCorrelationCalibRow,
     v2::PPUMemoryBlock,
     v2::PPUMemory,
     v2::CapMemBlock,

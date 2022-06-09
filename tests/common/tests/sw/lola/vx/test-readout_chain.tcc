@@ -11,9 +11,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#if CHIP_REVISION == 1
-#define CHIP_REVISION_STR v1
-#elif CHIP_REVISION == 2
+#if CHIP_REVISION == 2
 #define CHIP_REVISION_STR v2
 #elif CHIP_REVISION == 3
 #define CHIP_REVISION_STR v3
