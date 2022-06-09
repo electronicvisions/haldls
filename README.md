@@ -63,7 +63,7 @@ export SINGULARITYENV_LD_LIBRARY_PATH=`pwd`/lib:$SINGULARITYENV_LD_LIBRARY_PATH
 export PYTHONPATH=`pwd`/lib:$PYTHONPATH
 
 # 10) You can now run any program, e.g. plain unit tests
-c ./bin/stadls_swtest_vx_v1
+c ./bin/stadls_swtest_vx_v3
 ```
 
 ### On the Electronic Vision(s) Cluster
