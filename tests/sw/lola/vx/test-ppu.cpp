@@ -1,15 +1,14 @@
-#include <cstdlib>
+#include "lola/vx/ppu.h"
 
+#include "halco/common/cerealization_geometry.h"
+#include "haldls/vx/ppu.h"
+#include "lola/vx/cerealization.h"
+#include <cstdlib>
+#include <cereal/archives/json.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include <cereal/archives/json.hpp>
-#include "halco/common/cerealization_geometry.h"
-#include "haldls/vx/v1/ppu.h"
-#include "lola/vx/cerealization.h"
-#include "lola/vx/v1/ppu.h"
-
-using namespace lola::vx::v1;
+using namespace lola::vx;
 using namespace halco::hicann_dls::vx;
 
 static std::string const test_ppu_program = TEST_PPU_PROGRAM;
