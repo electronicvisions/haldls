@@ -28,4 +28,4 @@ using PlaybackProgram GENPYBIND(visible) = stadls::vx::PlaybackProgram;
 
 } // namespace stadls::vx::v2
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::PlaybackProgram);
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v2::PlaybackProgram)
