@@ -181,6 +181,9 @@ def build(bld):
                     f'src/haldls/vx/v{hx_version}/address_transformation.cpp',
                 ]
 
+            env = bld.all_envs[f'nux_vx_v{hx_version}'].derive()
+            env.detach()
+
             bld(
                 target = f'haldls_ppu_vx_v{hx_version}',
                 source = ppu_build_source,
@@ -188,7 +191,7 @@ def build(bld):
                 features = 'cxx cxxstlib',
                 use = ['haldls_inc', f'halco_hicann_dls_ppu_vx_v{hx_version}', 'fisch_ppu_vx', 'hate_inc'],
                 uselib = 'HALDLS_LIBRARIES',
-                env = bld.all_envs[f'nux_vx_v{hx_version}'],
+                env = env,
                 linkflags = '-Wl,-z,defs',
             )
 
@@ -237,6 +240,9 @@ def build(bld):
         )
 
         if bld.env.have_ppu_toolchain:
+            env = bld.all_envs[f'nux_vx_v{hx_version}'].derive()
+            env.detach()
+
             bld(
                 target = f'stadls_hwtest_ppu_vx_v{hx_version}',
                 features = 'cxx cxxprogram',
@@ -245,7 +251,7 @@ def build(bld):
                 ],
                 use = [f'nux_inc_vx_v{hx_version}', f'haldls_ppu_vx_v{hx_version}', 'haldls_test_common_inc', f'nux_vx_v{hx_version}', f'nux_runtime_vx_v{hx_version}'],
                 install_path = '${PREFIX}/bin/ppu/tests',
-                env = bld.all_envs[f'nux_vx_v{hx_version}'],
+                env = env,
             )
 
         bld(
