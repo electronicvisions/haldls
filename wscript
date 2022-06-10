@@ -155,7 +155,6 @@ def build(bld):
         if bld.env.have_ppu_toolchain:
             ppu_build_source = [
                 'src/haldls/vx/padi.cpp',
-                'src/haldls/vx/padi.cpp',
                 'src/haldls/vx/pll.cpp',
                 'src/haldls/vx/phy.cpp',
                 'src/haldls/vx/background.cpp',
