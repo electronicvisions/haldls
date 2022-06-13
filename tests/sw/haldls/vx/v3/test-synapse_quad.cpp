@@ -7,6 +7,7 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/v3/omnibus.h"
 #include "halco/hicann-dls/vx/v3/quad.h"
+#include "halco/hicann-dls/vx/v3/synram.h"
 #include "haldls/vx/v3/common.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
