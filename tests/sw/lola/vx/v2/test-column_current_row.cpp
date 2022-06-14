@@ -7,6 +7,7 @@
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_heap_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "halco/hicann-dls/vx/v2/coordinates.h"
 #include "haldls/vx/v2/common.h"
 #include "haldls/vx/v2/synapse.h"
 #include "lola/vx/cerealization.h"

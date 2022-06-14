@@ -33,6 +33,14 @@ using PPUMemory = haldls::vx::PPUMemory;
 
 namespace lola::vx {
 class ExternalPPUMemoryBlock;
+class SynapseCorrelationCalibRow;
+class SynapseCorrelationCalibMatrix;
+class SynapseLabelMatrix;
+class SynapseLabelRow;
+class SynapseMatrix;
+class SynapseRow;
+class SynapseWeightMatrix;
+class SynapseWeightRow;
 } // namespace lola::vx
 
 namespace lola::vx::v2 {
@@ -40,14 +48,6 @@ class AtomicNeuron;
 class CADCSampleRow;
 class CADCSamples;
 using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
-class SynapseCorrelationCalibRow;
-class SynapseCorrelationCalibMatrix;
-class SynapseLabelMatrix;
-class SynapseLabelRow;
-class SynapseMatrix;
-class SynapseRow;
-class SynapseWeightMatrix;
-class SynapseWeightRow;
 } // namespace lola::vx::v2
 
 namespace lola::vx::v3 {
@@ -55,14 +55,6 @@ class AtomicNeuron;
 class CADCSampleRow;
 class CADCSamples;
 using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
-class SynapseCorrelationCalibRow;
-class SynapseCorrelationCalibMatrix;
-class SynapseLabelMatrix;
-class SynapseLabelRow;
-class SynapseMatrix;
-class SynapseRow;
-class SynapseWeightMatrix;
-class SynapseWeightRow;
 } // namespace lola::vx::v3
 
 namespace haldls::vx::detail {
@@ -85,6 +77,14 @@ struct IsReadable<
 };
 
 typedef hate::type_list<
+    lola::vx::SynapseCorrelationCalibRow,
+    lola::vx::SynapseCorrelationCalibMatrix,
+    lola::vx::SynapseLabelMatrix,
+    lola::vx::SynapseLabelRow,
+    lola::vx::SynapseMatrix,
+    lola::vx::SynapseRow,
+    lola::vx::SynapseWeightMatrix,
+    lola::vx::SynapseWeightRow,
     v2::PPUMemory,
     v2::PPUMemoryBlock,
     v2::CapMemBlock,
@@ -92,29 +92,13 @@ typedef hate::type_list<
     lola::vx::v2::CADCSampleRow,
     lola::vx::v2::CADCSamples,
     lola::vx::v2::ExternalPPUMemoryBlock,
-    lola::vx::v2::SynapseCorrelationCalibRow,
-    lola::vx::v2::SynapseCorrelationCalibMatrix,
-    lola::vx::v2::SynapseLabelMatrix,
-    lola::vx::v2::SynapseLabelRow,
-    lola::vx::v2::SynapseMatrix,
-    lola::vx::v2::SynapseRow,
-    lola::vx::v2::SynapseWeightMatrix,
-    lola::vx::v2::SynapseWeightRow,
     v3::PPUMemory,
     v3::PPUMemoryBlock,
     v3::CapMemBlock,
     lola::vx::v3::AtomicNeuron,
     lola::vx::v3::CADCSampleRow,
     lola::vx::v3::CADCSamples,
-    lola::vx::v3::ExternalPPUMemoryBlock,
-    lola::vx::v3::SynapseCorrelationCalibRow,
-    lola::vx::v3::SynapseCorrelationCalibMatrix,
-    lola::vx::v3::SynapseLabelMatrix,
-    lola::vx::v3::SynapseLabelRow,
-    lola::vx::v3::SynapseMatrix,
-    lola::vx::v3::SynapseRow,
-    lola::vx::v3::SynapseWeightMatrix,
-    lola::vx::v3::SynapseWeightRow>
+    lola::vx::v3::ExternalPPUMemoryBlock>
     NonLeafNodeReadableContainerList;
 
 // manually add all non-leaf node containers which are readable

@@ -1,4 +1,4 @@
-#include "haldls/vx/v3/correlation.h"
+#include "haldls/vx/correlation.h"
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
@@ -12,7 +12,7 @@
 #include "haldls/cerealization.tcc"
 #endif
 
-namespace haldls::vx::v3 {
+namespace haldls::vx {
 
 CommonCorrelationConfig::CommonCorrelationConfig() :
     m_sense_delay(),
@@ -20,8 +20,8 @@ CommonCorrelationConfig::CommonCorrelationConfig() :
     m_reset_fall_time(),
     m_reset_mode(ResetMode::normal),
     m_cadc_v_offset_assignment(
-        {halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::left,
-         halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::right})
+        {halco::hicann_dls::vx::CapMemBlockOnHemisphere::left,
+         halco::hicann_dls::vx::CapMemBlockOnHemisphere::right})
 {}
 
 
@@ -161,13 +161,11 @@ std::ostream& operator<<(std::ostream& os, CommonCorrelationConfig const& config
 	ss << "\tReset fall time:          \t" << config.m_reset_fall_time << std::endl;
 	ss << "\tReset mode:               \t" << config.m_reset_mode << std::endl;
 	ss << "\tCADC offset voltage left: \t"
-	   << config
-	          .m_cadc_v_offset_assignment[halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::left]
+	   << config.m_cadc_v_offset_assignment[halco::hicann_dls::vx::CapMemBlockOnHemisphere::left]
 	   << std::endl;
 	;
 	ss << "\tCADC offset voltage right: \t"
-	   << config
-	          .m_cadc_v_offset_assignment[halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::right]
+	   << config.m_cadc_v_offset_assignment[halco::hicann_dls::vx::CapMemBlockOnHemisphere::right]
 	   << std::endl;
 	ss << ")" << std::endl;
 
@@ -211,9 +209,9 @@ std::array<WordT, CommonCorrelationConfig::config_size_in_words> CommonCorrelati
 	bitfield.u.m.reset_mode = static_cast<uint32_t>(m_reset_mode);
 
 	bitfield.u.m.select_voltage_left =
-	    m_cadc_v_offset_assignment[halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::left];
-	if (m_cadc_v_offset_assignment[halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::right] ==
-	    halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::right)
+	    m_cadc_v_offset_assignment[halco::hicann_dls::vx::CapMemBlockOnHemisphere::left];
+	if (m_cadc_v_offset_assignment[halco::hicann_dls::vx::CapMemBlockOnHemisphere::right] ==
+	    halco::hicann_dls::vx::CapMemBlockOnHemisphere::right)
 		bitfield.u.m.select_voltage_right = 0b0;
 	else
 		bitfield.u.m.select_voltage_right = 0b1;
@@ -245,14 +243,14 @@ void CommonCorrelationConfig::decode(
 	m_reset_fall_time = ResetFallTime(bitfield.u.m.reset_fall_time);
 	m_reset_mode = ResetMode(bitfield.u.m.reset_mode);
 
-	m_cadc_v_offset_assignment[halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::left] =
-	    halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere(bitfield.u.m.select_voltage_left);
+	m_cadc_v_offset_assignment[halco::hicann_dls::vx::CapMemBlockOnHemisphere::left] =
+	    halco::hicann_dls::vx::CapMemBlockOnHemisphere(bitfield.u.m.select_voltage_left);
 	if (bitfield.u.m.select_voltage_right)
-		m_cadc_v_offset_assignment[halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::right] =
-		    halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::left;
+		m_cadc_v_offset_assignment[halco::hicann_dls::vx::CapMemBlockOnHemisphere::right] =
+		    halco::hicann_dls::vx::CapMemBlockOnHemisphere::left;
 	else
-		m_cadc_v_offset_assignment[halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::right] =
-		    halco::hicann_dls::vx::v3::CapMemBlockOnHemisphere::right;
+		m_cadc_v_offset_assignment[halco::hicann_dls::vx::CapMemBlockOnHemisphere::right] =
+		    halco::hicann_dls::vx::CapMemBlockOnHemisphere::right;
 }
 
 template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
@@ -264,8 +262,8 @@ template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
         fisch::vx::word_access_type::Omnibus,
         CommonCorrelationConfig::config_size_in_words> const& data);
 
-} // namespace haldls::vx::v3
+} // namespace haldls::vx
 
 #ifndef __ppu__
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::CommonCorrelationConfig)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::CommonCorrelationConfig)
 #endif

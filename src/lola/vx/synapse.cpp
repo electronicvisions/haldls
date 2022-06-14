@@ -1,4 +1,4 @@
-#include "lola/vx/v3/synapse.h"
+#include "lola/vx/v2/synapse.h"
 
 #include "haldls/cerealization.tcc"
 #include "hate/indent.h"
@@ -8,14 +8,14 @@
 #include "lola/vx/hana.h"
 #include <boost/hana/adapt_struct.hpp>
 
-namespace lola::vx::v3 {
+namespace lola::vx {
 
 namespace {
 
 template <typename ValuesT>
 std::string print_row(ValuesT const& values)
 {
-	using namespace halco::hicann_dls::vx::v3;
+	using namespace halco::hicann_dls::vx;
 	using namespace halco::common;
 	typedef typename std::remove_cv<
 	    typename std::remove_reference<decltype(values)>::type>::type::value_type value_type;
@@ -181,7 +181,7 @@ namespace {
 template <typename ValuesT>
 std::string print_matrix(ValuesT const& values)
 {
-	using namespace halco::hicann_dls::vx::v3;
+	using namespace halco::hicann_dls::vx;
 	using namespace halco::common;
 	typedef typename std::remove_cv<typename std::remove_reference<decltype(values)>::type>::type::
 	    value_type::value_type value_type;
@@ -326,20 +326,16 @@ std::ostream& operator<<(std::ostream& os, CorrelationResetRow const& /* row */)
 	return os;
 }
 
-} // namespace lola::vx::v3
+} // namespace lola::vx
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::ColumnCorrelationRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::ColumnCurrentRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseWeightRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseLabelRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseCorrelationCalibRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseWeightMatrix)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseLabelMatrix)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseCorrelationCalibMatrix)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::SynapseMatrix)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::CorrelationResetRow)
-
-#define CHIP_REVISION 3
-#include "lola/vx/synapse_block_impl.tcc"
-#undef CHIP_REVISION
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::ColumnCorrelationRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::ColumnCurrentRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseWeightRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseLabelRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseCorrelationCalibRow)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseWeightMatrix)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseLabelMatrix)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseCorrelationCalibMatrix)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseMatrix)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CorrelationResetRow)

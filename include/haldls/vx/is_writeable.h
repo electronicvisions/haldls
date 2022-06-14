@@ -34,44 +34,35 @@ using PPUMemory = haldls::vx::PPUMemory;
 
 namespace lola::vx {
 class ExternalPPUMemoryBlock;
+class CorrelationResetRow;
 class DACChannelBlock;
 class DACControlBlock;
+class SynapseCorrelationCalibRow;
+class SynapseCorrelationCalibMatrix;
+class SynapseLabelMatrix;
+class SynapseLabelRow;
+class SynapseMatrix;
+class SynapseRow;
+class SynapseWeightMatrix;
+class SynapseWeightRow;
 } // namespace lola::vx
 
 namespace lola::vx::v2 {
 class AtomicNeuron;
 class CADCSampleRow;
 class CADCSamples;
-class CorrelationResetRow;
 using DACChannelBlock = lola::vx::DACChannelBlock;
 using DACControlBlock = lola::vx::DACControlBlock;
 using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
-class SynapseCorrelationCalibRow;
-class SynapseCorrelationCalibMatrix;
-class SynapseLabelMatrix;
-class SynapseLabelRow;
-class SynapseMatrix;
-class SynapseRow;
-class SynapseWeightMatrix;
-class SynapseWeightRow;
 } // namespace lola::vx::v2
 
 namespace lola::vx::v3 {
 class AtomicNeuron;
 class CADCSampleRow;
 class CADCSamples;
-class CorrelationResetRow;
 using DACChannelBlock = lola::vx::DACChannelBlock;
 using DACControlBlock = lola::vx::DACControlBlock;
 using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
-class SynapseCorrelationCalibRow;
-class SynapseCorrelationCalibMatrix;
-class SynapseLabelMatrix;
-class SynapseLabelRow;
-class SynapseMatrix;
-class SynapseRow;
-class SynapseWeightMatrix;
-class SynapseWeightRow;
 } // namespace lola::vx::v3
 
 namespace haldls::vx::detail {
@@ -94,38 +85,29 @@ struct IsWriteable<
 };
 
 typedef hate::type_list<
+    lola::vx::CorrelationResetRow,
+    lola::vx::SynapseRow,
+    lola::vx::SynapseMatrix,
+    lola::vx::SynapseWeightMatrix,
+    lola::vx::SynapseLabelMatrix,
+    lola::vx::SynapseCorrelationCalibMatrix,
+    lola::vx::SynapseWeightRow,
+    lola::vx::SynapseLabelRow,
+    lola::vx::SynapseCorrelationCalibRow,
     v2::PPUMemoryBlock,
     v2::PPUMemory,
     v2::CapMemBlock,
     lola::vx::v2::AtomicNeuron,
-    lola::vx::v2::CorrelationResetRow,
     lola::vx::v2::DACChannelBlock,
     lola::vx::v2::DACControlBlock,
     lola::vx::v2::ExternalPPUMemoryBlock,
-    lola::vx::v2::SynapseRow,
-    lola::vx::v2::SynapseMatrix,
-    lola::vx::v2::SynapseWeightMatrix,
-    lola::vx::v2::SynapseLabelMatrix,
-    lola::vx::v2::SynapseCorrelationCalibMatrix,
-    lola::vx::v2::SynapseWeightRow,
-    lola::vx::v2::SynapseLabelRow,
-    lola::vx::v2::SynapseCorrelationCalibRow,
     v3::PPUMemoryBlock,
     v3::PPUMemory,
     v3::CapMemBlock,
     lola::vx::v3::AtomicNeuron,
-    lola::vx::v3::CorrelationResetRow,
     lola::vx::v3::DACChannelBlock,
     lola::vx::v3::DACControlBlock,
-    lola::vx::v3::ExternalPPUMemoryBlock,
-    lola::vx::v3::SynapseRow,
-    lola::vx::v3::SynapseMatrix,
-    lola::vx::v3::SynapseWeightMatrix,
-    lola::vx::v3::SynapseLabelMatrix,
-    lola::vx::v3::SynapseCorrelationCalibMatrix,
-    lola::vx::v3::SynapseWeightRow,
-    lola::vx::v3::SynapseLabelRow,
-    lola::vx::v3::SynapseCorrelationCalibRow>
+    lola::vx::v3::ExternalPPUMemoryBlock>
     NonLeafNodeWriteableContainerList;
 
 // manually add all non-leaf node containers which are writeable
