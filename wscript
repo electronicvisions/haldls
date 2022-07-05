@@ -156,6 +156,7 @@ def build(bld):
             ppu_build_source = [
                 'src/haldls/vx/padi.cpp',
                 'src/haldls/vx/pll.cpp',
+                f'src/haldls/vx/v{hx_version}/pll.cpp',
                 'src/haldls/vx/phy.cpp',
                 'src/haldls/vx/background.cpp',
                 'src/haldls/vx/routing_crossbar.cpp',
