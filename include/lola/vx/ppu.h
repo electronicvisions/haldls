@@ -218,6 +218,10 @@ private:
 	 * Base address of external memory for instructions from the view of the PPU.
 	 */
 	constexpr static uint32_t external_base_address = 0x8000'0000;
+	/**
+	 * Base address of external memory for data from the view of the PPU.
+	 */
+	constexpr static uint32_t external_data_base_address = 0x4000'0000;
 };
 
 } // namespace vx

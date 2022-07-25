@@ -347,10 +347,17 @@ PPUElfFile::symbols_type PPUElfFile::read_symbols()
 					}
 				}
 				auto const name = std::string(strtab + x.st_name);
-				constexpr size_t external_base = external_base_address;
-				if (x.st_value >= external_base) { // external memory
+				if (x.st_value >= external_base_address) { // external memory instructions
 					auto min = halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(
-					    x.st_value - external_base);
+					    x.st_value - external_base_address);
+					auto max =
+					    halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(min + x.st_size - 1);
+					symbol.coordinate =
+					    halco::hicann_dls::vx::ExternalPPUMemoryBlockOnFPGA(min, max);
+				} else if (x.st_value >= external_data_base_address) { // external memory
+					                                                   // data
+					auto min = halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(
+					    x.st_value - external_data_base_address);
 					auto max =
 					    halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(min + x.st_size - 1);
 					symbol.coordinate =
@@ -473,8 +480,13 @@ PPUElfFile::Memory PPUElfFile::read_program()
 		if (std::string(name).rfind("int", 0) == 0) {
 			copy_scn(scn, internal_bytes, shdr->sh_addr);
 		} else if (std::string(name).rfind("ext", 0) == 0) {
-			constexpr size_t external_base = external_base_address;
-			copy_scn(scn, external_bytes, shdr->sh_addr - external_base);
+			if (shdr->sh_addr >= external_base_address) { // extmem instructions
+				copy_scn(scn, external_bytes, shdr->sh_addr - external_base_address);
+			} else if (shdr->sh_addr >= external_data_base_address) { // extmem data
+				copy_scn(scn, external_bytes, shdr->sh_addr - external_data_base_address);
+			} else {
+				throw std::logic_error("External memory section base address not implemented.");
+			}
 		} else if (
 		    (std::string(name).find(".text") != std::string::npos) ||
 		    (std::string(name).find(".data") != std::string::npos) ||
