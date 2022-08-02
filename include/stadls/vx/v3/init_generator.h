@@ -16,6 +16,9 @@ public:
 	/** Builder typedef (e.g. for usage in generators). */
 	typedef v3::PlaybackProgramBuilder Builder;
 
+	/** Instruction timeout duration on FPGA config. */
+	haldls::vx::InstructionTimeoutConfig instruction_timeout;
+
 	/** Shift register on xBoard config. */
 	haldls::vx::ShiftRegister shift_register;
 

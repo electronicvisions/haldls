@@ -49,6 +49,7 @@ TEST(convert_to_chip, General)
  * weight/label/calib bits synapse containers, single ppu memory words/bytes).
  */
 typedef hate::type_list<
+    haldls::vx::v3::InstructionTimeoutConfig,           // init
     haldls::vx::v3::DAC6573ChannelConfig,               // init
     haldls::vx::v3::AD5252ChannelConfig,                // init
     haldls::vx::v3::AD5252ChannelConfigPersistent,      // init

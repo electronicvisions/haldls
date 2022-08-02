@@ -199,6 +199,77 @@ void EventRecordingConfig::serialize(Archive& ar, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventRecordingConfig)
 
 
+InstructionTimeoutConfig::InstructionTimeoutConfig() :
+    m_value(Value::fpga_clock_cycles_per_us * 10000)
+{}
+
+InstructionTimeoutConfig::Value InstructionTimeoutConfig::get_value() const
+{
+	return m_value;
+}
+
+void InstructionTimeoutConfig::set_value(Value const value)
+{
+	m_value = value;
+}
+
+bool InstructionTimeoutConfig::operator==(InstructionTimeoutConfig const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool InstructionTimeoutConfig::operator!=(InstructionTimeoutConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, InstructionTimeoutConfig const& config)
+{
+	os << "InstructionTimeoutConfig(" << config.m_value << ")";
+	return os;
+}
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    InstructionTimeoutConfig::read_config_size_in_words>
+InstructionTimeoutConfig::read_addresses(coordinate_type const& /*coord*/) const
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(instruction_timeout_config_base_address)};
+}
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    InstructionTimeoutConfig::write_config_size_in_words>
+InstructionTimeoutConfig::write_addresses(coordinate_type const& /*coord*/) const
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(instruction_timeout_config_base_address)};
+}
+
+void InstructionTimeoutConfig::decode(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        InstructionTimeoutConfig::read_config_size_in_words> const& data)
+{
+	m_value = Value(data[0].word.value());
+}
+
+std::array<
+    fisch::vx::word_access_type::Omnibus,
+    InstructionTimeoutConfig::write_config_size_in_words>
+InstructionTimeoutConfig::encode() const
+{
+	return {fisch::vx::word_access_type::Omnibus(m_value)};
+}
+
+template <class Archive>
+void InstructionTimeoutConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(InstructionTimeoutConfig)
+
+
 ExternalPPUMemoryByte::Value ExternalPPUMemoryByte::get_value() const
 {
 	return m_value;
@@ -396,5 +467,6 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryQuad)
 
 CEREAL_CLASS_VERSION(haldls::vx::FPGADeviceDNA, 0)
 CEREAL_CLASS_VERSION(haldls::vx::EventRecordingConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::InstructionTimeoutConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryByte, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryQuad, 0)

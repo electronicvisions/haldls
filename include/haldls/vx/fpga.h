@@ -9,6 +9,7 @@
 #include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
+#include "haldls/vx/timer.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
@@ -141,6 +142,61 @@ private:
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventRecordingConfig)
 
+/**
+ * Container for the configuration of the playback instruction timeout duration.
+ */
+class GENPYBIND(visible) InstructionTimeoutConfig
+{
+public:
+	typedef halco::hicann_dls::vx::InstructionTimeoutConfigOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	typedef Timer::Value Value GENPYBIND(visible);
+
+	explicit InstructionTimeoutConfig() SYMBOL_VISIBLE;
+
+	/**
+	 * Get value.
+	 * @return Duration value
+	 */
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set value.
+	 * @param Duration value
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(Value value) SYMBOL_VISIBLE;
+
+	bool operator==(InstructionTimeoutConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(InstructionTimeoutConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, InstructionTimeoutConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words> read_addresses(
+	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words> write_addresses(
+	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Value m_value;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(InstructionTimeoutConfig)
+
 class GENPYBIND(visible) ExternalPPUMemoryByte
 {
 public:
@@ -257,6 +313,11 @@ struct BackendContainerTrait<FPGADeviceDNA>
 template <>
 struct BackendContainerTrait<EventRecordingConfig>
     : public BackendContainerBase<EventRecordingConfig, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<InstructionTimeoutConfig>
+    : public BackendContainerBase<InstructionTimeoutConfig, fisch::vx::word_access_type::Omnibus>
 {};
 
 template <>

@@ -7,6 +7,7 @@ namespace stadls::vx::v2 {
 namespace detail {
 
 InitGenerator::InitGenerator() :
+    instruction_timeout(),
     shift_register(),
     dac_control_block(),
     dac_channel_block(lola::vx::DACChannelBlock::default_ldo_2),
@@ -40,6 +41,9 @@ PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate(
 	using namespace halco::common;
 
 	InitGenerator::Builder builder;
+
+	// Configure playback instruction timeout
+	builder.write(InstructionTimeoutConfigOnFPGA(), instruction_timeout);
 
 	if (enable_xboard) {
 		// Set shift register values

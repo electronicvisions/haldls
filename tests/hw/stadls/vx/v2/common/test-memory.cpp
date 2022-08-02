@@ -93,6 +93,7 @@ struct HasNoSideeffects
 	constexpr static bool value = !hate::is_in_type_list<
 	    T,
 	    hate::type_list<
+	        InstructionTimeoutConfig,
 	        CommonSynramConfig,
 	        PhyConfigFPGA,
 	        PhyConfigChip,
