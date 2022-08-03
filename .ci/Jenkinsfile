@@ -16,18 +16,12 @@ try {
 
 	Map<String, Object> pipelineNoDeploymentOptions = [
 		container              : [app: "dls-core"],
-		configureInstallOptions: "--build-profile=ci"
+		configureInstallOptions: "--build-profile=ci",
+		testOptions       : "--test-execall -j1",
+		testSlurmResource : [[partition: "cube", wafer: 62, "fpga-without-aout": 0],
+		                     [partition: "cube", wafer: 62, "fpga-without-aout": 3]],
+		preTestHook       : { configureHxCubeBitfile() },
 	] << commonPipelineOptions
-
-	// Additional options for hardware testing in "no deployment" and not triggered by Gerrit case
-	if (!isTriggeredByGerrit()) {
-		pipelineNoDeploymentOptions << [
-				testOptions       : "--test-execall -j1",
-				testSlurmResource : [[partition: "cube", wafer: 62, "fpga-without-aout": 0],
-				                     [partition: "cube", wafer: 62, "fpga-without-aout": 3]],
-				preTestHook       : { configureHxCubeBitfile() },
-		]
-	}
 
 	boolean deploy = env.GERRIT_EVENT_TYPE == "change-merged"
 
