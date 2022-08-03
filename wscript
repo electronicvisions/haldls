@@ -17,7 +17,6 @@ def depends(ctx):
     ctx('halco')
     ctx('hate')
     ctx('fisch')
-    ctx('ztl')
     ctx("libnux")
     ctx("hxcomm")
 
@@ -271,7 +270,7 @@ def build(bld):
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/hw/test-*.cpp')
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/common/test-*.cpp'),
             test_main = 'tests/hw/stadls/vx/main.cpp',
-            use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST', 'haldls_test_common_inc', 'ZTL'],
+            use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST', 'haldls_test_common_inc', 'hate_inc'],
             defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
             install_path = '${PREFIX}/bin',
             linkflags = ['-lboost_program_options-mt'],

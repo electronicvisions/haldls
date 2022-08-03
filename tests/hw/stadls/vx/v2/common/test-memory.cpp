@@ -9,12 +9,12 @@
 #include "haldls/vx/v2/barrier.h"
 #include "haldls/vx/v2/container.h"
 #include "haldls/vx/v2/traits.h"
+#include "hate/type_index.h"
 #include "hxcomm/vx/connection_from_env.h"
 #include "stadls/vx/v2/decode.h"
 #include "stadls/vx/v2/init_generator.h"
 #include "stadls/vx/v2/playback_program.h"
 #include "stadls/vx/v2/run.h"
-#include "ztl/debug.h"
 
 #ifdef SIMULATION_TEST
 constexpr static bool is_simulation = true;
@@ -125,7 +125,7 @@ public:
 	template <typename T>
 	static std::string GetName(int)
 	{
-		return ZTL::typestring<T>().substr(strlen("haldls::vx::"));
+		return hate::full_name<T>().substr(strlen("haldls::vx::"));
 	}
 };
 } // namespace haldls::vx
