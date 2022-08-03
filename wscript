@@ -19,6 +19,7 @@ def depends(ctx):
     ctx('fisch')
     ctx('ztl')
     ctx("libnux")
+    ctx("hxcomm")
 
     if getattr(ctx.options, 'with_haldls_python_bindings', True):
         ctx('halco', 'pyhalco')
