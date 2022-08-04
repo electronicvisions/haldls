@@ -110,7 +110,7 @@ def build(bld):
             tests=f'test/pystadls_hwtest_vx_v{hx_version}.py',
             features='use pytest pylint pycodestyle',
             use=[f'pyhalco_hicann_dls_vx_v{hx_version}', f'pystadls_vx_v{hx_version}', f'pyhaldls_vx_v{hx_version}',
-                 'pyhalco_common_files', 'pyhxcomm_vx'],
+                 'pyhalco_common_files', 'pyhxcomm_vx', 'pylogging'],
             install_path='${PREFIX}/bin',
             pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
             pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),

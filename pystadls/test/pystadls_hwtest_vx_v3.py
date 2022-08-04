@@ -10,6 +10,14 @@ import pystadls_vx_v3 as stadls
 import pyfisch_vx_v3 as fisch
 import pyhxcomm_vx as hxcomm
 
+import pylogging as logger
+
+
+if logger.get_root().get_number_of_appenders() == 0:
+    logger.reset()
+    logger.default_config(level=logger.LogLevel.WARN)
+logger.set_loglevel(logger.get("pystadls"), logger.LogLevel.DEBUG)
+
 
 class HwTestPystadlsVxV3(unittest.TestCase):
     @classmethod
@@ -276,6 +284,21 @@ class HwTestPystadlsVxV3(unittest.TestCase):
                     samples = samples[samples["value"] != 0]
                     samples = numpy.sort(samples,
                                          order=["chip_time", "fpga_time"])
+
+                    # assert the expected number of samples is present
+                    log = logger.get(
+                        "pystadls.hwtest.vx.v3.test_madc_sample_rate")
+                    log.DEBUG(
+                        f"At madc_clock_scale {madc_clock_scale_value}, "
+                        + f"sample_duration_adjust {sample_duration_adjust}, "
+                        + "enable_madc_clock_scaling "
+                        + f"{enable_madc_clock_scaling}: "
+                        + f"Received {len(samples)} MADC samples.")
+                    self.assertGreater(
+                        len(samples),
+                        int(madc_config.number_of_samples) * 0.95,
+                        "Too few MADC samples were received!")
+
                     # convert to SI units (us)
                     sample_times = samples["chip_time"] / \
                         (float(haldls.Timer.Value.fpga_clock_cycles_per_us))
