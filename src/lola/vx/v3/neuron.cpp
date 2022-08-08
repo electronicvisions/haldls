@@ -38,7 +38,7 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::SynapticInput const& co
 	   << "\ti_bias_gm:                " << config.i_bias_gm << "\n"
 	   << "\ti_bias_coba:              " << config.i_bias_coba << "\n"
 	   << "\tenable_small_capacitance: " << config.enable_small_capacitance << "\n"
-	   << "\tenable_high_resistance:   " << config.enable_high_resistance << "\n)"
+	   << "\tenable_high_resistance:   " << config.enable_high_resistance << "\n"
 	   << "\tenable_coba_mode:         " << config.enable_coba_mode << "\n)";
 	os << ss.str();
 	return os;
