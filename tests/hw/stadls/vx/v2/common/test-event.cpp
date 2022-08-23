@@ -8,15 +8,15 @@
 #include "stadls/vx/v2/run.h"
 #include "test-helper.h"
 #include <gtest/gtest.h>
+#include <log4cxx/logger.h>
 
 using namespace halco::common;
 using namespace halco::hicann_dls::vx::v2;
 using namespace haldls::vx::v2;
 using namespace stadls::vx::v2;
 
-// disabled due to Issue #3578
 #define TEST_SPIKE(Num)                                                                            \
-	TEST(SpikePack##Num##ToChip, DISABLED_Loopback)                                                \
+	TEST(SpikePack##Num##ToChip, Loopback)                                                         \
 	{                                                                                              \
 		auto sequence = DigitalInit();                                                             \
 		auto [builder, _] = generate(sequence);                                                    \
@@ -44,8 +44,16 @@ using namespace stadls::vx::v2;
                                                                                                    \
 		auto spikes = program.get_spikes();                                                        \
                                                                                                    \
+		static auto logger = log4cxx::Logger::getLogger(                                           \
+		    "stadls.SpikePack" + std::to_string(Num) + "ToChip.Loopback");                         \
+		if (spikes.size() < Num * num_spikes) {                                                    \
+			LOG4CXX_TRACE(                                                                         \
+			    logger,                                                                            \
+			    ("WARNING: " + std::to_string(Num * num_spikes - spikes.size()) +                  \
+			     " spikes were lost from a total of " + std::to_string(Num * num_spikes) + "!"));  \
+		}                                                                                          \
 		EXPECT_LE(spikes.size(), num_spikes* Num);                                                 \
-		EXPECT_GT(spikes.size(), 0);                                                               \
+		EXPECT_GT(spikes.size(), 0.9 * num_spikes * Num);                                          \
                                                                                                    \
 		for (auto spike : spikes) {                                                                \
 			auto it = std::find(                                                                   \
