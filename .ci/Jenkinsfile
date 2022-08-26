@@ -11,7 +11,7 @@ try {
 
 	Map<String, Object> pipelineDeploymentOptions = [
 		container              : [app: "dls-nodev"],
-		configureInstallOptions: "--build-profile=release_with_debug"
+		configureInstallOptions: "--build-profile=release"
 	] << commonPipelineOptions
 
 	Map<String, Object> pipelineNoDeploymentOptions = [
