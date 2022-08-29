@@ -94,7 +94,7 @@ TEST(CADCSampleQuad, EncodeDecode)
 
 	std::array<OmnibusAddress, CADCSampleQuad::read_config_size_in_words> ref_addresses = {
 	    OmnibusAddress{0x02ec'0143ul}};
-	std::array<Omnibus, CADCSampleQuad::read_config_size_in_words> ref_data = {Omnibus(0x12 << 8)};
+	std::array<Omnibus, CADCSampleQuad::read_config_size_in_words> ref_data = {Omnibus(0x12 << 16)};
 
 	{ // write addresses
 		std::vector<OmnibusAddress> write_addresses;

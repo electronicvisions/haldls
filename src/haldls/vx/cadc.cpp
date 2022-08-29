@@ -361,10 +361,10 @@ struct CADCSampleQuadBitfield
 		// clang-format off
 		struct __attribute__((packed)) {
 #define BITFIELD \
-			(uint32_t sample_0 : 8;) \
-			(uint32_t sample_1 : 8;) \
+			(uint32_t sample_3 : 8;) \
 			(uint32_t sample_2 : 8;) \
-			(uint32_t sample_3 : 8;)
+			(uint32_t sample_1 : 8;) \
+			(uint32_t sample_0 : 8;)
 			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
 #undef BITFIELD
 		} m;

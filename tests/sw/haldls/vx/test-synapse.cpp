@@ -227,8 +227,8 @@ TEST(SynapseQuad, EncodeDecode)
 	        {halco::hicann_dls::vx::OmnibusAddress(0x02cf'0083),
 	         halco::hicann_dls::vx::OmnibusAddress(0x02cf'00c3)}};
 	std::array<fisch::vx::word_access_type::Omnibus, SynapseQuad::config_size_in_words> ref_data = {
-	    {fisch::vx::word_access_type::Omnibus(0x00B7'0000),
-	     fisch::vx::word_access_type::Omnibus(0x007F'0000)}};
+	    {fisch::vx::word_access_type::Omnibus(0x0000'B700),
+	     fisch::vx::word_access_type::Omnibus(0x0000'7F00)}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;

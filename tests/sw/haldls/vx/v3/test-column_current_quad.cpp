@@ -126,8 +126,8 @@ TEST(ColumnCurrentQuad, EncodeDecode)
 	                      halco::hicann_dls::vx::OmnibusAddress(0x02c2'4003)}};
 	std::array<fisch::vx::word_access_type::Omnibus, ColumnCurrentQuad::config_size_in_words>
 	    ref_data = {
-	        {fisch::vx::word_access_type::Omnibus(0x0002'0000),
-	         fisch::vx::word_access_type::Omnibus(0x0001'0000)}};
+	        {fisch::vx::word_access_type::Omnibus(0x0000'0200),
+	         fisch::vx::word_access_type::Omnibus(0x0000'0100)}};
 
 	{ // write addresses
 		std::vector<halco::hicann_dls::vx::OmnibusAddress> write_addresses;
