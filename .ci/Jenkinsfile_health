@@ -10,6 +10,8 @@ class HXCubeWing implements Serializable {
 	int hxcubeId
 	int fpgaId
 	int chipRevision
+	Integer fpgaBitfileVersion = null
+	String fpgaBitfileBuildTime = null
 
 	HXCubeWing(int hxcubeId, int fpgaId, int chipRevision) {
 		this.hxcubeId = hxcubeId
@@ -63,6 +65,23 @@ class HXCubeWing implements Serializable {
 	}
 }
 
+static int readBitfileVersion(WorkflowScript pipeline) {
+	String query = "import yaml\n" +
+	               "from pyhxcomm_vx import ManagedConnection\n" +
+	               "with ManagedConnection() as connection:\n" +
+	               "    bitfile_info = yaml.safe_load(connection.bitfile_info)\n" +
+	               "    print(bitfile_info[\"version\"])"
+	return (int) pipeline.jesh(script: "python -c '${query}'", returnStdout: true).trim()
+}
+
+static String readBitfileBuildTime(WorkflowScript pipeline) {
+	String query = "import yaml\n" +
+	               "from pyhxcomm_vx import ManagedConnection\n" +
+	               "with ManagedConnection() as connection:\n" +
+	               "    bitfile_info = yaml.safe_load(connection.bitfile_info)\n" +
+	               "    print(bitfile_info[\"build_time\"].strftime(\"%Y-%m-%d %H:%M\"))"
+	return pipeline.jesh(script: "python -c '${query}'", returnStdout: true).trim()
+}
 
 try {
 	List<HXCubeWing> setups = []
@@ -88,6 +107,8 @@ try {
 							timeout(time: 30, unit: "SECONDS") {
 								success[setup_local] = jesh(script: "stadls_hwtest_vx_v${setup_local.chipRevision} --gtest_filter='-FPGADeviceDNA.Read'",
 								                            returnStatus: true) == 0
+								setup_local.fpgaBitfileVersion = readBitfileVersion(this)
+								setup_local.fpgaBitfileBuildTime = readBitfileBuildTime(this)
 							}
 						} catch (FlowInterruptedException ignored) {
 							success[setup_local] = false
@@ -174,6 +195,8 @@ static String compileHtml(List<HXCubeWing> setups, Map<HXCubeWing, Boolean> succ
 			content += "<td style=\"${entry_style}background-color:#f8ff00;text-align:left;" +
 			           "vertical-align:top\">not tested</td>"
 		}
+		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${setup.fpgaBitfileVersion ?: ''}</td>"
+		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${setup.fpgaBitfileBuildTime ?: ''}</td>"
 		content += "</tr>"
 	}
 
@@ -184,6 +207,8 @@ static String compileHtml(List<HXCubeWing> setups, Map<HXCubeWing, Boolean> succ
 <th style="${entry_style}text-align:center">Setup</th>
 <th style="${entry_style}text-align:center">Chip Revision</th>
 <th style="${entry_style}text-align:center">State</th>
+<th style="${entry_style}text-align:center">Bitfile Version</th>
+<th style="${entry_style}text-align:center">Bitfile Build Time</th>
 </tr>
 </thead>
 ${content}
