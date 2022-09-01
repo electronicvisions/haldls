@@ -623,7 +623,7 @@ double MADCConfig::calculate_sample_rate(double const& madc_base_frequency) cons
 
 template <typename AddressT>
 std::array<AddressT, MADCConfig::config_size_in_words> SYMBOL_VISIBLE
-MADCConfig::addresses(coordinate_type const& /* coord */) const
+MADCConfig::addresses(coordinate_type const& /* coord */)
 {
 	std::array<AddressT, MADCConfig::config_size_in_words> addresses;
 	size_t i = 1;
@@ -638,12 +638,11 @@ MADCConfig::addresses(coordinate_type const& /* coord */) const
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress, MADCConfig::config_size_in_words>
     MADCConfig::addresses<halco::hicann_dls::vx::OmnibusChipOverJTAGAddress>(
-        coordinate_type const& coord) const;
+        coordinate_type const& coord);
 
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusAddress, MADCConfig::config_size_in_words>
-    MADCConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(
-        coordinate_type const& coord) const;
+    MADCConfig::addresses<halco::hicann_dls::vx::OmnibusAddress>(coordinate_type const& coord);
 
 namespace {
 

@@ -123,10 +123,10 @@ public:
 
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words> read_addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words> write_addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
@@ -178,10 +178,10 @@ public:
 
 	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
 	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
-	std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words> read_addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words> write_addresses(
-	    coordinate_type const& word) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
 	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&

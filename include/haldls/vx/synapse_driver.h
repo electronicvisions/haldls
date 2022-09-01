@@ -41,7 +41,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 	template <typename AddressT>
-	std::array<AddressT, config_size_in_words> addresses(coordinate_type const& word) const
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& word)
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:

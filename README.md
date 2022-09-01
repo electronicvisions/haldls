@@ -117,7 +117,7 @@ public:
 
     constexpr static size_t config_size_in_words = N;
 
-    std::array<typename fisch::vx::MyNewRegister::coordinate_type, config_size_in_words> addresses() const;
+    static std::array<typename fisch::vx::MyNewRegister::coordinate_type, config_size_in_words> addresses();
 
     std::array<fisch::vx::MyNewRegister, config_size_in_words> encode() const;
 
@@ -168,8 +168,8 @@ public:
     constexpr static size_t read_config_size_in_words = N;
     constexpr static size_t write_config_size_in_words = M;
 
-    std::array<typename fisch::vx::MyNewRegister::coordinate_type, read_config_size_in_words> read_addresses() const;
-    std::array<typename fisch::vx::MyNewRegister::coordinate_type, write_config_size_in_words> write_addresses() const;
+    static std::array<typename fisch::vx::MyNewRegister::coordinate_type, read_config_size_in_words> read_addresses();
+    static std::array<typename fisch::vx::MyNewRegister::coordinate_type, write_config_size_in_words> write_addresses();
 
     std::array<fisch::vx::MyNewRegister, write_config_size_in_words> encode() const;
 

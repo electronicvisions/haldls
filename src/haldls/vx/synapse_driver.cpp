@@ -33,7 +33,7 @@ std::ostream& operator<<(std::ostream& os, SynapseDriverSRAMTimingConfig const& 
 
 template <typename AddressT>
 std::array<AddressT, SynapseDriverSRAMTimingConfig::config_size_in_words>
-SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord) const
+SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord)
 {
 	return {AddressT(synapse_driver_sram_timing_base_addresses.at(coord.toEnum())),
 	        AddressT(synapse_driver_sram_timing_base_addresses.at(coord.toEnum()) + 1)};
@@ -42,11 +42,11 @@ SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     SynapseDriverSRAMTimingConfig::config_size_in_words>
-SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusAddress,
     SynapseDriverSRAMTimingConfig::config_size_in_words>
-SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+SynapseDriverSRAMTimingConfig::addresses(coordinate_type const& coord);
 
 #ifndef __ppu__
 template <typename Archive>

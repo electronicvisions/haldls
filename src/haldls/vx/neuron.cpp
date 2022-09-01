@@ -810,7 +810,7 @@ std::ostream& operator<<(std::ostream& os, NeuronSRAMTimingConfig const& config)
 
 template <typename AddressT>
 std::array<AddressT, NeuronSRAMTimingConfig::config_size_in_words>
-NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const
+NeuronSRAMTimingConfig::addresses(coordinate_type const& coord)
 {
 	return {AddressT(neuron_sram_timing_base_addresses.at(coord.toEnum())),
 	        AddressT(neuron_sram_timing_base_addresses.at(coord.toEnum()) + 1)};
@@ -819,10 +819,10 @@ NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     NeuronSRAMTimingConfig::config_size_in_words>
-NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+NeuronSRAMTimingConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronSRAMTimingConfig::config_size_in_words>
-    NeuronSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+    NeuronSRAMTimingConfig::addresses(coordinate_type const& coord);
 
 #ifndef __ppu__
 template <class Archive>
@@ -854,7 +854,7 @@ std::ostream& operator<<(std::ostream& os, NeuronBackendSRAMTimingConfig const& 
 
 template <typename AddressT>
 std::array<AddressT, NeuronBackendSRAMTimingConfig::config_size_in_words>
-NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const
+NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord)
 {
 	return {AddressT(neuron_backend_sram_timing_base_addresses.at(coord.toEnum())),
 	        AddressT(neuron_backend_sram_timing_base_addresses.at(coord.toEnum()) + 1)};
@@ -863,11 +863,11 @@ NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     NeuronBackendSRAMTimingConfig::config_size_in_words>
-NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusAddress,
     NeuronBackendSRAMTimingConfig::config_size_in_words>
-NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord);
 
 #ifndef __ppu__
 template <class Archive>

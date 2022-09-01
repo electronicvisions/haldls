@@ -294,7 +294,7 @@ std::ostream& operator<<(std::ostream& os, CADCOffsetSRAMTimingConfig const& con
 
 template <typename AddressT>
 std::array<AddressT, CADCOffsetSRAMTimingConfig::config_size_in_words>
-CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const
+CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord)
 {
 	return {AddressT(cadc_offset_sram_timing_config_base_addresses.at(coord.toEnum())),
 	        AddressT(cadc_offset_sram_timing_config_base_addresses.at(coord.toEnum()) + 1)};
@@ -303,10 +303,10 @@ CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const
 template SYMBOL_VISIBLE std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
     CADCOffsetSRAMTimingConfig::config_size_in_words>
-CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusAddress, CADCOffsetSRAMTimingConfig::config_size_in_words>
-    CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord) const;
+    CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord);
 
 #ifndef __ppu__
 template <typename Archive>

@@ -137,13 +137,13 @@ std::ostream& operator<<(std::ostream& os, EventRecordingConfig const& config)
 }
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, EventRecordingConfig::read_config_size_in_words>
-EventRecordingConfig::read_addresses(coordinate_type const& /*coord*/) const
+EventRecordingConfig::read_addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusAddress(event_recording_config_base_address)};
 }
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, EventRecordingConfig::write_config_size_in_words>
-EventRecordingConfig::write_addresses(coordinate_type const& /*coord*/) const
+EventRecordingConfig::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusAddress(event_recording_config_base_address)};
 }
@@ -232,7 +232,7 @@ std::ostream& operator<<(std::ostream& os, InstructionTimeoutConfig const& confi
 std::array<
     halco::hicann_dls::vx::OmnibusAddress,
     InstructionTimeoutConfig::read_config_size_in_words>
-InstructionTimeoutConfig::read_addresses(coordinate_type const& /*coord*/) const
+InstructionTimeoutConfig::read_addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusAddress(instruction_timeout_config_base_address)};
 }
@@ -240,7 +240,7 @@ InstructionTimeoutConfig::read_addresses(coordinate_type const& /*coord*/) const
 std::array<
     halco::hicann_dls::vx::OmnibusAddress,
     InstructionTimeoutConfig::write_config_size_in_words>
-InstructionTimeoutConfig::write_addresses(coordinate_type const& /*coord*/) const
+InstructionTimeoutConfig::write_addresses(coordinate_type const& /*coord*/)
 {
 	return {halco::hicann_dls::vx::OmnibusAddress(instruction_timeout_config_base_address)};
 }
