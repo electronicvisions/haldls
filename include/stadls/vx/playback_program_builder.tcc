@@ -14,6 +14,7 @@
 #include "haldls/vx/traits.h"
 #include "hate/type_traits.h"
 #include "stadls/visitors.h"
+#include "stadls/vx/addresses.h"
 #include "stadls/vx/supports_empty.h"
 
 namespace stadls::vx::detail {
@@ -204,15 +205,11 @@ void PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToCon
 	typedef decltype(
 	    fisch::vx::container_cast(std::declval<backend_container_type>())) fisch_container_type;
 	typedef std::vector<typename fisch_container_type::coordinate_type> addresses_type;
-	addresses_type write_addresses;
-	if constexpr (supports_empty_container_v<T>) {
-		hate::Empty<T> empty_config;
-		haldls::vx::visit_preorder(
-		    empty_config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
-	} else {
-		haldls::vx::visit_preorder(
-		    config, coord, stadls::WriteAddressVisitor<addresses_type>{write_addresses});
-	}
+	auto const maybe_array_write_addresses = get_write_addresses<
+	    typename fisch_container_type::coordinate_type, typename T::coordinate_type,
+	    CoordinateToContainer>(coord);
+	addresses_type const write_addresses(
+	    maybe_array_write_addresses.begin(), maybe_array_write_addresses.end());
 
 	typedef std::vector<backend_container_type> words_type;
 	words_type words;
@@ -432,17 +429,12 @@ PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToContaine
 
 		    typedef decltype(fisch::vx::container_cast(
 		        std::declval<backend_container_type>())) fisch_container_type;
+		    auto const maybe_array_read_addresses = get_read_addresses<
+		        typename fisch_container_type::coordinate_type, typename T::coordinate_type,
+		        CoordinateToContainer>(coord);
 		    typedef std::vector<typename fisch_container_type::coordinate_type> addresses_type;
-		    addresses_type read_addresses;
-		    if constexpr (supports_empty_container_v<T>) {
-			    hate::Empty<T> config;
-			    haldls::vx::visit_preorder(
-			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
-		    } else {
-			    T config = coordinate_to_container<typename T::coordinate_type, T>(coord);
-			    haldls::vx::visit_preorder(
-			        config, coord, stadls::ReadAddressVisitor<addresses_type>{read_addresses});
-		    }
+		    addresses_type const read_addresses(
+		        maybe_array_read_addresses.begin(), maybe_array_read_addresses.end());
 
 		    if (read_addresses.size() == 0) {
 			    throw std::runtime_error("Container not readable.");
