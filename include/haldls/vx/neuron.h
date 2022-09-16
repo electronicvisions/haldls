@@ -605,7 +605,7 @@ public:
 	};
 
 	/** Default constructor */
-	SpikeCounterRead() SYMBOL_VISIBLE;
+	SpikeCounterRead() = default; // SYMBOL_VISIBLE;
 
 	/**
 	 * Get count, i.e. number of spikes since last reset.
@@ -649,7 +649,7 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Count m_count;
-	bool m_overflow;
+	bool m_overflow{false};
 };
 
 #ifndef __ppu__

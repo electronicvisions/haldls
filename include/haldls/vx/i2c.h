@@ -11,12 +11,14 @@
 #include "halco/hicann-dls/vx/i2c.h"
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "halco/hicann-dls/vx/xboard.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+#ifndef __ppu__
+#include "haldls/cerealization.h"
 #include "hxcomm/vx/target.h"
+#endif
 
 namespace halco::hicann_dls::vx {} // namespace halco::hicann_dls::vx
 
@@ -28,8 +30,10 @@ class GENPYBIND(visible) INA219Config
 public:
 	typedef halco::hicann_dls::vx::INA219ConfigOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	/** ADC resolution and number of samples. */
 	enum class ADCMode
@@ -105,7 +109,9 @@ private:
 
 std::ostream& operator<<(std::ostream& os, INA219Config::ADCMode const& mode) SYMBOL_VISIBLE;
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(INA219Config)
+#endif
 
 namespace detail {
 
@@ -122,8 +128,10 @@ class GENPYBIND(visible) INA219Status
 public:
 	typedef halco::hicann_dls::vx::INA219StatusOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	/**
 	 * Bus voltage with linear conversion and LSB = 4mV.
@@ -264,7 +272,9 @@ private:
 	ShuntVoltage m_shunt_voltage;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(INA219Status)
+#endif
 
 namespace detail {
 
@@ -281,8 +291,10 @@ class GENPYBIND(visible) TCA9554Inputs
 public:
 	typedef halco::hicann_dls::vx::TCA9554InputsOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	typedef GENPYBIND(opaque) halco::common::
 	    typed_array<bool, halco::hicann_dls::vx::TCA9554ChannelOnBoard> ChannelsBooleanArray;
@@ -327,7 +339,9 @@ private:
 	ChannelsBooleanArray m_input;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Inputs)
+#endif
 
 namespace detail {
 
@@ -343,8 +357,10 @@ class GENPYBIND(visible) TCA9554Config
 public:
 	typedef halco::hicann_dls::vx::TCA9554ConfigOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	enum class ChannelPolarity : bool
 	{
@@ -436,7 +452,9 @@ private:
 	ChannelsModeArray m_mode;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Config)
+#endif
 
 namespace detail {
 
@@ -453,8 +471,10 @@ class GENPYBIND(visible) AD5252ChannelConfig
 public:
 	typedef halco::hicann_dls::vx::AD5252ChannelConfigOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	struct GENPYBIND(inline_base("*")) WiperSetting
 	    : public halco::common::detail::RantWrapper<
@@ -509,7 +529,9 @@ private:
 	WiperSetting m_value;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfig)
+#endif
 
 namespace detail {
 
@@ -528,8 +550,10 @@ class GENPYBIND(visible) AD5252ChannelConfigPersistent
 public:
 	typedef halco::hicann_dls::vx::AD5252ChannelConfigPersistentOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	struct GENPYBIND(inline_base("*")) WiperSetting
 	    : public halco::common::detail::RantWrapper<
@@ -585,7 +609,9 @@ private:
 	WiperSetting m_value;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfigPersistent)
+#endif
 
 namespace detail {
 
@@ -604,8 +630,10 @@ class GENPYBIND(visible) DAC6573ChannelConfig
 public:
 	typedef halco::hicann_dls::vx::DAC6573ChannelOnBoard coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::simulation};
+#endif
 
 	struct GENPYBIND(inline_base("*")) Value
 	    : public halco::common::detail::RantWrapper<
@@ -660,7 +688,9 @@ private:
 	Value m_value;
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(DAC6573ChannelConfig)
+#endif
 
 namespace detail {
 

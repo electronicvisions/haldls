@@ -241,15 +241,38 @@ def build(bld):
             env.detach()
 
             bld(
-                target = f'stadls_hwtest_ppu_vx_v{hx_version}',
+                target = f'stadls_hwsimtest_ppu_program_vx_v{hx_version}',
                 features = 'cxx cxxprogram',
                 source = [
-                    'tests/hw/stadls/vx/common/test-systime_sync_base_ppu.cpp',
+                    f'tests/hw/stadls/vx/ppu_main.cpp',
+                    f'tests/hw/stadls/vx/v{hx_version}/common/test-systime_sync_base_ppu.cpp',
+                    f'tests/hw/stadls/vx/v{hx_version}/common/test-neuron_spike_counter_ppu.cpp',
                 ],
                 use = [f'nux_inc_vx_v{hx_version}', f'haldls_ppu_vx_v{hx_version}', 'haldls_test_common_inc', f'nux_vx_v{hx_version}', f'nux_runtime_vx_v{hx_version}'],
                 install_path = '${PREFIX}/bin/ppu/tests',
                 env = env,
             )
+
+            bld(
+                name = f"stadls_hwsimtest_ppu_vx_v{hx_version}",
+                tests = bld.root.find_node(f"{get_toplevel_path()}/libnux/tests/hw/libnux/test_hwsimtests_vx_v{hx_version}.py"),
+                features = "use pytest pylint pycodestyle",
+                use = [f"dlens_vx_v{hx_version}", "libnux_test_helpers"],
+                skip_run = not (((bld.env.TEST_TARGET == TestTarget.HARDWARE) or
+                                 (bld.env.TEST_TARGET == TestTarget.SIMULATION))
+                                and
+                                int(bld.env.CURRENT_SETUP["chip_revision"]) ==
+                                hx_version),
+                env = bld.all_envs[''],
+                test_environ = dict(STACK_PROTECTION=env.LIBNUX_STACK_PROTECTOR_ENABLED[0],
+                                    STACK_REDZONE=env.LIBNUX_STACK_REDZONE_ENABLED[0],
+                                    TEST_BINARY_PATH=os.path.join(bld.env.PREFIX, "build", "haldls", "tests", "hw", "stadls")),
+                pylint_config = join(get_toplevel_path(), "code-format", "pylintrc"),
+                pycodestyle_config = join(get_toplevel_path(), "code-format", "pycodestyle"),
+                test_timeout = 20000
+            )
+
+
 
         bld(
             target = f'lola_swtest_vx_v{hx_version}',

@@ -564,8 +564,6 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(BlockPostPulse)
 #endif
 
 
-SpikeCounterRead::SpikeCounterRead() : m_count(), m_overflow(false) {}
-
 SpikeCounterRead::Count SpikeCounterRead::get_count() const
 {
 	return m_count;
@@ -591,7 +589,7 @@ std::array<AddressT, SpikeCounterRead::read_config_size_in_words> SpikeCounterRe
     SpikeCounterRead::coordinate_type const& neuron)
 {
 	auto const base_address =
-	    spike_counter_read_sram_base_addresses.at(neuron.toSpikeCounterReadBlockOnDLS());
+	    spike_counter_read_sram_base_addresses[neuron.toSpikeCounterReadBlockOnDLS()];
 	auto const neuron_coord = neuron.toSpikeCounterReadOnSpikeCounterReadBlock();
 
 	// Multiply the neuron coordinate with the backend config size to get the true address
@@ -646,8 +644,8 @@ template <typename WordT>
 void SpikeCounterRead::decode(
     std::array<WordT, SpikeCounterRead::read_config_size_in_words> const& data)
 {
-	m_count = Count(data.at(0) & 0xFF);
-	m_overflow = data.at(0) & 0x100;
+	m_count = Count(data[0] & 0xFF);
+	m_overflow = data[0] & 0x100;
 }
 
 template SYMBOL_VISIBLE void

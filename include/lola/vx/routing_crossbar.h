@@ -4,7 +4,9 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/routing_crossbar.h"
 #include "hate/visibility.h"
+#ifndef __ppu__
 #include "hxcomm/vx/target.h"
+#endif
 #include "lola/vx/genpybind.h"
 
 namespace cereal {
@@ -21,8 +23,10 @@ class GENPYBIND(visible) Crossbar
 public:
 	typedef halco::hicann_dls::vx::CrossbarOnDLS coordinate_type;
 	typedef std::false_type has_local_data;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::hardware};
+#endif
 
 	/** Default constructor. */
 	Crossbar() SYMBOL_VISIBLE;

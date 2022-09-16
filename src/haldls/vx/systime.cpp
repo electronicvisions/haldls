@@ -132,6 +132,7 @@ void SystimeSyncBase::serialize(Archive& ar, std::uint32_t const)
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeSyncBase)
+#endif
 
 
 SystimeSync::SystimeSync(bool const value) : m_do_sync(value) {}
@@ -186,6 +187,7 @@ void SystimeSync::decode(std::array<
                          SystimeSync::read_config_size_in_words> const& /*data*/)
 {}
 
+#ifndef __ppu__
 template <class Archive>
 void SystimeSync::serialize(Archive& ar, std::uint32_t const)
 {

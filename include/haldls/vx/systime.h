@@ -86,7 +86,6 @@ struct BackendContainerTrait<SystimeSyncBase>
 } // namespace detail
 
 
-#ifndef __ppu__
 /**
  * Container for syncronization of chip and FPGA systime.
  * After syncronization the FPGA will annotate responses with systime information by sending
@@ -143,7 +142,9 @@ private:
 	void serialize(Archive& ar, std::uint32_t const version);
 };
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SystimeSync)
+#endif
 
 namespace detail {
 
@@ -153,7 +154,6 @@ struct BackendContainerTrait<SystimeSync>
 {};
 
 } // namespace detail
-#endif
 
 } // namespace vx
 } // namespace haldls

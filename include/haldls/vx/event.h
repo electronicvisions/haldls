@@ -1,9 +1,11 @@
 #pragma once
-#include "fisch/vx/event.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/event.h"
+#ifndef __ppu__
+#include "fisch/vx/event.h"
 #include "halco/hicann-dls/vx/highspeed_link.h"
 #include "halco/hicann-dls/vx/readout.h"
+#endif
 #include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
@@ -98,7 +100,8 @@ SpikePackToChip(3)
 #undef SpikePackToChip
 
 
-typedef fisch::vx::FPGATime FPGATime GENPYBIND(visible);
+#ifndef __ppu__
+    typedef fisch::vx::FPGATime FPGATime GENPYBIND(visible);
 typedef fisch::vx::ChipTime ChipTime GENPYBIND(visible);
 
 namespace detail {
@@ -464,5 +467,6 @@ private:
 };
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(HighspeedLinkNotification)
+#endif
 
 } // namespace haldls::vx

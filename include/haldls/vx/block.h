@@ -5,11 +5,13 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#ifndef __ppu__
+#include "haldls/cerealization.h"
 #include "hxcomm/vx/target.h"
+#endif
 
 namespace cereal {
 class access;
@@ -22,8 +24,10 @@ class GENPYBIND(visible) PollingOmnibusBlockConfig
 public:
 	typedef halco::hicann_dls::vx::PollingOmnibusBlockConfigOnFPGA coordinate_type;
 	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
 	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
 	    hxcomm::vx::Target::hardware, hxcomm::vx::Target::simulation};
+#endif
 
 	typedef halco::hicann_dls::vx::OmnibusAddress Address GENPYBIND(visible);
 	typedef fisch::vx::word_access_type::Omnibus::Word Value GENPYBIND(visible);
@@ -145,6 +149,8 @@ struct BackendContainerTrait<PollingOmnibusBlock>
 
 } // namespace detail
 
+#ifndef __ppu__
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PollingOmnibusBlock)
+#endif
 
 } // namespace haldls::vx
