@@ -71,7 +71,7 @@ static int readBitfileVersion(WorkflowScript pipeline) {
 	               "with ManagedConnection() as connection:\n" +
 	               "    bitfile_info = yaml.safe_load(connection.bitfile_info)\n" +
 	               "    print(bitfile_info[\"version\"])"
-	return (int) pipeline.jesh(script: "python -c '${query}'", returnStdout: true).trim()
+	return pipeline.jesh(script: "python -c '${query}'", returnStdout: true).trim().toInteger()
 }
 
 static String readBitfileBuildTime(WorkflowScript pipeline) {
