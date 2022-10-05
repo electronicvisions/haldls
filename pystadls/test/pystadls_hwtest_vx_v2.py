@@ -61,7 +61,7 @@ class HwTestPystadlsVxV2(unittest.TestCase):
         for spike_type_count, spike_type_coord, spike_type in spike_pack_types:
             for i in range(num_spikes):
                 # TODO: random numbers would be nicer here
-                labels = [haldls.SpikeLabel(i)] * spike_type_count
+                labels = [halco.SpikeLabel(i)] * spike_type_count
                 spike = spike_type(labels)
                 builder.write(spike_type_coord(), spike)
                 builder.write(halco.TimerOnDLS(), haldls.Timer())
@@ -87,7 +87,7 @@ class HwTestPystadlsVxV2(unittest.TestCase):
 
         # count incorrectly received spikes (unknown label)
         incorrect_spikes = numpy.sum(
-            [haldls.SpikeLabel(spike["label"])
+            [halco.SpikeLabel(spike["label"])
              not in to_fpga_spike_labels for spike in spikes])
         self.assertLess(incorrect_spikes, 100,
                         "Too many random spikes were received.")

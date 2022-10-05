@@ -202,19 +202,6 @@ private:
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronBackendConfig)
 #endif
 
-/**
- * Address of the spikes sent out by a neuron.
- */
-struct GENPYBIND(inline_base("*")) NeuronBackendAddressOut
-    : public halco::common::detail::RantWrapper<NeuronBackendAddressOut, uint_fast16_t, 255, 0>
-{
-	typedef halco::common::detail::RantWrapper<NeuronBackendAddressOut, uint_fast16_t, 255, 0>
-	    rant_t;
-	constexpr explicit NeuronBackendAddressOut(uintmax_t const val = 0)
-	    GENPYBIND(implicit_conversion) :
-	    rant_t(val)
-	{}
-};
 
 template <typename Coordinates>
 class NeuronBackendConfig;
@@ -237,7 +224,7 @@ public:
 	    hxcomm::vx::Target::simulation};
 #endif
 
-	typedef NeuronBackendAddressOut AddressOut GENPYBIND(visible);
+	typedef halco::hicann_dls::vx::NeuronBackendAddressOut AddressOut GENPYBIND(visible);
 
 	/**
 	 * ResetHoldoff period: Adjusts the time delta between the reset and the refractory period.

@@ -91,7 +91,7 @@ PADIEvent::RowSelectAddress PADIEvent::get_row_select_address() const
 	return m_row_select_address;
 }
 
-void PADIEvent::set_row_select_address(PADIEvent::RowSelectAddress const value)
+void PADIEvent::set_row_select_address(RowSelectAddress const value)
 {
 	m_row_select_address = value;
 }

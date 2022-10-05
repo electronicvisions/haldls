@@ -35,7 +35,8 @@ public:
 	typedef halco::hicann_dls::vx::PADIEventOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	using EventAddress = haldls::vx::SynapseLabelValue;
+	using EventAddress = halco::hicann_dls::vx::SynapseLabel;
+	using RowSelectAddress = halco::hicann_dls::vx::PADIRowSelectAddress;
 
 	/**
 	 * Address in Hagen-mode.
@@ -57,15 +58,6 @@ public:
 	    : public halco::common::detail::RantWrapper<HagenActivation, uint_fast16_t, 31, 0>
 	{
 		constexpr explicit HagenActivation(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-		    rant_t(val)
-		{}
-	};
-
-	struct GENPYBIND(inline_base("*")) RowSelectAddress
-	    : public halco::common::detail::RantWrapper<RowSelectAddress, uint_fast16_t, 31, 0>
-	{
-		constexpr explicit RowSelectAddress(uintmax_t const val = 0)
-		    GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
 	};

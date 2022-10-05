@@ -38,17 +38,6 @@ class ColumnCurrentRow;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-/**
- * Value type of a single synapse label configuration.
- */
-struct GENPYBIND(inline_base("*")) SynapseLabelValue
-    : public halco::common::detail::RantWrapper<SynapseLabelValue, uint8_t, 63, 0>
-{
-	constexpr explicit SynapseLabelValue(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-	    rant_t(val)
-	{}
-};
-
 class GENPYBIND(visible) CommonSynramConfig : public DifferentialWriteTrait
 {
 public:
@@ -299,7 +288,7 @@ public:
 	typedef halco::hicann_dls::vx::SynapseLabelQuadOnDLS coordinate_type;
 	typedef std::true_type is_leaf_node;
 
-	typedef SynapseLabelValue Value GENPYBIND(visible);
+	typedef halco::hicann_dls::vx::SynapseLabel Value GENPYBIND(visible);
 
 	SynapseLabelQuad() SYMBOL_VISIBLE;
 
@@ -910,7 +899,6 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CorrelationReset)
 namespace std {
 
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CommonSynramConfig::PCConf)
-HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SynapseLabelValue)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CommonSynramConfig::WConf)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::CommonSynramConfig::WaitCtrClear)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SynapseWeightQuad::Value)

@@ -4,7 +4,6 @@
 
 namespace haldls::vx::v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
-using SpikeLabel GENPYBIND(visible) = haldls::vx::SpikeLabel;
 using SpikePack1ToChip GENPYBIND(visible) = haldls::vx::SpikePack1ToChip;
 using SpikePack2ToChip GENPYBIND(visible) = haldls::vx::SpikePack2ToChip;
 using SpikePack3ToChip GENPYBIND(visible) = haldls::vx::SpikePack3ToChip;

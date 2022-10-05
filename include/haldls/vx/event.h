@@ -14,64 +14,6 @@
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
-struct GENPYBIND(inline_base("*")) SpikeLabel
-    : public halco::common::detail::BaseType<SpikeLabel, uint16_t>
-{
-	constexpr explicit SpikeLabel(value_type const value = value_type()) : base_t(value) {}
-
-	/** SPL1-label, bits 14-15. */
-	GENPYBIND(getter_for(spl1_address))
-	halco::hicann_dls::vx::SPL1Address get_spl1_address() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(spl1_address))
-	void set_spl1_address(halco::hicann_dls::vx::SPL1Address value) SYMBOL_VISIBLE;
-
-	/** Label type processed by Crossbar, bits 0-13. */
-	GENPYBIND(getter_for(neuron_label))
-	halco::hicann_dls::vx::NeuronLabel get_neuron_label() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(neuron_label))
-	void set_neuron_label(halco::hicann_dls::vx::NeuronLabel value) SYMBOL_VISIBLE;
-
-	/** Label type processed by PADI-bus, bits 0-10. */
-	struct GENPYBIND(inline_base("*")) PADILabel
-	    : public halco::common::detail::RantWrapper<PADILabel, uint_fast16_t, 0x3ff, 0>
-	{
-		constexpr explicit PADILabel(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
-		    rant_t(val)
-		{}
-	};
-
-	/** PADI-bus label, bits 0-10. */
-	GENPYBIND(getter_for(padi_label))
-	PADILabel get_padi_label() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(padi_label))
-	void set_padi_label(PADILabel value) SYMBOL_VISIBLE;
-
-	/** Neuron event output of on-chip neurons, bits 8-10. */
-	GENPYBIND(getter_for(neuron_event_output))
-	halco::hicann_dls::vx::NeuronEventOutputOnDLS get_neuron_event_output() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(neuron_event_output))
-	void set_neuron_event_output(halco::hicann_dls::vx::NeuronEventOutputOnDLS value)
-	    SYMBOL_VISIBLE;
-
-	/** Configurable neuron backend output label, bits 0-7. */
-	GENPYBIND(getter_for(neuron_backend_address_out))
-	NeuronBackendAddressOut get_neuron_backend_address_out() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(neuron_backend_address_out))
-	void set_neuron_backend_address_out(NeuronBackendAddressOut value) SYMBOL_VISIBLE;
-
-	/** Configurable row select address on PADIBus, bits 6-10. */
-	GENPYBIND(getter_for(row_select_address))
-	PADIEvent::RowSelectAddress get_row_select_address() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(row_select_address))
-	void set_row_select_address(PADIEvent::RowSelectAddress) SYMBOL_VISIBLE;
-
-	/** Configurable synapse address, bits 0-5. */
-	GENPYBIND(getter_for(synapse_label))
-	SynapseLabelValue get_synapse_label() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(synapse_label))
-	void set_synapse_label(SynapseLabelValue value) SYMBOL_VISIBLE;
-};
-
 #define SpikePackToChip(Num)                                                                       \
 	class GENPYBIND(visible) SpikePack##Num##ToChip                                                \
 	{                                                                                              \
@@ -79,7 +21,7 @@ struct GENPYBIND(inline_base("*")) SpikeLabel
 		typedef halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS coordinate_type;                \
 		typedef std::true_type is_leaf_node;                                                       \
                                                                                                    \
-		typedef std::array<SpikeLabel, Num> labels_type;                                           \
+		typedef std::array<halco::hicann_dls::vx::SpikeLabel, Num> labels_type;                    \
                                                                                                    \
 		/** Default constructor. */                                                                \
 		SpikePack##Num##ToChip() SYMBOL_VISIBLE;                                                   \
@@ -179,7 +121,10 @@ public:
 	 * @param fpga_time FPGATime to use
 	 * @param chip_time ChipTime to use
 	 */
-	SpikeFromChip(SpikeLabel const& label, FPGATime const& fpga_time, ChipTime const& chip_time) :
+	SpikeFromChip(
+	    halco::hicann_dls::vx::SpikeLabel const& label,
+	    FPGATime const& fpga_time,
+	    ChipTime const& chip_time) :
 	    label(label), fpga_time(fpga_time), chip_time(chip_time)
 	{}
 
@@ -194,7 +139,7 @@ public:
 	/**
 	 * Spike label.
 	 */
-	SpikeLabel label;
+	halco::hicann_dls::vx::SpikeLabel label;
 
 	/**
 	 * FPGA time.
@@ -521,7 +466,3 @@ private:
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(HighspeedLinkNotification)
 
 } // namespace haldls::vx
-
-namespace std {
-HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SpikeLabel)
-} // namespace std

@@ -56,7 +56,7 @@ TEST(SpikeLabel, General)
 	}
 
 	{
-		SynapseLabelValue const value(23);
+		SynapseLabel const value(23);
 		config.set_synapse_label(value);
 		EXPECT_EQ(config.get_synapse_label(), value);
 	}
