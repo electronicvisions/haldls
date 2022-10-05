@@ -2,6 +2,7 @@
 
 import com.cloudbees.groovy.cps.NonCPS
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
+import hudson.AbortException
 
 
 class HXCubeWing implements Serializable {
@@ -107,8 +108,12 @@ try {
 							timeout(time: 30, unit: "SECONDS") {
 								success[setup_local] = jesh(script: "stadls_hwtest_vx_v${setup_local.chipRevision} --gtest_filter='-FPGADeviceDNA.Read'",
 								                            returnStatus: true) == 0
-								setup_local.fpgaBitfileVersion = readBitfileVersion(this)
-								setup_local.fpgaBitfileBuildTime = readBitfileBuildTime(this)
+								try {
+									setup_local.fpgaBitfileVersion = readBitfileVersion(this)
+									setup_local.fpgaBitfileBuildTime = readBitfileBuildTime(this)
+								} catch (AbortException ignored) {
+									success[setup_local] = false
+								}
 							}
 						} catch (FlowInterruptedException ignored) {
 							success[setup_local] = false
