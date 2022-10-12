@@ -40,4 +40,16 @@ using ExtollSpikeCommTimestampDelayEventLossExpired GENPYBIND(visible) =
 using ExtollSpikeCommTimestampDelayCounterReset GENPYBIND(visible) =
     haldls::vx::ExtollSpikeCommTimestampDelayCounterReset;
 
+
+using ExtollBarrierTriggerReached GENPYBIND(visible) = haldls::vx::ExtollBarrierTriggerReached;
+using ExtollBarrierReleased GENPYBIND(visible) = haldls::vx::ExtollBarrierReleased;
+using ExtollBarrierConfig GENPYBIND(visible) = haldls::vx::ExtollBarrierConfig;
+using ExtollInterruptControl GENPYBIND(visible) = haldls::vx::ExtollInterruptControl;
+using ExtollInterruptConfig GENPYBIND(visible) = haldls::vx::ExtollInterruptConfig;
+
+using ExtollBarrierInterruptInportErrorCount GENPYBIND(visible) =
+    haldls::vx::ExtollBarrierInterruptInportErrorCount;
+using ExtollBarrierInterruptInportCounterReset GENPYBIND(visible) =
+    haldls::vx::ExtollBarrierInterruptInportCounterReset;
+
 } // namespace haldls::vx::v2

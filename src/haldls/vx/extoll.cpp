@@ -4,10 +4,13 @@
 
 #include "fisch/vx/word_access/type/extoll.h"
 #include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_array.h"
+#include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/extoll.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/extoll_constants.h"
 #include "haldls/vx/omnibus_constants.h"
+#include "hate/join.h"
 #include "hate/math.h"
 
 namespace haldls {
@@ -2163,6 +2166,1046 @@ void ExtollSpikeCommTimestampDelayCounterReset::serialize(Archive& ar, std::uint
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayCounterReset)
 
 
+/**
+ * implementation of ExtollBarrierTriggerReached for Coord
+ * ExtollBarrierTriggerReachedOnExtollNetwork
+ */
+
+
+ExtollBarrierTriggerReached::ExtollBarrierTriggerReached() {}
+
+bool ExtollBarrierTriggerReached::operator==(ExtollBarrierTriggerReached const& /*other*/) const
+{
+	return true;
+}
+
+bool ExtollBarrierTriggerReached::operator!=(ExtollBarrierTriggerReached const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExtollBarrierTriggerReached const& /*config*/)
+{
+	std::stringstream ss;
+	ss << "ExtollBarrierTriggerReached()";
+	return (os << ss.str());
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddressOnExtollNetwork,
+    ExtollBarrierTriggerReached::write_config_size_in_words>
+ExtollBarrierTriggerReached::write_addresses(coordinate_type const& coord)
+{
+	auto coordNodeIdOnNetwork = coord.toExtollNodeIdOnExtollNetwork();
+	auto coordChipType = coordNodeIdOnNetwork.toExtollChipType();
+	auto coordBarrierReachedOnNodeId = coord.toExtollBarrierTriggerReachedOnExtollNodeId();
+
+	uint64_t address_mask = 0;
+	if (coordChipType == halco::hicann_dls::vx::ExtollChipType::fpga) {
+		address_mask = fpga_barrier_top_rf_mask;
+	} else if (coordChipType == halco::hicann_dls::vx::ExtollChipType::tourmalet) {
+		address_mask = tourmalet_barrier_top_rf_mask;
+	} else {
+		throw std::logic_error("Unknown ExtollChipType");
+	}
+
+	return {halco::hicann_dls::vx::ExtollAddressOnExtollNetwork(
+	    halco::hicann_dls::vx::ExtollAddress(
+	        address_mask + barrier_control_rf_offsets.at(coordBarrierReachedOnNodeId.toEnum()) +
+	        static_cast<int>(BarrierControlRegs::CONTROL)),
+	    coordNodeIdOnNetwork)};
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddressOnExtollNetwork,
+    ExtollBarrierTriggerReached::read_config_size_in_words>
+ExtollBarrierTriggerReached::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+namespace {
+
+struct ExtollBarrierTriggerReachedBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t reached           :  1;
+			uint64_t /* unused */      : 63;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExtollBarrierTriggerReachedBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	ExtollBarrierTriggerReachedBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void ExtollBarrierTriggerReached::decode(
+    std::array<
+        fisch::vx::word_access_type::ExtollOnNwNode,
+        ExtollBarrierTriggerReached::read_config_size_in_words> const& /*data*/)
+{}
+
+std::array<
+    fisch::vx::word_access_type::ExtollOnNwNode,
+    ExtollBarrierTriggerReached::write_config_size_in_words>
+ExtollBarrierTriggerReached::encode() const
+{
+	ExtollBarrierTriggerReachedBitfield bitfield;
+
+	bitfield.u.m.reached = 0x1;
+
+	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
+}
+
+template <class Archive>
+void ExtollBarrierTriggerReached::serialize(Archive& /*ar*/, std::uint32_t const)
+{}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierTriggerReached)
+
+
+/**
+ * implementation of ExtollBarrierReleased for Coord
+ * ExtollBarrierReleasedOnExtollNetwork
+ */
+
+
+ExtollBarrierReleased::ExtollBarrierReleased() : m_released_0(), m_released_1(), m_released_active()
+{}
+
+bool ExtollBarrierReleased::get_released_0() const
+{
+	return m_released_0;
+}
+
+void ExtollBarrierReleased::set_released_0(bool const value)
+{
+	m_released_0 = value;
+}
+
+bool ExtollBarrierReleased::get_released_1() const
+{
+	return m_released_1;
+}
+
+void ExtollBarrierReleased::set_released_1(bool const value)
+{
+	m_released_1 = value;
+}
+
+bool ExtollBarrierReleased::get_released_active() const
+{
+	return m_released_active;
+}
+
+void ExtollBarrierReleased::set_released_active(bool const value)
+{
+	m_released_active = value;
+}
+
+bool ExtollBarrierReleased::operator==(ExtollBarrierReleased const& other) const
+{
+	return (m_released_0 == other.m_released_0) && (m_released_1 == other.m_released_1) &&
+	       (m_released_active == other.m_released_active);
+}
+
+bool ExtollBarrierReleased::operator!=(ExtollBarrierReleased const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExtollBarrierReleased const& config)
+{
+	std::stringstream ss;
+	ss << "ExtollBarrierReleased(released_0: " << std::boolalpha << config.m_released_0
+	   << ", released_1: " << config.m_released_1
+	   << ", released_active: " << config.m_released_active << ")";
+	return (os << ss.str());
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddressOnExtollNetwork,
+    ExtollBarrierReleased::read_config_size_in_words>
+ExtollBarrierReleased::read_addresses(coordinate_type const& coord)
+{
+	auto coordNodeIdOnNetwork = coord.toExtollNodeIdOnExtollNetwork();
+	auto coordChipType = coordNodeIdOnNetwork.toExtollChipType();
+	auto coordBarrierReleasedOnNodeId = coord.toExtollBarrierReleasedOnExtollNodeId();
+
+	uint64_t address_mask = 0;
+	if (coordChipType == halco::hicann_dls::vx::ExtollChipType::fpga) {
+		address_mask = fpga_barrier_top_rf_mask;
+	} else if (coordChipType == halco::hicann_dls::vx::ExtollChipType::tourmalet) {
+		address_mask = tourmalet_barrier_top_rf_mask;
+	} else {
+		throw std::logic_error("Unknown ExtollChipType");
+	}
+
+	return {halco::hicann_dls::vx::ExtollAddressOnExtollNetwork(
+	    halco::hicann_dls::vx::ExtollAddress(
+	        address_mask + barrier_control_rf_offsets.at(coordBarrierReleasedOnNodeId.toEnum()) +
+	        static_cast<int>(BarrierControlRegs::CONTROL)),
+	    coordNodeIdOnNetwork)};
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddressOnExtollNetwork,
+    ExtollBarrierReleased::write_config_size_in_words>
+ExtollBarrierReleased::write_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+namespace {
+
+struct ExtollBarrierReleasedBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t /* reached */     :  1;
+			uint64_t released_0        :  1;
+			uint64_t released_1        :  1;
+			uint64_t released_active   :  1;
+			uint64_t /* unused */      : 60;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExtollBarrierReleasedBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	ExtollBarrierReleasedBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void ExtollBarrierReleased::decode(std::array<
+                                   fisch::vx::word_access_type::ExtollOnNwNode,
+                                   ExtollBarrierReleased::read_config_size_in_words> const& data)
+{
+	ExtollBarrierReleasedBitfield bitfield;
+	bitfield.u.raw = data[0];
+
+	m_released_0 = bitfield.u.m.released_0;
+	m_released_1 = bitfield.u.m.released_1;
+	m_released_active = bitfield.u.m.released_active;
+}
+
+std::array<
+    fisch::vx::word_access_type::ExtollOnNwNode,
+    ExtollBarrierReleased::write_config_size_in_words>
+ExtollBarrierReleased::encode() const
+{
+	return {};
+}
+
+template <class Archive>
+void ExtollBarrierReleased::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_released_0));
+	ar(CEREAL_NVP(m_released_1));
+	ar(CEREAL_NVP(m_released_active));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierReleased)
+
+/**
+ * implementation of ExtollBarrierConfig for Coord
+ * ExtollBarrierConfigOnExtollNetwork
+ */
+
+ExtollBarrierConfig::ExtollBarrierConfig() :
+    m_enable(),
+    m_child_nodes(),
+    m_parent_nodes(),
+    m_host_count(),
+    m_client_count(),
+    m_enable_reset()
+{}
+
+bool ExtollBarrierConfig::get_enable() const
+{
+	return m_enable;
+}
+
+void ExtollBarrierConfig::set_enable(bool const value)
+{
+	m_enable = value;
+}
+
+ExtollBarrierConfig::LinkFlags ExtollBarrierConfig::get_child_nodes() const
+{
+	return m_child_nodes;
+}
+
+void ExtollBarrierConfig::set_child_nodes(LinkFlags const value)
+{
+	m_child_nodes = value;
+}
+
+ExtollBarrierConfig::LinkFlags ExtollBarrierConfig::get_parent_nodes() const
+{
+	return m_parent_nodes;
+}
+
+void ExtollBarrierConfig::set_parent_nodes(LinkFlags const value)
+{
+	m_parent_nodes = value;
+}
+
+ExtollBarrierConfig::HostCount ExtollBarrierConfig::get_host_count() const
+{
+	return m_host_count;
+}
+
+void ExtollBarrierConfig::set_host_count(HostCount const value)
+{
+	m_host_count = value;
+}
+
+ExtollBarrierConfig::ClientCount ExtollBarrierConfig::get_client_count() const
+{
+	return m_client_count;
+}
+
+void ExtollBarrierConfig::set_client_count(ClientCount const value)
+{
+	m_client_count = value;
+}
+
+bool ExtollBarrierConfig::get_enable_reset() const
+{
+	return m_enable_reset;
+}
+
+void ExtollBarrierConfig::set_enable_reset(bool const value)
+{
+	m_enable_reset = value;
+}
+
+bool ExtollBarrierConfig::operator==(ExtollBarrierConfig const& other) const
+{
+	return (m_enable == other.m_enable) && (m_child_nodes == other.m_child_nodes) &&
+	       (m_parent_nodes == other.m_parent_nodes) && (m_host_count == other.m_host_count) &&
+	       (m_client_count == other.m_client_count) && (m_enable_reset == other.m_enable_reset);
+}
+
+bool ExtollBarrierConfig::operator!=(ExtollBarrierConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExtollBarrierConfig const& config)
+{
+	std::stringstream ss;
+	ss << "ExtollBarrierConfig(enable: " << std::hex << config.m_enable << ", child_nodes: ("
+	   << std::boolalpha;
+	hate::join(ss, config.m_child_nodes, ",");
+	ss << "), parent_nodes: (" << std::boolalpha;
+	hate::join(ss, config.m_parent_nodes, ",");
+	ss << "), host_count: " << std::hex << config.m_host_count << ", client_count: " << std::hex
+	   << config.m_client_count << ", enable_reset: " << std::hex << config.m_enable_reset << ")";
+	return (os << ss.str());
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddressOnExtollNetwork,
+    ExtollBarrierConfig::config_size_in_words>
+ExtollBarrierConfig::addresses(coordinate_type const& coord)
+{
+	auto coordNodeIdOnNetwork = coord.toExtollNodeIdOnExtollNetwork();
+	auto coordChipType = coordNodeIdOnNetwork.toExtollChipType();
+	auto coordBarrierConfigOnNodeId = coord.toExtollBarrierConfigOnExtollNodeId();
+
+	uint64_t address_mask = 0;
+	if (coordChipType == halco::hicann_dls::vx::ExtollChipType::fpga) {
+		address_mask = fpga_barrier_top_rf_mask;
+	} else if (coordChipType == halco::hicann_dls::vx::ExtollChipType::tourmalet) {
+		address_mask = tourmalet_barrier_top_rf_mask;
+	} else {
+		throw std::logic_error("Unknown ExtollChipType");
+	}
+
+	return {halco::hicann_dls::vx::ExtollAddressOnExtollNetwork(
+	    halco::hicann_dls::vx::ExtollAddress(
+	        address_mask + barrier_config_rf_offsets.at(coordBarrierConfigOnNodeId.toEnum()) +
+	        static_cast<int>(BarrierConfigRegs::CONFIG)),
+	    coordNodeIdOnNetwork)};
+}
+
+namespace {
+
+struct ExtollBarrierConfigBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t enable            :  1;
+			uint64_t child_nodes       :  7;
+			uint64_t parent_nodes      :  7;
+			uint64_t host_count        :  4;
+			uint64_t enable_reset      :  1;
+			uint64_t client_count      :  4;
+			uint64_t /* unused */      : 40;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExtollBarrierConfigBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	ExtollBarrierConfigBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void ExtollBarrierConfig::decode(std::array<
+                                 fisch::vx::word_access_type::ExtollOnNwNode,
+                                 ExtollBarrierConfig::config_size_in_words> const& data)
+{
+	ExtollBarrierConfigBitfield bitfield;
+	bitfield.u.raw = data[0];
+
+	for (auto i : halco::common::iter_all<halco::hicann_dls::vx::LinkOnExtollNode>()) {
+		m_child_nodes[i] = static_cast<bool>(bitfield.u.m.child_nodes & (0x1 << i));
+	}
+
+	for (auto i : halco::common::iter_all<halco::hicann_dls::vx::LinkOnExtollNode>()) {
+		m_parent_nodes[i] = static_cast<bool>(bitfield.u.m.parent_nodes & (0x1 << i));
+	}
+
+	m_enable = bitfield.u.m.enable;
+	m_host_count = HostCount(bitfield.u.m.host_count);
+	m_enable_reset = bitfield.u.m.enable_reset;
+	m_client_count = ClientCount(bitfield.u.m.client_count);
+}
+
+std::array<fisch::vx::word_access_type::ExtollOnNwNode, ExtollBarrierConfig::config_size_in_words>
+ExtollBarrierConfig::encode() const
+{
+	ExtollBarrierConfigBitfield bitfield;
+
+	uint8_t child_nodes = 0;
+	for (auto i : halco::common::iter_all<halco::hicann_dls::vx::LinkOnExtollNode>()) {
+		child_nodes |= static_cast<uint8_t>(m_child_nodes[i]) << i;
+	}
+	uint8_t parent_nodes = 0;
+	for (auto i : halco::common::iter_all<halco::hicann_dls::vx::LinkOnExtollNode>()) {
+		parent_nodes |= static_cast<uint8_t>(m_parent_nodes[i]) << i;
+	}
+
+	bitfield.u.m.enable = m_enable;
+	bitfield.u.m.child_nodes = child_nodes;
+	bitfield.u.m.parent_nodes = parent_nodes;
+	bitfield.u.m.host_count = m_host_count;
+	bitfield.u.m.enable_reset = m_enable_reset;
+	// bitfield.u.m.client_count = *READ_ONLY*;
+
+	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
+}
+
+template <class Archive>
+void ExtollBarrierConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_enable));
+	ar(CEREAL_NVP(m_child_nodes));
+	ar(CEREAL_NVP(m_parent_nodes));
+	ar(CEREAL_NVP(m_host_count));
+	ar(CEREAL_NVP(m_enable_reset));
+	ar(CEREAL_NVP(m_client_count));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierConfig)
+
+
+/**
+ * implementation of ExtollInterruptControl for Coord
+ * ExtollInterruptControlOnExtollNetwork
+ */
+
+
+ExtollInterruptControl::ExtollInterruptControl() : m_trigger(), m_interrupt() {}
+
+bool ExtollInterruptControl::get_trigger() const
+{
+	return m_trigger;
+}
+
+void ExtollInterruptControl::set_trigger(bool const value)
+{
+	m_trigger = value;
+}
+
+bool ExtollInterruptControl::get_interrupt() const
+{
+	return m_interrupt;
+}
+
+void ExtollInterruptControl::set_interrupt(bool const value)
+{
+	m_interrupt = value;
+}
+
+bool ExtollInterruptControl::operator==(ExtollInterruptControl const& other) const
+{
+	return (m_trigger == other.m_trigger) && (m_interrupt == other.m_interrupt);
+}
+
+bool ExtollInterruptControl::operator!=(ExtollInterruptControl const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExtollInterruptControl const& config)
+{
+	std::stringstream ss;
+	ss << "ExtollInterruptControl(trigger: " << std::boolalpha << config.m_trigger
+	   << ", interrupt: " << config.m_interrupt << ")";
+	return (os << ss.str());
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddressOnExtollNetwork,
+    ExtollInterruptControl::config_size_in_words>
+ExtollInterruptControl::addresses(coordinate_type const& coord)
+{
+	auto coordNodeIdOnNetwork = coord.toExtollNodeIdOnExtollNetwork();
+	auto coordChipType = coordNodeIdOnNetwork.toExtollChipType();
+	auto coordInterruptControlOnNodeId = coord.toExtollInterruptControlOnExtollNodeId();
+
+	uint64_t address_mask = 0;
+	if (coordChipType == halco::hicann_dls::vx::ExtollChipType::fpga) {
+		address_mask = fpga_barrier_top_rf_mask;
+	} else if (coordChipType == halco::hicann_dls::vx::ExtollChipType::tourmalet) {
+		address_mask = tourmalet_barrier_top_rf_mask;
+	} else {
+		throw std::logic_error("Unknown ExtollChipType");
+	}
+
+	return {halco::hicann_dls::vx::ExtollAddressOnExtollNetwork(
+	    halco::hicann_dls::vx::ExtollAddress(
+	        address_mask + interrupt_control_rf_offsets.at(coordInterruptControlOnNodeId.toEnum()) +
+	        static_cast<int>(InterruptControlRegs::CONTROL)),
+	    coordNodeIdOnNetwork)};
+}
+
+namespace {
+
+struct ExtollInterruptControlBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t trigger           :  1;
+			uint64_t interrupt         :  1;
+			uint64_t /* unused */      : 62;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExtollInterruptControlBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	ExtollInterruptControlBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void ExtollInterruptControl::decode(std::array<
+                                    fisch::vx::word_access_type::ExtollOnNwNode,
+                                    ExtollInterruptControl::config_size_in_words> const& data)
+{
+	ExtollInterruptControlBitfield bitfield;
+	bitfield.u.raw = data[0];
+
+	m_trigger = bitfield.u.m.trigger;
+	m_interrupt = bitfield.u.m.interrupt;
+}
+
+std::
+    array<fisch::vx::word_access_type::ExtollOnNwNode, ExtollInterruptControl::config_size_in_words>
+    ExtollInterruptControl::encode() const
+{
+	ExtollInterruptControlBitfield bitfield;
+
+	bitfield.u.m.trigger = m_trigger;
+	bitfield.u.m.interrupt = m_interrupt;
+
+	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
+}
+
+template <class Archive>
+void ExtollInterruptControl::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_trigger));
+	ar(CEREAL_NVP(m_interrupt));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptControl)
+
+
+/**
+ * implementation of ExtollInterruptConfig for Coord
+ * ExtollInterruptConfigOnExtollNetwork
+ */
+
+ExtollInterruptConfig::ExtollInterruptConfig() :
+    m_enable(),
+    m_child_nodes(),
+    m_delay_count(),
+    m_enable_reset(),
+    m_enable_measure(),
+    m_measure_counter()
+{}
+
+bool ExtollInterruptConfig::get_enable() const
+{
+	return m_enable;
+}
+
+void ExtollInterruptConfig::set_enable(bool const value)
+{
+	m_enable = value;
+}
+
+ExtollInterruptConfig::LinkFlags ExtollInterruptConfig::get_child_nodes() const
+{
+	return m_child_nodes;
+}
+
+void ExtollInterruptConfig::set_child_nodes(LinkFlags const value)
+{
+	m_child_nodes = value;
+}
+
+ExtollInterruptConfig::DelayValue ExtollInterruptConfig::get_delay_count() const
+{
+	return m_delay_count;
+}
+
+void ExtollInterruptConfig::set_delay_count(DelayValue const value)
+{
+	m_delay_count = value;
+}
+
+ExtollInterruptConfig::DelayValue ExtollInterruptConfig::get_measure_counter() const
+{
+	return m_measure_counter;
+}
+
+void ExtollInterruptConfig::set_measure_counter(DelayValue const value)
+{
+	m_measure_counter = value;
+}
+
+bool ExtollInterruptConfig::get_enable_measure() const
+{
+	return m_enable_measure;
+}
+
+void ExtollInterruptConfig::set_enable_measure(bool const value)
+{
+	m_enable_measure = value;
+}
+
+bool ExtollInterruptConfig::get_enable_reset() const
+{
+	return m_enable_reset;
+}
+
+void ExtollInterruptConfig::set_enable_reset(bool const value)
+{
+	m_enable_reset = value;
+}
+
+bool ExtollInterruptConfig::operator==(ExtollInterruptConfig const& other) const
+{
+	return (m_enable == other.m_enable) && (m_child_nodes == other.m_child_nodes) &&
+	       (m_delay_count == other.m_delay_count) && (m_enable_reset == other.m_enable_reset) &&
+	       (m_enable_measure == other.m_enable_measure) &&
+	       (m_measure_counter == other.m_measure_counter);
+}
+
+bool ExtollInterruptConfig::operator!=(ExtollInterruptConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExtollInterruptConfig const& config)
+{
+	std::stringstream ss;
+	ss << "ExtollInterruptConfig(enable: " << std::hex << config.m_enable << ", child_nodes: ("
+	   << std::boolalpha;
+	hate::join(ss, config.m_child_nodes, ",");
+	ss << "), delay_count: " << std::hex << config.m_delay_count << ", enable_reset: " << std::hex
+	   << config.m_enable_reset << ", enable_measure: " << std::boolalpha << config.m_enable_measure
+	   << ", measure_counter: " << std::hex << config.m_measure_counter << ")";
+	return (os << ss.str());
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddressOnExtollNetwork,
+    ExtollInterruptConfig::config_size_in_words>
+ExtollInterruptConfig::addresses(coordinate_type const& coord)
+{
+	auto coordNodeIdOnNetwork = coord.toExtollNodeIdOnExtollNetwork();
+	auto coordChipType = coordNodeIdOnNetwork.toExtollChipType();
+	auto coordInterruptConfigOnNodeId = coord.toExtollInterruptConfigOnExtollNodeId();
+
+	uint64_t address_mask = 0;
+	if (coordChipType == halco::hicann_dls::vx::ExtollChipType::fpga) {
+		address_mask = fpga_barrier_top_rf_mask;
+	} else if (coordChipType == halco::hicann_dls::vx::ExtollChipType::tourmalet) {
+		address_mask = tourmalet_barrier_top_rf_mask;
+	} else {
+		throw std::logic_error("Unknown ExtollChipType");
+	}
+
+	return {halco::hicann_dls::vx::ExtollAddressOnExtollNetwork(
+	    halco::hicann_dls::vx::ExtollAddress(
+	        address_mask + interrupt_config_rf_offsets.at(coordInterruptConfigOnNodeId.toEnum()) +
+	        static_cast<int>(InterruptConfigRegs::CONFIG)),
+	    coordNodeIdOnNetwork)};
+}
+
+namespace {
+
+struct ExtollInterruptConfigBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t enable            :  1;
+			uint64_t child_nodes       :  7;
+			uint64_t delay_count       : 16;
+			uint64_t enable_reset      :  1;
+			uint64_t enable_measure           :  1;
+			uint64_t measure_counter   : 16;
+			uint64_t /* unused */      : 22;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExtollInterruptConfigBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	ExtollInterruptConfigBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void ExtollInterruptConfig::decode(std::array<
+                                   fisch::vx::word_access_type::ExtollOnNwNode,
+                                   ExtollInterruptConfig::config_size_in_words> const& data)
+{
+	ExtollInterruptConfigBitfield bitfield;
+	bitfield.u.raw = data[0];
+
+	for (auto i : halco::common::iter_all<halco::hicann_dls::vx::LinkOnExtollNode>()) {
+		m_child_nodes[i] = static_cast<bool>(bitfield.u.m.child_nodes & (0x1 << i));
+	}
+
+	m_enable = bitfield.u.m.enable;
+	// m_child_nodes = LinkFlags(bitfield.u.m.child_nodes);
+	m_delay_count = DelayValue(bitfield.u.m.delay_count);
+	m_enable_reset = bitfield.u.m.enable_reset;
+	m_enable_measure = bitfield.u.m.enable_measure;
+	m_measure_counter = DelayValue(bitfield.u.m.measure_counter);
+}
+
+std::array<fisch::vx::word_access_type::ExtollOnNwNode, ExtollInterruptConfig::config_size_in_words>
+ExtollInterruptConfig::encode() const
+{
+	ExtollInterruptConfigBitfield bitfield;
+
+	uint8_t child_nodes = 0;
+	for (auto i : halco::common::iter_all<halco::hicann_dls::vx::LinkOnExtollNode>()) {
+		child_nodes |= static_cast<uint8_t>(m_child_nodes[i]) << i;
+	}
+
+	bitfield.u.m.enable = m_enable;
+	bitfield.u.m.child_nodes = child_nodes;
+	bitfield.u.m.delay_count = m_delay_count;
+	bitfield.u.m.enable_reset = m_enable_reset;
+	bitfield.u.m.enable_measure = m_enable_measure;
+	bitfield.u.m.measure_counter = m_measure_counter;
+
+	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
+}
+
+template <class Archive>
+void ExtollInterruptConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_enable));
+	ar(CEREAL_NVP(m_child_nodes));
+	ar(CEREAL_NVP(m_delay_count));
+	ar(CEREAL_NVP(m_enable_reset));
+	ar(CEREAL_NVP(m_enable_measure));
+	ar(CEREAL_NVP(m_measure_counter));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptConfig)
+
+
+/**
+ * implementation of ExtollBarrierInterruptInportErrorCount for Coord
+ * ExtollBarrierInterruptInportErrorCountOnFPGA
+ */
+
+ExtollBarrierInterruptInportErrorCount::ExtollBarrierInterruptInportErrorCount() : m_error_count()
+{}
+
+ExtollBarrierInterruptInportErrorCount::ErrorCount
+ExtollBarrierInterruptInportErrorCount::get_error_count() const
+{
+	return m_error_count;
+}
+
+void ExtollBarrierInterruptInportErrorCount::set_error_count(ErrorCount const value)
+{
+	m_error_count = value;
+}
+
+bool ExtollBarrierInterruptInportErrorCount::operator==(
+    ExtollBarrierInterruptInportErrorCount const& other) const
+{
+	return m_error_count == other.m_error_count;
+}
+
+bool ExtollBarrierInterruptInportErrorCount::operator!=(
+    ExtollBarrierInterruptInportErrorCount const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExtollBarrierInterruptInportErrorCount const& config)
+{
+	std::stringstream ss;
+	ss << "ExtollBarrierInterruptInportErrorCount(barrier-cells to non-implemented unit: "
+	   << std::hex << config.m_error_count << ")";
+	return (os << ss.str());
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddress,
+    ExtollBarrierInterruptInportErrorCount::read_config_size_in_words>
+ExtollBarrierInterruptInportErrorCount::read_addresses(coordinate_type const&)
+{
+	return {halco::hicann_dls::vx::ExtollAddress(
+	    fpga_barrier_top_rf_mask + barrier_interrupt_inport_rf_offset +
+	    static_cast<int>(BarrierInterruptInportRegs::ERROR_CNT))};
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddress,
+    ExtollBarrierInterruptInportErrorCount::write_config_size_in_words>
+ExtollBarrierInterruptInportErrorCount::write_addresses(coordinate_type const&)
+{
+	return {};
+}
+
+namespace {
+
+struct ExtollBarrierInterruptInportErrorCountBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t error_count  : 48;
+			uint64_t /* unused */ : 16;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExtollBarrierInterruptInportErrorCountBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	ExtollBarrierInterruptInportErrorCountBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void ExtollBarrierInterruptInportErrorCount::decode(
+    std::array<
+        fisch::vx::word_access_type::Extoll,
+        ExtollBarrierInterruptInportErrorCount::read_config_size_in_words> const& data)
+{
+	ExtollBarrierInterruptInportErrorCountBitfield bitfield;
+	bitfield.u.raw = data[0];
+
+	m_error_count = ErrorCount(bitfield.u.m.error_count);
+}
+
+std::array<
+    fisch::vx::word_access_type::Extoll,
+    ExtollBarrierInterruptInportErrorCount::write_config_size_in_words>
+ExtollBarrierInterruptInportErrorCount::encode() const
+{
+	return {};
+}
+
+template <class Archive>
+void ExtollBarrierInterruptInportErrorCount::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_error_count));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportErrorCount)
+
+
+/**
+ * implementation of ExtollBarrierInterruptInportCounterReset for Coord
+ * ExtollBarrierInterruptInportCounterResetOnFPGA
+ */
+
+ExtollBarrierInterruptInportCounterReset::ExtollBarrierInterruptInportCounterReset() {}
+
+bool ExtollBarrierInterruptInportCounterReset::operator==(
+    ExtollBarrierInterruptInportCounterReset const& /*other*/) const
+{
+	return true;
+}
+
+bool ExtollBarrierInterruptInportCounterReset::operator!=(
+    ExtollBarrierInterruptInportCounterReset const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(
+    std::ostream& os, ExtollBarrierInterruptInportCounterReset const& /*config*/)
+{
+	std::stringstream ss;
+	ss << "ExtollBarrierInterruptInportCounterReset()";
+	return (os << ss.str());
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddress,
+    ExtollBarrierInterruptInportCounterReset::write_config_size_in_words>
+ExtollBarrierInterruptInportCounterReset::write_addresses(coordinate_type const&)
+{
+	return {halco::hicann_dls::vx::ExtollAddress(
+	    fpga_barrier_top_rf_mask + barrier_interrupt_inport_rf_offset +
+	    static_cast<int>(BarrierInterruptInportRegs::CNT_RES))};
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddress,
+    ExtollBarrierInterruptInportCounterReset::read_config_size_in_words>
+ExtollBarrierInterruptInportCounterReset::read_addresses(coordinate_type const&)
+{
+	return {};
+}
+
+namespace {
+
+struct ExtollBarrierInterruptInportCounterResetBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t counter_reset :  1;
+			uint64_t /* unused */  : 63;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExtollBarrierInterruptInportCounterResetBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	ExtollBarrierInterruptInportCounterResetBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void ExtollBarrierInterruptInportCounterReset::decode(
+    std::array<
+        fisch::vx::word_access_type::Extoll,
+        ExtollBarrierInterruptInportCounterReset::read_config_size_in_words> const&)
+{}
+
+std::array<
+    fisch::vx::word_access_type::Extoll,
+    ExtollBarrierInterruptInportCounterReset::write_config_size_in_words>
+ExtollBarrierInterruptInportCounterReset::encode() const
+{
+	ExtollBarrierInterruptInportCounterResetBitfield bitfield;
+	bitfield.u.m.counter_reset = 0x1;
+
+	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
+}
+
+template <class Archive>
+void ExtollBarrierInterruptInportCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
+{}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportCounterReset)
+
+
 } // namespace vx
 } // namespace haldls
 
@@ -2185,3 +3228,11 @@ CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayNumEventsReceived,
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayEventLossFull, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayEventLossExpired, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayCounterReset, 0)
+
+CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierTriggerReached, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptControl, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptConfig, 0)
+
+CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierInterruptInportErrorCount, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierInterruptInportCounterReset, 0)

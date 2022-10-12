@@ -1320,6 +1320,659 @@ private:
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayCounterReset)
 
+
+/**
+ * Container for controlling an Extoll Barrier.
+ */
+class GENPYBIND(visible) ExtollBarrierTriggerReached
+{
+public:
+	typedef halco::hicann_dls::vx::ExtollBarrierTriggerReachedOnExtollNetwork coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	ExtollBarrierTriggerReached() SYMBOL_VISIBLE;
+
+	bool operator==(ExtollBarrierTriggerReached const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExtollBarrierTriggerReached const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExtollBarrierTriggerReached const& config)
+	    SYMBOL_VISIBLE;
+
+	constexpr static size_t write_config_size_in_words GENPYBIND(hidden) = 1;
+	constexpr static size_t read_config_size_in_words GENPYBIND(hidden) = 0;
+
+	static std::
+	    array<halco::hicann_dls::vx::ExtollAddressOnExtollNetwork, write_config_size_in_words>
+	    write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::
+	    array<halco::hicann_dls::vx::ExtollAddressOnExtollNetwork, read_config_size_in_words>
+	    read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<typename fisch::vx::word_access_type::ExtollOnNwNode, write_config_size_in_words>
+	encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	void decode(std::array<
+	            typename fisch::vx::word_access_type::ExtollOnNwNode,
+	            read_config_size_in_words> const& words) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierTriggerReached)
+
+
+/**
+ * Container for controlling an Extoll Barrier.
+ */
+class GENPYBIND(visible) ExtollBarrierReleased
+{
+public:
+	typedef halco::hicann_dls::vx::ExtollBarrierReleasedOnExtollNetwork coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	ExtollBarrierReleased() SYMBOL_VISIBLE;
+
+	/**
+	 * Get released_0 flag.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(released_0))
+	bool get_released_0() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set released_0 flag.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(released_0))
+	void set_released_0(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get released_1 flag.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(released_1))
+	bool get_released_1() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set released_1 flag.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(released_1))
+	void set_released_1(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get released_active flag.
+	 * It determines, which of the {released_0, released_1} is to be interpreted.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(released_active))
+	bool get_released_active() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set released_active flag.
+	 * It determines, which of the {released_0, released_1} is to be interpreted.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(released_active))
+	void set_released_active(bool value) SYMBOL_VISIBLE;
+
+	bool operator==(ExtollBarrierReleased const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExtollBarrierReleased const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExtollBarrierReleased const& config)
+	    SYMBOL_VISIBLE;
+
+	constexpr static size_t read_config_size_in_words GENPYBIND(hidden) = 1;
+	constexpr static size_t write_config_size_in_words GENPYBIND(hidden) = 0;
+
+	static std::
+	    array<halco::hicann_dls::vx::ExtollAddressOnExtollNetwork, read_config_size_in_words>
+	    read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::
+	    array<halco::hicann_dls::vx::ExtollAddressOnExtollNetwork, write_config_size_in_words>
+	    write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<typename fisch::vx::word_access_type::ExtollOnNwNode, write_config_size_in_words>
+	encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	void decode(std::array<
+	            typename fisch::vx::word_access_type::ExtollOnNwNode,
+	            read_config_size_in_words> const& words) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	bool m_released_0;
+	bool m_released_1;
+	bool m_released_active;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierReleased)
+
+
+/**
+ * Container for configuring an Extoll Barrier.
+ */
+class GENPYBIND(visible) ExtollBarrierConfig
+{
+public:
+	typedef halco::hicann_dls::vx::ExtollBarrierConfigOnExtollNetwork coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	ExtollBarrierConfig() SYMBOL_VISIBLE;
+
+	/**
+	 * Bit flags for each of up to 7 links.
+	 */
+	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::LinkOnExtollNode> LinkFlags
+	    GENPYBIND(opaque(false));
+
+	/**
+	 * Delay Value for Delay and Measure-Counter
+	 */
+	struct GENPYBIND(inline_base("*")) HostCount
+	    : public halco::common::detail::RantWrapper<HostCount, uint8_t, 0xf, 0>
+	{
+		constexpr explicit HostCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	/**
+	 * Delay Value for Delay and Measure-Counter
+	 */
+	struct GENPYBIND(inline_base("*")) ClientCount
+	    : public halco::common::detail::RantWrapper<ClientCount, uint8_t, 0xf, 0>
+	{
+		constexpr explicit ClientCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	/**
+	 * Get enable flag.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(enable))
+	bool get_enable() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable flag.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(enable))
+	void set_enable(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get child_nodes setting.
+	 * Bit mask for the child nodes. One bit for each link.
+	 * @return LinkFlags
+	 */
+	GENPYBIND(getter_for(child_nodes))
+	LinkFlags get_child_nodes() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set child_nodes setting.
+	 * Bit mask for the child nodes. One bit for each link.
+	 * FPGAs have one link, while Tourmalets have 7 links.
+	 * @param value LinkFlags to set
+	 */
+	GENPYBIND(setter_for(child_nodes))
+	void set_child_nodes(LinkFlags value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get one-hot parent_nodes setting.
+	 * Indicates the link to the parent node.
+	 * @return LinkFlags
+	 */
+	GENPYBIND(getter_for(parent_nodes))
+	LinkFlags get_parent_nodes() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set one-hot parent_nodes setting.
+	 * Indicates the link to the parent node.
+	 * FPGAs have one link, while Tourmalets have 7 links.
+	 * @param value LinkFlags to set
+	 */
+	GENPYBIND(setter_for(parent_nodes))
+	void set_parent_nodes(LinkFlags value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get host_count setting.
+	 * Number of local sw-processes taking part in the barrier.
+	 * @return HostCount
+	 */
+	GENPYBIND(getter_for(host_count))
+	HostCount get_host_count() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set host_count setting.
+	 * Number of local sw-processes taking part in the barrier.
+	 * Does only exist for FPGA
+	 * Configuring host_count higher than (0xF - client_count)
+	 * leads to undefined behaviour
+	 * @param value HostCount to set
+	 */
+	GENPYBIND(setter_for(host_count))
+	void set_host_count(HostCount value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get client_count setting.
+	 * Number of local hw-clients taking part in the barrier.
+	 * @return ClientCount
+	 */
+	GENPYBIND(getter_for(client_count))
+	ClientCount get_client_count() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set client_count setting.
+	 * Number of local hw-clients taking part in the barrier.
+	 * Does only exist for FPGA nodes.
+	 * Configuring host_count higher than (0xF - client_count)
+	 * leads to undefined behaviour
+	 * client_count is READ_ONLY (fixed in Hardware)!
+	 * @param value ClientCount to set
+	 */
+	GENPYBIND(setter_for(client_count))
+	void set_client_count(ClientCount value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get enable_reset flag.
+	 * Resets the barrier unit.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(enable_reset))
+	bool get_enable_reset() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable_reset flag.
+	 * Resets the barrier unit.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(enable_reset))
+	void set_enable_reset(bool value) SYMBOL_VISIBLE;
+
+	bool operator==(ExtollBarrierConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExtollBarrierConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExtollBarrierConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	constexpr static size_t config_size_in_words GENPYBIND(hidden) = 1;
+
+	static std::array<halco::hicann_dls::vx::ExtollAddressOnExtollNetwork, config_size_in_words>
+	addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<typename fisch::vx::word_access_type::ExtollOnNwNode, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	void decode(std::array<
+	            typename fisch::vx::word_access_type::ExtollOnNwNode,
+	            config_size_in_words> const& words) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	bool m_enable;
+	LinkFlags m_child_nodes;
+	LinkFlags m_parent_nodes;
+	HostCount m_host_count;
+	ClientCount m_client_count;
+	bool m_enable_reset;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierConfig)
+
+
+/**
+ * Container for controlling an Extoll Barrier.
+ */
+class GENPYBIND(visible) ExtollInterruptControl
+{
+public:
+	typedef halco::hicann_dls::vx::ExtollInterruptControlOnExtollNetwork coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	ExtollInterruptControl() SYMBOL_VISIBLE;
+
+	/**
+	 * Get trigger.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(trigger))
+	bool get_trigger() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set trigger.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(trigger))
+	void set_trigger(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get interrupt flag.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(interrupt))
+	bool get_interrupt() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set interrupt flag.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(interrupt))
+	void set_interrupt(bool value) SYMBOL_VISIBLE;
+
+	bool operator==(ExtollInterruptControl const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExtollInterruptControl const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExtollInterruptControl const& config)
+	    SYMBOL_VISIBLE;
+
+	constexpr static size_t config_size_in_words GENPYBIND(hidden) = 1;
+
+	static std::array<halco::hicann_dls::vx::ExtollAddressOnExtollNetwork, config_size_in_words>
+	addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<typename fisch::vx::word_access_type::ExtollOnNwNode, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	void decode(std::array<
+	            typename fisch::vx::word_access_type::ExtollOnNwNode,
+	            config_size_in_words> const& words) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	bool m_trigger;
+	bool m_interrupt;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptControl)
+
+
+/**
+ * Container for configuring an Extoll Barrier.
+ */
+class GENPYBIND(visible) ExtollInterruptConfig
+{
+public:
+	typedef halco::hicann_dls::vx::ExtollInterruptConfigOnExtollNetwork coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/**
+	 * Bit flags for each of up to 7 links.
+	 */
+	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::LinkOnExtollNode> LinkFlags
+	    GENPYBIND(opaque(false));
+
+	/**
+	 * Delay Value for Delay and Measure-Counter
+	 */
+	struct GENPYBIND(inline_base("*")) DelayValue
+	    : public halco::common::detail::RantWrapper<DelayValue, uint32_t, 0xffffull, 0>
+	{
+		constexpr explicit DelayValue(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	ExtollInterruptConfig() SYMBOL_VISIBLE;
+
+	/**
+	 * Get enable flag.
+	 * Enables the interrupt unit.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(enable))
+	bool get_enable() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable flag.
+	 * Enables the interrupt unit.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(enable))
+	void set_enable(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get child_nodes setting.
+	 * Bit mask for the child nodes. One bit for each link.
+	 * @return LinkFlags
+	 */
+	GENPYBIND(getter_for(child_nodes))
+	LinkFlags get_child_nodes() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set child_nodes setting.
+	 * Bit mask for the child nodes. One bit for each link.
+	 * FPGAs have one link, while Tourmalets have 7 links.
+	 * @param value LinkFlags to set
+	 */
+	GENPYBIND(setter_for(child_nodes))
+	void set_child_nodes(LinkFlags value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get one-hot delay_count setting.
+	 * Number of clock cycles before the local interrupt gets triggered.
+	 * @return DelayValue
+	 */
+	GENPYBIND(getter_for(delay_count))
+	DelayValue get_delay_count() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set one-hot delay_count setting.
+	 * Number of clock cycles before the local interrupt gets triggered.
+	 * @param value DelayValue to set
+	 */
+	GENPYBIND(setter_for(delay_count))
+	void set_delay_count(DelayValue value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get enable_reset flag.
+	 * Resets the interrupt unit.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(enable_reset))
+	bool get_enable_reset() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable_reset flag.
+	 * Resets the interrupt unit.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(enable_reset))
+	void set_enable_reset(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get enable_measure setting.
+	 * Enables interrupt measurement between two nodes directly connected to each other.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(enable_measure))
+	bool get_enable_measure() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable_measure setting.
+	 * Enables interrupt measurement between two nodes directly connected to each other.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(enable_measure))
+	void set_enable_measure(bool value) SYMBOL_VISIBLE;
+
+	/**
+	 * Get measure_counter setting.
+	 * Starts counting when trigger is set and stops on a received interrupt message.
+	 * @return DelayValue
+	 */
+	GENPYBIND(getter_for(measure_counter))
+	DelayValue get_measure_counter() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set measure_counter setting.
+	 * Starts counting when trigger is set and stops on a received interrupt message.
+	 * @param value DelayValue to set
+	 */
+	GENPYBIND(setter_for(measure_counter))
+	void set_measure_counter(DelayValue value) SYMBOL_VISIBLE;
+
+	bool operator==(ExtollInterruptConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExtollInterruptConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExtollInterruptConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	constexpr static size_t config_size_in_words GENPYBIND(hidden) = 1;
+
+	static std::array<halco::hicann_dls::vx::ExtollAddressOnExtollNetwork, config_size_in_words>
+	addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<typename fisch::vx::word_access_type::ExtollOnNwNode, config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	void decode(std::array<
+	            typename fisch::vx::word_access_type::ExtollOnNwNode,
+	            config_size_in_words> const& words) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	bool m_enable;
+	LinkFlags m_child_nodes;
+	DelayValue m_delay_count;
+	bool m_enable_reset;
+	bool m_enable_measure;
+	DelayValue m_measure_counter;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptConfig)
+
+
+/**
+ * Container for reading the interrupt / barrier error counter via Extoll.
+ */
+class GENPYBIND(visible) ExtollBarrierInterruptInportErrorCount
+{
+public:
+	typedef halco::hicann_dls::vx::ExtollBarrierInterruptInportErrorCountOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/**
+	 * Counts the number of barrier-cells for not-implemented unit-ids at the Inport
+	 * of the barrier- / interrupt-unit.
+	 */
+	struct GENPYBIND(inline_base("*")) ErrorCount
+	    : public halco::common::detail::RantWrapper<ErrorCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	{
+		constexpr explicit ErrorCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
+		{}
+	};
+
+	ExtollBarrierInterruptInportErrorCount() SYMBOL_VISIBLE;
+
+	/**
+	 * Get destination node id.
+	 * @return ErrorCount
+	 */
+	GENPYBIND(getter_for(error_count))
+	ErrorCount get_error_count() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set destination node id.
+	 * @param value ErrorCount to set
+	 */
+	GENPYBIND(setter_for(error_count))
+	void set_error_count(ErrorCount value) SYMBOL_VISIBLE;
+
+	bool operator==(ExtollBarrierInterruptInportErrorCount const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExtollBarrierInterruptInportErrorCount const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(
+	    std::ostream& os, ExtollBarrierInterruptInportErrorCount const& config) SYMBOL_VISIBLE;
+
+	constexpr static size_t read_config_size_in_words GENPYBIND(hidden) = 1;
+	constexpr static size_t write_config_size_in_words GENPYBIND(hidden) = 0;
+
+	static std::array<halco::hicann_dls::vx::ExtollAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	static std::array<halco::hicann_dls::vx::ExtollAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<fisch::vx::word_access_type::Extoll, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Extoll, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	ErrorCount m_error_count;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportErrorCount)
+
+
+/**
+ * Container for configuring the individual buckets for routing via Extoll.
+ */
+class GENPYBIND(visible) ExtollBarrierInterruptInportCounterReset
+{
+public:
+	typedef halco::hicann_dls::vx::ExtollBarrierInterruptInportCounterResetOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	ExtollBarrierInterruptInportCounterReset() SYMBOL_VISIBLE;
+
+	bool operator==(ExtollBarrierInterruptInportCounterReset const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExtollBarrierInterruptInportCounterReset const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(
+	    std::ostream& os, ExtollBarrierInterruptInportCounterReset const& config) SYMBOL_VISIBLE;
+
+	constexpr static size_t read_config_size_in_words GENPYBIND(hidden) = 0;
+	constexpr static size_t write_config_size_in_words GENPYBIND(hidden) = 1;
+
+	static std::array<halco::hicann_dls::vx::ExtollAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::ExtollAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<fisch::vx::word_access_type::Extoll, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Extoll, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportCounterReset)
+
+
 namespace detail {
 
 template <>
@@ -1421,6 +2074,40 @@ struct BackendContainerTrait<ExtollSpikeCommTimestampDelayCounterReset>
     : public BackendContainerBase<
           ExtollSpikeCommTimestampDelayCounterReset,
           fisch::vx::word_access_type::Extoll>
+{};
+
+
+template <>
+struct BackendContainerTrait<ExtollBarrierTriggerReached>
+    : public BackendContainerBase<
+          ExtollBarrierTriggerReached,
+          fisch::vx::word_access_type::ExtollOnNwNode>
+{};
+
+template <>
+struct BackendContainerTrait<ExtollBarrierConfig>
+    : public BackendContainerBase<ExtollBarrierConfig, fisch::vx::word_access_type::ExtollOnNwNode>
+{};
+
+template <>
+struct BackendContainerTrait<ExtollInterruptControl>
+    : public BackendContainerBase<
+          ExtollInterruptControl,
+          fisch::vx::word_access_type::ExtollOnNwNode>
+{};
+
+template <>
+struct BackendContainerTrait<ExtollInterruptConfig>
+    : public BackendContainerBase<
+          ExtollInterruptConfig,
+          fisch::vx::word_access_type::ExtollOnNwNode>
+{};
+
+template <>
+struct BackendContainerTrait<ExtollBarrierInterruptInportErrorCount>
+    : public BackendContainerBase<
+          ExtollBarrierInterruptInportErrorCount,
+          fisch::vx::word_access_type::ExtollOnNwNode>
 {};
 
 } // namespace detail
