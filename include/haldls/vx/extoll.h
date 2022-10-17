@@ -1,6 +1,7 @@
 #pragma once
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/extoll.h"
+#include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/cerealization.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
@@ -10,10 +11,81 @@
 
 namespace halco::hicann_dls::vx {
 class ExtollAddress;
+class OmnibusAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
+
+
+/**
+ * Container for configuring the FPGA-Event-Switch.
+ */
+class GENPYBIND(visible) EventSwitchSource
+{
+public:
+	typedef halco::hicann_dls::vx::EventSwitchSourceOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/**
+	 * The Source for the Executor.
+	 */
+	struct GENPYBIND(inline_base("*")) Source
+	    : public halco::common::detail::RantWrapper<Source, uint8_t, 3, 0>
+	{
+		constexpr explicit Source(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
+		{}
+
+		static const Source executor SYMBOL_VISIBLE;
+		static const Source asic SYMBOL_VISIBLE;
+		static const Source external SYMBOL_VISIBLE;
+		static const Source off SYMBOL_VISIBLE;
+	};
+
+	EventSwitchSource() SYMBOL_VISIBLE;
+
+	/**
+	 * Get source.
+	 * @return Source
+	 */
+	GENPYBIND(getter_for(source))
+	Source get_source() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set source.
+	 * @param value Source to set
+	 */
+	GENPYBIND(setter_for(source))
+	void set_source(Source value) SYMBOL_VISIBLE;
+
+	bool operator==(EventSwitchSource const& other) const SYMBOL_VISIBLE;
+	bool operator!=(EventSwitchSource const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, EventSwitchSource const& config)
+	    SYMBOL_VISIBLE;
+
+	constexpr static size_t config_size_in_words GENPYBIND(hidden) = 1;
+
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Source m_source;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchSource)
+
 
 /**
  * Container for configuring the individual buckets for routing via Extoll.

@@ -7,10 +7,125 @@
 #include "halco/hicann-dls/vx/extoll.h"
 #include "haldls/cerealization.tcc"
 #include "haldls/vx/extoll_constants.h"
+#include "haldls/vx/omnibus_constants.h"
 #include "hate/math.h"
 
 namespace haldls {
 namespace vx {
+
+
+/**
+ * implementation of EventSwitchSource for Coord
+ * EventSwitchToExecutorSourceOnFPGA
+ */
+
+EventSwitchSource::Source const EventSwitchSource::Source::executor{0};
+EventSwitchSource::Source const EventSwitchSource::Source::asic{1};
+EventSwitchSource::Source const EventSwitchSource::Source::external{2};
+EventSwitchSource::Source const EventSwitchSource::Source::off{3};
+
+EventSwitchSource::EventSwitchSource() : m_source(Source::asic) {}
+
+EventSwitchSource::Source EventSwitchSource::get_source() const
+{
+	return m_source;
+}
+
+void EventSwitchSource::set_source(Source const value)
+{
+	m_source = value;
+}
+
+bool EventSwitchSource::operator==(EventSwitchSource const& other) const
+{
+	return (m_source == other.m_source);
+}
+
+bool EventSwitchSource::operator!=(EventSwitchSource const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, EventSwitchSource const& config)
+{
+	std::stringstream ss;
+	ss << "EventSwitchSource(source: " << std::hex << config.m_source << ")";
+	return (os << ss.str());
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, EventSwitchSource::config_size_in_words>
+EventSwitchSource::addresses(coordinate_type const& coord)
+{
+	halco::hicann_dls::vx::OmnibusAddress addr;
+
+	if (coord == coordinate_type::to_executor) {
+		return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_exec_source_address)};
+	}
+	if (coord == coordinate_type::to_asic) {
+		return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_asic_source_address)};
+	}
+	if (coord == coordinate_type::to_external) {
+		return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_external_source_address)};
+	}
+
+	return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_exec_source_address)};
+}
+
+namespace {
+
+struct EventSwitchSourceBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t source     :  2;
+			uint32_t /*unused*/ : 30;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	EventSwitchSourceBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	EventSwitchSourceBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void EventSwitchSource::decode(
+    std::array<fisch::vx::word_access_type::Omnibus, EventSwitchSource::config_size_in_words> const&
+        data)
+{
+	EventSwitchSourceBitfield bitfield;
+	bitfield.u.raw = data[0];
+
+	m_source = Source(bitfield.u.m.source);
+}
+
+std::array<fisch::vx::word_access_type::Omnibus, EventSwitchSource::config_size_in_words>
+EventSwitchSource::encode() const
+{
+	EventSwitchSourceBitfield bitfield;
+	bitfield.u.m.source = m_source;
+
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
+}
+
+template <class Archive>
+void EventSwitchSource::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_source));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchSource)
 
 
 /**
@@ -2050,6 +2165,8 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayCounterReset)
 
 } // namespace vx
 } // namespace haldls
+
+CEREAL_CLASS_VERSION(haldls::vx::EventSwitchSource, 0)
 
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketTriggerConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketDestinationConfig, 0)

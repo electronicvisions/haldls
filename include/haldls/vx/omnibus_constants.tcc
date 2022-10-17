@@ -207,8 +207,14 @@ constexpr uint32_t phy_omnibus_mask{0x0000'2000 | ut_omnibus_mask};
 // 						split(11, num_in_flight(1))
 // 							slave(spimaster)
 constexpr uint32_t spimaster_omnibus_mask{0x0000'1000 | phy_omnibus_mask}; // unused for now
-// 							slave(i2cmaster)
+// 							split(10, num_in_flight(1))
+// 								slave(i2cmaster)
 constexpr uint32_t i2cmaster_omnibus_mask{0x0000'0800 | spimaster_omnibus_mask}; // unused for now
+// 								slave(evswitch)
+constexpr uint32_t evswitch_omnibus_mask{0x0000'0400 | i2cmaster_omnibus_mask};
+constexpr uint32_t evswitch_to_exec_source_address{0x0 | evswitch_omnibus_mask};
+constexpr uint32_t evswitch_to_asic_source_address{0x1 | evswitch_omnibus_mask};
+constexpr uint32_t evswitch_to_external_source_address{0x2 | evswitch_omnibus_mask};
 // 			split(14, num_in_flight(8))
 // 				slave(perftest)
 constexpr uint32_t perftest_omnibus_mask{

@@ -4,6 +4,8 @@
 
 namespace haldls::vx::v2 GENPYBIND_TAG_HALDLS_VX_V2 {
 
+using EventSwitchSource GENPYBIND(visible) = haldls::vx::EventSwitchSource;
+
 using ExtollSpikeCommBucketTriggerConfig GENPYBIND(visible) =
     haldls::vx::ExtollSpikeCommBucketTriggerConfig;
 using ExtollSpikeCommBucketDestinationConfig GENPYBIND(visible) =
