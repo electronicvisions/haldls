@@ -185,12 +185,19 @@ constexpr uint32_t fpga_omnibus_mask{0x8000'0000};
 constexpr uint32_t external_ppu_memory_base_address{0x0000'0000 | fpga_omnibus_mask};
 // 		split(15, num_in_flight(8))
 // 			split(14)
-// 				slave(executor)
+// 				split(13)
+// 					slave(executor)
 constexpr uint32_t executor_omnibus_mask{
     0x0800'0000 | external_ppu_memory_base_address}; // unused for now
 constexpr uint32_t fpga_device_dna_base_address{0x3 | executor_omnibus_mask};
 constexpr uint32_t event_recording_config_base_address{0x5 | executor_omnibus_mask};
 constexpr uint32_t instruction_timeout_config_base_address{0x9 | executor_omnibus_mask};
+// 					slave(systime)
+constexpr uint32_t systime_omnibus_mask{0x0000'2000 | executor_omnibus_mask};
+constexpr uint32_t systime_num_tries_address{0x0 | systime_omnibus_mask};
+constexpr uint32_t systime_last_rtt_address{0x1 | systime_omnibus_mask};
+constexpr uint32_t systime_last_asic_systime_address{0x3 | systime_omnibus_mask};
+constexpr uint32_t systime_active_state_address{0x5 | systime_omnibus_mask};
 // 				split(13)
 // 					slave(ut)
 constexpr uint32_t ut_omnibus_mask{0x0000'4000 | executor_omnibus_mask};

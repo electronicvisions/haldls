@@ -27,6 +27,262 @@ namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
+ * Container for writing the number of retries for the systime-sync on the FPGA.
+ */
+class GENPYBIND(visible) FPGASystimeSyncNumRetries
+{
+public:
+	typedef halco::hicann_dls::vx::FPGASystimeSyncNumRetriesOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/** Try-count value type. */
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::RantWrapper<Value, uint8_t, 15, 0>
+	{
+		constexpr explicit Value(uintmax_t const val = 3) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	/**
+	 * Construct Systime-Sync try-count with value.
+	 * @param value Value to construct with
+	 */
+	explicit FPGASystimeSyncNumRetries(Value value = Value()) SYMBOL_VISIBLE;
+
+	/**
+	 * Get value.
+	 * @return Value
+	 */
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set value.
+	 * @param value Value to set
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(Value value) SYMBOL_VISIBLE;
+
+	bool operator==(FPGASystimeSyncNumRetries const& other) const SYMBOL_VISIBLE;
+	bool operator!=(FPGASystimeSyncNumRetries const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, FPGASystimeSyncNumRetries const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Value m_value;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncNumRetries)
+
+
+/**
+ * Container for reading out the last systime-sync RTT on the FPGA.
+ */
+class GENPYBIND(visible) FPGASystimeSyncLastRTT
+{
+public:
+	typedef halco::hicann_dls::vx::FPGASystimeSyncLastRTTOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/** Systime value type. */
+	struct GENPYBIND(inline_base("*")) Systime
+	    : public halco::common::detail::RantWrapper<Systime, uint64_t, 0x07ff'ffff'ffffull, 0>
+	{
+		constexpr explicit Systime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	/**
+	 * Construct Systime-Sync try-count with value.
+	 * @param value Systime to construct with
+	 */
+	explicit FPGASystimeSyncLastRTT(Systime value = Systime()) SYMBOL_VISIBLE;
+
+	/**
+	 * Get value.
+	 * @return Systime
+	 */
+	GENPYBIND(getter_for(value))
+	Systime get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set value.
+	 * @param value Systime to set
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(Systime value) SYMBOL_VISIBLE;
+
+	bool operator==(FPGASystimeSyncLastRTT const& other) const SYMBOL_VISIBLE;
+	bool operator!=(FPGASystimeSyncLastRTT const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, FPGASystimeSyncLastRTT const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 2;
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Systime m_value;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncLastRTT)
+
+
+/**
+ * Container for reading out the last systime received from the ASIC on the FPGA.
+ */
+class GENPYBIND(visible) FPGASystimeSyncLastAsicSystime
+{
+public:
+	typedef halco::hicann_dls::vx::FPGASystimeSyncLastAsicSystimeOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/** Systime value type. */
+	struct GENPYBIND(inline_base("*")) Systime
+	    : public halco::common::detail::RantWrapper<Systime, uint64_t, 0x07ff'ffff'ffff, 0>
+	{
+		constexpr explicit Systime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	/**
+	 * Construct Systime-Sync try-count with value.
+	 * @param value Systime to construct with
+	 */
+	explicit FPGASystimeSyncLastAsicSystime(Systime value = Systime()) SYMBOL_VISIBLE;
+
+	/**
+	 * Get value.
+	 * @return Systime
+	 */
+	GENPYBIND(getter_for(value))
+	Systime get_value() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set value.
+	 * @param value Systime to set
+	 */
+	GENPYBIND(setter_for(value))
+	void set_value(Systime value) SYMBOL_VISIBLE;
+
+	bool operator==(FPGASystimeSyncLastAsicSystime const& other) const SYMBOL_VISIBLE;
+	bool operator!=(FPGASystimeSyncLastAsicSystime const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, FPGASystimeSyncLastAsicSystime const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 2;
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Systime m_value;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncLastAsicSystime)
+
+
+/**
+ * Container for reading out the last active-state of the systime-sync FSM.
+ */
+class GENPYBIND(visible) FPGASystimeSyncActiveState
+{
+public:
+	typedef halco::hicann_dls::vx::FPGASystimeSyncActiveStateOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/**
+	 * Construct Systime-Sync try-count with active_state.
+	 * @param active_state bool to construct with
+	 */
+	explicit FPGASystimeSyncActiveState(bool active_state = false) SYMBOL_VISIBLE;
+
+	/**
+	 * Get active_state.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(active_state))
+	bool get_active_state() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set active_state.
+	 * @param active_state bool to set
+	 */
+	GENPYBIND(setter_for(active_state))
+	void set_active_state(bool active_state) SYMBOL_VISIBLE;
+
+	bool operator==(FPGASystimeSyncActiveState const& other) const SYMBOL_VISIBLE;
+	bool operator!=(FPGASystimeSyncActiveState const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, FPGASystimeSyncActiveState const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	bool m_active_state;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncActiveState)
+
+
+/**
  * Container for reading out the unique identifier of the FPGA.
  */
 class GENPYBIND(visible) FPGADeviceDNA
@@ -486,6 +742,28 @@ private:
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOOutputRoute)
 
 namespace detail {
+
+template <>
+struct BackendContainerTrait<FPGASystimeSyncNumRetries>
+    : public BackendContainerBase<FPGASystimeSyncNumRetries, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<FPGASystimeSyncLastRTT>
+    : public BackendContainerBase<FPGASystimeSyncLastRTT, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<FPGASystimeSyncLastAsicSystime>
+    : public BackendContainerBase<
+          FPGASystimeSyncLastAsicSystime,
+          fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<FPGASystimeSyncActiveState>
+    : public BackendContainerBase<FPGASystimeSyncActiveState, fisch::vx::word_access_type::Omnibus>
+{};
 
 template <>
 struct BackendContainerTrait<FPGADeviceDNA>

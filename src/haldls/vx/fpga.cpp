@@ -17,6 +17,406 @@
 namespace haldls {
 namespace vx {
 
+
+FPGASystimeSyncNumRetries::FPGASystimeSyncNumRetries(Value const value) : m_value(value) {}
+
+FPGASystimeSyncNumRetries::Value FPGASystimeSyncNumRetries::get_value() const
+{
+	return m_value;
+}
+
+void FPGASystimeSyncNumRetries::set_value(Value const value)
+{
+	m_value = value;
+}
+
+bool FPGASystimeSyncNumRetries::operator==(FPGASystimeSyncNumRetries const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool FPGASystimeSyncNumRetries::operator!=(FPGASystimeSyncNumRetries const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, FPGASystimeSyncNumRetries const& config)
+{
+	os << "FPGASystimeSyncNumRetries(" << config.m_value << ")";
+	return os;
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, FPGASystimeSyncNumRetries::config_size_in_words>
+FPGASystimeSyncNumRetries::addresses(coordinate_type const& /*coord*/)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(systime_num_tries_address)};
+}
+
+namespace {
+
+struct FPGASystimeSyncNumRetriesBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct {
+			uint32_t value      :  4;
+			uint32_t /*unused*/ : 28;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	FPGASystimeSyncNumRetriesBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	FPGASystimeSyncNumRetriesBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<fisch::vx::word_access_type::Omnibus, FPGASystimeSyncNumRetries::config_size_in_words>
+FPGASystimeSyncNumRetries::encode() const
+{
+	FPGASystimeSyncNumRetriesBitfield bitfield;
+	bitfield.u.m.value = m_value;
+
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
+}
+
+void FPGASystimeSyncNumRetries::decode(std::array<
+                                       fisch::vx::word_access_type::Omnibus,
+                                       FPGASystimeSyncNumRetries::config_size_in_words> const& data)
+{
+	FPGASystimeSyncNumRetriesBitfield bitfield;
+	bitfield.u.m.value = data[0];
+
+	m_value = Value(bitfield.u.raw);
+}
+
+template <class Archive>
+void FPGASystimeSyncNumRetries::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncNumRetries)
+
+
+FPGASystimeSyncLastRTT::FPGASystimeSyncLastRTT(Systime const value) : m_value(value) {}
+
+FPGASystimeSyncLastRTT::Systime FPGASystimeSyncLastRTT::get_value() const
+{
+	return m_value;
+}
+
+void FPGASystimeSyncLastRTT::set_value(Systime const value)
+{
+	m_value = value;
+}
+
+bool FPGASystimeSyncLastRTT::operator==(FPGASystimeSyncLastRTT const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool FPGASystimeSyncLastRTT::operator!=(FPGASystimeSyncLastRTT const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, FPGASystimeSyncLastRTT const& config)
+{
+	os << "FPGASystimeSyncLastRTT(" << config.m_value << ")";
+	return os;
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, FPGASystimeSyncLastRTT::read_config_size_in_words>
+FPGASystimeSyncLastRTT::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {
+	    halco::hicann_dls::vx::OmnibusAddress(systime_last_rtt_address),
+	    halco::hicann_dls::vx::OmnibusAddress(systime_last_rtt_address + 1)};
+}
+
+std::
+    array<halco::hicann_dls::vx::OmnibusAddress, FPGASystimeSyncLastRTT::write_config_size_in_words>
+    FPGASystimeSyncLastRTT::write_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+namespace {
+
+struct FPGASystimeSyncLastRTTBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct {
+			uint64_t low          : 32;
+			uint64_t high         : 11;
+			uint64_t /* unused */ : 21;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	FPGASystimeSyncLastRTTBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	FPGASystimeSyncLastRTTBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<fisch::vx::word_access_type::Omnibus, FPGASystimeSyncLastRTT::write_config_size_in_words>
+FPGASystimeSyncLastRTT::encode() const
+{
+	return {};
+}
+
+void FPGASystimeSyncLastRTT::decode(std::array<
+                                    fisch::vx::word_access_type::Omnibus,
+                                    FPGASystimeSyncLastRTT::read_config_size_in_words> const& data)
+{
+	FPGASystimeSyncLastRTTBitfield bitfield;
+	bitfield.u.m.low = data[1];
+	bitfield.u.m.high = data[0];
+
+	m_value = Systime(bitfield.u.raw);
+}
+
+template <class Archive>
+void FPGASystimeSyncLastRTT::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncLastRTT)
+
+
+FPGASystimeSyncLastAsicSystime::FPGASystimeSyncLastAsicSystime(Systime const value) : m_value(value)
+{}
+
+FPGASystimeSyncLastAsicSystime::Systime FPGASystimeSyncLastAsicSystime::get_value() const
+{
+	return m_value;
+}
+
+void FPGASystimeSyncLastAsicSystime::set_value(Systime const value)
+{
+	m_value = value;
+}
+
+bool FPGASystimeSyncLastAsicSystime::operator==(FPGASystimeSyncLastAsicSystime const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool FPGASystimeSyncLastAsicSystime::operator!=(FPGASystimeSyncLastAsicSystime const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, FPGASystimeSyncLastAsicSystime const& config)
+{
+	os << "FPGASystimeSyncLastAsicSystime(" << config.m_value << ")";
+	return os;
+}
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    FPGASystimeSyncLastAsicSystime::read_config_size_in_words>
+FPGASystimeSyncLastAsicSystime::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {
+	    halco::hicann_dls::vx::OmnibusAddress(systime_last_asic_systime_address),
+	    halco::hicann_dls::vx::OmnibusAddress(systime_last_asic_systime_address + 1)};
+}
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    FPGASystimeSyncLastAsicSystime::write_config_size_in_words>
+FPGASystimeSyncLastAsicSystime::write_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+namespace {
+
+struct FPGASystimeSyncLastAsicSystimeBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct {
+			uint64_t low : 32;
+			uint64_t high : 11;
+			uint64_t /* unused */ : 21;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	FPGASystimeSyncLastAsicSystimeBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	FPGASystimeSyncLastAsicSystimeBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<
+    fisch::vx::word_access_type::Omnibus,
+    FPGASystimeSyncLastAsicSystime::write_config_size_in_words>
+FPGASystimeSyncLastAsicSystime::encode() const
+{
+	return {};
+}
+
+void FPGASystimeSyncLastAsicSystime::decode(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        FPGASystimeSyncLastAsicSystime::read_config_size_in_words> const& data)
+{
+	FPGASystimeSyncLastAsicSystimeBitfield bitfield;
+	bitfield.u.m.low = data[1];
+	bitfield.u.m.high = data[0];
+
+	m_value = Systime(bitfield.u.raw);
+}
+
+template <class Archive>
+void FPGASystimeSyncLastAsicSystime::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_value));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncLastAsicSystime)
+
+
+FPGASystimeSyncActiveState::FPGASystimeSyncActiveState(bool const active_state) :
+    m_active_state(active_state)
+{}
+
+bool FPGASystimeSyncActiveState::get_active_state() const
+{
+	return m_active_state;
+}
+
+void FPGASystimeSyncActiveState::set_active_state(bool const active_state)
+{
+	m_active_state = active_state;
+}
+
+bool FPGASystimeSyncActiveState::operator==(FPGASystimeSyncActiveState const& other) const
+{
+	return m_active_state == other.m_active_state;
+}
+
+bool FPGASystimeSyncActiveState::operator!=(FPGASystimeSyncActiveState const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, FPGASystimeSyncActiveState const& config)
+{
+	os << "FPGASystimeSyncActiveState(" << std::boolalpha << config.m_active_state << ")";
+	return os;
+}
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    FPGASystimeSyncActiveState::read_config_size_in_words>
+FPGASystimeSyncActiveState::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(systime_active_state_address)};
+}
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    FPGASystimeSyncActiveState::write_config_size_in_words>
+FPGASystimeSyncActiveState::write_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+namespace {
+
+struct FPGASystimeSyncActiveStateBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct {
+			uint32_t active : 1;
+			uint32_t /* unused */ : 31;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	FPGASystimeSyncActiveStateBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	FPGASystimeSyncActiveStateBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<
+    fisch::vx::word_access_type::Omnibus,
+    FPGASystimeSyncActiveState::write_config_size_in_words>
+FPGASystimeSyncActiveState::encode() const
+{
+	return {};
+}
+
+void FPGASystimeSyncActiveState::decode(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        FPGASystimeSyncActiveState::read_config_size_in_words> const& data)
+{
+	FPGASystimeSyncActiveStateBitfield bitfield;
+	bitfield.u.m.active = data[0];
+
+	m_active_state = static_cast<bool>(bitfield.u.raw);
+}
+
+template <class Archive>
+void FPGASystimeSyncActiveState::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_active_state));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncActiveState)
+
+
 FPGADeviceDNA::FPGADeviceDNA(Value const value) : m_value(value) {}
 
 FPGADeviceDNA::Value FPGADeviceDNA::get_value() const
