@@ -9,5 +9,8 @@ using EventRecordingConfig GENPYBIND(visible) = haldls::vx::EventRecordingConfig
 using InstructionTimeoutConfig GENPYBIND(visible) = haldls::vx::InstructionTimeoutConfig;
 using ExternalPPUMemoryByte GENPYBIND(visible) = haldls::vx::ExternalPPUMemoryByte;
 using ExternalPPUMemoryQuad GENPYBIND(visible) = haldls::vx::ExternalPPUMemoryQuad;
+using SpikeIOConfig GENPYBIND(visible) = haldls::vx::SpikeIOConfig;
+using SpikeIOInputRoute GENPYBIND(visible) = haldls::vx::SpikeIOInputRoute;
+using SpikeIOOutputRoute GENPYBIND(visible) = haldls::vx::SpikeIOOutputRoute;
 
 } // namespace haldls::vx::v3

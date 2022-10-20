@@ -26,6 +26,8 @@ typedef hate::type_list<
     haldls::vx::CommonPhyConfigFPGA,
     haldls::vx::v2::CapMemBlockConfig,
     haldls::vx::INA219Status,
+    haldls::vx::SpikeIOInputRoute,  // One'd by default
+    haldls::vx::SpikeIOOutputRoute, // One'd by default
     haldls::vx::VectorGeneratorControl>
     NotOneableTypes;
 

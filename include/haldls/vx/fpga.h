@@ -4,6 +4,7 @@
 
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
+#include "halco/hicann-dls/vx/event.h"
 #include "halco/hicann-dls/vx/fpga.h"
 #include "halco/hicann-dls/vx/quad.h"
 #include "haldls/cerealization.h"
@@ -304,6 +305,186 @@ private:
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryQuad)
 
+/**
+ * Configuration registers for on-FPGA SpikeIO.
+ */
+class GENPYBIND(visible) SpikeIOConfig
+{
+public:
+	typedef halco::hicann_dls::vx::SpikeIOConfigOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	explicit SpikeIOConfig() SYMBOL_VISIBLE;
+
+	struct GENPYBIND(inline_base("*")) DataRateScaler
+	    : public halco::common::detail::RantWrapper<DataRateScaler, uint_fast16_t, (1 << 16) - 1, 1>
+	{
+		constexpr explicit DataRateScaler(uintmax_t const val = 1) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	/** Get data rate scaling value for serial output. */
+	GENPYBIND(getter_for(data_rate_scaler))
+	DataRateScaler const& get_data_rate_scaler() const SYMBOL_VISIBLE;
+
+	/** Set data rate scaling value for serial output. */
+	GENPYBIND(setter_for(data_rate_scaler))
+	void set_data_rate_scaler(DataRateScaler value) SYMBOL_VISIBLE;
+
+	/** Get global enable of serial output. */
+	GENPYBIND(getter_for(enable_tx))
+	bool get_enable_tx() const SYMBOL_VISIBLE;
+
+	/** Set global enable of serial output. */
+	GENPYBIND(setter_for(enable_tx))
+	void set_enable_tx(bool value) SYMBOL_VISIBLE;
+
+	/** Get global enable of serial input. */
+	GENPYBIND(getter_for(enable_rx))
+	bool get_enable_rx() const SYMBOL_VISIBLE;
+
+	/** Set global enable of serial input. */
+	GENPYBIND(setter_for(enable_rx))
+	void set_enable_rx(bool value) SYMBOL_VISIBLE;
+
+	/** Get enable of internal serial loopback. */
+	GENPYBIND(getter_for(enable_internal_loopback))
+	bool get_enable_internal_loopback() const SYMBOL_VISIBLE;
+
+	/** Set enable of internal serial loopback. */
+	GENPYBIND(setter_for(enable_internal_loopback))
+	void set_enable_internal_loopback(bool value) SYMBOL_VISIBLE;
+
+	bool operator==(SpikeIOConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SpikeIOConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SpikeIOConfig const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t version) SYMBOL_VISIBLE;
+
+	DataRateScaler m_data_rate_scaler;
+	bool m_enable_tx;
+	bool m_enable_rx;
+	bool m_enable_internal_loopback;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOConfig)
+
+/**
+ * On-chip target spike address for events received via the on-fpga SpikeIO module.
+ */
+class GENPYBIND(visible) SpikeIOInputRoute
+{
+public:
+	typedef halco::hicann_dls::vx::SpikeIOInputRouteOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	explicit SpikeIOInputRoute() SYMBOL_VISIBLE;
+	explicit SpikeIOInputRoute(halco::hicann_dls::vx::SpikeLabel label) SYMBOL_VISIBLE;
+
+	/** Discard events with this target. */
+	static constexpr halco::hicann_dls::vx::SpikeLabel SILENT{
+	    halco::hicann_dls::vx::SpikeLabel::max};
+
+	/** Get target spike label. */
+	GENPYBIND(getter_for(target))
+	halco::hicann_dls::vx::SpikeLabel const& get_target() const SYMBOL_VISIBLE;
+
+	/** Set target spike label. */
+	GENPYBIND(setter_for(target))
+	void set_target(halco::hicann_dls::vx::SpikeLabel value) SYMBOL_VISIBLE;
+
+	bool operator==(SpikeIOInputRoute const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SpikeIOInputRoute const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SpikeIOInputRoute const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t version) SYMBOL_VISIBLE;
+
+	halco::hicann_dls::vx::SpikeLabel m_target;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOInputRoute)
+
+/**
+ * Serial address target for events sent via the on-fpga SpikeIO module.
+ */
+class GENPYBIND(visible) SpikeIOOutputRoute
+{
+public:
+	typedef halco::hicann_dls::vx::SpikeIOOutputRouteOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	explicit SpikeIOOutputRoute() SYMBOL_VISIBLE;
+
+	explicit SpikeIOOutputRoute(halco::hicann_dls::vx::SpikeIOAddress serial_address)
+	    SYMBOL_VISIBLE;
+
+	/** Discard events with this target. */
+	static constexpr halco::hicann_dls::vx::SpikeIOAddress SILENT{
+	    halco::hicann_dls::vx::SpikeIOAddress::max};
+
+	/** Get target spike label. */
+	GENPYBIND(getter_for(target))
+	halco::hicann_dls::vx::SpikeIOAddress const& get_target() const SYMBOL_VISIBLE;
+
+	/** Set target spike label. */
+	GENPYBIND(setter_for(target))
+	void set_target(halco::hicann_dls::vx::SpikeIOAddress value) SYMBOL_VISIBLE;
+
+	bool operator==(SpikeIOOutputRoute const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SpikeIOOutputRoute const& other) const SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SpikeIOOutputRoute const& config)
+	    SYMBOL_VISIBLE;
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t version) SYMBOL_VISIBLE;
+
+	halco::hicann_dls::vx::SpikeIOAddress m_target;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOOutputRoute)
+
 namespace detail {
 
 template <>
@@ -331,6 +512,21 @@ struct BackendContainerTrait<ExternalPPUMemoryQuad>
     : public BackendContainerBase<ExternalPPUMemoryQuad, fisch::vx::word_access_type::Omnibus>
 {};
 
+template <>
+struct BackendContainerTrait<SpikeIOConfig>
+    : public BackendContainerBase<SpikeIOConfig, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<SpikeIOInputRoute>
+    : public BackendContainerBase<SpikeIOInputRoute, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<SpikeIOOutputRoute>
+    : public BackendContainerBase<SpikeIOOutputRoute, fisch::vx::word_access_type::Omnibus>
+{};
+
 } // namespace detail
 
 } // namespace vx
@@ -340,5 +536,6 @@ namespace std {
 
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::FPGADeviceDNA::Value)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::ExternalPPUMemoryByte::Value)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SpikeIOConfig::DataRateScaler)
 
 } // namespace std

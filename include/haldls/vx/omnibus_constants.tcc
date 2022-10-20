@@ -226,3 +226,8 @@ constexpr uint32_t crossbar_output_event_counter_base_address{
     crossbar_input_drop_counter_base_address + 20};
 
 constexpr uint32_t madc_base_address{0x000c'0000};
+
+constexpr uint32_t fpga_spikeio_mask{executor_omnibus_mask | 1u << 17};
+constexpr uint32_t fpga_spikeio_output_routing_base_address{fpga_spikeio_mask};
+constexpr uint32_t fpga_spikeio_input_routing_base_address{fpga_spikeio_mask | 1u << 16};
+constexpr uint32_t fpga_spikeio_config_base_address{fpga_spikeio_mask | 1u << 16 | 1u << 15};

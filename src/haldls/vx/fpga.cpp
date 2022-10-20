@@ -6,6 +6,7 @@
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
+#include "halco/hicann-dls/vx/fpga.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/quad.h"
 #include "haldls/cerealization.tcc"
@@ -462,6 +463,275 @@ void ExternalPPUMemoryQuad::serialize(Archive& ar, std::uint32_t const)
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryQuad)
 
+SpikeIOConfig::SpikeIOConfig() :
+    m_data_rate_scaler(DataRateScaler()),
+    m_enable_tx(false),
+    m_enable_rx(false),
+    m_enable_internal_loopback(false)
+{}
+
+SpikeIOConfig::DataRateScaler const& SpikeIOConfig::get_data_rate_scaler() const
+{
+	return m_data_rate_scaler;
+}
+
+void SpikeIOConfig::set_data_rate_scaler(SpikeIOConfig::DataRateScaler const value)
+{
+	m_data_rate_scaler = value;
+}
+
+bool SpikeIOConfig::get_enable_tx() const
+{
+	return m_enable_tx;
+}
+
+void SpikeIOConfig::set_enable_tx(bool const value)
+{
+	m_enable_tx = value;
+}
+
+bool SpikeIOConfig::get_enable_rx() const
+{
+	return m_enable_rx;
+}
+
+void SpikeIOConfig::set_enable_rx(bool const value)
+{
+	m_enable_rx = value;
+}
+
+bool SpikeIOConfig::get_enable_internal_loopback() const
+{
+	return m_enable_internal_loopback;
+}
+
+void SpikeIOConfig::set_enable_internal_loopback(bool const value)
+{
+	m_enable_internal_loopback = value;
+}
+
+bool SpikeIOConfig::operator==(SpikeIOConfig const& other) const
+{
+	return (
+	    (m_data_rate_scaler == other.m_data_rate_scaler) && (m_enable_tx == other.m_enable_tx) &&
+	    (m_enable_rx == other.m_enable_rx) &&
+	    (m_enable_internal_loopback == other.m_enable_internal_loopback));
+}
+
+bool SpikeIOConfig::operator!=(SpikeIOConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, SpikeIOConfig const& config)
+{
+	std::stringstream ss;
+	ss << "SpikeIOConfig(" << std::endl;
+	ss << "\tdata_rate_scaler:         " << config.get_data_rate_scaler() << std::endl;
+	ss << "\tenable_tx:                " << config.get_enable_tx() << std::endl;
+	ss << "\tenable_rx:                " << config.get_enable_rx() << std::endl;
+	ss << "\tenable_internal_loopback: " << config.get_enable_internal_loopback() << std::endl;
+	ss << ")" << std::endl;
+	return (os << ss.str());
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, SpikeIOConfig::config_size_in_words>
+SpikeIOConfig::addresses(coordinate_type const& /*coord*/)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(fpga_spikeio_config_base_address)};
+}
+
+namespace {
+
+struct SpikeIOConfigBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t data_rate_scaler         : 16;  // 00 - 15
+			uint32_t enable_tx                : 1;   // 16
+			uint32_t enable_rx                : 1;   // 17
+			uint32_t enable_internal_loopback : 1;   // 18
+			uint32_t /* unused */             : 13;  // 19 - 31
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	SpikeIOConfigBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	SpikeIOConfigBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<fisch::vx::word_access_type::Omnibus, SpikeIOConfig::config_size_in_words>
+SpikeIOConfig::encode() const
+{
+	SpikeIOConfigBitfield bitfield;
+	bitfield.u.m.data_rate_scaler = m_data_rate_scaler;
+	bitfield.u.m.enable_tx = m_enable_tx;
+	bitfield.u.m.enable_rx = m_enable_rx;
+	bitfield.u.m.enable_internal_loopback = m_enable_internal_loopback;
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
+}
+
+void SpikeIOConfig::decode(
+    std::array<fisch::vx::word_access_type::Omnibus, SpikeIOConfig::config_size_in_words> const&
+        data)
+{
+	SpikeIOConfigBitfield bitfield(data[0]);
+	m_data_rate_scaler = DataRateScaler(bitfield.u.m.data_rate_scaler);
+	m_enable_tx = bitfield.u.m.enable_tx;
+	m_enable_rx = bitfield.u.m.enable_rx;
+	m_enable_internal_loopback = bitfield.u.m.enable_internal_loopback;
+}
+
+template <typename Archive>
+void SpikeIOConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_data_rate_scaler));
+	ar(CEREAL_NVP(m_enable_tx));
+	ar(CEREAL_NVP(m_enable_rx));
+	ar(CEREAL_NVP(m_enable_internal_loopback));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOConfig)
+
+SpikeIOInputRoute::SpikeIOInputRoute() : m_target(SILENT) {}
+SpikeIOInputRoute::SpikeIOInputRoute(halco::hicann_dls::vx::SpikeLabel label) : m_target(label) {}
+
+halco::hicann_dls::vx::SpikeLabel const& SpikeIOInputRoute::get_target() const
+{
+	return m_target;
+}
+
+void SpikeIOInputRoute::set_target(halco::hicann_dls::vx::SpikeLabel const value)
+{
+	m_target = value;
+}
+
+bool SpikeIOInputRoute::operator==(SpikeIOInputRoute const& other) const
+{
+	return (m_target == other.m_target);
+}
+
+bool SpikeIOInputRoute::operator!=(SpikeIOInputRoute const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, SpikeIOInputRoute const& config)
+{
+	std::stringstream ss;
+	ss << "SpikeIOInputRoute(" << std::endl;
+	ss << "\ttarget: " << config.get_target() << std::endl;
+	ss << ")" << std::endl;
+	return (os << ss.str());
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, SpikeIOInputRoute::config_size_in_words>
+SpikeIOInputRoute::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    fpga_spikeio_input_routing_base_address + coord.toEnum())};
+}
+
+std::array<fisch::vx::word_access_type::Omnibus, SpikeIOInputRoute::config_size_in_words>
+SpikeIOInputRoute::encode() const
+{
+	return {fisch::vx::word_access_type::Omnibus(
+	    m_target & ((1u << hate::math::num_bits(halco::hicann_dls::vx::SpikeLabel::max)) - 1))};
+}
+
+void SpikeIOInputRoute::decode(
+    std::array<fisch::vx::word_access_type::Omnibus, SpikeIOInputRoute::config_size_in_words> const&
+        data)
+{
+	m_target = halco::hicann_dls::vx::SpikeLabel(
+	    data[0] & ((1u << hate::math::num_bits(halco::hicann_dls::vx::SpikeLabel::max)) - 1));
+}
+
+template <typename Archive>
+void SpikeIOInputRoute::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_target));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOInputRoute)
+
+SpikeIOOutputRoute::SpikeIOOutputRoute() : m_target(SILENT) {}
+SpikeIOOutputRoute::SpikeIOOutputRoute(halco::hicann_dls::vx::SpikeIOAddress serial_address) :
+    m_target(serial_address)
+{}
+
+halco::hicann_dls::vx::SpikeIOAddress const& SpikeIOOutputRoute::get_target() const
+{
+	return m_target;
+}
+
+void SpikeIOOutputRoute::set_target(halco::hicann_dls::vx::SpikeIOAddress const value)
+{
+	m_target = value;
+}
+
+bool SpikeIOOutputRoute::operator==(SpikeIOOutputRoute const& other) const
+{
+	return (m_target == other.m_target);
+}
+
+bool SpikeIOOutputRoute::operator!=(SpikeIOOutputRoute const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, SpikeIOOutputRoute const& config)
+{
+	std::stringstream ss;
+	ss << "SpikeIOOutputRoute(" << std::endl;
+	ss << "\ttarget: " << config.get_target() << std::endl;
+	ss << ")" << std::endl;
+	return (os << ss.str());
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, SpikeIOOutputRoute::config_size_in_words>
+SpikeIOOutputRoute::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    fpga_spikeio_output_routing_base_address + coord.toEnum())};
+}
+
+std::array<fisch::vx::word_access_type::Omnibus, SpikeIOOutputRoute::config_size_in_words>
+SpikeIOOutputRoute::encode() const
+{
+	return {fisch::vx::word_access_type::Omnibus(
+	    m_target & ((1u << hate::math::num_bits(halco::hicann_dls::vx::SpikeIOAddress::max)) - 1))};
+}
+
+void SpikeIOOutputRoute::decode(std::array<
+                                fisch::vx::word_access_type::Omnibus,
+                                SpikeIOOutputRoute::config_size_in_words> const& data)
+{
+	m_target = halco::hicann_dls::vx::SpikeIOAddress(
+	    data[0] & ((1u << hate::math::num_bits(halco::hicann_dls::vx::SpikeIOAddress::max)) - 1));
+}
+
+template <typename Archive>
+void SpikeIOOutputRoute::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_target));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOOutputRoute)
+
 } // namespace vx
 } // namespace haldls
 
@@ -470,3 +740,6 @@ CEREAL_CLASS_VERSION(haldls::vx::EventRecordingConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::InstructionTimeoutConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryByte, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryQuad, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SpikeIOConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SpikeIOInputRoute, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SpikeIOOutputRoute, 0)
