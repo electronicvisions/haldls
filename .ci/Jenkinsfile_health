@@ -200,8 +200,8 @@ static String compileHtml(List<HXCubeWing> setups, Map<HXCubeWing, Boolean> succ
 			content += "<td style=\"${entry_style}background-color:#f8ff00;text-align:left;" +
 			           "vertical-align:top\">not tested</td>"
 		}
-		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${(setup.fpgaBitfileVersion == null) ?: ''}</td>"
-		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${(setup.fpgaBitfileBuildTime == null) ?: ''}</td>"
+		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${(setup.fpgaBitfileVersion != null) ? setup.fpgaBitfileVersion : ''}</td>"
+		content += "<td style=\"${entry_style}text-align:center;vertical-align:top\">${(setup.fpgaBitfileBuildTime != null) ? setup.fpgaBitfileBuildTime : ''}</td>"
 		content += "</tr>"
 	}
 
