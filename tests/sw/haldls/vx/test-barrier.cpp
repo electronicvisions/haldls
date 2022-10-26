@@ -9,12 +9,12 @@
 
 using namespace haldls::vx;
 
-HALDLS_TEST(Barrier, (enable_omnibus)(enable_jtag)(enable_systime))
+HALDLS_TEST(Barrier, (enable_omnibus)(enable_jtag)(enable_systime)(enable_multi_fpga))
 
 TEST(Barrier, Encode)
 {
 	Barrier config;
 	config.set_enable_omnibus(false);
 
-	EXPECT_EQ(config.encode(), 0x6);
+	EXPECT_EQ(config.encode(), 0xe);
 }
