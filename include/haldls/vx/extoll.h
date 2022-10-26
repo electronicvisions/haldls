@@ -11,7 +11,7 @@
 
 namespace halco::hicann_dls::vx {
 class ExtollAddress;
-class OmnibusAddress;
+struct OmnibusAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -77,7 +77,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -167,7 +167,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -280,7 +280,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -350,7 +350,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -392,7 +392,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
@@ -499,7 +499,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -573,7 +573,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -642,7 +642,7 @@ public:
 	        words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -710,7 +710,7 @@ public:
 	        words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -777,7 +777,7 @@ public:
 	        words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -820,7 +820,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
@@ -885,7 +885,7 @@ public:
 	        words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -927,7 +927,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
@@ -994,7 +994,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -1066,7 +1066,7 @@ public:
 	        words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -1134,7 +1134,7 @@ public:
 	        words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -1206,7 +1206,7 @@ public:
 	        words) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -1249,7 +1249,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };

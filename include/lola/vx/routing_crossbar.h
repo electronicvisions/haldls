@@ -10,7 +10,7 @@
 #include "lola/vx/genpybind.h"
 
 namespace cereal {
-class access;
+struct access;
 } // namespace cereal
 
 namespace lola::vx GENPYBIND_TAG_LOLA_VX {

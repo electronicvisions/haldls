@@ -124,7 +124,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, CommonSynramConfig const& config) SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -198,7 +198,7 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -274,7 +274,7 @@ private:
 	// used for direct member access without function calls
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseWeightRow>;
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseWeightMatrix>;
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t version);
 
@@ -320,7 +320,7 @@ private:
 	// used for direct member access without function calls
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseLabelRow>;
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseLabelMatrix>;
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t version);
 
@@ -389,7 +389,7 @@ private:
 	// used for direct member access without function calls
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseCorrelationCalibRow>;
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseCorrelationCalibMatrix>;
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t version);
 
@@ -452,7 +452,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, SynapseQuad const& config) SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 	// used for direct member access without function calls
@@ -585,7 +585,7 @@ public:
 		    SYMBOL_VISIBLE;
 
 	private:
-		friend class cereal::access;
+		friend struct cereal::access;
 		template <class Archive>
 		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -622,7 +622,7 @@ public:
 	friend std::ostream& operator<<(std::ostream&, ColumnCorrelationQuad const&) SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -738,7 +738,7 @@ public:
 		friend std::ostream& operator<<(std::ostream&, ColumnCurrentSwitch const&) SYMBOL_VISIBLE;
 
 	private:
-		friend class cereal::access;
+		friend struct cereal::access;
 		template <class Archive>
 		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -774,7 +774,7 @@ public:
 	bool operator!=(ColumnCurrentQuad const& other) const SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -818,7 +818,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };

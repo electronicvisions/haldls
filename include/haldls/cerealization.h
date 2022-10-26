@@ -12,7 +12,7 @@
 
 namespace cereal {
 
-class access;
+struct access;
 class JSONOutputArchive;
 class JSONInputArchive;
 class PortableBinaryOutputArchive;

@@ -17,7 +17,7 @@ class OmnibusChipOverJTAG;
 } // namespace fisch::vx
 
 namespace halco::hicann_dls::vx {
-class OmnibusAddress;
+struct OmnibusAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -119,7 +119,7 @@ public:
 	    GENPYBIND(hidden);
 
 protected:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -204,7 +204,7 @@ public:
 	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
 
 protected:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -243,7 +243,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t);
 };
@@ -317,7 +317,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 protected:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 

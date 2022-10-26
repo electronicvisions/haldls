@@ -396,7 +396,7 @@ public:
 		                 &::lola::vx::CHIP_REVISION_STR::CADCReadoutChain::AnalogValues::empty));
 	})
 private:
-	friend class haldls::vx::detail::VisitPreorderImpl<CADCReadoutChain>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<CADCReadoutChain>;
 };
 
 
@@ -427,7 +427,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, CADCSampleRow const& row) SYMBOL_VISIBLE;
 
 private:
-	friend class haldls::vx::detail::VisitPreorderImpl<CADCSampleRow>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<CADCSampleRow>;
 };
 
 
@@ -457,7 +457,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, CADCSamples const& row) SYMBOL_VISIBLE;
 
 private:
-	friend class haldls::vx::detail::VisitPreorderImpl<CADCSamples>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<CADCSamples>;
 };
 
 } // namespace lola::vx

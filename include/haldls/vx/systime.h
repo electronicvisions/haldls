@@ -62,7 +62,7 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -137,7 +137,7 @@ public:
 private:
 	bool m_do_sync;
 
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 };

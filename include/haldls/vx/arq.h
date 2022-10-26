@@ -11,7 +11,7 @@
 #include "hate/visibility.h"
 
 namespace halco::hicann_dls::vx {
-class OmnibusAddress;
+struct OmnibusAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -107,7 +107,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, HicannARQStatus const& config) SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 

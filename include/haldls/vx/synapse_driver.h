@@ -45,7 +45,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t);
 };
@@ -292,7 +292,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 

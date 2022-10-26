@@ -71,7 +71,7 @@ namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 		            read_config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);      \
                                                                                                    \
 	private:                                                                                       \
-		friend class cereal::access;                                                               \
+		friend struct cereal::access;                                                              \
 		template <class Archive>                                                                   \
 		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;                   \
                                                                                                    \
@@ -161,7 +161,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, SpikeFromChip const& spike) SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -279,7 +279,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -453,7 +453,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 

@@ -209,7 +209,7 @@ public:
 			attr.attr("to_numpy") = parent->py::cpp_function(
 			    [](_values_type const& self) {
 				    pybind11::array_t<haldls::vx::SpikeFromChip::SpikeFromChipDType> ret(
-				        {static_cast<pybind11::ssize_t>(self.size())},
+				        static_cast<pybind11::ssize_t>(self.size()),
 				        reinterpret_cast<haldls::vx::SpikeFromChip::SpikeFromChipDType const*>(
 				            self.data()));
 				    return ret;
@@ -240,7 +240,7 @@ public:
 
 			auto const to_numpy = [](_values_type const& self) {
 				pybind11::array_t<haldls::vx::MADCSampleFromChip::MADCSampleFromChipDType> ret(
-				    {static_cast<pybind11::ssize_t>(self.size())},
+				    static_cast<pybind11::ssize_t>(self.size()),
 				    reinterpret_cast<
 				        haldls::vx::MADCSampleFromChip::MADCSampleFromChipDType const*>(
 				        self.data()));

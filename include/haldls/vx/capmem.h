@@ -91,7 +91,7 @@ public:
 	bool operator!=(CapMemCell const& other) const;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -133,7 +133,7 @@ public:
 
 private:
 	friend detail::VisitPreorderImpl<CapMemBlock>;
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -480,7 +480,7 @@ public:
 	}
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 

@@ -14,11 +14,11 @@
 #include "hate/visibility.h"
 
 namespace cereal {
-class access;
+struct access;
 } // namespace cereal
 
 namespace halco::hicann_dls::vx {
-class OmnibusAddress;
+struct OmnibusAddress;
 struct PPUMemoryWordOnDLS;
 } // namespace halco::hicann_dls::vx
 
@@ -209,7 +209,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -299,7 +299,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -366,7 +366,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -415,7 +415,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
@@ -513,7 +513,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 

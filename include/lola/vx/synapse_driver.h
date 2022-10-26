@@ -100,7 +100,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend class haldls::vx::detail::VisitPreorderImpl<SynapseDriverBlock>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<SynapseDriverBlock>;
 };
 
 } // namespace lola::vx::vY

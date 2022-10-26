@@ -399,7 +399,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend class haldls::vx::detail::VisitPreorderImpl<CorrelationResetRow>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<CorrelationResetRow>;
 };
 
 } // namespace lola::vx

@@ -11,7 +11,7 @@
 #include "hate/visibility.h"
 
 namespace halco::hicann_dls::vx {
-class OmnibusAddress;
+struct OmnibusAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -65,7 +65,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -198,7 +198,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 

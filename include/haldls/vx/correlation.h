@@ -14,8 +14,8 @@
 #endif
 
 namespace fisch::vx::word_access_type {
-class Omnibus;
-class OmnibusChipOverJTAG;
+struct Omnibus;
+struct OmnibusChipOverJTAG;
 } // namespace fisch::vx::word_access_type
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
@@ -147,7 +147,7 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 

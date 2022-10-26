@@ -321,8 +321,8 @@ public:
 		friend std::ostream& operator<<(std::ostream& os, Multicompartment const& config)
 		    SYMBOL_VISIBLE;
 
-		friend class haldls::vx::detail::VisitPreorderImpl<LogicalNeuron>;
-		friend class haldls::vx::detail::VisitPreorderImpl<MCSafeAtomicNeuron>;
+		friend struct haldls::vx::detail::VisitPreorderImpl<LogicalNeuron>;
+		friend struct haldls::vx::detail::VisitPreorderImpl<MCSafeAtomicNeuron>;
 
 	private:
 		/** Members that can change the morphology of a neuron are immutable. */
@@ -341,7 +341,7 @@ public:
 		/** Enable inter-compartment conductance. */
 		bool enable_conductance;
 
-		friend class cereal::access;
+		friend struct cereal::access;
 		friend class MCSafeAtomicNeuron;
 		Multicompartment& operator=(AtomicNeuron::Multicompartment const& other);
 		explicit operator AtomicNeuron::Multicompartment() const SYMBOL_VISIBLE;
@@ -371,7 +371,7 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend class haldls::vx::detail::VisitPreorderImpl<LogicalNeuron>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<LogicalNeuron>;
 	friend class LogicalNeuron;
 };
 
@@ -470,7 +470,7 @@ private:
 	    Connections connected_neighbors,
 	    Connections involved_connect_soma_right_neurons) SYMBOL_VISIBLE;
 
-	friend class haldls::vx::detail::VisitPreorderImpl<LogicalNeuron>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<LogicalNeuron>;
 };
 
 } // namespace lola::vx

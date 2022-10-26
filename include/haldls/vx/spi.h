@@ -13,9 +13,9 @@
 #include "hate/visibility.h"
 
 namespace halco::hicann_dls::vx {
-class SPIShiftRegisterOnBoard;
-class SPIDACDataRegisterOnBoard;
-class SPIDACControlRegisterOnBoard;
+struct SPIShiftRegisterOnBoard;
+struct SPIDACDataRegisterOnBoard;
+struct SPIDACControlRegisterOnBoard;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -244,7 +244,7 @@ public:
 	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -337,7 +337,7 @@ public:
 	            read_config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -405,7 +405,7 @@ public:
 	            read_config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 

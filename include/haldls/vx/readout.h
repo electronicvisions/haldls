@@ -194,7 +194,7 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -324,7 +324,7 @@ public:
 
 	private:
 		friend class ReadoutSourceSelection;
-		friend class cereal::access;
+		friend struct cereal::access;
 		template <class Archive>
 		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -381,7 +381,7 @@ public:
 	bool operator!=(ReadoutSourceSelection const& other) const SYMBOL_VISIBLE;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 

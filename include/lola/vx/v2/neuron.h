@@ -501,7 +501,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, AtomicNeuron const& config) SYMBOL_VISIBLE;
 
 private:
-	friend class haldls::vx::detail::VisitPreorderImpl<AtomicNeuron>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<AtomicNeuron>;
 };
 
 
@@ -664,7 +664,7 @@ public:
 		    "empty", parent->py::cpp_function(&::lola::vx::v2::NeuronBlock::AnalogValues::empty));
 	})
 private:
-	friend class haldls::vx::detail::VisitPreorderImpl<NeuronBlock>;
+	friend struct haldls::vx::detail::VisitPreorderImpl<NeuronBlock>;
 };
 
 } // namespace lola::vx::v2

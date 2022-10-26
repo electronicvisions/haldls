@@ -65,7 +65,7 @@ public:
 	friend haldls::vx::detail::VisitPreorderImpl<ExternalPPUMemoryBlock>;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 
@@ -112,7 +112,7 @@ public:
 	friend haldls::vx::detail::VisitPreorderImpl<ExternalPPUMemory>;
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version);
 };

@@ -11,8 +11,8 @@
 #include "hate/visibility.h"
 
 namespace halco::hicann_dls::vx {
-class OmnibusAddress;
-class OmnibusChipOverJTAGAddress;
+struct OmnibusAddress;
+struct OmnibusChipOverJTAGAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -135,7 +135,7 @@ public:
 protected:
 	PhyConfigBase() SYMBOL_VISIBLE;
 
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void cerealize_impl(Archive& ar) SYMBOL_VISIBLE;
 
@@ -191,7 +191,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
@@ -240,7 +240,7 @@ public:
 	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 };
@@ -290,7 +290,7 @@ public:
 	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -343,7 +343,7 @@ public:
 	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -470,7 +470,7 @@ public:
 	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 

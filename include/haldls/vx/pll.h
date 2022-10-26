@@ -12,8 +12,8 @@
 #include "hate/visibility.h"
 
 namespace halco::hicann_dls::vx {
-class JTAGPLLRegisterOnDLS;
-class OmnibusChipOverJTAGAddress;
+struct JTAGPLLRegisterOnDLS;
+struct OmnibusChipOverJTAGAddress;
 } // namespace halco::hicann_dls::vx
 
 namespace haldls {
@@ -317,7 +317,7 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -469,7 +469,7 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
@@ -564,7 +564,7 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend class cereal::access;
+	friend struct cereal::access;
 	template <typename Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
