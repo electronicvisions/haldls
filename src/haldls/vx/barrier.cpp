@@ -10,7 +10,10 @@ namespace haldls {
 namespace vx {
 
 Barrier::Barrier() :
-    m_enable_omnibus(true), m_enable_jtag(true), m_enable_systime(true), m_enable_multi_fpga(true)
+    m_enable_omnibus(false),
+    m_enable_jtag(false),
+    m_enable_systime(false),
+    m_enable_multi_fpga(false)
 {}
 
 bool Barrier::get_enable_omnibus() const

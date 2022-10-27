@@ -15,6 +15,9 @@ TEST(Barrier, Encode)
 {
 	Barrier config;
 	config.set_enable_omnibus(false);
+	config.set_enable_jtag(true);
+	config.set_enable_systime(true);
+	config.set_enable_multi_fpga(true);
 
 	EXPECT_EQ(config.encode(), 0xe);
 }
