@@ -127,9 +127,17 @@ def build(bld):
         bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=1",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
 
+    bld.install_files(
+        dest = '${PREFIX}/',
+        files = bld.path.ant_glob('include/**/*.(h|tcc|def)'),
+        name = 'haldls_header',
+        relative_trick = True
+    )
+
     bld(
         target = 'haldls_inc',
         export_includes = 'include',
+        depends_on = 'haldls_header'
     )
 
     bld(
