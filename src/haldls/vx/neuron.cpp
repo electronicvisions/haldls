@@ -714,7 +714,12 @@ std::array<AddressT, SpikeCounterReset::write_config_size_in_words>
 SpikeCounterReset::write_addresses(SpikeCounterReset::coordinate_type const& neuron)
 {
 	auto const base_address =
+#ifdef __ppu__
+	    spike_counter_reset_sram_base_addresses[neuron.toSpikeCounterResetBlockOnDLS()];
+#else
 	    spike_counter_reset_sram_base_addresses.at(neuron.toSpikeCounterResetBlockOnDLS());
+#endif
+
 	auto const neuron_coord = neuron.toSpikeCounterResetOnSpikeCounterResetBlock();
 
 	// Multiply the neuron coordinate with the backend config size to get the true address
