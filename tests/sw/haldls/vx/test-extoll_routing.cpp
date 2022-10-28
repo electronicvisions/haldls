@@ -76,12 +76,9 @@ TEST(ExtollSpikeCommBucketNumPktsSent, Decode)
 }
 
 
-HALDLS_TEST(ExtollSpikeCommBucketCounterReset, (counter_reset))
-
 TEST(ExtollSpikeCommBucketCounterReset, Encode)
 {
 	ExtollSpikeCommBucketCounterReset config;
-	config.set_counter_reset(true);
 
 	typename ExtollSpikeCommBucketCounterReset::coordinate_type coord(5);
 
@@ -199,12 +196,9 @@ TEST(ExtollSpikeCommRouterEventsRouted, Decode)
 }
 
 
-HALDLS_TEST(ExtollSpikeCommRouterCounterReset, (counter_reset))
-
 TEST(ExtollSpikeCommRouterCounterReset, Encode)
 {
 	ExtollSpikeCommRouterCounterReset config;
-	config.set_counter_reset(true);
 
 	typename ExtollSpikeCommRouterCounterReset::coordinate_type coord(
 	    ExtollSpikeCommSplitOnFPGA(1));
@@ -239,12 +233,9 @@ TEST(ExtollSpikeCommDecoderNumEventsReceived, Decode)
 }
 
 
-HALDLS_TEST(ExtollSpikeCommDecoderCounterReset, (counter_reset))
-
 TEST(ExtollSpikeCommDecoderCounterReset, Encode)
 {
 	ExtollSpikeCommDecoderCounterReset config;
-	config.set_counter_reset(true);
 
 	typename ExtollSpikeCommDecoderCounterReset::coordinate_type coord;
 
@@ -344,12 +335,9 @@ TEST(ExtollSpikeCommTimestampDelayEventLossExpired, Decode)
 }
 
 
-HALDLS_TEST(ExtollSpikeCommTimestampDelayCounterReset, (counter_reset))
-
 TEST(ExtollSpikeCommTimestampDelayCounterReset, Encode)
 {
 	ExtollSpikeCommTimestampDelayCounterReset config;
-	config.set_counter_reset(true);
 
 	typename ExtollSpikeCommTimestampDelayCounterReset::coordinate_type coord(
 	    ExtollSpikeCommSplitOnFPGA(1));

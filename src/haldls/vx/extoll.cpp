@@ -516,22 +516,12 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketNumPktsSent)
  * ExtollSpikeCommBucketCounterResetOnFPGA
  */
 
-ExtollSpikeCommBucketCounterReset::ExtollSpikeCommBucketCounterReset() : m_counter_reset() {}
-
-bool ExtollSpikeCommBucketCounterReset::get_counter_reset() const
-{
-	return m_counter_reset;
-}
-
-void ExtollSpikeCommBucketCounterReset::set_counter_reset(bool const value)
-{
-	m_counter_reset = value;
-}
+ExtollSpikeCommBucketCounterReset::ExtollSpikeCommBucketCounterReset() {}
 
 bool ExtollSpikeCommBucketCounterReset::operator==(
-    ExtollSpikeCommBucketCounterReset const& other) const
+    ExtollSpikeCommBucketCounterReset const& /*other*/) const
 {
-	return (m_counter_reset == other.m_counter_reset);
+	return true;
 }
 
 bool ExtollSpikeCommBucketCounterReset::operator!=(
@@ -540,11 +530,10 @@ bool ExtollSpikeCommBucketCounterReset::operator!=(
 	return !(*this == other);
 }
 
-std::ostream& operator<<(std::ostream& os, ExtollSpikeCommBucketCounterReset const& config)
+std::ostream& operator<<(std::ostream& os, ExtollSpikeCommBucketCounterReset const& /*config*/)
 {
 	std::stringstream ss;
-	ss << "ExtollSpikeCommBucketCounterReset(counter reset: " << std::hex << config.m_counter_reset
-	   << ")";
+	ss << "ExtollSpikeCommBucketCounterReset()";
 	return (os << ss.str());
 }
 
@@ -605,16 +594,14 @@ std::array<
 ExtollSpikeCommBucketCounterReset::encode() const
 {
 	ExtollSpikeCommBucketCounterResetBitfield bitfield;
-	bitfield.u.m.counter_reset = m_counter_reset;
+	bitfield.u.m.counter_reset = 0x1;
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
 template <class Archive>
-void ExtollSpikeCommBucketCounterReset::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_counter_reset));
-}
+void ExtollSpikeCommBucketCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
+{}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketCounterReset)
 
@@ -1240,22 +1227,12 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterEventsRouted)
  * ExtollSpikeCommRouterCounterResetOnFPGA
  */
 
-ExtollSpikeCommRouterCounterReset::ExtollSpikeCommRouterCounterReset() : m_counter_reset() {}
-
-bool ExtollSpikeCommRouterCounterReset::get_counter_reset() const
-{
-	return m_counter_reset;
-}
-
-void ExtollSpikeCommRouterCounterReset::set_counter_reset(bool const value)
-{
-	m_counter_reset = value;
-}
+ExtollSpikeCommRouterCounterReset::ExtollSpikeCommRouterCounterReset() {}
 
 bool ExtollSpikeCommRouterCounterReset::operator==(
-    ExtollSpikeCommRouterCounterReset const& other) const
+    ExtollSpikeCommRouterCounterReset const& /*other*/) const
 {
-	return (m_counter_reset == other.m_counter_reset);
+	return true;
 }
 
 bool ExtollSpikeCommRouterCounterReset::operator!=(
@@ -1264,11 +1241,10 @@ bool ExtollSpikeCommRouterCounterReset::operator!=(
 	return !(*this == other);
 }
 
-std::ostream& operator<<(std::ostream& os, ExtollSpikeCommRouterCounterReset const& config)
+std::ostream& operator<<(std::ostream& os, ExtollSpikeCommRouterCounterReset const& /*config*/)
 {
 	std::stringstream ss;
-	ss << "ExtollSpikeCommRouterCounterReset(counter reset: " << std::hex << config.m_counter_reset
-	   << ")";
+	ss << "ExtollSpikeCommRouterCounterReset()";
 	return (os << ss.str());
 }
 
@@ -1333,16 +1309,14 @@ std::array<
 ExtollSpikeCommRouterCounterReset::encode() const
 {
 	ExtollSpikeCommRouterCounterResetBitfield bitfield;
-	bitfield.u.m.counter_reset = m_counter_reset;
+	bitfield.u.m.counter_reset = 0x1;
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
 template <class Archive>
-void ExtollSpikeCommRouterCounterReset::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_counter_reset));
-}
+void ExtollSpikeCommRouterCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
+{}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterCounterReset)
 
@@ -1467,22 +1441,12 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommDecoderNumEventsReceived)
  * ExtollSpikeCommDecoderCounterResetOnFPGA
  */
 
-ExtollSpikeCommDecoderCounterReset::ExtollSpikeCommDecoderCounterReset() : m_counter_reset() {}
-
-bool ExtollSpikeCommDecoderCounterReset::get_counter_reset() const
-{
-	return m_counter_reset;
-}
-
-void ExtollSpikeCommDecoderCounterReset::set_counter_reset(bool const value)
-{
-	m_counter_reset = value;
-}
+ExtollSpikeCommDecoderCounterReset::ExtollSpikeCommDecoderCounterReset() {}
 
 bool ExtollSpikeCommDecoderCounterReset::operator==(
-    ExtollSpikeCommDecoderCounterReset const& other) const
+    ExtollSpikeCommDecoderCounterReset const& /*other*/) const
 {
-	return (m_counter_reset == other.m_counter_reset);
+	return true;
 }
 
 bool ExtollSpikeCommDecoderCounterReset::operator!=(
@@ -1491,11 +1455,10 @@ bool ExtollSpikeCommDecoderCounterReset::operator!=(
 	return !(*this == other);
 }
 
-std::ostream& operator<<(std::ostream& os, ExtollSpikeCommDecoderCounterReset const& config)
+std::ostream& operator<<(std::ostream& os, ExtollSpikeCommDecoderCounterReset const& /*config*/)
 {
 	std::stringstream ss;
-	ss << "ExtollSpikeCommDecoderCounterReset(counter reset: " << std::hex << config.m_counter_reset
-	   << ")";
+	ss << "ExtollSpikeCommDecoderCounterReset()";
 	return (os << ss.str());
 }
 
@@ -1556,16 +1519,14 @@ std::array<
 ExtollSpikeCommDecoderCounterReset::encode() const
 {
 	ExtollSpikeCommDecoderCounterResetBitfield bitfield;
-	bitfield.u.m.counter_reset = m_counter_reset;
+	bitfield.u.m.counter_reset = 0x1;
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
 template <class Archive>
-void ExtollSpikeCommDecoderCounterReset::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_counter_reset));
-}
+void ExtollSpikeCommDecoderCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
+{}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommDecoderCounterReset)
 
@@ -2057,24 +2018,12 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayEventLossExpi
  * ExtollSpikeCommTimestampDelayCounterResetOnFPGA
  */
 
-ExtollSpikeCommTimestampDelayCounterReset::ExtollSpikeCommTimestampDelayCounterReset() :
-    m_counter_reset()
-{}
-
-bool ExtollSpikeCommTimestampDelayCounterReset::get_counter_reset() const
-{
-	return m_counter_reset;
-}
-
-void ExtollSpikeCommTimestampDelayCounterReset::set_counter_reset(bool const value)
-{
-	m_counter_reset = value;
-}
+ExtollSpikeCommTimestampDelayCounterReset::ExtollSpikeCommTimestampDelayCounterReset() {}
 
 bool ExtollSpikeCommTimestampDelayCounterReset::operator==(
-    ExtollSpikeCommTimestampDelayCounterReset const& other) const
+    ExtollSpikeCommTimestampDelayCounterReset const& /*other*/) const
 {
-	return (m_counter_reset == other.m_counter_reset);
+	return true;
 }
 
 bool ExtollSpikeCommTimestampDelayCounterReset::operator!=(
@@ -2083,11 +2032,11 @@ bool ExtollSpikeCommTimestampDelayCounterReset::operator!=(
 	return !(*this == other);
 }
 
-std::ostream& operator<<(std::ostream& os, ExtollSpikeCommTimestampDelayCounterReset const& config)
+std::ostream& operator<<(
+    std::ostream& os, ExtollSpikeCommTimestampDelayCounterReset const& /*config*/)
 {
 	std::stringstream ss;
-	ss << "ExtollSpikeCommTimestampDelayCounterReset(counter reset: " << std::hex
-	   << config.m_counter_reset << ")";
+	ss << "ExtollSpikeCommTimestampDelayCounterReset()";
 	return (os << ss.str());
 }
 
@@ -2152,16 +2101,14 @@ std::array<
 ExtollSpikeCommTimestampDelayCounterReset::encode() const
 {
 	ExtollSpikeCommTimestampDelayCounterResetBitfield bitfield;
-	bitfield.u.m.counter_reset = m_counter_reset;
+	bitfield.u.m.counter_reset = 0x1;
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
 template <class Archive>
-void ExtollSpikeCommTimestampDelayCounterReset::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_counter_reset));
-}
+void ExtollSpikeCommTimestampDelayCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
+{}
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayCounterReset)
 
@@ -3214,20 +3161,20 @@ CEREAL_CLASS_VERSION(haldls::vx::EventSwitchSource, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketTriggerConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketDestinationConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketNumPktsSent, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketCounterReset, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketCounterReset, 1)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterLookupConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterEventLossDisabled, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterEventLossMisconf, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterEventsRouted, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterCounterReset, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterCounterReset, 1)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommDecoderNumEventsReceived, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommDecoderCounterReset, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommDecoderCounterReset, 1)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayNumEventsReceived, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayEventLossFull, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayEventLossExpired, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayCounterReset, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayCounterReset, 1)
 
 CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierTriggerReached, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierConfig, 0)

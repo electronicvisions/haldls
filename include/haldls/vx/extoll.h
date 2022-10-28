@@ -371,20 +371,6 @@ public:
 
 	ExtollSpikeCommBucketCounterReset() SYMBOL_VISIBLE;
 
-	/**
-	 * Get counter reset.
-	 * @return bool
-	 */
-	GENPYBIND(getter_for(counter_reset))
-	bool get_counter_reset() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set counter reset.
-	 * @param value bool to set
-	 */
-	GENPYBIND(setter_for(counter_reset))
-	void set_counter_reset(bool value) SYMBOL_VISIBLE;
-
 	bool operator==(ExtollSpikeCommBucketCounterReset const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ExtollSpikeCommBucketCounterReset const& other) const SYMBOL_VISIBLE;
 
@@ -409,8 +395,6 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
-
-	bool m_counter_reset;
 };
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketCounterReset)
@@ -815,20 +799,6 @@ public:
 
 	ExtollSpikeCommRouterCounterReset() SYMBOL_VISIBLE;
 
-	/**
-	 * Get destination node id.
-	 * @return bool
-	 */
-	GENPYBIND(getter_for(counter_reset))
-	bool get_counter_reset() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set destination node id.
-	 * @param value bool to set
-	 */
-	GENPYBIND(setter_for(counter_reset))
-	void set_counter_reset(bool value) SYMBOL_VISIBLE;
-
 	bool operator==(ExtollSpikeCommRouterCounterReset const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ExtollSpikeCommRouterCounterReset const& other) const SYMBOL_VISIBLE;
 
@@ -853,8 +823,6 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
-
-	bool m_counter_reset;
 };
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterCounterReset)
@@ -938,20 +906,6 @@ public:
 
 	ExtollSpikeCommDecoderCounterReset() SYMBOL_VISIBLE;
 
-	/**
-	 * Get destination node id.
-	 * @return bool
-	 */
-	GENPYBIND(getter_for(counter_reset))
-	bool get_counter_reset() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set destination node id.
-	 * @param value bool to set
-	 */
-	GENPYBIND(setter_for(counter_reset))
-	void set_counter_reset(bool value) SYMBOL_VISIBLE;
-
 	bool operator==(ExtollSpikeCommDecoderCounterReset const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ExtollSpikeCommDecoderCounterReset const& other) const SYMBOL_VISIBLE;
 
@@ -976,8 +930,6 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
-
-	bool m_counter_reset;
 };
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommDecoderCounterReset)
@@ -1276,20 +1228,6 @@ public:
 
 	ExtollSpikeCommTimestampDelayCounterReset() SYMBOL_VISIBLE;
 
-	/**
-	 * Get destination node id.
-	 * @return bool
-	 */
-	GENPYBIND(getter_for(counter_reset))
-	bool get_counter_reset() const SYMBOL_VISIBLE;
-
-	/**
-	 * Set destination node id.
-	 * @param value bool to set
-	 */
-	GENPYBIND(setter_for(counter_reset))
-	void set_counter_reset(bool value) SYMBOL_VISIBLE;
-
 	bool operator==(ExtollSpikeCommTimestampDelayCounterReset const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ExtollSpikeCommTimestampDelayCounterReset const& other) const SYMBOL_VISIBLE;
 
@@ -1314,8 +1252,6 @@ private:
 	friend class cereal::access;
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
-
-	bool m_counter_reset;
 };
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayCounterReset)
