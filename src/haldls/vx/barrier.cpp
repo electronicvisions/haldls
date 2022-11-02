@@ -13,7 +13,8 @@ Barrier::Barrier() :
     m_enable_omnibus(false),
     m_enable_jtag(false),
     m_enable_systime(false),
-    m_enable_multi_fpga(false)
+    m_enable_multi_fpga(false),
+    m_enable_systime_correction(false)
 {}
 
 bool Barrier::get_enable_omnibus() const
@@ -52,12 +53,22 @@ void Barrier::set_enable_multi_fpga(bool const value)
 	m_enable_multi_fpga = value;
 }
 
+bool Barrier::get_enable_systime_correction() const
+{
+	return m_enable_systime_correction;
+}
+void Barrier::set_enable_systime_correction(bool const value)
+{
+	m_enable_systime_correction = value;
+}
+
 fisch::vx::word_access_type::Barrier Barrier::encode() const
 {
 	return fisch::vx::word_access_type::Barrier(
 	    static_cast<uintmax_t>(m_enable_omnibus) | (static_cast<uintmax_t>(m_enable_jtag) << 1) |
 	    (static_cast<uintmax_t>(m_enable_systime) << 2) |
-	    (static_cast<uintmax_t>(m_enable_multi_fpga) << 3));
+	    (static_cast<uintmax_t>(m_enable_multi_fpga) << 3) |
+	    (static_cast<uintmax_t>(m_enable_systime_correction) << 4));
 }
 
 std::ostream& operator<<(std::ostream& os, Barrier const& config)
@@ -65,7 +76,8 @@ std::ostream& operator<<(std::ostream& os, Barrier const& config)
 	return (
 	    os << "Barrier(omnibus: " << std::boolalpha << config.m_enable_omnibus
 	       << ", jtag: " << config.m_enable_jtag << ", systime: " << config.m_enable_systime
-	       << ", multi_fpga: " << config.m_enable_multi_fpga << ")");
+	       << ", multi_fpga: " << config.m_enable_multi_fpga
+	       << ", systime_correction: " << config.m_enable_systime_correction << ")");
 }
 
 bool Barrier::operator==(Barrier const& other) const
@@ -73,7 +85,8 @@ bool Barrier::operator==(Barrier const& other) const
 	return (
 	    (m_enable_omnibus == other.m_enable_omnibus) && (m_enable_jtag == other.m_enable_jtag) &&
 	    (m_enable_systime == other.m_enable_systime) &&
-	    (m_enable_multi_fpga == other.m_enable_multi_fpga));
+	    (m_enable_multi_fpga == other.m_enable_multi_fpga) &&
+	    (m_enable_systime_correction == other.m_enable_systime_correction));
 }
 
 bool Barrier::operator!=(Barrier const& other) const
@@ -88,6 +101,7 @@ void Barrier::serialize(Archive& ar, std::uint32_t const)
 	ar(CEREAL_NVP(m_enable_jtag));
 	ar(CEREAL_NVP(m_enable_systime));
 	ar(CEREAL_NVP(m_enable_multi_fpga));
+	ar(CEREAL_NVP(m_enable_systime_correction));
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(Barrier)
@@ -98,6 +112,7 @@ Barrier const Barrier::omnibus = []() {
 	s.set_enable_omnibus(true);
 	s.set_enable_systime(false);
 	s.set_enable_multi_fpga(false);
+	s.set_enable_systime_correction(false);
 	return s;
 }();
 
@@ -107,6 +122,7 @@ Barrier const Barrier::jtag = []() {
 	s.set_enable_omnibus(false);
 	s.set_enable_systime(false);
 	s.set_enable_multi_fpga(false);
+	s.set_enable_systime_correction(false);
 	return s;
 }();
 
@@ -116,6 +132,7 @@ Barrier const Barrier::systime = []() {
 	s.set_enable_omnibus(false);
 	s.set_enable_systime(true);
 	s.set_enable_multi_fpga(false);
+	s.set_enable_systime_correction(false);
 	return s;
 }();
 
@@ -125,10 +142,21 @@ Barrier const Barrier::multi_fpga = []() {
 	s.set_enable_omnibus(false);
 	s.set_enable_systime(false);
 	s.set_enable_multi_fpga(true);
+	s.set_enable_systime_correction(false);
+	return s;
+}();
+
+Barrier const Barrier::systime_correction = []() {
+	Barrier s;
+	s.set_enable_jtag(false);
+	s.set_enable_omnibus(false);
+	s.set_enable_systime(false);
+	s.set_enable_multi_fpga(false);
+	s.set_enable_systime_correction(true);
 	return s;
 }();
 
 } // namespace vx
 } // namespace haldls
 
-CEREAL_CLASS_VERSION(haldls::vx::Barrier, 1)
+CEREAL_CLASS_VERSION(haldls::vx::Barrier, 2)
