@@ -3177,6 +3177,7 @@ CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayEventLossExpired, 
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayCounterReset, 1)
 
 CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierTriggerReached, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierReleased, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptControl, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptConfig, 0)

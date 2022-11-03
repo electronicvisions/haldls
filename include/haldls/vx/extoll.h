@@ -1912,6 +1912,10 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportCounterReset)
 namespace detail {
 
 template <>
+struct BackendContainerTrait<EventSwitchSource>
+    : public BackendContainerBase<EventSwitchSource, fisch::vx::word_access_type::Omnibus>
+{};
+template <>
 struct BackendContainerTrait<ExtollSpikeCommBucketTriggerConfig>
     : public BackendContainerBase<
           ExtollSpikeCommBucketTriggerConfig,
@@ -2021,6 +2025,13 @@ struct BackendContainerTrait<ExtollBarrierTriggerReached>
 {};
 
 template <>
+struct BackendContainerTrait<ExtollBarrierReleased>
+    : public BackendContainerBase<
+          ExtollBarrierReleased,
+          fisch::vx::word_access_type::ExtollOnNwNode>
+{};
+
+template <>
 struct BackendContainerTrait<ExtollBarrierConfig>
     : public BackendContainerBase<ExtollBarrierConfig, fisch::vx::word_access_type::ExtollOnNwNode>
 {};
@@ -2043,7 +2054,14 @@ template <>
 struct BackendContainerTrait<ExtollBarrierInterruptInportErrorCount>
     : public BackendContainerBase<
           ExtollBarrierInterruptInportErrorCount,
-          fisch::vx::word_access_type::ExtollOnNwNode>
+          fisch::vx::word_access_type::Extoll>
+{};
+
+template <>
+struct BackendContainerTrait<ExtollBarrierInterruptInportCounterReset>
+    : public BackendContainerBase<
+          ExtollBarrierInterruptInportCounterReset,
+          fisch::vx::word_access_type::Extoll>
 {};
 
 } // namespace detail
