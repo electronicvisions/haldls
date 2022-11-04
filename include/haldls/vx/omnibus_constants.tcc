@@ -215,6 +215,10 @@ constexpr uint32_t evswitch_omnibus_mask{0x0000'0400 | i2cmaster_omnibus_mask};
 constexpr uint32_t evswitch_to_exec_source_address{0x0 | evswitch_omnibus_mask};
 constexpr uint32_t evswitch_to_asic_source_address{0x1 | evswitch_omnibus_mask};
 constexpr uint32_t evswitch_to_external_source_address{0x2 | evswitch_omnibus_mask};
+constexpr uint32_t evswitch_config{0x3 | evswitch_omnibus_mask};
+constexpr uint32_t evswitch_systime_offset{0x4 | evswitch_omnibus_mask};
+constexpr uint32_t evswitch_global_systime{0x6 | evswitch_omnibus_mask};
+constexpr uint32_t evswitch_last_global_systime{0x8 | evswitch_omnibus_mask};
 // 			split(14, num_in_flight(8))
 // 				slave(perftest)
 constexpr uint32_t perftest_omnibus_mask{

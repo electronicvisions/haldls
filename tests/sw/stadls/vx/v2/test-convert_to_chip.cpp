@@ -115,6 +115,8 @@ typedef hate::type_list<
     haldls::vx::v2::SpikeIOInputRoute,                       // logically not part of the chip
     haldls::vx::v2::SpikeIOOutputRoute,                      // logically not part of the chip
     haldls::vx::v2::EventSwitchSource,                       // logically not part of the chip
+    haldls::vx::v2::EventSwitchReadout,                      // logically not part of the chip
+    haldls::vx::v2::EventSwitchConfig,                       // logically not part of the chip
     haldls::vx::v2::ExtollSpikeCommBucketTriggerConfig,      // logically not part of the chip
     haldls::vx::v2::ExtollSpikeCommBucketDestinationConfig,  // logically not part of the chip
     haldls::vx::v2::ExtollSpikeCommBucketNumPktsSent,        // logically not part of the chip

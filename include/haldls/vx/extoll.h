@@ -88,6 +88,124 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchSource)
 
 
 /**
+ * Container for configuring the FPGA-Event-Switch.
+ */
+class GENPYBIND(visible) EventSwitchReadout
+{
+public:
+	typedef halco::hicann_dls::vx::EventSwitchReadoutOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/** Systime value type. */
+	struct GENPYBIND(inline_base("*")) Systime
+	    : public halco::common::detail::RantWrapper<Systime, uint64_t, 0x07ff'ffff'ffffull, 0>
+	{
+		constexpr explicit Systime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{}
+	};
+
+	EventSwitchReadout(Systime const systime = Systime(0)) SYMBOL_VISIBLE;
+
+	/**
+	 * Get systime.
+	 * @return Systime
+	 */
+	GENPYBIND(getter_for(systime))
+	Systime get_systime() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set systime.
+	 * @param value Systime to set
+	 */
+	GENPYBIND(setter_for(systime))
+	void set_systime(Systime value) SYMBOL_VISIBLE;
+
+	bool operator==(EventSwitchReadout const& other) const SYMBOL_VISIBLE;
+	bool operator!=(EventSwitchReadout const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, EventSwitchReadout const& config)
+	    SYMBOL_VISIBLE;
+
+	constexpr static size_t read_config_size_in_words GENPYBIND(hidden) = 2;
+	constexpr static size_t write_config_size_in_words GENPYBIND(hidden) = 0;
+
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	Systime m_systime;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchReadout)
+
+
+/**
+ * Container for configuring the FPGA-Event-Switch.
+ */
+class GENPYBIND(visible) EventSwitchConfig
+{
+public:
+	typedef halco::hicann_dls::vx::EventSwitchConfigOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	EventSwitchConfig(bool const interrupt_armed = false) SYMBOL_VISIBLE;
+
+	/**
+	 * Get interrupt_armed.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(interrupt_armed))
+	bool get_interrupt_armed() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set interrupt_armed.
+	 * @param value bool to set
+	 */
+	GENPYBIND(setter_for(interrupt_armed))
+	void set_interrupt_armed(bool value) SYMBOL_VISIBLE;
+
+	bool operator==(EventSwitchConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(EventSwitchConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, EventSwitchConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	constexpr static size_t config_size_in_words GENPYBIND(hidden) = 1;
+
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend class cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	bool m_interrupt_armed;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchConfig)
+
+
+/**
  * Container for configuring the individual buckets for routing via Extoll.
  */
 class GENPYBIND(visible) ExtollSpikeCommBucketTriggerConfig
@@ -1914,6 +2032,14 @@ namespace detail {
 template <>
 struct BackendContainerTrait<EventSwitchSource>
     : public BackendContainerBase<EventSwitchSource, fisch::vx::word_access_type::Omnibus>
+{};
+template <>
+struct BackendContainerTrait<EventSwitchReadout>
+    : public BackendContainerBase<EventSwitchReadout, fisch::vx::word_access_type::Omnibus>
+{};
+template <>
+struct BackendContainerTrait<EventSwitchConfig>
+    : public BackendContainerBase<EventSwitchConfig, fisch::vx::word_access_type::Omnibus>
 {};
 template <>
 struct BackendContainerTrait<ExtollSpikeCommBucketTriggerConfig>

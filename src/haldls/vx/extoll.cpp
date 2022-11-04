@@ -132,6 +132,227 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchSource)
 
 
 /**
+ * implementation of EventSwitchReadout for Coord
+ * EventSwitchReadoutOnFPGA
+ */
+
+EventSwitchReadout::EventSwitchReadout(Systime const systime) : m_systime(systime) {}
+
+EventSwitchReadout::Systime EventSwitchReadout::get_systime() const
+{
+	return m_systime;
+}
+
+void EventSwitchReadout::set_systime(Systime const systime)
+{
+	m_systime = systime;
+}
+
+bool EventSwitchReadout::operator==(EventSwitchReadout const& other) const
+{
+	return (m_systime == other.m_systime);
+}
+
+bool EventSwitchReadout::operator!=(EventSwitchReadout const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, EventSwitchReadout const& config)
+{
+	std::stringstream ss;
+	ss << "EventSwitchReadout(systime: " << config.m_systime << ")";
+	return (os << ss.str());
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, EventSwitchReadout::read_config_size_in_words>
+EventSwitchReadout::read_addresses(coordinate_type const& coord)
+{
+	std::array<halco::hicann_dls::vx::OmnibusAddress, EventSwitchReadout::read_config_size_in_words>
+	    ret;
+
+	if (coord == coordinate_type::systime_offset) {
+		ret = {
+		    halco::hicann_dls::vx::OmnibusAddress(evswitch_systime_offset),
+		    halco::hicann_dls::vx::OmnibusAddress(evswitch_systime_offset + 1)};
+	} else if (coord == coordinate_type::global_systime) {
+		ret = {
+		    halco::hicann_dls::vx::OmnibusAddress(evswitch_global_systime),
+		    halco::hicann_dls::vx::OmnibusAddress(evswitch_global_systime + 1)};
+	} else if (coord == coordinate_type::last_global_systime) {
+		ret = {
+		    halco::hicann_dls::vx::OmnibusAddress(evswitch_last_global_systime),
+		    halco::hicann_dls::vx::OmnibusAddress(evswitch_last_global_systime + 1)};
+	} else {
+		throw std::logic_error("Unknown EventSwitchReadoutOnFPGA coordinate");
+	}
+
+	return ret;
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, EventSwitchReadout::write_config_size_in_words>
+EventSwitchReadout::write_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+namespace {
+
+struct EventSwitchReadoutBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t low          : 32;
+			uint64_t high         : 11;
+			uint64_t /* unused */ : 21;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	EventSwitchReadoutBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	EventSwitchReadoutBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void EventSwitchReadout::decode(std::array<
+                                fisch::vx::word_access_type::Omnibus,
+                                EventSwitchReadout::read_config_size_in_words> const& data)
+{
+	EventSwitchReadoutBitfield bitfield;
+	bitfield.u.m.low = data[1];
+	bitfield.u.m.high = data[0];
+
+	m_systime = Systime(bitfield.u.raw);
+}
+
+std::array<fisch::vx::word_access_type::Omnibus, EventSwitchReadout::write_config_size_in_words>
+EventSwitchReadout::encode() const
+{
+	return {};
+}
+
+template <class Archive>
+void EventSwitchReadout::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_systime));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchReadout)
+
+
+/**
+ * implementation of EventSwitchConfig for Coord
+ * EventSwitchConfigOnFPGA
+ */
+
+EventSwitchConfig::EventSwitchConfig(bool const interrupt_armed) :
+    m_interrupt_armed(interrupt_armed)
+{}
+
+bool EventSwitchConfig::get_interrupt_armed() const
+{
+	return m_interrupt_armed;
+}
+
+void EventSwitchConfig::set_interrupt_armed(bool const interrupt_armed)
+{
+	m_interrupt_armed = interrupt_armed;
+}
+
+bool EventSwitchConfig::operator==(EventSwitchConfig const& other) const
+{
+	return (m_interrupt_armed == other.m_interrupt_armed);
+}
+
+bool EventSwitchConfig::operator!=(EventSwitchConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, EventSwitchConfig const& config)
+{
+	std::stringstream ss;
+	ss << "EventSwitchConfig(interrupt_armed: " << std::boolalpha << config.m_interrupt_armed
+	   << ")";
+	return (os << ss.str());
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, EventSwitchConfig::config_size_in_words>
+EventSwitchConfig::addresses(coordinate_type const& /*coord*/)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(evswitch_config)};
+}
+
+namespace {
+
+struct EventSwitchConfigBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t interrupt_armed  :  1;
+			uint32_t /* unused */     : 31;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	EventSwitchConfigBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	EventSwitchConfigBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void EventSwitchConfig::decode(
+    std::array<fisch::vx::word_access_type::Omnibus, EventSwitchConfig::config_size_in_words> const&
+        data)
+{
+	EventSwitchConfigBitfield bitfield;
+	bitfield.u.m.interrupt_armed = data[0];
+
+	m_interrupt_armed = static_cast<bool>(bitfield.u.raw);
+}
+
+std::array<fisch::vx::word_access_type::Omnibus, EventSwitchConfig::config_size_in_words>
+EventSwitchConfig::encode() const
+{
+	EventSwitchConfigBitfield bitfield;
+	bitfield.u.m.interrupt_armed = m_interrupt_armed;
+
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
+}
+
+template <class Archive>
+void EventSwitchConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_interrupt_armed));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchConfig)
+
+
+/**
  * implementation of ExtollSpikeCommBucketTriggerConfig for Coord
  * ExtollSpikeCommBucketTriggerConfigOnFPGA
  */
@@ -3157,6 +3378,8 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportCounterReset)
 } // namespace haldls
 
 CEREAL_CLASS_VERSION(haldls::vx::EventSwitchSource, 0)
+CEREAL_CLASS_VERSION(haldls::vx::EventSwitchReadout, 0)
+CEREAL_CLASS_VERSION(haldls::vx::EventSwitchConfig, 0)
 
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketTriggerConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketDestinationConfig, 0)
