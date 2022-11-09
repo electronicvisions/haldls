@@ -19,7 +19,7 @@ namespace vx {
 
 /**
  * implementation of EventSwitchSource for Coord
- * EventSwitchToExecutorSourceOnFPGA
+ * EventSwitchSourceOnFPGA
  */
 
 EventSwitchSource::Source const EventSwitchSource::Source::executor{0};

@@ -35,7 +35,7 @@ typedef hate::type_list<
 	TEST(Name, IsRandomizable)                                                                     \
 	{                                                                                              \
 		if constexpr (!hate::is_in_type_list<Type, NotRandomizableTypes>::value) {                 \
-			std::mt19937 rng(1234);                                                                \
+			std::mt19937 rng(212345);                                                              \
 			Type config;                                                                           \
 			stadls::vx::decode_random<Type>(rng, config);                                          \
 			typedef typename haldls::vx::detail::BackendContainerTrait<Type>::default_container    \

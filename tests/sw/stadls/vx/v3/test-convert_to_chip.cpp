@@ -49,84 +49,114 @@ TEST(convert_to_chip, General)
  * weight/label/calib bits synapse containers, single ppu memory words/bytes).
  */
 typedef hate::type_list<
-    haldls::vx::v3::InstructionTimeoutConfig,           // init
-    haldls::vx::v3::DAC6573ChannelConfig,               // init
-    haldls::vx::v3::AD5252ChannelConfig,                // init
-    haldls::vx::v3::AD5252ChannelConfigPersistent,      // init
-    haldls::vx::v3::TCA9554Config,                      // init
-    haldls::vx::v3::TCA9554Inputs,                      // init
-    haldls::vx::v3::VectorGeneratorFIFOWord,            // trigger
-    haldls::vx::v3::VectorGeneratorTrigger,             // trigger
-    haldls::vx::v3::VectorGeneratorNotificationAddress, // not covered
-    haldls::vx::v3::VectorGeneratorLUTEntry,            // not covered
-    haldls::vx::v3::VectorGeneratorControl,             // not covered
-    haldls::vx::v3::INA219Config,                       // init
-    haldls::vx::v3::INA219Status,                       // read
-    haldls::vx::v3::NullPayloadReadable,                // read
-    haldls::vx::v3::PollingOmnibusBlockConfig,          // trigger
-    haldls::vx::v3::NeuronReset,                        // trigger
-    haldls::vx::v3::SpikeCounterRead,                   // read
-    haldls::vx::v3::SpikeCounterReset,                  // trigger
-    haldls::vx::v3::HicannARQStatus,                    // read
-    haldls::vx::v3::PhyStatus,                          // read
-    haldls::vx::v3::PPUControlRegister,                 // trigger
-    haldls::vx::v3::PPUStatusRegister,                  // read
-    haldls::vx::v3::ResetChip,                          // init
-    haldls::vx::v3::Timer,                              // trigger
-    haldls::vx::v3::JTAGClockScaler,                    // init
-    haldls::vx::v3::JTAGIdCode,                         // read
-    haldls::vx::v3::ResetJTAGTap,                       // init
-    haldls::vx::v3::ShiftRegister,                      // init
-    haldls::vx::v3::DACChannel,                         // init
-    haldls::vx::v3::DACControl,                         // init
-    haldls::vx::v3::PADIEvent,                          // trigger
-    haldls::vx::v3::ADPLL,                              // init
-    haldls::vx::v3::PLLClockOutputBlock,                // init
-    haldls::vx::v3::PLLSelfTest,                        // trigger
-    haldls::vx::v3::PLLSelfTestStatus,                  // read
-    haldls::vx::v3::PhyConfigFPGA,                      // init
-    haldls::vx::v3::CommonPhyConfigFPGA,                // init
-    haldls::vx::v3::PhyConfigChip,                      // init
-    haldls::vx::v3::CommonPhyConfigChip,                // init
-    haldls::vx::v3::PerfTest,                           // trigger
-    haldls::vx::v3::PerfTestStatus,                     // read
-    haldls::vx::v3::SystimeSyncBase,                    // init
-    haldls::vx::v3::SynapseWeightQuad,                  // included in SynapseQuad
-    haldls::vx::v3::SynapseLabelQuad,                   // included in SynapseQuad
-    haldls::vx::v3::SynapseCorrelationCalibQuad,        // included in SynapseQuad
-    haldls::vx::v3::CADCSampleQuad,                     // read
-    haldls::vx::v3::SpikePack1ToChip,                   // trigger
-    haldls::vx::v3::SpikePack2ToChip,                   // trigger
-    haldls::vx::v3::SpikePack3ToChip,                   // trigger
-    haldls::vx::v3::FPGADeviceDNA,                      // read
-    haldls::vx::v3::EventRecordingConfig,               // trigger
-    haldls::vx::v3::CrossbarInputDropCounter,           // read
-    haldls::vx::v3::CrossbarOutputEventCounter,         // read
-    haldls::vx::v3::MADCControl,                        // trigger
-    haldls::vx::v3::CorrelationReset,                   // trigger
-    haldls::vx::v3::NeuronResetQuad,                    // trigger
-    haldls::vx::v3::BlockPostPulse,                     // trigger
-    haldls::vx::v3::SystimeSync,                        // trigger
-    haldls::vx::v3::PPUMemoryBlock,                     // coordinate not easily iterable
-    haldls::vx::v3::PPUMemoryWord,                      // included in PPUMemory
-    haldls::vx::v3::ExternalPPUMemoryByte,              // included in ExternalPPUMemory
-    haldls::vx::v3::ExternalPPUMemoryQuad,              // included in ExternalPPUMemory
-    haldls::vx::v3::SpikeIOConfig,                      // logically not part of the chip
-    haldls::vx::v3::SpikeIOInputRoute,                  // logically not part of the chip
-    haldls::vx::v3::SpikeIOOutputRoute,                 // logically not part of the chip
-    lola::vx::v3::LogicalNeuron,                        // FIXME
-    lola::vx::v3::ExternalPPUMemoryBlock,               // coordinate not easily iterable
-    lola::vx::v3::DACControlBlock,                      // init
-    lola::vx::v3::DACChannelBlock,                      // init
-    lola::vx::v3::CADCSampleRow,                        // read
-    lola::vx::v3::CADCSamples,                          // read
-    lola::vx::v3::SynapseWeightMatrix,                  // included in SynapseMatrix
-    lola::vx::v3::SynapseLabelMatrix,                   // included in SynapseMatrix
-    lola::vx::v3::SynapseCorrelationCalibMatrix,        // included in SynapseMatrix
-    lola::vx::v3::SynapseWeightRow,                     // included in SynapseRow
-    lola::vx::v3::SynapseLabelRow,                      // included in SynapseRow
-    lola::vx::v3::SynapseCorrelationCalibRow,           // included in SynapseRow
-    haldls::vx::v3::SynapseQuad,                        // included in SynapseRow
+    haldls::vx::v3::InstructionTimeoutConfig,                // init
+    haldls::vx::v3::DAC6573ChannelConfig,                    // init
+    haldls::vx::v3::AD5252ChannelConfig,                     // init
+    haldls::vx::v3::AD5252ChannelConfigPersistent,           // init
+    haldls::vx::v3::TCA9554Config,                           // init
+    haldls::vx::v3::TCA9554Inputs,                           // init
+    haldls::vx::v3::VectorGeneratorFIFOWord,                 // trigger
+    haldls::vx::v3::VectorGeneratorTrigger,                  // trigger
+    haldls::vx::v3::VectorGeneratorNotificationAddress,      // not covered
+    haldls::vx::v3::VectorGeneratorLUTEntry,                 // not covered
+    haldls::vx::v3::VectorGeneratorControl,                  // not covered
+    haldls::vx::v3::INA219Config,                            // init
+    haldls::vx::v3::INA219Status,                            // read
+    haldls::vx::v3::NullPayloadReadable,                     // read
+    haldls::vx::v3::PollingOmnibusBlockConfig,               // trigger
+    haldls::vx::v3::NeuronReset,                             // trigger
+    haldls::vx::v3::SpikeCounterRead,                        // read
+    haldls::vx::v3::SpikeCounterReset,                       // trigger
+    haldls::vx::v3::HicannARQStatus,                         // read
+    haldls::vx::v3::PhyStatus,                               // read
+    haldls::vx::v3::PPUControlRegister,                      // trigger
+    haldls::vx::v3::PPUStatusRegister,                       // read
+    haldls::vx::v3::ResetChip,                               // init
+    haldls::vx::v3::Timer,                                   // trigger
+    haldls::vx::v3::JTAGClockScaler,                         // init
+    haldls::vx::v3::JTAGIdCode,                              // read
+    haldls::vx::v3::ResetJTAGTap,                            // init
+    haldls::vx::v3::ShiftRegister,                           // init
+    haldls::vx::v3::DACChannel,                              // init
+    haldls::vx::v3::DACControl,                              // init
+    haldls::vx::v3::PADIEvent,                               // trigger
+    haldls::vx::v3::ADPLL,                                   // init
+    haldls::vx::v3::PLLClockOutputBlock,                     // init
+    haldls::vx::v3::PLLSelfTest,                             // trigger
+    haldls::vx::v3::PLLSelfTestStatus,                       // read
+    haldls::vx::v3::PhyConfigFPGA,                           // init
+    haldls::vx::v3::CommonPhyConfigFPGA,                     // init
+    haldls::vx::v3::PhyConfigChip,                           // init
+    haldls::vx::v3::CommonPhyConfigChip,                     // init
+    haldls::vx::v3::PerfTest,                                // trigger
+    haldls::vx::v3::PerfTestStatus,                          // read
+    haldls::vx::v3::SystimeSyncBase,                         // init
+    haldls::vx::v3::SynapseWeightQuad,                       // included in SynapseQuad
+    haldls::vx::v3::SynapseLabelQuad,                        // included in SynapseQuad
+    haldls::vx::v3::SynapseCorrelationCalibQuad,             // included in SynapseQuad
+    haldls::vx::v3::CADCSampleQuad,                          // read
+    haldls::vx::v3::SpikePack1ToChip,                        // trigger
+    haldls::vx::v3::SpikePack2ToChip,                        // trigger
+    haldls::vx::v3::SpikePack3ToChip,                        // trigger
+    haldls::vx::v3::FPGADeviceDNA,                           // read
+    haldls::vx::v3::EventRecordingConfig,                    // trigger
+    haldls::vx::v3::CrossbarInputDropCounter,                // read
+    haldls::vx::v3::CrossbarOutputEventCounter,              // read
+    haldls::vx::v3::MADCControl,                             // trigger
+    haldls::vx::v3::CorrelationReset,                        // trigger
+    haldls::vx::v3::NeuronResetQuad,                         // trigger
+    haldls::vx::v3::BlockPostPulse,                          // trigger
+    haldls::vx::v3::SystimeSync,                             // trigger
+    haldls::vx::v3::PPUMemoryBlock,                          // coordinate not easily iterable
+    haldls::vx::v3::PPUMemoryWord,                           // included in PPUMemory
+    haldls::vx::v3::ExternalPPUMemoryByte,                   // included in ExternalPPUMemory
+    haldls::vx::v3::ExternalPPUMemoryQuad,                   // included in ExternalPPUMemory
+    haldls::vx::v3::SpikeIOConfig,                           // logically not part of the chip
+    haldls::vx::v3::SpikeIOInputRoute,                       // logically not part of the chip
+    haldls::vx::v3::SpikeIOOutputRoute,                      // logically not part of the chip
+    haldls::vx::v3::EventSwitchSource,                       // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommBucketTriggerConfig,      // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommBucketDestinationConfig,  // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommBucketNumPktsSent,        // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommBucketCounterReset,       // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommRouterLookupConfig,       // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommRouterConfig,             // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommRouterEventLossDisabled,  // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommRouterEventLossMisconf,   // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommRouterEventsRouted,       // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommRouterCounterReset,       // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommDecoderNumEventsReceived, // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommDecoderCounterReset,      // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommTimestampDelayConfig,     // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommTimestampDelayNumEventsReceived, // logically not part of the
+                                                                    // chip
+    haldls::vx::v3::ExtollSpikeCommTimestampDelayEventLossFull,    // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommTimestampDelayEventLossExpired, // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommTimestampDelayCounterReset,     // logically not part of the chip
+    haldls::vx::v3::ExtollBarrierTriggerReached,                   // logically not part of the chip
+    haldls::vx::v3::ExtollBarrierReleased,                         // logically not part of the chip
+    haldls::vx::v3::ExtollBarrierConfig,                           // logically not part of the chip
+    haldls::vx::v3::ExtollInterruptControl,                        // logically not part of the chip
+    haldls::vx::v3::ExtollInterruptConfig,                         // logically not part of the chip
+    haldls::vx::v3::ExtollBarrierInterruptInportErrorCount,        // logically not part of the chip
+    haldls::vx::v3::ExtollBarrierInterruptInportCounterReset,      // logically not part of the chip
+    haldls::vx::v3::FPGASystimeSyncNumRetries,                     // logically not part of the chip
+    haldls::vx::v3::FPGASystimeSyncLastRTT,                        // logically not part of the chip
+    haldls::vx::v3::FPGASystimeSyncLastAsicSystime,                // logically not part of the chip
+    haldls::vx::v3::FPGASystimeSyncActiveState,                    // logically not part of the chip
+    lola::vx::v3::LogicalNeuron,                                   // FIXME
+    lola::vx::v3::ExternalPPUMemoryBlock,                          // coordinate not easily iterable
+    lola::vx::v3::DACControlBlock,                                 // init
+    lola::vx::v3::DACChannelBlock,                                 // init
+    lola::vx::v3::CADCSampleRow,                                   // read
+    lola::vx::v3::CADCSamples,                                     // read
+    lola::vx::v3::SynapseWeightMatrix,                             // included in SynapseMatrix
+    lola::vx::v3::SynapseLabelMatrix,                              // included in SynapseMatrix
+    lola::vx::v3::SynapseCorrelationCalibMatrix,                   // included in SynapseMatrix
+    lola::vx::v3::SynapseWeightRow,                                // included in SynapseRow
+    lola::vx::v3::SynapseLabelRow,                                 // included in SynapseRow
+    lola::vx::v3::SynapseCorrelationCalibRow,                      // included in SynapseRow
+    haldls::vx::v3::SynapseQuad,                                   // included in SynapseRow
     lola::vx::v3::CorrelationResetRow>
     ContainersNotCoveredByChip;
 

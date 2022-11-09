@@ -32,7 +32,32 @@ typedef hate::type_list<
     haldls::vx::TCA9554Config,
     haldls::vx::AD5252ChannelConfig,
     haldls::vx::AD5252ChannelConfigPersistent, // Persistent register. DO NOT change randomly
-    haldls::vx::DAC6573ChannelConfig>
+    haldls::vx::DAC6573ChannelConfig,
+    haldls::vx::EventSwitchSource,
+    haldls::vx::ExtollSpikeCommBucketTriggerConfig,
+    haldls::vx::ExtollSpikeCommBucketDestinationConfig,
+    haldls::vx::ExtollSpikeCommBucketNumPktsSent,
+    haldls::vx::ExtollSpikeCommBucketCounterReset,
+    haldls::vx::ExtollSpikeCommRouterLookupConfig,
+    haldls::vx::ExtollSpikeCommRouterConfig,
+    haldls::vx::ExtollSpikeCommRouterEventLossDisabled,
+    haldls::vx::ExtollSpikeCommRouterEventLossMisconf,
+    haldls::vx::ExtollSpikeCommRouterEventsRouted,
+    haldls::vx::ExtollSpikeCommRouterCounterReset,
+    haldls::vx::ExtollSpikeCommDecoderNumEventsReceived,
+    haldls::vx::ExtollSpikeCommDecoderCounterReset,
+    haldls::vx::ExtollSpikeCommTimestampDelayConfig,
+    haldls::vx::ExtollSpikeCommTimestampDelayNumEventsReceived,
+    haldls::vx::ExtollSpikeCommTimestampDelayEventLossFull,
+    haldls::vx::ExtollSpikeCommTimestampDelayEventLossExpired,
+    haldls::vx::ExtollSpikeCommTimestampDelayCounterReset,
+    haldls::vx::ExtollBarrierTriggerReached,
+    haldls::vx::ExtollBarrierReleased,
+    haldls::vx::ExtollBarrierConfig,
+    haldls::vx::ExtollInterruptControl,
+    haldls::vx::ExtollInterruptConfig,
+    haldls::vx::ExtollBarrierInterruptInportErrorCount,
+    haldls::vx::ExtollBarrierInterruptInportCounterReset>
     WriteTestsDisabledContainers;
 
 /**
