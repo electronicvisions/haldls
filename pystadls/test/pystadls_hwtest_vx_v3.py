@@ -108,10 +108,10 @@ class HwTestPystadlsVxV3(unittest.TestCase):
             ('chip_time', numpy.uint64)
         ])
         self.assertEqual(spikes.dtype, dtype_tmp,
-                         "Expect spikes.dtype to be {}".format(str(dtype_tmp)))
-        self.assertGreater(spikes.size, total_spikes_sent * 0.98,
-                           "Expected at least {} received spikes".format(
-                               total_spikes_sent * 0.98))
+                         f"Expect spikes.dtype to be {str(dtype_tmp)}")
+        self.assertGreater(
+            spikes.size, total_spikes_sent * 0.98,
+            f"Expected at least {total_spikes_sent * 0.98} received spikes")
 
     def test_madc_samples(self):
         """
@@ -192,7 +192,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         ])
         self.assertEqual(
             samples.dtype, expected_dtype,
-            "Expected samples.dtype to be {}".format(str(expected_dtype)))
+            f"Expected samples.dtype to be {str(expected_dtype)}")
 
         # assert sawtooth test pattern is visible in samples
         diff = numpy.diff(samples["value"].astype(int))
