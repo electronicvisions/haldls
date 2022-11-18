@@ -134,7 +134,7 @@ try {
 				wafDefaultPipeline(container: [app: "dls-core"],
 				                   moduleOptions: [modules: ["ppu-toolchain"]],
 				                   projects: ["haldls"],
-				                   configureInstallOptions: "--build-profile=ci",
+				                   configureInstallOptions: "--build-profile=ci --disable-doxygen",
 				                   notificationChannel: "#jenkins-trashbin")
 			}
 
