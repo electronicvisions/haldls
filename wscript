@@ -145,7 +145,7 @@ def build(bld):
         export_includes = 'tests/common',
     )
 
-    reduced_jobs = max(bld.jobs // 2, 1)
+    reduced_jobs = max(bld.jobs // 4, 1)
     bld.env['stadls_semaphore'] = TaskSemaphore(reduced_jobs)
 
     for hx_version in [2, 3]:
