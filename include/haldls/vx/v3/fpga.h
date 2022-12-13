@@ -12,6 +12,8 @@ using FPGASystimeSyncActiveState GENPYBIND(visible) = haldls::vx::FPGASystimeSyn
 using FPGADeviceDNA GENPYBIND(visible) = haldls::vx::FPGADeviceDNA;
 using EventRecordingConfig GENPYBIND(visible) = haldls::vx::EventRecordingConfig;
 using InstructionTimeoutConfig GENPYBIND(visible) = haldls::vx::InstructionTimeoutConfig;
+using SystimeCorrectionBarrierConfig GENPYBIND(visible) =
+    haldls::vx::SystimeCorrectionBarrierConfig;
 using ExternalPPUMemoryByte GENPYBIND(visible) = haldls::vx::ExternalPPUMemoryByte;
 using ExternalPPUMemoryQuad GENPYBIND(visible) = haldls::vx::ExternalPPUMemoryQuad;
 using SpikeIOConfig GENPYBIND(visible) = haldls::vx::SpikeIOConfig;

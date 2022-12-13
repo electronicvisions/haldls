@@ -454,6 +454,63 @@ private:
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE(InstructionTimeoutConfig)
 
+/**
+ * Container for arming the systime-correction barrier in playback executor.
+ * This barrier, if armed, blocks the pb-executor until a global interrupt signal is received.
+ * If unarmed, the barrier returns immediately.
+ * With an Extoll-Bitfile, this waits for a global network-Interrupt.
+ * In any other case, it will just return immediately.
+ */
+class GENPYBIND(visible) SystimeCorrectionBarrierConfig
+{
+public:
+	typedef halco::hicann_dls::vx::SystimeCorrectionBarrierConfigOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	explicit SystimeCorrectionBarrierConfig() SYMBOL_VISIBLE;
+
+	/**
+	 * Get enable_interrupt.
+	 * @return bool enable_interrupt
+	 */
+	GENPYBIND(getter_for(enable_interrupt))
+	bool get_enable_interrupt() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable_interrupt.
+	 * @param bool enable_interrupt
+	 */
+	GENPYBIND(setter_for(enable_interrupt))
+	void set_enable_interrupt(bool enable_interrupt) SYMBOL_VISIBLE;
+
+	bool operator==(SystimeCorrectionBarrierConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(SystimeCorrectionBarrierConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, SystimeCorrectionBarrierConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend struct cereal::access;
+	template <class Archive>
+	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	bool m_enable_interrupt;
+};
+
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SystimeCorrectionBarrierConfig)
+
 class GENPYBIND(visible) ExternalPPUMemoryByte
 {
 public:
@@ -778,6 +835,13 @@ struct BackendContainerTrait<EventRecordingConfig>
 template <>
 struct BackendContainerTrait<InstructionTimeoutConfig>
     : public BackendContainerBase<InstructionTimeoutConfig, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<SystimeCorrectionBarrierConfig>
+    : public BackendContainerBase<
+          SystimeCorrectionBarrierConfig,
+          fisch::vx::word_access_type::Omnibus>
 {};
 
 template <>

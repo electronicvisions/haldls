@@ -50,6 +50,7 @@ TEST(convert_to_chip, General)
  */
 typedef hate::type_list<
     haldls::vx::v2::InstructionTimeoutConfig,                // init
+    haldls::vx::v2::SystimeCorrectionBarrierConfig,          // init
     haldls::vx::v2::DAC6573ChannelConfig,                    // init
     haldls::vx::v2::AD5252ChannelConfig,                     // init
     haldls::vx::v2::AD5252ChannelConfigPersistent,           // init

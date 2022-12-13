@@ -188,10 +188,11 @@ constexpr uint32_t external_ppu_memory_base_address{0x0000'0000 | fpga_omnibus_m
 // 				split(13)
 // 					slave(executor)
 constexpr uint32_t executor_omnibus_mask{
-    0x0800'0000 | external_ppu_memory_base_address}; // unused for now
+    0x0800'0000 | external_ppu_memory_base_address};
 constexpr uint32_t fpga_device_dna_base_address{0x3 | executor_omnibus_mask};
 constexpr uint32_t event_recording_config_base_address{0x5 | executor_omnibus_mask};
 constexpr uint32_t instruction_timeout_config_base_address{0x9 | executor_omnibus_mask};
+constexpr uint32_t systime_correction_barrier_config{0xb | executor_omnibus_mask};
 // 					slave(systime)
 constexpr uint32_t systime_omnibus_mask{0x0000'2000 | executor_omnibus_mask};
 constexpr uint32_t systime_num_tries_address{0x0 | systime_omnibus_mask};

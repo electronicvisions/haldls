@@ -671,6 +671,107 @@ void InstructionTimeoutConfig::serialize(Archive& ar, std::uint32_t const)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(InstructionTimeoutConfig)
 
 
+SystimeCorrectionBarrierConfig::SystimeCorrectionBarrierConfig() : m_enable_interrupt(false) {}
+
+bool SystimeCorrectionBarrierConfig::get_enable_interrupt() const
+{
+	return m_enable_interrupt;
+}
+
+void SystimeCorrectionBarrierConfig::set_enable_interrupt(bool const enable_interrupt)
+{
+	m_enable_interrupt = enable_interrupt;
+}
+
+bool SystimeCorrectionBarrierConfig::operator==(SystimeCorrectionBarrierConfig const& other) const
+{
+	return m_enable_interrupt == other.m_enable_interrupt;
+}
+
+bool SystimeCorrectionBarrierConfig::operator!=(SystimeCorrectionBarrierConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, SystimeCorrectionBarrierConfig const& config)
+{
+	os << "SystimeCorrectionBarrierConfig(" << std::boolalpha << config.m_enable_interrupt << ")";
+	return os;
+}
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    SystimeCorrectionBarrierConfig::read_config_size_in_words>
+SystimeCorrectionBarrierConfig::read_addresses(coordinate_type const& /*coord*/)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(systime_correction_barrier_config)};
+}
+
+std::array<
+    halco::hicann_dls::vx::OmnibusAddress,
+    SystimeCorrectionBarrierConfig::write_config_size_in_words>
+SystimeCorrectionBarrierConfig::write_addresses(coordinate_type const& /*coord*/)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(systime_correction_barrier_config)};
+}
+
+namespace {
+
+struct SystimeCorrectionBarrierConfigBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t enable_interrupt : 1;   // 0
+			uint32_t /* unused */             : 31;  // 1 - 31
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	SystimeCorrectionBarrierConfigBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	SystimeCorrectionBarrierConfigBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<
+    fisch::vx::word_access_type::Omnibus,
+    SystimeCorrectionBarrierConfig::write_config_size_in_words>
+SystimeCorrectionBarrierConfig::encode() const
+{
+	SystimeCorrectionBarrierConfigBitfield bitfield;
+	bitfield.u.m.enable_interrupt = m_enable_interrupt;
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
+}
+
+void SystimeCorrectionBarrierConfig::decode(
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        SystimeCorrectionBarrierConfig::read_config_size_in_words> const& data)
+{
+	SystimeCorrectionBarrierConfigBitfield bitfield(data[0]);
+	m_enable_interrupt = bitfield.u.m.enable_interrupt;
+}
+
+template <class Archive>
+void SystimeCorrectionBarrierConfig::serialize(Archive& ar, std::uint32_t const)
+{
+	ar(CEREAL_NVP(m_enable_interrupt));
+}
+
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeCorrectionBarrierConfig)
+
+
 ExternalPPUMemoryByte::Value ExternalPPUMemoryByte::get_value() const
 {
 	return m_value;
@@ -1138,6 +1239,7 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOOutputRoute)
 CEREAL_CLASS_VERSION(haldls::vx::FPGADeviceDNA, 0)
 CEREAL_CLASS_VERSION(haldls::vx::EventRecordingConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::InstructionTimeoutConfig, 0)
+CEREAL_CLASS_VERSION(haldls::vx::SystimeCorrectionBarrierConfig, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryByte, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryQuad, 0)
 CEREAL_CLASS_VERSION(haldls::vx::SpikeIOConfig, 0)
