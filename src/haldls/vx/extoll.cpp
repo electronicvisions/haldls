@@ -2823,16 +2823,16 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierConfig)
  */
 
 
-ExtollInterruptControl::ExtollInterruptControl() : m_trigger(), m_interrupt() {}
+ExtollInterruptControl::ExtollInterruptControl() : m_operation_trigger(), m_interrupt() {}
 
-bool ExtollInterruptControl::get_trigger() const
+bool ExtollInterruptControl::get_operation_trigger() const
 {
-	return m_trigger;
+	return m_operation_trigger;
 }
 
-void ExtollInterruptControl::set_trigger(bool const value)
+void ExtollInterruptControl::set_operation_trigger(bool const value)
 {
-	m_trigger = value;
+	m_operation_trigger = value;
 }
 
 bool ExtollInterruptControl::get_interrupt() const
@@ -2847,7 +2847,7 @@ void ExtollInterruptControl::set_interrupt(bool const value)
 
 bool ExtollInterruptControl::operator==(ExtollInterruptControl const& other) const
 {
-	return (m_trigger == other.m_trigger) && (m_interrupt == other.m_interrupt);
+	return (m_operation_trigger == other.m_operation_trigger) && (m_interrupt == other.m_interrupt);
 }
 
 bool ExtollInterruptControl::operator!=(ExtollInterruptControl const& other) const
@@ -2858,8 +2858,8 @@ bool ExtollInterruptControl::operator!=(ExtollInterruptControl const& other) con
 std::ostream& operator<<(std::ostream& os, ExtollInterruptControl const& config)
 {
 	std::stringstream ss;
-	ss << "ExtollInterruptControl(trigger: " << std::boolalpha << config.m_trigger
-	   << ", interrupt: " << config.m_interrupt << ")";
+	ss << "ExtollInterruptControl(operation_trigger: " << std::boolalpha
+	   << config.m_operation_trigger << ", interrupt: " << config.m_interrupt << ")";
 	return (os << ss.str());
 }
 
@@ -2925,7 +2925,7 @@ void ExtollInterruptControl::decode(std::array<
 	ExtollInterruptControlBitfield bitfield;
 	bitfield.u.raw = data[0];
 
-	m_trigger = bitfield.u.m.trigger;
+	m_operation_trigger = bitfield.u.m.trigger;
 	m_interrupt = bitfield.u.m.interrupt;
 }
 
@@ -2935,7 +2935,7 @@ std::
 {
 	ExtollInterruptControlBitfield bitfield;
 
-	bitfield.u.m.trigger = m_trigger;
+	bitfield.u.m.trigger = m_operation_trigger;
 	bitfield.u.m.interrupt = m_interrupt;
 
 	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
@@ -2944,11 +2944,27 @@ std::
 template <class Archive>
 void ExtollInterruptControl::serialize(Archive& ar, std::uint32_t const)
 {
-	ar(CEREAL_NVP(m_trigger));
+	ar(CEREAL_NVP(m_operation_trigger));
 	ar(CEREAL_NVP(m_interrupt));
 }
 
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptControl)
+
+ExtollInterruptControl const ExtollInterruptControl::trigger = []() {
+	ExtollInterruptControl c;
+
+	c.set_operation_trigger(true);
+	c.set_interrupt(false);
+	return c;
+}();
+
+ExtollInterruptControl const ExtollInterruptControl::reset = []() {
+	ExtollInterruptControl c;
+
+	c.set_operation_trigger(false);
+	c.set_interrupt(false);
+	return c;
+}();
 
 
 /**
@@ -3088,7 +3104,7 @@ struct ExtollInterruptConfigBitfield
 			uint64_t child_nodes       :  7;
 			uint64_t delay_count       : 16;
 			uint64_t enable_reset      :  1;
-			uint64_t enable_measure           :  1;
+			uint64_t enable_measure    :  1;
 			uint64_t measure_counter   : 16;
 			uint64_t /* unused */      : 22;
 		} m;
@@ -3402,7 +3418,7 @@ CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayCounterReset, 1)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierTriggerReached, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierReleased, 0)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptControl, 0)
+CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptControl, 1)
 CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptConfig, 0)
 
 CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierInterruptInportErrorCount, 0)

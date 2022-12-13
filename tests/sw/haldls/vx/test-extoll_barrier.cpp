@@ -189,12 +189,12 @@ TEST(ExtollBarrierConfig, Decode)
 }
 
 
-HALDLS_TEST(ExtollInterruptControl, (trigger)(interrupt))
+HALDLS_TEST(ExtollInterruptControl, (operation_trigger)(interrupt))
 
 TEST(ExtollInterruptControl, EncodeDecode)
 {
 	ExtollInterruptControl config;
-	config.set_trigger(true);
+	config.set_operation_trigger(true);
 	config.set_interrupt(true);
 
 	std::array<network_word_type, ExtollInterruptControl::config_size_in_words> ref_data = {

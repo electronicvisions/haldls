@@ -1699,19 +1699,22 @@ public:
 
 	ExtollInterruptControl() SYMBOL_VISIBLE;
 
-	/**
-	 * Get trigger.
-	 * @return bool
-	 */
-	GENPYBIND(getter_for(trigger))
-	bool get_trigger() const SYMBOL_VISIBLE;
+	static SYMBOL_VISIBLE const ExtollInterruptControl trigger GENPYBIND(visible);
+	static SYMBOL_VISIBLE const ExtollInterruptControl reset GENPYBIND(visible);
 
 	/**
-	 * Set trigger.
+	 * Get operation_trigger.
+	 * @return bool
+	 */
+	GENPYBIND(getter_for(operation_trigger))
+	bool get_operation_trigger() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set operation_trigger.
 	 * @param value bool to set
 	 */
-	GENPYBIND(setter_for(trigger))
-	void set_trigger(bool value) SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(operation_trigger))
+	void set_operation_trigger(bool value) SYMBOL_VISIBLE;
 
 	/**
 	 * Get interrupt flag.
@@ -1751,7 +1754,7 @@ private:
 	template <class Archive>
 	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
 
-	bool m_trigger;
+	bool m_operation_trigger;
 	bool m_interrupt;
 };
 
