@@ -599,9 +599,9 @@ class TestPylolaVXV3(unittest.TestCase):
         self.assertEqual(builder[moco(0, 0)].connect_soma, True)
         self.assertEqual(builder[moco(0, 0)].enable_conductance, False)
 
-        builder.connect_resistor_to_soma(moco(0, 0))
-        self.assertEqual(builder[moco(0, 0)].connect_soma, False)
-        self.assertEqual(builder[moco(0, 0)].enable_conductance, True)
+        builder.connect_resistor_to_soma(moco(0, 1))
+        self.assertEqual(builder[moco(0, 1)].connect_soma, False)
+        self.assertEqual(builder[moco(0, 1)].enable_conductance, True)
 
         builder.create_compartment([moco(0, 0), moco(0, 1)])
         self.assertEqual(builder[moco(0, 0)].connect_vertical, True)

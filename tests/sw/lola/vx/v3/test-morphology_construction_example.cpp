@@ -148,6 +148,21 @@ TEST(Morphology, Chain)
 	}
 }
 
+TEST(Morphology, NeuronDoubleConnection2Soma)
+{
+	typedef halco::hicann_dls::vx::v3::AtomicNeuronOnLogicalNeuron coord;
+	typedef halco::hicann_dls::vx::v3::NeuronColumnOnLogicalNeuron column;
+	typedef halco::hicann_dls::vx::v3::NeuronRowOnLogicalNeuron row;
+
+	auto morphology = Morphology();
+
+	morphology.connect_to_soma(coord(column(0), row(0)));
+	EXPECT_THROW(morphology.connect_resistor_to_soma(coord(column(0), row(0))), std::runtime_error);
+
+	morphology.connect_resistor_to_soma(coord(column(1), row(0)));
+	EXPECT_THROW(morphology.connect_to_soma(coord(column(1), row(0))), std::runtime_error);
+}
+
 TEST(MCSafeAtomicNeuron, Assignment)
 {
 	auto atomic_neuron = AtomicNeuron();

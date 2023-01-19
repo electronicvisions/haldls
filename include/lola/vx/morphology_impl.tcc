@@ -192,13 +192,23 @@ bool advance_left(AtomicNeuronOnLogicalNeuron& curr_coord_left)
 void Morphology::connect_to_soma(AtomicNeuronOnLogicalNeuron const& coord)
 {
 	morphology[coord].connect_soma = true;
-	morphology[coord].enable_conductance = false;
+	if (morphology[coord].enable_conductance) {
+		std::stringstream ss;
+		ss << coord;
+		ss << " already has a connection to the somatic line via conductance.";
+		throw std::runtime_error(ss.str());
+	}
 }
 
 void Morphology::connect_resistor_to_soma(AtomicNeuronOnLogicalNeuron const& coord)
 {
-	morphology[coord].connect_soma = false;
 	morphology[coord].enable_conductance = true;
+	if (morphology[coord].connect_soma) {
+		std::stringstream ss;
+		ss << coord;
+		ss << " already has a connection to the somatic line via direct switch.";
+		throw std::runtime_error(ss.str());
+	}
 }
 
 void Morphology::connect_vertical(NeuronColumnOnLogicalNeuron const& column)
