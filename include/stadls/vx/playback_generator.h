@@ -50,7 +50,7 @@ auto generate(Seq const& seq)
 struct SYMBOL_VISIBLE PlaybackGenerator
 {
 	virtual pybind11::tuple generate() const = 0;
-	virtual ~PlaybackGenerator() = 0;
+	virtual ~PlaybackGenerator() {}
 };
 
 namespace detail {

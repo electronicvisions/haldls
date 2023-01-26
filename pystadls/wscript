@@ -64,8 +64,7 @@ def build(bld):
         bld(
             features='cxx pyext',
             target=f'pystadls_vx_v{hx_version}_obj',
-            source=[f'../src/stadls/vx/v{hx_version}/pystadls.cpp',
-                    f'../src/stadls/vx/playback_generator.cpp'],
+            source=f'../src/stadls/vx/v{hx_version}/pystadls.cpp',
             use=[f'stadls_vx_v{hx_version}', 'pyhxcomm_vx'],
             defines=['__GENPYBIND_GENERATED__'],
         )
