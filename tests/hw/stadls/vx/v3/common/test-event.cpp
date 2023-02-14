@@ -44,7 +44,7 @@ using namespace stadls::vx::v3;
                                                                                                    \
 		auto spikes = program.get_spikes();                                                        \
                                                                                                    \
-		static auto logger = log4cxx::Logger::getLogger(                                           \
+		auto logger = log4cxx::Logger::getLogger(                                                  \
 		    "stadls.SpikePack" + std::to_string(Num) + "ToChip.Loopback");                         \
 		if (spikes.size() < Num * num_spikes) {                                                    \
 			LOG4CXX_TRACE(                                                                         \

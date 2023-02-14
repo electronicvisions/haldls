@@ -138,7 +138,7 @@ lola::vx::v3::Chip convert_to_chip_impl(
 		if (!std::includes(
 		        addresses_sorted.begin(), addresses_sorted.end(), memory_addresses_sorted.begin(),
 		        memory_addresses_sorted.end())) {
-			static auto logger = log4cxx::Logger::getLogger("stadls.convert_to_chip");
+			auto logger = log4cxx::Logger::getLogger("stadls.convert_to_chip");
 			LOG4CXX_WARN(
 			    logger,
 			    "Coco-list contains containers, which are not present in the lola chip object.");
