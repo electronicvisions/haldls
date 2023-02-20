@@ -276,6 +276,13 @@ class HwTestPystadlsVxV2(unittest.TestCase):
                     samples = samples[samples["value"] != 0]
                     samples = numpy.sort(samples,
                                          order=["chip_time", "fpga_time"])
+
+                    # assert the expected number of samples is present
+                    self.assertGreater(
+                        len(samples),
+                        int(madc_config.number_of_samples) * 0.95,
+                        "Too few MADC samples were received!")
+
                     # convert to SI units (us)
                     sample_times = samples["chip_time"] / \
                         (float(haldls.Timer.Value.fpga_clock_cycles_per_us))
