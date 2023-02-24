@@ -552,9 +552,21 @@ class TestPylolaVXV3(unittest.TestCase):
     def test_neuron_bayesian(self):
         neuron = lola.AtomicNeuron()
 
-        self.assertEqual(neuron.bayesian.enable, False)
-        neuron.bayesian.enable = True
-        self.assertEqual(neuron.bayesian.enable, True)
+        self.assertEqual(neuron.bayesian.to_post_pulse, True)
+        neuron.bayesian.to_post_pulse = False
+        self.assertEqual(neuron.bayesian.to_post_pulse, False)
+
+        self.assertEqual(neuron.bayesian.operation,
+                         neuron.bayesian.Operation.local)
+        neuron.bayesian.operation = neuron.bayesian.Operation.AND
+        self.assertEqual(neuron.bayesian.operation,
+                         neuron.bayesian.Operation.AND)
+        neuron.bayesian.operation = neuron.bayesian.Operation.XNOR
+        self.assertEqual(neuron.bayesian.operation,
+                         neuron.bayesian.Operation.XNOR)
+        neuron.bayesian.operation = neuron.bayesian.Operation.MULLER_C
+        self.assertEqual(neuron.bayesian.operation,
+                         neuron.bayesian.Operation.MULLER_C)
 
         self.assertEqual(neuron.bayesian.connect_fire_vertical, False)
         neuron.bayesian.connect_fire_vertical = True
@@ -568,21 +580,13 @@ class TestPylolaVXV3(unittest.TestCase):
         neuron.bayesian.connect_fire_from_right = True
         self.assertEqual(neuron.bayesian.connect_fire_from_right, True)
 
-        self.assertEqual(neuron.bayesian.enable_master, True)
-        neuron.bayesian.enable_master = False
         self.assertEqual(neuron.bayesian.enable_master, False)
+        neuron.bayesian.enable_master = True
+        self.assertEqual(neuron.bayesian.enable_master, True)
 
         self.assertEqual(neuron.bayesian.enable_slave, False)
         neuron.bayesian.enable_slave = True
         self.assertEqual(neuron.bayesian.enable_slave, True)
-
-        self.assertEqual(neuron.bayesian.enable_0, False)
-        neuron.bayesian.enable_0 = True
-        self.assertEqual(neuron.bayesian.enable_0, True)
-
-        self.assertEqual(neuron.bayesian.enable_1, False)
-        neuron.bayesian.enable_1 = True
-        self.assertEqual(neuron.bayesian.enable_1, True)
 
     def test_morphology_builder(self):
         builder = lola.Morphology()

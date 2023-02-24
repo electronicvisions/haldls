@@ -440,20 +440,55 @@ public:
 	{
 		Bayesian() SYMBOL_VISIBLE;
 
-		bool enable;
-		bool connect_fire_vertical;
-		bool connect_fire_to_right;
-		bool connect_fire_from_right;
+		/**
+		 * Decide whether the bayesian output will be routed to the synapses as
+		 * correlation post-pulse.
+		 *
+		 * If disabled, spikes in the selected master neuron will trigger post-pulses.
+		 */
+		bool to_post_pulse;
 
 		/**
-		 * Enable local spikes to be effective.
-		 * If not using Bayesian extensions, this setting needs to be enabled for spikes
-		 * to reach synapses and the outputs.
+		 * Switch the logic operation executed by the bayesian module.
+		 * The operation affects the spike output and, if enabled, the correlation post-pulse.
+		 *
+		 * `local` uses only the neuron's own refractory state.
+		 * This is the default for non-connected neurons and does not require further configuration
+		 * to work.
+		 *
+		 * `AND` creates an output only if local and remote refractory states are
+		 * present.
+		 *
+		 * `XNOR` creates an output at the falling edge of an XOR gate between the local and
+		 * remote refractory states.
+		 *
+		 * `MULLER_C` executes a Muller C-element operation between the local and
+		 * refractory state: The output is activated if both the local and remote neuron are
+		 * refractory, but both have to be non-refractory once before the next output can be
+		 * generated.
 		 */
+		enum class Operation
+		{
+			local,
+			AND,
+			XNOR,
+			MULLER_C
+		} operation;
+
+		/* Connect the neuron_fire_connect signal to the opposing neuron at the other hemisphere. */
+		bool connect_fire_vertical;
+
+		/* Output the neuron_fire_connect signal to the next neuron at the right. */
+		bool connect_fire_to_right;
+
+		/* Receive the neuron_fire_connect signal from the next neuron at the right. */
+		bool connect_fire_from_right;
+
+		/* Write the local refractory state to `neuron_fire_connect`. */
 		bool enable_master;
+
+		/* Set the local refractory state from `neuron_fire_connect`. */
 		bool enable_slave;
-		bool enable_0;
-		bool enable_1;
 
 		bool operator==(Bayesian const& other) const SYMBOL_VISIBLE;
 		bool operator!=(Bayesian const& other) const SYMBOL_VISIBLE;

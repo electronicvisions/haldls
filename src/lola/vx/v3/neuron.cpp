@@ -439,14 +439,13 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron::RefractoryPeriod const&
 
 
 AtomicNeuron::Bayesian::Bayesian() :
-    enable(false),
+    to_post_pulse(true),
+    operation(AtomicNeuron::Bayesian::Operation::local),
     connect_fire_vertical(false),
     connect_fire_to_right(false),
     connect_fire_from_right(false),
-    enable_master(true),
-    enable_slave(false),
-    enable_0(false),
-    enable_1(false)
+    enable_master(false),
+    enable_slave(false)
 {}
 
 bool AtomicNeuron::Bayesian::operator==(Bayesian const& other) const
@@ -462,16 +461,27 @@ bool AtomicNeuron::Bayesian::operator!=(Bayesian const& other) const
 std::ostream& operator<<(std::ostream& os, AtomicNeuron::Bayesian const& config)
 {
 	using namespace halco::hicann_dls::vx;
+
+	std::stringstream operation;
+	if (config.operation == lola::vx::v3::AtomicNeuron::Bayesian::Operation::local)
+		operation << "local";
+	else if (config.operation == lola::vx::v3::AtomicNeuron::Bayesian::Operation::AND)
+		operation << "AND";
+	else if (config.operation == lola::vx::v3::AtomicNeuron::Bayesian::Operation::XNOR)
+		operation << "XNOR";
+	else if (config.operation == lola::vx::v3::AtomicNeuron::Bayesian::Operation::MULLER_C)
+		operation << "MULLER_C";
+
 	std::stringstream ss;
 	ss << "Bayesian(\n"
-	   << std::boolalpha << "\tenable:                  " << config.enable << "\n"
+	   << std::boolalpha << "\tto_post_pulse:           " << config.to_post_pulse << "\n"
 	   << "\tconnect_fire_vertical:   " << config.connect_fire_vertical << "\n"
 	   << "\tconnect_fire_to_right:   " << config.connect_fire_to_right << "\n"
 	   << "\tconnect_fire_from_right: " << config.connect_fire_from_right << "\n"
 	   << "\tenable_master:           " << config.enable_master << "\n"
 	   << "\tenable_slave:            " << config.enable_slave << "\n"
-	   << "\tenable_0:                " << config.enable_0 << "\n"
-	   << "\tenable_1:                " << config.enable_1 << "\n)";
+	   << "\toperation:               " << operation.str() << "\n)";
+
 	os << ss.str();
 	return os;
 }
@@ -682,9 +692,22 @@ AtomicNeuron::operator haldls::vx::v3::NeuronBackendConfig() const
 	haldls::vx::v3::NeuronBackendConfig neuron_backend_config;
 
 	neuron_backend_config.set_enable_spike_out(event_routing.enable_digital);
-	neuron_backend_config.set_enable_bayesian_extension(bayesian.enable);
-	neuron_backend_config.set_enable_bayesian_0(bayesian.enable_0);
-	neuron_backend_config.set_enable_bayesian_1(bayesian.enable_1);
+	neuron_backend_config.set_enable_bayesian_extension(bayesian.to_post_pulse);
+
+	if (bayesian.operation == lola::vx::v3::AtomicNeuron::Bayesian::Operation::local) {
+		neuron_backend_config.set_enable_bayesian_0(false);
+		neuron_backend_config.set_enable_bayesian_1(false);
+	} else if (bayesian.operation == lola::vx::v3::AtomicNeuron::Bayesian::Operation::AND) {
+		neuron_backend_config.set_enable_bayesian_0(true);
+		neuron_backend_config.set_enable_bayesian_1(false);
+	} else if (bayesian.operation == lola::vx::v3::AtomicNeuron::Bayesian::Operation::XNOR) {
+		neuron_backend_config.set_enable_bayesian_0(false);
+		neuron_backend_config.set_enable_bayesian_1(true);
+	} else if (bayesian.operation == lola::vx::v3::AtomicNeuron::Bayesian::Operation::MULLER_C) {
+		neuron_backend_config.set_enable_bayesian_0(true);
+		neuron_backend_config.set_enable_bayesian_1(true);
+	}
+
 	neuron_backend_config.set_enable_neuron_master(bayesian.enable_master);
 	neuron_backend_config.set_enable_neuron_slave(bayesian.enable_slave);
 	neuron_backend_config.set_connect_fire_bottom(bayesian.connect_fire_vertical);
@@ -717,9 +740,24 @@ void AtomicNeuron::set_from(haldls::vx::v3::NeuronBackendConfig const& neuron_ba
 	bayesian.connect_fire_vertical = neuron_backend_config.get_connect_fire_bottom();
 	bayesian.connect_fire_to_right = neuron_backend_config.get_connect_fire_to_right();
 	bayesian.connect_fire_from_right = neuron_backend_config.get_connect_fire_from_right();
-	bayesian.enable = neuron_backend_config.get_enable_bayesian_extension();
-	bayesian.enable_0 = neuron_backend_config.get_enable_bayesian_0();
-	bayesian.enable_1 = neuron_backend_config.get_enable_bayesian_1();
+	bayesian.to_post_pulse = neuron_backend_config.get_enable_bayesian_extension();
+
+	if (!neuron_backend_config.get_enable_bayesian_0() &&
+	    !neuron_backend_config.get_enable_bayesian_1()) {
+		bayesian.operation = lola::vx::v3::AtomicNeuron::Bayesian::Operation::local;
+	} else if (
+	    neuron_backend_config.get_enable_bayesian_0() &&
+	    !neuron_backend_config.get_enable_bayesian_1()) {
+		bayesian.operation = lola::vx::v3::AtomicNeuron::Bayesian::Operation::AND;
+	} else if (
+	    !neuron_backend_config.get_enable_bayesian_0() &&
+	    neuron_backend_config.get_enable_bayesian_1()) {
+		bayesian.operation = lola::vx::v3::AtomicNeuron::Bayesian::Operation::XNOR;
+	} else if (
+	    neuron_backend_config.get_enable_bayesian_0() &&
+	    neuron_backend_config.get_enable_bayesian_1()) {
+		bayesian.operation = lola::vx::v3::AtomicNeuron::Bayesian::Operation::MULLER_C;
+	}
 }
 
 

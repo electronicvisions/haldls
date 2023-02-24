@@ -24,15 +24,15 @@ NeuronBackendConfig<Coordinates>::NeuronBackendConfig() :
     m_post_overwrite(false),
     m_select_input_clock(),
     m_en_adapt_pulse(false),
-    m_en_baesian_extension(false),
+    m_en_bayesian_extension(true),
     m_en_neuron_slave(false),
     m_connect_fire_bottom(false),
     m_connect_fire_from_right(false),
     m_connect_fire_to_right(false),
     m_en_spike_out(false),
-    m_en_neuron_master(true),
-    m_en_0_baesian(false),
-    m_en_1_baesian(false)
+    m_en_neuron_master(false),
+    m_en_0_bayesian(false),
+    m_en_1_bayesian(false)
 {}
 
 template <typename Coordinates>
@@ -74,7 +74,7 @@ void NeuronBackendConfig<Coordinates>::set_enable_adaptation_pulse(bool const va
 template <typename Coordinates>
 void NeuronBackendConfig<Coordinates>::set_enable_bayesian_extension(bool const val)
 {
-	m_en_baesian_extension = val;
+	m_en_bayesian_extension = val;
 }
 
 template <typename Coordinates>
@@ -116,13 +116,13 @@ void NeuronBackendConfig<Coordinates>::set_enable_neuron_master(bool const val)
 template <typename Coordinates>
 void NeuronBackendConfig<Coordinates>::set_enable_bayesian_0(bool const val)
 {
-	m_en_0_baesian = val;
+	m_en_0_bayesian = val;
 }
 
 template <typename Coordinates>
 void NeuronBackendConfig<Coordinates>::set_enable_bayesian_1(bool const val)
 {
-	m_en_1_baesian = val;
+	m_en_1_bayesian = val;
 }
 
 template <typename Coordinates>
@@ -168,7 +168,7 @@ bool NeuronBackendConfig<Coordinates>::get_enable_adaptation_pulse() const
 template <typename Coordinates>
 bool NeuronBackendConfig<Coordinates>::get_enable_bayesian_extension() const
 {
-	return m_en_baesian_extension;
+	return m_en_bayesian_extension;
 }
 
 template <typename Coordinates>
@@ -210,13 +210,13 @@ bool NeuronBackendConfig<Coordinates>::get_enable_neuron_master() const
 template <typename Coordinates>
 bool NeuronBackendConfig<Coordinates>::get_enable_bayesian_0() const
 {
-	return m_en_0_baesian;
+	return m_en_0_bayesian;
 }
 
 template <typename Coordinates>
 bool NeuronBackendConfig<Coordinates>::get_enable_bayesian_1() const
 {
-	return m_en_1_baesian;
+	return m_en_1_bayesian;
 }
 
 namespace {
@@ -244,7 +244,7 @@ struct NeuronBackendConfigBitfield
 			(uint32_t select_input_clock      :  1; /* 1    ; 2    */ ) \
 			(uint32_t refractory_time_2       :  4; /* 2-5  ; 2    */ ) \
 			(uint32_t en_adapt_pulse          :  1; /* 6    ; 2    */ ) \
-			(uint32_t en_baesian_extension    :  1; /* 7    ; 2    */ ) \
+			(uint32_t en_bayesian_extension   :  1; /* 7    ; 2    */ ) \
 			(uint32_t                         : 24; /* 8-31 ; 2    */ ) \
 			                                                            \
 			(uint32_t en_neuron_slave         :  1; /* 0    ; 3    */ ) \
@@ -253,8 +253,8 @@ struct NeuronBackendConfigBitfield
 			(uint32_t connect_fire_to_right   :  1; /* 3    ; 3    */ ) \
 			(uint32_t en_spike_out            :  1; /* 4    ; 3    */ ) \
 			(uint32_t en_neuron_master        :  1; /* 5    ; 3    */ ) \
-			(uint32_t en_0_baesian            :  1; /* 6    ; 3    */ ) \
-			(uint32_t en_1_baesian            :  1; /* 7    ; 3    */ ) \
+			(uint32_t en_1_bayesian           :  1; /* 6    ; 3    */ ) \
+			(uint32_t en_0_bayesian           :  1; /* 7    ; 3    */ ) \
 			(uint32_t                         : 24; /* 8-31 ; 3    */ )
 			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
 #undef BITFIELD
@@ -316,15 +316,15 @@ NeuronBackendConfig<Coordinates>::encode() const
 	bitfield.u.m.select_input_clock = static_cast<uint32_t>(m_select_input_clock);
 	bitfield.u.m.refractory_time_2 = (~m_refractory_time & 0b00001111);
 	bitfield.u.m.en_adapt_pulse = m_en_adapt_pulse;
-	bitfield.u.m.en_baesian_extension = m_en_baesian_extension;
+	bitfield.u.m.en_bayesian_extension = m_en_bayesian_extension;
 	bitfield.u.m.en_neuron_slave = m_en_neuron_slave;
 	bitfield.u.m.connect_fire_bottom = m_connect_fire_bottom;
 	bitfield.u.m.connect_fire_from_right = m_connect_fire_from_right;
 	bitfield.u.m.connect_fire_to_right = m_connect_fire_to_right;
 	bitfield.u.m.en_spike_out = m_en_spike_out;
 	bitfield.u.m.en_neuron_master = m_en_neuron_master;
-	bitfield.u.m.en_0_baesian = m_en_0_baesian;
-	bitfield.u.m.en_1_baesian = m_en_1_baesian;
+	bitfield.u.m.en_0_bayesian = m_en_0_bayesian;
+	bitfield.u.m.en_1_bayesian = m_en_1_bayesian;
 	std::array<WordT, NeuronBackendConfig<Coordinates>::config_size_in_words> data;
 	std::transform(
 	    bitfield.u.words.begin(), bitfield.u.words.end(), data.begin(),
@@ -355,15 +355,15 @@ void NeuronBackendConfig<Coordinates>::decode(
 	m_select_input_clock =
 	    NeuronBackendConfig<Coordinates>::InputClock(bitfield.u.m.select_input_clock);
 	m_en_adapt_pulse = bitfield.u.m.en_adapt_pulse;
-	m_en_baesian_extension = bitfield.u.m.en_baesian_extension;
+	m_en_bayesian_extension = bitfield.u.m.en_bayesian_extension;
 	m_en_neuron_slave = bitfield.u.m.en_neuron_slave;
 	m_connect_fire_bottom = bitfield.u.m.connect_fire_bottom;
 	m_connect_fire_from_right = bitfield.u.m.connect_fire_from_right;
 	m_connect_fire_to_right = bitfield.u.m.connect_fire_to_right;
 	m_en_spike_out = bitfield.u.m.en_spike_out;
 	m_en_neuron_master = bitfield.u.m.en_neuron_master;
-	m_en_0_baesian = bitfield.u.m.en_0_baesian;
-	m_en_1_baesian = bitfield.u.m.en_1_baesian;
+	m_en_0_bayesian = bitfield.u.m.en_0_bayesian;
+	m_en_1_bayesian = bitfield.u.m.en_1_bayesian;
 }
 
 template <typename Coordinates>
@@ -375,15 +375,15 @@ bool NeuronBackendConfig<Coordinates>::operator==(NeuronBackendConfig const& oth
 	    m_post_overwrite == other.get_post_overwrite() &&
 	    m_select_input_clock == other.get_select_input_clock() &&
 	    m_en_adapt_pulse == other.get_enable_adaptation_pulse() &&
-	    m_en_baesian_extension == other.get_enable_bayesian_extension() &&
+	    m_en_bayesian_extension == other.get_enable_bayesian_extension() &&
 	    m_en_neuron_slave == other.get_enable_neuron_slave() &&
 	    m_connect_fire_bottom == other.get_connect_fire_bottom() &&
 	    m_connect_fire_from_right == other.get_connect_fire_from_right() &&
 	    m_connect_fire_to_right == other.get_connect_fire_to_right() &&
 	    m_en_spike_out == other.get_enable_spike_out() &&
 	    m_en_neuron_master == other.get_enable_neuron_master() &&
-	    m_en_0_baesian == other.get_enable_bayesian_0() &&
-	    m_en_1_baesian == other.get_enable_bayesian_1());
+	    m_en_0_bayesian == other.get_enable_bayesian_0() &&
+	    m_en_1_bayesian == other.get_enable_bayesian_1());
 }
 
 template <typename Coordinates>
@@ -403,15 +403,15 @@ void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t cons
 	ar(CEREAL_NVP(m_post_overwrite));
 	ar(CEREAL_NVP(m_select_input_clock));
 	ar(CEREAL_NVP(m_en_adapt_pulse));
-	ar(CEREAL_NVP(m_en_baesian_extension));
+	ar(CEREAL_NVP(m_en_bayesian_extension));
 	ar(CEREAL_NVP(m_en_neuron_slave));
 	ar(CEREAL_NVP(m_connect_fire_bottom));
 	ar(CEREAL_NVP(m_connect_fire_from_right));
 	ar(CEREAL_NVP(m_connect_fire_to_right));
 	ar(CEREAL_NVP(m_en_spike_out));
 	ar(CEREAL_NVP(m_en_neuron_master));
-	ar(CEREAL_NVP(m_en_0_baesian));
-	ar(CEREAL_NVP(m_en_1_baesian));
+	ar(CEREAL_NVP(m_en_0_bayesian));
+	ar(CEREAL_NVP(m_en_1_bayesian));
 }
 #endif
 

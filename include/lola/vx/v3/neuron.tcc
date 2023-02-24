@@ -620,14 +620,13 @@ BOOST_HANA_ADAPT_STRUCT(
 
 BOOST_HANA_ADAPT_STRUCT(
     lola::vx::v3::AtomicNeuron::Bayesian,
-    enable,
+    to_post_pulse,
+    operation,
     connect_fire_vertical,
     connect_fire_to_right,
     connect_fire_from_right,
     enable_master,
-    enable_slave,
-    enable_0,
-    enable_1);
+    enable_slave);
 
 BOOST_HANA_ADAPT_STRUCT(
     lola::vx::v3::AtomicNeuron,

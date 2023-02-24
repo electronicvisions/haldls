@@ -309,82 +309,136 @@ public:
 	NeuronBackendConfig();
 
 	// accessors
+	/**
+	 * Lower 8 bit of the output spike address. The upper 5 bit are determined
+	 * by the position of the neuron.
+	 */
 	GENPYBIND(getter_for(address_out))
 	AddressOut get_address_out() const;
 	GENPYBIND(setter_for(address_out))
 	void set_address_out(AddressOut addr);
 
+	/**
+	 * Bits 4, 3, 2, 1 (but not 0) of the refractory counter to release the reset at.
+	 * For a full explanation, refer to the ResetHoldoff type.
+	 */
 	GENPYBIND(getter_for(reset_holdoff))
 	ResetHoldoff get_reset_holdoff() const;
 	GENPYBIND(setter_for(reset_holdoff))
 	void set_reset_holdoff(ResetHoldoff val);
 
+	/** Refractory counter setting. */
 	GENPYBIND(getter_for(refractory_time))
 	RefractoryTime get_refractory_time() const;
 	GENPYBIND(setter_for(refractory_time))
 	void set_refractory_time(RefractoryTime val);
 
+	/** Use an external debug post pulse exclusively, disable the internal pulse generation. */
 	GENPYBIND(getter_for(post_overwrite))
 	bool get_post_overwrite() const;
 	GENPYBIND(setter_for(post_overwrite))
 	void set_post_overwrite(bool val);
 
+	/** Switch between the two refractory clocks provided by the common neuron backend. */
 	GENPYBIND(getter_for(select_input_clock))
 	InputClock get_select_input_clock() const;
 	GENPYBIND(setter_for(select_input_clock))
 	void set_select_input_clock(InputClock src);
 
+	/**
+	 * Enable output of a pulse to the adaptation circuitry, allowing for spike-triggered
+	 * adaptation.
+	 */
 	GENPYBIND(getter_for(enable_adaptation_pulse))
 	bool get_enable_adaptation_pulse() const;
 	GENPYBIND(setter_for(enable_adaptation_pulse))
 	void set_enable_adaptation_pulse(bool val);
 
+	/**
+	 * Use the bayesian logic module for generating post pulses.
+	 * If disabled, the neuron_fire_connect signal is used to trigger post pulses.
+	 */
 	GENPYBIND(getter_for(enable_bayesian_extension))
 	bool get_enable_bayesian_extension() const;
 	GENPYBIND(setter_for(enable_bayesian_extension))
 	void set_enable_bayesian_extension(bool val);
 
+	/** Receive fire signals from a connected master neuron via neuron_fire_connect, i.e. receive
+	 * refractory state from there. */
 	GENPYBIND(getter_for(enable_neuron_slave))
 	bool get_enable_neuron_slave() const;
 	GENPYBIND(setter_for(enable_neuron_slave))
 	void set_enable_neuron_slave(bool val);
 
+	/** Connect fire signal to the opposite hemisphere. */
 	GENPYBIND(getter_for(connect_fire_bottom))
 	bool get_connect_fire_bottom() const;
 	GENPYBIND(setter_for(connect_fire_bottom))
 	void set_connect_fire_bottom(bool val);
 
+	/**
+	 * Connect fire signal from the right adjacent neuron.
+	 * This setting is currently broken, cf. issue 3858.
+	 */
 	GENPYBIND(getter_for(connect_fire_from_right))
 	bool get_connect_fire_from_right() const;
 	GENPYBIND(setter_for(connect_fire_from_right))
 	void set_connect_fire_from_right(bool val);
 
+	/**
+	 * Connect fire signal to the right adjacent neuron.
+	 * Implemented as a uni-directional driver, overwrites any state of the neuron to the right.
+	 */
 	GENPYBIND(getter_for(connect_fire_to_right))
 	bool get_connect_fire_to_right() const;
 	GENPYBIND(setter_for(connect_fire_to_right))
 	void set_connect_fire_to_right(bool val);
 
+	/**
+	 * Enable spike packet output. Required e.g. for recurrent networks, but not required for the
+	 * spike counter and post pulses.
+	 */
 	GENPYBIND(getter_for(enable_spike_out))
 	bool get_enable_spike_out() const;
 	GENPYBIND(setter_for(enable_spike_out))
 	void set_enable_spike_out(bool val);
 
-	/** Enable the fire output of a neuron.
+	/**
+	 * Write the local fire output to the common neuron_fire_connect line.
 	 * If the threshold comparator creates a fire signal, all connected neurons
-	 * receive a fire input. Even if no neurons are connected, this setting
-	 * needs to be switched on in order to process the fire signal.
-	 * If this setting is disabled, spikes will not trigger post pulses in the synapses.
+	 * receive a fire input.
+	 *
+	 * In order for the fire signal to trigger a post pulse for the synapses,
+	 * either this setting can be used, or the bayesian extensions need to be enabled.
 	 */
 	GENPYBIND(getter_for(enable_neuron_master))
 	bool get_enable_neuron_master() const;
 	GENPYBIND(setter_for(enable_neuron_master))
 	void set_enable_neuron_master(bool val);
 
+	/**
+	 * Switch between different logic operations in the bayesian extension.
+	 * There are four different operating modes, encoded by enable bits 0 and 1:
+	 * en_0    en_1    mode
+	 * 0       0       neuron_refrac (local refractory state only)
+	 * 1       0       neuron_refrac AND neuron_fire_connect
+	 * 0       1       NOT neuron_refrac XOR neuron_fire_connect
+	 * 1       1       neuron_refrac MULLER C-ELEMENT neuron_fire_connect
+	 */
 	GENPYBIND(getter_for(enable_bayesian_0))
 	bool get_enable_bayesian_0() const;
 	GENPYBIND(setter_for(enable_bayesian_0))
 	void set_enable_bayesian_0(bool val);
 
+	/**
+	 * Switch between different logic operations in the bayesian extension.
+	 * There are four different operating modes, encoded by enable bits 0 and 1:
+	 * en_0    en_1    mode
+	 * 0       0       neuron_refrac (local refractory state only)
+	 * 1       0       neuron_refrac AND neuron_fire_connect
+	 * 0       1       NOT neuron_refrac XOR neuron_fire_connect
+	 * 1       1       neuron_refrac MULLER C-ELEMENT neuron_fire_connect
+	 */
 	GENPYBIND(getter_for(enable_bayesian_1))
 	bool get_enable_bayesian_1() const;
 	GENPYBIND(setter_for(enable_bayesian_1))
@@ -415,15 +469,15 @@ public:
 		   << "\tpost_overwrite:            \t" << config.m_post_overwrite << "\n"
 		   << "\tselect_input_clock:        \t" << config.m_select_input_clock << "\n"
 		   << "\tenable_adaptation_pulse:   \t" << config.m_en_adapt_pulse << "\n"
-		   << "\tenable_bayesian_extension: \t" << config.m_en_baesian_extension << "\n"
+		   << "\tenable_bayesian_extension: \t" << config.m_en_bayesian_extension << "\n"
 		   << "\tenable_neuron_slave:       \t" << config.m_en_neuron_slave << "\n"
 		   << "\tconnect_fire_bottom:       \t" << config.m_connect_fire_bottom << "\n"
 		   << "\tconnect_fire_from_right:   \t" << config.m_connect_fire_from_right << "\n"
 		   << "\tconnect_fire_to_right:     \t" << config.m_connect_fire_to_right << "\n"
 		   << "\tenable_spike_out:          \t" << config.m_en_spike_out << "\n"
 		   << "\tenable_neuron_master:      \t" << config.m_en_neuron_master << "\n"
-		   << "\tenable_0_bayesian:         \t" << config.m_en_0_baesian << "\n"
-		   << "\tenable_1_bayesian:         \t" << config.m_en_1_baesian << "\n)";
+		   << "\tenable_0_bayesian:         \t" << config.m_en_0_bayesian << "\n"
+		   << "\tenable_1_bayesian:         \t" << config.m_en_1_bayesian << "\n)";
 		// clang-format on
 		return (os << ss.str());
 	}
@@ -439,15 +493,15 @@ private:
 	bool m_post_overwrite;
 	InputClock m_select_input_clock;
 	bool m_en_adapt_pulse;
-	bool m_en_baesian_extension;
+	bool m_en_bayesian_extension;
 	bool m_en_neuron_slave;
 	bool m_connect_fire_bottom;
 	bool m_connect_fire_from_right;
 	bool m_connect_fire_to_right;
 	bool m_en_spike_out;
 	bool m_en_neuron_master;
-	bool m_en_0_baesian;
-	bool m_en_1_baesian;
+	bool m_en_0_bayesian;
+	bool m_en_1_bayesian;
 };
 
 namespace detail {
