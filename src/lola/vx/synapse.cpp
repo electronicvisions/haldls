@@ -1,4 +1,4 @@
-#include "lola/vx/v2/synapse.h"
+#include "lola/vx/synapse.h"
 
 #include "haldls/cerealization.tcc"
 #include "hate/indent.h"

@@ -148,7 +148,7 @@ def build(bld):
     reduced_jobs = max(bld.jobs // 4, 1)
     bld.env['stadls_semaphore'] = TaskSemaphore(reduced_jobs)
 
-    for hx_version in [2, 3]:
+    for hx_version in [3]:
         bld(
             target = f'haldls_vx_v{hx_version}',
             source = bld.path.ant_glob('src/haldls/vx/*.cpp')
