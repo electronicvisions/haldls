@@ -135,6 +135,7 @@ try {
 				                   moduleOptions: [modules: ["ppu-toolchain"]],
 				                   projects: ["haldls"],
 				                   configureInstallOptions: "--build-profile=ci --disable-doxygen",
+				                   setupOptions: "--release-branch=ebrains-4.0",
 				                   notificationChannel: "#jenkins-trashbin")
 			}
 

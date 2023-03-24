@@ -1,9 +1,10 @@
-@Library("jenlib") _
+@Library("jenlib@ebrains-4.0") _
 
 try {
 
 	Map<String, Object> commonPipelineOptions = [
 		projects           : ["haldls"],
+		setupOptions       : "--release-branch=ebrains-4.0",
 		moduleOptions      : [modules: ["ppu-toolchain"]],
 		testTimeout        : 240,
 		notificationChannel: "#jenkins-trashbin"  // success is checked globally
@@ -31,13 +32,14 @@ try {
 		wafDefaultPipeline(pipelineOptions)
 	}
 
-	conditionalStage(name: "Module Deployment", skip: !deploy) {
-		runOnSlave(label: "frontend") {
-			inSingularity(app: "dls-nodev") {
-				deployModule([name: "haldls", source: "bin/ lib/ doc/ repos_log.txt"])
-			}
-		}
-	}
+	// Don't deploy for ebrains
+	//conditionalStage(name: "Module Deployment", skip: !deploy) {
+	//	runOnSlave(label: "frontend") {
+	//		inSingularity(app: "dls-nodev") {
+	//			deployModule([name: "haldls", source: "bin/ lib/ doc/ repos_log.txt"])
+	//		}
+	//	}
+	//}
 } catch (Throwable t) {
 	notifyFailure(mattermostChannel: "#dls-software")
 	throw t
