@@ -69,12 +69,18 @@ struct RunUnrollPyBind11Helper<std::variant<T, Ts...>>
 
 	RunUnrollPyBind11Helper(pybind11::module& m) : parent_t(m)
 	{
-		m.def("run", [](T& conn, ::stadls::vx::PlaybackProgram& prog) {
-			return ::stadls::vx::run<T>(conn, prog);
-		});
-		m.def("run", [](T& conn, std::shared_ptr<::fisch::vx::PlaybackProgram> const& prog) {
-			return ::stadls::vx::run<T>(conn, prog);
-		});
+		m.def(
+		    "run",
+		    [](T& conn, ::stadls::vx::PlaybackProgram& prog) {
+			    return ::stadls::vx::run<T>(conn, prog);
+		    },
+		    pybind11::call_guard<pybind11::gil_scoped_release>());
+		m.def(
+		    "run",
+		    [](T& conn, std::shared_ptr<::fisch::vx::PlaybackProgram> const& prog) {
+			    return ::stadls::vx::run<T>(conn, prog);
+		    },
+		    pybind11::call_guard<pybind11::gil_scoped_release>());
 	}
 };
 
