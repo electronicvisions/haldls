@@ -2,8 +2,18 @@
 
 #include "haldls/cerealization.tcc"
 #include "stadls/vx/dumper.tcc"
+#include "stadls/vx/playback_program_builder.tcc"
 
 namespace stadls::vx {
+
+namespace v3 {
+
+PlaybackProgramBuilderDumper convert_to_dumper(DumperDone const& cocos)
+{
+	return detail::convert_to_builder<PlaybackProgramBuilderDumper>(cocos);
+}
+
+} // v3
 
 template class stadls::vx::detail::Dumper<stadls::vx::v3::DumperDone>;
 

@@ -637,4 +637,27 @@ void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContain
 	}
 }
 
+template<typename Res, typename In>
+auto convert_to_builder(In& cocos) -> Res
+{
+	typedef hate::type_list<
+		haldls::vx::Timer::Value, haldls::vx::Barrier, haldls::vx::PollingOmnibusBlock>
+		block_types;
+	Res builder;
+	for (auto const& coco : cocos.values) {
+		std::visit(
+			[&builder](auto const& cc) {
+				auto const& [coord, config] = cc;
+				typedef std::remove_cv_t<std::remove_reference_t<decltype(config)>> config_type;
+				if constexpr (hate::is_in_type_list<config_type, block_types>::value) {
+					builder.block_until(coord, config);
+				} else {
+					builder.write(coord, config);
+				}
+			},
+			coco);
+	}
+	return builder;
+}
+
 } // namespace stadls::vx::detail

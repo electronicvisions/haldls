@@ -50,24 +50,7 @@ PlaybackProgramBuilder convert_to_builder(PlaybackProgramBuilderDumper&& dumper)
 
 PlaybackProgramBuilder convert_to_builder(Dumper::done_type const& cocos)
 {
-	typedef hate::type_list<
-	    haldls::vx::Timer::Value, haldls::vx::Barrier, haldls::vx::PollingOmnibusBlock>
-	    block_types;
-	PlaybackProgramBuilder builder;
-	for (auto const& coco : cocos.values) {
-		std::visit(
-		    [&builder](auto const& cc) {
-			    auto const& [coord, config] = cc;
-			    typedef std::remove_cv_t<std::remove_reference_t<decltype(config)>> config_type;
-			    if constexpr (hate::is_in_type_list<config_type, block_types>::value) {
-				    builder.block_until(coord, config);
-			    } else {
-				    builder.write(coord, config);
-			    }
-		    },
-		    coco);
-	}
-	return builder;
+	return detail::convert_to_builder<PlaybackProgramBuilder>(cocos);
 }
 
 } // namespace v3

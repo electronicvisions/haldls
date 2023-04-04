@@ -133,6 +133,7 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 	EXPECT_EQ(cocos_saved.values.size(), 4);
 
 	EXPECT_EQ(cocos_written, cocos_saved);
+	EXPECT_EQ(cocos_written, convert_to_dumper(cocos_written).done());
 
 	{
 		std::ostringstream ostream;

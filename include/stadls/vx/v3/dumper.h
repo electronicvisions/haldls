@@ -47,6 +47,13 @@ GENPYBIND_MANUAL({
 	    parent, {"PlaybackProgramBuilderDumper"});
 })
 
+/**
+ * Convert a sequence of coordinate container pairs to a PlaybackProgramBuilderDumper.
+ * @param cocos Coordinate-Container pair sequence
+ */
+PlaybackProgramBuilderDumper GENPYBIND(visible)
+    convert_to_dumper(DumperDone const& cocos) SYMBOL_VISIBLE;
+
 } // namespace v3
 
 extern template SYMBOL_VISIBLE std::ostream& stadls::vx::detail::operator<<(
