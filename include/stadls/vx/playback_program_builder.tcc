@@ -105,25 +105,6 @@ template <
     typename DoneType,
     template <typename>
     class CoordinateToContainer>
-void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContainer>::wait_until(
-    typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value const time)
-{
-	static bool first = true;
-	if (first) {
-		auto logger = log4cxx::Logger::getLogger("stadls.playback_program_builder");
-		LOG4CXX_WARN(
-		    logger, "wait_until(halco.TimerOnDLS(), value) is deprecated, use "
-		            "block_until(halco.TimerOnDLS(), value) instead.");
-		first = false;
-	}
-	block_until(coord, time);
-}
-
-template <
-    typename BuilderStorage,
-    typename DoneType,
-    template <typename>
-    class CoordinateToContainer>
 void PlaybackProgramBuilderAdapter<BuilderStorage, DoneType, CoordinateToContainer>::block_until(
     typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value const time)
 {

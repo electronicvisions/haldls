@@ -71,15 +71,6 @@ public:
 
 	/**
 	 * Add instruction to block execution until specified timer has reached specified value.
-	 * @deprecated In favor of block_until
-	 * @param coord Timer coordinate for which to wait
-	 * @param time Timer value until which to block execution
-	 */
-	void wait_until(
-	    typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value time);
-
-	/**
-	 * Add instruction to block execution until specified timer has reached specified value.
 	 * @param coord Timer coordinate for which to block
 	 * @param time Timer value until which to block execution
 	 */
