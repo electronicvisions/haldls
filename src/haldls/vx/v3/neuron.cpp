@@ -4,13 +4,9 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/neuron.tcc"
 #include "haldls/vx/omnibus_constants.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls::vx {
 #ifndef __ppu__
@@ -766,58 +762,6 @@ bool NeuronConfig::operator!=(NeuronConfig const& other) const
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <class Archive>
-void NeuronConfig::serialize(Archive& ar, std::uint32_t const version)
-{
-	ar(CEREAL_NVP(m_en_comp_cond_div));
-	ar(CEREAL_NVP(m_en_comp_cond_mul));
-	ar(CEREAL_NVP(m_connect_soma));
-	ar(CEREAL_NVP(m_connect_membrane_right));
-	ar(CEREAL_NVP(m_en_comp_cond));
-	ar(CEREAL_NVP(m_connect_bottom));
-	ar(CEREAL_NVP(m_connect_somata));
-	ar(CEREAL_NVP(m_en_fire));
-	ar(CEREAL_NVP(m_en_strong_fire));
-	ar(CEREAL_NVP(m_en_thresh_comp));
-	ar(CEREAL_NVP(m_en_synin_inh));
-	ar(CEREAL_NVP(m_en_synin_exc));
-	ar(CEREAL_NVP(m_en_synin_inh_coba));
-	ar(CEREAL_NVP(m_en_synin_exc_coba));
-	ar(CEREAL_NVP(m_en_synin_inh_small_cap));
-	ar(CEREAL_NVP(m_en_synin_exc_small_cap));
-	ar(CEREAL_NVP(m_en_synin_inh_high_res));
-	ar(CEREAL_NVP(m_en_synin_exc_high_res));
-	ar(CEREAL_NVP(m_en_byp_inh));
-	ar(CEREAL_NVP(m_en_byp_exc));
-	ar(CEREAL_NVP(m_en_mem_off));
-	ar(CEREAL_NVP(m_invert_current));
-	if (version < 1) {
-		bool m_en_cap_merge = false;
-		ar(CEREAL_NVP(m_en_cap_merge));
-	}
-	ar(CEREAL_NVP(m_mem_cap_size));
-	ar(CEREAL_NVP(m_invert_adapt_a));
-	ar(CEREAL_NVP(m_invert_adapt_b));
-	ar(CEREAL_NVP(m_en_adapt));
-	ar(CEREAL_NVP(m_en_exp));
-	if (version < 2) {
-		bool m_en_read_vw = false;
-		ar(CEREAL_NVP(m_en_read_vw));
-	}
-	ar(CEREAL_NVP(m_en_unbuf_access));
-	ar(CEREAL_NVP(m_en_readout_amp));
-	ar(CEREAL_NVP(m_readout_select));
-	ar(CEREAL_NVP(m_en_readout));
-	ar(CEREAL_NVP(m_en_reset_deg));
-	ar(CEREAL_NVP(m_en_reset_div));
-	ar(CEREAL_NVP(m_en_reset_mul));
-	ar(CEREAL_NVP(m_en_leak_deg));
-	ar(CEREAL_NVP(m_en_leak_div));
-	ar(CEREAL_NVP(m_en_leak_mul));
-	ar(CEREAL_NVP(m_en_pause));
-}
-#endif
 
 NeuronResetQuad::NeuronResetQuad() {}
 
@@ -908,16 +852,8 @@ bool NeuronResetQuad::operator!=(NeuronResetQuad const& other) const
 	return !(*this == other);
 }
 
-template <typename Archive>
-void NeuronResetQuad::serialize(Archive&, std::uint32_t const)
-{}
-
 } // namespace haldls::vx::v3
 
-#ifndef __ppu__
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::NeuronConfig)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::NeuronResetQuad)
-CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronBackendConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::v3::NeuronResetQuad, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v3::NeuronConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v3::NeuronResetQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v3::NeuronBackendConfig)

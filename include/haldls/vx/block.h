@@ -5,12 +5,33 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
+#include "haldls/vx/block_until.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 #ifndef __ppu__
-#include "haldls/cerealization.h"
 #include "hxcomm/vx/target.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct PollingOmnibusBlockConfig;
+struct PollingOmnibusBlock;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PollingOmnibusBlockConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PollingOmnibusBlock& value, std::uint32_t const version);
+
+} // namespace cereal
 #endif
 
 namespace cereal {
@@ -19,7 +40,8 @@ struct access;
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) PollingOmnibusBlockConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PollingOmnibusBlockConfig
+    : public ContainerBase<PollingOmnibusBlockConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::PollingOmnibusBlockConfigOnFPGA coordinate_type;
@@ -68,7 +90,7 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(Archive& ar, PollingOmnibusBlockConfig& value, std::uint32_t);
 
 	Address m_address;
 	Value m_mask;
@@ -84,13 +106,13 @@ struct BackendContainerTrait<PollingOmnibusBlockConfig>
 
 } // namespace detail
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PollingOmnibusBlockConfig)
 
 /**
  * Container for polling block operation on a Omnibus address.
  * Compare given value from address in FPGA register file masked with expected target result.
  */
-class GENPYBIND(visible) PollingOmnibusBlock
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*BlockUntilBase*")) PollingOmnibusBlock
+    : public BlockUntilBase<PollingOmnibusBlock>
 {
 public:
 	typedef halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA coordinate_type;
@@ -127,13 +149,16 @@ public:
 	bool operator==(PollingOmnibusBlock const& other) const SYMBOL_VISIBLE;
 	bool operator!=(PollingOmnibusBlock const& other) const SYMBOL_VISIBLE;
 
-	fisch::vx::word_access_type::PollingOmnibusBlock encode() const SYMBOL_VISIBLE
-	    GENPYBIND(hidden);
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, write_config_size_in_words>
+	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::PollingOmnibusBlock, write_config_size_in_words>
+	encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+
 
 private:
-	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(Archive& ar, PollingOmnibusBlock& value, std::uint32_t);
 
 	bool m_enable_expects_equality;
 };
@@ -150,7 +175,7 @@ struct BackendContainerTrait<PollingOmnibusBlock>
 } // namespace detail
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PollingOmnibusBlock)
+
 #endif
 
 } // namespace haldls::vx

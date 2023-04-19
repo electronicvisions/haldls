@@ -1,16 +1,15 @@
 #pragma once
 #include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
+#include "haldls/vx/fpga.h"
+#include "haldls/vx/ppu.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 #include <optional>
 #include <variant>
 #include <boost/hana/adapt_struct.hpp>
-
-#include "haldls/vx/fpga.h"
-#include "haldls/vx/ppu.h"
+#include <cereal/macros.hpp>
 
 #ifdef __GENPYBIND_GENERATED__
 #include <pybind11/pybind11.h>
@@ -18,13 +17,28 @@
 
 class Elf;
 
+namespace lola::vx {
+
+struct ExternalPPUMemoryBlock;
+
+} // namespace lola::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, lola::vx::ExternalPPUMemoryBlock& value, std::uint32_t const version);
+
+} // namespace cereal
+
 namespace lola {
 namespace vx GENPYBIND_TAG_LOLA_VX {
 
 /**
  * Contiguous block of bytes in the external PPU memory.
  */
-class GENPYBIND(visible) ExternalPPUMemoryBlock
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExternalPPUMemoryBlock
+    : public haldls::vx::ContainerBase<ExternalPPUMemoryBlock>
 {
 public:
 	typedef halco::hicann_dls::vx::ExternalPPUMemoryBlockOnFPGA coordinate_type;
@@ -65,9 +79,10 @@ public:
 	friend haldls::vx::detail::VisitPreorderImpl<ExternalPPUMemoryBlock>;
 
 private:
-	friend struct cereal::access;
+	friend class cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::CEREAL_SERIALIZE_FUNCTION_NAME(
+	    Archive& ar, ExternalPPUMemoryBlock& value, std::uint32_t const version);
 
 	bytes_type m_bytes;
 };
@@ -76,7 +91,8 @@ private:
 /**
  * Complete external PPU memory.
  */
-class GENPYBIND(visible) ExternalPPUMemory
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExternalPPUMemory
+    : public haldls::vx::ContainerBase<ExternalPPUMemory>
 {
 public:
 	typedef halco::hicann_dls::vx::ExternalPPUMemoryOnFPGA coordinate_type;
@@ -110,11 +126,6 @@ public:
 	std::string to_string() const SYMBOL_VISIBLE;
 
 	friend haldls::vx::detail::VisitPreorderImpl<ExternalPPUMemory>;
-
-private:
-	friend struct cereal::access;
-	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
 };
 
 

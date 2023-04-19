@@ -2,7 +2,7 @@
 
 #include "fisch/vx/word_access/type/null_payload_readable.h"
 #include "halco/hicann-dls/vx/fpga.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 
 namespace haldls {
 namespace vx {
@@ -52,13 +52,7 @@ bool NullPayloadReadable::operator!=(NullPayloadReadable const& other) const
 	return !(*this == other);
 }
 
-template <class Archive>
-void NullPayloadReadable::serialize(Archive&, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NullPayloadReadable)
-
 } // namespace vx
 } // namespace haldls
 
-CEREAL_CLASS_VERSION(haldls::vx::NullPayloadReadable, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::NullPayloadReadable)

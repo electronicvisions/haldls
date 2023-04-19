@@ -4,6 +4,7 @@
 #include "lola/vx/genpybind.h"
 
 #include "haldls/vx/cadc.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/synapse_driver.h"
@@ -13,7 +14,8 @@ namespace lola::vx GENPYBIND_TAG_LOLA_VX {
 /**
  * Timing configuration of memories.
  */
-class GENPYBIND(visible) MemoryTiming
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) MemoryTiming
+    : public haldls::vx::ContainerBase<MemoryTiming>
 {
 public:
 	typedef halco::hicann_dls::vx::MemoryTimingOnDLS coordinate_type;

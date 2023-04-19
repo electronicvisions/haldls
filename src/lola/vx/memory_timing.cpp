@@ -1,10 +1,8 @@
 #include "lola/vx/memory_timing.h"
 
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
 #include "hate/join.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 #include <sstream>
 
@@ -36,5 +34,4 @@ std::ostream& operator<<(std::ostream& os, MemoryTiming const& config)
 
 } // namespace lola::vx
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::MemoryTiming)
-CEREAL_CLASS_VERSION(lola::vx::MemoryTiming, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::MemoryTiming)

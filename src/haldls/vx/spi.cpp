@@ -1,11 +1,9 @@
 #include "haldls/vx/spi.h"
 
 #include "fisch/vx/word_access/type/spi.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/spi.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/join.h"
 
 namespace haldls {
@@ -347,23 +345,6 @@ void ShiftRegister::decode(std::array<
                            ShiftRegister::read_config_size_in_words> const& /*data*/)
 {}
 
-template <typename Archive>
-void ShiftRegister::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_mux_1));
-	ar(CEREAL_NVP(m_mux_2));
-	ar(CEREAL_NVP(m_mux_3));
-	ar(CEREAL_NVP(m_enable_i_ref_board));
-	ar(CEREAL_NVP(m_enable_measure_i_ref));
-	ar(CEREAL_NVP(m_enable_dac_to_readout_0));
-	ar(CEREAL_NVP(m_enable_dac_to_readout_1));
-	ar(CEREAL_NVP(m_enable_led));
-	ar(CEREAL_NVP(m_enable_adc_power_down));
-	ar(CEREAL_NVP(m_enable_adc_reset));
-	ar(CEREAL_NVP(m_enable_vdd));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ShiftRegister)
 
 DACChannel::Value DACChannel::get_value() const
 {
@@ -413,14 +394,6 @@ void DACChannel::decode(std::array<
                         fisch::vx::word_access_type::SPIDACDataRegister,
                         DACChannel::read_config_size_in_words> const& /*data*/)
 {}
-
-template <typename Archive>
-void DACChannel::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(DACChannel)
 
 
 DACControl::DACControl() : m_enable_channel()
@@ -501,16 +474,9 @@ void DACControl::decode(std::array<
                         DACControl::read_config_size_in_words> const& /*data*/)
 {}
 
-template <typename Archive>
-void DACControl::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_channel));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(DACControl)
-
 } // namespace vx
 } // namespace haldls
-CEREAL_CLASS_VERSION(haldls::vx::ShiftRegister, 0)
-CEREAL_CLASS_VERSION(haldls::vx::DACChannel, 0)
-CEREAL_CLASS_VERSION(haldls::vx::DACControl, 0)
+
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ShiftRegister)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::DACChannel)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::DACControl)

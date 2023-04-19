@@ -4,10 +4,9 @@
 
 #include "lola/vx/synapse_block.h"
 
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
 #include "hate/join.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 #include <boost/hana/adapt_struct.hpp>
 
@@ -46,4 +45,4 @@ std::ostream& operator<<(std::ostream& os, SynapseBlock const& config)
 
 } // namespace lola::vx::vY
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::SynapseBlock)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::CHIP_REVISION_STR::SynapseBlock)

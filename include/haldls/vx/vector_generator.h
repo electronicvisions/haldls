@@ -7,11 +7,48 @@
 #include "halco/hicann-dls/vx/quad.h"
 #include "halco/hicann-dls/vx/vector_generator.h"
 
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/padi.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct VectorGeneratorControl;
+struct VectorGeneratorLUTEntry;
+struct VectorGeneratorNotificationAddress;
+struct VectorGeneratorFIFOWord;
+struct VectorGeneratorTrigger;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::VectorGeneratorControl& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::VectorGeneratorLUTEntry& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::VectorGeneratorNotificationAddress& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::VectorGeneratorFIFOWord& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::VectorGeneratorTrigger& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace cereal {
 struct access;
@@ -24,7 +61,8 @@ struct PPUMemoryWordOnDLS;
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) VectorGeneratorControl
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) VectorGeneratorControl
+    : public ContainerBase<VectorGeneratorControl>
 {
 public:
 	typedef halco::hicann_dls::vx::VectorGeneratorControlOnFPGA coordinate_type;
@@ -211,7 +249,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, VectorGeneratorControl& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::hicann_dls::vx::VectorGeneratorLUTEntryOnVectorGeneratorLUT m_lookup_table_entry_start{};
 	SourceCount m_source_count{};
@@ -225,7 +264,6 @@ private:
 	Signal m_signal{};
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorControl)
 
 namespace detail {
 
@@ -249,7 +287,8 @@ std::ostream& operator<<(std::ostream& os, VectorGeneratorControl::Signal const&
 /**
  * Container for an entry in the lookup-table for generation of spike events from activation values.
  */
-class GENPYBIND(visible) VectorGeneratorLUTEntry
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) VectorGeneratorLUTEntry
+    : public ContainerBase<VectorGeneratorLUTEntry>
 {
 public:
 	typedef std::true_type is_leaf_node;
@@ -301,12 +340,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, VectorGeneratorLUTEntry& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value{};
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorLUTEntry)
 
 namespace detail {
 
@@ -318,7 +357,8 @@ struct BackendContainerTrait<VectorGeneratorLUTEntry>
 } // namespace detail
 
 
-class GENPYBIND(visible) VectorGeneratorNotificationAddress
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) VectorGeneratorNotificationAddress
+    : public ContainerBase<VectorGeneratorNotificationAddress>
 {
 public:
 	typedef std::true_type is_leaf_node;
@@ -368,12 +408,14 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    VectorGeneratorNotificationAddress& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value{};
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorNotificationAddress)
 
 namespace detail {
 
@@ -387,7 +429,8 @@ struct BackendContainerTrait<VectorGeneratorNotificationAddress>
 } // namespace detail
 
 
-class GENPYBIND(visible) VectorGeneratorTrigger
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) VectorGeneratorTrigger
+    : public ContainerBase<VectorGeneratorTrigger>
 {
 public:
 	typedef std::true_type is_leaf_node;
@@ -417,10 +460,10 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, VectorGeneratorTrigger& value, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorTrigger)
 
 namespace detail {
 
@@ -436,7 +479,8 @@ struct BackendContainerTrait<VectorGeneratorTrigger>
  * Container for writing a word of (maximally) four activation values into the FIFO in front of the
  * vector generator.
  */
-class GENPYBIND(visible) VectorGeneratorFIFOWord
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) VectorGeneratorFIFOWord
+    : public ContainerBase<VectorGeneratorFIFOWord>
 {
 public:
 	typedef std::true_type is_leaf_node;
@@ -515,14 +559,14 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, VectorGeneratorFIFOWord& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Values m_values;
 	Enables m_last;
 	Enables m_enable;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorFIFOWord)
 
 namespace detail {
 

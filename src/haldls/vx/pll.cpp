@@ -4,16 +4,11 @@
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/traits.h"
 #include "hate/indent.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls {
 namespace vx {
@@ -474,33 +469,6 @@ template SYMBOL_VISIBLE void ADPLL::decode(
 template SYMBOL_VISIBLE void ADPLL::decode(
     std::array<fisch::vx::word_access_type::OmnibusChipOverJTAG, config_size_in_words> const& data);
 
-#ifndef __ppu__
-template <typename Archive>
-void ADPLL::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_loop_filter_int));
-	ar(CEREAL_NVP(m_loop_filter_prop));
-	ar(CEREAL_NVP(m_loop_div_n));
-	ar(CEREAL_NVP(m_core_div_m0));
-	ar(CEREAL_NVP(m_core_div_m1));
-	ar(CEREAL_NVP(m_pre_div_p0));
-	ar(CEREAL_NVP(m_pre_div_p1));
-	ar(CEREAL_NVP(m_pre_div_p2));
-	ar(CEREAL_NVP(m_tune));
-	ar(CEREAL_NVP(m_dco_power_switch));
-	ar(CEREAL_NVP(m_open_lock));
-	ar(CEREAL_NVP(m_enforce_lock));
-	ar(CEREAL_NVP(m_pfd_select));
-	ar(CEREAL_NVP(m_lock_window));
-	ar(CEREAL_NVP(m_filter_shift));
-	ar(CEREAL_NVP(m_enable_output_clock));
-	ar(CEREAL_NVP(m_enable));
-	ar(CEREAL_NVP(m_use_external_config));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ADPLL)
-#endif
-
 
 PLLSelfTest::PLLSelfTest() :
     m_clock_enable(false),
@@ -676,20 +644,6 @@ template SYMBOL_VISIBLE void PLLSelfTest::decode(std::array<
                                                  fisch::vx::word_access_type::OmnibusChipOverJTAG,
                                                  config_size_in_words> const& /*data*/);
 
-#ifndef __ppu__
-template <typename Archive>
-void PLLSelfTest::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_clock_enable));
-	ar(CEREAL_NVP(m_pre_scaler_p));
-	ar(CEREAL_NVP(m_select_source));
-	ar(CEREAL_NVP(m_check_range));
-	ar(CEREAL_NVP(m_check_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTest)
-#endif
-
 
 PLLSelfTestStatus::PLLSelfTestStatus() : m_success(false), m_finished(false), m_counter_value() {}
 
@@ -811,23 +765,9 @@ template SYMBOL_VISIBLE void PLLSelfTestStatus::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         read_config_size_in_words> const& /*data*/);
 
-#ifndef __ppu__
-template <typename Archive>
-void PLLSelfTestStatus::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_success));
-	ar(CEREAL_NVP(m_finished));
-	ar(CEREAL_NVP(m_counter_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTestStatus)
-#endif
-
 } // namespace vx
 } // namespace haldls
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::ADPLL, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PLLSelfTest, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PLLSelfTestStatus, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ADPLL)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PLLSelfTest)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PLLSelfTestStatus)

@@ -5,10 +5,55 @@
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/highspeed_link.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct PhyConfigFPGA;
+struct PhyConfigChip;
+struct CommonPhyConfigFPGA;
+struct CommonPhyConfigChip;
+struct PhyStatus;
+
+namespace detail {
+
+struct PhyConfigBase;
+
+} // namespace detail
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::detail::PhyConfigBase& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PhyConfigFPGA& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PhyConfigChip& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CommonPhyConfigFPGA& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CommonPhyConfigChip& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PhyStatus& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 struct OmnibusAddress;
@@ -135,9 +180,8 @@ public:
 protected:
 	PhyConfigBase() SYMBOL_VISIBLE;
 
-	friend struct cereal::access;
 	template <typename Archive>
-	void cerealize_impl(Archive& ar) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, PhyConfigBase& value, std::uint32_t const version);
 
 	uint32_t pack() const SYMBOL_VISIBLE;
 	void unpack(uint32_t value) SYMBOL_VISIBLE;
@@ -168,7 +212,9 @@ protected:
  */
 // FIXME: Instead of normal public inheritance we want CRTP here, which is not possible due to
 // python wrapping issues, the properties don't show up in the derived class.
-class SYMBOL_VISIBLE GENPYBIND(visible) PhyConfigFPGA : public detail::PhyConfigBase
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PhyConfigFPGA
+    : public detail::PhyConfigBase
+    , public ContainerBase<PhyConfigFPGA>
 {
 public:
 	typedef halco::hicann_dls::vx::PhyConfigFPGAOnDLS coordinate_type;
@@ -193,10 +239,10 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, PhyConfigFPGA& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PhyConfigFPGA)
 
 namespace detail {
 
@@ -213,7 +259,9 @@ struct BackendContainerTrait<PhyConfigFPGA>
  */
 // FIXME: Instead of normal public inheritance we want CRTP here, which is not possible due to
 // python wrapping issues, the properties don't show up in the derived class.
-class GENPYBIND(visible) PhyConfigChip : public detail::PhyConfigBase
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PhyConfigChip
+    : public detail::PhyConfigBase
+    , public ContainerBase<PhyConfigChip>
 {
 public:
 	typedef halco::hicann_dls::vx::PhyConfigChipOnDLS coordinate_type;
@@ -242,10 +290,10 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, PhyConfigChip& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PhyConfigChip)
 
 namespace detail {
 
@@ -260,7 +308,8 @@ struct BackendContainerTrait<PhyConfigChip>
 /**
  * Container for configuration of enable values for the FPGA-side PHYs.
  */
-class GENPYBIND(visible) CommonPhyConfigFPGA
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CommonPhyConfigFPGA
+    : public ContainerBase<CommonPhyConfigFPGA>
 {
 public:
 	typedef halco::hicann_dls::vx::CommonPhyConfigFPGAOnDLS coordinate_type;
@@ -292,12 +341,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CommonPhyConfigFPGA& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::PhyConfigFPGAOnDLS> m_enable_phy;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigFPGA)
 
 namespace detail {
 
@@ -312,7 +361,8 @@ struct BackendContainerTrait<CommonPhyConfigFPGA>
 /**
  * Container for configuration of enable values for the chip-side PHYs.
  */
-class GENPYBIND(visible) CommonPhyConfigChip
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CommonPhyConfigChip
+    : public ContainerBase<CommonPhyConfigChip>
 {
 public:
 	typedef halco::hicann_dls::vx::CommonPhyConfigChipOnDLS coordinate_type;
@@ -345,12 +395,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CommonPhyConfigChip& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::PhyConfigChipOnDLS> m_enable_phy;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigChip)
 
 namespace detail {
 
@@ -364,7 +414,8 @@ struct BackendContainerTrait<CommonPhyConfigChip>
 } // namespace detail
 
 
-class GENPYBIND(visible) PhyStatus
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PhyStatus
+    : public ContainerBase<PhyStatus>
 {
 public:
 	typedef halco::hicann_dls::vx::PhyStatusOnFPGA coordinate_type;
@@ -472,7 +523,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, PhyStatus& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	CRCErrorCount m_crc_error_count;
 	OnlineTime m_online_time;
@@ -481,7 +533,6 @@ private:
 	TxCount m_tx_count;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PhyStatus)
 
 namespace detail {
 

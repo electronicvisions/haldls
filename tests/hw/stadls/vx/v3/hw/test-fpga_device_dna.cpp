@@ -45,5 +45,5 @@ TEST(FPGADeviceDNA, Read)
 	FPGADeviceDNA expectation(
 	    FPGADeviceDNA::Value(hxcube_setup_entry.fpgas.at(fpga_id).get_dna_port()));
 
-	EXPECT_EQ(ticket.get(), expectation);
+	EXPECT_EQ(dynamic_cast<FPGADeviceDNA const&>(ticket.get()), expectation);
 }

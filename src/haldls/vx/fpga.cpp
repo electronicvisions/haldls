@@ -3,13 +3,11 @@
 #include <iomanip>
 
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/fpga.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/quad.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 #include "hate/math.h"
@@ -99,14 +97,6 @@ void FPGASystimeSyncNumRetries::decode(std::array<
 
 	m_value = Value(bitfield.u.raw);
 }
-
-template <class Archive>
-void FPGASystimeSyncNumRetries::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncNumRetries)
 
 
 FPGASystimeSyncLastRTT::FPGASystimeSyncLastRTT(Systime const value) : m_value(value) {}
@@ -198,14 +188,6 @@ void FPGASystimeSyncLastRTT::decode(std::array<
 
 	m_value = Systime(bitfield.u.raw);
 }
-
-template <class Archive>
-void FPGASystimeSyncLastRTT::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncLastRTT)
 
 
 FPGASystimeSyncLastAsicSystime::FPGASystimeSyncLastAsicSystime(Systime const value) : m_value(value)
@@ -305,14 +287,6 @@ void FPGASystimeSyncLastAsicSystime::decode(
 	m_value = Systime(bitfield.u.raw);
 }
 
-template <class Archive>
-void FPGASystimeSyncLastAsicSystime::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncLastAsicSystime)
-
 
 FPGASystimeSyncActiveState::FPGASystimeSyncActiveState(bool const active_state) :
     m_active_state(active_state)
@@ -408,14 +382,6 @@ void FPGASystimeSyncActiveState::decode(
 	m_active_state = static_cast<bool>(bitfield.u.raw);
 }
 
-template <class Archive>
-void FPGASystimeSyncActiveState::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_active_state));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncActiveState)
-
 
 FPGADeviceDNA::FPGADeviceDNA(Value const value) : m_value(value) {}
 
@@ -499,13 +465,6 @@ void FPGADeviceDNA::decode(std::array<
 	m_value = Value(bitfield.u.raw);
 }
 
-template <class Archive>
-void FPGADeviceDNA::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(FPGADeviceDNA)
 
 EventRecordingConfig::EventRecordingConfig() : m_enable_event_recording(false) {}
 
@@ -591,14 +550,6 @@ EventRecordingConfig::encode() const
 	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
 }
 
-template <class Archive>
-void EventRecordingConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_event_recording));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventRecordingConfig)
-
 
 InstructionTimeoutConfig::InstructionTimeoutConfig() :
     m_value(Value::fpga_clock_cycles_per_us * 10000)
@@ -661,14 +612,6 @@ InstructionTimeoutConfig::encode() const
 {
 	return {fisch::vx::word_access_type::Omnibus(m_value)};
 }
-
-template <class Archive>
-void InstructionTimeoutConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(InstructionTimeoutConfig)
 
 
 SystimeCorrectionBarrierConfig::SystimeCorrectionBarrierConfig() : m_enable_interrupt(false) {}
@@ -763,14 +706,6 @@ void SystimeCorrectionBarrierConfig::decode(
 	m_enable_interrupt = bitfield.u.m.enable_interrupt;
 }
 
-template <class Archive>
-void SystimeCorrectionBarrierConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_interrupt));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeCorrectionBarrierConfig)
-
 
 ExternalPPUMemoryByte::Value ExternalPPUMemoryByte::get_value() const
 {
@@ -832,13 +767,6 @@ void ExternalPPUMemoryByte::decode(
 	m_value = Value((data[0] >> (byte_in_word * CHAR_BIT)) & 0xff);
 }
 
-template <typename Archive>
-void ExternalPPUMemoryByte::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryByte)
 
 ExternalPPUMemoryQuad::ExternalPPUMemoryQuad() : m_quad(), m_enables({true, true, true, true}) {}
 
@@ -955,14 +883,6 @@ void ExternalPPUMemoryQuad::decode(std::array<
 	m_quad[halco::hicann_dls::vx::EntryOnQuad(3)] = Value(bitfield.u.m.byte_3);
 }
 
-template <typename Archive>
-void ExternalPPUMemoryQuad::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_quad));
-	ar(CEREAL_NVP(m_enables));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryQuad)
 
 SpikeIOConfig::SpikeIOConfig() :
     m_data_rate_scaler(DataRateScaler()),
@@ -1096,16 +1016,6 @@ void SpikeIOConfig::decode(
 	m_enable_internal_loopback = bitfield.u.m.enable_internal_loopback;
 }
 
-template <typename Archive>
-void SpikeIOConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_data_rate_scaler));
-	ar(CEREAL_NVP(m_enable_tx));
-	ar(CEREAL_NVP(m_enable_rx));
-	ar(CEREAL_NVP(m_enable_internal_loopback));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOConfig)
 
 SpikeIOInputRoute::SpikeIOInputRoute() : m_target(SILENT) {}
 SpikeIOInputRoute::SpikeIOInputRoute(halco::hicann_dls::vx::SpikeLabel label) : m_target(label) {}
@@ -1161,13 +1071,6 @@ void SpikeIOInputRoute::decode(
 	    data[0] & ((1u << hate::math::num_bits(halco::hicann_dls::vx::SpikeLabel::max)) - 1));
 }
 
-template <typename Archive>
-void SpikeIOInputRoute::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_target));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOInputRoute)
 
 SpikeIOOutputRoute::SpikeIOOutputRoute() : m_target(SILENT) {}
 SpikeIOOutputRoute::SpikeIOOutputRoute(halco::hicann_dls::vx::SpikeIOAddress serial_address) :
@@ -1225,23 +1128,19 @@ void SpikeIOOutputRoute::decode(std::array<
 	    data[0] & ((1u << hate::math::num_bits(halco::hicann_dls::vx::SpikeIOAddress::max)) - 1));
 }
 
-template <typename Archive>
-void SpikeIOOutputRoute::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_target));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOOutputRoute)
-
 } // namespace vx
 } // namespace haldls
 
-CEREAL_CLASS_VERSION(haldls::vx::FPGADeviceDNA, 0)
-CEREAL_CLASS_VERSION(haldls::vx::EventRecordingConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::InstructionTimeoutConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SystimeCorrectionBarrierConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryByte, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExternalPPUMemoryQuad, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SpikeIOConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SpikeIOInputRoute, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SpikeIOOutputRoute, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::FPGADeviceDNA)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::EventRecordingConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::InstructionTimeoutConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SystimeCorrectionBarrierConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExternalPPUMemoryByte)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExternalPPUMemoryQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikeIOConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikeIOInputRoute)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikeIOOutputRoute)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::FPGASystimeSyncLastAsicSystime)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::FPGASystimeSyncLastRTT)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::FPGASystimeSyncActiveState)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::FPGASystimeSyncNumRetries)

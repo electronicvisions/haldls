@@ -4,14 +4,16 @@
 #include "hxcomm/vx/target.h"
 #include "stadls/vx/v3/dumper.h"
 
+#include "cereal/types/haldls/cereal.h"
+#include "cereal/types/haldls/cereal.tcc"
 #include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.tcc"
-#include "lola/vx/cerealization.h"
 
 #include "stadls/vx/v3/playback_program_builder.h"
 
+#include "cereal/types/halco/hicann-dls/vx/v3/coordinate.h"
 #include "fisch/vx/playback_program_builder.h"
 #include "halco/hicann-dls/vx/v3/coordinates.h"
+#include "haldls/vx/v3/arq.h"
 #include "haldls/vx/v3/barrier.h"
 #include "haldls/vx/v3/capmem.h"
 #include "haldls/vx/v3/padi.h"
@@ -96,32 +98,24 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 	PlaybackProgramBuilderDumper builder;
 	Dumper::done_type cocos_written;
 	cocos_written.values.push_back(
-	    std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(123))));
+	    std::make_pair(std::make_unique<PPUMemoryWordOnDLS>(), std::make_unique<PPUMemoryWord>()));
+	cocos_written.values.push_back(std::make_pair(
+	    std::make_unique<CapMemCellOnDLS>(), std::make_unique<CapMemCell>(CapMemCell::Value(456))));
 	cocos_written.values.push_back(
-	    std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456))));
-	cocos_written.values.push_back(std::make_pair(TimerOnDLS(), Timer::Value(1234)));
-	cocos_written.values.push_back(
-	    std::make_pair(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456))));
+	    std::make_pair(std::make_unique<TimerOnDLS>(), std::make_unique<Timer::Value>(1234)));
+	cocos_written.values.push_back(std::make_pair(
+	    std::make_unique<CapMemCellOnDLS>(), std::make_unique<CapMemCell>(CapMemCell::Value(456))));
 
 	for (auto& item : cocos_written.values) {
-		// clang-format off
-		std::visit(
-			hate::overloaded {
-				[&](auto const& coco_pair) {
-					builder.write(std::get<0>(coco_pair), std::get<1>(coco_pair));
-				},
-				[&](std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value> const& coco_pair) {
-					builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
-				},
-				[&](std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier> const& coco_pair) {
-					builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
-				},
-				[&](std::pair<halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, haldls::vx::PollingOmnibusBlock> const& coco_pair) {
-					builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
-				}
-			}, item
-		);
-		// clang-format on
+		if (auto const config_ptr = dynamic_cast<haldls::vx::Container const*>(item.second.get())) {
+			builder.write(*item.first, *config_ptr);
+		} else if (
+		    auto const config_ptr =
+		        dynamic_cast<haldls::vx::BlockUntil const*>(item.second.get())) {
+			builder.block_until(*item.first, *config_ptr);
+		} else {
+			throw std::logic_error("Unexpected encodable type.");
+		}
 	}
 
 	EXPECT_ANY_THROW(builder.read(CapMemCellOnDLS()));
@@ -153,25 +147,16 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 
 	/* repack into a real builder */
 	PlaybackProgramBuilder real_builder;
-	for (auto& item : cocos_saved.values) {
-		// clang-format off
-		std::visit(
-			hate::overloaded {
-				[&](auto const& coco_pair) {
-					real_builder.write(std::get<0>(coco_pair), std::get<1>(coco_pair));
-				},
-				[&](std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value> const& coco_pair) {
-					real_builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
-				},
-				[&](std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier> const& coco_pair) {
-					real_builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
-				},
-				[&](std::pair<halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, haldls::vx::PollingOmnibusBlock> const& coco_pair) {
-					builder.block_until(std::get<0>(coco_pair), std::get<1>(coco_pair));
-				}
-	}, item
-		);
-		// clang-format on
+	for (auto const& item : cocos_saved.values) {
+		if (auto const config_ptr = dynamic_cast<haldls::vx::Container const*>(item.second.get())) {
+			real_builder.write(*item.first, *config_ptr);
+		} else if (
+		    auto const config_ptr =
+		        dynamic_cast<haldls::vx::BlockUntil const*>(item.second.get())) {
+			real_builder.block_until(*item.first, *config_ptr);
+		} else {
+			throw std::logic_error("Unexpected encodable type.");
+		}
 	}
 
 	auto program = real_builder.done();
@@ -181,4 +166,24 @@ TEST(PlaybackProgramBuilderDumper, Dumpstuff)
 	builder_copy_copy.copy_back(builder_copy);
 	EXPECT_EQ(program, convert_to_builder(builder_copy).done());
 	EXPECT_EQ(program, convert_to_builder(std::move(builder_copy_copy)).done());
+}
+
+TEST(PlaybackProgramBuilder, PolymorphicWrite)
+{
+	PlaybackProgramBuilder builder;
+	CapMemCellOnDLS const raw_coord;
+	// explicit cast due to to be removed overload
+	haldls::vx::Container::Coordinate const& coord = raw_coord;
+	builder.write(coord, CapMemCell());
+	auto program_1 = builder.done();
+}
+
+TEST(PlaybackProgramBuilder, PolymorphicRead)
+{
+	PlaybackProgramBuilder builder;
+	HicannARQStatusOnFPGA const raw_coord;
+	// explicit cast due to to be removed overload
+	haldls::vx::Container::Coordinate const& coord = raw_coord;
+	auto ticket = builder.read(coord);
+	auto program_1 = builder.done();
 }

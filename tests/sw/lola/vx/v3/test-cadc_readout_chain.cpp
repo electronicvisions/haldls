@@ -3,12 +3,13 @@
 
 #include "lola/vx/v3/cadc.h"
 
+#include "cereal/types/haldls/cereal.h"
+#include "cereal/types/lola/vx/v3/cadc.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/common/cerealization_geometry.h"
 #include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/v3/common.h"
-#include "lola/vx/cerealization.h"
 #include "stadls/visitors.h"
 #include "test-helper.h"
 

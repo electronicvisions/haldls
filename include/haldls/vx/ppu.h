@@ -6,13 +6,48 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/ppu.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/coordinate_to_container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/empty.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct PPUMemoryWord;
+struct PPUMemoryBlock;
+struct PPUMemory;
+struct PPUControlRegister;
+struct PPUStatusRegister;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PPUMemoryWord& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PPUMemoryBlock& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PPUMemory& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PPUControlRegister& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PPUStatusRegister& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -22,7 +57,8 @@ class Omnibus;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) PPUMemoryWord
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PPUMemoryWord
+    : public ContainerBase<PPUMemoryWord>
 {
 public:
 	typedef halco::hicann_dls::vx::PPUMemoryWordOnDLS coordinate_type;
@@ -63,16 +99,14 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, PPUMemoryWord& value, std::uint32_t const version);
 
 	Value m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryWord)
-
-class GENPYBIND(visible) PPUMemoryBlock
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PPUMemoryBlock
+    : public ContainerBase<PPUMemoryBlock>
 {
 public:
 	typedef halco::hicann_dls::vx::PPUMemoryBlockOnDLS coordinate_type;
@@ -113,16 +147,15 @@ public:
 	friend detail::VisitPreorderImpl<PPUMemoryBlock>;
 
 private:
-	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, PPUMemoryBlock& value, std::uint32_t const version);
 
 	words_type m_words;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryBlock)
-
-class GENPYBIND(visible) PPUMemory
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PPUMemory
+    : public ContainerBase<PPUMemory>
 {
 public:
 	typedef halco::hicann_dls::vx::PPUMemoryOnDLS coordinate_type;
@@ -167,16 +200,15 @@ public:
 	friend detail::VisitPreorderImpl<PPUMemory>;
 
 private:
-	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, PPUMemory& value, std::uint32_t const version);
 
 	words_type m_words;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUMemory)
-
-class GENPYBIND(visible) PPUControlRegister : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PPUControlRegister
+    : public DifferentialWriteTrait
+    , public ContainerBase<PPUControlRegister>
 {
 public:
 	typedef halco::hicann_dls::vx::PPUControlRegisterOnDLS coordinate_type;
@@ -227,7 +259,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, PPUControlRegister& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_cache_controller_enable;
 	bool m_inhibit_reset;
@@ -235,9 +268,9 @@ private:
 	bool m_force_clock_off;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUControlRegister)
 
-class GENPYBIND(visible) PPUStatusRegister
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PPUStatusRegister
+    : public ContainerBase<PPUStatusRegister>
 {
 public:
 	typedef halco::hicann_dls::vx::PPUStatusRegisterOnDLS coordinate_type;
@@ -272,12 +305,13 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, PPUStatusRegister& value, std::uint32_t const version) SYMBOL_VISIBLE;
+
 
 	bool m_sleep;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PPUStatusRegister)
 
 namespace detail {
 

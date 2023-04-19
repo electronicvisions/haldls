@@ -1,0 +1,34 @@
+#include "cereal/types/lola/vx/ppu.h"
+
+#include "cereal/types/haldls/cereal.tcc"
+#include "cereal/types/lola/detail/hana.tcc"
+#include "halco/common/cerealization_geometry.h"
+#include "halco/common/cerealization_typed_heap_array.h"
+#include "lola/vx/ppu.h"
+#include <cereal/types/variant.hpp>
+#include <cereal/types/vector.hpp>
+
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, lola::vx::ExternalPPUMemoryBlock& value, std::uint32_t const /* version */)
+{
+	ar(CEREAL_NVP_("m_bytes", value.m_bytes));
+}
+
+} // namespace cereal
+
+CEREAL_REGISTER_TYPE(lola::vx::ExternalPPUMemoryBlock)
+CEREAL_REGISTER_TYPE(lola::vx::ExternalPPUMemory)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, lola::vx::ExternalPPUMemoryBlock)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, lola::vx::ExternalPPUMemory)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::PPUProgram::Symbol)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::ExternalPPUMemoryBlock)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::ExternalPPUMemory)
+CEREAL_CLASS_VERSION(lola::vx::ExternalPPUMemoryBlock, 0)
+CEREAL_CLASS_VERSION(lola::vx::ExternalPPUMemory, 0)
+CEREAL_REGISTER_DYNAMIC_INIT(lola_vx_ppu)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, lola::vx::ExternalPPUMemoryBlock)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, lola::vx::ExternalPPUMemory)

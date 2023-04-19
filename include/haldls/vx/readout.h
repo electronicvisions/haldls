@@ -5,10 +5,38 @@
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/chip.h"
 #include "halco/hicann-dls/vx/readout.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct PadMultiplexerConfig;
+struct ReadoutSourceSelection;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+class access;
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PadMultiplexerConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ReadoutSourceSelection& value, std::uint32_t const version);
+
+// template <typename Archive>
+// void CEREAL_SERIALIZE_FUNCTION_NAME(
+//    Archive& ar,
+//    haldls::vx::ReadoutSourceSelection::SourceMultiplexer& value,
+//    std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 
@@ -24,7 +52,8 @@ namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
  * an analog readout pad and different components on the chip.
  * There are two equal instances of this mux on the chip, one for each of the two pads.
  */
-class GENPYBIND(visible) PadMultiplexerConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PadMultiplexerConfig
+    : public ContainerBase<PadMultiplexerConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::PadMultiplexerConfigOnDLS coordinate_type;
@@ -196,7 +225,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, PadMultiplexerConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	// CADC
 	capmem_quadrant_type m_cadc_v_ramp_mux;
@@ -227,7 +257,6 @@ private:
 	bool m_debug_to_pad;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PadMultiplexerConfig)
 
 /**
  * Configuration container for the two mux and buffer blocks for voltage readout.
@@ -239,7 +268,8 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PadMultiplexerConfig)
  * while here the signal is amplified. Do not enable both connections, as there
  * will be feedback otherwise!
  */
-class GENPYBIND(visible) ReadoutSourceSelection
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ReadoutSourceSelection
+    : public ContainerBase<ReadoutSourceSelection>
 {
 public:
 	typedef halco::hicann_dls::vx::ReadoutSourceSelectionOnDLS coordinate_type;
@@ -324,9 +354,9 @@ public:
 
 	private:
 		friend class ReadoutSourceSelection;
-		friend struct cereal::access;
+		friend class cereal::access;
 		template <class Archive>
-		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+		void serialize(Archive& ar, std::uint32_t const version);
 
 		bool m_debug_plus;
 		bool m_debug_minus;
@@ -383,7 +413,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, ReadoutSourceSelection& value, std::uint32_t const version);
 
 	halco::common::typed_array<
 	    SourceMultiplexer,
@@ -392,8 +423,6 @@ private:
 	source_multiplexer_type m_enable_buffer_to_pad;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection::SourceMultiplexer)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection)
 
 namespace detail {
 

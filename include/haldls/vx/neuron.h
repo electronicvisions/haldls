@@ -5,15 +5,60 @@
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/neuron.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 
 #ifndef __ppu__
-#include "haldls/cerealization.h"
 #include "hxcomm/vx/target.h"
+#include <cereal/macros.hpp>
 #endif
+
+namespace haldls::vx {
+
+struct NeuronSRAMTimingConfig;
+struct NeuronBackendSRAMTimingConfig;
+struct CommonNeuronBackendConfig;
+struct NeuronReset;
+struct BlockPostPulse;
+struct SpikeCounterRead;
+struct SpikeCounterReset;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::NeuronSRAMTimingConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::NeuronBackendSRAMTimingConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CommonNeuronBackendConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::NeuronReset& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::BlockPostPulse& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikeCounterRead& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikeCounterReset& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -27,7 +72,9 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * Read/write access to common neuron parameters
  */
-class GENPYBIND(visible) CommonNeuronBackendConfig : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CommonNeuronBackendConfig
+    : public DifferentialWriteTrait
+    , public ContainerBase<CommonNeuronBackendConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::CommonNeuronBackendConfigOnDLS coordinate_type;
@@ -181,7 +228,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CommonNeuronBackendConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_en_event_regs;
 	bool m_force_reset;
@@ -199,7 +247,7 @@ private:
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronBackendConfig)
+
 #endif
 
 
@@ -214,7 +262,9 @@ class NeuronBackendConfig;
  * then be found in the CI test environment.
  */
 template <typename Coordinates>
-class NeuronBackendConfig : public DifferentialWriteTrait
+class NeuronBackendConfig
+    : public DifferentialWriteTrait
+    , public ContainerBase<NeuronBackendConfig<Coordinates>>
 {
 public:
 	typedef typename Coordinates::NeuronBackendConfigOnDLS coordinate_type;
@@ -484,8 +534,9 @@ public:
 
 private:
 	friend struct cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	template <class Archive, typename T>
+	friend void ::cereal::serialize(
+	    Archive& ar, NeuronBackendConfig<T>& value, std::uint32_t const version);
 
 	AddressOut m_address_out;
 	ResetHoldoff m_reset_holdoff;
@@ -528,7 +579,8 @@ struct BackendContainerTrait<NeuronBackendConfig<Coordinates>>
 /**
  * Container to trigger reset of a single neuron.
  */
-class GENPYBIND(visible) NeuronReset
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) NeuronReset
+    : public ContainerBase<NeuronReset>
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronResetOnDLS coordinate_type;
@@ -560,11 +612,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, NeuronReset& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
+
 #endif
 
 namespace detail {
@@ -586,7 +639,8 @@ struct BackendContainerTrait<NeuronReset>
  * The timing this pulse arrives may not be precise, it may vary between
  * neurons in the block.
  */
-class GENPYBIND(visible) BlockPostPulse
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) BlockPostPulse
+    : public ContainerBase<BlockPostPulse>
 {
 public:
 	typedef halco::hicann_dls::vx::BlockPostPulseOnDLS coordinate_type;
@@ -618,11 +672,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, BlockPostPulse& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(BlockPostPulse)
+
 #endif
 
 namespace detail {
@@ -641,7 +696,8 @@ struct BackendContainerTrait<BlockPostPulse>
 /**
  * Container to read the spike counter of a single neuron.
  */
-class GENPYBIND(visible) SpikeCounterRead
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SpikeCounterRead
+    : public ContainerBase<SpikeCounterRead>
 {
 public:
 	typedef halco::hicann_dls::vx::SpikeCounterReadOnDLS coordinate_type;
@@ -700,14 +756,15 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, SpikeCounterRead& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Count m_count;
 	bool m_overflow{false};
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterRead)
+
 #endif
 
 namespace detail {
@@ -726,7 +783,8 @@ struct BackendContainerTrait<SpikeCounterRead>
 /**
  * Container to reset the spike counter of a single neuron.
  */
-class GENPYBIND(visible) SpikeCounterReset
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SpikeCounterReset
+    : public ContainerBase<SpikeCounterReset>
 {
 public:
 	typedef halco::hicann_dls::vx::SpikeCounterResetOnDLS coordinate_type;
@@ -759,11 +817,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, SpikeCounterReset& value, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
 #ifndef __ppu
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterReset)
+
 #endif
 
 namespace detail {
@@ -780,7 +839,9 @@ struct BackendContainerTrait<SpikeCounterReset>
 
 
 // TODO: Switch to CRTP pattern when https://github.com/kljohann/genpybind/issues/28 is solved
-class GENPYBIND(visible) NeuronSRAMTimingConfig : public detail::SRAMTimingConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) NeuronSRAMTimingConfig
+    : public detail::SRAMTimingConfig
+    , public ContainerBase<NeuronSRAMTimingConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronSRAMTimingConfigOnDLS coordinate_type;
@@ -803,11 +864,11 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(Archive& ar, NeuronSRAMTimingConfig& value, std::uint32_t);
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronSRAMTimingConfig)
+
 #endif
 
 namespace detail {
@@ -824,7 +885,9 @@ struct BackendContainerTrait<NeuronSRAMTimingConfig>
 
 
 // TODO: Switch to CRTP pattern when https://github.com/kljohann/genpybind/issues/28 is solved
-class GENPYBIND(visible) NeuronBackendSRAMTimingConfig : public detail::SRAMTimingConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) NeuronBackendSRAMTimingConfig
+    : public detail::SRAMTimingConfig
+    , public ContainerBase<NeuronBackendSRAMTimingConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::NeuronBackendSRAMTimingConfigOnDLS coordinate_type;
@@ -847,11 +910,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(
+	    Archive& ar, NeuronBackendSRAMTimingConfig& value, std::uint32_t);
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendSRAMTimingConfig)
+
 #endif
 
 namespace detail {

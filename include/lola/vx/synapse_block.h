@@ -7,11 +7,10 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "halco/common/typed_heap_array.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 #include <boost/hana/adapt_struct.hpp>
 
@@ -40,7 +39,8 @@ namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 /**
  * Synapses of one hemisphere in conjunction with hemisphere-global configuration.
  */
-struct GENPYBIND(visible) SynapseBlock
+struct SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseBlock
+    : public haldls::vx::ContainerBase<SynapseBlock>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -169,5 +169,3 @@ struct VisitPreorderImpl<lola::vx::CHIP_REVISION_STR::SynapseBlock>
 } // namespace haldls::vx::detail
 
 BOOST_HANA_ADAPT_STRUCT(lola::vx::CHIP_REVISION_STR::SynapseBlock, matrix, i_bias_dac);
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::SynapseBlock)

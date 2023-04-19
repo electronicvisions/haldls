@@ -2,13 +2,12 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/dac.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/spi.h"
 #include "haldls/vx/traits.h"
 #include "hate/empty.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 #include <boost/hana/adapt_struct.hpp>
 
@@ -17,7 +16,8 @@ namespace lola::vx GENPYBIND_TAG_LOLA_VX {
 /**
  * Container for configuration of all DAC channels on the xBoard.
  */
-class GENPYBIND(visible) DACChannelBlock
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) DACChannelBlock
+    : public haldls::vx::ContainerBase<DACChannelBlock>
 {
 public:
 	typedef halco::hicann_dls::vx::DACChannelBlockOnBoard coordinate_type;
@@ -74,7 +74,8 @@ private:
 /**
  * Container for configuration of all DAC channel enable values on the xBoard.
  */
-class GENPYBIND(visible) DACControlBlock
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) DACControlBlock
+    : public haldls::vx::ContainerBase<DACControlBlock>
 {
 public:
 	typedef halco::hicann_dls::vx::DACControlBlockOnBoard coordinate_type;
@@ -239,6 +240,3 @@ struct VisitPreorderImpl<lola::vx::DACControlBlock>
 
 BOOST_HANA_ADAPT_STRUCT(lola::vx::DACChannelBlock, value);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::DACControlBlock, enable);
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::DACChannelBlock)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::DACControlBlock)

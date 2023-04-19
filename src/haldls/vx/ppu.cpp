@@ -9,16 +9,12 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/indent.h"
 #include "hate/math.h"
 
 #ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_heap_array.h"
-#include "haldls/cerealization.tcc"
-#include <cereal/types/array.hpp>
-#include <cereal/types/vector.hpp>
 #include <netinet/in.h>
 #else
 unsigned long ntohl(unsigned long const value)
@@ -115,16 +111,6 @@ PPUMemoryWord::decode<fisch::vx::word_access_type::OmnibusChipOverJTAG>(
 template SYMBOL_VISIBLE void PPUMemoryWord::decode<fisch::vx::word_access_type::Omnibus>(
     std::array<fisch::vx::word_access_type::Omnibus, PPUMemoryWord::config_size_in_words> const&
         data);
-
-#ifndef __ppu__
-template <class Archive>
-void PPUMemoryWord::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryWord)
-#endif
 
 PPUMemoryBlock::PPUMemoryBlock(size_type const size) : m_words(size.value()) {}
 
@@ -294,15 +280,6 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 	return os;
 }
 
-#ifndef __ppu__
-template <class Archive>
-void PPUMemoryBlock::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_words));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemoryBlock)
-#endif
 
 PPUMemory::PPUMemory(words_type const& words) : m_words(words) {}
 
@@ -459,15 +436,6 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 	return os;
 }
 
-#ifndef __ppu__
-template <class Archive>
-void PPUMemory::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_words));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUMemory)
-#endif
 
 PPUControlRegister::PPUControlRegister() :
     m_cache_controller_enable(false),
@@ -635,18 +603,6 @@ template SYMBOL_VISIBLE void PPUControlRegister::decode<fisch::vx::word_access_t
         fisch::vx::word_access_type::Omnibus,
         PPUControlRegister::config_size_in_words> const& data);
 
-#ifndef __ppu__
-template <class Archive>
-void PPUControlRegister::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_cache_controller_enable));
-	ar(CEREAL_NVP(m_inhibit_reset));
-	ar(CEREAL_NVP(m_force_clock_on));
-	ar(CEREAL_NVP(m_force_clock_off));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUControlRegister)
-#endif
 
 PPUStatusRegister::PPUStatusRegister() : m_sleep(false) {}
 
@@ -748,23 +704,28 @@ template SYMBOL_VISIBLE void PPUStatusRegister::decode<fisch::vx::word_access_ty
         fisch::vx::word_access_type::Omnibus,
         PPUStatusRegister::read_config_size_in_words> const& data);
 
-#ifndef __ppu__
-template <class Archive>
-void PPUStatusRegister::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_sleep));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PPUStatusRegister)
-#endif
-
 } // namespace vx
 } // namespace haldls
 
 #ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::PPUMemoryWord, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PPUMemoryBlock, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PPUMemory, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PPUControlRegister, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PPUStatusRegister, 0)
+namespace {
+
+static std::unique_ptr<haldls::vx::Container> construct_container_PPUMemoryBlock(
+    haldls::vx::Container::Coordinate const& coord)
+{
+	return std::make_unique<haldls::vx::PPUMemoryBlock>(
+	    dynamic_cast<haldls::vx::PPUMemoryBlock::coordinate_type const&>(coord)
+	        .toPPUMemoryBlockSize());
+}
+
+} // namespace
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE_CUSTOM_CONSTRUCTION(
+    haldls::vx::PPUMemoryBlock, construct_container_PPUMemoryBlock)
+#else
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PPUMemoryBlock)
 #endif
+
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PPUMemoryWord)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PPUMemory)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PPUControlRegister)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PPUStatusRegister)

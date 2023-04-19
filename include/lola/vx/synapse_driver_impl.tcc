@@ -4,12 +4,9 @@
 
 #include "lola/vx/synapse_driver.h"
 
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
 #include "hate/join.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 #if CHIP_REVISION == 3
@@ -80,4 +77,4 @@ std::ostream& operator<<(std::ostream& os, SynapseDriverBlock const& config)
 }
 } // namespace lola::vx::CHIP_REVISION_STR
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::SynapseDriverBlock)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::CHIP_REVISION_STR::SynapseDriverBlock)

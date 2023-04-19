@@ -2,6 +2,7 @@
 
 #include "haldls/vx/v3/barrier.h"
 #include "haldls/vx/v3/neuron.h"
+#include "stadls/vx/v3/container_ticket.h"
 #include "stadls/vx/v3/init_generator.h"
 #include "stadls/vx/v3/playback_program.h"
 #include "stadls/vx/v3/playback_program_builder.h"
@@ -66,7 +67,7 @@ TEST(NeuronBackend, ResetCounterTest)
 	}
 
 	// Readout Neuron Spike Counters
-	std::vector<PlaybackProgram::ContainerTicket<SpikeCounterRead>> cnt_value_read;
+	std::vector<ContainerTicket> cnt_value_read;
 	for (auto nrn_read : iter_all<SpikeCounterReadOnDLS>()) {
 		cnt_value_read.push_back(builder.read(nrn_read));
 	}
@@ -85,7 +86,7 @@ TEST(NeuronBackend, ResetCounterTest)
 	}
 
 	// Readout Neuron Spike Counters
-	std::vector<PlaybackProgram::ContainerTicket<SpikeCounterRead>> cnt_value_ovrflw;
+	std::vector<ContainerTicket> cnt_value_ovrflw;
 	for (auto nrn_read : iter_all<SpikeCounterReadOnDLS>()) {
 		cnt_value_ovrflw.push_back(builder.read(nrn_read));
 	}
@@ -96,7 +97,7 @@ TEST(NeuronBackend, ResetCounterTest)
 	}
 
 	// Readout Neuron Spike Counters again
-	std::vector<PlaybackProgram::ContainerTicket<SpikeCounterRead>> cnt_value_reset;
+	std::vector<ContainerTicket> cnt_value_reset;
 	for (auto nrn_read : iter_all<SpikeCounterReadOnDLS>()) {
 		cnt_value_reset.push_back(builder.read(nrn_read));
 	}
@@ -107,18 +108,21 @@ TEST(NeuronBackend, ResetCounterTest)
 	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
-	for (auto cnt_value : cnt_value_read) {
-		EXPECT_EQ(cnt_value.get().get_count(), SpikeCounterRead::Count(3));
-		EXPECT_EQ(cnt_value.get().get_overflow(), false);
+	for (auto cnt_value_ticket : cnt_value_read) {
+		auto const& cnt_value = dynamic_cast<SpikeCounterRead const&>(cnt_value_ticket.get());
+		EXPECT_EQ(cnt_value.get_count(), SpikeCounterRead::Count(3));
+		EXPECT_EQ(cnt_value.get_overflow(), false);
 	}
 
-	for (auto cnt_value : cnt_value_ovrflw) {
-		EXPECT_EQ(cnt_value.get().get_count(), SpikeCounterRead::Count(3));
-		EXPECT_EQ(cnt_value.get().get_overflow(), true);
+	for (auto cnt_value_ticket : cnt_value_ovrflw) {
+		auto const& cnt_value = dynamic_cast<SpikeCounterRead const&>(cnt_value_ticket.get());
+		EXPECT_EQ(cnt_value.get_count(), SpikeCounterRead::Count(3));
+		EXPECT_EQ(cnt_value.get_overflow(), true);
 	}
 
-	for (auto cnt_value : cnt_value_reset) {
-		EXPECT_EQ(cnt_value.get().get_count(), SpikeCounterRead::Count(0));
-		EXPECT_EQ(cnt_value.get().get_overflow(), false);
+	for (auto cnt_value_ticket : cnt_value_reset) {
+		auto const& cnt_value = dynamic_cast<SpikeCounterRead const&>(cnt_value_ticket.get());
+		EXPECT_EQ(cnt_value.get_count(), SpikeCounterRead::Count(0));
+		EXPECT_EQ(cnt_value.get_overflow(), false);
 	}
 }

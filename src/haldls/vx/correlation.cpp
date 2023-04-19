@@ -4,13 +4,8 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls::vx {
 
@@ -87,26 +82,6 @@ bool CommonCorrelationConfig::operator!=(CommonCorrelationConfig const& other) c
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <typename Archive>
-void CommonCorrelationConfig::serialize(Archive& ar, std::uint32_t const version)
-{
-	ar(CEREAL_NVP(m_sense_delay));
-	ar(CEREAL_NVP(m_reset_duration));
-	ar(CEREAL_NVP(m_reset_fall_time));
-	if (version == 0) {
-		bool tmp = static_cast<bool>(m_reset_mode);
-		ar(CEREAL_NVP_("m_reset_mode", tmp));
-		m_reset_mode = ResetMode(static_cast<uint32_t>(tmp));
-	} else {
-		ar(CEREAL_NVP(m_reset_mode));
-	}
-	if (version > 0) {
-		ar(CEREAL_NVP(m_cadc_v_offset_assignment));
-	}
-}
-#endif
 
 namespace {
 
@@ -264,6 +239,4 @@ template SYMBOL_VISIBLE void CommonCorrelationConfig::decode(
 
 } // namespace haldls::vx
 
-#ifndef __ppu__
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::CommonCorrelationConfig)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CommonCorrelationConfig)

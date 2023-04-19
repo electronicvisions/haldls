@@ -4,14 +4,9 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 
 namespace haldls {
@@ -38,16 +33,6 @@ bool CADCChannelConfig::operator!=(CADCChannelConfig const& other) const
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <typename Archive>
-void CADCChannelConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_offset));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCChannelConfig)
-#endif
 
 #ifndef __ppu__
 template std::array<
@@ -132,6 +117,12 @@ void CADCChannelConfig::decode(
 	m_offset = Offset(static_cast<int32_t>(bitfield.u.m.offset) - 128);
 }
 
+std::ostream& operator<<(std::ostream& os, CADCChannelConfig const& config)
+{
+	os << "CADCChannelConfig(" << config.m_offset << ")";
+	return os;
+}
+
 CADCConfig::CADCConfig() : m_enable(false), m_reset_wait(), m_dead_time() {}
 
 bool CADCConfig::get_enable() const
@@ -174,18 +165,6 @@ bool CADCConfig::operator!=(CADCConfig const& other) const
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <typename Archive>
-void CADCConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable));
-	ar(CEREAL_NVP(m_reset_wait));
-	ar(CEREAL_NVP(m_dead_time));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCConfig)
-#endif
 
 namespace {
 
@@ -308,16 +287,6 @@ template SYMBOL_VISIBLE std::
     array<halco::hicann_dls::vx::OmnibusAddress, CADCOffsetSRAMTimingConfig::config_size_in_words>
     CADCOffsetSRAMTimingConfig::addresses(coordinate_type const& coord);
 
-#ifndef __ppu__
-template <typename Archive>
-void CADCOffsetSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(cereal::base_class<detail::SRAMTimingConfig>(this));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CADCOffsetSRAMTimingConfig)
-#endif
-
 
 CADCSampleQuad::CADCSampleQuad() : m_samples() {}
 
@@ -341,15 +310,6 @@ bool CADCSampleQuad::operator!=(CADCSampleQuad const& other) const
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <typename Archive>
-void CADCSampleQuad::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_samples));
-}
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::CADCSampleQuad)
-#endif
 
 namespace {
 
@@ -430,9 +390,7 @@ void CADCSampleQuad::decode(std::array<
 } // namespace vx
 } // namespace haldls
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::CADCConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CADCOffsetSRAMTimingConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CADCChannelConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CADCSampleQuad, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CADCConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CADCOffsetSRAMTimingConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CADCChannelConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CADCSampleQuad)

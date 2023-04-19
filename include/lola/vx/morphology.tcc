@@ -1,6 +1,4 @@
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
-#include "lola/vx/cerealization.h"
 #include <boost/hana/adapt_struct.hpp>
 
 namespace haldls::vx::detail {
@@ -191,7 +189,3 @@ BOOST_HANA_ADAPT_STRUCT(
     bayesian);
 
 BOOST_HANA_ADAPT_STRUCT(lola::vx::CHIP_REVISION_STR::LogicalNeuron, morphology);
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::Morphology)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::MCSafeAtomicNeuron)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::LogicalNeuron)

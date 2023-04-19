@@ -3,10 +3,8 @@
 #include <string>
 
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/ppu.h"
 #include "hate/join.h"
@@ -313,23 +311,6 @@ bool VectorGeneratorControl::operator!=(VectorGeneratorControl const& other) con
 	return !(*this == other);
 }
 
-template <class Archive>
-void VectorGeneratorControl::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_source_count));
-	ar(CEREAL_NVP(m_resend_count));
-	ar(CEREAL_NVP(m_source_waits));
-	ar(CEREAL_NVP(m_sources));
-	ar(CEREAL_NVP(m_event_pack));
-	ar(CEREAL_NVP(m_enable_ignore_zeros));
-	ar(CEREAL_NVP(m_lookup_table_entry_start));
-	ar(CEREAL_NVP(m_notification));
-	ar(CEREAL_NVP(m_trigger));
-	ar(CEREAL_NVP(m_signal));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorControl)
-
 
 typename VectorGeneratorLUTEntry::Value VectorGeneratorLUTEntry::get_value() const
 {
@@ -350,14 +331,6 @@ bool VectorGeneratorLUTEntry::operator!=(VectorGeneratorLUTEntry const& other) c
 {
 	return !(*this == other);
 }
-
-template <typename Archive>
-void VectorGeneratorLUTEntry::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorLUTEntry)
 
 namespace {
 
@@ -449,14 +422,6 @@ bool VectorGeneratorNotificationAddress::operator!=(
 	return !(*this == other);
 }
 
-template <typename Archive>
-void VectorGeneratorNotificationAddress::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorNotificationAddress)
-
 std::array<
     halco::hicann_dls::vx::OmnibusAddress,
     VectorGeneratorNotificationAddress::config_size_in_words>
@@ -498,12 +463,6 @@ bool VectorGeneratorTrigger::operator!=(VectorGeneratorTrigger const& other) con
 {
 	return !(*this == other);
 }
-
-template <typename Archive>
-void VectorGeneratorTrigger::serialize(Archive&, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorTrigger)
 
 std::
     array<halco::hicann_dls::vx::OmnibusAddress, VectorGeneratorTrigger::write_config_size_in_words>
@@ -580,16 +539,6 @@ bool VectorGeneratorFIFOWord::operator!=(VectorGeneratorFIFOWord const& other) c
 {
 	return !(*this == other);
 }
-
-template <typename Archive>
-void VectorGeneratorFIFOWord::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_values));
-	ar(CEREAL_NVP(m_last));
-	ar(CEREAL_NVP(m_enable));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(VectorGeneratorFIFOWord)
 
 std::array<
     halco::hicann_dls::vx::OmnibusAddress,
@@ -683,7 +632,8 @@ std::ostream& operator<<(std::ostream& os, VectorGeneratorFIFOWord const& data)
 
 } // namespace haldls::vx
 
-CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorControl, 0)
-CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorLUTEntry, 0)
-CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorNotificationAddress, 0)
-CEREAL_CLASS_VERSION(haldls::vx::VectorGeneratorFIFOWord, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::VectorGeneratorControl)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::VectorGeneratorLUTEntry)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::VectorGeneratorNotificationAddress)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::VectorGeneratorFIFOWord)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::VectorGeneratorTrigger)

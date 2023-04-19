@@ -1,22 +1,32 @@
 #pragma once
 
-#include "halco/hicann-dls/vx/barrier.h"
-#include "haldls/cerealization.h"
-#include "haldls/vx/barrier.h"
-#include "haldls/vx/timer.h"
-#include "haldls/vx/v3/container.h"
+#include "haldls/vx/encodable.h"
 #include "hate/visibility.h"
-#include "lola/vx/v3/container.h"
+#include "lola/vx/v3/chip.h"
 #include "stadls/vx/genpybind.h"
-#include <utility>
-#include <variant>
+#include <memory>
 #include <vector>
+#include <cereal/macros.hpp>
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 #include "haldls/vx/pickle.h"
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
 #endif
+
+namespace stadls::vx::v3 {
+
+struct DumperDone;
+
+} // namespace stadls::vx::v3
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, stadls::vx::v3::DumperDone& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX_V3 {
 
@@ -27,22 +37,52 @@ struct GENPYBIND(visible) DumperDone
 	/**
 	 * Variant over all coordinate/container pairs
 	 */
-	typedef std::variant<
-#define PLAYBACK_CONTAINER(Name, Type) std::pair<typename Type::coordinate_type, Type>,
-#pragma push_macro("PLAYBACK_CONTAINER")
-#include "haldls/vx/v3/container.def"
-#pragma pop_macro("PLAYBACK_CONTAINER")
-#include "lola/vx/v3/container.def"
-	    std::pair<typename haldls::vx::Timer::coordinate_type, haldls::vx::Timer::Value>,
-	    std::pair<halco::hicann_dls::vx::BarrierOnFPGA, haldls::vx::Barrier>,
-	    std::
-	        pair<halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA, haldls::vx::PollingOmnibusBlock>>
+	typedef std::pair<
+	    std::unique_ptr<haldls::vx::Encodable::Coordinate>,
+	    std::unique_ptr<haldls::vx::Encodable>>
 	    coco_type;
 	typedef std::vector<coco_type> values_type;
 
 	DumperDone() = default;
 
-	values_type values{};
+	DumperDone(DumperDone const&) = delete;
+	DumperDone(DumperDone&&) = default;
+	DumperDone& operator=(DumperDone const&) = delete;
+	DumperDone& operator=(DumperDone&&) = default;
+
+	values_type values GENPYBIND(hidden);
+
+	GENPYBIND_MANUAL({
+		auto const get_values = [parent](GENPYBIND_PARENT_TYPE const& self) {
+			pybind11::list ret;
+			for (auto const& value : self.values) {
+				if (!value.first || !value.second) {
+					throw std::logic_error("Unexpected access to moved-from object.");
+				}
+				ret.append(py::make_tuple(value.first->clone(), value.second->clone_encodable()));
+			}
+			return ret;
+		};
+		auto const set_values = [parent](
+		                            GENPYBIND_PARENT_TYPE& self, pybind11::list const& new_values) {
+			stadls::vx::v3::DumperDone::values_type tmp_values;
+			for (auto const& value : new_values) {
+				if (!py::isinstance<py::tuple>(value)) {
+					throw std::runtime_error("Expected tuple.");
+				}
+				auto const* const coord =
+				    py::cast<halco::common::Coordinate const*>(py::cast<py::tuple>(value)[0]);
+				auto const* const config =
+				    py::cast<haldls::vx::Encodable const*>(py::cast<py::tuple>(value)[1]);
+				if (coord == nullptr || config == nullptr) {
+					throw py::cast_error("Casted to nullptr.");
+				}
+				tmp_values.push_back(std::make_pair(coord->clone(), config->clone_encodable()));
+			}
+			self.values = std::move(tmp_values);
+		};
+		parent.def_property("values", get_values, set_values);
+	})
 
 	bool operator==(DumperDone const& other) const SYMBOL_VISIBLE;
 	bool operator!=(DumperDone const& other) const SYMBOL_VISIBLE;
@@ -53,12 +93,8 @@ struct GENPYBIND(visible) DumperDone
 			.def("tolist", [](GENPYBIND_PARENT_TYPE const& v) {
 				py::list ret;
 				for (auto const& vv : v.values) {
-					py::object item;
-					std::visit(
-						[&item](auto const& vvv) {
-							item = py::make_tuple(std::get<0>(vvv), std::get<1>(vvv));
-						},
-						vv);
+					py::object item = py::make_tuple(
+							    std::get<0>(vv)->clone(), std::get<1>(vv)->clone_encodable());
 					ret.append(item);
 				}
 				return ret;
@@ -66,11 +102,9 @@ struct GENPYBIND(visible) DumperDone
 	})
 	// clang-format on
 
-
 private:
-	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(Archive& ar, DumperDone& value, std::uint32_t);
 };
 
 
@@ -100,5 +134,3 @@ GENPYBIND_MANUAL({
 })
 
 } // namespace stadls::vx
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(stadls::vx::v3::DumperDone)

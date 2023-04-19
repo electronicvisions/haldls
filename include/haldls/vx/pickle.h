@@ -1,10 +1,9 @@
 #pragma once
+#include "cereal/types/haldls/cereal.h"
+#include "hate/type_list.h"
 #include <iosfwd>
 #include <vector>
 #include <pybind11/pybind11.h>
-
-#include "hate/type_list.h"
-
 
 namespace haldls::vx {
 

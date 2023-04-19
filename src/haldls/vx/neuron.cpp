@@ -4,14 +4,9 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls {
 namespace vx {
@@ -355,27 +350,6 @@ std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& conf
 	return (os << ss.str());
 }
 
-#ifndef __ppu__
-template <class Archive>
-void CommonNeuronBackendConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_en_event_regs));
-	ar(CEREAL_NVP(m_force_reset));
-	ar(CEREAL_NVP(m_en_clocks));
-	ar(CEREAL_NVP(m_clock_scale_slow));
-	ar(CEREAL_NVP(m_clock_scale_fast));
-	ar(CEREAL_NVP(m_sample_pos_edge));
-	ar(CEREAL_NVP(m_clock_scale_adapt_pulse));
-	ar(CEREAL_NVP(m_clock_scale_post_pulse));
-	ar(CEREAL_NVP(m_wait_global_post_pulse));
-	ar(CEREAL_NVP(m_wait_spike_counter_reset));
-	ar(CEREAL_NVP(m_wait_spike_counter_read));
-	ar(CEREAL_NVP(m_wait_fire_neuron));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonNeuronBackendConfig)
-#endif
-
 
 NeuronReset::NeuronReset() {}
 
@@ -460,14 +434,6 @@ bool NeuronReset::operator!=(NeuronReset const& other) const
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <class Archive>
-void NeuronReset::serialize(Archive&, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronReset)
-#endif
 
 
 BlockPostPulse::BlockPostPulse() {}
@@ -554,14 +520,6 @@ bool BlockPostPulse::operator!=(BlockPostPulse const& other) const
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <class Archive>
-void BlockPostPulse::serialize(Archive&, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(BlockPostPulse)
-#endif
 
 
 SpikeCounterRead::Count SpikeCounterRead::get_count() const
@@ -677,17 +635,6 @@ bool SpikeCounterRead::operator!=(SpikeCounterRead const& other) const
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <class Archive>
-void SpikeCounterRead::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_count));
-	ar(CEREAL_NVP(m_overflow));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterRead)
-#endif
-
 
 SpikeCounterReset::SpikeCounterReset() {}
 
@@ -785,14 +732,6 @@ bool SpikeCounterReset::operator!=(SpikeCounterReset const& other) const
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <class Archive>
-void SpikeCounterReset::serialize(Archive&, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeCounterReset)
-#endif
-
 
 bool NeuronSRAMTimingConfig::operator==(NeuronSRAMTimingConfig const& other) const
 {
@@ -826,16 +765,6 @@ NeuronSRAMTimingConfig::addresses(coordinate_type const& coord);
 template SYMBOL_VISIBLE
     std::array<halco::hicann_dls::vx::OmnibusAddress, NeuronSRAMTimingConfig::config_size_in_words>
     NeuronSRAMTimingConfig::addresses(coordinate_type const& coord);
-
-#ifndef __ppu__
-template <class Archive>
-void NeuronSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(cereal::base_class<detail::SRAMTimingConfig>(this));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronSRAMTimingConfig)
-#endif
 
 
 bool NeuronBackendSRAMTimingConfig::operator==(NeuronBackendSRAMTimingConfig const& other) const
@@ -872,25 +801,13 @@ template SYMBOL_VISIBLE std::array<
     NeuronBackendSRAMTimingConfig::config_size_in_words>
 NeuronBackendSRAMTimingConfig::addresses(coordinate_type const& coord);
 
-#ifndef __ppu__
-template <class Archive>
-void NeuronBackendSRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(cereal::base_class<detail::SRAMTimingConfig>(this));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendSRAMTimingConfig)
-#endif
-
 } // namespace vx
 } // namespace haldls
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::NeuronSRAMTimingConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::NeuronBackendSRAMTimingConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CommonNeuronBackendConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::NeuronReset, 0)
-CEREAL_CLASS_VERSION(haldls::vx::BlockPostPulse, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SpikeCounterRead, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SpikeCounterReset, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::NeuronSRAMTimingConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::NeuronBackendSRAMTimingConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CommonNeuronBackendConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::NeuronReset)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::BlockPostPulse)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikeCounterRead)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikeCounterReset)

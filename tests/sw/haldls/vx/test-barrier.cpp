@@ -1,9 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "cereal/types/haldls/cereal.tcc"
 #include "fisch/vx/word_access/type/barrier.h"
 #include "halco/hicann-dls/vx/barrier.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/barrier.h"
 #include "test-helper.h"
 
@@ -22,5 +22,5 @@ TEST(Barrier, Encode)
 	config.set_enable_multi_fpga(true);
 	config.set_enable_systime_correction(false);
 
-	EXPECT_EQ(config.encode(), 0xe);
+	EXPECT_EQ(config.encode().at(0), 0xe);
 }

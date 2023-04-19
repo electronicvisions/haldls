@@ -6,12 +6,8 @@
 
 #include <stack>
 #include <string>
-#include <cereal/types/map.hpp>
-#include <cereal/types/set.hpp>
-#include <cereal/types/vector.hpp>
 
-#include "haldls/cerealization.tcc"
-#include "lola/vx/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "lola/vx/hana.h"
 
 #if CHIP_REVISION == 3
@@ -881,22 +877,6 @@ MCSafeAtomicNeuron::Multicompartment::operator AtomicNeuron::Multicompartment() 
 	return multicompartment;
 }
 
-#ifndef __ppu__
-template <typename Archive>
-void MCSafeAtomicNeuron::Multicompartment::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(connect_soma));
-	ar(CEREAL_NVP(connect_soma_right));
-	ar(CEREAL_NVP(connect_right));
-	ar(CEREAL_NVP(connect_vertical));
-	ar(CEREAL_NVP(enable_conductance));
-	ar(CEREAL_NVP(enable_conductance_division));
-	ar(CEREAL_NVP(enable_conductance_multiplication));
-	ar(CEREAL_NVP(i_bias_nmda));
-}
-#endif
-
-
 std::ostream& operator<<(std::ostream& os, MCSafeAtomicNeuron::Multicompartment const& config)
 {
 	using namespace halco::hicann_dls::vx;
@@ -1210,12 +1190,4 @@ std::pair<MCSafeAtomicNeuron&, MCSafeAtomicNeuron&> LogicalNeuron::get_neurons(
 
 } // namespace lola::vx
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::Morphology)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::MCSafeAtomicNeuron)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::LogicalNeuron)
-
-#ifndef __ppu__
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(
-    lola::vx::CHIP_REVISION_STR::MCSafeAtomicNeuron::Multicompartment)
-CEREAL_CLASS_VERSION(lola::vx::CHIP_REVISION_STR::MCSafeAtomicNeuron::Multicompartment, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::CHIP_REVISION_STR::LogicalNeuron)

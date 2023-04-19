@@ -1,12 +1,25 @@
 #include "haldls/vx/timer.h"
 
 #include "fisch/vx/constants.h"
-#include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/block_until.tcc"
+#include "haldls/vx/container.tcc"
 
 namespace haldls::vx {
 
 Timer::Value const Timer::Value::fpga_clock_cycles_per_us{fisch::vx::fpga_clock_cycles_per_us};
+
+std::array<halco::hicann_dls::vx::WaitUntilOnFPGA, Timer::Value::write_config_size_in_words>
+Timer::Value::write_addresses(coordinate_type const& /* coord */)
+{
+	return {halco::hicann_dls::vx::WaitUntilOnFPGA()};
+}
+
+std::array<fisch::vx::word_access_type::WaitUntil, Timer::Value::write_config_size_in_words>
+Timer::Value::encode() const
+{
+	return {fisch::vx::word_access_type::WaitUntil(value())};
+}
+
 
 Timer::Timer(Value const value) : m_value(value) {}
 
@@ -53,14 +66,7 @@ void Timer::decode(
 	m_value = Value(data[0]);
 }
 
-template <class Archive>
-void Timer::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(Timer)
-
 } // namespace haldls::vx
 
-CEREAL_CLASS_VERSION(haldls::vx::Timer, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::Timer)
+EXPLICIT_INSTANTIATE_HALDLS_BLOCK_UNTIL_BASE(haldls::vx::Timer::Value)

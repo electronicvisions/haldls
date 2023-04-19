@@ -1,10 +1,10 @@
 #include "haldls/vx/barrier.h"
 
-#include <string>
-
 #include "fisch/vx/word_access/type/barrier.h"
 #include "halco/hicann-dls/vx/barrier.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/block_until.tcc"
+#include <string>
+
 
 namespace haldls {
 namespace vx {
@@ -62,13 +62,20 @@ void Barrier::set_enable_systime_correction(bool const value)
 	m_enable_systime_correction = value;
 }
 
-fisch::vx::word_access_type::Barrier Barrier::encode() const
+std::array<halco::hicann_dls::vx::BarrierOnFPGA, Barrier::write_config_size_in_words>
+Barrier::write_addresses(coordinate_type const& coord)
 {
-	return fisch::vx::word_access_type::Barrier(
+	return {coord};
+}
+
+std::array<fisch::vx::word_access_type::Barrier, Barrier::write_config_size_in_words>
+Barrier::encode() const
+{
+	return {fisch::vx::word_access_type::Barrier(
 	    static_cast<uintmax_t>(m_enable_omnibus) | (static_cast<uintmax_t>(m_enable_jtag) << 1) |
 	    (static_cast<uintmax_t>(m_enable_systime) << 2) |
 	    (static_cast<uintmax_t>(m_enable_multi_fpga) << 3) |
-	    (static_cast<uintmax_t>(m_enable_systime_correction) << 4));
+	    (static_cast<uintmax_t>(m_enable_systime_correction) << 4))};
 }
 
 std::ostream& operator<<(std::ostream& os, Barrier const& config)
@@ -93,18 +100,6 @@ bool Barrier::operator!=(Barrier const& other) const
 {
 	return !(*this == other);
 }
-
-template <class Archive>
-void Barrier::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_omnibus));
-	ar(CEREAL_NVP(m_enable_jtag));
-	ar(CEREAL_NVP(m_enable_systime));
-	ar(CEREAL_NVP(m_enable_multi_fpga));
-	ar(CEREAL_NVP(m_enable_systime_correction));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(Barrier)
 
 Barrier const Barrier::omnibus = []() {
 	Barrier s;
@@ -159,4 +154,4 @@ Barrier const Barrier::systime_correction = []() {
 } // namespace vx
 } // namespace haldls
 
-CEREAL_CLASS_VERSION(haldls::vx::Barrier, 2)
+EXPLICIT_INSTANTIATE_HALDLS_BLOCK_UNTIL_BASE(haldls::vx::Barrier)

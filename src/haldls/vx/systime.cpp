@@ -5,12 +5,8 @@
 #include "fisch/vx/word_access/type/systime.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 
 namespace haldls {
@@ -124,16 +120,6 @@ template SYMBOL_VISIBLE void SystimeSyncBase::decode<fisch::vx::word_access_type
     std::array<fisch::vx::word_access_type::Omnibus, SystimeSyncBase::config_size_in_words> const&
         data);
 
-#ifndef __ppu__
-template <class Archive>
-void SystimeSyncBase::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeSyncBase)
-#endif
-
 
 SystimeSync::SystimeSync(bool const value) : m_do_sync(value) {}
 
@@ -187,20 +173,8 @@ void SystimeSync::decode(std::array<
                          SystimeSync::read_config_size_in_words> const& /*data*/)
 {}
 
-#ifndef __ppu__
-template <class Archive>
-void SystimeSync::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_do_sync));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SystimeSync)
-#endif
-
 } // namespace vx
 } // namespace haldls
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::SystimeSyncBase, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SystimeSync, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SystimeSyncBase)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SystimeSync)

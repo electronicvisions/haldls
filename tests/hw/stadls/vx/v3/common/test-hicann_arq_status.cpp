@@ -49,8 +49,8 @@ TEST(HicannARQStatus, OmnibusReadCount)
 
 	EXPECT_TRUE(ticket_ref.valid());
 	EXPECT_TRUE(ticket.valid());
-	auto status_ref = ticket_ref.get();
-	auto status = ticket.get();
+	auto const& status_ref = dynamic_cast<HicannARQStatus const&>(ticket_ref.get());
+	auto const& status = dynamic_cast<HicannARQStatus const&>(ticket.get());
 	EXPECT_EQ(
 	    status.get_read_count() - status_ref.get_read_count(),
 	    SystimeSyncBase::config_size_in_words * fisch::vx::Omnibus::decode_ut_message_count);
@@ -88,7 +88,7 @@ TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 	run(connection, program);
 
 	EXPECT_TRUE(ticket.valid());
-	auto status = ticket.get();
+	auto const& status = dynamic_cast<HicannARQStatus const&>(ticket.get());
 	// write response filtering above measuring point
 	EXPECT_EQ(
 	    status.get_read_count(),

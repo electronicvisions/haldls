@@ -19,9 +19,7 @@
 
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/capmem.h"
-#include "haldls/cerealization.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 
 #if CHIP_REVISION == 3
@@ -37,7 +35,8 @@ namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 /**
  * Configuration of the CapMem and associated selections as well as the reference generator.
  */
-class GENPYBIND(visible) CapMem
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CapMem
+    : public haldls::vx::ContainerBase<CapMem>
 {
 public:
 	typedef halco::hicann_dls::vx::CapMemOnDLS coordinate_type;

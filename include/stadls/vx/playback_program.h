@@ -7,10 +7,7 @@
 
 #include <boost/variant.hpp>
 
-#include "fisch/vx/container_cast.h"
-#include "fisch/vx/container_ticket.h"
 #include "fisch/vx/playback_program.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/event.h"
 #include "hate/type_list.h"
@@ -18,31 +15,33 @@
 #include "hxcomm/vx/target.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/run_time_info.h"
+#include <cereal/macros.hpp>
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 #include <pybind11/numpy.h>
 #include <pybind11/stl_bind.h>
 #endif
 
+namespace stadls::vx {
+struct PlaybackProgram;
+} // namespace stadls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, stadls::vx::PlaybackProgram& value, std::uint32_t const version);
+
+} // namespace cereal
+
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
 namespace detail {
 
-template <typename, typename, template <typename> class>
+template <typename, typename>
 class PlaybackProgramBuilderAdapter;
-template <typename, typename, template <typename> class>
+template <typename, typename>
 class PlaybackProgramBuilderAdapterImpl;
-
-template <typename BackendContainerTypeList>
-struct to_ticket_variant;
-
-template <typename... BackendContainer>
-struct to_ticket_variant<hate::type_list<BackendContainer...>>
-{
-	typedef boost::variant<fisch::vx::ContainerTicket<decltype(
-	    fisch::vx::container_cast(std::declval<BackendContainer>()))>...>
-	    type;
-};
 
 } // namespace detail
 
@@ -60,63 +59,6 @@ RunTimeInfo run(Connection&, PlaybackProgram&);
 class GENPYBIND(visible) PlaybackProgram
 {
 public:
-	typedef fisch::vx::FPGATime fpga_time_type;
-
-	/**
-	 * Ticket for to-be-available container data corresponding to a read instruction.
-	 * @tparam T Container type
-	 */
-	template <typename T>
-	class ContainerTicket
-	{
-	public:
-		typedef typename T::coordinate_type coordinate_type;
-
-		/**
-		 * Get container data if available.
-		 * @throws std::runtime_error On container data not available yet
-		 * @return Container data
-		 */
-		T get() const SYMBOL_VISIBLE;
-
-		/**
-		 * Get whether container data is available.
-		 * @return Boolean value
-		 */
-		bool valid() const SYMBOL_VISIBLE;
-
-		/**
-		 * Get coordinate corresponding to location of (to-be) read container data.
-		 * @return Coordinate value
-		 */
-		coordinate_type get_coordinate() const SYMBOL_VISIBLE;
-
-		/**
-		 * Get FPGA executor timestamp of last container response if time annotation is enabled.
-		 * If time annotation is not enabled, get message count since last time annotation or
-		 * from the beginning of the response stream.
-		 * @return FPGATime value
-		 */
-		GENPYBIND(getter_for(fpga_time))
-		fpga_time_type get_fpga_time() const SYMBOL_VISIBLE;
-
-	private:
-		typedef typename detail::to_ticket_variant<
-		    typename haldls::vx::detail::BackendContainerTrait<T>::container_list>::type
-		    ticket_impl_type;
-
-		template <typename, typename, template <typename> class>
-		friend class detail::PlaybackProgramBuilderAdapterImpl;
-
-		ContainerTicket(coordinate_type const& coord, ticket_impl_type ticket_impl) :
-		    m_coord(coord), m_ticket_impl(std::move(ticket_impl))
-		{}
-
-		coordinate_type m_coord;
-		ticket_impl_type m_ticket_impl;
-	}; // ContainerTicket
-
-
 	/** Default constructor. */
 	PlaybackProgram() SYMBOL_VISIBLE;
 
@@ -252,14 +194,13 @@ public:
 	})
 
 private:
-	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, uint32_t);
+	friend void ::cereal::serialize(Archive& ar, PlaybackProgram&, uint32_t);
 
-	template <typename, typename, template <typename> class>
+	template <typename, typename>
 	friend class stadls::vx::detail::PlaybackProgramBuilderAdapter;
 
-	template <typename, typename, template <typename> class>
+	template <typename, typename>
 	friend class stadls::vx::detail::PlaybackProgramBuilderAdapterImpl;
 
 	template <typename Connection>

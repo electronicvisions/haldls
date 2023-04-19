@@ -4,14 +4,9 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls {
 namespace vx {
@@ -193,18 +188,6 @@ bool PADIEvent::operator!=(PADIEvent const& other) const
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <class Archive>
-void PADIEvent::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_fire_bus));
-	ar(CEREAL_NVP(m_event_address));
-	ar(CEREAL_NVP(m_row_select_address));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PADIEvent)
-#endif
 
 
 CommonPADIBusConfig::CommonPADIBusConfig() :
@@ -416,17 +399,6 @@ bool CommonPADIBusConfig::operator!=(CommonPADIBusConfig const& other) const
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <class Archive>
-void CommonPADIBusConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_spl1));
-	ar(CEREAL_NVP(m_enable_extended_timing));
-	ar(CEREAL_NVP(m_dacen_pulse_extension));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonPADIBusConfig)
-#endif
 
 CommonSTPConfig::CommonSTPConfig() : m_enable_recovery_clock(false), m_recovery_clock_speed() {}
 
@@ -548,22 +520,9 @@ bool CommonSTPConfig::operator!=(CommonSTPConfig const& other) const
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <class Archive>
-void CommonSTPConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_recovery_clock));
-	ar(CEREAL_NVP(m_recovery_clock_speed));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonSTPConfig)
-#endif
-
 } // namespace vx
 } // namespace haldls
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::PADIEvent, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CommonPADIBusConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CommonSTPConfig, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PADIEvent)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CommonPADIBusConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CommonSTPConfig)

@@ -166,4 +166,3 @@ BOOST_HANA_ADAPT_STRUCT(
     readout_chain,
     ppu_memory,
     external_ppu_memory);
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::Chip)

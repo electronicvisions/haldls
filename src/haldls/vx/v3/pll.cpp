@@ -4,16 +4,11 @@
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/traits.h"
 #include "hate/indent.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 
 namespace haldls {
@@ -93,17 +88,6 @@ std::ostream& operator<<(std::ostream& os, PLLClockOutputBlock const& config)
 	   << "\tSPL1 clock source: " << config.get_spl1_source() << "\n)";
 	return os;
 }
-
-#ifndef __ppu__
-template <typename Archive>
-void PLLClockOutputBlock::ClockOutput::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_output));
-	ar(CEREAL_NVP(m_enable_bypass));
-	ar(CEREAL_NVP(m_adpll));
-	ar(CEREAL_NVP(m_adpll_output));
-}
-#endif
 
 PLLClockOutputBlock::PLLClockOutputBlock() : m_output(), m_switch_spl1_to_madc(false)
 {
@@ -361,23 +345,8 @@ template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         config_size_in_words> const& /*data*/);
 
-#ifndef __ppu__
-template <typename Archive>
-void PLLClockOutputBlock::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_output));
-	ar(CEREAL_NVP(m_switch_spl1_to_madc));
-}
-#endif
-
 } // namespace v3
 } // namespace vx
 } // namespace haldls
 
-
-#ifndef __ppu__
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::PLLClockOutputBlock)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::PLLClockOutputBlock::ClockOutput)
-CEREAL_CLASS_VERSION(haldls::vx::v3::PLLClockOutputBlock, 0)
-CEREAL_CLASS_VERSION(haldls::vx::v3::PLLClockOutputBlock::ClockOutput, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v3::PLLClockOutputBlock)

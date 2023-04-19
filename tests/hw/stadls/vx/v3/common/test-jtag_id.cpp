@@ -29,7 +29,7 @@ TEST(JTAGIdCode, ReadJTAGId)
 	run(connection, program);
 
 	ASSERT_TRUE(jtag_id_ticket.valid());
-	auto jtag_id = jtag_id_ticket.get();
+	auto const& jtag_id = dynamic_cast<JTAGIdCode const&>(jtag_id_ticket.get());
 
 	EXPECT_TRUE((jtag_id.get_version() >= 0) && (jtag_id.get_version() <= 3));
 	EXPECT_EQ(jtag_id.get_part_number(), 0x4858);    // ASCII('HX')

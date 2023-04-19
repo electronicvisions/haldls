@@ -4,6 +4,7 @@
 
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/synapse_driver.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/synapse_driver.h"
@@ -11,9 +12,28 @@
 #include "hate/visibility.h"
 
 #ifndef __ppu__
-#include "haldls/cerealization.h"
 #include "hxcomm/vx/target.h"
+#include <cereal/macros.hpp>
 #endif
+
+namespace haldls::vx {
+
+struct SynapseDriverConfig;
+struct SynapseDriverSRAMTimingConfig;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SynapseDriverConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SynapseDriverSRAMTimingConfig& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -24,7 +44,9 @@ namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 // TODO: Switch to CRTP pattern when https://github.com/kljohann/genpybind/issues/28 is solved
-class GENPYBIND(visible) SynapseDriverSRAMTimingConfig : public detail::SRAMTimingConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseDriverSRAMTimingConfig
+    : public detail::SRAMTimingConfig
+    , public ContainerBase<SynapseDriverSRAMTimingConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseDriverSRAMTimingConfigOnDLS coordinate_type;
@@ -47,11 +69,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(
+	    Archive& ar, SynapseDriverSRAMTimingConfig& value, std::uint32_t);
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SynapseDriverSRAMTimingConfig)
+
 #endif
 
 namespace detail {
@@ -66,7 +89,9 @@ struct BackendContainerTrait<SynapseDriverSRAMTimingConfig>
 
 } // namespace detail
 
-class GENPYBIND(visible) SynapseDriverConfig : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseDriverConfig
+    : public DifferentialWriteTrait
+    , public ContainerBase<SynapseDriverConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseDriverOnDLS coordinate_type;
@@ -294,7 +319,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, SynapseDriverConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	struct SynapseDriverConfigBitfield;
 
@@ -323,7 +349,7 @@ private:
 std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& mode) SYMBOL_VISIBLE;
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::SynapseDriverConfig)
+
 #endif
 
 namespace detail {

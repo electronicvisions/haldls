@@ -4,9 +4,7 @@
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/sram_controller.h"
 
@@ -55,15 +53,6 @@ bool SRAMTimingConfig::operator!=(SRAMTimingConfig const& other) const
 {
 	return !(*this == other);
 }
-
-template <typename Archive>
-void SRAMTimingConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_read_delay));
-	ar(CEREAL_NVP(m_address_setup_time));
-	ar(CEREAL_NVP(m_enable_width));
-}
-
 
 namespace {
 
@@ -140,9 +129,3 @@ template SYMBOL_VISIBLE void SRAMTimingConfig::decode(
         data);
 
 } // namespace haldls::vx::detail
-
-namespace haldls::vx {
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(detail::SRAMTimingConfig)
-} // namespace haldls::vx
-
-CEREAL_CLASS_VERSION(haldls::vx::detail::SRAMTimingConfig, 0)

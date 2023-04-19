@@ -5,6 +5,7 @@
 
 #include "lola/vx/routing_crossbar.h"
 
+#include "cereal/types/lola/vx/routing_crossbar.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/vx/common.h"

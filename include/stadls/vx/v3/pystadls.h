@@ -1,6 +1,7 @@
 /* This header file contains additional code related to python bindings */
 #include <pybind11/pybind11.h>
 
+#include "cereal/types/stadls/vx/v3/stadls.h"
 #include "stadls/vx/genpybind.h"
 
 namespace py = pybind11;

@@ -5,10 +5,25 @@
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/highspeed_link.h"
 
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct HicannARQStatus;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::HicannARQStatus& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 struct OmnibusAddress;
@@ -17,7 +32,8 @@ struct OmnibusAddress;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) HicannARQStatus
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) HicannARQStatus
+    : public ContainerBase<HicannARQStatus>
 {
 public:
 	typedef halco::hicann_dls::vx::HicannARQStatusOnFPGA coordinate_type;
@@ -107,9 +123,9 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, HicannARQStatus const& config) SYMBOL_VISIBLE;
 
 private:
-	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, HicannARQStatus& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	ReadCount m_read_count;
 	WriteCount m_write_count;
@@ -117,7 +133,6 @@ private:
 	TxCount m_tx_count;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(HicannARQStatus)
 
 namespace detail {
 

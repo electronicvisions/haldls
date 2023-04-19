@@ -1,15 +1,45 @@
 #pragma once
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/cadc.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
 
 #ifndef __ppu__
 #include "hxcomm/vx/target.h"
 #endif
+
+namespace haldls::vx {
+
+struct CADCConfig;
+struct CADCChannelConfig;
+struct CADCOffsetSRAMTimingConfig;
+struct CADCSampleQuad;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CADCConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CADCChannelConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CADCOffsetSRAMTimingConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CADCSampleQuad& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -26,7 +56,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * CADC container with global digital config for a vertical half.
  */
-class GENPYBIND(visible) CADCConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CADCConfig
+    : public ContainerBase<CADCConfig>
 {
 public:
 	typedef std::true_type is_leaf_node;
@@ -121,14 +152,14 @@ public:
 protected:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, CADCConfig& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	bool m_enable;
 	ResetWait m_reset_wait;
 	DeadTime m_dead_time;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CADCConfig)
 
 namespace detail {
 
@@ -145,7 +176,8 @@ struct BackendContainerTrait<CADCConfig>
 /**
  * CADC container with channel-local digital offset config.
  */
-class SYMBOL_VISIBLE CADCChannelConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CADCChannelConfig
+    : public ContainerBase<CADCChannelConfig>
 {
 public:
 	typedef std::true_type is_leaf_node;
@@ -189,10 +221,7 @@ public:
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, CADCChannelConfig const& config)
-	{
-		os << "CADCChannelConfig(" << config.m_offset << ")";
-		return os;
-	}
+	    SYMBOL_VISIBLE;
 
 	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
 	template <typename AddressT>
@@ -203,10 +232,11 @@ public:
 	template <typename WordT>
 	void decode(std::array<WordT, config_size_in_words> const& data) GENPYBIND(hidden);
 
-protected:
+private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, CADCChannelConfig& value, std::uint32_t const version);
 
 	Offset m_offset;
 };
@@ -226,7 +256,9 @@ struct BackendContainerTrait<CADCChannelConfig>
 
 
 // TODO: Switch to CRTP pattern when https://github.com/kljohann/genpybind/issues/28 is solved
-class GENPYBIND(visible) CADCOffsetSRAMTimingConfig : public detail::SRAMTimingConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CADCOffsetSRAMTimingConfig
+    : public detail::SRAMTimingConfig
+    , public ContainerBase<CADCOffsetSRAMTimingConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::CADCOffsetSRAMTimingConfigOnDLS coordinate_type;
@@ -245,10 +277,9 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(Archive& ar, CADCOffsetSRAMTimingConfig& value, std::uint32_t);
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CADCOffsetSRAMTimingConfig)
 
 namespace detail {
 
@@ -265,7 +296,8 @@ struct BackendContainerTrait<CADCOffsetSRAMTimingConfig>
 /**
  * CADC container of four CADC samples.
  */
-class GENPYBIND(visible) CADCSampleQuad
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CADCSampleQuad
+    : public ContainerBase<CADCSampleQuad>
 {
 public:
 	typedef std::true_type is_leaf_node;
@@ -319,7 +351,8 @@ public:
 protected:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, CADCSampleQuad& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> m_samples;
 };
@@ -333,7 +366,6 @@ struct BackendContainerTrait<CADCSampleQuad>
 
 } // namespace detail
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CADCSampleQuad)
 
 } // namespace vx
 } // namespace haldls

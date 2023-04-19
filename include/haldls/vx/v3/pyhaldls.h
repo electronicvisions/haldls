@@ -2,7 +2,8 @@
 #include <vector>
 #include <pybind11/pybind11.h>
 
-#include "haldls/cerealization.tcc"
+#include "cereal/types/haldls/cereal.tcc"
+#include "cereal/types/haldls/vx/v3/haldls.h"
 #include "haldls/vx/genpybind.h"
 
 
@@ -15,11 +16,11 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyfisch_vx_v3");
 })
 
-#include "haldls/cerealization.h"
 #include "haldls/vx/pickle.h"
 #include "haldls/vx/v3/barrier.h"
 #include "haldls/vx/v3/haldls.h"
 #include "hate/type_list.h"
+#include <cereal/macros.hpp>
 
 namespace haldls::vx::v3::detail {
 
@@ -47,7 +48,4 @@ GENPYBIND_MANUAL({
 	}();
 
 	::haldls::vx::WrapToFromFunctions<::haldls::vx::v3::detail::pickle_types>::apply(parent);
-
-	auto typing = parent->py::module::import("typing");
-	parent.attr("Container") = typing.attr("Union")[parent->py::tuple(parent.attr("containers"))];
 })

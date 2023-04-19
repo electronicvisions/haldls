@@ -5,11 +5,36 @@
 #include "halco/common/geometry.h"
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/pll.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/constants.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct ADPLL;
+struct PLLSelfTest;
+struct PLLSelfTestStatus;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ADPLL& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PLLSelfTest& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PLLSelfTestStatus& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 struct JTAGPLLRegisterOnDLS;
@@ -24,7 +49,7 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * The PLL features two ADPLLs with three clock outputs each. The clock outputs are routed to the
  * PLLClockOutputBlock with four clock output ports.
  */
-class GENPYBIND(visible) ADPLL
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ADPLL : public ContainerBase<ADPLL>
 {
 public:
 	/** Outputs of the ADPLL. */
@@ -319,7 +344,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, ADPLL& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	LoopFilterInt m_loop_filter_int;
 	LoopFilterProp m_loop_filter_prop;
@@ -343,7 +369,6 @@ private:
 
 std::ostream& operator<<(std::ostream&, ADPLL::Output const&) SYMBOL_VISIBLE;
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ADPLL)
 
 namespace detail {
 
@@ -367,7 +392,8 @@ struct BackendContainerTrait<ADPLL>
 /**
  * Container for configuration and triggering of the PLL internal self test.
  */
-class GENPYBIND(visible) PLLSelfTest
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PLLSelfTest
+    : public ContainerBase<PLLSelfTest>
 {
 public:
 	typedef halco::hicann_dls::vx::PLLSelfTestOnDLS coordinate_type;
@@ -471,7 +497,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, PLLSelfTest& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	bool m_clock_enable;
 	PreScalerP m_pre_scaler_p;
@@ -480,7 +507,6 @@ private:
 	CheckValue m_check_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTest)
 
 namespace detail {
 
@@ -498,7 +524,8 @@ struct BackendContainerTrait<PLLSelfTest>
 /**
  * Container of PLL self-test status data.
  */
-class GENPYBIND(visible) PLLSelfTestStatus
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PLLSelfTestStatus
+    : public ContainerBase<PLLSelfTestStatus>
 {
 public:
 	typedef halco::hicann_dls::vx::PLLSelfTestStatusOnDLS coordinate_type;
@@ -566,14 +593,14 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, PLLSelfTestStatus& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_success;
 	bool m_finished;
 	CounterValue m_counter_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTestStatus)
 
 namespace detail {
 

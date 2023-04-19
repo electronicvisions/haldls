@@ -13,6 +13,7 @@
 
 #if CHIP_REVISION == 3
 #define CHIP_REVISION_STR v3
+#include "cereal/types/lola/vx/v3/synapse_block.h"
 #else
 #error "Unknown CHIP_REVISION"
 #endif

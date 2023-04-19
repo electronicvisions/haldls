@@ -5,10 +5,25 @@
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/fpga.h"
 
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct NullPayloadReadable;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::NullPayloadReadable& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 struct NullPayloadReadableOnFPGA;
@@ -17,7 +32,8 @@ struct NullPayloadReadableOnFPGA;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) NullPayloadReadable
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) NullPayloadReadable
+    : public ContainerBase<NullPayloadReadable>
 {
 public:
 	typedef halco::hicann_dls::vx::NullPayloadReadableOnFPGA coordinate_type;
@@ -47,10 +63,10 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, NullPayloadReadable& value, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(NullPayloadReadable)
 
 namespace detail {
 

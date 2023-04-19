@@ -1,10 +1,24 @@
 #pragma once
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx::detail {
+
+struct SRAMTimingConfig;
+
+} // namespace haldls::vx::detail
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::detail::SRAMTimingConfig& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -103,7 +117,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, SRAMTimingConfig& value, std::uint32_t)
+	    SYMBOL_VISIBLE;
 
 	ReadDelay m_read_delay;
 	AddressSetupTime m_address_setup_time;
@@ -112,7 +127,6 @@ private:
 
 } // namespace detail
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(detail::SRAMTimingConfig)
 
 } // namespace vx
 } // namespace haldls

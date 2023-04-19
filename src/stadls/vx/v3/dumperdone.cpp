@@ -1,7 +1,8 @@
 #include "stadls/vx/v3/dumperdone.h"
 
+#include "cereal/types/haldls/cereal.tcc"
 #include "fisch/vx/container_cast.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/encodable.h"
 #include "stadls/visitors.h"
 #include <log4cxx/logger.h>
 
@@ -9,13 +10,27 @@ namespace stadls::vx::v3 {
 
 bool DumperDone::operator==(DumperDone const& other) const
 {
-	return values == other.values;
+	if (values.size() != other.values.size()) {
+		return false;
+	}
+	for (size_t i = 0; i < values.size(); ++i) {
+		auto const& value = values.at(i);
+		auto const& other_value = other.values.at(i);
+		auto const comparison =
+		    ((static_cast<bool>(value.first) == static_cast<bool>(other_value.first)) &&
+		     (!static_cast<bool>(value.first) || (*value.first == *other_value.first))) &&
+		    ((static_cast<bool>(value.second) == static_cast<bool>(other_value.second)) &&
+		     (!static_cast<bool>(value.second) || (*value.second == *other_value.second)));
+		if (!comparison) {
+			return false;
+		}
+	}
+	return true;
 }
 bool DumperDone::operator!=(DumperDone const& other) const
 {
 	return !(*this == other);
 }
-
 
 namespace {
 
@@ -66,25 +81,28 @@ lola::vx::v3::Chip convert_to_chip_impl(
 		}
 	}
 
+	constexpr auto backend =
+	    haldls::vx::detail::BackendContainerTrait<lola::vx::v3::Chip>::default_backend;
+
 	// apply coco list to memory
 	for (auto const& coco : dumperdone.values) {
 		words_type words;
 		addresses_type addresses;
-		std::visit(
-		    [&words, &addresses](auto const& cc) {
-			    auto const& [coord, config] = cc;
-			    if constexpr (hate::is_in_type_list<
-			                      backend_container_type,
-			                      typename haldls::vx::detail::BackendContainerTrait<
-			                          std::remove_const_t<decltype(config)>>::container_list>::
-			                      value) {
-				    haldls::vx::visit_preorder(
-				        config, coord, stadls::EncodeVisitor<words_type>{words});
-				    haldls::vx::visit_preorder(
-				        config, coord, stadls::WriteAddressVisitor<addresses_type>{addresses});
-			    }
-		    },
-		    coco);
+		auto const& [coord, config] = coco;
+		if (!coord || !config) {
+			throw std::logic_error("Unexpected access to moved-from object.");
+		}
+		if (!dynamic_cast<haldls::vx::Container const*>(coco.second.get())) {
+			continue;
+		}
+		if (!config->get_is_valid_backend(backend)) {
+			continue;
+		}
+		auto const local_encoded = config->encode_write(*coord, backend);
+		auto const& [local_addresses, local_words] =
+		    std::get<std::pair<decltype(addresses), decltype(words)>>(local_encoded);
+		addresses.insert(addresses.end(), local_addresses.begin(), local_addresses.end());
+		words.insert(words.end(), local_words.begin(), local_words.end());
 
 		for (size_t i = 0; i < addresses.size(); ++i) {
 			if (memory.contains(addresses.at(i))) {
@@ -170,10 +188,3 @@ lola::vx::v3::Chip convert_to_chip(DumperDone const& dumperdone, lola::vx::v3::C
 }
 
 } // namespace stadls::vx::v3
-
-template std::string haldls::vx::to_json(stadls::vx::v3::DumperDone const&);
-template std::string haldls::vx::to_portablebinary(stadls::vx::v3::DumperDone const&);
-template void haldls::vx::from_json(stadls::vx::v3::DumperDone&, std::string const&);
-template void haldls::vx::from_portablebinary(stadls::vx::v3::DumperDone&, std::string const&);
-
-CEREAL_CLASS_VERSION(stadls::vx::v3::DumperDone, 4)

@@ -3,9 +3,8 @@
 #include <string>
 
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 
 namespace haldls {
@@ -103,18 +102,7 @@ bool HicannARQStatus::operator!=(HicannARQStatus const& other) const
 	return !(*this == other);
 }
 
-template <class Archive>
-void HicannARQStatus::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_read_count));
-	ar(CEREAL_NVP(m_write_count));
-	ar(CEREAL_NVP(m_rx_count));
-	ar(CEREAL_NVP(m_tx_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(HicannARQStatus)
-
 } // namespace vx
 } // namespace haldls
 
-CEREAL_CLASS_VERSION(haldls::vx::HicannARQStatus, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::HicannARQStatus)

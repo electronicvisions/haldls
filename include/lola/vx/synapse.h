@@ -2,12 +2,11 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "halco/common/typed_heap_array.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 #include <boost/hana/adapt_struct.hpp>
 
@@ -17,13 +16,16 @@
 
 namespace lola::vx GENPYBIND_TAG_LOLA_VX {
 
-class GENPYBIND(visible) ColumnCorrelationRow : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ColumnCorrelationRow
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<ColumnCorrelationRow>
 {
 public:
 	typedef std::false_type has_local_data;
 	typedef halco::hicann_dls::vx::ColumnCorrelationRowOnDLS coordinate_type;
 
-	typedef haldls::vx::ColumnCorrelationQuad::ColumnCorrelationSwitch Value GENPYBIND(visible);
+	typedef haldls::vx::ColumnCorrelationQuad::ColumnCorrelationSwitch Value
+	    GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef halco::common::typed_heap_array<Value, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    Values GENPYBIND(opaque(false));
@@ -44,13 +46,16 @@ private:
 };
 
 
-class GENPYBIND(visible) ColumnCurrentRow : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ColumnCurrentRow
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<ColumnCurrentRow>
 {
 public:
 	typedef std::false_type has_local_data;
 	typedef halco::hicann_dls::vx::ColumnCurrentRowOnDLS coordinate_type;
 
-	typedef haldls::vx::ColumnCurrentQuad::ColumnCurrentSwitch Value GENPYBIND(visible);
+	typedef haldls::vx::ColumnCurrentQuad::ColumnCurrentSwitch Value
+	    GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef halco::common::typed_heap_array<Value, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    Values GENPYBIND(opaque(false));
@@ -70,13 +75,15 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseWeightRow : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseWeightRow
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<SynapseWeightRow>
 {
 public:
 	typedef std::false_type has_local_data;
 	typedef halco::hicann_dls::vx::SynapseWeightRowOnDLS coordinate_type;
 
-	typedef haldls::vx::SynapseWeightQuad::Value Value GENPYBIND(visible);
+	typedef haldls::vx::SynapseWeightQuad::Value Value GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef halco::common::typed_heap_array<Value, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _values_type GENPYBIND(opaque(false));
@@ -98,13 +105,15 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseLabelRow : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseLabelRow
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<SynapseLabelRow>
 {
 public:
 	typedef std::false_type has_local_data;
 	typedef halco::hicann_dls::vx::SynapseLabelRowOnDLS coordinate_type;
 
-	typedef haldls::vx::SynapseLabelQuad::Value Value GENPYBIND(visible);
+	typedef haldls::vx::SynapseLabelQuad::Value Value GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef halco::common::typed_heap_array<Value, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _values_type GENPYBIND(opaque(false));
@@ -126,14 +135,18 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseCorrelationCalibRow : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseCorrelationCalibRow
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<SynapseCorrelationCalibRow>
 {
 public:
 	typedef std::false_type has_local_data;
 	typedef halco::hicann_dls::vx::SynapseCorrelationCalibRowOnDLS coordinate_type;
 
-	typedef haldls::vx::SynapseCorrelationCalibQuad::TimeCalib TimeCalib GENPYBIND(visible);
-	typedef haldls::vx::SynapseCorrelationCalibQuad::AmpCalib AmpCalib GENPYBIND(visible);
+	typedef haldls::vx::SynapseCorrelationCalibQuad::TimeCalib TimeCalib
+	    GENPYBIND(inline_base("*ContainerBase*"));
+	typedef haldls::vx::SynapseCorrelationCalibQuad::AmpCalib AmpCalib
+	    GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef halco::common::typed_heap_array<TimeCalib, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _time_calibs_type GENPYBIND(opaque(false));
@@ -163,16 +176,18 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseRow : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseRow
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<SynapseRow>
 {
 public:
 	typedef std::false_type has_local_data;
 	typedef halco::hicann_dls::vx::SynapseRowOnDLS coordinate_type;
 
-	typedef haldls::vx::SynapseQuad::Weight Weight GENPYBIND(visible);
-	typedef haldls::vx::SynapseQuad::Label Label GENPYBIND(visible);
-	typedef haldls::vx::SynapseQuad::TimeCalib TimeCalib GENPYBIND(visible);
-	typedef haldls::vx::SynapseQuad::AmpCalib AmpCalib GENPYBIND(visible);
+	typedef haldls::vx::SynapseQuad::Weight Weight GENPYBIND(inline_base("*ContainerBase*"));
+	typedef haldls::vx::SynapseQuad::Label Label GENPYBIND(inline_base("*ContainerBase*"));
+	typedef haldls::vx::SynapseQuad::TimeCalib TimeCalib GENPYBIND(inline_base("*ContainerBase*"));
+	typedef haldls::vx::SynapseQuad::AmpCalib AmpCalib GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef halco::common::typed_heap_array<Weight, halco::hicann_dls::vx::SynapseOnSynapseRow>
 	    _weights_type GENPYBIND(opaque);
@@ -209,7 +224,9 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseWeightMatrix : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseWeightMatrix
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<SynapseWeightMatrix>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -222,7 +239,7 @@ public:
 	using matrix_type =
 	    halco::common::typed_heap_array<row_type<T>, halco::hicann_dls::vx::SynapseRowOnSynram>;
 
-	typedef haldls::vx::SynapseWeightQuad::Value Value GENPYBIND(visible);
+	typedef haldls::vx::SynapseWeightQuad::Value Value GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef row_type<Value> _row_type GENPYBIND(opaque(false));
 	typedef matrix_type<Value> _values_type GENPYBIND(opaque(false));
@@ -245,7 +262,9 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseLabelMatrix : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseLabelMatrix
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<SynapseLabelMatrix>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -258,7 +277,7 @@ public:
 	using matrix_type =
 	    halco::common::typed_heap_array<row_type<T>, halco::hicann_dls::vx::SynapseRowOnSynram>;
 
-	typedef haldls::vx::SynapseLabelQuad::Value Value GENPYBIND(visible);
+	typedef haldls::vx::SynapseLabelQuad::Value Value GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef row_type<Value> _row_type GENPYBIND(opaque(false));
 	typedef matrix_type<Value> _values_type GENPYBIND(opaque(false));
@@ -280,7 +299,9 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseCorrelationCalibMatrix : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseCorrelationCalibMatrix
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<SynapseCorrelationCalibMatrix>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -293,8 +314,10 @@ public:
 	using matrix_type =
 	    halco::common::typed_heap_array<row_type<T>, halco::hicann_dls::vx::SynapseRowOnSynram>;
 
-	typedef haldls::vx::SynapseCorrelationCalibQuad::TimeCalib TimeCalib GENPYBIND(visible);
-	typedef haldls::vx::SynapseCorrelationCalibQuad::AmpCalib AmpCalib GENPYBIND(visible);
+	typedef haldls::vx::SynapseCorrelationCalibQuad::TimeCalib TimeCalib
+	    GENPYBIND(inline_base("*ContainerBase*"));
+	typedef haldls::vx::SynapseCorrelationCalibQuad::AmpCalib AmpCalib
+	    GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef row_type<TimeCalib> _time_calibs_row_type GENPYBIND(opaque(false));
 	typedef row_type<AmpCalib> _amp_calibs_row_type GENPYBIND(opaque(false));
@@ -323,7 +346,9 @@ private:
 };
 
 
-class GENPYBIND(visible) SynapseMatrix : public haldls::vx::DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseMatrix
+    : public haldls::vx::DifferentialWriteTrait
+    , public haldls::vx::ContainerBase<SynapseMatrix>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -336,10 +361,10 @@ public:
 	using matrix_type =
 	    halco::common::typed_heap_array<row_type<T>, halco::hicann_dls::vx::SynapseRowOnSynram>;
 
-	typedef haldls::vx::SynapseQuad::Weight Weight GENPYBIND(visible);
-	typedef haldls::vx::SynapseQuad::Label Label GENPYBIND(visible);
-	typedef haldls::vx::SynapseQuad::TimeCalib TimeCalib GENPYBIND(visible);
-	typedef haldls::vx::SynapseQuad::AmpCalib AmpCalib GENPYBIND(visible);
+	typedef haldls::vx::SynapseQuad::Weight Weight GENPYBIND(inline_base("*ContainerBase*"));
+	typedef haldls::vx::SynapseQuad::Label Label GENPYBIND(inline_base("*ContainerBase*"));
+	typedef haldls::vx::SynapseQuad::TimeCalib TimeCalib GENPYBIND(inline_base("*ContainerBase*"));
+	typedef haldls::vx::SynapseQuad::AmpCalib AmpCalib GENPYBIND(inline_base("*ContainerBase*"));
 
 	typedef row_type<Weight> _weights_row_type GENPYBIND(opaque);
 	typedef row_type<Label> _labels_row_type GENPYBIND(opaque);
@@ -382,7 +407,8 @@ private:
  * Using this container is equivalent to writing haldls CorrelationReset containers
  * to all quads of the row.
  */
-class GENPYBIND(visible) CorrelationResetRow
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CorrelationResetRow
+    : public haldls::vx::ContainerBase<CorrelationResetRow>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -1494,15 +1520,3 @@ BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseLabelMatrix, values);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseCorrelationCalibMatrix, time_calibs, amp_calibs);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::SynapseMatrix, weights, labels, time_calibs, amp_calibs);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::CorrelationResetRow);
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::ColumnCorrelationRow)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::ColumnCurrentRow)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseRow)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseWeightRow)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseLabelRow)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseCorrelationCalibRow)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseWeightMatrix)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseLabelMatrix)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseCorrelationCalibMatrix)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseMatrix)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CorrelationResetRow)

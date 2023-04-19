@@ -6,9 +6,12 @@
 
 #include "halco/hicann-dls/vx/barrier.h"
 #include "haldls/vx/barrier.h"
+#include "haldls/vx/block_until.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "hate/visibility.h"
 #include "hxcomm/vx/target.h"
+#include "stadls/vx/container_ticket.h"
 #include "stadls/vx/dumper.h"
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/playback_program.h"
@@ -22,6 +25,23 @@
 #include "fisch/vx/playback_program_builder.h"
 #endif
 // clang-format on
+
+namespace stadls::vx::detail {
+
+template <typename BuilderStorage, typename DoneType>
+struct PlaybackProgramBuilderAdapter;
+
+} // namespace stadls::vx::detail
+
+namespace cereal {
+
+template <typename Archive, typename BuilderStorage, typename DoneType>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    stadls::vx::detail::PlaybackProgramBuilderAdapter<BuilderStorage, DoneType>& value,
+    std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class PlaybackProgramBuilder;
@@ -38,24 +58,20 @@ using Dumper = class stadls::vx::detail::Dumper<stadls::vx::v3::DumperDone>;
 
 namespace detail {
 
-template <typename, typename, template <typename> class>
+template <typename, typename>
 class PlaybackProgramBuilderAdapterImpl;
 
-template <typename, typename, template <typename> class>
+template <typename, typename>
 class PlaybackProgramBuilderAdapter;
 
-template <typename T, typename U, template <typename> class C>
-std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilderAdapter<T, U, C> const& builder)
+template <typename T, typename U>
+std::ostream& operator<<(std::ostream& os, PlaybackProgramBuilderAdapter<T, U> const& builder)
     SYMBOL_VISIBLE;
 
 /**
  * Sequential PlaybackProgram builder.
  */
-template <
-    typename BuilderStorage,
-    typename DoneType,
-    template <typename>
-    class CoordinateToContainer>
+template <typename BuilderStorage, typename DoneType>
 class SYMBOL_VISIBLE PlaybackProgramBuilderAdapter
 {
 public:
@@ -70,28 +86,19 @@ public:
 	typedef BuilderStorage Builder;
 
 	/**
-	 * Add instruction to block execution until specified timer has reached specified value.
-	 * @param coord Timer coordinate for which to block
-	 * @param time Timer value until which to block execution
-	 */
-	void block_until(
-	    typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value time);
-
-	/**
-	 * Add instruction to block execution until specified barrier is completed.
-	 * @param coord Barrier coordinate for which to block
-	 * @param sync Barrier value for which to block execution
-	 */
-	void block_until(halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier sync);
-
-	/*
-	 * Add instruction to block execution until configured Omnibus address has (not) defined value.
+	 * Add instruction to block execution until specified condition is satisfied.
 	 * @param coord Coordinate for which to block
-	 * @param sync PollingOmnibusBlock value for which to block execution
+	 * @param condition Condition to block execution for until satisfaction
 	 */
 	void block_until(
-	    halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA const& coord,
-	    haldls::vx::PollingOmnibusBlock sync);
+	    haldls::vx::BlockUntil::Coordinate const& coord, haldls::vx::BlockUntil const& condition);
+
+	/**
+	 * Add instructions to write given container to given location.
+	 * @param coord Coordinate value selecting location
+	 * @param config Container configuration data
+	 */
+	void write(haldls::vx::Container::Coordinate const& coord, haldls::vx::Container const& config);
 
 	/**
 	 * Add instructions to write given container to given location.
@@ -99,22 +106,21 @@ public:
 	 * @param config Container configuration data
 	 * @param backend Backend selection
 	 */
-	template <typename Type>
 	void write(
-	    typename Type::coordinate_type const& coord,
-	    Type const& config,
+	    haldls::vx::Container::Coordinate const& coord,
+	    haldls::vx::Container const& config,
 	    haldls::vx::Backend backend);
 
 	/**
 	 * Add instructions to write given container to given location.
-	 * The container's default backend is used.
 	 * @param coord Coordinate value selecting location
 	 * @param config Container configuration data
-	 * @note This function without backend parameter is needed due to python wrapping not being
-	 * able to handle templated default arguments.
+	 * @param config_reference Reference configuration for differential write
 	 */
-	template <typename Type>
-	void write(typename Type::coordinate_type const& coord, Type const& config);
+	void write(
+	    haldls::vx::Container::Coordinate const& coord,
+	    haldls::vx::Container const& config,
+	    haldls::vx::Container const& config_reference);
 
 	/**
 	 * Add instructions to write given container to given location.
@@ -123,47 +129,25 @@ public:
 	 * @param config_reference Reference configuration for differential write
 	 * @param backend Backend selection
 	 */
-	template <typename Type>
 	void write(
-	    typename Type::coordinate_type const& coord,
-	    Type const& config,
-	    Type const& config_reference,
+	    haldls::vx::Container::Coordinate const& coord,
+	    haldls::vx::Container const& config,
+	    haldls::vx::Container const& config_reference,
 	    haldls::vx::Backend backend);
 
 	/**
-	 * Add instructions to write given container to given location.
-	 * The container's default backend is used.
+	 * Add instructions to read container data from given location.
 	 * @param coord Coordinate value selecting location
-	 * @param config Container configuration data
-	 * @param config_reference Reference configuration for differential write
-	 * @note This function without backend parameter is needed due to python wrapping not being
-	 * able to handle templated default arguments.
 	 */
-	template <typename Type>
-	void write(
-	    typename Type::coordinate_type const& coord,
-	    Type const& config,
-	    Type const& config_reference);
+	ContainerTicket read(haldls::vx::Container::Coordinate const& coord);
 
 	/**
 	 * Add instructions to read container data from given location.
 	 * @param coord Coordinate value selecting location
 	 * @param backend Backend selection
 	 */
-	template <typename CoordinateType>
-	PlaybackProgram::ContainerTicket<typename CoordinateToContainer<CoordinateType>::type> read(
-	    CoordinateType const& coord, haldls::vx::Backend backend);
-
-	/**
-	 * Add instructions to read container data from given location.
-	 * The container's default backend is used.
-	 * @param coord Coordinate value selecting location
-	 * @note This function without backend parameter is needed due to python wrapping not being
-	 * able to handle templated default arguments.
-	 */
-	template <typename CoordinateType>
-	PlaybackProgram::ContainerTicket<typename CoordinateToContainer<CoordinateType>::type> read(
-	    CoordinateType const& coord);
+	ContainerTicket read(
+	    haldls::vx::Container::Coordinate const& coord, haldls::vx::Backend backend);
 
 	/**
 	 * Merge other PlaybackProgramBuilderAdapter to the end of this builder instance.
@@ -215,9 +199,9 @@ public:
 	 */
 	DoneType done();
 
-	template <typename T, typename U, template <typename> class C>
+	template <typename T, typename U>
 	friend std::ostream& operator<<(
-	    std::ostream& os, PlaybackProgramBuilderAdapter<T, U, C> const& builder);
+	    std::ostream& os, PlaybackProgramBuilderAdapter<T, U> const& builder);
 
 	GENPYBIND_MANUAL({
 		parent.def("__repr__", [](GENPYBIND_PARENT_TYPE const& p) {
@@ -265,13 +249,12 @@ public:
 	bool is_write_only() const;
 
 private:
-	using Impl =
-	    detail::PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType, CoordinateToContainer>;
+	using Impl = detail::PlaybackProgramBuilderAdapterImpl<BuilderStorage, DoneType>;
 	friend Impl;
 
-	friend struct cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	template <class Archive, typename T, typename U>
+	friend void ::cereal::serialize(
+	    Archive& ar, PlaybackProgramBuilderAdapter<T, U>& value, std::uint32_t const version);
 
 	std::unique_ptr<BuilderStorage> m_builder_impl;
 

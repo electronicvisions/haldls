@@ -7,11 +7,31 @@
 #include "halco/hicann-dls/vx/madc.h"
 #include "halco/hicann-dls/vx/readout.h"
 #include "halco/hicann-dls/vx/synapse.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/pll.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct MADCControl;
+struct MADCConfig;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::MADCControl& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::MADCConfig& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -27,7 +47,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * https://chat.bioai.eu/visions/pl/s4o4mq36xtyeigtzkw9kgfihcc
  * FIXME: Add more explanatory description (issue #3471)
  */
-class GENPYBIND(visible) MADCControl
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) MADCControl
+    : public ContainerBase<MADCControl>
 {
 public:
 	typedef halco::hicann_dls::vx::MADCControlOnDLS coordinate_type;
@@ -102,7 +123,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, MADCControl& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	bool m_enable_iconv_amplifier;
 	bool m_enable_pre_amplifier;
@@ -113,7 +135,6 @@ private:
 	bool m_wake_up;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(MADCControl)
 
 namespace detail {
 
@@ -131,7 +152,8 @@ struct BackendContainerTrait<MADCControl>
 /**
  * Configuration container for MADC and related circuitry.
  */
-class GENPYBIND(visible) MADCConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) MADCConfig
+    : public ContainerBase<MADCConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::MADCConfigOnDLS coordinate_type;
@@ -556,7 +578,7 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const);
+	friend void ::cereal::serialize(Archive& ar, MADCConfig& value, std::uint32_t const);
 
 	input_selection_type m_active_mux_initially_selected_input;
 	ActiveMuxInputSelectLength m_active_mux_input_select_length;
@@ -592,7 +614,6 @@ private:
 	synapse_target_type m_connect_iconv_synapse;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(MADCConfig)
 
 namespace detail {
 

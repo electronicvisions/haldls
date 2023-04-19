@@ -4,15 +4,10 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/indent.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls::vx {
 
@@ -528,33 +523,6 @@ template SYMBOL_VISIBLE void PadMultiplexerConfig::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         PadMultiplexerConfig::config_size_in_words> const& words);
 
-#ifndef __ppu__
-template <class Archive>
-void PadMultiplexerConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_cadc_v_ramp_mux));
-	ar(CEREAL_NVP(m_cadc_v_ramp_mux_to_pad));
-	ar(CEREAL_NVP(m_capmem_i_out_mux));
-	ar(CEREAL_NVP(m_capmem_i_out_mux_to_inter));
-	ar(CEREAL_NVP(m_capmem_inter_mux_to_pad));
-	ar(CEREAL_NVP(m_capmem_v_out_mux));
-	ar(CEREAL_NVP(m_capmem_v_out_mux_to_inter));
-	ar(CEREAL_NVP(m_capmem_v_ref_mux));
-	ar(CEREAL_NVP(m_capmem_v_ref_mux_to_inter));
-	ar(CEREAL_NVP(m_neuron_i_stim_mux));
-	ar(CEREAL_NVP(m_neuron_i_stim_mux_to_pad));
-	ar(CEREAL_NVP(m_cadc_debug_acausal_to_inter));
-	ar(CEREAL_NVP(m_cadc_debug_causal_to_inter));
-	ar(CEREAL_NVP(m_synin_debug_inhibitory_to_inter));
-	ar(CEREAL_NVP(m_synin_debug_excitatory_to_inter));
-	ar(CEREAL_NVP(m_synapse_inter_mux_to_pad));
-	ar(CEREAL_NVP(m_buffer_to_pad));
-	ar(CEREAL_NVP(m_debug_to_pad));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PadMultiplexerConfig)
-#endif
-
 
 ReadoutSourceSelection::SourceMultiplexer::SourceMultiplexer() :
     m_debug_plus(false),
@@ -691,25 +659,6 @@ bool ReadoutSourceSelection::SourceMultiplexer::operator!=(
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <class Archive>
-void ReadoutSourceSelection::SourceMultiplexer::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_debug_plus));
-	ar(CEREAL_NVP(m_debug_minus));
-	ar(CEREAL_NVP(m_current_dac));
-	ar(CEREAL_NVP(m_synin_debug_inhibitory));
-	ar(CEREAL_NVP(m_synin_debug_excitatory));
-	ar(CEREAL_NVP(m_cadc_debug_causal));
-	ar(CEREAL_NVP(m_cadc_debug_acausal));
-	ar(CEREAL_NVP(m_synapse_driver_debug));
-	ar(CEREAL_NVP(m_neuron_odd));
-	ar(CEREAL_NVP(m_neuron_even));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection::SourceMultiplexer)
-#endif
 
 
 ReadoutSourceSelection::ReadoutSourceSelection() : m_buffers(), m_enable_buffer_to_pad() {}
@@ -1052,21 +1001,7 @@ template SYMBOL_VISIBLE void ReadoutSourceSelection::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         ReadoutSourceSelection::config_size_in_words> const& words);
 
-#ifndef __ppu__
-template <class Archive>
-void ReadoutSourceSelection::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_buffers));
-	ar(CEREAL_NVP(m_enable_buffer_to_pad));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ReadoutSourceSelection)
-#endif
-
 } // namespace haldls::vx
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::PadMultiplexerConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ReadoutSourceSelection::SourceMultiplexer, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ReadoutSourceSelection, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PadMultiplexerConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ReadoutSourceSelection)

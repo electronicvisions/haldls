@@ -1,9 +1,8 @@
 #include "lola/vx/synapse.h"
 
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
 #include "hate/join.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/gray_scale.h"
 #include "lola/vx/hana.h"
 #include <boost/hana/adapt_struct.hpp>
@@ -328,14 +327,14 @@ std::ostream& operator<<(std::ostream& os, CorrelationResetRow const& /* row */)
 
 } // namespace lola::vx
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::ColumnCorrelationRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::ColumnCurrentRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseWeightRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseLabelRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseCorrelationCalibRow)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseWeightMatrix)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseLabelMatrix)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseCorrelationCalibMatrix)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::SynapseMatrix)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CorrelationResetRow)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::ColumnCorrelationRow)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::ColumnCurrentRow)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::SynapseRow)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::SynapseWeightRow)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::SynapseLabelRow)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::SynapseCorrelationCalibRow)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::SynapseWeightMatrix)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::SynapseLabelMatrix)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::SynapseCorrelationCalibMatrix)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::SynapseMatrix)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::CorrelationResetRow)

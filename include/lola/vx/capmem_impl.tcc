@@ -5,10 +5,9 @@
 #include "lola/vx/capmem.h"
 
 #include "halco/common/iter_all.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
 #include "hate/join.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 #if CHIP_REVISION == 3
@@ -53,4 +52,4 @@ std::ostream& operator<<(std::ostream& os, CapMem const& config)
 
 }
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::CapMem)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::CHIP_REVISION_STR::CapMem)

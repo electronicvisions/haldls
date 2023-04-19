@@ -7,12 +7,6 @@
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.h"
-#endif
-
 namespace haldls::vx {
 
 // TODO: Initialize with reasonable default values, see Issue #3368
@@ -392,29 +386,6 @@ bool NeuronBackendConfig<Coordinates>::operator!=(NeuronBackendConfig const& oth
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <typename Coordinates>
-template <class Archive>
-void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_address_out));
-	ar(CEREAL_NVP(m_reset_holdoff));
-	ar(CEREAL_NVP(m_refractory_time));
-	ar(CEREAL_NVP(m_post_overwrite));
-	ar(CEREAL_NVP(m_select_input_clock));
-	ar(CEREAL_NVP(m_en_adapt_pulse));
-	ar(CEREAL_NVP(m_en_bayesian_extension));
-	ar(CEREAL_NVP(m_en_neuron_slave));
-	ar(CEREAL_NVP(m_connect_fire_bottom));
-	ar(CEREAL_NVP(m_connect_fire_from_right));
-	ar(CEREAL_NVP(m_connect_fire_to_right));
-	ar(CEREAL_NVP(m_en_spike_out));
-	ar(CEREAL_NVP(m_en_neuron_master));
-	ar(CEREAL_NVP(m_en_0_bayesian));
-	ar(CEREAL_NVP(m_en_1_bayesian));
-}
-#endif
-
 #define NEURON_BACKEND_CONFIG_UNROLL_PPU(Coordinates)                                              \
 	template class NeuronBackendConfig<Coordinates>;                                               \
                                                                                                    \
@@ -453,9 +424,7 @@ void NeuronBackendConfig<Coordinates>::serialize(Archive& ar, std::uint32_t cons
 	    coordinate_type const& cell);
 
 #ifndef __ppu__
-#define NEURON_BACKEND_CONFIG_UNROLL(Coordinates)                                                  \
-	NEURON_BACKEND_CONFIG_UNROLL_PPU(Coordinates)                                                  \
-	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(NeuronBackendConfig<Coordinates>)
+#define NEURON_BACKEND_CONFIG_UNROLL(Coordinates) NEURON_BACKEND_CONFIG_UNROLL_PPU(Coordinates)
 #endif
 
 } // namespace haldls::vx

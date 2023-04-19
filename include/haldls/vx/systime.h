@@ -4,13 +4,30 @@
 
 #include "halco/hicann-dls/vx/timing.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
 
-#ifndef __ppu__
-#include "haldls/cerealization.h"
-#endif
+namespace haldls::vx {
+
+struct SystimeSyncBase;
+struct SystimeSync;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SystimeSyncBase& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SystimeSync& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -24,7 +41,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * Container for configuring the initial counter value of the systime counter in the chip and in the
  * FPGA after the next systime syncronization operation.
  */
-class GENPYBIND(visible) SystimeSyncBase
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SystimeSyncBase
+    : public ContainerBase<SystimeSyncBase>
 {
 public:
 	typedef halco::hicann_dls::vx::SystimeSyncBaseOnDLS coordinate_type;
@@ -62,16 +80,12 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend struct cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	template <typename Archive>
+	friend void ::cereal::serialize(
+	    Archive& ar, SystimeSyncBase& value, std::uint32_t const version);
 
 	Value m_value;
 };
-
-#ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SystimeSyncBase)
-#endif
 
 namespace detail {
 
@@ -91,7 +105,8 @@ struct BackendContainerTrait<SystimeSyncBase>
  * After syncronization the FPGA will annotate responses with systime information by sending
  * additional timing messages.
  */
-class GENPYBIND(visible) SystimeSync
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SystimeSync
+    : public ContainerBase<SystimeSync>
 {
 public:
 	typedef halco::hicann_dls::vx::SystimeSyncOnFPGA coordinate_type;
@@ -137,14 +152,9 @@ public:
 private:
 	bool m_do_sync;
 
-	friend struct cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	template <typename Archive>
+	friend void ::cereal::serialize(Archive& ar, SystimeSync& value, std::uint32_t const version);
 };
-
-#ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SystimeSync)
-#endif
 
 namespace detail {
 

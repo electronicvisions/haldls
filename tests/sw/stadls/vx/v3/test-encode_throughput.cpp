@@ -11,6 +11,7 @@
 #include "hxcomm/vx/zeromockconnection.h"
 #include "lola/vx/v3/container.h"
 #include "stadls/visitors.h"
+#include "stadls/vx/container_ticket.h"
 #include "stadls/vx/v3/decode.h"
 #include "stadls/vx/v3/playback_program.h"
 #include "stadls/vx/v3/playback_program_builder.h"
@@ -52,6 +53,7 @@ constexpr size_t num_containers = 100;
 
 template <typename Type>
 std::enable_if_t<
+    !std::is_base_of_v<haldls::vx::Container, Type> ||
     !haldls::vx::detail::IsWriteable<Type>::value ||
     !fisch::vx::IsWritable<decltype(
         fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
@@ -61,6 +63,7 @@ test_write()
 
 template <typename Type>
 std::enable_if_t<
+    std::is_base_of_v<haldls::vx::Container, Type> &&
     haldls::vx::detail::IsWriteable<Type>::value &&
     fisch::vx::IsWritable<decltype(
         fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
@@ -98,6 +101,7 @@ test_write()
 
 template <typename Type>
 std::enable_if_t<
+    !std::is_base_of_v<haldls::vx::Container, Type> ||
     !haldls::vx::detail::IsReadable<Type>::value ||
     !fisch::vx::IsReadable<decltype(
         fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
@@ -107,7 +111,7 @@ test_read()
 
 template <typename Type>
 std::enable_if_t<
-    haldls::vx::detail::IsReadable<Type>::value &&
+    std::is_base_of_v<haldls::vx::Container, Type> && haldls::vx::detail::IsReadable<Type>::value &&
     fisch::vx::IsReadable<decltype(
         fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
                                       Type>::default_container>()))>::value>
@@ -137,6 +141,7 @@ test_read()
 
 template <typename Type>
 std::enable_if_t<
+    !std::is_base_of_v<haldls::vx::Container, Type> ||
     !haldls::vx::detail::IsReadable<Type>::value ||
     !fisch::vx::IsReadable<decltype(
         fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
@@ -147,7 +152,7 @@ test_read_get()
 
 template <typename Type>
 std::enable_if_t<
-    haldls::vx::detail::IsReadable<Type>::value &&
+    std::is_base_of_v<haldls::vx::Container, Type> && haldls::vx::detail::IsReadable<Type>::value &&
     fisch::vx::IsReadable<decltype(
         fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
                                       Type>::default_container>()))>::value &&
@@ -156,7 +161,7 @@ test_read_get()
 {
 	typename Type::coordinate_type coord = stadls::vx::detail::get_coord(Type());
 	stadls::vx::v3::PlaybackProgramBuilder builder;
-	std::vector<stadls::vx::PlaybackProgram::ContainerTicket<Type>> tickets;
+	std::vector<stadls::vx::ContainerTicket> tickets;
 	for (size_t i = 0; i < num_containers; ++i) {
 		tickets.push_back(builder.read(coord));
 	}

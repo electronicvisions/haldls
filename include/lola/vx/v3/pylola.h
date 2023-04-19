@@ -1,8 +1,6 @@
 /* This header file contains additional code related to python bindings */
 #include <vector>
 #include <pybind11/pybind11.h>
-
-#include "haldls/cerealization.tcc"
 #include "lola/vx/genpybind.h"
 
 namespace py = pybind11;
@@ -14,10 +12,11 @@ GENPYBIND_MANUAL({
 	parent->py::module::import("pyhaldls_vx_v3");
 })
 
-#include "haldls/cerealization.h"
+#include "cereal/types/haldls/cereal.tcc"
+#include "cereal/types/lola/vx/v3/lola.h"
 #include "haldls/vx/pickle.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/v3/lola.h"
+#include <cereal/macros.hpp>
 
 
 namespace lola::vx::v3::detail {

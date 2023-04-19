@@ -6,15 +6,45 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/event.h"
 #include "halco/hicann-dls/vx/routing_crossbar.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
 
 #ifndef __ppu__
 #include "hxcomm/vx/target.h"
 #endif
+
+namespace haldls::vx {
+
+struct CrossbarOutputConfig;
+struct CrossbarInputDropCounter;
+struct CrossbarOutputEventCounter;
+struct CrossbarNode;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CrossbarOutputConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CrossbarInputDropCounter& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CrossbarOutputEventCounter& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CrossbarNode& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -24,7 +54,8 @@ class Omnibus;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) CrossbarOutputConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CrossbarOutputConfig
+    : public ContainerBase<CrossbarOutputConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::CrossbarOutputConfigOnDLS coordinate_type;
@@ -82,13 +113,13 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CrossbarOutputConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	enable_event_counter_type m_enable_event_counter;
 	enable_slow_type m_enable_slow;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CrossbarOutputConfig)
 
 namespace detail {
 
@@ -107,7 +138,8 @@ struct BackendContainerTrait<CrossbarOutputConfig>
  * Crossbar input drop counter accumulating drops at all outputs for which the drop counter
  * accumulation is enabled in the corresponding CrossbarNode.
  */
-class GENPYBIND(visible) CrossbarInputDropCounter
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CrossbarInputDropCounter
+    : public ContainerBase<CrossbarInputDropCounter>
 {
 public:
 	typedef halco::hicann_dls::vx::CrossbarInputOnDLS coordinate_type;
@@ -169,12 +201,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CrossbarInputDropCounter& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CrossbarInputDropCounter)
 
 namespace detail {
 
@@ -192,7 +224,8 @@ struct BackendContainerTrait<CrossbarInputDropCounter>
 /**
  * Crossbar output event counter counting events routed to an output.
  */
-class GENPYBIND(visible) CrossbarOutputEventCounter
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CrossbarOutputEventCounter
+    : public ContainerBase<CrossbarOutputEventCounter>
 {
 public:
 	typedef halco::hicann_dls::vx::CrossbarOutputOnDLS coordinate_type;
@@ -254,12 +287,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CrossbarOutputEventCounter& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CrossbarOutputEventCounter)
 
 namespace detail {
 
@@ -279,7 +312,8 @@ struct BackendContainerTrait<CrossbarOutputEventCounter>
  * A event is routed exactly if the following statement is true:
  *     (event_label & mask) == target
  */
-class GENPYBIND(visible) CrossbarNode
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CrossbarNode
+    : public ContainerBase<CrossbarNode>
 {
 public:
 	typedef halco::hicann_dls::vx::CrossbarNodeOnDLS coordinate_type;
@@ -349,14 +383,14 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, CrossbarNode& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	neuron_label_type m_mask;
 	neuron_label_type m_target;
 	bool m_enable_drop_counter;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CrossbarNode)
 
 namespace detail {
 

@@ -6,18 +6,59 @@
 #include "halco/hicann-dls/vx/highspeed_link.h"
 #include "halco/hicann-dls/vx/readout.h"
 #endif
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/padi.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct SpikePack1ToChip;
+struct SpikePack2ToChip;
+struct SpikePack3ToChip;
+struct SpikeFromChip;
+struct MADCSampleFromChip;
+struct HighspeedLinkNotification;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikePack1ToChip& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikePack2ToChip& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikePack3ToChip& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikeFromChip& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::MADCSampleFromChip& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::HighspeedLinkNotification& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 
 #define SpikePackToChip(Num)                                                                       \
-	class GENPYBIND(visible) SpikePack##Num##ToChip                                                \
+	class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SpikePack##Num##ToChip          \
+	    : public ContainerBase<SpikePack##Num##ToChip>                                             \
 	{                                                                                              \
 	public:                                                                                        \
 		typedef halco::hicann_dls::vx::SpikePack##Num##ToChipOnDLS coordinate_type;                \
@@ -73,12 +114,14 @@ namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 	private:                                                                                       \
 		friend struct cereal::access;                                                              \
 		template <class Archive>                                                                   \
-		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;                   \
+		friend void ::cereal::serialize(                                                           \
+		    Archive& ar,                                                                           \
+		    SpikePack##Num##ToChip& value,                                                         \
+		    std::uint32_t const version) SYMBOL_VISIBLE;                                           \
                                                                                                    \
 		labels_type m_impl;                                                                        \
 	};                                                                                             \
                                                                                                    \
-	EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikePack##Num##ToChip)                                    \
                                                                                                    \
 	namespace detail {                                                                             \
                                                                                                    \
@@ -163,7 +206,7 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(Archive& ar, SpikeFromChip& value, std::uint32_t const version);
 
 public:
 	friend struct detail::SpikeFromChipChecker;
@@ -176,7 +219,6 @@ public:
 	};
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeFromChip)
 
 namespace detail {
 
@@ -281,7 +323,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, MADCSampleFromChip& value, std::uint32_t const version);
 
 public:
 	friend struct detail::MADCSampleFromChipChecker;
@@ -295,7 +338,6 @@ public:
 	};
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(MADCSampleFromChip)
 
 namespace detail {
 
@@ -455,7 +497,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, HighspeedLinkNotification& value, std::uint32_t const version);
 
 	halco::hicann_dls::vx::PhyStatusOnFPGA m_phy{};
 	bool m_link_up{false};
@@ -466,7 +509,7 @@ private:
 	FPGATime m_fpga_time{};
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(HighspeedLinkNotification)
+
 #endif
 
 } // namespace haldls::vx

@@ -2,6 +2,7 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/routing_crossbar.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/routing_crossbar.h"
 #include "hate/visibility.h"
 #ifndef __ppu__
@@ -18,7 +19,8 @@ namespace lola::vx GENPYBIND_TAG_LOLA_VX {
 /**
  * Container for configuration of the routing crossbar.
  */
-class GENPYBIND(visible) Crossbar
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) Crossbar
+    : public haldls::vx::ContainerBase<Crossbar>
 {
 public:
 	typedef halco::hicann_dls::vx::CrossbarOnDLS coordinate_type;

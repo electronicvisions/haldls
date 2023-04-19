@@ -9,9 +9,9 @@
 #include <gtest/gtest.h>
 
 
+#include "cereal/types/haldls/cereal.tcc"
 #include "halco/common/iter_sparse.h"
 #include "halco/common/typed_array.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/common.h"
 #include "hate/math.h"
 #include "hate/type_index.h"

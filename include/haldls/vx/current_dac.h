@@ -6,10 +6,25 @@
 #include "halco/hicann-dls/vx/chip.h"
 #include "halco/hicann-dls/vx/current_dac.h"
 #include "halco/hicann-dls/vx/synapse.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct CurrentDAC;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CurrentDAC& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 
@@ -23,7 +38,8 @@ namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * Configuration of the current DAC of the readout chain.
  */
-class GENPYBIND(visible) CurrentDAC
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CurrentDAC
+    : public ContainerBase<CurrentDAC>
 {
 public:
 	typedef halco::hicann_dls::vx::CurrentDACOnDLS coordinate_type;
@@ -107,7 +123,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, CurrentDAC& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	Current m_current;
 	bool m_enable_current;
@@ -117,8 +134,6 @@ private:
 };
 
 std::ostream& operator<<(std::ostream&, CurrentDAC::Sign const&) SYMBOL_VISIBLE;
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CurrentDAC)
 
 
 namespace detail {

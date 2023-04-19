@@ -1,6 +1,5 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
-#include "lola/vx/cerealization.h"
 #include <boost/hana/adapt_struct.hpp>
 
 namespace haldls::vx::detail {
@@ -118,4 +117,3 @@ struct VisitPreorderImpl<lola::vx::MemoryTiming>
 
 BOOST_HANA_ADAPT_STRUCT(
     lola::vx::MemoryTiming, cadc_offset, synapse_driver, neuron, neuron_backend, synram);
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::MemoryTiming)

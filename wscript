@@ -160,6 +160,15 @@ def build(bld):
             uselib = 'HALDLS_LIBRARIES',
         )
 
+        bld(
+            target = f'haldls_vx_v{hx_version}_serialization',
+            source = bld.path.ant_glob('src/cereal/types/haldls/vx/*.cpp')
+                   + bld.path.ant_glob(f'src/cereal/types/haldls/vx/v{hx_version}/*.cpp'),
+            install_path = '${PREFIX}/lib',
+            features = 'cxx cxxshlib',
+            use = [f'haldls_vx_v{hx_version}', f'halco_hicann_dls_vx_v{hx_version}_serialization'],
+        )
+
         if bld.env.have_ppu_toolchain:
             ppu_build_source = [
                 'src/haldls/vx/padi.cpp',
@@ -213,14 +222,33 @@ def build(bld):
         )
 
         bld(
+            target = f'stadls_vx_v{hx_version}_serialization',
+            source = bld.path.ant_glob('src/cereal/types/stadls/vx/*.cpp')
+                   + bld.path.ant_glob(f'src/cereal/types/stadls/vx/v{hx_version}/*.cpp'),
+            install_path = '${PREFIX}/lib',
+            features = 'cxx cxxshlib apply_semaphore',
+            use = [f'stadls_vx_v{hx_version}', f'haldls_vx_v{hx_version}_serialization', f'lola_vx_v{hx_version}_serialization', 'logger_obj'],
+            semaphore = bld.env['stadls_semaphore'],
+        )
+
+        bld(
             features = 'cxx cxxshlib',
             target = f'lola_vx_v{hx_version}',
             source = bld.path.ant_glob('src/lola/vx/*.cpp')
                    + bld.path.ant_glob(f'src/lola/vx/v{hx_version}/*.cpp',
                                        excl=f'src/lola/vx/v{hx_version}/pylola.cpp'),
             install_path = '${PREFIX}/lib',
-            use = [f'haldls_vx_v{hx_version}', 'ELF'],
+            use = [f'haldls_vx_v{hx_version}', f'haldls_vx_v{hx_version}_serialization', 'ELF'],
             uselib = 'HALDLS_LIBRARIES',
+        )
+
+        bld(
+            target = f'lola_vx_v{hx_version}_serialization',
+            source = bld.path.ant_glob('src/cereal/types/lola/vx/*.cpp')
+                   + bld.path.ant_glob(f'src/cereal/types/lola/vx/v{hx_version}/*.cpp'),
+            install_path = '${PREFIX}/lib',
+            features = 'cxx cxxshlib',
+            use = [f'lola_vx_v{hx_version}'],
         )
 
         bld(
@@ -229,7 +257,7 @@ def build(bld):
             source = bld.path.ant_glob('tests/sw/stadls/vx/test-*.cpp')
                    + bld.path.ant_glob(f'tests/sw/stadls/vx/v{hx_version}/test-*.cpp'),
             test_main = 'tests/sw/stadls/vx/main.cpp',
-            use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST'],
+            use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', f'stadls_vx_v{hx_version}_serialization', 'GTEST'],
             install_path = '${PREFIX}/bin',
             linkflags = ['-lboost_program_options-mt'],
             test_timeout = 240,
@@ -240,7 +268,7 @@ def build(bld):
             features = 'gtest cxx cxxprogram',
             source = bld.path.ant_glob('tests/sw/haldls/vx/test-*.cpp')
                    + bld.path.ant_glob(f'tests/sw/haldls/vx/v{hx_version}/test-*.cpp'),
-            use = [f'haldls_vx_v{hx_version}', 'haldls_test_common_inc', 'GTEST'],
+            use = [f'haldls_vx_v{hx_version}', f'haldls_vx_v{hx_version}_serialization', 'haldls_test_common_inc', 'GTEST'],
             install_path = '${PREFIX}/bin',
         )
 
@@ -287,7 +315,7 @@ def build(bld):
             features = 'gtest cxx cxxprogram',
             source = bld.path.ant_glob('tests/sw/lola/vx/test-*.cpp')
                    + bld.path.ant_glob(f'tests/sw/lola/vx/v{hx_version}/test-*.cpp'),
-            use = [f'lola_vx_v{hx_version}', 'GTEST', 'haldls_test_common_inc'],
+            use = [f'lola_vx_v{hx_version}', f'lola_vx_v{hx_version}_serialization', 'GTEST', 'haldls_test_common_inc'],
             install_path = '${PREFIX}/bin',
             defines = ['TEST_PPU_PROGRAM="' + join(get_toplevel_path(), 'haldls', 'tests', 'sw', 'lola', 'lola_ppu_test_elf_file.bin') + '"'],
             test_timeout=120
@@ -301,7 +329,7 @@ def build(bld):
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/hw/test-*.cpp')
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/common/test-*.cpp'),
             test_main = 'tests/hw/stadls/vx/main.cpp',
-            use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', 'GTEST', 'haldls_test_common_inc', 'hate_inc'],
+            use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', f'stadls_vx_v{hx_version}_serialization', 'GTEST', 'haldls_test_common_inc', 'hate_inc'],
             defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
             install_path = '${PREFIX}/bin',
             linkflags = ['-lboost_program_options-mt'],
@@ -317,7 +345,7 @@ def build(bld):
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/sim/test-*.cpp')
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/common/test-*.cpp'),
             test_main = 'tests/hw/stadls/vx/main.cpp',
-            use = [f'haldls_vx_v{hx_version}', 'GTEST', f'stadls_vx_v{hx_version}', 'haldls_test_common_inc'],
+            use = [f'haldls_vx_v{hx_version}', 'GTEST', f'stadls_vx_v{hx_version}', f'stadls_vx_v{hx_version}_serialization', 'haldls_test_common_inc'],
             defines = bld.env.REDUCED_SIMTESTS_DEFINES + ["SIMULATION_TEST=1"],
             install_path = '${PREFIX}/bin',
             linkflags = ['-lboost_program_options-mt'],

@@ -104,4 +104,3 @@ BOOST_HANA_ADAPT_STRUCT(
     synapse_bias_selection,
     reference_generator,
     unused_cells);
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::CapMem)

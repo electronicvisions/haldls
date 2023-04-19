@@ -1,9 +1,10 @@
 #pragma once
 #include "halco/hicann-dls/vx/v3/capmem.h"
 #include "halco/hicann-dls/vx/v3/coordinates.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/capmem.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
+#include <cereal/macros.hpp>
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -18,9 +19,24 @@ namespace std {
 CAPMEM_HALCO_GEOMETRY_HASH(halco::hicann_dls::vx::v3::Coordinates)
 } // namespace std
 
+namespace haldls::vx::v3 {
+
+struct ReferenceGeneratorConfig;
+
+} // namespace haldls::vx::v3
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::v3::ReferenceGeneratorConfig& value, std::uint32_t const version);
+
+} // namespace cereal
+
 namespace haldls::vx::v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
-using CapMemCell GENPYBIND(opaque) = haldls::vx::CapMemCell<halco::hicann_dls::vx::v3::Coordinates>;
+using CapMemCell GENPYBIND(opaque, inline_base("*ContainerBase*")) =
+    haldls::vx::CapMemCell<halco::hicann_dls::vx::v3::Coordinates>;
 
 GENPYBIND_MANUAL({
 	auto cls = pybind11::class_<::haldls::vx::v3::CapMemCell::value_type>(
@@ -33,12 +49,13 @@ GENPYBIND_MANUAL({
 	parent.attr("CapMemCell").attr("value_type") = parent.attr("_CapMemCell_value_type");
 })
 
-using CapMemBlock GENPYBIND(opaque) =
+using CapMemBlock GENPYBIND(opaque, inline_base("*ContainerBase*")) =
     haldls::vx::CapMemBlock<halco::hicann_dls::vx::v3::Coordinates>;
-using CapMemBlockConfig GENPYBIND(opaque) =
+using CapMemBlockConfig GENPYBIND(opaque, inline_base("*ContainerBase*")) =
     haldls::vx::CapMemBlockConfig<halco::hicann_dls::vx::v3::Coordinates>;
 
-class GENPYBIND(visible) ReferenceGeneratorConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ReferenceGeneratorConfig
+    : public ContainerBase<ReferenceGeneratorConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::ReferenceGeneratorConfigOnDLS coordinate_type;
@@ -173,9 +190,9 @@ public:
 	    SYMBOL_VISIBLE;
 
 private:
-	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, ReferenceGeneratorConfig& value, std::uint32_t const version);
 
 	bool m_enable_internal_reference;
 	bool m_enable_reference_output;
@@ -211,5 +228,3 @@ HALCO_GEOMETRY_HASH_CLASS(haldls::vx::v3::ReferenceGeneratorConfig::ReferenceCon
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::v3::ReferenceGeneratorConfig::ResistorControl)
 
 } // namespace std
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::ReferenceGeneratorConfig)

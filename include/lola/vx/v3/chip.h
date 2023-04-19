@@ -1,10 +1,9 @@
 #pragma once
 #include "halco/hicann-dls/vx/v3/chip.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/v3/background.h"
 #include "haldls/vx/v3/ppu.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 #include "lola/vx/v3/cadc.h"
 #include "lola/vx/v3/capmem.h"
@@ -22,7 +21,8 @@ namespace lola::vx::v3 GENPYBIND_TAG_LOLA_VX_V3 {
 /**
  * Complete static configuration of one chip.
  */
-class GENPYBIND(visible) Chip
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) Chip
+    : public haldls::vx::ContainerBase<Chip>
 {
 public:
 	typedef halco::hicann_dls::vx::ChipOnDLS coordinate_type;

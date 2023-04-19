@@ -10,16 +10,10 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "halco/hicann-dls/vx/v3/coordinates.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 #include "hate/math.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "halco/common/cerealization_typed_heap_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls::vx {
 
@@ -36,10 +30,6 @@ CAPMEM_BLOCK_CONFIG_UNROLL_PPU(halco::hicann_dls::vx::v3::Coordinates)
 #endif
 
 } // namespace haldls::vx
-
-#ifndef __ppu__
-CAPMEM_CEREAL_VERSION(halco::hicann_dls::vx::v3::Coordinates)
-#endif
 
 namespace haldls::vx::v3 {
 
@@ -376,26 +366,12 @@ template SYMBOL_VISIBLE void ReferenceGeneratorConfig::decode<fisch::vx::word_ac
         fisch::vx::word_access_type::Omnibus,
         ReferenceGeneratorConfig::config_size_in_words> const& data);
 
-#ifndef __ppu__
-template <class Archive>
-void ReferenceGeneratorConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_capmem_amplifier));
-	ar(CEREAL_NVP(m_enable_internal_reference));
-	ar(CEREAL_NVP(m_enable_reference_output));
-	ar(CEREAL_NVP(m_enable_reference_input));
-	ar(CEREAL_NVP(m_capmem_amplifier));
-	ar(CEREAL_NVP(m_capmem_offset));
-	ar(CEREAL_NVP(m_capmem_slope));
-	ar(CEREAL_NVP(m_reference_control));
-	ar(CEREAL_NVP(m_resistor_control));
-	ar(CEREAL_NVP(m_enable_reset));
-}
-#endif
-
 } // namespace haldls::vx::v3
 
-#ifndef __ppu__
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::ReferenceGeneratorConfig)
-CEREAL_CLASS_VERSION(haldls::vx::v3::ReferenceGeneratorConfig, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(
+    haldls::vx::CapMemCell<halco::hicann_dls::vx::v3::Coordinates>)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(
+    haldls::vx::CapMemBlock<halco::hicann_dls::vx::v3::Coordinates>)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(
+    haldls::vx::CapMemBlockConfig<halco::hicann_dls::vx::v3::Coordinates>)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v3::ReferenceGeneratorConfig)

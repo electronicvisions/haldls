@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "haldls/cerealization.tcc"
+#include "cereal/types/haldls/cereal.tcc"
 #include "haldls/vx/v3/jtag.h"
 #include "haldls/vx/v3/perftest.h"
 #include "haldls/vx/v3/ppu.h"

@@ -6,15 +6,10 @@
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/bitset.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls {
 namespace vx {
@@ -224,29 +219,6 @@ bool PhyConfigBase::operator!=(PhyConfigBase const& other) const
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <typename Archive>
-void PhyConfigBase::cerealize_impl(Archive& ar)
-{
-	ar(CEREAL_NVP(m_enable_bit_slip));
-	ar(CEREAL_NVP(m_manual_delay));
-	ar(CEREAL_NVP(m_enable_delay_cell_measurement));
-	ar(CEREAL_NVP(m_enable_initialization_master_mode));
-	ar(CEREAL_NVP(m_enable_manual_tx_data_valid_for_init));
-	ar(CEREAL_NVP(m_enable_force_lvds_power_up));
-	ar(CEREAL_NVP(m_enable_force_start));
-	ar(CEREAL_NVP(m_enable_manual_training_mode));
-	ar(CEREAL_NVP(m_enable_ber_loopback));
-	ar(CEREAL_NVP(m_vbias));
-	ar(CEREAL_NVP(m_debug_outputs));
-	ar(CEREAL_NVP(m_enable_transmission_without_idle_pattern));
-	ar(CEREAL_NVP(m_enable_clock_pre_alignment));
-	ar(CEREAL_NVP(m_enable_des_recal));
-	ar(CEREAL_NVP(m_enable_loopback_en));
-	ar(CEREAL_NVP(m_enable_auto_init));
-}
-#endif
-
 std::ostream& operator<<(std::ostream& os, PhyConfigBase const& config)
 {
 	std::stringstream ss;
@@ -414,16 +386,6 @@ void PhyConfigFPGA::decode(
 	unpack(data[0]);
 }
 
-#ifndef __ppu__
-template <typename Archive>
-void PhyConfigFPGA::serialize(Archive& ar, std::uint32_t const)
-{
-	cerealize_impl(ar);
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PhyConfigFPGA)
-#endif
-
 
 PhyConfigChip::PhyConfigChip() : PhyConfigBase()
 {
@@ -470,15 +432,6 @@ void PhyConfigChip::decode(std::array<
                            PhyConfigChip::read_config_size_in_words> const& /*data*/)
 {}
 
-#ifndef __ppu__
-template <typename Archive>
-void PhyConfigChip::serialize(Archive& ar, std::uint32_t const)
-{
-	cerealize_impl(ar);
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PhyConfigChip)
-#endif
 
 CommonPhyConfigFPGA::CommonPhyConfigFPGA() : m_enable_phy()
 {
@@ -542,16 +495,6 @@ void CommonPhyConfigFPGA::decode(std::array<
 		m_enable_phy[phy] = enable_mask.test(phy.toEnum());
 	}
 }
-
-#ifndef __ppu__
-template <typename Archive>
-void CommonPhyConfigFPGA::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_phy));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigFPGA)
-#endif
 
 
 CommonPhyConfigChip::CommonPhyConfigChip() : m_enable_phy()
@@ -626,15 +569,6 @@ void CommonPhyConfigChip::decode(std::array<
 	}
 }
 
-#ifndef __ppu__
-template <typename Archive>
-void CommonPhyConfigChip::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_phy));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonPhyConfigChip)
-#endif
 
 #ifndef __ppu__
 PhyStatus::PhyStatus() :
@@ -750,27 +684,13 @@ void PhyStatus::decode(
 	m_tx_count = TxCount(data.at(3));
 	m_rx_count = RxCount(data.at(4));
 }
-
-template <typename Archive>
-void PhyStatus::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_crc_error_count));
-	ar(CEREAL_NVP(m_online_time));
-	ar(CEREAL_NVP(m_rx_dropped_count));
-	ar(CEREAL_NVP(m_rx_count));
-	ar(CEREAL_NVP(m_tx_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PhyStatus)
 #endif
 
 } // namespace vx
 } // namespace haldls
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::PhyConfigFPGA, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PhyConfigChip, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CommonPhyConfigFPGA, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CommonPhyConfigChip, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PhyStatus, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PhyConfigFPGA)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PhyConfigChip)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CommonPhyConfigFPGA)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CommonPhyConfigChip)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PhyStatus)

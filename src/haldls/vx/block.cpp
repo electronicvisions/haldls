@@ -1,9 +1,9 @@
 #include "haldls/vx/block.h"
 
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/block_until.tcc"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 
 namespace haldls::vx {
@@ -85,16 +85,6 @@ void PollingOmnibusBlockConfig::decode(std::array<
 	m_mask = Value(data[2]);
 }
 
-template <class Archive>
-void PollingOmnibusBlockConfig::serialize(Archive& ar, std::uint32_t)
-{
-	ar(CEREAL_NVP(m_address));
-	ar(CEREAL_NVP(m_mask));
-	ar(CEREAL_NVP(m_target));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PollingOmnibusBlockConfig)
-
 PollingOmnibusBlock::PollingOmnibusBlock(bool const enable_expects_equality) :
     m_enable_expects_equality(enable_expects_equality)
 {}
@@ -121,22 +111,26 @@ bool PollingOmnibusBlock::operator!=(PollingOmnibusBlock const& other) const
 
 std::ostream& operator<<(std::ostream& os, PollingOmnibusBlock const& config)
 {
-	return (os << config.encode());
+	return (os << config.encode().at(0));
 }
 
-fisch::vx::word_access_type::PollingOmnibusBlock PollingOmnibusBlock::encode() const
+std::array<
+    halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA,
+    PollingOmnibusBlock::write_config_size_in_words>
+PollingOmnibusBlock::write_addresses(coordinate_type const& coord)
 {
-	return fisch::vx::word_access_type::PollingOmnibusBlock(m_enable_expects_equality);
+	return {coord};
 }
 
-template <class Archive>
-void PollingOmnibusBlock::serialize(Archive& ar, std::uint32_t)
+std::array<
+    fisch::vx::word_access_type::PollingOmnibusBlock,
+    PollingOmnibusBlock::write_config_size_in_words>
+PollingOmnibusBlock::encode() const
 {
-	ar(CEREAL_NVP(m_enable_expects_equality));
+	return {fisch::vx::word_access_type::PollingOmnibusBlock(m_enable_expects_equality)};
 }
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PollingOmnibusBlock)
 
 } // namespace haldls::vx
 
-CEREAL_CLASS_VERSION(haldls::vx::PollingOmnibusBlockConfig, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PollingOmnibusBlockConfig)
+EXPLICIT_INSTANTIATE_HALDLS_BLOCK_UNTIL_BASE(haldls::vx::PollingOmnibusBlock)

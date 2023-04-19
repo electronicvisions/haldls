@@ -6,15 +6,30 @@
 #include "halco/hicann-dls/vx/background.h"
 #include "halco/hicann-dls/vx/event.h"
 
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
 
 #ifndef __ppu__
 #include "hxcomm/vx/target.h"
 #endif
+
+namespace haldls::vx {
+
+struct BackgroundSpikeSource;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::BackgroundSpikeSource& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -32,7 +47,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * with the latter, the lower eight bits of the emitted NeuronLabel can bit-wise be replaced by
  * randomly generated values.
  */
-class GENPYBIND(visible) BackgroundSpikeSource
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) BackgroundSpikeSource
+    : public ContainerBase<BackgroundSpikeSource>
 {
 public:
 	typedef halco::hicann_dls::vx::BackgroundSpikeSourceOnDLS coordinate_type;
@@ -243,7 +259,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, BackgroundSpikeSource& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable;
 	bool m_enable_random;
@@ -254,7 +271,6 @@ private:
 	halco::hicann_dls::vx::NeuronLabel m_neuron_label;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(BackgroundSpikeSource)
 
 namespace detail {
 

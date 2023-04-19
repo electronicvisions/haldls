@@ -1,9 +1,8 @@
 #include "lola/vx/v3/chip.h"
 
 #include "halco/common/iter_all.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 namespace lola::vx::v3 {
@@ -129,4 +128,4 @@ Chip const Chip::default_neuron_bypass = []() {
 
 } // namespace lola::vx::v3
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::Chip)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::v3::Chip)

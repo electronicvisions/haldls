@@ -250,7 +250,5 @@ struct VisitPreorderImpl<lola::vx::ExternalPPUMemory>
 
 } // namespace haldls::vx::detail
 
+BOOST_HANA_ADAPT_STRUCT(lola::vx::ExternalPPUMemory, bytes);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::PPUProgram::Symbol, type, coordinate);
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(lola::vx::ExternalPPUMemoryBlock)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(lola::vx::ExternalPPUMemory)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::PPUProgram::Symbol)

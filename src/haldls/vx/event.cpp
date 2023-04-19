@@ -1,9 +1,6 @@
 #include "haldls/vx/event.h"
 
-#include <cereal/types/array.hpp>
-
-#include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/join.h"
 
 namespace haldls::vx {
@@ -73,15 +70,8 @@ namespace haldls::vx {
 	void SpikePack##Num##ToChip::decode(std::array<                                                \
 	                                    fisch::vx::word_access_type::SpikePack##Num##ToChip,       \
 	                                    read_config_size_in_words> const& /* data */)              \
-	{}                                                                                             \
-                                                                                                   \
-	template <typename Archive>                                                                    \
-	void SpikePack##Num##ToChip::serialize(Archive& ar, std::uint32_t const)                       \
-	{                                                                                              \
-		ar(CEREAL_NVP(m_impl));                                                                    \
-	}                                                                                              \
-                                                                                                   \
-	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikePack##Num##ToChip)
+	{}
+
 
 // clang-format off
 SpikePackToChip(1)
@@ -109,16 +99,6 @@ std::ostream& operator<<(std::ostream& os, SpikeFromChip const& spike)
 	       << ")");
 }
 
-template <typename Archive>
-void SpikeFromChip::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP_("m_label", label));
-	ar(CEREAL_NVP_("m_fpga_time", fpga_time));
-	ar(CEREAL_NVP_("chip_time", chip_time));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SpikeFromChip)
-
 
 bool MADCSampleFromChip::operator==(MADCSampleFromChip const& other) const
 {
@@ -137,17 +117,6 @@ std::ostream& operator<<(std::ostream& os, MADCSampleFromChip const& sample)
 	    os << "MADCSampleFromChip(" << sample.value << ", " << sample.channel << ", "
 	       << sample.fpga_time << ", " << sample.chip_time << ")");
 }
-
-template <typename Archive>
-void MADCSampleFromChip::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP_("m_value", value));
-	ar(CEREAL_NVP_("m_channel", channel));
-	ar(CEREAL_NVP_("m_fpga_time", fpga_time));
-	ar(CEREAL_NVP_("m_chip_time", chip_time));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(MADCSampleFromChip)
 
 
 HighspeedLinkNotification::HighspeedLinkNotification(
@@ -273,24 +242,8 @@ std::ostream& operator<<(std::ostream& os, HighspeedLinkNotification const& samp
 	return (os << ss.str());
 }
 
-template <typename Archive>
-void HighspeedLinkNotification::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_phy));
-	ar(CEREAL_NVP(m_link_up));
-	ar(CEREAL_NVP(m_decode_error));
-	ar(CEREAL_NVP(m_crc_error));
-	ar(CEREAL_NVP(m_crc_recover));
-	ar(CEREAL_NVP(m_check_error));
-	ar(CEREAL_NVP(m_fpga_time));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(HighspeedLinkNotification)
-
 } // namespace haldls::vx
 
-CEREAL_CLASS_VERSION(haldls::vx::SpikePack1ToChip, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SpikePack2ToChip, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SpikePack3ToChip, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SpikeFromChip, 0)
-CEREAL_CLASS_VERSION(haldls::vx::HighspeedLinkNotification, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikePack1ToChip)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikePack2ToChip)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikePack3ToChip)

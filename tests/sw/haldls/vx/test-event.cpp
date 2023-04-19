@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
+#include "cereal/types/haldls/cereal.tcc"
 #include "halco/hicann-dls/vx/event.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/event.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/padi.h"

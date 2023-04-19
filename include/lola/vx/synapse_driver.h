@@ -20,11 +20,10 @@
 
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/traits.h"
+#include "haldls/vx/container.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 #include <boost/hana/adapt_struct.hpp>
 
@@ -40,7 +39,8 @@ namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 /**
  * Block on synapse drivers and global configuration of one hemisphere.
  */
-class GENPYBIND(visible) SynapseDriverBlock
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseDriverBlock
+    : public haldls::vx::ContainerBase<SynapseDriverBlock>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -395,4 +395,3 @@ BOOST_HANA_ADAPT_STRUCT(
     stp_i_calib,
     stp_i_bias_readout,
     hagen_i_bias_dac);
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::SynapseDriverBlock)

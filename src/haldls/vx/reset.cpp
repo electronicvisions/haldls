@@ -2,7 +2,7 @@
 
 
 #include "fisch/vx/word_access/type/reset.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 
 namespace haldls::vx {
 
@@ -54,14 +54,6 @@ void ResetChip::decode(std::array<
                        ResetChip::read_config_size_in_words> const& /*data*/)
 {}
 
-template <class Archive>
-void ResetChip::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ResetChip)
-
 } // namespace haldls::vx
 
-CEREAL_CLASS_VERSION(haldls::vx::ResetChip, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ResetChip)

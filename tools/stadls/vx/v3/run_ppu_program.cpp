@@ -217,14 +217,14 @@ int main(int argc, char* argv[])
 
 	// get results
 
-	auto status_register = ppu_status_ticket.get();
+	auto const& status_register = dynamic_cast<PPUStatusRegister const&>(ppu_status_ticket.get());
 	if (status_register.get_sleep()) {
 		LOG4CXX_INFO(logger, "PPU program finished.");
 	} else {
 		LOG4CXX_WARN(logger, "PPU program didn't finish.");
 	}
 
-	auto ppu_memory_after = ppu_memory_ticket.get();
+	auto const& ppu_memory_after = dynamic_cast<PPUMemory const&>(ppu_memory_ticket.get());
 	auto ppu_memory_program_after = ppu_memory_after.get_block(ppu_memory_program_coord);
 	if (ppu_memory_program == ppu_memory_program_after) {
 		LOG4CXX_INFO(logger, "PPU program didn't change.");
@@ -232,7 +232,8 @@ int main(int argc, char* argv[])
 		LOG4CXX_WARN(logger, "PPU program changed.");
 	}
 
-	uint32_t exit_code = ppu_memory_return_ticket.get().get_value();
+	uint32_t exit_code =
+	    dynamic_cast<PPUMemoryWord const&>(ppu_memory_return_ticket.get()).get_value();
 	if (exit_code == PPUMemoryWord::Value(0)) {
 		LOG4CXX_INFO(logger, "PPU program exited with exit code 0.");
 	} else {

@@ -1,8 +1,7 @@
 #include "lola/vx/routing_crossbar.h"
 
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 #include <sstream>
 
@@ -35,4 +34,4 @@ std::ostream& operator<<(std::ostream& os, Crossbar const& config)
 
 } // namespace lola::vx
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::Crossbar)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::Crossbar)

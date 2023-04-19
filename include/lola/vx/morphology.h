@@ -4,6 +4,7 @@
 #error "Requires CHIP_REVISION"
 #endif
 
+#include "haldls/vx/container.h"
 #include "hate/visibility.h"
 #include "lola/vx/genpybind.h"
 #include <utility>
@@ -27,6 +28,10 @@
 #else
 #error "Unknown CHIP_REVISION"
 #endif
+
+namespace cereal {
+class access;
+} // namespace cereal
 
 namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 #undef GENPYBIND_TAG_LOLA_VX_VY
@@ -338,12 +343,12 @@ public:
 		/** Enable inter-compartment conductance. */
 		bool enable_conductance;
 
-		friend struct cereal::access;
 		friend class MCSafeAtomicNeuron;
 		Multicompartment& operator=(AtomicNeuron::Multicompartment const& other);
 		explicit operator AtomicNeuron::Multicompartment() const SYMBOL_VISIBLE;
+		friend cereal::access;
 		template <class Archive>
-		void serialize(Archive& ar, std::uint32_t const) SYMBOL_VISIBLE;
+		void serialize(Archive& ar, std::uint32_t const);
 	};
 
 	SynapticInput excitatory_input;
@@ -375,7 +380,8 @@ private:
 /**
  * Configuration of a multicompartment/logical neuron.
  */
-class GENPYBIND(visible) LogicalNeuron
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) LogicalNeuron
+    : public haldls::vx::ContainerBase<LogicalNeuron>
 {
 public:
 	typedef halco::hicann_dls::vx::CHIP_REVISION_STR::LogicalNeuronOnDLS coordinate_type;

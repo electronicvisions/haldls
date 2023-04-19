@@ -1,4 +1,5 @@
 #pragma once
+#include "haldls/vx/container.h"
 #include "haldls/vx/v3/capmem.h"
 #include "haldls/vx/v3/neuron.h"
 #include "hate/visibility.h"
@@ -10,7 +11,8 @@ namespace lola::vx::v3 GENPYBIND_TAG_LOLA_VX_V3 {
 /**
  * Configuration of digital and analog parameters for a single-denmem neuron.
  */
-class GENPYBIND(visible) AtomicNeuron
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) AtomicNeuron
+    : public haldls::vx::ContainerBase<AtomicNeuron>
 {
 public:
 	typedef haldls::vx::v3::CapMemCell::Value AnalogValue GENPYBIND(visible);
@@ -552,7 +554,8 @@ private:
 /**
  * Neuron block of all neurons on one chip including switches to synapses and global parameters.
  */
-class GENPYBIND(visible) NeuronBlock
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) NeuronBlock
+    : public haldls::vx::ContainerBase<NeuronBlock>
 {
 public:
 	typedef haldls::vx::v3::CapMemCell::Value AnalogValue GENPYBIND(visible);

@@ -11,13 +11,58 @@
 #include "halco/hicann-dls/vx/i2c.h"
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "halco/hicann-dls/vx/xboard.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
 #ifndef __ppu__
-#include "haldls/cerealization.h"
 #include "hxcomm/vx/target.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct INA219Config;
+struct INA219Status;
+struct TCA9554Inputs;
+struct TCA9554Config;
+struct AD5252ChannelConfig;
+struct AD5252ChannelConfigPersistent;
+struct DAC6573ChannelConfig;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::INA219Config& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::INA219Status& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::TCA9554Inputs& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::TCA9554Config& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::AD5252ChannelConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::AD5252ChannelConfigPersistent& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::DAC6573ChannelConfig& value, std::uint32_t const version);
+
+} // namespace cereal
 #endif
 
 namespace halco::hicann_dls::vx {} // namespace halco::hicann_dls::vx
@@ -25,7 +70,8 @@ namespace halco::hicann_dls::vx {} // namespace halco::hicann_dls::vx
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) INA219Config
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) INA219Config
+    : public ContainerBase<INA219Config>
 {
 public:
 	typedef halco::hicann_dls::vx::INA219ConfigOnBoard coordinate_type;
@@ -101,7 +147,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, INA219Config& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	ADCMode m_bus_adc_mode;
 	ADCMode m_shunt_adc_mode;
@@ -110,7 +157,7 @@ private:
 std::ostream& operator<<(std::ostream& os, INA219Config::ADCMode const& mode) SYMBOL_VISIBLE;
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(INA219Config)
+
 #endif
 
 namespace detail {
@@ -123,7 +170,8 @@ struct BackendContainerTrait<INA219Config>
 } // namespace detail
 
 
-class GENPYBIND(visible) INA219Status
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) INA219Status
+    : public ContainerBase<INA219Status>
 {
 public:
 	typedef halco::hicann_dls::vx::INA219StatusOnBoard coordinate_type;
@@ -265,7 +313,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, INA219Status& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	BusVoltage m_bus_voltage;
 	bool m_bus_voltage_overflow;
@@ -273,7 +322,7 @@ private:
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(INA219Status)
+
 #endif
 
 namespace detail {
@@ -286,7 +335,8 @@ struct BackendContainerTrait<INA219Status>
 } // namespace detail
 
 
-class GENPYBIND(visible) TCA9554Inputs
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) TCA9554Inputs
+    : public ContainerBase<TCA9554Inputs>
 {
 public:
 	typedef halco::hicann_dls::vx::TCA9554InputsOnBoard coordinate_type;
@@ -334,13 +384,14 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, TCA9554Inputs& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	ChannelsBooleanArray m_input;
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Inputs)
+
 #endif
 
 namespace detail {
@@ -352,7 +403,8 @@ struct BackendContainerTrait<TCA9554Inputs>
 
 } // namespace detail
 
-class GENPYBIND(visible) TCA9554Config
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) TCA9554Config
+    : public ContainerBase<TCA9554Config>
 {
 public:
 	typedef halco::hicann_dls::vx::TCA9554ConfigOnBoard coordinate_type;
@@ -445,7 +497,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, TCA9554Config& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	ChannelsBooleanArray m_output;
 	ChannelsPolarityArray m_polarity;
@@ -453,7 +506,7 @@ private:
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Config)
+
 #endif
 
 namespace detail {
@@ -466,7 +519,8 @@ struct BackendContainerTrait<TCA9554Config>
 } // namespace detail
 
 
-class GENPYBIND(visible) AD5252ChannelConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) AD5252ChannelConfig
+    : public ContainerBase<AD5252ChannelConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::AD5252ChannelConfigOnBoard coordinate_type;
@@ -524,13 +578,14 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, AD5252ChannelConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	WiperSetting m_value;
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfig)
+
 #endif
 
 namespace detail {
@@ -545,7 +600,8 @@ struct BackendContainerTrait<AD5252ChannelConfig>
 } // namespace detail
 
 
-class GENPYBIND(visible) AD5252ChannelConfigPersistent
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) AD5252ChannelConfigPersistent
+    : public ContainerBase<AD5252ChannelConfigPersistent>
 {
 public:
 	typedef halco::hicann_dls::vx::AD5252ChannelConfigPersistentOnBoard coordinate_type;
@@ -604,13 +660,16 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    AD5252ChannelConfigPersistent& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	WiperSetting m_value;
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfigPersistent)
+
 #endif
 
 namespace detail {
@@ -625,7 +684,8 @@ struct BackendContainerTrait<AD5252ChannelConfigPersistent>
 } // namespace detail
 
 
-class GENPYBIND(visible) DAC6573ChannelConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) DAC6573ChannelConfig
+    : public ContainerBase<DAC6573ChannelConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::DAC6573ChannelOnBoard coordinate_type;
@@ -683,13 +743,14 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, DAC6573ChannelConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
 
 #ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(DAC6573ChannelConfig)
+
 #endif
 
 namespace detail {

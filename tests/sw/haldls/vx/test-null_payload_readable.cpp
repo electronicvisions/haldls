@@ -3,9 +3,9 @@
 
 #include "haldls/vx/null_payload_readable.h"
 
+#include "cereal/types/haldls/cereal.tcc"
 #include "fisch/vx/word_access/type/null_payload_readable.h"
 #include "halco/hicann-dls/vx/fpga.h"
-#include "haldls/cerealization.tcc"
 #include "haldls/vx/common.h"
 #include "stadls/visitors.h"
 

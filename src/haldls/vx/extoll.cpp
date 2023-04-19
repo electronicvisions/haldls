@@ -3,11 +3,9 @@
 #include <iomanip>
 
 #include "fisch/vx/word_access/type/extoll.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/extoll.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/extoll_constants.h"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
@@ -122,14 +120,6 @@ EventSwitchSource::encode() const
 	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
 }
 
-template <class Archive>
-void EventSwitchSource::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_source));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchSource)
-
 
 /**
  * implementation of EventSwitchReadout for Coord
@@ -243,14 +233,6 @@ EventSwitchReadout::encode() const
 	return {};
 }
 
-template <class Archive>
-void EventSwitchReadout::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_systime));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchReadout)
-
 
 /**
  * implementation of EventSwitchConfig for Coord
@@ -342,14 +324,6 @@ EventSwitchConfig::encode() const
 
 	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw)};
 }
-
-template <class Archive>
-void EventSwitchConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_interrupt_armed));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchConfig)
 
 
 /**
@@ -466,15 +440,6 @@ ExtollSpikeCommBucketTriggerConfig::encode() const
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
-
-template <class Archive>
-void ExtollSpikeCommBucketTriggerConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_pulse_timeout));
-	ar(CEREAL_NVP(m_packet_timeout));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketTriggerConfig)
 
 
 /**
@@ -609,16 +574,6 @@ ExtollSpikeCommBucketDestinationConfig::encode() const
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
-template <class Archive>
-void ExtollSpikeCommBucketDestinationConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_destination_node_id));
-	ar(CEREAL_NVP(m_enable_multicast));
-	ar(CEREAL_NVP(m_destination_delay));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketDestinationConfig)
-
 
 /**
  * implementation of ExtollSpikeCommBucketNumPktsSent for Coord
@@ -723,14 +678,6 @@ ExtollSpikeCommBucketNumPktsSent::encode() const
 	return {};
 }
 
-template <class Archive>
-void ExtollSpikeCommBucketNumPktsSent::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_packet_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketNumPktsSent)
-
 
 /**
  * implementation of ExtollSpikeCommBucketCounterReset for Coord
@@ -819,12 +766,6 @@ ExtollSpikeCommBucketCounterReset::encode() const
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
-
-template <class Archive>
-void ExtollSpikeCommBucketCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketCounterReset)
 
 
 /**
@@ -961,16 +902,6 @@ ExtollSpikeCommRouterLookupConfig::encode() const
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
-template <class Archive>
-void ExtollSpikeCommRouterLookupConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_entry_valid));
-	ar(CEREAL_NVP(m_destination_event));
-	ar(CEREAL_NVP(m_bucket_id));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterLookupConfig)
-
 
 /**
  * implementation of ExtollSpikeCommRouterConfig for Coord ExtollSpikeCommRouterConfigOnFPGA
@@ -1084,15 +1015,6 @@ ExtollSpikeCommRouterConfig::encode() const
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
-template <class Archive>
-void ExtollSpikeCommRouterConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_routing));
-	ar(CEREAL_NVP(m_enable_drop_if_routing_disabled));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterConfig)
-
 
 /**
  * implementation of ExtollSpikeCommRouterEventLossDisabled for Coord
@@ -1201,14 +1123,6 @@ ExtollSpikeCommRouterEventLossDisabled::encode() const
 {
 	return {};
 }
-
-template <class Archive>
-void ExtollSpikeCommRouterEventLossDisabled::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_lost_event_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterEventLossDisabled)
 
 
 /**
@@ -1319,14 +1233,6 @@ ExtollSpikeCommRouterEventLossMisconf::encode() const
 	return {};
 }
 
-template <class Archive>
-void ExtollSpikeCommRouterEventLossMisconf::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_lost_event_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterEventLossMisconf)
-
 
 /**
  * implementation of ExtollSpikeCommRouterEventsRouted for Coord
@@ -1434,14 +1340,6 @@ ExtollSpikeCommRouterEventsRouted::encode() const
 	return {};
 }
 
-template <class Archive>
-void ExtollSpikeCommRouterEventsRouted::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_event_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterEventsRouted)
-
 
 /**
  * implementation of ExtollSpikeCommRouterCounterReset for Coord
@@ -1534,12 +1432,6 @@ ExtollSpikeCommRouterCounterReset::encode() const
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
-
-template <class Archive>
-void ExtollSpikeCommRouterCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterCounterReset)
 
 
 /**
@@ -1648,14 +1540,6 @@ ExtollSpikeCommDecoderNumEventsReceived::encode() const
 	return {};
 }
 
-template <class Archive>
-void ExtollSpikeCommDecoderNumEventsReceived::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_event_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommDecoderNumEventsReceived)
-
 
 /**
  * implementation of ExtollSpikeCommDecoderCounterReset for Coord
@@ -1744,12 +1628,6 @@ ExtollSpikeCommDecoderCounterReset::encode() const
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
-
-template <class Archive>
-void ExtollSpikeCommDecoderCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommDecoderCounterReset)
 
 
 /**
@@ -1871,15 +1749,6 @@ ExtollSpikeCommTimestampDelayConfig::encode() const
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
-template <class Archive>
-void ExtollSpikeCommTimestampDelayConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_forward_immediately));
-	ar(CEREAL_NVP(m_timestamp_to_systime));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayConfig)
-
 
 /**
  * implementation of ExtollSpikeCommTimestampDelayNumEventsReceived for Coord
@@ -1990,14 +1859,6 @@ ExtollSpikeCommTimestampDelayNumEventsReceived::encode() const
 	return {};
 }
 
-template <class Archive>
-void ExtollSpikeCommTimestampDelayNumEventsReceived::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_event_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayNumEventsReceived)
-
 
 /**
  * implementation of ExtollSpikeCommTimestampDelayEventLossFull for Coord
@@ -2106,14 +1967,6 @@ ExtollSpikeCommTimestampDelayEventLossFull::encode() const
 {
 	return {};
 }
-
-template <class Archive>
-void ExtollSpikeCommTimestampDelayEventLossFull::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_event_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayEventLossFull)
 
 
 /**
@@ -2225,14 +2078,6 @@ ExtollSpikeCommTimestampDelayEventLossExpired::encode() const
 	return {};
 }
 
-template <class Archive>
-void ExtollSpikeCommTimestampDelayEventLossExpired::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_event_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayEventLossExpired)
-
 
 /**
  * implementation of ExtollSpikeCommTimestampDelayCounterReset for Coord
@@ -2326,12 +2171,6 @@ ExtollSpikeCommTimestampDelayCounterReset::encode() const
 
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
-
-template <class Archive>
-void ExtollSpikeCommTimestampDelayCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayCounterReset)
 
 
 /**
@@ -2438,12 +2277,6 @@ ExtollBarrierTriggerReached::encode() const
 
 	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
 }
-
-template <class Archive>
-void ExtollBarrierTriggerReached::serialize(Archive& /*ar*/, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierTriggerReached)
 
 
 /**
@@ -2590,15 +2423,6 @@ ExtollBarrierReleased::encode() const
 	return {};
 }
 
-template <class Archive>
-void ExtollBarrierReleased::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_released_0));
-	ar(CEREAL_NVP(m_released_1));
-	ar(CEREAL_NVP(m_released_active));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierReleased)
 
 /**
  * implementation of ExtollBarrierConfig for Coord
@@ -2803,19 +2627,6 @@ ExtollBarrierConfig::encode() const
 	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
 }
 
-template <class Archive>
-void ExtollBarrierConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable));
-	ar(CEREAL_NVP(m_child_nodes));
-	ar(CEREAL_NVP(m_parent_nodes));
-	ar(CEREAL_NVP(m_host_count));
-	ar(CEREAL_NVP(m_enable_reset));
-	ar(CEREAL_NVP(m_client_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierConfig)
-
 
 /**
  * implementation of ExtollInterruptControl for Coord
@@ -2941,14 +2752,6 @@ std::
 	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
 }
 
-template <class Archive>
-void ExtollInterruptControl::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_operation_trigger));
-	ar(CEREAL_NVP(m_interrupt));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptControl)
 
 ExtollInterruptControl const ExtollInterruptControl::trigger = []() {
 	ExtollInterruptControl c;
@@ -3164,19 +2967,6 @@ ExtollInterruptConfig::encode() const
 	return {fisch::vx::word_access_type::ExtollOnNwNode(bitfield.u.raw)};
 }
 
-template <class Archive>
-void ExtollInterruptConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable));
-	ar(CEREAL_NVP(m_child_nodes));
-	ar(CEREAL_NVP(m_delay_count));
-	ar(CEREAL_NVP(m_enable_reset));
-	ar(CEREAL_NVP(m_enable_measure));
-	ar(CEREAL_NVP(m_measure_counter));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptConfig)
-
 
 /**
  * implementation of ExtollBarrierInterruptInportErrorCount for Coord
@@ -3283,14 +3073,6 @@ ExtollBarrierInterruptInportErrorCount::encode() const
 	return {};
 }
 
-template <class Archive>
-void ExtollBarrierInterruptInportErrorCount::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_error_count));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportErrorCount)
-
 
 /**
  * implementation of ExtollBarrierInterruptInportCounterReset for Coord
@@ -3383,43 +3165,36 @@ ExtollBarrierInterruptInportCounterReset::encode() const
 	return {fisch::vx::word_access_type::Extoll(bitfield.u.raw)};
 }
 
-template <class Archive>
-void ExtollBarrierInterruptInportCounterReset::serialize(Archive& /*ar*/, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportCounterReset)
-
 
 } // namespace vx
 } // namespace haldls
 
-CEREAL_CLASS_VERSION(haldls::vx::EventSwitchSource, 0)
-CEREAL_CLASS_VERSION(haldls::vx::EventSwitchReadout, 0)
-CEREAL_CLASS_VERSION(haldls::vx::EventSwitchConfig, 0)
-
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketTriggerConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketDestinationConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketNumPktsSent, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommBucketCounterReset, 1)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterLookupConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterEventLossDisabled, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterEventLossMisconf, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterEventsRouted, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommRouterCounterReset, 1)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommDecoderNumEventsReceived, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommDecoderCounterReset, 1)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayNumEventsReceived, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayEventLossFull, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayEventLossExpired, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollSpikeCommTimestampDelayCounterReset, 1)
-
-CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierTriggerReached, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierReleased, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptControl, 1)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollInterruptConfig, 0)
-
-CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierInterruptInportErrorCount, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ExtollBarrierInterruptInportCounterReset, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::EventSwitchSource)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::EventSwitchReadout)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::EventSwitchConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketTriggerConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketDestinationConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketNumPktsSent)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketCounterReset)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommRouterLookupConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommRouterConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommRouterEventLossDisabled)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommRouterEventLossMisconf)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommRouterEventsRouted)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommRouterCounterReset)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommDecoderNumEventsReceived)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommDecoderCounterReset)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommTimestampDelayConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(
+    haldls::vx::ExtollSpikeCommTimestampDelayNumEventsReceived)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommTimestampDelayEventLossFull)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(
+    haldls::vx::ExtollSpikeCommTimestampDelayEventLossExpired)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommTimestampDelayCounterReset)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollBarrierTriggerReached)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollBarrierReleased)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollBarrierConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollInterruptControl)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollInterruptConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollBarrierInterruptInportErrorCount)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollBarrierInterruptInportCounterReset)

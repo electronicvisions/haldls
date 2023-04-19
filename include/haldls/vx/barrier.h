@@ -1,17 +1,37 @@
 #pragma once
 #include <iosfwd>
 
-#include "haldls/cerealization.h"
+#include "halco/hicann-dls/vx/barrier.h"
+#include "haldls/vx/block_until.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct Barrier;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::Barrier& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) Barrier
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*BlockUntilBase*")) Barrier
+    : public BlockUntilBase<Barrier>
 {
 public:
+	typedef halco::hicann_dls::vx::BarrierOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
 	Barrier() SYMBOL_VISIBLE;
 
 	static SYMBOL_VISIBLE const Barrier omnibus GENPYBIND(visible);
@@ -48,7 +68,11 @@ public:
 	bool operator==(Barrier const& other) const SYMBOL_VISIBLE;
 	bool operator!=(Barrier const& other) const SYMBOL_VISIBLE;
 
-	fisch::vx::word_access_type::Barrier encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::BarrierOnFPGA, write_config_size_in_words>
+	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Barrier, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, Barrier const& config) SYMBOL_VISIBLE;
@@ -56,7 +80,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, Barrier& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	bool m_enable_omnibus;
 	bool m_enable_jtag;
@@ -65,7 +90,14 @@ private:
 	bool m_enable_systime_correction;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(Barrier)
+namespace detail {
+
+template <>
+struct BackendContainerTrait<Barrier>
+    : public BackendContainerBase<Barrier, fisch::vx::word_access_type::Barrier>
+{};
+
+} // namespace detail
 
 } // namespace vx
 } // namespace haldls

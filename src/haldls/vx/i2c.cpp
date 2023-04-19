@@ -1,13 +1,11 @@
 #include "haldls/vx/i2c.h"
 
 #include "fisch/vx/word_access/type/i2c.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/i2c.h"
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "halco/hicann-dls/vx/xboard.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/type_index.h"
 
 namespace haldls::vx {
@@ -172,15 +170,6 @@ void INA219Config::decode(std::array<
 	m_bus_adc_mode = ADCMode(bitfield.u.m.bus_adc_mode);
 }
 
-template <typename Archive>
-void INA219Config::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_bus_adc_mode));
-	ar(CEREAL_NVP(m_shunt_adc_mode));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(INA219Config)
-
 
 float INA219Status::BusVoltage::toUncalibratedVoltage() const
 {
@@ -308,16 +297,6 @@ void INA219Status::decode(std::array<
 	}
 }
 
-template <typename Archive>
-void INA219Status::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_bus_voltage));
-	ar(CEREAL_NVP(m_shunt_voltage));
-	ar(CEREAL_NVP(m_bus_voltage_overflow));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(INA219Status)
-
 
 namespace {
 
@@ -405,14 +384,6 @@ std::ostream& operator<<(std::ostream& os, TCA9554Inputs const& config)
 
 	return (os << hate::name<TCA9554Inputs>() << "(inputs: " << ss.str() << ")");
 }
-
-template <typename Archive>
-void TCA9554Inputs::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_input));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Inputs)
 
 
 TCA9554Config::TCA9554Config() : m_output(), m_polarity(), m_mode()
@@ -521,16 +492,6 @@ std::ostream& operator<<(std::ostream& os, TCA9554Config const& config)
 	          << "\toutput:   \t" << ss_output.str() << "\n)";
 }
 
-template <typename Archive>
-void TCA9554Config::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_output));
-	ar(CEREAL_NVP(m_polarity));
-	ar(CEREAL_NVP(m_mode));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(TCA9554Config)
-
 
 AD5252ChannelConfig::AD5252ChannelConfig() : m_value() {}
 
@@ -582,14 +543,6 @@ std::ostream& operator<<(std::ostream& os, AD5252ChannelConfig const& config)
 {
 	return os << hate::name<AD5252ChannelConfig>() << "(value: " << config.m_value << ")";
 }
-
-template <typename Archive>
-void AD5252ChannelConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfig)
 
 
 AD5252ChannelConfigPersistent::AD5252ChannelConfigPersistent() : m_value() {}
@@ -644,14 +597,6 @@ std::ostream& operator<<(std::ostream& os, AD5252ChannelConfigPersistent const& 
 	return os << hate::name<AD5252ChannelConfigPersistent>() << "(value: " << config.m_value << ")";
 }
 
-template <typename Archive>
-void AD5252ChannelConfigPersistent::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(AD5252ChannelConfigPersistent)
-
 
 DAC6573ChannelConfig::Value DAC6573ChannelConfig::get_value() const
 {
@@ -701,20 +646,12 @@ std::ostream& operator<<(std::ostream& os, DAC6573ChannelConfig const& config)
 	return os << hate::name<DAC6573ChannelConfig>() << "(value: " << config.m_value << ")";
 }
 
-template <typename Archive>
-void DAC6573ChannelConfig::serialize(Archive& ar, std::uint32_t const /*version*/)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(DAC6573ChannelConfig)
-
 } // namespace haldls::vx
 
-CEREAL_CLASS_VERSION(haldls::vx::INA219Config, 0)
-CEREAL_CLASS_VERSION(haldls::vx::INA219Status, 0)
-CEREAL_CLASS_VERSION(haldls::vx::TCA9554Inputs, 0)
-CEREAL_CLASS_VERSION(haldls::vx::TCA9554Config, 0)
-CEREAL_CLASS_VERSION(haldls::vx::AD5252ChannelConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::AD5252ChannelConfigPersistent, 0)
-CEREAL_CLASS_VERSION(haldls::vx::DAC6573ChannelConfig, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::INA219Config)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::INA219Status)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::TCA9554Inputs)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::TCA9554Config)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::AD5252ChannelConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::AD5252ChannelConfigPersistent)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::DAC6573ChannelConfig)

@@ -7,15 +7,70 @@
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/switch_rows.h"
 #include "halco/hicann-dls/vx/synapse.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
 
 #ifndef __ppu__
 #include "hxcomm/vx/target.h"
 #endif
+
+namespace haldls::vx {
+
+struct CommonSynramConfig;
+struct SynapseWeightQuad;
+struct SynapseLabelQuad;
+struct SynapseCorrelationCalibQuad;
+struct SynapseQuad;
+struct ColumnCorrelationQuad;
+struct ColumnCurrentQuad;
+struct CorrelationReset;
+struct SynapseBiasSelection;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CommonSynramConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SynapseWeightQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SynapseLabelQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SynapseCorrelationCalibQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SynapseQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ColumnCorrelationQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ColumnCurrentQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CorrelationReset& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SynapseBiasSelection& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class Omnibus;
@@ -38,7 +93,9 @@ class ColumnCurrentRow;
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
-class GENPYBIND(visible) CommonSynramConfig : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CommonSynramConfig
+    : public DifferentialWriteTrait
+    , public ContainerBase<CommonSynramConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::CommonSynramConfigOnDLS coordinate_type;
@@ -126,7 +183,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, CommonSynramConfig& value, std::uint32_t const version);
 
 	PCConf m_pc_conf_west;
 	PCConf m_pc_conf_east;
@@ -135,9 +193,9 @@ private:
 	WaitCtrClear m_wait_ctr_clear;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonSynramConfig)
 
-class GENPYBIND(visible) SynapseBiasSelection
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseBiasSelection
+    : public ContainerBase<SynapseBiasSelection>
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseBiasSelectionOnDLS coordinate_type;
@@ -200,7 +258,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, SynapseBiasSelection& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bias_selection_type m_int_dac_bias;
 	bias_selection_type m_int_ramp_bias;
@@ -208,7 +267,6 @@ private:
 	bias_selection_type m_int_output_bias;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SynapseBiasSelection)
 
 namespace detail {
 
@@ -230,7 +288,9 @@ struct BackendContainerTrait<SynapseBiasSelection>
 
 } // namespace detail
 
-class GENPYBIND(visible) SynapseWeightQuad : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseWeightQuad
+    : public DifferentialWriteTrait
+    , public ContainerBase<SynapseWeightQuad>
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseWeightQuadOnDLS coordinate_type;
@@ -276,13 +336,15 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseWeightMatrix>;
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t version);
+	friend void ::cereal::serialize(Archive& ar, SynapseWeightQuad& value, std::uint32_t version);
 
 	values_type m_values;
 };
 
 
-class GENPYBIND(visible) SynapseLabelQuad : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseLabelQuad
+    : public DifferentialWriteTrait
+    , public ContainerBase<SynapseLabelQuad>
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseLabelQuadOnDLS coordinate_type;
@@ -322,13 +384,15 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseLabelMatrix>;
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t version);
+	friend void ::cereal::serialize(Archive& ar, SynapseLabelQuad& value, std::uint32_t version);
 
 	values_type m_values;
 };
 
 
-class GENPYBIND(visible) SynapseCorrelationCalibQuad : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseCorrelationCalibQuad
+    : public DifferentialWriteTrait
+    , public ContainerBase<SynapseCorrelationCalibQuad>
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseCorrelationCalibQuadOnDLS coordinate_type;
@@ -391,14 +455,17 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseCorrelationCalibMatrix>;
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t version);
+	friend void ::cereal::serialize(
+	    Archive& ar, SynapseCorrelationCalibQuad& value, std::uint32_t version);
 
 	time_calibs_type m_time_calibs;
 	amp_calibs_type m_amp_calibs;
 };
 
 
-class GENPYBIND(visible) SynapseQuad : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SynapseQuad
+    : public DifferentialWriteTrait
+    , public ContainerBase<SynapseQuad>
 {
 public:
 	typedef halco::hicann_dls::vx::SynapseQuadOnDLS coordinate_type;
@@ -454,7 +521,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, SynapseQuad& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 	// used for direct member access without function calls
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseMatrix>;
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::SynapseRow>;
@@ -466,7 +534,9 @@ private:
 };
 
 
-class GENPYBIND(visible) ColumnCorrelationQuad : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ColumnCorrelationQuad
+    : public DifferentialWriteTrait
+    , public ContainerBase<ColumnCorrelationQuad>
 {
 public:
 	typedef halco::hicann_dls::vx::ColumnCorrelationQuadOnDLS coordinate_type;
@@ -585,9 +655,9 @@ public:
 		    SYMBOL_VISIBLE;
 
 	private:
-		friend struct cereal::access;
+		friend class cereal::access;
 		template <class Archive>
-		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+		void serialize(Archive& ar, std::uint32_t const version);
 
 		bool m_enable_internal_causal;
 		bool m_enable_internal_acausal;
@@ -624,7 +694,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, ColumnCorrelationQuad& value, std::uint32_t const version);
 
 	halco::common::typed_array<ColumnCorrelationSwitch, halco::hicann_dls::vx::EntryOnQuad>
 	    m_switches;
@@ -632,7 +703,9 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::ColumnCorrelationRow>;
 };
 
-class GENPYBIND(visible) ColumnCurrentQuad : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ColumnCurrentQuad
+    : public DifferentialWriteTrait
+    , public ContainerBase<ColumnCurrentQuad>
 {
 public:
 	typedef halco::hicann_dls::vx::ColumnCurrentQuadOnDLS coordinate_type;
@@ -738,9 +811,9 @@ public:
 		friend std::ostream& operator<<(std::ostream&, ColumnCurrentSwitch const&) SYMBOL_VISIBLE;
 
 	private:
-		friend struct cereal::access;
+		friend class cereal::access;
 		template <class Archive>
-		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+		void serialize(Archive& ar, std::uint32_t const version);
 
 		bool m_enable_synaptic_current_excitatory;
 		bool m_enable_synaptic_current_inhibitory;
@@ -776,7 +849,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, ColumnCurrentQuad& value, std::uint32_t const version);
 
 	halco::common::typed_array<ColumnCurrentSwitch, halco::hicann_dls::vx::EntryOnQuad> m_switches;
 
@@ -787,7 +861,8 @@ private:
 /**
  * Container to trigger reset of correlation measurements on a synapse quad.
  */
-class GENPYBIND(visible) CorrelationReset
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CorrelationReset
+    : public ContainerBase<CorrelationReset>
 {
 public:
 	typedef halco::hicann_dls::vx::CorrelationResetOnDLS coordinate_type;
@@ -820,7 +895,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CorrelationReset& value, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
 namespace detail {
@@ -883,15 +959,6 @@ struct BackendContainerTrait<CorrelationReset>
 
 } // namespace detail
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SynapseWeightQuad)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SynapseLabelQuad)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SynapseCorrelationCalibQuad)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SynapseQuad)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ColumnCorrelationQuad)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ColumnCorrelationQuad::ColumnCorrelationSwitch)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentQuad::ColumnCurrentSwitch)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ColumnCurrentQuad)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CorrelationReset)
 
 } // namespace vx
 } // namespace haldls

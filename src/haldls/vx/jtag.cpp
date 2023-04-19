@@ -1,8 +1,7 @@
 #include "haldls/vx/jtag.h"
 
 #include "fisch/vx/word_access/type/jtag.h"
-#include "halco/common/cerealization_geometry.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 
 namespace haldls::vx {
 
@@ -53,14 +52,6 @@ void JTAGClockScaler::decode(std::array<
                              JTAGClockScaler::read_config_size_in_words> const& /*data*/)
 {}
 
-template <class Archive>
-void JTAGClockScaler::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(JTAGClockScaler)
-
 
 ResetJTAGTap::ResetJTAGTap() {}
 
@@ -102,12 +93,6 @@ void ResetJTAGTap::decode(std::array<
                           fisch::vx::word_access_type::ResetJTAGTap,
                           ResetJTAGTap::read_config_size_in_words> const& /*data*/)
 {}
-
-template <class Archive>
-void ResetJTAGTap::serialize(Archive&, std::uint32_t const)
-{}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(ResetJTAGTap)
 
 
 JTAGIdCode::JTAGIdCode() : m_version(), m_part_number(), m_manufacturer_id() {}
@@ -225,18 +210,8 @@ void JTAGIdCode::decode(std::array<
 	m_manufacturer_id = ManufacturerId(bitfield.u.m.manufacturer_id);
 }
 
-template <class Archive>
-void JTAGIdCode::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_version));
-	ar(CEREAL_NVP(m_part_number));
-	ar(CEREAL_NVP(m_manufacturer_id));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(JTAGIdCode)
-
 } // namespace haldls::vx
 
-CEREAL_CLASS_VERSION(haldls::vx::JTAGClockScaler, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ResetJTAGTap, 0)
-CEREAL_CLASS_VERSION(haldls::vx::JTAGIdCode, 1)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::JTAGClockScaler)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ResetJTAGTap)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::JTAGIdCode)

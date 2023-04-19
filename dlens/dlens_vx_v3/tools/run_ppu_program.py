@@ -125,7 +125,8 @@ def wait_until_ppu_finished(connection: ConnectionHandle,
     poll_builder = PlaybackProgramBuilder()
     status_handle = poll_builder.read(ppu.toPPUStatusRegisterOnDLS())
     poll_builder.write(halco.TimerOnDLS(), Timer(0))
-    poll_builder.block_until(halco.TimerOnDLS(), per_poll_wait)
+    poll_builder.block_until(
+        halco.TimerOnDLS(), Timer.Value(per_poll_wait))
     poll_builder.block_until(halco.BarrierOnFPGA(), Barrier.omnibus)
     poll_program = poll_builder.done()
 

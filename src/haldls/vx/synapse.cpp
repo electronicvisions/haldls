@@ -7,15 +7,10 @@
 #include "halco/hicann-dls/vx/quad.h"
 #include "halco/hicann-dls/vx/synram.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/indent.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls::vx {
 
@@ -202,20 +197,6 @@ std::ostream& operator<<(std::ostream& os, CommonSynramConfig const& config)
 	   << config.m_wait_ctr_clear << ")";
 	return os;
 }
-
-#ifndef __ppu__
-template <class Archive>
-void CommonSynramConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_pc_conf_west));
-	ar(CEREAL_NVP(m_pc_conf_east));
-	ar(CEREAL_NVP(m_w_conf_west));
-	ar(CEREAL_NVP(m_w_conf_east));
-	ar(CEREAL_NVP(m_wait_ctr_clear));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CommonSynramConfig)
-#endif
 
 
 SynapseBiasSelection::SynapseBiasSelection() :
@@ -437,18 +418,6 @@ template SYMBOL_VISIBLE void SynapseBiasSelection::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         SynapseBiasSelection::config_size_in_words> const& words);
 
-#ifndef __ppu__
-template <class Archive>
-void SynapseBiasSelection::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_int_dac_bias));
-	ar(CEREAL_NVP(m_int_ramp_bias));
-	ar(CEREAL_NVP(m_int_store_bias));
-	ar(CEREAL_NVP(m_int_output_bias));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(SynapseBiasSelection)
-#endif
 
 SynapseWeightQuad::SynapseWeightQuad() : m_values() {}
 
@@ -607,14 +576,6 @@ std::ostream& operator<<(std::ostream& os, SynapseWeightQuad const& config)
 	return os;
 }
 
-#ifndef __ppu__
-template <class Archive>
-void SynapseWeightQuad::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_values));
-}
-#endif
-
 
 SynapseLabelQuad::SynapseLabelQuad() : m_values() {}
 
@@ -756,14 +717,6 @@ std::ostream& operator<<(std::ostream& os, SynapseLabelQuad const& config)
 	os << "SynapseLabelQuad(" << hate::join_string(config.m_values, ", ") << ")";
 	return os;
 }
-
-#ifndef __ppu__
-template <class Archive>
-void SynapseLabelQuad::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_values));
-}
-#endif
 
 
 SynapseCorrelationCalibQuad::SynapseCorrelationCalibQuad() : m_time_calibs(), m_amp_calibs() {}
@@ -953,15 +906,6 @@ std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibQuad const& co
 	   << "\t" << hate::join_string(config.m_amp_calibs, ", ") << "\n)";
 	return os;
 }
-
-#ifndef __ppu__
-template <class Archive>
-void SynapseCorrelationCalibQuad::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_time_calibs));
-	ar(CEREAL_NVP(m_amp_calibs));
-}
-#endif
 
 
 SynapseQuad::SynapseQuad() : m_weights(), m_labels(), m_time_calibs(), m_amp_calibs() {}
@@ -1172,17 +1116,6 @@ std::ostream& operator<<(std::ostream& os, SynapseQuad const& config)
 	return os;
 }
 
-#ifndef __ppu__
-template <class Archive>
-void SynapseQuad::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_weights));
-	ar(CEREAL_NVP(m_labels));
-	ar(CEREAL_NVP(m_time_calibs));
-	ar(CEREAL_NVP(m_amp_calibs));
-}
-#endif
-
 
 ColumnCorrelationQuad::ColumnCorrelationSwitch::ColumnCorrelationSwitch() :
     m_enable_internal_causal(false),
@@ -1271,19 +1204,6 @@ bool ColumnCorrelationQuad::ColumnCorrelationSwitch::operator!=(
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <class Archive>
-void ColumnCorrelationQuad::ColumnCorrelationSwitch::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_internal_causal));
-	ar(CEREAL_NVP(m_enable_internal_acausal));
-	ar(CEREAL_NVP(m_enable_debug_causal));
-	ar(CEREAL_NVP(m_enable_debug_acausal));
-	ar(CEREAL_NVP(m_enable_cadc_neuron_readout_causal));
-	ar(CEREAL_NVP(m_enable_cadc_neuron_readout_acausal));
-}
-#endif
 
 
 ColumnCorrelationQuad::ColumnCorrelationQuad() : m_switches() {}
@@ -1561,14 +1481,6 @@ template SYMBOL_VISIBLE void ColumnCorrelationQuad::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         ColumnCorrelationQuad::config_size_in_words> const& data);
 
-#ifndef __ppu__
-template <class Archive>
-void ColumnCorrelationQuad::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_switches));
-}
-#endif
-
 
 ColumnCurrentQuad::ColumnCurrentSwitch::ColumnCurrentSwitch() :
     m_enable_synaptic_current_excitatory(false),
@@ -1633,17 +1545,6 @@ bool ColumnCurrentQuad::ColumnCurrentSwitch::operator!=(
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <class Archive>
-void ColumnCurrentQuad::ColumnCurrentSwitch::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_synaptic_current_excitatory));
-	ar(CEREAL_NVP(m_enable_synaptic_current_inhibitory));
-	ar(CEREAL_NVP(m_enable_debug_excitatory));
-	ar(CEREAL_NVP(m_enable_debug_inhibitory));
-}
-#endif
 
 
 ColumnCurrentQuad::ColumnCurrentQuad() : m_switches() {}
@@ -1826,14 +1727,6 @@ template SYMBOL_VISIBLE void ColumnCurrentQuad::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         ColumnCurrentQuad::config_size_in_words> const& data);
 
-#ifndef __ppu__
-template <class Archive>
-void ColumnCurrentQuad::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_switches));
-}
-#endif
-
 
 CorrelationReset::CorrelationReset() {}
 
@@ -1925,32 +1818,14 @@ bool CorrelationReset::operator!=(CorrelationReset const& other) const
 	return !(*this == other);
 }
 
-template <class Archive>
-void CorrelationReset::serialize(Archive&, std::uint32_t const)
-{}
-
 } // namespace haldls::vx
 
-#ifndef __ppu__
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::SynapseWeightQuad)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::SynapseLabelQuad)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::SynapseCorrelationCalibQuad)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::SynapseQuad)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::ColumnCorrelationQuad)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::ColumnCorrelationQuad::ColumnCorrelationSwitch)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::ColumnCurrentQuad::ColumnCurrentSwitch)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::ColumnCurrentQuad)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::CorrelationReset)
-
-CEREAL_CLASS_VERSION(haldls::vx::CommonSynramConfig, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SynapseBiasSelection, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SynapseWeightQuad, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SynapseLabelQuad, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SynapseCorrelationCalibQuad, 0)
-CEREAL_CLASS_VERSION(haldls::vx::SynapseQuad, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ColumnCorrelationQuad, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ColumnCorrelationQuad::ColumnCorrelationSwitch, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ColumnCurrentQuad::ColumnCurrentSwitch, 0)
-CEREAL_CLASS_VERSION(haldls::vx::ColumnCurrentQuad, 0)
-CEREAL_CLASS_VERSION(haldls::vx::CorrelationReset, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CommonSynramConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SynapseWeightQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SynapseLabelQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SynapseCorrelationCalibQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SynapseQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ColumnCorrelationQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ColumnCurrentQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CorrelationReset)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SynapseBiasSelection)

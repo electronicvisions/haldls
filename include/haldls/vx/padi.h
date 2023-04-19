@@ -4,15 +4,40 @@
 
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/padi.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
 
 #ifndef __ppu__
 #include "hxcomm/vx/target.h"
 #endif
+
+namespace haldls::vx {
+
+struct PADIEvent;
+struct CommonPADIBusConfig;
+struct CommonSTPConfig;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PADIEvent& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CommonPADIBusConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CommonSTPConfig& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -29,7 +54,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * determine the target synapse driver row, and a mask to specify
  * the set of PADI buses to fire the event on.
  */
-class GENPYBIND(visible) PADIEvent
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PADIEvent
+    : public ContainerBase<PADIEvent>
 {
 public:
 	typedef halco::hicann_dls::vx::PADIEventOnDLS coordinate_type;
@@ -133,7 +159,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, PADIEvent& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	struct PADIEventBitfield;
 
@@ -142,7 +169,6 @@ private:
 	RowSelectAddress m_row_select_address;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PADIEvent)
 
 /**
  * Configuration for a PADI bus block.
@@ -150,7 +176,9 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PADIEvent)
  * event trigger register or from the SPL1 merger matrix.
  * Additionally the timing of PADI pulses can be modified.
  */
-class GENPYBIND(visible) CommonPADIBusConfig : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CommonPADIBusConfig
+    : public DifferentialWriteTrait
+    , public ContainerBase<CommonPADIBusConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::CommonPADIBusConfigOnDLS coordinate_type;
@@ -235,7 +263,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CommonPADIBusConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	struct CommonPADIBusConfigBitfield;
 
@@ -244,13 +273,14 @@ private:
 	dacen_pulse_extension_type m_dacen_pulse_extension;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonPADIBusConfig)
 
 /**
  * Common STP configuration shared by synapse drivers per vertical half.
  * It allows to enable/disable and set the speed for the recovery clock.
  */
-class GENPYBIND(visible) CommonSTPConfig : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CommonSTPConfig
+    : public DifferentialWriteTrait
+    , public ContainerBase<CommonSTPConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::CommonSTPConfigOnDLS coordinate_type;
@@ -304,7 +334,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CommonSTPConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	struct CommonSTPConfigBitfield;
 
@@ -312,7 +343,6 @@ private:
 	RecoveryClockSpeed m_recovery_clock_speed;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(CommonSTPConfig)
 
 namespace detail {
 

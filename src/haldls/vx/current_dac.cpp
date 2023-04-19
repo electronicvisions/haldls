@@ -4,17 +4,12 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/bitset.h"
 #include "hate/indent.h"
 #include "hate/join.h"
 #include "hate/math.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls::vx {
 
@@ -262,22 +257,6 @@ template SYMBOL_VISIBLE void CurrentDAC::decode(std::array<
                                                 fisch::vx::word_access_type::OmnibusChipOverJTAG,
                                                 CurrentDAC::config_size_in_words> const& words);
 
-#ifndef __ppu__
-template <class Archive>
-void CurrentDAC::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_current));
-	ar(CEREAL_NVP(m_enable_current));
-	ar(CEREAL_NVP(m_sign));
-	ar(CEREAL_NVP(m_connect_neuron));
-	ar(CEREAL_NVP(m_connect_synapse));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CurrentDAC)
-#endif
-
 } // namespace haldls::vx
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::CurrentDAC, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::CurrentDAC)

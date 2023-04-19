@@ -9,15 +9,10 @@
 #include <libelf.h>
 #include <netinet/in.h>
 
-#include <cereal/types/vector.hpp>
-
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/coordinates.h"
-#include "haldls/cerealization.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/ppu.h"
 
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 namespace lola {
@@ -132,12 +127,6 @@ std::string ExternalPPUMemoryBlock::to_string() const
 	return ss.str();
 }
 
-template <class Archive>
-void ExternalPPUMemoryBlock::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_bytes));
-}
-
 std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryBlock const& config)
 {
 	os << "ExternalPPUMemoryBlock(" << std::endl;
@@ -205,12 +194,6 @@ std::string ExternalPPUMemory::to_string() const
 		}
 	}
 	return ss.str();
-}
-
-template <class Archive>
-void ExternalPPUMemory::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(bytes));
 }
 
 std::ostream& operator<<(std::ostream& os, ExternalPPUMemory const& config)
@@ -515,8 +498,23 @@ PPUElfFile::~PPUElfFile()
 } // namespace vx
 } // namespace lola
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::PPUProgram::Symbol)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(lola::vx::ExternalPPUMemoryBlock)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(lola::vx::ExternalPPUMemory)
-CEREAL_CLASS_VERSION(lola::vx::ExternalPPUMemoryBlock, 0)
-CEREAL_CLASS_VERSION(lola::vx::ExternalPPUMemory, 0)
+#ifndef __ppu__
+namespace {
+
+static std::unique_ptr<haldls::vx::Container> construct_container_ExternalPPUMemoryBlock(
+    haldls::vx::Container::Coordinate const& coord)
+{
+	return std::make_unique<lola::vx::ExternalPPUMemoryBlock>(
+	    dynamic_cast<lola::vx::ExternalPPUMemoryBlock::coordinate_type const&>(coord)
+	        .toExternalPPUMemoryBlockSize());
+}
+
+} // namespace
+
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE_CUSTOM_CONSTRUCTION(
+    lola::vx::ExternalPPUMemoryBlock, construct_container_ExternalPPUMemoryBlock)
+#else
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::ExternalPPUMemoryBlock)
+#endif
+
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::ExternalPPUMemory)

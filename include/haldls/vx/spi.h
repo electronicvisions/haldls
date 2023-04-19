@@ -7,10 +7,35 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/dac.h"
 #include "halco/hicann-dls/vx/xboard.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct ShiftRegister;
+struct DACChannel;
+struct DACControl;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ShiftRegister& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::DACChannel& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::DACControl& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 struct SPIShiftRegisterOnBoard;
@@ -28,7 +53,9 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * Information about the routing can be found in the xBoard wiki under
  * https://brainscales-r.kip.uni-heidelberg.de/projects/symap2ic/wiki/xboard.
  */
-class GENPYBIND(visible) ShiftRegister : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ShiftRegister
+    : public DifferentialWriteTrait
+    , public ContainerBase<ShiftRegister>
 {
 public:
 	typedef halco::hicann_dls::vx::ShiftRegisterOnBoard coordinate_type;
@@ -246,7 +273,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, ShiftRegister& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	AnalogReadoutMux1Input m_mux_1;
 	AnalogReadoutMux2Input m_mux_2;
@@ -268,7 +296,6 @@ std::ostream& operator<<(std::ostream& os, ShiftRegister::AnalogReadoutMux2Input
 std::ostream& operator<<(std::ostream& os, ShiftRegister::AnalogReadoutMux3Input const& config)
     SYMBOL_VISIBLE;
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ShiftRegister)
 
 namespace detail {
 
@@ -283,7 +310,9 @@ struct BackendContainerTrait<ShiftRegister>
 /**
  * Container for individual configuration of the value of a DAC channel of the xBoard DACs.
  */
-class GENPYBIND(visible) DACChannel : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) DACChannel
+    : public DifferentialWriteTrait
+    , public ContainerBase<DACChannel>
 {
 public:
 	typedef halco::hicann_dls::vx::DACChannelOnBoard coordinate_type;
@@ -339,12 +368,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, DACChannel& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	Value m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(DACChannel)
 
 namespace detail {
 
@@ -359,7 +388,9 @@ struct BackendContainerTrait<DACChannel>
 /**
  * Container for enabling DAC channels of a xBoard DAC.
  */
-class GENPYBIND(visible) DACControl : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) DACControl
+    : public DifferentialWriteTrait
+    , public ContainerBase<DACControl>
 {
 public:
 	typedef halco::hicann_dls::vx::DACOnBoard coordinate_type;
@@ -407,12 +438,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, DACControl& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	halco::common::typed_array<bool, halco::hicann_dls::vx::DACChannelOnDAC> m_enable_channel;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(DACControl)
 
 namespace detail {
 

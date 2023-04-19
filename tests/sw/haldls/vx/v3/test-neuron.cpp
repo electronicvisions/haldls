@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 
+#include "cereal/types/haldls/vx/v3/neuron.h"
 #include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/v3/omnibus.h"
 #include "halco/hicann-dls/vx/v3/quad.h"

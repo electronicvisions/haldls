@@ -6,10 +6,35 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/jtag.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct JTAGClockScaler;
+struct ResetJTAGTap;
+struct JTAGIdCode;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::JTAGClockScaler& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ResetJTAGTap& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::JTAGIdCode& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class JTAGClockScaler;
@@ -23,7 +48,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * Container writing JTAG clock-scaler value.
  */
-class GENPYBIND(visible) JTAGClockScaler
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) JTAGClockScaler
+    : public ContainerBase<JTAGClockScaler>
 {
 public:
 	typedef halco::hicann_dls::vx::JTAGClockScalerOnDLS coordinate_type;
@@ -98,12 +124,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, JTAGClockScaler& value, std::uint32_t const version);
 
 	Value m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(JTAGClockScaler)
 
 namespace detail {
 
@@ -118,7 +144,8 @@ struct BackendContainerTrait<JTAGClockScaler>
 /**
  * Container for resetting JTAG state-machine.
  */
-class GENPYBIND(visible) ResetJTAGTap
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ResetJTAGTap
+    : public ContainerBase<ResetJTAGTap>
 {
 public:
 	typedef halco::hicann_dls::vx::ResetJTAGTapOnDLS coordinate_type;
@@ -148,10 +175,9 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(Archive& ar, ResetJTAGTap& value, std::uint32_t const version);
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ResetJTAGTap)
 
 namespace detail {
 
@@ -166,7 +192,8 @@ struct BackendContainerTrait<ResetJTAGTap>
 /**
  * Container for reading the JTAG IDCODE.
  */
-class GENPYBIND(visible) JTAGIdCode
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) JTAGIdCode
+    : public ContainerBase<JTAGIdCode>
 {
 public:
 	typedef halco::hicann_dls::vx::JTAGIdCodeOnDLS coordinate_type;
@@ -268,14 +295,13 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(Archive& ar, JTAGIdCode& value, std::uint32_t const version);
 
 	Version m_version;
 	PartNumber m_part_number;
 	ManufacturerId m_manufacturer_id;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(JTAGIdCode)
 
 namespace detail {
 

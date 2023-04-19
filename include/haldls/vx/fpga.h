@@ -7,12 +7,87 @@
 #include "halco/hicann-dls/vx/event.h"
 #include "halco/hicann-dls/vx/fpga.h"
 #include "halco/hicann-dls/vx/quad.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/timer.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct FPGADeviceDNA;
+struct EventRecordingConfig;
+struct InstructionTimeoutConfig;
+struct SystimeCorrectionBarrierConfig;
+struct ExternalPPUMemoryByte;
+struct ExternalPPUMemoryQuad;
+struct SpikeIOConfig;
+struct SpikeIOInputRoute;
+struct SpikeIOOutputRoute;
+struct FPGASystimeSyncLastAsicSystime;
+struct FPGASystimeSyncLastRTT;
+struct FPGASystimeSyncActiveState;
+struct FPGASystimeSyncNumRetries;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::FPGADeviceDNA& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::EventRecordingConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::InstructionTimeoutConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SystimeCorrectionBarrierConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExternalPPUMemoryByte& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExternalPPUMemoryQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikeIOConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikeIOInputRoute& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::SpikeIOOutputRoute& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::FPGASystimeSyncLastAsicSystime& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::FPGASystimeSyncLastRTT& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::FPGASystimeSyncActiveState& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::FPGASystimeSyncNumRetries& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 struct OmnibusAddress;
@@ -29,7 +104,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * Container for writing the number of retries for the systime-sync on the FPGA.
  */
-class GENPYBIND(visible) FPGASystimeSyncNumRetries
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) FPGASystimeSyncNumRetries
+    : public ContainerBase<FPGASystimeSyncNumRetries>
 {
 public:
 	typedef halco::hicann_dls::vx::FPGASystimeSyncNumRetriesOnFPGA coordinate_type;
@@ -82,18 +158,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, FPGASystimeSyncNumRetries& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncNumRetries)
 
 
 /**
  * Container for reading out the last systime-sync RTT on the FPGA.
  */
-class GENPYBIND(visible) FPGASystimeSyncLastRTT
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) FPGASystimeSyncLastRTT
+    : public ContainerBase<FPGASystimeSyncLastRTT>
 {
 public:
 	typedef halco::hicann_dls::vx::FPGASystimeSyncLastRTTOnFPGA coordinate_type;
@@ -149,18 +225,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, FPGASystimeSyncLastRTT& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Systime m_value;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncLastRTT)
 
 
 /**
  * Container for reading out the last systime received from the ASIC on the FPGA.
  */
-class GENPYBIND(visible) FPGASystimeSyncLastAsicSystime
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) FPGASystimeSyncLastAsicSystime
+    : public ContainerBase<FPGASystimeSyncLastAsicSystime>
 {
 public:
 	typedef halco::hicann_dls::vx::FPGASystimeSyncLastAsicSystimeOnFPGA coordinate_type;
@@ -216,18 +292,20 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    FPGASystimeSyncLastAsicSystime& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Systime m_value;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncLastAsicSystime)
 
 
 /**
  * Container for reading out the last active-state of the systime-sync FSM.
  */
-class GENPYBIND(visible) FPGASystimeSyncActiveState
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) FPGASystimeSyncActiveState
+    : public ContainerBase<FPGASystimeSyncActiveState>
 {
 public:
 	typedef halco::hicann_dls::vx::FPGASystimeSyncActiveStateOnFPGA coordinate_type;
@@ -274,18 +352,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, FPGASystimeSyncActiveState& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_active_state;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGASystimeSyncActiveState)
 
 
 /**
  * Container for reading out the unique identifier of the FPGA.
  */
-class GENPYBIND(visible) FPGADeviceDNA
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) FPGADeviceDNA
+    : public ContainerBase<FPGADeviceDNA>
 {
 public:
 	typedef halco::hicann_dls::vx::FPGADeviceDNAOnFPGA coordinate_type;
@@ -340,17 +418,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, FPGADeviceDNA& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	Value m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(FPGADeviceDNA)
 
 /**
  * Container for the event (spikes, MADC samples) recording configuration register.
  */
-class GENPYBIND(visible) EventRecordingConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) EventRecordingConfig
+    : public ContainerBase<EventRecordingConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::EventRecordingConfigOnFPGA coordinate_type;
@@ -392,17 +471,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, EventRecordingConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable_event_recording;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventRecordingConfig)
 
 /**
  * Container for the configuration of the playback instruction timeout duration.
  */
-class GENPYBIND(visible) InstructionTimeoutConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) InstructionTimeoutConfig
+    : public ContainerBase<InstructionTimeoutConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::InstructionTimeoutConfigOnFPGA coordinate_type;
@@ -447,12 +527,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, InstructionTimeoutConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Value m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(InstructionTimeoutConfig)
 
 /**
  * Container for arming the systime-correction barrier in playback executor.
@@ -461,7 +541,8 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE(InstructionTimeoutConfig)
  * With an Extoll-Bitfile, this waits for a global network-Interrupt.
  * In any other case, it will just return immediately.
  */
-class GENPYBIND(visible) SystimeCorrectionBarrierConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SystimeCorrectionBarrierConfig
+    : public ContainerBase<SystimeCorrectionBarrierConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::SystimeCorrectionBarrierConfigOnFPGA coordinate_type;
@@ -504,14 +585,17 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    SystimeCorrectionBarrierConfig& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable_interrupt;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SystimeCorrectionBarrierConfig)
 
-class GENPYBIND(visible) ExternalPPUMemoryByte
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExternalPPUMemoryByte
+    : public ContainerBase<ExternalPPUMemoryByte>
 {
 public:
 	typedef halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA coordinate_type;
@@ -556,16 +640,16 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(Archive& ar, ExternalPPUMemoryByte& value, std::uint32_t);
 
 	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUMemoryBlock>;
 	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUMemory>;
 	Value m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryByte)
 
-class GENPYBIND(visible) ExternalPPUMemoryQuad
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExternalPPUMemoryQuad
+    : public ContainerBase<ExternalPPUMemoryQuad>
 {
 public:
 	typedef halco::hicann_dls::vx::ExternalPPUMemoryQuadOnFPGA coordinate_type;
@@ -608,7 +692,7 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t);
+	friend void ::cereal::serialize(Archive& ar, ExternalPPUMemoryQuad& value, std::uint32_t);
 
 	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUMemoryBlock>;
 	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUMemory>;
@@ -616,12 +700,12 @@ private:
 	Enables m_enables;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExternalPPUMemoryQuad)
 
 /**
  * Configuration registers for on-FPGA SpikeIO.
  */
-class GENPYBIND(visible) SpikeIOConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SpikeIOConfig
+    : public ContainerBase<SpikeIOConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::SpikeIOConfigOnFPGA coordinate_type;
@@ -686,7 +770,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, SpikeIOConfig& value, std::uint32_t version)
+	    SYMBOL_VISIBLE;
 
 	DataRateScaler m_data_rate_scaler;
 	bool m_enable_tx;
@@ -694,12 +779,12 @@ private:
 	bool m_enable_internal_loopback;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOConfig)
 
 /**
  * On-chip target spike address for events received via the on-fpga SpikeIO module.
  */
-class GENPYBIND(visible) SpikeIOInputRoute
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SpikeIOInputRoute
+    : public ContainerBase<SpikeIOInputRoute>
 {
 public:
 	typedef halco::hicann_dls::vx::SpikeIOInputRouteOnFPGA coordinate_type;
@@ -739,17 +824,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, SpikeIOInputRoute& value, std::uint32_t version)
+	    SYMBOL_VISIBLE;
 
 	halco::hicann_dls::vx::SpikeLabel m_target;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOInputRoute)
 
 /**
  * Serial address target for events sent via the on-fpga SpikeIO module.
  */
-class GENPYBIND(visible) SpikeIOOutputRoute
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SpikeIOOutputRoute
+    : public ContainerBase<SpikeIOOutputRoute>
 {
 public:
 	typedef halco::hicann_dls::vx::SpikeIOOutputRouteOnFPGA coordinate_type;
@@ -791,12 +877,12 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, SpikeIOOutputRoute& value, std::uint32_t version)
+	    SYMBOL_VISIBLE;
 
 	halco::hicann_dls::vx::SpikeIOAddress m_target;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(SpikeIOOutputRoute)
 
 namespace detail {
 

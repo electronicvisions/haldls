@@ -6,6 +6,7 @@
 #include "haldls/vx/v3/timer.h"
 #include "haldls/vx/v3/traits.h"
 #include "hxcomm/vx/connection_from_env.h"
+#include "stadls/vx/v3/container_ticket.h"
 #include "stadls/vx/v3/playback_program.h"
 #include "stadls/vx/v3/playback_program_builder.h"
 #include "stadls/vx/v3/run.h"
@@ -80,12 +81,11 @@ protected:
 
 	void check_equality()
 	{
-		auto read_config = ticket->get();
-		EXPECT_EQ(read_config, ADPLL());
+		EXPECT_EQ(dynamic_cast<ADPLL const&>(ticket->get()), ADPLL());
 	}
 
 	PlaybackProgram program;
-	std::optional<PlaybackProgram::ContainerTicket<ADPLL>> ticket;
+	std::optional<ContainerTicket> ticket;
 }; // PLLTestWriteReadADPLL
 
 INSTANTIATE_TEST_CASE_P(
@@ -115,7 +115,7 @@ TEST_F(PLLTest, WriteReadPLLClockOutputBlockOmnibusEquality)
 	auto program = builder.done();
 	test_run_program(program);
 
-	EXPECT_EQ(ticket.get(), config);
+	EXPECT_EQ(dynamic_cast<PLLClockOutputBlock const&>(ticket.get()), config);
 }
 
 TEST_F(PLLTest, WriteReadPLLSelfTestOmnibusEquality)
@@ -136,7 +136,7 @@ TEST_F(PLLTest, WriteReadPLLSelfTestOmnibusEquality)
 	auto program = builder.done();
 	test_run_program(program);
 
-	EXPECT_EQ(ticket.get(), config);
+	EXPECT_EQ(dynamic_cast<PLLSelfTest const&>(ticket.get()), config);
 }
 
 TEST_F(PLLTest, PLLSelfTest)
@@ -180,7 +180,7 @@ TEST_F(PLLTest, PLLSelfTest)
 
 	EXPECT_TRUE(ticket.valid());
 
-	auto status = ticket.get();
+	auto const& status = dynamic_cast<PLLSelfTestStatus const&>(ticket.get());
 
 	EXPECT_TRUE(status.get_finished());
 	EXPECT_TRUE(status.get_success());

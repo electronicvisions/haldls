@@ -11,6 +11,7 @@
 #include "haldls/vx/v3/traits.h"
 #include "hate/type_index.h"
 #include "hxcomm/vx/connection_from_env.h"
+#include "stadls/vx/v3/container_ticket.h"
 #include "stadls/vx/v3/decode.h"
 #include "stadls/vx/v3/init_generator.h"
 #include "stadls/vx/v3/playback_program.h"
@@ -188,7 +189,7 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 	PlaybackProgramBuilder read_builder;
 
 	std::vector<Container> reference_containers;
-	std::vector<PlaybackProgram::ContainerTicket<Container>> read_tickets;
+	std::vector<ContainerTicket> read_tickets;
 
 	for (auto const& coord :
 	     iter_sparse<typename Container::coordinate_type>(MAX_WORDS_PER_REDUCED_TEST)) {
@@ -245,6 +246,8 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 
 	for (size_t i = 0; i < reference_containers.size(); ++i) {
 		EXPECT_TRUE(read_tickets.at(i).valid());
-		EXPECT_EQ(reference_containers.at(i), read_tickets.at(i).get());
+		EXPECT_EQ(
+		    reference_containers.at(i),
+		    dynamic_cast<TypeParam::first_type const&>(read_tickets.at(i).get()));
 	}
 }

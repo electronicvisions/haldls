@@ -5,10 +5,9 @@
 #include "lola/vx/readout_chain.h"
 
 #include "halco/common/iter_all.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
 #include "hate/join.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 #if CHIP_REVISION == 3
@@ -343,17 +342,4 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain const& config)
 
 } // lola::vx::CHIP_REVISION
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::ReadoutChain::BufferToPadT)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::ReadoutChain::DynamicMux)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(
-    lola::vx::CHIP_REVISION_STR::ReadoutChain::PseudoDifferentialConverter)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(
-    lola::vx::CHIP_REVISION_STR::ReadoutChain::MADCInputCrossbar)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::ReadoutChain::MADCPreamp)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(
-    lola::vx::CHIP_REVISION_STR::ReadoutChain::MADCDebugCrossbar)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::ReadoutChain::MADC)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(
-    lola::vx::CHIP_REVISION_STR::ReadoutChain::SourceMeasureUnit)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::ReadoutChain::CurrentDAC)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::ReadoutChain)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::CHIP_REVISION_STR::ReadoutChain)

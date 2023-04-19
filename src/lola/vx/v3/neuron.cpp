@@ -1,8 +1,7 @@
 #include "lola/vx/v3/neuron.h"
 
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "hate/indent.h"
-#include "lola/vx/cerealization.tcc"
 #include "lola/vx/hana.h"
 
 namespace lola::vx::v3 {
@@ -809,18 +808,5 @@ std::ostream& operator<<(std::ostream& os, NeuronBlock const& config)
 
 } // namespace lola::vx::v3
 
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::SynapticInput)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::Leak)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::Reset)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::Threshold)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::Multicompartment)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::ConstantCurrent)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::MembraneCapacitance)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::Adaptation)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::Exponential)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::Readout)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::EventRouting)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::RefractoryPeriod)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron::Bayesian)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::AtomicNeuron)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::v3::NeuronBlock)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::v3::AtomicNeuron)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::v3::NeuronBlock)

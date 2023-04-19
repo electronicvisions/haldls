@@ -9,17 +9,47 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/capmem.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/empty.h"
 #include "hate/join.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
 
 #ifndef __ppu__
 #include "hxcomm/vx/target.h"
 #endif
+
+namespace haldls::vx {
+
+template <typename Coordinates>
+struct CapMemCell;
+
+template <typename Coordinates>
+struct CapMemBlock;
+
+template <typename Coordinates>
+struct CapMemBlockConfig;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive, typename Coordinates>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CapMemCell<Coordinates>& value, std::uint32_t const version);
+
+template <typename Archive, typename Coordinates>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CapMemBlock<Coordinates>& value, std::uint32_t const version);
+
+template <typename Archive, typename Coordinates>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CapMemBlockConfig<Coordinates>& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class OmnibusChipOverJTAG;
@@ -30,10 +60,9 @@ namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 template <typename Coordinates>
-class CapMemCell;
-
-template <typename Coordinates>
-class SYMBOL_VISIBLE CapMemCell : public DifferentialWriteTrait
+class SYMBOL_VISIBLE CapMemCell
+    : public DifferentialWriteTrait
+    , public ContainerBase<CapMemCell<Coordinates>>
 {
 public:
 	typedef typename Coordinates::CapMemCellOnDLS coordinate_type;
@@ -91,9 +120,8 @@ public:
 	bool operator!=(CapMemCell const& other) const;
 
 private:
-	friend struct cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	template <class Archive, typename T>
+	friend void ::cereal::serialize(Archive& ar, CapMemCell<T>& value, std::uint32_t const version);
 
 	value_type m_value;
 };
@@ -102,7 +130,9 @@ template <typename Coordinates>
 class CapMemBlock;
 
 template <typename Coordinates>
-class SYMBOL_VISIBLE CapMemBlock : public DifferentialWriteTrait
+class SYMBOL_VISIBLE CapMemBlock
+    : public DifferentialWriteTrait
+    , public ContainerBase<CapMemBlock<Coordinates>>
 {
 public:
 	typedef typename Coordinates::CapMemBlockOnDLS coordinate_type;
@@ -134,8 +164,9 @@ public:
 private:
 	friend detail::VisitPreorderImpl<CapMemBlock>;
 	friend struct cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	template <class Archive, typename T>
+	friend void ::cereal::serialize(
+	    Archive& ar, CapMemBlock<T>& value, std::uint32_t const version);
 
 	halco::common::
 	    typed_heap_array<CapMemCell<Coordinates>, typename Coordinates::CapMemCellOnCapMemBlock>
@@ -171,7 +202,9 @@ std::ostream& operator<<(std::ostream& os, CapMemBlockConfigIOutSelect const& co
     SYMBOL_VISIBLE;
 
 template <typename Coordinates>
-class SYMBOL_VISIBLE CapMemBlockConfig : public DifferentialWriteTrait
+class SYMBOL_VISIBLE CapMemBlockConfig
+    : public DifferentialWriteTrait
+    , public ContainerBase<CapMemBlockConfig<Coordinates>>
 {
 public:
 	typedef typename Coordinates::CapMemBlockConfigOnDLS coordinate_type;
@@ -480,9 +513,9 @@ public:
 	}
 
 private:
-	friend struct cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	template <class Archive, typename T>
+	friend void ::cereal::serialize(
+	    Archive& ar, CapMemBlockConfig<T>& value, std::uint32_t const version);
 
 	bool m_enable_capmem;
 	bool m_debug_readout_enable;

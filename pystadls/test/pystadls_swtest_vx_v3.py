@@ -17,7 +17,7 @@ class TestPystadlsVxV3(unittest.TestCase):
         # reset chip
         builder.write(halco.ResetChipOnDLS(), haldls.ResetChip(True))
         builder.write(halco.TimerOnDLS(), haldls.Timer())
-        builder.block_until(halco.TimerOnDLS(), 10)
+        builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(10))
         tmp = (halco.ResetChipOnDLS(), haldls.ResetChip(False))
         builder.write(*tmp)
 
@@ -30,8 +30,10 @@ class TestPystadlsVxV3(unittest.TestCase):
             builder.write(halco.TimerOnDLS(), haldls.Timer())
             shiftreg.set_enable_led(led, True)
             builder.write(halco.ShiftRegisterOnBoard(), shiftreg)
-            builder.block_until(halco.TimerOnDLS(),
-                                int(fisch.fpga_clock_cycles_per_us * 1e6 / 8))
+            builder.block_until(
+                halco.TimerOnDLS(),
+                haldls.Timer.Value(
+                    int(fisch.fpga_clock_cycles_per_us * 1e6 / 8)))
             shiftreg.set_enable_led(led, False)
         builder.write(halco.ShiftRegisterOnBoard(), shiftreg)
 
@@ -67,6 +69,28 @@ class TestPystadlsVxV3(unittest.TestCase):
                          stadls.convert_to_builder(program).done())
         self.assertEqual(real_program,
                          stadls.convert_to_builder(builder_copy).done())
+
+    def test_pb_builder_dumper_done(self):
+        builder = stadls.PlaybackProgramBuilderDumper()
+        donetype = builder.done()
+
+        self.assertEqual(donetype.values, [])
+
+        # reset chip
+        donetype.values = [
+            (halco.ResetChipOnDLS(), haldls.ResetChip(True)),
+            (halco.TimerOnDLS(), haldls.Timer.Value(10)),
+        ]
+
+        self.assertEqual(donetype.values, [
+            (halco.ResetChipOnDLS(), haldls.ResetChip(True)),
+            (halco.TimerOnDLS(), haldls.Timer.Value(10)),
+        ])
+
+        self.assertEqual(donetype.values, [
+            (halco.ResetChipOnDLS(), haldls.ResetChip(True)),
+            (halco.TimerOnDLS(), haldls.Timer.Value(10)),
+        ])
 
 
 if __name__ == "__main__":

@@ -41,6 +41,6 @@ TEST(PollingOmnibusBlock, Encode)
 {
 	PollingOmnibusBlock config(true);
 
-	auto const encoded = config.encode();
+	auto const encoded = config.encode().at(0);
 	EXPECT_EQ(encoded, fisch::vx::word_access_type::PollingOmnibusBlock(true));
 }

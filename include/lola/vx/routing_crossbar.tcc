@@ -5,7 +5,6 @@
 #include "haldls/vx/traits.h"
 #include "lola/vx/routing_crossbar.h"
 #include <boost/hana/adapt_struct.hpp>
-#include "lola/vx/cerealization.h"
 
 namespace haldls::vx::detail {
 
@@ -76,4 +75,3 @@ struct VisitPreorderImpl<lola::vx::Crossbar>
 } // namespace haldls::vx::detail
 
 BOOST_HANA_ADAPT_STRUCT(lola::vx::Crossbar, nodes, outputs);
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::Crossbar)

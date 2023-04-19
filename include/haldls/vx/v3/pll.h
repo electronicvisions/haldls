@@ -1,6 +1,23 @@
 #pragma once
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/pll.h"
+
+namespace haldls::vx::v3 {
+
+class PLLClockOutputBlock;
+
+} // namespace haldls::vx::v3
+
+namespace cereal {
+
+class access;
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::v3::PLLClockOutputBlock& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace haldls::vx::v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
@@ -12,7 +29,8 @@ using PLLSelfTestStatus GENPYBIND(visible) = haldls::vx::PLLSelfTestStatus;
 /**
  * Container for configuration of the clock outputs of the PLL.
  */
-class GENPYBIND(visible) PLLClockOutputBlock
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PLLClockOutputBlock
+    : public ContainerBase<PLLClockOutputBlock>
 {
 public:
 	class ClockOutput
@@ -86,9 +104,9 @@ public:
 		friend std::ostream& operator<<(std::ostream& os, ClockOutput const& config) SYMBOL_VISIBLE;
 
 	private:
-		friend struct cereal::access;
+		friend class cereal::access;
 		template <typename Archive>
-		void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+		void serialize(Archive& ar, std::uint32_t const version);
 
 		bool m_enable_output;
 		bool m_enable_bypass;
@@ -150,9 +168,9 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, PLLClockOutputBlock& value, std::uint32_t const version);
 
 	halco::common::typed_array<ClockOutput, halco::hicann_dls::vx::PLLClockOutputOnDLS> m_output;
 	bool m_switch_spl1_to_madc;
@@ -171,5 +189,3 @@ struct BackendContainerTrait<v3::PLLClockOutputBlock>
 {};
 
 } // namespace haldls::vx::detail
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::PLLClockOutputBlock)

@@ -5,14 +5,9 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/bitfield.h"
 #include "haldls/vx/constants.h"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
-
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "haldls/cerealization.tcc"
-#endif
 
 namespace haldls {
 namespace vx {
@@ -236,22 +231,6 @@ bool MADCControl::operator!=(MADCControl const& other) const
 {
 	return !(*this == other);
 }
-
-#ifndef __ppu__
-template <class Archive>
-void MADCControl::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_iconv_amplifier));
-	ar(CEREAL_NVP(m_enable_pre_amplifier));
-	ar(CEREAL_NVP(m_enable_continuous_sampling));
-	ar(CEREAL_NVP(m_enable_power_down_after_sampling));
-	ar(CEREAL_NVP(m_stop_recording));
-	ar(CEREAL_NVP(m_start_recording));
-	ar(CEREAL_NVP(m_wake_up));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(MADCControl)
-#endif
 
 
 MADCConfig::MADCConfig() :
@@ -964,51 +943,8 @@ bool MADCConfig::operator!=(MADCConfig const& other) const
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <class Archive>
-void MADCConfig::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_active_mux_initially_selected_input));
-	ar(CEREAL_NVP(m_active_mux_input_select_length));
-	ar(CEREAL_NVP(m_sample_duration_adjust));
-	ar(CEREAL_NVP(m_enable_sar_reset_on_fall));
-	ar(CEREAL_NVP(m_sar_reset_wait));
-	ar(CEREAL_NVP(m_sar_reset_length));
-	ar(CEREAL_NVP(m_powerup_wait_value));
-	ar(CEREAL_NVP(m_conversion_cycles_offset));
-	ar(CEREAL_NVP(m_calibration_wait_value));
-	ar(CEREAL_NVP(m_enable_calibration));
-	ar(CEREAL_NVP(m_number_of_samples));
-	ar(CEREAL_NVP(m_preamp_sampling_window_start));
-	ar(CEREAL_NVP(m_preamp_sampling_window_end));
-	ar(CEREAL_NVP(m_iconv_sampling_window_start));
-	ar(CEREAL_NVP(m_iconv_sampling_window_end));
-	ar(CEREAL_NVP(m_sample_on_positive_edge));
-	ar(CEREAL_NVP(m_enable_dummy_data));
-	ar(CEREAL_NVP(m_connect_preamp_to_madc));
-	ar(CEREAL_NVP(m_connect_pads_to_madc));
-	ar(CEREAL_NVP(m_connect_preamp_to_pads));
-	ar(CEREAL_NVP(m_preamp_gain_capacitor_size));
-	ar(CEREAL_NVP(m_enable_madc_clock_scaling));
-	ar(CEREAL_NVP(m_madc_clock_scale_value));
-	ar(CEREAL_NVP(m_enable_active_mux_amplifiers));
-	ar(CEREAL_NVP(m_enable_pseudo_differential_reference));
-	ar(CEREAL_NVP(m_signal_selection_connect_current_meter));
-	ar(CEREAL_NVP(m_signal_selection_connect_active_mux));
-	ar(CEREAL_NVP(m_signal_selection_connect_debug));
-	ar(CEREAL_NVP(m_signal_selection_connect_preamp));
-	ar(CEREAL_NVP(m_enable_iconv_amplifier));
-	ar(CEREAL_NVP(m_connect_iconv_neuron));
-	ar(CEREAL_NVP(m_connect_iconv_synapse));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(MADCConfig)
-#endif
-
 } // namespace vx
 } // namespace haldls
 
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::MADCControl, 0)
-CEREAL_CLASS_VERSION(haldls::vx::MADCConfig, 0)
-#endif
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::MADCControl)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::MADCConfig)

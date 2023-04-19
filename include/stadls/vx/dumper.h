@@ -1,16 +1,23 @@
 #pragma once
-#include "halco/hicann-dls/vx/barrier.h"
-#include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/vx/barrier.h"
-#include "haldls/vx/block.h"
-#include "haldls/vx/timer.h"
+#include "haldls/vx/block_until.h"
+#include "haldls/vx/container.h"
 #include "hate/visibility.h"
-#include "stadls/vx/playback_program.h"
+#include "stadls/vx/container_ticket.h"
 
 namespace stadls::vx::detail {
-
 template <typename>
 class Dumper;
+} // namespace stadls::vx::detail
+
+namespace cereal {
+
+template <typename Archive, typename DoneType>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, stadls::vx::detail::Dumper<DoneType>& value, std::uint32_t const version);
+
+} // namespace cereal
+
+namespace stadls::vx::detail {
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, Dumper<T> const& builder) SYMBOL_VISIBLE;
@@ -46,43 +53,22 @@ public:
 	Dumper& operator=(Dumper const&) = delete;
 
 	/**
-	 * Add instruction to block execution until specified timer has reached specified value.
-	 * @param coord Timer coordinate for which to block
-	 * @param time Timer value until which to block execution
+	 * Add instruction to block execution until specified condition is satisfied.
+	 * @param coord Coordinate for which to block
+	 * @param condition Condition to block execution for until satisfaction
 	 */
 	void block_until(
-	    typename haldls::vx::Timer::coordinate_type const& coord, haldls::vx::Timer::Value time);
-
-	/**
-	 * Add instruction to block execution until specified barrier is completed.
-	 * @param coord Barrier synchronization coordinate for which to block
-	 * @param barrier Barrier synchronization value for to block execution
-	 */
-	void block_until(
-	    halco::hicann_dls::vx::BarrierOnFPGA const& coord, haldls::vx::Barrier barrier);
-
-	/**
-	 * Add instruction to block execution until specified barrier is completed.
-	 * @param coord PollingOmnibusBlock synchronization coordinate for which to block
-	 * @param barrier PollingOmnibusBlock synchronization value for to block execution
-	 */
-	void block_until(
-	    halco::hicann_dls::vx::PollingOmnibusBlockOnFPGA const& coord,
-	    haldls::vx::PollingOmnibusBlock barrier);
+	    haldls::vx::BlockUntil::Coordinate const& coord, haldls::vx::BlockUntil const& condition);
 
 	/**
 	 * Add write instruction for container.
-	 * @tparam ContainerT Container type
 	 * @param coord Container coordinate
 	 * @param config Container data
 	 */
-	template <typename ContainerT>
-	void write(typename ContainerT::coordinate_type const& coord, ContainerT const& config);
+	void write(haldls::vx::Container::Coordinate const& coord, haldls::vx::Container const& config);
 
 	/** We do not support read and throw at runtime. */
-	template <typename ContainerT>
-	PlaybackProgram::ContainerTicket<ContainerT> read(
-	    typename ContainerT::coordinate_type const& coord);
+	ContainerTicket read(haldls::vx::Container::Coordinate const& coord);
 
 	/**
 	 * Return ordered list of write coordinate-container pairs.
@@ -126,9 +112,8 @@ public:
 	bool empty() const;
 
 private:
-	friend struct cereal::access;
-	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	template <class Archive, typename T>
+	friend void ::cereal::serialize(Archive& ar, Dumper<T>& value, std::uint32_t const version);
 
 	done_type m_dumpit;
 };

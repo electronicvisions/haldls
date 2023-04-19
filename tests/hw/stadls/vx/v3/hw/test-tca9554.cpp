@@ -10,6 +10,7 @@
 #include "haldls/vx/v3/reset.h"
 #include "haldls/vx/v3/timer.h"
 #include "hxcomm/vx/connection_from_env.h"
+#include "stadls/vx/v3/container_ticket.h"
 #include "stadls/vx/v3/playback_program.h"
 #include "stadls/vx/v3/playback_program_builder.h"
 #include "stadls/vx/v3/run.h"
@@ -86,7 +87,7 @@ TEST(TCA9554Inputs, DISABLED_ReadChannels)
 	builder.block_until(TimerOnDLS(), Timer::Value(100));
 
 	// test read of inputs
-	PlaybackProgram::ContainerTicket<TCA9554Inputs> ticket = builder.read(TCA9554InputsOnBoard());
+	ContainerTicket ticket = builder.read(TCA9554InputsOnBoard());
 
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
@@ -94,7 +95,7 @@ TEST(TCA9554Inputs, DISABLED_ReadChannels)
 	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
-	auto channel_inputs = ticket.get().get_channel_input();
+	auto channel_inputs = dynamic_cast<TCA9554Inputs const&>(ticket.get()).get_channel_input();
 	for (auto channel : iter_all<TCA9554ChannelOnBoard>()) {
 		EXPECT_EQ(channel_inputs[channel], 0);
 	}

@@ -1,9 +1,8 @@
 #include "haldls/vx/perftest.h"
 
 #include "fisch/vx/word_access/type/omnibus.h"
-#include "halco/common/cerealization_geometry.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.tcc"
+#include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 
 namespace haldls::vx {
@@ -54,14 +53,6 @@ void PerfTest::decode(
 {
 	m_enable = (data[0] & 0x1);
 }
-
-template <class Archive>
-void PerfTest::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PerfTest)
 
 
 PerfTestStatus::PerfTestStatus() : m_sent(), m_received(), m_in_order(), m_error_word() {}
@@ -158,18 +149,7 @@ void PerfTestStatus::decode(std::array<
 	m_error_word = ErrorWord(data[3]);
 }
 
-template <class Archive>
-void PerfTestStatus::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_sent));
-	ar(CEREAL_NVP(m_received));
-	ar(CEREAL_NVP(m_in_order));
-	ar(CEREAL_NVP(m_error_word));
-}
-
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PerfTestStatus)
-
 } // namespace haldls::vx
 
-CEREAL_CLASS_VERSION(haldls::vx::PerfTest, 0)
-CEREAL_CLASS_VERSION(haldls::vx::PerfTestStatus, 0)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PerfTest)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::PerfTestStatus)

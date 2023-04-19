@@ -16,13 +16,6 @@
 #include "hate/join.h"
 #include "hate/math.h"
 
-#ifndef __ppu__
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_heap_array.h"
-#include "haldls/cerealization.h"
-#include <cereal/types/variant.hpp>
-#endif
-
 namespace haldls {
 namespace vx {
 
@@ -94,12 +87,6 @@ bool CapMemCell<Coordinates>::operator!=(CapMemCell<Coordinates> const& other) c
 }
 
 #ifndef __ppu__
-template <typename Coordinates>
-template <class Archive>
-void CapMemCell<Coordinates>::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_value));
-}
 #endif
 
 #define CAPMEM_CELL_UNROLL_PPU(Coordinates)                                                        \
@@ -144,9 +131,7 @@ void CapMemCell<Coordinates>::serialize(Archive& ar, std::uint32_t const)
 	        CapMemCell<Coordinates>::config_size_in_words> const& data);
 
 #ifndef __ppu__
-#define CAPMEM_CELL_UNROLL(Coordinates)                                                            \
-	CAPMEM_CELL_UNROLL_PPU(Coordinates)                                                            \
-	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemCell<Coordinates>)
+#define CAPMEM_CELL_UNROLL(Coordinates) CAPMEM_CELL_UNROLL_PPU(Coordinates)
 #endif
 
 template <typename Coordinates>
@@ -188,15 +173,6 @@ bool CapMemBlock<Coordinates>::operator!=(CapMemBlock<Coordinates> const& other)
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-template <typename Coordinates>
-template <class Archive>
-void CapMemBlock<Coordinates>::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_capmem_cells));
-}
-#endif
-
 template <typename Coordinates>
 std::ostream& operator<<(std::ostream& os, CapMemBlock<Coordinates> const& block)
 {
@@ -207,9 +183,7 @@ std::ostream& operator<<(std::ostream& os, CapMemBlock<Coordinates> const& block
 #define CAPMEM_BLOCK_UNROLL_PPU(Coordinates) template class CapMemBlock<Coordinates>;
 
 #ifndef __ppu__
-#define CAPMEM_BLOCK_UNROLL(Coordinates)                                                           \
-	CAPMEM_BLOCK_UNROLL_PPU(Coordinates)                                                           \
-	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemBlock<Coordinates>)
+#define CAPMEM_BLOCK_UNROLL(Coordinates) CAPMEM_BLOCK_UNROLL_PPU(Coordinates)
 #endif
 
 template <typename Coordinates>
@@ -710,35 +684,6 @@ void CapMemBlockConfig<Coordinates>::decode(
 	m_pause_counter = PauseCounter(bitfield.u.m.pause_counter);
 }
 
-#ifndef __ppu__
-template <typename Coordinates>
-template <class Archive>
-void CapMemBlockConfig<Coordinates>::serialize(Archive& ar, std::uint32_t const)
-{
-	ar(CEREAL_NVP(m_enable_capmem));
-	ar(CEREAL_NVP(m_debug_readout_enable));
-	ar(CEREAL_NVP(m_debug_capmem_coord));
-	ar(CEREAL_NVP(m_debug_v_ref_select));
-	ar(CEREAL_NVP(m_debug_i_out_select));
-	ar(CEREAL_NVP(m_debug_out_amp_bias));
-	ar(CEREAL_NVP(m_debug_source_follower_bias));
-	ar(CEREAL_NVP(m_debug_level_shifter_bias));
-	ar(CEREAL_NVP(m_v_global_bias));
-	ar(CEREAL_NVP(m_current_cell_res));
-	ar(CEREAL_NVP(m_enable_boost));
-	ar(CEREAL_NVP(m_boost_factor));
-	ar(CEREAL_NVP(m_enable_autoboost));
-	ar(CEREAL_NVP(m_prescale_pause));
-	ar(CEREAL_NVP(m_prescale_ramp));
-	ar(CEREAL_NVP(m_sub_counter));
-	ar(CEREAL_NVP(m_pause_counter));
-	ar(CEREAL_NVP(m_pulse_a));
-	ar(CEREAL_NVP(m_pulse_b));
-	ar(CEREAL_NVP(m_boost_a));
-	ar(CEREAL_NVP(m_boost_b));
-}
-#endif
-
 std::ostream& operator<<(std::ostream& os, CapMemBlockConfigVRefSelect const& config)
 {
 	switch (config) {
@@ -821,17 +766,8 @@ std::ostream& operator<<(std::ostream& os, CapMemBlockConfigIOutSelect const& co
 	        CapMemBlockConfig<Coordinates>::config_size_in_words> const& data);
 
 #ifndef __ppu
-#define CAPMEM_BLOCK_CONFIG_UNROLL(Coordinates)                                                    \
-	CAPMEM_BLOCK_CONFIG_UNROLL_PPU(Coordinates)                                                    \
-	EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(CapMemBlockConfig<Coordinates>)
+#define CAPMEM_BLOCK_CONFIG_UNROLL(Coordinates) CAPMEM_BLOCK_CONFIG_UNROLL_PPU(Coordinates)
 #endif
 
 } // namespace vx
 } // namespace haldls
-
-#ifndef __ppu__
-#define CAPMEM_CEREAL_VERSION(Coordinates)                                                         \
-	CEREAL_CLASS_VERSION(haldls::vx::CapMemCell<Coordinates>, 0)                                   \
-	CEREAL_CLASS_VERSION(haldls::vx::CapMemBlock<Coordinates>, 0)                                  \
-	CEREAL_CLASS_VERSION(haldls::vx::CapMemBlockConfig<Coordinates>, 0)
-#endif

@@ -1,11 +1,47 @@
 #pragma once
 #include "halco/hicann-dls/vx/v3/coordinates.h"
 #include "halco/hicann-dls/vx/v3/neuron.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/neuron.h"
 
 #ifndef __ppu__
-#include "haldls/cerealization.h"
+#include <cereal/macros.hpp>
+#endif
+
+namespace halco::hicann_dls::vx::v3 {
+
+struct Coordinates;
+
+} // namespace halco::hicann_dls::vx::v3
+
+namespace haldls::vx {
+
+template <typename Coordinates>
+struct NeuronBackendConfig;
+
+namespace v3 {
+
+struct NeuronConfig;
+struct NeuronResetQuad;
+typedef haldls::vx::NeuronBackendConfig<halco::hicann_dls::vx::v3::Coordinates> NeuronBackendConfig;
+
+} // namespace v3
+
+} // namespace haldls::vx
+
+#ifndef __ppu__
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::v3::NeuronConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::v3::NeuronResetQuad& value, std::uint32_t const version);
+
+} // namespace cereal
 #endif
 
 namespace fisch::vx {
@@ -20,7 +56,7 @@ NEURON_EXTERN_TEMPLATE(halco::hicann_dls::vx::v3::Coordinates)
 namespace haldls::vx::v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
 using CommonNeuronBackendConfig GENPYBIND(visible) = haldls::vx::CommonNeuronBackendConfig;
-using NeuronBackendConfig GENPYBIND(opaque) =
+using NeuronBackendConfig GENPYBIND(opaque, inline_base("*ContainerBase*")) =
     haldls::vx::NeuronBackendConfig<halco::hicann_dls::vx::v3::Coordinates>;
 using NeuronReset GENPYBIND(visible) = haldls::vx::NeuronReset;
 using BlockPostPulse GENPYBIND(visible) = haldls::vx::BlockPostPulse;
@@ -32,7 +68,9 @@ using NeuronSRAMTimingConfig GENPYBIND(visible) = haldls::vx::NeuronSRAMTimingCo
 /*
  * Container for configuration of (digital) neuron parameters.
  */
-class GENPYBIND(visible) NeuronConfig : public DifferentialWriteTrait
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) NeuronConfig
+    : public DifferentialWriteTrait
+    , public ContainerBase<NeuronConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::v3::NeuronConfigOnDLS coordinate_type;
@@ -315,9 +353,9 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, NeuronConfig const& config) SYMBOL_VISIBLE;
 
 private:
-	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(Archive& ar, NeuronConfig& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
 
 	bool m_en_comp_cond_div;
 	bool m_en_comp_cond_mul;
@@ -366,7 +404,8 @@ std::ostream& operator<<(std::ostream&, NeuronConfig::ReadoutSource const&) SYMB
  * Currently, also the correlation in the corresponding synapse quad in row zero
  * is reset. This behaviour will be fixed for HX-v3 (issue 3346).
  */
-class GENPYBIND(visible) NeuronResetQuad
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) NeuronResetQuad
+    : public ContainerBase<NeuronResetQuad>
 {
 public:
 	typedef halco::hicann_dls::vx::v3::NeuronResetQuadOnDLS coordinate_type;
@@ -396,9 +435,9 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, NeuronResetQuad const& config) SYMBOL_VISIBLE;
 
 private:
-	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, NeuronResetQuad& value, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
 } // namespace haldls::vx::v3
@@ -422,8 +461,3 @@ struct BackendContainerTrait<v3::NeuronResetQuad>
 {};
 
 } // namespace haldls::vx::detail
-
-#ifndef __ppu__
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::NeuronConfig)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::v3::NeuronResetQuad)
-#endif

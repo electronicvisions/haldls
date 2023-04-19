@@ -3,10 +3,25 @@
 #include <iosfwd>
 
 #include "halco/hicann-dls/vx/reset.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct ResetChip;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ResetChip& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx {
 class ResetChip;
@@ -18,7 +33,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * Container for setting the reset pin of the chip.
  */
-class GENPYBIND(visible) ResetChip
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ResetChip
+    : public ContainerBase<ResetChip>
 {
 public:
 	typedef halco::hicann_dls::vx::ResetChipOnDLS coordinate_type;
@@ -58,12 +74,11 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(Archive& ar, ResetChip& value, std::uint32_t const version);
 
 	bool m_value;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ResetChip)
 
 namespace detail {
 

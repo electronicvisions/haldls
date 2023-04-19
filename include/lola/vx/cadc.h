@@ -7,13 +7,12 @@
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
 #include "halco/common/typed_heap_array.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/cadc.h"
 #include "haldls/vx/common.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 #include "lola/vx/synapse.h"
 #include <boost/hana/adapt_struct.hpp>
@@ -48,7 +47,8 @@ namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 /**
  * Configuration container for CADC and correlation/neuron-readout related settings.
  */
-class GENPYBIND(visible) CADCReadoutChain
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CADCReadoutChain
+    : public haldls::vx::ContainerBase<CADCReadoutChain>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -397,7 +397,8 @@ private:
 };
 
 
-class GENPYBIND(visible) CADCSampleRow
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CADCSampleRow
+    : public haldls::vx::ContainerBase<CADCSampleRow>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -428,7 +429,8 @@ private:
 };
 
 
-class GENPYBIND(visible) CADCSamples
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CADCSamples
+    : public haldls::vx::ContainerBase<CADCSamples>
 {
 public:
 	typedef std::false_type has_local_data;
@@ -1323,6 +1325,3 @@ BOOST_HANA_ADAPT_STRUCT(
     i_bias_corout);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::CHIP_REVISION_STR::CADCSampleRow, causal, acausal);
 BOOST_HANA_ADAPT_STRUCT(lola::vx::CHIP_REVISION_STR::CADCSamples, causal, acausal);
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::CADCReadoutChain)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::CADCSampleRow)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(lola::vx::CHIP_REVISION_STR::CADCSamples)

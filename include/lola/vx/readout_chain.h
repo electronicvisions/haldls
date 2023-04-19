@@ -19,12 +19,11 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/readout.h"
 #include "halco/hicann-dls/vx/current_dac.h"
-#include "haldls/cerealization.h"
 #include "haldls/vx/madc.h"
 #include "haldls/vx/current_dac.h"
 #include "haldls/vx/readout.h"
+#include "haldls/vx/container.h"
 #include "hate/visibility.h"
-#include "lola/vx/cerealization.h"
 #include "lola/vx/genpybind.h"
 
 #if CHIP_REVISION == 3
@@ -40,7 +39,8 @@ namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 /**
  * Configuration of all circuits composing the analog readout chain.
  */
-class GENPYBIND(visible) ReadoutChain
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ReadoutChain
+    : public haldls::vx::ContainerBase<ReadoutChain>
 {
 public:
 	typedef halco::hicann_dls::vx::ReadoutChainOnDLS coordinate_type;

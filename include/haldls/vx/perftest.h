@@ -5,10 +5,30 @@
 #include "fisch/vx/word_access/type/reset.h"
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/highspeed_link.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct PerfTest;
+struct PerfTestStatus;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PerfTest& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::PerfTestStatus& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 struct OmnibusAddress;
@@ -24,7 +44,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
  * expected to be in order.
  * The test execution does not block playback execution.
  */
-class GENPYBIND(visible) PerfTest
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PerfTest
+    : public ContainerBase<PerfTest>
 {
 public:
 	typedef halco::hicann_dls::vx::PerfTestOnFPGA coordinate_type;
@@ -67,12 +88,11 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(Archive& ar, PerfTest& value, std::uint32_t const version);
 
 	bool m_enable;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PerfTest)
 
 namespace detail {
 
@@ -87,7 +107,8 @@ struct BackendContainerTrait<PerfTest>
 /**
  * Container for perf test result readout.
  */
-class GENPYBIND(visible) PerfTestStatus
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PerfTestStatus
+    : public ContainerBase<PerfTestStatus>
 {
 public:
 	typedef halco::hicann_dls::vx::PerfTestStatusOnFPGA coordinate_type;
@@ -200,7 +221,8 @@ public:
 private:
 	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version);
+	friend void ::cereal::serialize(
+	    Archive& ar, PerfTestStatus& value, std::uint32_t const version);
 
 	Sent m_sent;
 	Received m_received;
@@ -208,7 +230,6 @@ private:
 	ErrorWord m_error_word;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(PerfTestStatus)
 
 namespace detail {
 

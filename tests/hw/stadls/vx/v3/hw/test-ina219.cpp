@@ -2,6 +2,7 @@
 #include "haldls/vx/v3/barrier.h"
 #include "haldls/vx/v3/i2c.h"
 #include "hxcomm/vx/connection_from_env.h"
+#include "stadls/vx/v3/container_ticket.h"
 #include "stadls/vx/v3/init_generator.h"
 #include "stadls/vx/v3/playback_program.h"
 #include "stadls/vx/v3/playback_program_builder.h"
@@ -22,7 +23,7 @@ TEST(INA219, DACVoltages)
 		builder.write(ina, INA219Config());
 	}
 
-	std::vector<PlaybackProgram::ContainerTicket<INA219Status>> tickets;
+	std::vector<ContainerTicket> tickets;
 	for (auto const ina : iter_all<INA219StatusOnBoard>()) {
 		tickets.push_back(builder.read(ina));
 	}
@@ -41,17 +42,53 @@ TEST(INA219, DACVoltages)
 	auto const range12_max = 1300 / 4 /* linear with 4mV/LSB*/;
 	auto const range25_min = 2400 / 4 /* linear with 4mV/LSB*/;
 	auto const range25_max = 2600 / 4 /* linear with 4mV/LSB*/;
-	EXPECT_LE(tickets.at(INA219StatusOnBoard::vdd12_digital).get().get_bus_voltage(), range12_max);
-	EXPECT_LE(tickets.at(INA219StatusOnBoard::vdd25_digital).get().get_bus_voltage(), range25_max);
-	EXPECT_LE(tickets.at(INA219StatusOnBoard::vdd12_analog).get().get_bus_voltage(), range12_max);
-	EXPECT_LE(tickets.at(INA219StatusOnBoard::vdd25_analog).get().get_bus_voltage(), range25_max);
-	EXPECT_LE(tickets.at(INA219StatusOnBoard::vdd12_madc).get().get_bus_voltage(), range12_max);
-	EXPECT_LE(tickets.at(INA219StatusOnBoard::vdd12_pll).get().get_bus_voltage(), range12_max);
+	EXPECT_LE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_digital).get())
+	        .get_bus_voltage(),
+	    range12_max);
+	EXPECT_LE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_digital).get())
+	        .get_bus_voltage(),
+	    range25_max);
+	EXPECT_LE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_analog).get())
+	        .get_bus_voltage(),
+	    range12_max);
+	EXPECT_LE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_analog).get())
+	        .get_bus_voltage(),
+	    range25_max);
+	EXPECT_LE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_madc).get())
+	        .get_bus_voltage(),
+	    range12_max);
+	EXPECT_LE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_pll).get())
+	        .get_bus_voltage(),
+	    range12_max);
 
-	EXPECT_GE(tickets.at(INA219StatusOnBoard::vdd12_digital).get().get_bus_voltage(), range12_min);
-	EXPECT_GE(tickets.at(INA219StatusOnBoard::vdd25_digital).get().get_bus_voltage(), range25_min);
-	EXPECT_GE(tickets.at(INA219StatusOnBoard::vdd12_analog).get().get_bus_voltage(), range12_min);
-	EXPECT_GE(tickets.at(INA219StatusOnBoard::vdd25_analog).get().get_bus_voltage(), range25_min);
-	EXPECT_GE(tickets.at(INA219StatusOnBoard::vdd12_madc).get().get_bus_voltage(), range12_min);
-	EXPECT_GE(tickets.at(INA219StatusOnBoard::vdd12_pll).get().get_bus_voltage(), range12_min);
+	EXPECT_GE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_digital).get())
+	        .get_bus_voltage(),
+	    range12_min);
+	EXPECT_GE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_digital).get())
+	        .get_bus_voltage(),
+	    range25_min);
+	EXPECT_GE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_analog).get())
+	        .get_bus_voltage(),
+	    range12_min);
+	EXPECT_GE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_analog).get())
+	        .get_bus_voltage(),
+	    range25_min);
+	EXPECT_GE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_madc).get())
+	        .get_bus_voltage(),
+	    range12_min);
+	EXPECT_GE(
+	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_pll).get())
+	        .get_bus_voltage(),
+	    range12_min);
 }

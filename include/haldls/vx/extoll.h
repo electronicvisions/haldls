@@ -2,12 +2,195 @@
 #include "halco/common/geometry.h"
 #include "halco/hicann-dls/vx/extoll.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/cerealization.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/visibility.h"
 #include <array>
 #include <iosfwd>
+#include <cereal/macros.hpp>
+
+namespace haldls::vx {
+
+struct EventSwitchSource;
+struct EventSwitchReadout;
+struct EventSwitchConfig;
+struct ExtollSpikeCommBucketTriggerConfig;
+struct ExtollSpikeCommBucketDestinationConfig;
+struct ExtollSpikeCommBucketNumPktsSent;
+struct ExtollSpikeCommBucketCounterReset;
+struct ExtollSpikeCommRouterLookupConfig;
+struct ExtollSpikeCommRouterConfig;
+struct ExtollSpikeCommRouterEventLossDisabled;
+struct ExtollSpikeCommRouterEventLossMisconf;
+struct ExtollSpikeCommRouterEventsRouted;
+struct ExtollSpikeCommRouterCounterReset;
+struct ExtollSpikeCommDecoderNumEventsReceived;
+struct ExtollSpikeCommDecoderCounterReset;
+struct ExtollSpikeCommTimestampDelayConfig;
+struct ExtollSpikeCommTimestampDelayNumEventsReceived;
+struct ExtollSpikeCommTimestampDelayEventLossFull;
+struct ExtollSpikeCommTimestampDelayEventLossExpired;
+struct ExtollSpikeCommTimestampDelayCounterReset;
+struct ExtollBarrierTriggerReached;
+struct ExtollBarrierReleased;
+struct ExtollBarrierConfig;
+struct ExtollInterruptControl;
+struct ExtollInterruptConfig;
+struct ExtollBarrierInterruptInportErrorCount;
+struct ExtollBarrierInterruptInportCounterReset;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::EventSwitchSource& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::EventSwitchReadout& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::EventSwitchConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommBucketTriggerConfig& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommBucketTriggerConfig& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommBucketDestinationConfig& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommBucketDestinationConfig& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommBucketNumPktsSent& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommBucketCounterReset& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommRouterLookupConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommRouterConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommRouterEventLossDisabled& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommRouterEventLossMisconf& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommRouterEventsRouted& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommRouterCounterReset& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommDecoderNumEventsReceived& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommDecoderCounterReset& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommTimestampDelayConfig& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommTimestampDelayNumEventsReceived& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommTimestampDelayEventLossFull& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommTimestampDelayEventLossExpired& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollSpikeCommTimestampDelayCounterReset& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollBarrierTriggerReached& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollBarrierReleased& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollBarrierConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollInterruptControl& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollInterruptConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollBarrierInterruptInportErrorCount& value,
+    std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar,
+    haldls::vx::ExtollBarrierInterruptInportCounterReset& value,
+    std::uint32_t const version);
+
+} // namespace cereal
 
 namespace halco::hicann_dls::vx {
 class ExtollAddress;
@@ -21,7 +204,8 @@ namespace vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * Container for configuring the FPGA-Event-Switch.
  */
-class GENPYBIND(visible) EventSwitchSource
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) EventSwitchSource
+    : public ContainerBase<EventSwitchSource>
 {
 public:
 	typedef halco::hicann_dls::vx::EventSwitchSourceOnFPGA coordinate_type;
@@ -79,18 +263,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, EventSwitchSource& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Source m_source;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchSource)
 
 
 /**
  * Container for configuring the FPGA-Event-Switch.
  */
-class GENPYBIND(visible) EventSwitchReadout
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) EventSwitchReadout
+    : public ContainerBase<EventSwitchReadout>
 {
 public:
 	typedef halco::hicann_dls::vx::EventSwitchReadoutOnFPGA coordinate_type;
@@ -144,18 +328,18 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, EventSwitchReadout& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	Systime m_systime;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchReadout)
 
 
 /**
  * Container for configuring the FPGA-Event-Switch.
  */
-class GENPYBIND(visible) EventSwitchConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) EventSwitchConfig
+    : public ContainerBase<EventSwitchConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::EventSwitchConfigOnFPGA coordinate_type;
@@ -197,18 +381,18 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, EventSwitchConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_interrupt_armed;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(EventSwitchConfig)
 
 
 /**
  * Container for configuring the individual buckets for routing via Extoll.
  */
-class GENPYBIND(visible) ExtollSpikeCommBucketTriggerConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommBucketTriggerConfig
+    : public ContainerBase<ExtollSpikeCommBucketTriggerConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommBucketTriggerConfigOnFPGA coordinate_type;
@@ -287,19 +471,22 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommBucketTriggerConfig& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	PulseTimeout m_pulse_timeout;
 	PacketTimeout m_packet_timeout;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketTriggerConfig)
-
 
 /**
  * Container for configuring the individual buckets for routing via Extoll.
  */
-class GENPYBIND(visible) ExtollSpikeCommBucketDestinationConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollSpikeCommBucketDestinationConfig
+    : public ContainerBase<ExtollSpikeCommBucketDestinationConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommBucketDestinationConfigOnFPGA coordinate_type;
@@ -400,20 +587,22 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommBucketDestinationConfig& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	DestinationNodeID m_destination_node_id;
 	bool m_enable_multicast;
 	DestinationDelay m_destination_delay;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketDestinationConfig)
-
 
 /**
  * Container for monitoring the individual buckets for routing via Extoll.
  */
-class GENPYBIND(visible) ExtollSpikeCommBucketNumPktsSent
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommBucketNumPktsSent
+    : public ContainerBase<ExtollSpikeCommBucketNumPktsSent>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommBucketNumPktsSentOnFPGA coordinate_type;
@@ -470,18 +659,20 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommBucketNumPktsSent& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	PacketCount m_packet_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketNumPktsSent)
 
 
 /**
  * Container for resetting the pkt-counter (NumPktsSent) via Extoll.
  */
-class GENPYBIND(visible) ExtollSpikeCommBucketCounterReset
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommBucketCounterReset
+    : public ContainerBase<ExtollSpikeCommBucketCounterReset>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommBucketCounterResetOnFPGA coordinate_type;
@@ -512,16 +703,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommBucketCounterReset& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommBucketCounterReset)
 
 
 /**
  * Container for configuring the send lookup table for routing via Extoll.
  */
-class GENPYBIND(visible) ExtollSpikeCommRouterLookupConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommRouterLookupConfig
+    : public ContainerBase<ExtollSpikeCommRouterLookupConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommRouterLookupConfigOnFPGA coordinate_type;
@@ -619,20 +812,22 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommRouterLookupConfig& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_entry_valid;
 	DestinationEvent m_destination_event;
 	BucketID m_bucket_id;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterLookupConfig)
-
 
 /**
  * Container for setting the router configuration state.
  */
-class GENPYBIND(visible) ExtollSpikeCommRouterConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommRouterConfig
+    : public ContainerBase<ExtollSpikeCommRouterConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommRouterConfigOnFPGA coordinate_type;
@@ -693,19 +888,22 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommRouterConfig& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable_routing;
 	bool m_enable_drop_if_routing_disabled;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterConfig)
-
 
 /**
  * Container for getting the number of lost pulse-events due to disabled routing.
  */
-class GENPYBIND(visible) ExtollSpikeCommRouterEventLossDisabled
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollSpikeCommRouterEventLossDisabled
+    : public ContainerBase<ExtollSpikeCommRouterEventLossDisabled>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommRouterEventLossDisabledOnFPGA coordinate_type;
@@ -762,18 +960,20 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommRouterEventLossDisabled& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	LostEventCount m_lost_event_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterEventLossDisabled)
 
 
 /**
  * Container for getting the number of lost pulse-events due to invalid routing-table entries.
  */
-class GENPYBIND(visible) ExtollSpikeCommRouterEventLossMisconf
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommRouterEventLossMisconf
+    : public ContainerBase<ExtollSpikeCommRouterEventLossMisconf>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommRouterEventLossMisconfOnFPGA coordinate_type;
@@ -830,18 +1030,20 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommRouterEventLossMisconf& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	LostEventCount m_lost_event_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterEventLossMisconf)
 
 
 /**
  * Container for getting the number of routed pulse-events.
  */
-class GENPYBIND(visible) ExtollSpikeCommRouterEventsRouted
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommRouterEventsRouted
+    : public ContainerBase<ExtollSpikeCommRouterEventsRouted>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommRouterEventsRoutedOnFPGA coordinate_type;
@@ -897,19 +1099,21 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommRouterEventsRouted& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	EventCount m_event_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterEventsRouted)
 
 
 /**
  * Container for resetting the event-counters
  * (EventLossDisabled, EventLossMisconf, EventsRouted) via Extoll.
  */
-class GENPYBIND(visible) ExtollSpikeCommRouterCounterReset
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommRouterCounterReset
+    : public ContainerBase<ExtollSpikeCommRouterCounterReset>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommRouterCounterResetOnFPGA coordinate_type;
@@ -940,16 +1144,19 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommRouterCounterReset& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommRouterCounterReset)
 
 
 /**
  * Container for getting the number of received spike-events in the rx-decoders.
  */
-class GENPYBIND(visible) ExtollSpikeCommDecoderNumEventsReceived
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollSpikeCommDecoderNumEventsReceived
+    : public ContainerBase<ExtollSpikeCommDecoderNumEventsReceived>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommDecoderNumEventsReceivedOnFPGA coordinate_type;
@@ -1005,18 +1212,20 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommDecoderNumEventsReceived& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	EventCount m_event_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommDecoderNumEventsReceived)
 
 
 /**
  * Container for resetting the spike counters of the decoder (NumEventsReceived) via Extoll.
  */
-class GENPYBIND(visible) ExtollSpikeCommDecoderCounterReset
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommDecoderCounterReset
+    : public ContainerBase<ExtollSpikeCommDecoderCounterReset>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommDecoderCounterResetOnFPGA coordinate_type;
@@ -1047,16 +1256,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommDecoderCounterReset& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommDecoderCounterReset)
 
 
 /**
  * Container for configuring the spike-delay module on the receiving side.
  */
-class GENPYBIND(visible) ExtollSpikeCommTimestampDelayConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommTimestampDelayConfig
+    : public ContainerBase<ExtollSpikeCommTimestampDelayConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommTimestampDelayConfigOnFPGA coordinate_type;
@@ -1114,19 +1325,22 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommTimestampDelayConfig& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_forward_immediately;
 	bool m_timestamp_to_systime;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayConfig)
-
 
 /**
  * Container for getting the number of received spike-events in the rx-decoders.
  */
-class GENPYBIND(visible) ExtollSpikeCommTimestampDelayNumEventsReceived
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollSpikeCommTimestampDelayNumEventsReceived
+    : public ContainerBase<ExtollSpikeCommTimestampDelayNumEventsReceived>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommTimestampDelayNumEventsReceivedOnFPGA
@@ -1186,19 +1400,22 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommTimestampDelayNumEventsReceived& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	EventCount m_event_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayNumEventsReceived)
 
 
 /**
  * Container for getting the number of lost spike-events in the rx-decoders
  * due to full delay-buffer.
  */
-class GENPYBIND(visible) ExtollSpikeCommTimestampDelayEventLossFull
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollSpikeCommTimestampDelayEventLossFull
+    : public ContainerBase<ExtollSpikeCommTimestampDelayEventLossFull>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommTimestampDelayEventLossFullOnFPGA coordinate_type;
@@ -1254,19 +1471,22 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommTimestampDelayEventLossFull& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	EventCount m_event_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayEventLossFull)
 
 
 /**
  * Container for getting the number of lost spike-events in the rx-decoders
  * due to expired timestamp.
  */
-class GENPYBIND(visible) ExtollSpikeCommTimestampDelayEventLossExpired
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollSpikeCommTimestampDelayEventLossExpired
+    : public ContainerBase<ExtollSpikeCommTimestampDelayEventLossExpired>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommTimestampDelayEventLossExpiredOnFPGA
@@ -1326,19 +1546,22 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommTimestampDelayEventLossExpired& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	EventCount m_event_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayEventLossExpired)
 
 
 /**
  * Container for resetting the event (loss) counters in the rx_delay_buffers
  * (NumEventsReceived, EventLossFull, EventLossExpired) via Extoll.
  */
-class GENPYBIND(visible) ExtollSpikeCommTimestampDelayCounterReset
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollSpikeCommTimestampDelayCounterReset
+    : public ContainerBase<ExtollSpikeCommTimestampDelayCounterReset>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollSpikeCommTimestampDelayCounterResetOnFPGA coordinate_type;
@@ -1369,16 +1592,18 @@ public:
 private:
 	friend struct cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommTimestampDelayCounterReset& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollSpikeCommTimestampDelayCounterReset)
 
 
 /**
  * Container for controlling an Extoll Barrier.
  */
-class GENPYBIND(visible) ExtollBarrierTriggerReached
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollBarrierTriggerReached
+    : public ContainerBase<ExtollBarrierTriggerReached>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollBarrierTriggerReachedOnExtollNetwork coordinate_type;
@@ -1413,16 +1638,18 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollBarrierTriggerReached& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierTriggerReached)
 
 
 /**
  * Container for controlling an Extoll Barrier.
  */
-class GENPYBIND(visible) ExtollBarrierReleased
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollBarrierReleased
+    : public ContainerBase<ExtollBarrierReleased>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollBarrierReleasedOnExtollNetwork coordinate_type;
@@ -1501,20 +1728,20 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, ExtollBarrierReleased& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_released_0;
 	bool m_released_1;
 	bool m_released_active;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierReleased)
-
 
 /**
  * Container for configuring an Extoll Barrier.
  */
-class GENPYBIND(visible) ExtollBarrierConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollBarrierConfig
+    : public ContainerBase<ExtollBarrierConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollBarrierConfigOnExtollNetwork coordinate_type;
@@ -1675,7 +1902,8 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, ExtollBarrierConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable;
 	LinkFlags m_child_nodes;
@@ -1685,13 +1913,12 @@ private:
 	bool m_enable_reset;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierConfig)
-
 
 /**
  * Container for controlling an Extoll Barrier.
  */
-class GENPYBIND(visible) ExtollInterruptControl
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollInterruptControl
+    : public ContainerBase<ExtollInterruptControl>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollInterruptControlOnExtollNetwork coordinate_type;
@@ -1752,19 +1979,19 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, ExtollInterruptControl& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_operation_trigger;
 	bool m_interrupt;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptControl)
-
 
 /**
  * Container for configuring an Extoll Barrier.
  */
-class GENPYBIND(visible) ExtollInterruptConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollInterruptConfig
+    : public ContainerBase<ExtollInterruptConfig>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollInterruptConfigOnExtollNetwork coordinate_type;
@@ -1908,7 +2135,8 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, ExtollInterruptConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	bool m_enable;
 	LinkFlags m_child_nodes;
@@ -1918,13 +2146,13 @@ private:
 	DelayValue m_measure_counter;
 };
 
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollInterruptConfig)
-
 
 /**
  * Container for reading the interrupt / barrier error counter via Extoll.
  */
-class GENPYBIND(visible) ExtollBarrierInterruptInportErrorCount
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollBarrierInterruptInportErrorCount
+    : public ContainerBase<ExtollBarrierInterruptInportErrorCount>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollBarrierInterruptInportErrorCountOnFPGA coordinate_type;
@@ -1982,18 +2210,21 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollBarrierInterruptInportErrorCount& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	ErrorCount m_error_count;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportErrorCount)
 
 
 /**
  * Container for configuring the individual buckets for routing via Extoll.
  */
-class GENPYBIND(visible) ExtollBarrierInterruptInportCounterReset
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*"))
+    ExtollBarrierInterruptInportCounterReset
+    : public ContainerBase<ExtollBarrierInterruptInportCounterReset>
 {
 public:
 	typedef halco::hicann_dls::vx::ExtollBarrierInterruptInportCounterResetOnFPGA coordinate_type;
@@ -2024,10 +2255,11 @@ public:
 private:
 	friend class cereal::access;
 	template <class Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollBarrierInterruptInportCounterReset& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
 };
-
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(ExtollBarrierInterruptInportCounterReset)
 
 
 namespace detail {

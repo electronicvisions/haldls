@@ -3,15 +3,26 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/capmem.h"
 #include "halco/hicann-dls/vx/correlation.h"
+#include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/traits.h"
 #include "hate/math.h"
 #include "hate/visibility.h"
+#include <cereal/macros.hpp>
 
-#ifndef __ppu__
-#include "haldls/cerealization.h"
-#include <cereal/cereal.hpp>
-#endif
+namespace haldls::vx {
+
+struct CommonCorrelationConfig;
+
+} // namespace haldls::vx
+
+namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CommonCorrelationConfig& value, std::uint32_t const version);
+
+} // namespace cereal
 
 namespace fisch::vx::word_access_type {
 struct Omnibus;
@@ -23,7 +34,8 @@ namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
 /**
  * Correlation reset and readout timing configuration container.
  */
-class GENPYBIND(visible) CommonCorrelationConfig
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CommonCorrelationConfig
+    : public ContainerBase<CommonCorrelationConfig>
 {
 public:
 	typedef std::true_type is_leaf_node;
@@ -147,9 +159,9 @@ public:
 	    GENPYBIND(hidden);
 
 private:
-	friend struct cereal::access;
 	template <typename Archive>
-	void serialize(Archive& ar, std::uint32_t const version) SYMBOL_VISIBLE;
+	friend void ::cereal::serialize(
+	    Archive& ar, CommonCorrelationConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
 
 	SenseDelay m_sense_delay;
 	ResetDuration m_reset_duration;
@@ -174,8 +186,3 @@ struct BackendContainerTrait<CommonCorrelationConfig>
 {};
 
 } // namespace haldls::vx::detail
-
-#ifndef __ppu__
-CEREAL_CLASS_VERSION(haldls::vx::CommonCorrelationConfig, 1)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE(haldls::vx::CommonCorrelationConfig)
-#endif
