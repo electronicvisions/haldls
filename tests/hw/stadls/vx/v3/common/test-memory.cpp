@@ -190,7 +190,7 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 	std::vector<Container> reference_containers;
 	std::vector<PlaybackProgram::ContainerTicket<Container>> read_tickets;
 
-	for (auto const coord :
+	for (auto const& coord :
 	     iter_sparse<typename Container::coordinate_type>(MAX_WORDS_PER_REDUCED_TEST)) {
 		Container reference_container;
 
