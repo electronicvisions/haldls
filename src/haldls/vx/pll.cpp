@@ -691,7 +691,7 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE(PLLSelfTest)
 #endif
 
 
-PLLSelfTestStatus::PLLSelfTestStatus() : m_success(false), m_counter_value() {}
+PLLSelfTestStatus::PLLSelfTestStatus() : m_success(false), m_finished(false), m_counter_value() {}
 
 bool PLLSelfTestStatus::get_success() const
 {
@@ -710,7 +710,9 @@ PLLSelfTestStatus::CounterValue PLLSelfTestStatus::get_counter_value() const
 
 bool PLLSelfTestStatus::operator==(PLLSelfTestStatus const& other) const
 {
-	return (m_success == other.m_success && m_counter_value == other.m_counter_value);
+	return (
+	    m_success == other.m_success && m_finished == other.m_finished &&
+	    m_counter_value == other.m_counter_value);
 }
 
 bool PLLSelfTestStatus::operator!=(PLLSelfTestStatus const& other) const
