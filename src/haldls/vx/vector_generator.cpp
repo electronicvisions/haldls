@@ -537,7 +537,9 @@ std::ostream& operator<<(std::ostream& os, VectorGeneratorTrigger const&)
 }
 
 
-VectorGeneratorFIFOWord::VectorGeneratorFIFOWord() : m_values(), m_last(), m_enable() {}
+VectorGeneratorFIFOWord::VectorGeneratorFIFOWord() :
+    m_values(), m_last({false, false, false, false}), m_enable({false, false, false, false})
+{}
 
 VectorGeneratorFIFOWord::Values const& VectorGeneratorFIFOWord::get_values() const
 {

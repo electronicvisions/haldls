@@ -817,7 +817,7 @@ ExternalPPUMemoryByte::encode(coordinate_type const& coord) const
 {
 	auto const byte_in_word = (sizeof(uint32_t) - 1) - (coord.toEnum() % sizeof(uint32_t));
 	uint32_t const raw_value = static_cast<uint32_t>(m_value) << (byte_in_word * CHAR_BIT);
-	fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables{};
+	fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables{false, false, false, false};
 	byte_enables[byte_in_word] = true;
 	return {fisch::vx::word_access_type::Omnibus(raw_value, byte_enables)};
 }
