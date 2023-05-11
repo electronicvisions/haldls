@@ -10,7 +10,9 @@
 #include "haldls/vx/v3/timer.h"
 #include "haldls/vx/v3/traits.h"
 #include "hxcomm/common/connect_to_remote_parameter_defs.h"
+#ifdef WITH_HXCOMM_HOSTARQ
 #include "hxcomm/vx/arqconnection.h"
+#endif
 #include "hxcomm/vx/simconnection.h"
 #include "logging_ctrl.h"
 #include "stadls/vx/v3/playback_program.h"
@@ -199,9 +201,14 @@ int main(int argc, char* argv[])
 	LOG4CXX_INFO(logger, "Creating program.");
 	auto program = builder.done();
 	if ((sim_ip == "0.0.0.0") and (sim_port == 0)) {
+#ifdef WITH_HXCOMM_HOSTARQ
 		LOG4CXX_INFO(logger, "Running built program on hardware.");
 		auto connection = hxcomm::vx::ARQConnection(fpga_ip);
 		run(connection, program);
+#else
+		LOG4CXX_ERROR(logger, "Support for HostARQ was disabled!");
+		return EXIT_FAILURE;
+#endif
 	} else {
 		LOG4CXX_INFO(logger, "Running built program on simulation.");
 		auto connection = hxcomm::vx::SimConnection(sim_ip, sim_port);
