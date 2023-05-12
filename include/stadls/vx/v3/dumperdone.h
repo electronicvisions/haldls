@@ -102,6 +102,16 @@ struct GENPYBIND(visible) DumperDone
 	})
 	// clang-format on
 
+	/**
+	 * Remove entries which contain block_until commands.
+	 */
+	void remove_block_until() SYMBOL_VISIBLE;
+
+	/**
+	 * For each coordinate value only retain the latest command.
+	 */
+	void squash() SYMBOL_VISIBLE;
+
 private:
 	template <typename Archive>
 	friend void ::cereal::serialize(Archive& ar, DumperDone& value, std::uint32_t);

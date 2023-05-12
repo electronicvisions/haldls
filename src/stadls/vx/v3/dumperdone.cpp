@@ -4,6 +4,7 @@
 #include "fisch/vx/container_cast.h"
 #include "haldls/vx/encodable.h"
 #include "stadls/visitors.h"
+#include <algorithm>
 #include <log4cxx/logger.h>
 
 namespace stadls::vx::v3 {
@@ -30,6 +31,25 @@ bool DumperDone::operator==(DumperDone const& other) const
 bool DumperDone::operator!=(DumperDone const& other) const
 {
 	return !(*this == other);
+}
+
+void DumperDone::remove_block_until()
+{
+	auto const is_block_until = [](auto const& value) {
+		return static_cast<bool>(value.second) &&
+		       (dynamic_cast<haldls::vx::BlockUntil const*>(value.second.get()) != nullptr);
+	};
+
+	std::erase_if(values, is_block_until);
+}
+
+void DumperDone::squash()
+{
+	auto const equal_coord = [](auto const& value, auto const& other_value) {
+		return (static_cast<bool>(value.first) == static_cast<bool>(other_value.first)) &&
+		       static_cast<bool>(value.first) && (*value.first == *other_value.first);
+	};
+	values.erase(values.begin(), std::unique(values.rbegin(), values.rend(), equal_coord).base());
 }
 
 namespace {

@@ -187,3 +187,35 @@ TEST(PlaybackProgramBuilder, PolymorphicRead)
 	auto ticket = builder.read(coord);
 	auto program_1 = builder.done();
 }
+
+TEST(PlaybackProgramBuilderDumper, remove_block_until)
+{
+	PlaybackProgramBuilderDumper builder;
+	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(123)));
+	builder.block_until(TimerOnDLS(), Timer::Value(1234));
+
+	auto done = builder.done();
+	done.remove_block_until();
+
+	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(123)));
+	auto const expectation = builder.done();
+	EXPECT_EQ(done, expectation);
+}
+
+TEST(PlaybackProgramBuilderDumper, squash)
+{
+	PlaybackProgramBuilderDumper builder;
+	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(123)));
+	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456)));
+	builder.block_until(TimerOnDLS(), Timer::Value(1234));
+	builder.write(DACChannelOnBoard(), DACChannel());
+
+	auto done = builder.done();
+	done.squash();
+
+	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456)));
+	builder.block_until(TimerOnDLS(), Timer::Value(1234));
+	builder.write(DACChannelOnBoard(), DACChannel());
+	auto const expectation = builder.done();
+	EXPECT_EQ(done, expectation);
+}
