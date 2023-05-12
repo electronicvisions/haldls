@@ -3,10 +3,6 @@
 #include <boost/utility/enable_if.hpp>
 #include "hate/type_list.h"
 
-namespace halco::hicann_dls::vx::v2 {
-struct Coordinates;
-} // namespace halco::hicann_dls::vx::v2
-
 namespace halco::hicann_dls::vx::v3 {
 struct Coordinates;
 } // namespace halco::hicann_dls::vx::v3
@@ -17,12 +13,6 @@ template <typename Coordinates>
 class CapMemBlock;
 class PPUMemoryBlock;
 class PPUMemory;
-
-namespace v2 {
-using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v2::Coordinates>;
-using PPUMemoryBlock = haldls::vx::PPUMemoryBlock;
-using PPUMemory = haldls::vx::PPUMemory;
-} // namespace v2
 
 namespace v3 {
 using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v3::Coordinates>;
@@ -46,15 +36,6 @@ class SynapseRow;
 class SynapseWeightMatrix;
 class SynapseWeightRow;
 } // namespace lola::vx
-
-namespace lola::vx::v2 {
-class AtomicNeuron;
-class CADCSampleRow;
-class CADCSamples;
-using DACChannelBlock = lola::vx::DACChannelBlock;
-using DACControlBlock = lola::vx::DACControlBlock;
-using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
-} // namespace lola::vx::v2
 
 namespace lola::vx::v3 {
 class AtomicNeuron;
@@ -94,13 +75,6 @@ typedef hate::type_list<
     lola::vx::SynapseWeightRow,
     lola::vx::SynapseLabelRow,
     lola::vx::SynapseCorrelationCalibRow,
-    v2::PPUMemoryBlock,
-    v2::PPUMemory,
-    v2::CapMemBlock,
-    lola::vx::v2::AtomicNeuron,
-    lola::vx::v2::DACChannelBlock,
-    lola::vx::v2::DACControlBlock,
-    lola::vx::v2::ExternalPPUMemoryBlock,
     v3::PPUMemoryBlock,
     v3::PPUMemory,
     v3::CapMemBlock,
