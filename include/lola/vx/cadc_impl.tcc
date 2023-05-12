@@ -12,9 +12,7 @@
 #include "lola/vx/gray_scale.h"
 #include "lola/vx/hana.h"
 
-#if CHIP_REVISION == 2
-#define CHIP_REVISION_STR v2
-#elif CHIP_REVISION == 3
+#if CHIP_REVISION == 3
 #define CHIP_REVISION_STR v3
 #else
 #error "Unknown CHIP_REVISION"

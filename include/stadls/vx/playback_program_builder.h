@@ -30,10 +30,10 @@ class PlaybackProgramBuilder;
 namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
-namespace v2 {
+namespace v3 {
 class DumperDone;
-using Dumper = class stadls::vx::detail::Dumper<stadls::vx::v2::DumperDone>;
-} // namespace v2
+using Dumper = class stadls::vx::detail::Dumper<stadls::vx::v3::DumperDone>;
+} // namespace v3
 #endif
 
 namespace detail {
@@ -222,7 +222,7 @@ public:
 	GENPYBIND_MANUAL({
 		parent.def("__repr__", [](GENPYBIND_PARENT_TYPE const& p) {
 			std::stringstream ss;
-			typedef hate::type_list<::stadls::vx::v2::Dumper> dumper_types;
+			typedef hate::type_list<::stadls::vx::v3::Dumper> dumper_types;
 			if constexpr (hate::is_in_type_list<
 			                  typename std::decay<decltype(p)>::type::Builder,
 			                  dumper_types>::value) {

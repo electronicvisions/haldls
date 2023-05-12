@@ -2,10 +2,6 @@
 #include "fisch/vx/traits.h"
 #include "hate/type_list.h"
 
-namespace halco::hicann_dls::vx::v2 {
-class Coordinates;
-} // namespace halco::hicann_dls::vx::v2
-
 namespace halco::hicann_dls::vx::v3 {
 class Coordinates;
 } // namespace halco::hicann_dls::vx::v3
@@ -16,12 +12,6 @@ template <typename Coordinates>
 class CapMemBlock;
 class PPUMemoryBlock;
 class PPUMemory;
-
-namespace v2 {
-using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v2::Coordinates>;
-using PPUMemoryBlock = haldls::vx::PPUMemoryBlock;
-using PPUMemory = haldls::vx::PPUMemory;
-} // namespace v2
 
 namespace v3 {
 using CapMemBlock = haldls::vx::CapMemBlock<halco::hicann_dls::vx::v3::Coordinates>;
@@ -42,13 +32,6 @@ class SynapseRow;
 class SynapseWeightMatrix;
 class SynapseWeightRow;
 } // namespace lola::vx
-
-namespace lola::vx::v2 {
-class AtomicNeuron;
-class CADCSampleRow;
-class CADCSamples;
-using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
-} // namespace lola::vx::v2
 
 namespace lola::vx::v3 {
 class AtomicNeuron;
@@ -85,13 +68,6 @@ typedef hate::type_list<
     lola::vx::SynapseRow,
     lola::vx::SynapseWeightMatrix,
     lola::vx::SynapseWeightRow,
-    v2::PPUMemory,
-    v2::PPUMemoryBlock,
-    v2::CapMemBlock,
-    lola::vx::v2::AtomicNeuron,
-    lola::vx::v2::CADCSampleRow,
-    lola::vx::v2::CADCSamples,
-    lola::vx::v2::ExternalPPUMemoryBlock,
     v3::PPUMemory,
     v3::PPUMemoryBlock,
     v3::CapMemBlock,
