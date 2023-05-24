@@ -503,7 +503,6 @@ template <typename AddressT>
 std::array<AddressT, NeuronConfig::config_size_in_words> NeuronConfig::addresses(
     NeuronConfig::coordinate_type const& neuron)
 {
-	assert(neuron.toNeuronConfigBlockOnDLS() < neuron_sram_base_addresses.size());
 	auto const base_address = neuron_sram_base_addresses.at(neuron.toNeuronConfigBlockOnDLS());
 	auto const neuron_coord = neuron.toNeuronConfigOnNeuronConfigBlock();
 	std::array<AddressT, NeuronConfig::config_size_in_words> data;
