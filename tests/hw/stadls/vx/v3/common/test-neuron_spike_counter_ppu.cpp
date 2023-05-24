@@ -13,7 +13,7 @@ using namespace halco::hicann_dls::vx::v3;
 using namespace halco::common;
 using namespace libnux::vx;
 
-TEST(SpikeCounterRead, ReadPerformance)
+TEST(SpikeCounter, ReadPerformance)
 {
 	auto const begin = now();
 	for (auto const& column : iter_all<NeuronColumnOnDLS>()) {
@@ -26,5 +26,15 @@ TEST(SpikeCounterRead, ReadPerformance)
 
 	mailbox_write_int(end - begin);
 	EXPECT_LE(end - begin, 320);
+}
+
+TEST(SpikeCounter, Reset)
+{
+	// Tests that `at()` array access is possible
+	for (auto const& column : iter_all<NeuronColumnOnDLS>()) {
+		SpikeCounterResetOnDLS coord =
+		    AtomicNeuronOnDLS(column, NeuronRowOnDLS()).toSpikeCounterResetOnDLS();
+		stadls::vx::v3::ppu::write(coord, haldls::vx::v3::SpikeCounterReset());
+	}
 }
 #endif
