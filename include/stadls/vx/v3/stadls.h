@@ -1,5 +1,6 @@
 #pragma once
 
+#include "stadls/vx/v3/absolute_time_playback_program_builder.h"
 #include "stadls/vx/v3/container_ticket.h"
 #include "stadls/vx/v3/dumper.h"
 #include "stadls/vx/v3/init_generator.h"

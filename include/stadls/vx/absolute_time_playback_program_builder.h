@@ -1,0 +1,85 @@
+#pragma once
+
+#include "haldls/vx/container.h"
+#include "haldls/vx/timer.h"
+#include "hate/visibility.h"
+#include "stadls/vx/genpybind.h"
+#include "stadls/vx/v3/playback_program_builder.h"
+
+#include <iosfwd>
+#include <memory>
+#include <vector>
+
+
+namespace stadls::vx {
+template <typename PPBType>
+class AbsoluteTimePlaybackProgramBuilder;
+
+template <typename BuilderType>
+std::ostream& operator<<(
+    std::ostream& os,
+    AbsoluteTimePlaybackProgramBuilder<BuilderType> const& builder) SYMBOL_VISIBLE;
+
+
+template <typename PPBType>
+class SYMBOL_VISIBLE AbsoluteTimePlaybackProgramBuilder
+{
+private:
+	struct CommandData
+	{
+		haldls::vx::Timer::Value time;
+		std::unique_ptr<haldls::vx::Container::Coordinate> coord;
+		std::unique_ptr<haldls::vx::Container> config;
+		bool operator<(CommandData const& other) const;
+	};
+	std::vector<CommandData> m_commands;
+	bool m_is_write_only = true;
+
+public:
+	AbsoluteTimePlaybackProgramBuilder() SYMBOL_VISIBLE;
+	~AbsoluteTimePlaybackProgramBuilder() SYMBOL_VISIBLE;
+
+
+	AbsoluteTimePlaybackProgramBuilder(AbsoluteTimePlaybackProgramBuilder<PPBType>&& other)
+	    SYMBOL_VISIBLE;
+	AbsoluteTimePlaybackProgramBuilder<PPBType>& operator=(
+	    AbsoluteTimePlaybackProgramBuilder<PPBType>&& other) SYMBOL_VISIBLE;
+	AbsoluteTimePlaybackProgramBuilder(AbsoluteTimePlaybackProgramBuilder<PPBType> const&) = delete;
+
+	/**
+	 * add command to the absolute_time_playback_program_builder
+	 */
+	void write(
+	    const haldls::vx::Timer::Value execTime,
+	    haldls::vx::Container::Coordinate const& coord,
+	    haldls::vx::Container const& config) SYMBOL_VISIBLE;
+
+	/**
+	 * merge with other absolute_time_playback_program_builder
+	 */
+	void merge(AbsoluteTimePlaybackProgramBuilder<PPBType>& other) SYMBOL_VISIBLE;
+
+	/**
+	 * copy commands vector from other absolute_time_playback_program_builder
+	 */
+	void copy(AbsoluteTimePlaybackProgramBuilder<PPBType>& other) SYMBOL_VISIBLE;
+
+	bool empty() const SYMBOL_VISIBLE;
+
+	bool is_write_only() const SYMBOL_VISIBLE;
+
+	/**
+	 * print all commands in initial order
+	 */
+	template <typename BuilderType>
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(
+	    std::ostream& os,
+	    AbsoluteTimePlaybackProgramBuilder<BuilderType> const& builder) SYMBOL_VISIBLE;
+
+	/**
+	 * return a playback_program_builder with according command queue
+	 */
+	PPBType done() SYMBOL_VISIBLE;
+};
+} // namespace stadls::vx
