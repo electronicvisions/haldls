@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	std::string loglevel;
 	namespace bpo = boost::program_options;
 	bpo::options_description desc("Options");
-	desc.add_options()("loglevel", bpo::value<std::string>(&loglevel)->default_value("info"));
+	desc.add_options()("loglevel", bpo::value<std::string>(&loglevel)->default_value("warning"));
 
 	bpo::variables_map vm;
 	bpo::store(
