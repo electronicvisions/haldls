@@ -311,7 +311,8 @@ TEST(ReadoutChain, General)
 	{
 		ReadoutChain config;
 		config.current_dac.current =
-		    draw_non_default_value<ReadoutChain::CurrentDAC::Current>(config.current_dac.current);
+		    draw_ranged_non_default_value<ReadoutChain::CurrentDAC::Current>(
+		        config.current_dac.current);
 		EXPECT_NE(config, ReadoutChain());
 	}
 	{
@@ -437,8 +438,8 @@ ReadoutChain create_non_default_container()
 	config.source_measure_unit.amp_i_bias =
 	    draw_ranged_non_default_value<ReadoutChain::AnalogValue>();
 	config.current_dac.enable_current = !config.current_dac.enable_current;
-	config.current_dac.current =
-	    draw_non_default_value<ReadoutChain::CurrentDAC::Current>(config.current_dac.current);
+	config.current_dac.current = draw_ranged_non_default_value<ReadoutChain::CurrentDAC::Current>(
+	    config.current_dac.current);
 	config.current_dac.sign = ReadoutChain::CurrentDAC::Sign::sink;
 	config.current_dac.connect_neuron_stimulus = ReadoutChain::HemisphereType{false, true};
 	config.current_dac.connect_synapse_debug = ReadoutChain::SynapseTargetType{false, true};

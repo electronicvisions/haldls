@@ -61,7 +61,7 @@ public:
 
 	/** Value of current DAC. */
 	struct GENPYBIND(inline_base("*")) Current
-	    : public halco::common::detail::BaseType<Current, uint8_t>
+	    : public halco::common::detail::RantWrapper<Current, uint_fast16_t, 255, 0>
 	{
 		constexpr explicit Current(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)
@@ -90,14 +90,14 @@ public:
 	void set_sign(Sign value) SYMBOL_VISIBLE;
 
 	/** Enable mux connection to neuron array current stimulus of corresponding hemisphere. */
-	GENPYBIND(getter_for(connect_neuron))
-	HemisphereType get_connect_neuron() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(connect_neuron), return_value_policy(reference_internal))
+	HemisphereType const& get_connect_neuron() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(connect_neuron))
 	void set_connect_neuron(HemisphereType value) SYMBOL_VISIBLE;
 
 	/** Enable mux connection to synapse. */
-	GENPYBIND(getter_for(connect_synapse))
-	SynapseTargetType get_connect_synapse() const SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(connect_synapse), return_value_policy(reference_internal))
+	SynapseTargetType const& get_connect_synapse() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(connect_synapse))
 	void set_connect_synapse(SynapseTargetType value) SYMBOL_VISIBLE;
 

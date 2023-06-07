@@ -54,7 +54,7 @@ void CurrentDAC::set_sign(Sign const value)
 	m_sign = value;
 }
 
-CurrentDAC::HemisphereType CurrentDAC::get_connect_neuron() const
+CurrentDAC::HemisphereType const& CurrentDAC::get_connect_neuron() const
 {
 	return m_connect_neuron;
 }
@@ -64,7 +64,7 @@ void CurrentDAC::set_connect_neuron(HemisphereType const value)
 	m_connect_neuron = value;
 }
 
-CurrentDAC::SynapseTargetType CurrentDAC::get_connect_synapse() const
+CurrentDAC::SynapseTargetType const& CurrentDAC::get_connect_synapse() const
 {
 	return m_connect_synapse;
 }

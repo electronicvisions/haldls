@@ -19,7 +19,7 @@ TEST(CurrentDAC, General)
 	CurrentDAC config;
 
 	{
-		auto const value = draw_non_default_value<CurrentDAC::Current>(config.get_current());
+		auto const value = draw_ranged_non_default_value<CurrentDAC::Current>(config.get_current());
 		config.set_current(value);
 		EXPECT_EQ(config.get_current(), value);
 	}
@@ -110,7 +110,7 @@ TEST(CurrentDAC, CerealizeCoverage)
 	CurrentDAC config, c2;
 
 	{
-		auto const value = draw_non_default_value<CurrentDAC::Current>(config.get_current());
+		auto const value = draw_ranged_non_default_value<CurrentDAC::Current>(config.get_current());
 		config.set_current(value);
 	}
 
