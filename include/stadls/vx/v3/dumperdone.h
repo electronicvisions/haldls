@@ -109,6 +109,7 @@ struct GENPYBIND(visible) DumperDone
 
 	/**
 	 * For each coordinate value only retain the latest command.
+	 * Order between different container types is not preserved.
 	 */
 	void squash() SYMBOL_VISIBLE;
 

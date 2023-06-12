@@ -209,13 +209,14 @@ TEST(PlaybackProgramBuilderDumper, squash)
 	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456)));
 	builder.block_until(TimerOnDLS(), Timer::Value(1234));
 	builder.write(DACChannelOnBoard(), DACChannel());
+	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(678)));
 
 	auto done = builder.done();
 	done.squash();
 
-	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(456)));
 	builder.block_until(TimerOnDLS(), Timer::Value(1234));
 	builder.write(DACChannelOnBoard(), DACChannel());
+	builder.write(CapMemCellOnDLS(), CapMemCell(CapMemCell::Value(678)));
 	auto const expectation = builder.done();
 	EXPECT_EQ(done, expectation);
 }

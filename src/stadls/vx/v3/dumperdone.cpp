@@ -45,10 +45,21 @@ void DumperDone::remove_block_until()
 
 void DumperDone::squash()
 {
-	auto const equal_coord = [](auto const& value, auto const& other_value) {
-		return (static_cast<bool>(value.first) == static_cast<bool>(other_value.first)) &&
-		       static_cast<bool>(value.first) && (*value.first == *other_value.first);
+	if (!std::all_of(values.begin(), values.end(), [](auto const& value) {
+		    return static_cast<bool>(value.first);
+	    })) {
+		throw std::runtime_error("Unexpected access to moved-from object.");
+	}
+
+	auto const less_coord = [](auto const& lhs, auto const& rhs) {
+		return *lhs.first < *rhs.first;
 	};
+
+	auto const equal_coord = [](auto const& value, auto const& other_value) {
+		return *value.first == *other_value.first;
+	};
+
+	std::stable_sort(values.begin(), values.end(), less_coord);
 	values.erase(values.begin(), std::unique(values.rbegin(), values.rend(), equal_coord).base());
 }
 
