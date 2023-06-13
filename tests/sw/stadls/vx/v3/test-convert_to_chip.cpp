@@ -121,6 +121,7 @@ typedef hate::type_list<
     haldls::vx::v3::ExtollSpikeCommBucketTriggerConfig,      // logically not part of the chip
     haldls::vx::v3::ExtollSpikeCommBucketDestinationConfig,  // logically not part of the chip
     haldls::vx::v3::ExtollSpikeCommBucketNumPktsSent,        // logically not part of the chip
+    haldls::vx::v3::ExtollSpikeCommBucketNumEvtsRcvd,        // logically not part of the chip
     haldls::vx::v3::ExtollSpikeCommBucketCounterReset,       // logically not part of the chip
     haldls::vx::v3::ExtollSpikeCommRouterLookupConfig,       // logically not part of the chip
     haldls::vx::v3::ExtollSpikeCommRouterConfig,             // logically not part of the chip

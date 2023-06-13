@@ -1,6 +1,7 @@
 #include "haldls/vx/extoll.h"
 
 #include <iomanip>
+#include <stdexcept>
 
 #include "fisch/vx/word_access/type/extoll.h"
 #include "halco/common/iter_all.h"
@@ -24,6 +25,30 @@ EventSwitchSource::Source const EventSwitchSource::Source::executor{0};
 EventSwitchSource::Source const EventSwitchSource::Source::asic{1};
 EventSwitchSource::Source const EventSwitchSource::Source::external{2};
 EventSwitchSource::Source const EventSwitchSource::Source::off{3};
+
+EventSwitchSource const EventSwitchSource::executor = []() {
+	EventSwitchSource s;
+	s.set_source(Source::executor);
+	return s;
+}();
+
+EventSwitchSource const EventSwitchSource::asic = []() {
+	EventSwitchSource s;
+	s.set_source(Source::asic);
+	return s;
+}();
+
+EventSwitchSource const EventSwitchSource::external = []() {
+	EventSwitchSource s;
+	s.set_source(Source::external);
+	return s;
+}();
+
+EventSwitchSource const EventSwitchSource::off = []() {
+	EventSwitchSource s;
+	s.set_source(Source::off);
+	return s;
+}();
 
 EventSwitchSource::EventSwitchSource() : m_source(Source::asic) {}
 
@@ -61,12 +86,12 @@ EventSwitchSource::addresses(coordinate_type const& coord)
 
 	if (coord == coordinate_type::to_executor) {
 		return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_exec_source_address)};
-	}
-	if (coord == coordinate_type::to_asic) {
+	} else if (coord == coordinate_type::to_asic) {
 		return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_asic_source_address)};
-	}
-	if (coord == coordinate_type::to_external) {
+	} else if (coord == coordinate_type::to_external) {
 		return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_external_source_address)};
+	} else {
+		throw std::logic_error("Unknown Coordinate for EventSwitchSource()");
 	}
 
 	return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_exec_source_address)};
@@ -674,6 +699,118 @@ std::array<
     fisch::vx::word_access_type::Extoll,
     ExtollSpikeCommBucketNumPktsSent::write_config_size_in_words>
 ExtollSpikeCommBucketNumPktsSent::encode() const
+{
+	return {};
+}
+
+
+/**
+ * implementation of ExtollSpikeCommBucketNumEvtsRcvd for Coord
+ * ExtollSpikeCommBucketNumEvtsRcvdOnFPGA
+ */
+
+ExtollSpikeCommBucketNumEvtsRcvd::ExtollSpikeCommBucketNumEvtsRcvd() : m_event_count() {}
+
+ExtollSpikeCommBucketNumEvtsRcvd::EventCount ExtollSpikeCommBucketNumEvtsRcvd::get_event_count()
+    const
+{
+	return m_event_count;
+}
+
+void ExtollSpikeCommBucketNumEvtsRcvd::set_event_count(EventCount const value)
+{
+	m_event_count = value;
+}
+
+bool ExtollSpikeCommBucketNumEvtsRcvd::operator==(
+    ExtollSpikeCommBucketNumEvtsRcvd const& other) const
+{
+	return (m_event_count == other.m_event_count);
+}
+
+bool ExtollSpikeCommBucketNumEvtsRcvd::operator!=(
+    ExtollSpikeCommBucketNumEvtsRcvd const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExtollSpikeCommBucketNumEvtsRcvd const& config)
+{
+	std::stringstream ss;
+	ss << "ExtollSpikeCommBucketNumEvtsRcvd(packet count: " << std::hex << config.m_event_count
+	   << ")";
+	return (os << ss.str());
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddress,
+    ExtollSpikeCommBucketNumEvtsRcvd::read_config_size_in_words>
+ExtollSpikeCommBucketNumEvtsRcvd::read_addresses(coordinate_type const& coord)
+{
+	auto split = coord.toExtollSpikeCommSplitOnFPGA();
+	auto coord_on_split = coord.toExtollSpikeCommBucketNumEvtsRcvdOnSpikeCommSplit();
+	int reg = 0;
+	if (split.toEnum() == 0) {
+		reg = static_cast<int>(BucketRegs::EVTS_RCVD_0);
+	} else {
+		reg = static_cast<int>(BucketRegs::EVTS_RCVD_1);
+	}
+	return {halco::hicann_dls::vx::ExtollAddress(
+	    tx_accum_bucket_rf_addresses.at(coord_on_split.toEnum()) + reg)};
+}
+
+std::array<
+    halco::hicann_dls::vx::ExtollAddress,
+    ExtollSpikeCommBucketNumEvtsRcvd::write_config_size_in_words>
+ExtollSpikeCommBucketNumEvtsRcvd::write_addresses(coordinate_type const&)
+{
+	return {};
+}
+
+namespace {
+
+struct ExtollSpikeCommBucketNumEvtsRcvdBitfield
+{
+	union
+	{
+		uint64_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint64_t event_count : 48;
+			uint64_t /* unused */ : 16;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExtollSpikeCommBucketNumEvtsRcvdBitfield()
+	{
+		u.raw = 0u;
+	}
+
+	ExtollSpikeCommBucketNumEvtsRcvdBitfield(uint64_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+void ExtollSpikeCommBucketNumEvtsRcvd::decode(
+    std::array<
+        fisch::vx::word_access_type::Extoll,
+        ExtollSpikeCommBucketNumEvtsRcvd::read_config_size_in_words> const& data)
+{
+	ExtollSpikeCommBucketNumEvtsRcvdBitfield bitfield;
+	bitfield.u.raw = data[0];
+
+	m_event_count = EventCount(bitfield.u.m.event_count);
+}
+
+std::array<
+    fisch::vx::word_access_type::Extoll,
+    ExtollSpikeCommBucketNumEvtsRcvd::write_config_size_in_words>
+ExtollSpikeCommBucketNumEvtsRcvd::encode() const
 {
 	return {};
 }
@@ -3175,6 +3312,7 @@ EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::EventSwitchConfig)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketTriggerConfig)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketDestinationConfig)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketNumPktsSent)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommBucketCounterReset)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommRouterLookupConfig)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExtollSpikeCommRouterConfig)

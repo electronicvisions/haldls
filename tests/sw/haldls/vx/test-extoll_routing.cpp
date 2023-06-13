@@ -24,7 +24,7 @@ TEST(ExtollSpikeCommBucketTriggerConfig, EncodeDecode)
 	typename ExtollSpikeCommBucketTriggerConfig::coordinate_type coord(5);
 
 	std::array<ExtollAddress, ExtollSpikeCommBucketTriggerConfig::config_size_in_words>
-	    ref_addresses = {ExtollAddress{0x20'00a0}};
+	    ref_addresses = {ExtollAddress{0x20'0140}};
 
 	std::array<word_type, ExtollSpikeCommBucketTriggerConfig::config_size_in_words> ref_data = {
 	    word_type(0xbaab)};
@@ -48,7 +48,7 @@ TEST(ExtollSpikeCommBucketDestinationConfig, EncodeDecode)
 	typename ExtollSpikeCommBucketDestinationConfig::coordinate_type coord(5);
 
 	std::array<ExtollAddress, ExtollSpikeCommBucketDestinationConfig::config_size_in_words>
-	    ref_addresses = {ExtollAddress{0x20'00a8}};
+	    ref_addresses = {ExtollAddress{0x20'0148}};
 
 	std::array<word_type, ExtollSpikeCommBucketDestinationConfig::config_size_in_words> ref_data = {
 	    word_type(0x557'abab)};
@@ -67,9 +67,29 @@ TEST(ExtollSpikeCommBucketNumPktsSent, Decode)
 	typename ExtollSpikeCommBucketNumPktsSent::coordinate_type coord(5);
 
 	std::array<ExtollAddress, ExtollSpikeCommBucketNumPktsSent::read_config_size_in_words>
-	    ref_addresses = {ExtollAddress{0x20'00b0}};
+	    ref_addresses = {ExtollAddress{0x20'0150}};
 
 	std::array<word_type, ExtollSpikeCommBucketNumPktsSent::read_config_size_in_words> ref_data = {
+	    word_type(0xbeaf'affe'cafe)};
+
+	HALDLS_TEST_DECODE(config, coord, ref_addresses, ref_data)
+}
+
+
+HALDLS_TEST(ExtollSpikeCommBucketNumEvtsRcvd, (event_count))
+
+TEST(ExtollSpikeCommBucketNumEvtsRcvd, Decode)
+{
+	ExtollSpikeCommBucketNumEvtsRcvd config;
+	config.set_event_count(ExtollSpikeCommBucketNumEvtsRcvd::EventCount(0xbeaf'affe'cafe));
+
+	typename ExtollSpikeCommBucketNumEvtsRcvd::coordinate_type coord(
+	    ExtollSpikeCommBucketNumEvtsRcvdOnSpikeCommSplit(5));
+
+	std::array<ExtollAddress, ExtollSpikeCommBucketNumEvtsRcvd::read_config_size_in_words>
+	    ref_addresses = {ExtollAddress{0x20'0158}};
+
+	std::array<word_type, ExtollSpikeCommBucketNumEvtsRcvd::read_config_size_in_words> ref_data = {
 	    word_type(0xbeaf'affe'cafe)};
 
 	HALDLS_TEST_DECODE(config, coord, ref_addresses, ref_data)
@@ -83,7 +103,7 @@ TEST(ExtollSpikeCommBucketCounterReset, Encode)
 	typename ExtollSpikeCommBucketCounterReset::coordinate_type coord(5);
 
 	std::array<ExtollAddress, ExtollSpikeCommBucketCounterReset::write_config_size_in_words>
-	    ref_addresses = {ExtollAddress{0x20'00b8}};
+	    ref_addresses = {ExtollAddress{0x20'0168}};
 
 	std::array<word_type, ExtollSpikeCommBucketCounterReset::write_config_size_in_words> ref_data =
 	    {word_type(0x1)};

@@ -41,6 +41,7 @@ typedef hate::type_list<
     haldls::vx::ExtollSpikeCommBucketTriggerConfig,
     haldls::vx::ExtollSpikeCommBucketDestinationConfig,
     haldls::vx::ExtollSpikeCommBucketNumPktsSent,
+    haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd,
     haldls::vx::ExtollSpikeCommBucketCounterReset,
     haldls::vx::ExtollSpikeCommRouterLookupConfig,
     haldls::vx::ExtollSpikeCommRouterConfig,

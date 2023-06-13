@@ -1,7 +1,7 @@
 constexpr uint64_t pulse_comm_top_rf_mask = 0x0020'0000ull;
 
 constexpr uint64_t tx_accum_bucket_rf_offset = 0x0000ull;
-constexpr uint64_t tx_accum_bucket_rf_size = 0x0020ull;
+constexpr uint64_t tx_accum_bucket_rf_size = 0x0040ull;
 
 constexpr uint64_t tx_accum_bucket_rf_base_addr{pulse_comm_top_rf_mask +
     tx_accum_bucket_rf_offset};
@@ -34,7 +34,14 @@ constexpr std::array<uint64_t, 8> tx_accum_bucket_rf_addresses = {
     tx_accum_bucket_rf_0, tx_accum_bucket_rf_1, tx_accum_bucket_rf_2, tx_accum_bucket_rf_3,
     tx_accum_bucket_rf_4, tx_accum_bucket_rf_5, tx_accum_bucket_rf_6, tx_accum_bucket_rf_7};
 
-enum class BucketRegs {TRIGGER = 0x0, DESTINATION = 0x8, PKTS_SENT = 0x10, CNT_RES = 0x18};
+enum class BucketRegs {
+    TRIGGER = 0x0,
+    DESTINATION = 0x8,
+    PKTS_SENT = 0x10,
+    EVTS_RCVD_0 = 0x18,
+    EVTS_RCVD_1 = 0x20,
+    CNT_RES = 0x28
+};
 
 
 constexpr uint64_t tx_accum_router_rf_offset = 0x0004'0000ull;

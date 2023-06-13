@@ -14,6 +14,8 @@ using ExtollSpikeCommBucketDestinationConfig GENPYBIND(visible) =
     haldls::vx::ExtollSpikeCommBucketDestinationConfig;
 using ExtollSpikeCommBucketNumPktsSent GENPYBIND(visible) =
     haldls::vx::ExtollSpikeCommBucketNumPktsSent;
+using ExtollSpikeCommBucketNumEvtsRcvd GENPYBIND(visible) =
+    haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd;
 using ExtollSpikeCommBucketCounterReset GENPYBIND(visible) =
     haldls::vx::ExtollSpikeCommBucketCounterReset;
 using ExtollSpikeCommRouterLookupConfig GENPYBIND(visible) =

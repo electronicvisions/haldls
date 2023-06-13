@@ -18,6 +18,7 @@ struct EventSwitchConfig;
 struct ExtollSpikeCommBucketTriggerConfig;
 struct ExtollSpikeCommBucketDestinationConfig;
 struct ExtollSpikeCommBucketNumPktsSent;
+struct ExtollSpikeCommBucketNumEvtsRcvd;
 struct ExtollSpikeCommBucketCounterReset;
 struct ExtollSpikeCommRouterLookupConfig;
 struct ExtollSpikeCommRouterConfig;
@@ -83,6 +84,10 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive& ar, haldls::vx::ExtollSpikeCommBucketNumPktsSent& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd& value, std::uint32_t const version);
 
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
@@ -226,6 +231,11 @@ public:
 		static const Source external SYMBOL_VISIBLE;
 		static const Source off SYMBOL_VISIBLE;
 	};
+
+	static const EventSwitchSource executor SYMBOL_VISIBLE;
+	static const EventSwitchSource asic SYMBOL_VISIBLE;
+	static const EventSwitchSource external SYMBOL_VISIBLE;
+	static const EventSwitchSource off SYMBOL_VISIBLE;
 
 	EventSwitchSource() SYMBOL_VISIBLE;
 
@@ -665,6 +675,76 @@ private:
 	    std::uint32_t const version) SYMBOL_VISIBLE;
 
 	PacketCount m_packet_count;
+};
+
+
+/**
+ * Container for monitoring the individual buckets for routing via Extoll.
+ */
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExtollSpikeCommBucketNumEvtsRcvd
+    : public ContainerBase<ExtollSpikeCommBucketNumEvtsRcvd>
+{
+public:
+	typedef halco::hicann_dls::vx::ExtollSpikeCommBucketNumEvtsRcvdOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	/**
+	 * Counts the number of events received at this bucket for the given split.
+	 */
+	struct GENPYBIND(inline_base("*")) EventCount
+	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	{
+		constexpr explicit EventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    base_t(val)
+		{}
+	};
+
+	ExtollSpikeCommBucketNumEvtsRcvd() SYMBOL_VISIBLE;
+
+	/**
+	 * Get the packet count.
+	 * @return EventCount
+	 */
+	GENPYBIND(getter_for(event_count))
+	EventCount get_event_count() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set the packet count.
+	 * @param value EventCount to set
+	 */
+	GENPYBIND(setter_for(event_count))
+	void set_event_count(EventCount value) SYMBOL_VISIBLE;
+
+	bool operator==(ExtollSpikeCommBucketNumEvtsRcvd const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExtollSpikeCommBucketNumEvtsRcvd const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(
+	    std::ostream& os, ExtollSpikeCommBucketNumEvtsRcvd const& config) SYMBOL_VISIBLE;
+
+	constexpr static size_t read_config_size_in_words GENPYBIND(hidden) = 1;
+	constexpr static size_t write_config_size_in_words GENPYBIND(hidden) = 0;
+
+	static std::array<halco::hicann_dls::vx::ExtollAddress, read_config_size_in_words>
+	read_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	static std::array<halco::hicann_dls::vx::ExtollAddress, write_config_size_in_words>
+	write_addresses(coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	std::array<fisch::vx::word_access_type::Extoll, write_config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Extoll, read_config_size_in_words> const&
+	                data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend struct cereal::access;
+	template <class Archive>
+	friend void ::cereal::serialize(
+	    Archive& ar,
+	    ExtollSpikeCommBucketNumEvtsRcvd& value,
+	    std::uint32_t const version) SYMBOL_VISIBLE;
+
+	EventCount m_event_count;
 };
 
 
@@ -2292,6 +2372,12 @@ template <>
 struct BackendContainerTrait<ExtollSpikeCommBucketNumPktsSent>
     : public BackendContainerBase<
           ExtollSpikeCommBucketNumPktsSent,
+          fisch::vx::word_access_type::Extoll>
+{};
+template <>
+struct BackendContainerTrait<ExtollSpikeCommBucketNumEvtsRcvd>
+    : public BackendContainerBase<
+          ExtollSpikeCommBucketNumEvtsRcvd,
           fisch::vx::word_access_type::Extoll>
 {};
 template <>

@@ -56,6 +56,13 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd& value, std::uint32_t const)
+{
+	ar(CEREAL_NVP(value.m_event_count));
+}
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive&, haldls::vx::ExtollSpikeCommBucketCounterReset&, std::uint32_t const)
 {}
 
@@ -218,6 +225,7 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::EventSwitchConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketTriggerConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketDestinationConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketNumPktsSent)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketCounterReset)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommRouterLookupConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommRouterConfig)
@@ -247,6 +255,7 @@ CEREAL_REGISTER_TYPE(haldls::vx::EventSwitchConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::ExtollSpikeCommBucketTriggerConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::ExtollSpikeCommBucketDestinationConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::ExtollSpikeCommBucketNumPktsSent)
+CEREAL_REGISTER_TYPE(haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd)
 CEREAL_REGISTER_TYPE(haldls::vx::ExtollSpikeCommBucketCounterReset)
 CEREAL_REGISTER_TYPE(haldls::vx::ExtollSpikeCommRouterLookupConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::ExtollSpikeCommRouterConfig)
@@ -277,6 +286,8 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(
     haldls::vx::Container, haldls::vx::ExtollSpikeCommBucketDestinationConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(
     haldls::vx::Container, haldls::vx::ExtollSpikeCommBucketNumPktsSent)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(
+    haldls::vx::Container, haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(
     haldls::vx::Container, haldls::vx::ExtollSpikeCommBucketCounterReset)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(
@@ -323,6 +334,8 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(
     haldls::vx::Encodable, haldls::vx::ExtollSpikeCommBucketDestinationConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(
     haldls::vx::Encodable, haldls::vx::ExtollSpikeCommBucketNumPktsSent)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(
+    haldls::vx::Encodable, haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(
     haldls::vx::Encodable, haldls::vx::ExtollSpikeCommBucketCounterReset)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(

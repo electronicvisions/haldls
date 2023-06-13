@@ -11,6 +11,7 @@ struct ExtollSpikeCommBucketTriggerConfig;
 struct ExtollSpikeCommBucketDestinationConfig;
 struct ExtollSpikeCommBucketNumPktsSent;
 struct ExtollSpikeCommBucketCounterReset;
+struct ExtollSpikeCommBucketNumEvtsRcvd;
 struct ExtollSpikeCommRouterLookupConfig;
 struct ExtollSpikeCommRouterConfig;
 struct ExtollSpikeCommRouterEventLossDisabled;
@@ -79,6 +80,10 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive& ar, haldls::vx::ExtollSpikeCommBucketCounterReset& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd& value, std::uint32_t const version);
 
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
@@ -191,6 +196,7 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketTrigge
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketDestinationConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketNumPktsSent)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketCounterReset)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommBucketNumEvtsRcvd)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommRouterLookupConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommRouterConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExtollSpikeCommRouterEventLossDisabled)
