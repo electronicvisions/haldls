@@ -1,9 +1,9 @@
 #include "cereal/types/lola/vx/dac.h"
 
+#include "cereal/types/halco/common/geometry.h"
+#include "cereal/types/halco/common/typed_array.h"
 #include "cereal/types/haldls/cereal.tcc"
 #include "cereal/types/lola/detail/hana.tcc"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "lola/vx/dac.h"
 
 

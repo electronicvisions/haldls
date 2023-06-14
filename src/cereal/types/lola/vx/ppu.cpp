@@ -1,9 +1,9 @@
 #include "cereal/types/lola/vx/ppu.h"
 
+#include "cereal/types/halco/common/geometry.h"
+#include "cereal/types/halco/common/typed_heap_array.h"
 #include "cereal/types/haldls/cereal.tcc"
 #include "cereal/types/lola/detail/hana.tcc"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_heap_array.h"
 #include "lola/vx/ppu.h"
 #include <cereal/types/variant.hpp>
 #include <cereal/types/vector.hpp>

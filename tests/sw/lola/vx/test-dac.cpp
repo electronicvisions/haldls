@@ -1,10 +1,10 @@
 #include "lola/vx/dac.h"
 
+#include "cereal/types/halco/common/geometry.h"
+#include "cereal/types/halco/common/typed_array.h"
 #include "cereal/types/haldls/cereal.h"
 #include "cereal/types/lola/vx/dac.h"
 #include "fisch/vx/word_access/type/spi.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "halco/hicann-dls/vx/spi.h"
 #include "haldls/vx/common.h"
 #include "haldls/vx/spi.h"

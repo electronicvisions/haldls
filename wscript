@@ -227,7 +227,7 @@ def build(bld):
                    + bld.path.ant_glob(f'src/cereal/types/stadls/vx/v{hx_version}/*.cpp'),
             install_path = '${PREFIX}/lib',
             features = 'cxx cxxshlib apply_semaphore',
-            use = [f'stadls_vx_v{hx_version}', f'haldls_vx_v{hx_version}_serialization', f'lola_vx_v{hx_version}_serialization', 'logger_obj'],
+            use = [f'stadls_vx_v{hx_version}', f'haldls_vx_v{hx_version}_serialization', f'lola_vx_v{hx_version}_serialization', 'logger_obj', f'fisch_vx_v{hx_version}_serialization'],
             semaphore = bld.env['stadls_semaphore'],
         )
 

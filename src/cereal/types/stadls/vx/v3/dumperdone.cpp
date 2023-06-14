@@ -1,8 +1,8 @@
 #include "cereal/types/stadls/vx/v3/dumperdone.h"
 
+#include "cereal/types/halco/common/geometry.h"
 #include "cereal/types/haldls/cereal.tcc"
 #include "cereal/types/haldls/vx/ppu.h"
-#include "halco/common/cerealization_geometry.h"
 #include "stadls/vx/v3/dumperdone.h"
 #include <cereal/types/memory.hpp>
 #include <cereal/types/utility.hpp>

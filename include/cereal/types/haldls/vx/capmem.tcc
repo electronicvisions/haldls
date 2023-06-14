@@ -1,9 +1,9 @@
 #pragma once
+#include "cereal/types/halco/common/geometry.h"
+#include "cereal/types/halco/common/typed_array.h"
+#include "cereal/types/halco/common/typed_heap_array.h"
 #include "cereal/types/haldls/cereal.h"
 #include "cereal/types/haldls/vx/capmem.h"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "halco/common/cerealization_typed_heap_array.h"
 #include "haldls/vx/capmem.h"
 #include <cereal/types/variant.hpp>
 

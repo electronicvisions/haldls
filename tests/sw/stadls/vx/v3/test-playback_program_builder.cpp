@@ -4,9 +4,9 @@
 #include "hxcomm/vx/target.h"
 #include "stadls/vx/v3/dumper.h"
 
+#include "cereal/types/halco/common/geometry.h"
 #include "cereal/types/haldls/cereal.h"
 #include "cereal/types/haldls/cereal.tcc"
-#include "halco/common/cerealization_geometry.h"
 
 #include "stadls/vx/v3/playback_program_builder.h"
 

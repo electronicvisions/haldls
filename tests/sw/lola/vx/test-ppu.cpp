@@ -1,8 +1,8 @@
 #include "lola/vx/ppu.h"
 
+#include "cereal/types/halco/common/geometry.h"
 #include "cereal/types/haldls/cereal.h"
 #include "cereal/types/lola/vx/ppu.h"
-#include "halco/common/cerealization_geometry.h"
 #include "haldls/vx/ppu.h"
 #include <cstdlib>
 #include <cereal/archives/json.hpp>

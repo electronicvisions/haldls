@@ -1,8 +1,8 @@
 #include "cereal/types/haldls/vx/correlation.h"
 
+#include "cereal/types/halco/common/geometry.h"
+#include "cereal/types/halco/common/typed_array.h"
 #include "cereal/types/haldls/cereal.tcc"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
 #include "haldls/vx/correlation.h"
 
 namespace cereal {

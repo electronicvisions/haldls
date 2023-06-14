@@ -1,7 +1,7 @@
 #pragma once
 #include "cereal/types/haldls/vx/neuron.h"
 
-#include "halco/common/cerealization_geometry.h"
+#include "cereal/types/halco/common/geometry.h"
 
 namespace cereal {
 

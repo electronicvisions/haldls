@@ -1,10 +1,10 @@
 #include "cereal/types/lola/vx/v3/morphology.h"
 
+#include "cereal/types/halco/common/geometry.h"
+#include "cereal/types/halco/common/typed_array.h"
+#include "cereal/types/halco/common/typed_heap_array.h"
 #include "cereal/types/haldls/cereal.tcc"
 #include "cereal/types/lola/detail/hana.tcc"
-#include "halco/common/cerealization_geometry.h"
-#include "halco/common/cerealization_typed_array.h"
-#include "halco/common/cerealization_typed_heap_array.h"
 #include "lola/vx/v3/morphology.h"
 #include <cereal/types/map.hpp>
 #include <cereal/types/set.hpp>

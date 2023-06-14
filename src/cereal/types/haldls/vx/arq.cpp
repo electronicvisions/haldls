@@ -1,7 +1,7 @@
 #include "cereal/types/haldls/vx/arq.h"
 
+#include "cereal/types/halco/common/geometry.h"
 #include "cereal/types/haldls/cereal.tcc"
-#include "halco/common/cerealization_geometry.h"
 #include "haldls/vx/arq.h"
 
 namespace cereal {

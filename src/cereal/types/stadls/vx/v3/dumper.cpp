@@ -1,9 +1,9 @@
 #include "cereal/types/stadls/vx/v3/dumper.h"
 
+#include "cereal/types/halco/common/geometry.h"
 #include "cereal/types/haldls/cereal.tcc"
 #include "cereal/types/stadls/vx/dumper.tcc"
 #include "cereal/types/stadls/vx/playback_program_builder.tcc"
-#include "halco/common/cerealization_geometry.h"
 #include "stadls/vx/v3/dumper.h"
 #include "stadls/vx/v3/dumperdone.h"
 
