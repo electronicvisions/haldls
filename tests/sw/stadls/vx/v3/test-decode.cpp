@@ -11,6 +11,7 @@
 typedef hate::type_list<
     haldls::vx::NullPayloadReadable,
     haldls::vx::INA219Status,
+    haldls::vx::TMP112Status,
     haldls::vx::VectorGeneratorControl,
     lola::vx::v3::LogicalNeuron>
     NotRandomizableTypes;

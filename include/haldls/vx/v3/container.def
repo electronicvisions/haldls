@@ -21,6 +21,7 @@ PLAYBACK_CONTAINER(VectorGeneratorTrigger, haldls::vx::v3::VectorGeneratorTrigge
 PLAYBACK_CONTAINER(VectorGeneratorNotificationAddress, haldls::vx::v3::VectorGeneratorNotificationAddress)
 PLAYBACK_CONTAINER(VectorGeneratorLUTEntry, haldls::vx::v3::VectorGeneratorLUTEntry)
 PLAYBACK_CONTAINER(VectorGeneratorControl, haldls::vx::v3::VectorGeneratorControl)
+PLAYBACK_CONTAINER(TMP112Status, haldls::vx::v3::TMP112Status)
 PLAYBACK_CONTAINER(INA219Config, haldls::vx::v3::INA219Config)
 PLAYBACK_CONTAINER(INA219Status, haldls::vx::v3::INA219Status)
 PLAYBACK_CONTAINER(NullPayloadReadable, haldls::vx::v3::NullPayloadReadable)

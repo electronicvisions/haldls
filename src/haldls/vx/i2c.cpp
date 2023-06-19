@@ -2,6 +2,7 @@
 
 #include "fisch/vx/word_access/type/i2c.h"
 #include "halco/common/iter_all.h"
+#include "halco/hicann-dls/vx/chip_carrier.h"
 #include "halco/hicann-dls/vx/i2c.h"
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "halco/hicann-dls/vx/xboard.h"
@@ -9,6 +10,72 @@
 #include "hate/type_index.h"
 
 namespace haldls::vx {
+
+float TMP112Status::Temperature::toUncalibratedTemperature() const
+{
+	return static_cast<float>(value() / 16 /* 4bit right shift */) * 0.0625 /* LSB [K] */;
+}
+
+TMP112Status::TMP112Status() : m_temperature() {}
+
+TMP112Status::Temperature TMP112Status::get_temperature() const
+{
+	return m_temperature;
+}
+
+void TMP112Status::set_temperature(Temperature const value)
+{
+	m_temperature = value;
+}
+
+bool TMP112Status::operator==(TMP112Status const& other) const
+{
+	return m_temperature == other.m_temperature;
+}
+
+bool TMP112Status::operator!=(TMP112Status const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, TMP112Status const& status)
+{
+	os << "TMP112Status(" << status.m_temperature << ")";
+	return os;
+}
+
+std::array<halco::hicann_dls::vx::I2CTempRegisterOnBoard, TMP112Status::read_config_size_in_words>
+TMP112Status::read_addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::I2CTempRegisterOnBoard(coord.toEnum())};
+}
+
+std::array<halco::hicann_dls::vx::I2CTempRegisterOnBoard, TMP112Status::write_config_size_in_words>
+TMP112Status::write_addresses(coordinate_type const& /*coord*/)
+{
+	return {};
+}
+
+std::array<fisch::vx::word_access_type::I2CTempRegister, TMP112Status::write_config_size_in_words>
+TMP112Status::encode() const
+{
+	return {};
+}
+
+void TMP112Status::decode(std::array<
+                          fisch::vx::word_access_type::I2CTempRegister,
+                          TMP112Status::read_config_size_in_words> const& data)
+{
+	auto const temperature = data[0];
+
+	bool const negative = temperature & 0x8000;
+	auto const temperature_value = temperature & 0x7fff;
+	if (!negative) {
+		m_temperature = Temperature(temperature_value);
+	} else {
+		m_temperature = Temperature(-static_cast<uint16_t>((~(temperature_value - 1)) & 0x7fff));
+	}
+}
 
 INA219Config::INA219Config() : m_bus_adc_mode(ADCMode::bits12), m_shunt_adc_mode(ADCMode::bits12) {}
 
@@ -659,6 +726,7 @@ std::ostream& operator<<(std::ostream& os, DAC6573ChannelConfig const& config)
 
 } // namespace haldls::vx
 
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::TMP112Status)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::INA219Config)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::INA219Status)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::TCA9554Inputs)

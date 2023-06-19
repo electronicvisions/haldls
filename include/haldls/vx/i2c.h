@@ -8,6 +8,7 @@
 #include "halco/common/geometry.h"
 #include "halco/common/iter_all.h"
 #include "halco/common/typed_array.h"
+#include "halco/hicann-dls/vx/chip_carrier.h"
 #include "halco/hicann-dls/vx/i2c.h"
 #include "halco/hicann-dls/vx/ultra96.h"
 #include "halco/hicann-dls/vx/xboard.h"
@@ -22,6 +23,7 @@
 
 namespace haldls::vx {
 
+struct TMP112Status;
 struct INA219Config;
 struct INA219Status;
 struct TCA9554Inputs;
@@ -33,6 +35,10 @@ struct DAC6573ChannelConfig;
 } // namespace haldls::vx
 
 namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::TMP112Status& value, std::uint32_t const version);
 
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
@@ -69,6 +75,89 @@ namespace halco::hicann_dls::vx {} // namespace halco::hicann_dls::vx
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
+
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) TMP112Status
+    : public ContainerBase<TMP112Status>
+{
+public:
+	typedef halco::hicann_dls::vx::TMP112StatusOnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
+#endif
+
+	/**
+	 * Temperature
+	 */
+	struct GENPYBIND(inline_base("*")) Temperature
+	    : public halco::common::detail::RantWrapper<Temperature, int32_t, 32752, -14080>
+	{
+		constexpr explicit Temperature(intmax_t const val = 0) GENPYBIND(implicit_conversion) :
+		    rant_t(val)
+		{
+		}
+
+		/**
+		 * Ideal conversion from 16bit 2's complement data format {12bit value, 4'h0}
+		 * to temperature [°C]. Maximum error of ideal conversion is 0.5K from 0°C to 65°C.
+		 * (see https://www.ti.com/lit/ds/symlink/tmp112.pdf)
+		 */
+		float toUncalibratedTemperature() const SYMBOL_VISIBLE;
+	};
+
+	/** Default constructor. */
+	TMP112Status() SYMBOL_VISIBLE;
+
+	/**
+	 * Get temperature value.
+	 * @return Value
+	 */
+	GENPYBIND(getter_for(temperature))
+	Temperature get_temperature() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set temperature value.
+	 * @param value Value
+	 */
+	GENPYBIND(setter_for(temperature))
+	void set_temperature(Temperature value) SYMBOL_VISIBLE;
+
+	bool operator==(TMP112Status const& other) const SYMBOL_VISIBLE;
+	bool operator!=(TMP112Status const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, TMP112Status const& config) SYMBOL_VISIBLE;
+
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::I2CTempRegisterOnBoard, write_config_size_in_words>
+	write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::I2CTempRegisterOnBoard, read_config_size_in_words>
+	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CTempRegister, write_config_size_in_words> encode()
+	    const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::I2CTempRegister, read_config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend struct cereal::access;
+	template <typename Archive>
+	friend void ::cereal::serialize(Archive& ar, TMP112Status& value, std::uint32_t const version)
+	    SYMBOL_VISIBLE;
+
+	Temperature m_temperature;
+};
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<TMP112Status>
+    : public BackendContainerBase<TMP112Status, fisch::vx::word_access_type::I2CTempRegister>
+{};
+
+} // namespace detail
 
 class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) INA219Config
     : public ContainerBase<INA219Config>

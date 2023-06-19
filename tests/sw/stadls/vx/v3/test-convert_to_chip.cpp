@@ -61,6 +61,7 @@ typedef hate::type_list<
     haldls::vx::v3::VectorGeneratorNotificationAddress, // not covered
     haldls::vx::v3::VectorGeneratorLUTEntry,            // not covered
     haldls::vx::v3::VectorGeneratorControl,             // not covered
+    haldls::vx::v3::TMP112Status,                       // read
     haldls::vx::v3::INA219Config,                       // init
     haldls::vx::v3::INA219Status,                       // read
     haldls::vx::v3::NullPayloadReadable,                // read

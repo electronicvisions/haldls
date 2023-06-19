@@ -8,6 +8,12 @@
 namespace cereal {
 
 template <typename Archive>
+void serialize(Archive& ar, haldls::vx::TMP112Status& value, std::uint32_t const)
+{
+	ar(CEREAL_NVP(value.m_temperature));
+}
+
+template <typename Archive>
 void serialize(Archive& ar, haldls::vx::INA219Config& value, std::uint32_t const)
 {
 	ar(CEREAL_NVP(value.m_bus_adc_mode));
@@ -57,6 +63,7 @@ void serialize(
 
 } // namespace cereal
 
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::TMP112Status)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::INA219Config)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::INA219Status)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::TCA9554Inputs)
@@ -64,6 +71,7 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::TCA9554Config)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::AD5252ChannelConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::AD5252ChannelConfigPersistent)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::DAC6573ChannelConfig)
+CEREAL_REGISTER_TYPE(haldls::vx::TMP112Status)
 CEREAL_REGISTER_TYPE(haldls::vx::INA219Config)
 CEREAL_REGISTER_TYPE(haldls::vx::INA219Status)
 CEREAL_REGISTER_TYPE(haldls::vx::TCA9554Inputs)
@@ -71,6 +79,7 @@ CEREAL_REGISTER_TYPE(haldls::vx::TCA9554Config)
 CEREAL_REGISTER_TYPE(haldls::vx::AD5252ChannelConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::AD5252ChannelConfigPersistent)
 CEREAL_REGISTER_TYPE(haldls::vx::DAC6573ChannelConfig)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::TMP112Status)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::INA219Config)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::INA219Status)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::TCA9554Inputs)
@@ -81,6 +90,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::DAC6573ChannelConfig)
 
 CEREAL_REGISTER_DYNAMIC_INIT(haldls_vx_i2c)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::TMP112Status)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::INA219Config)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::INA219Status)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::TCA9554Inputs)

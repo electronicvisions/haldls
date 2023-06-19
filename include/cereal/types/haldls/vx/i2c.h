@@ -4,6 +4,7 @@
 
 namespace haldls::vx {
 
+struct TMP112Status;
 struct INA219Config;
 struct INA219Status;
 struct TCA9554Inputs;
@@ -15,6 +16,10 @@ struct DAC6573ChannelConfig;
 } // namespace haldls::vx
 
 namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::TMP112Status& value, std::uint32_t const version);
 
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
@@ -46,6 +51,7 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 } // namespace cereal
 
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::TMP112Status)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::INA219Config)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::INA219Status)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::TCA9554Inputs)

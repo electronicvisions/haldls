@@ -5,6 +5,7 @@
 namespace haldls::vx {
 namespace v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
+using TMP112Status GENPYBIND(visible) = haldls::vx::TMP112Status;
 using INA219Config GENPYBIND(visible) = haldls::vx::INA219Config;
 using INA219Status GENPYBIND(visible) = haldls::vx::INA219Status;
 using TCA9554Inputs GENPYBIND(visible) = haldls::vx::TCA9554Inputs;
