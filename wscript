@@ -354,15 +354,6 @@ def build(bld):
             test_timeout = bld.env.SIMTEST_TIMEOUT_SECONDS
         )
 
-        bld(
-            target = f'run_ppu_program_vx_v{hx_version}',
-            features = 'cxx cxxprogram',
-            source = f'tools/stadls/vx/v{hx_version}/run_ppu_program.cpp',
-            use = [f'haldls_vx_v{hx_version}', 'logger_obj', f'stadls_vx_v{hx_version}'],
-            install_path = '${PREFIX}/bin',
-            linkflags = ['-lboost_program_options-mt'],
-        )
-
     if bld.env.build_with_haldls_python_bindings:
         bld.recurse("pyhaldls")
         bld.recurse("pystadls")
