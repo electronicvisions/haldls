@@ -882,6 +882,7 @@ MCSafeAtomicNeuron::Multicompartment::operator AtomicNeuron::Multicompartment() 
 	multicompartment.i_bias_nmda = i_bias_nmda;
 	multicompartment.connect_soma = connect_soma;
 	multicompartment.connect_soma_right = connect_soma_right;
+	multicompartment.connect_right = connect_right;
 	multicompartment.connect_vertical = connect_vertical;
 	multicompartment.enable_conductance = enable_conductance;
 	return multicompartment;
