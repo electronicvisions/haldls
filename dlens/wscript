@@ -9,14 +9,19 @@ from waflib.Errors import BuildError
 from waflib.extras.gtest import summary
 from waflib.extras.symwaf2ic import get_toplevel_path
 
+def depends(ctx):
+    ctx("libnux")
+
 
 def options(opt):
+    opt.load('compiler_cxx')
     opt.load('pytest')
     opt.load('pylint')
     opt.load('pycodestyle')
 
 
 def configure(cfg):
+    cfg.load('compiler_cxx')
     cfg.load('python')
     cfg.check_python_version()
     cfg.check_python_headers()
@@ -101,6 +106,26 @@ def build(bld):
             test_timeout=1000 if (bld.env.TEST_TARGET == TestTarget.SIMULATION) else 120
         )
 
+        bld(name=f'dlens_hwtest_with_ppu_vx_v{hx_version}',
+            tests=f'tests/dlens_hwtest_with_ppu_vx_v{hx_version}.py',
+            features='use pytest pylint pycodestyle',
+            use=[f'dlens_vx_v{hx_version}',
+                 f'dlens_hwtest_with_ppu_vx_v{hx_version}-ppu_code'],
+            install_path="${PREFIX}/bin/tests/ppu_code",
+            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+            skip_run = not (((bld.env.TEST_TARGET == TestTarget.HARDWARE) or
+                             (bld.env.TEST_TARGET == TestTarget.SIMULATION))
+                            and
+                            int(bld.env.CURRENT_SETUP["chip_revision"]) == hx_version),
+            test_timeout=1000 if (bld.env.TEST_TARGET == TestTarget.SIMULATION) else 120,
+            test_environ=dict(
+                TEST_BINARY_PATH=os.path.join(get_toplevel_path(),
+                                              "build",
+                                              "haldls",
+                                              "dlens")),
+        )
+
         bld(name=f'dlens_health_check_vx_v{hx_version}',
             tests=f'tests/dlens_health_check_vx_v{hx_version}.py',
             features='use pytest pylint pycodestyle',
@@ -114,6 +139,19 @@ def build(bld):
                             int(bld.env.CURRENT_SETUP["chip_revision"]) == hx_version),
             test_timeout=1000 if (bld.env.TEST_TARGET == TestTarget.SIMULATION) else 30
         )
+
+        # PPU code
+        if bld.env.have_ppu_toolchain:
+            env = bld.all_envs[f'nux_vx_v{hx_version}'].derive()
+            env.detach()
+            bld.program(name=f"dlens_hwtest_with_ppu_vx_v{hx_version}-ppu_code",
+                        features="cxx",
+                        target=f"test_ppu_write_vx_v{hx_version}.bin",
+                        source="tests/ppu_source/test_ppu_write.cpp",
+                        use=[f"nux_runtime_vx_v{hx_version}",
+                             f"halco_hicann_dls_ppu_vx_v{hx_version}",
+                             f"haldls_ppu_vx_v{hx_version}"],
+                        env=env)
 
         # --- Deprecated alias --- #
         bld(name=f'run_ppu_program_vx_v{hx_version}_py',
