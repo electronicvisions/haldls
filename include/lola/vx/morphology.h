@@ -7,6 +7,8 @@
 #include "haldls/vx/container.h"
 #include "hate/visibility.h"
 #include "lola/vx/genpybind.h"
+#include <map>
+#include <set>
 #include <utility>
 #include <vector>
 

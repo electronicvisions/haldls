@@ -6,6 +6,7 @@
 #include "haldls/vx/ppu.h"
 #include "hate/visibility.h"
 #include "lola/vx/genpybind.h"
+#include <map>
 #include <optional>
 #include <variant>
 #include <boost/hana/adapt_struct.hpp>
