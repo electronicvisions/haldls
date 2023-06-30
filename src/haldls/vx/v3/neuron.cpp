@@ -3,7 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/neuron.tcc"
 #include "haldls/vx/omnibus_constants.h"
@@ -70,7 +70,7 @@ struct NeuronConfigBitfield
 		// clang-format off
 		struct __attribute__((packed)) {
 			                                       /* bits ; word */
-#define BITFIELD \
+#define WORD \
 			(uint32_t en_reset_deg           :  1; /* 0    ; 2    */ ) \
 			(uint32_t en_reset_div           :  1; /* 1    ; 2    */ ) \
 			(uint32_t en_reset_mul           :  1; /* 2    ; 2    */ ) \
@@ -78,8 +78,10 @@ struct NeuronConfigBitfield
 			(uint32_t en_leak_div            :  1; /* 4    ; 2    */ ) \
 			(uint32_t en_leak_mul            :  1; /* 5    ; 2    */ ) \
 			(uint32_t en_strong_fire         :  1; /* 6    ; 2    */ ) \
-			(uint32_t                        : 25; /* 7-31 ; 2    */ ) \
-			                                                           \
+			(uint32_t                        : 25; /* 7-31 ; 2    */ )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t                        :  1; /* 0    ; 3    */ ) \
 			(uint32_t en_synin_coba_inh      :  1; /* 1    ; 3    */ ) \
 			(uint32_t en_synin_coba_exc      :  1; /* 2    ; 3    */ ) \
@@ -87,8 +89,10 @@ struct NeuronConfigBitfield
 			(uint32_t en_readout_amp         :  1; /* 4    ; 3    */ ) \
 			(uint32_t readout_select         :  2; /* 5-6  ; 3    */ ) \
 			(uint32_t en_readout             :  1; /* 7    ; 3    */ ) \
-			(uint32_t                        : 24; /* 8-31 ; 3    */ ) \
-			                                                           \
+			(uint32_t                        : 24; /* 8-31 ; 3    */ )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t invert_adapt_b         :  1; /* 0    ; 4    */ ) \
 			(uint32_t invert_adapt_a         :  1; /* 1    ; 4    */ ) \
 			(uint32_t en_adapt               :  1; /* 2    ; 4    */ ) \
@@ -97,13 +101,17 @@ struct NeuronConfigBitfield
 			(uint32_t en_synin_exc_small_cap :  1; /* 5    ; 4    */ ) \
 			(uint32_t en_synin_inh_high_res  :  1; /* 6    ; 4    */ ) \
 			(uint32_t en_synin_exc_high_res  :  1; /* 7    ; 4    */ ) \
-			(uint32_t                        : 24; /* 8-31 ; 4    */ ) \
-			                                                           \
+			(uint32_t                        : 24; /* 8-31 ; 4    */ )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t en_mem_off             :  1; /* 0    ; 5    */ ) \
 			(uint32_t                        :  1; /* 1    ; 5    */ ) \
 			(uint32_t mem_cap_size           :  6; /* 2-7  ; 5    */ ) \
-			(uint32_t                        : 24; /* 8-31 ; 5    */ ) \
-			                                                           \
+			(uint32_t                        : 24; /* 8-31 ; 5    */ )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t invert_current         :  1; /* 0    ; 6    */ ) \
 			(uint32_t                        :  1; /* 1    ; 6    */ ) \
 			(uint32_t en_fire                :  1; /* 2    ; 6    */ ) \
@@ -112,8 +120,10 @@ struct NeuronConfigBitfield
 			(uint32_t en_synin_exc           :  1; /* 5    ; 6    */ ) \
 			(uint32_t en_byp_inh             :  1; /* 6    ; 6    */ ) \
 			(uint32_t en_byp_exc             :  1; /* 7    ; 6    */ ) \
-			(uint32_t                        : 24; /* 8-31 ; 6    */ ) \
-			                                                           \
+			(uint32_t                        : 24; /* 8-31 ; 6    */ )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t connect_somata         :  1; /* 0    ; 7    */ ) \
 			(uint32_t connect_bottom         :  1; /* 1    ; 7    */ ) \
 			(uint32_t en_comp_cond           :  1; /* 2    ; 7    */ ) \
@@ -123,8 +133,8 @@ struct NeuronConfigBitfield
 			(uint32_t en_comp_cond_div       :  1; /* 6    ; 7    */ ) \
 			(uint32_t en_pause               :  1; /* 7    ; 7    */ ) \
 			(uint32_t                        : 24; /* 8-31 ; 7    */ )
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");

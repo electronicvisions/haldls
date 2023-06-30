@@ -3,7 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/traits.h"
@@ -165,7 +165,7 @@ struct PLLClockOutputBlockBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t enable_output_0       : 1;) \
 			(uint32_t enable_bypass_0       : 1;) \
 			(uint32_t select_adpll_0        : 1;) \
@@ -187,8 +187,8 @@ struct PLLClockOutputBlockBitfield
 			(uint32_t select_output_adpll_3 : 2;) \
 			(uint32_t /* unused */          : 2;) \
 			(uint32_t switch_spl1_to_madc   : 1;)
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

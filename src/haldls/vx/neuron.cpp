@@ -3,7 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
@@ -162,7 +162,7 @@ struct CommonNeuronBackendConfigBitfield
 		// clang-format off
 		struct __attribute__((packed)) {
 			                                        /* bits  ; word */
-#define BITFIELD \
+#define WORD \
 			(uint32_t en_event_regs            : 1; /* 0     ; 0    */ ) \
 			(uint32_t force_reset              : 1; /* 1     ; 0    */ ) \
 			(uint32_t en_clocks                : 1; /* 2     ; 0    */ ) \
@@ -172,14 +172,16 @@ struct CommonNeuronBackendConfigBitfield
 			(uint32_t sample_pos_edge          : 4; /* 12-15 ; 0    */ ) \
 			(uint32_t clock_scale_adapt_pulse  : 4; /* 16-19 ; 0    */ ) \
 			(uint32_t clock_scale_post_pulse   : 4; /* 20-23 ; 0    */ ) \
-			(uint32_t                          : 8; /* 24-31 ; 0    */ ) \
-			                                                             \
+			(uint32_t                          : 8; /* 24-31 ; 0    */ )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t wait_global_post_pulse   : 8; /* 0-7   ; 1    */ ) \
 			(uint32_t wait_spike_counter_reset : 8; /* 8-15  ; 1    */ ) \
 			(uint32_t wait_spike_counter_read  : 8; /* 16-23 ; 1    */ ) \
 			(uint32_t wait_fire_neuron         : 8; /* 23-31 ; 1    */ )
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "Sizes of union types should match.");

@@ -5,7 +5,7 @@
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/bitset.h"
@@ -261,7 +261,7 @@ struct PhyConfigBaseBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t enable_bit_slip                          :  1;) \
 			(uint32_t manual_delay                             :  4;) \
 			(uint32_t enable_delay_cell_measurement            :  1;) \
@@ -280,8 +280,8 @@ struct PhyConfigBaseBitfield
 			(uint32_t enable_loopback_en                       :  1;) \
 			(uint32_t enable_auto_init                         :  1;) \
 			(uint32_t /* unused */                             : 10;)
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

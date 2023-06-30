@@ -3,7 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/bitset.h"
@@ -158,7 +158,7 @@ struct CurrentDACBitfield
 		struct __attribute__((packed))
 		{
 			// clang-format off
-#define BITFIELD \
+#define WORD \
 			(uint32_t binary_code             :  6; /* 0-5     */ ) \
 			(uint32_t direction               :  1; /* 6       */ ) \
 			(uint32_t enable_current          :  1; /* 7       */ ) \
@@ -168,8 +168,8 @@ struct CurrentDACBitfield
 			(uint32_t mux_syntest_inhibitory  :  1; /* 13      */ ) \
 			(uint32_t mux_syntest_excitatory  :  1; /* 14      */ ) \
 			(uint32_t /* unused */            : 17; /* 15...31 */ )
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 			// clang-format on
 		} m;
 

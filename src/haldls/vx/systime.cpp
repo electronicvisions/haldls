@@ -4,7 +4,7 @@
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "fisch/vx/word_access/type/systime.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 
@@ -56,12 +56,15 @@ struct SystimeSyncBaseBitfield
 		uint64_t raw;
 		// clang-format off
 		struct {
-#define BITFIELD \
-			(uint32_t low : 32;) \
+#define WORD \
+			(uint32_t low : 32;)
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t high : 11;) \
 			(uint32_t : 21;)
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

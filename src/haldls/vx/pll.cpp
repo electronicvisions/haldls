@@ -3,7 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "halco/hicann-dls/vx/jtag.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "haldls/vx/traits.h"
@@ -314,7 +314,7 @@ struct ADPLLLowerBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t loop_filter_int  : 5;) \
 			(uint32_t loop_filter_prop : 5;) \
 			(uint32_t loop_div_n       : 5;) \
@@ -324,8 +324,8 @@ struct ADPLLLowerBitfield
 			(uint32_t pre_div_p1       : 2;) \
 			(uint32_t pre_div_p2       : 2;) \
 			(uint32_t /*unused*/       : 1;)
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -343,7 +343,7 @@ struct ADPLLUpperBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t tune                 : 12;) \
 			(uint32_t dco_power_switch     :  6;) \
 			(uint32_t open_lock            :  1;) \
@@ -355,8 +355,8 @@ struct ADPLLUpperBitfield
 			(uint32_t /*unused*/           :  5;) \
 			(uint32_t enable               :  1;) \
 			(uint32_t use_external_config  :  1;)
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -559,15 +559,15 @@ struct PLLSelfTestBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t clock_enable    :  1;) \
 			(uint32_t pre_scaler_p    :  4;) \
 			(uint32_t select_source   :  2;) \
 			(uint32_t /*unused*/      :  1;) \
 			(uint32_t check_range     :  4;) \
 			(uint32_t check_value     : 20;)
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
@@ -691,13 +691,13 @@ struct PLLSelfTestStatusBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t counter_value : 20;) \
 			(uint32_t finished      :  1;) \
 			(uint32_t success       :  1;) \
 			(uint32_t /*unused*/    : 10;)
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");

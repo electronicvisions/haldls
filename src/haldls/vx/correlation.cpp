@@ -3,7 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 
@@ -92,19 +92,28 @@ struct CommonCorrelationConfigBitfield
 		std::array<uint32_t, CommonCorrelationConfig::config_size_in_words> words;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t sense_delay     : 12; /* base address*/ ) \
-			(uint32_t /* unused */    : 20;                   ) \
+			(uint32_t /* unused */    : 20;                   )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t reset_duration  : 12; /* base + 1*/     ) \
-			(uint32_t /* unused */    : 20;                   ) \
+			(uint32_t /* unused */    : 20;                   )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t reset_fall_time : 12; /* base + 2*/     ) \
-			(uint32_t /* unused */    : 20;                   ) \
+			(uint32_t /* unused */    : 20;                   )
+			EXPAND_WORD(WORD)
+#undef WORD
+#define WORD \
 			(uint32_t reset_mode      :  1; /* base + 3*/     ) \
 			(uint32_t select_voltage_right : 1;               ) \
 			(uint32_t select_voltage_left  : 1;               ) \
 			(uint32_t /* unused */    : 29;                   )
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(words) == sizeof(m), "sizes of union types should match");

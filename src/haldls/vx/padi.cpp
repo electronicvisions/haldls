@@ -3,7 +3,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
@@ -20,7 +20,7 @@ struct PADIEvent::PADIEventBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t fire_bus_0         :  1; /*       0 */ ) \
 			(uint32_t fire_bus_1         :  1; /*       1 */ ) \
 			(uint32_t fire_bus_2         :  1; /*       2 */ ) \
@@ -29,8 +29,8 @@ struct PADIEvent::PADIEventBitfield
 			(uint32_t event_address      :  6; /* 21 - 16 */ ) \
 			(uint32_t row_select_address :  5; /* 26 - 22 */ ) \
 			(uint32_t                    :  5; /* 31 - 27 */ )
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "Sizes of union types should match.");
@@ -203,7 +203,7 @@ struct CommonPADIBusConfig::CommonPADIBusConfigBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t enable_spl1_0            : 1; /*       0 */ ) \
 			(uint32_t enable_spl1_1            : 1; /*       1 */ ) \
 			(uint32_t enable_spl1_2            : 1; /*       2 */ ) \
@@ -217,8 +217,8 @@ struct CommonPADIBusConfig::CommonPADIBusConfigBitfield
 			(uint32_t dacen_pulse_extension_1  : 4; /* 23 - 20 */ ) \
 			(uint32_t dacen_pulse_extension_2  : 4; /* 27 - 24 */ ) \
 			(uint32_t dacen_pulse_extension_3  : 4; /* 31 - 28 */ )
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "Sizes of union types should match.");
@@ -409,12 +409,12 @@ struct CommonSTPConfig::CommonSTPConfigBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t recovery_clock_speed  :  4; /*  3 -  0 */ ) \
 			(uint32_t enable_recovery_clock :  1; /*       4 */ ) \
 			(uint32_t                       : 27; /* 31 -  5 */ )
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "Sizes of union types should match.");

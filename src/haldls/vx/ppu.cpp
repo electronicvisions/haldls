@@ -8,7 +8,7 @@
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
 #include "halco/hicann-dls/vx/omnibus.h"
-#include "haldls/bitfield.h"
+#include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/indent.h"
@@ -516,14 +516,14 @@ struct PPUControlRegisterBitfield
 		uint32_t raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-#define BITFIELD \
+#define WORD \
 			(uint32_t inhibit_reset           :  1; /* 0    */) \
 			(uint32_t force_clock_on          :  1; /* 1    */) \
 			(uint32_t force_clock_off         :  1; /* 2    */) \
 			(uint32_t cache_controller_enable :  1; /* 3    */) \
 			(uint32_t                         : 28; /* 4-32 */)
-			EXPAND_BITFIELD_ELEMENTS(BITFIELD)
-#undef BITFIELD
+			EXPAND_WORD(WORD)
+#undef WORD
 		} m;
 		// clang-format on
 		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
