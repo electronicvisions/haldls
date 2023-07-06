@@ -1,4 +1,5 @@
 #include <random>
+#include <string>
 #include <vector>
 #include <gtest/gtest.h>
 
@@ -156,7 +157,34 @@ public:
 	template <typename T>
 	static std::string GetName(int)
 	{
-		return hate::full_name<T>().substr(strlen("haldls::vx::"));
+		std::string const full_name = hate::full_name<T>();
+		// full_name are in the form of std::pair<haldls::vx::CommonNeuronBackendConfig,
+		// fisch::vx::word_access_type::OmnibusChipOverJTAG> will be converted to
+		// CommonNeuronBackendConfig_OmnibusChipOverJTAG
+		size_t begin_first = 0;
+		if (full_name.find("std::pair<haldls::vx::v") != std::string::npos) {
+			begin_first = strlen("std::pair<haldls::vx::vy::");
+		} else {
+			begin_first = strlen("std::pair<haldls::vx::");
+		}
+		size_t const end_first = full_name.find(",");
+		std::string first = full_name.substr(begin_first, end_first - begin_first);
+		// some types are dependent on a coordinate -> also remove the coordinate NS
+		size_t coord_pos = first.find("halco::hicann_dls::vx::v");
+		if (coord_pos != std::string::npos) {
+			first.erase(coord_pos, strlen("halco::hicann_dls::vx::vy::"));
+		}
+		coord_pos = first.find("halco::hicann_dls::vx::");
+		if (coord_pos != std::string::npos) {
+			first.erase(coord_pos, strlen("halco::hicann_dls::vx::"));
+		}
+
+		size_t const begin_second = full_name.find("fisch::vx::word_access_type::") +
+		                            strlen("fisch::vx::word_access_type::");
+		size_t const end_second = full_name.find(">", begin_second);
+
+		std::string const second = full_name.substr(begin_second, end_second - begin_second);
+		return first + "_" + second;
 	}
 };
 } // namespace haldls::vx
