@@ -88,6 +88,11 @@ public:
 	 */
 	bool enable_highspeed_link;
 
+	/**
+	 * Event recording config, defaults to active recording.
+	 */
+	haldls::vx::EventRecordingConfig event_recording;
+
 	/** Memory timing settings. */
 	lola::vx::v3::MemoryTiming memory_timing;
 

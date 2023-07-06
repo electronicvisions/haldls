@@ -17,13 +17,16 @@ InitGenerator::InitGenerator() :
     adplls(),
     highspeed_link(),
     enable_highspeed_link(true),
+    event_recording(),
     memory_timing(),
     synapse_bias_selection(),
     enable_capmem(false),
     reference_generator_config(),
     capmem_block_config(),
     capmem_config()
-{}
+{
+	event_recording.set_enable_event_recording(true);
+}
 
 InitGenerator::HighspeedLink::HighspeedLink() :
     common_phy_config_fpga(),
@@ -106,6 +109,8 @@ PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate(
 			builder.block_until(BarrierOnFPGA(), Barrier::systime);
 		}
 	}
+
+	builder.write(EventRecordingConfigOnFPGA(), event_recording);
 
 	if (enable_capmem) {
 		// Require highspeed to be turned on in chip init
