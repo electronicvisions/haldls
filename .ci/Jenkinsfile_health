@@ -150,6 +150,13 @@ try {
 				String result = compileHtml(setups, success)
 				currentBuild.description = result
 				setJobDescription(result)
+				if (!isTriggeredByGerrit()) {
+					runOnSlave(label: "frontend") {
+						withCredentials([string(credentialsId: 'cd9bc8f6-afa4-437b-805f-96af41a62257', variable: 'EBRAINS_ELASTIC_KEY')]) {
+							logResult(setups, success)
+						}
+					}
+				}
 			}
 
 			if (success.any { key, value -> !value }) {
@@ -220,4 +227,45 @@ ${content}
 </table>
 """
 	return result
+}
+
+/**
+ * Log the result of the health check to monitoring
+ * @param setups List of setups
+ * @param success Map of setup check success values
+ */
+Void logResult(List<HXCubeWing> setups, Map<HXCubeWing, Boolean> success) {
+	for (HXCubeWing setup : setups) {
+		String command = "https_proxy='';tsocks curl -X POST 'https://elk-cscs.tc.humanbrainproject.eu:9200/platform_brainscales_apm-events/_doc/?pretty' "
+		command += "-H 'Content-Type: application/json' "
+		command += "-H 'Authorization: ApiKey ${env.EBRAINS_ELASTIC_KEY}' "
+		command += "-d '"
+
+		String state = ""
+		if (success.containsKey(setup)) {
+			if (success[setup]) {
+				state = "ok"
+			} else {
+				state = "broken"
+			}
+		} else {
+			state = "not tested"
+		}
+		String date = jesh(script: "date --iso-8601=s", returnStdout: true).trim()
+		command += """
+{
+	"@timestamp": "${date}",
+	"message": "HXCube health check",
+	"setup": "${setup}",
+	"test_result":
+	{
+		"chip_revision": "${setup.chipRevision}",
+		"state": "${state}",
+		"bitfile_revision": "${(setup.fpgaBitfileVersion != null) ? setup.fpgaBitfileVersion : ''}",
+		"bitfile_build_time": "${(setup.fpgaBitfileBuildTime != null) ? setup.fpgaBitfileBuildTime : ''}"
+	}
+}'
+"""
+		jesh(script: command)
+	}
 }
