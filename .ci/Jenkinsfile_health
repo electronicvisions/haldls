@@ -68,6 +68,9 @@ class HXCubeWing implements Serializable {
 
 static int readBitfileVersion(WorkflowScript pipeline) {
 	String query = "import yaml\n" +
+	               "import pylogging\n" +
+	               "pylogging.reset()\n" +
+	               "pylogging.default_config()\n" +
 	               "from pyhxcomm_vx import ManagedConnection\n" +
 	               "with ManagedConnection() as connection:\n" +
 	               "    bitfile_info = yaml.safe_load(connection.bitfile_info)\n" +
@@ -77,6 +80,9 @@ static int readBitfileVersion(WorkflowScript pipeline) {
 
 static String readBitfileBuildTime(WorkflowScript pipeline) {
 	String query = "import yaml\n" +
+	               "import pylogging\n" +
+	               "pylogging.reset()\n" +
+	               "pylogging.default_config()\n" +
 	               "from pyhxcomm_vx import ManagedConnection\n" +
 	               "with ManagedConnection() as connection:\n" +
 	               "    bitfile_info = yaml.safe_load(connection.bitfile_info)\n" +
