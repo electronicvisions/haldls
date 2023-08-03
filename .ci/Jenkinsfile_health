@@ -112,7 +112,7 @@ try {
 
 						try {
 							timeout(time: 90, unit: "SECONDS") {
-								success[setup_local] = jesh(script: "stadls_hwtest_vx_v${setup_local.chipRevision} --gtest_filter='-FPGADeviceDNA.Read'",
+								success[setup_local] = jesh(script: "stadls_hwtest_vx_v${setup_local.chipRevision}",
 								                            returnStatus: true) == 0
 								try {
 									setup_local.fpgaBitfileVersion = readBitfileVersion(this)
