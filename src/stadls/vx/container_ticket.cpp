@@ -31,7 +31,7 @@ haldls::vx::Container const& ContainerTicket::get() const
 	}
 
 	auto const visitor =
-	    [this](auto const& ticket_impl) -> haldls::vx::Container::BackendContainerListVariant {
+	    [](auto const& ticket_impl) -> haldls::vx::Container::BackendContainerListVariant {
 		auto const data = ticket_impl.get();
 		std::vector<decltype(
 		    fisch::vx::container_cast(std::declval<typename decltype(data)::value_type>()))>
