@@ -64,7 +64,7 @@ def build(bld):
         bld.env.TEST_TARGET = TestTarget.SOFTWARE_ONLY
         bld.env.CURRENT_SETUP = dict(chip_revision=None)
 
-    for hx_version in [3]:
+    for hx_version in [3, 4]:
         bld(name=f'dlens_vx_v{hx_version}',
             features='py pylint pycodestyle',
             source = bld.path.ant_glob(f'dlens_vx_v{hx_version}/**/*.py'),

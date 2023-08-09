@@ -60,7 +60,7 @@ def build(bld):
     if not bld.env.with_pybind:
         bld.fatal('building pyhaldls requires pybind')
 
-    for hx_version in [3]:
+    for hx_version in [3, 4]:
         bld(
             features='cxx pyext',
             target=f'pystadls_vx_v{hx_version}_obj',
