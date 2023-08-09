@@ -264,8 +264,7 @@ PPUElfFile::PPUElfFile(std::string const& filename)
 		throw std::runtime_error("Elf_begin failed.");
 	}
 
-	Elf_Kind ek;
-	if ((ek = elf_kind(m_elf_ptr)) != ELF_K_ELF) {
+	if (elf_kind(m_elf_ptr) != ELF_K_ELF) {
 		throw std::runtime_error("Not an ELF file");
 	}
 }
