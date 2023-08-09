@@ -425,7 +425,7 @@ public:
 	 */
 	struct GENPYBIND(inline_base("*")) CheckValue
 	    : public halco::common::detail::
-	          RantWrapper<CheckValue, uint_fast16_t, 1048575 /*2^20-1*/, 0>
+	          RantWrapper<CheckValue, uint_fast32_t, 1048575 /*2^20-1*/, 0>
 	{
 		constexpr explicit CheckValue(uintmax_t const val = 0) : rant_t(val) {}
 	};
@@ -536,7 +536,7 @@ public:
 	 */
 	struct GENPYBIND(inline_base("*")) CounterValue
 	    : public halco::common::detail::
-	          RantWrapper<CounterValue, uint_fast16_t, 1048575 /*2^20-1*/, 0>
+	          RantWrapper<CounterValue, uint_fast32_t, 1048575 /*2^20-1*/, 0>
 	{
 		constexpr explicit CounterValue(uintmax_t const val = 0) : rant_t(val) {}
 	};
