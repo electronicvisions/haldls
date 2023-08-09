@@ -82,8 +82,6 @@ std::ostream& operator<<(std::ostream& os, EventSwitchSource const& config)
 std::array<halco::hicann_dls::vx::OmnibusAddress, EventSwitchSource::config_size_in_words>
 EventSwitchSource::addresses(coordinate_type const& coord)
 {
-	halco::hicann_dls::vx::OmnibusAddress addr;
-
 	if (coord == coordinate_type::to_executor) {
 		return {halco::hicann_dls::vx::OmnibusAddress(evswitch_to_exec_source_address)};
 	} else if (coord == coordinate_type::to_asic) {
