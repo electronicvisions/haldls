@@ -223,15 +223,6 @@ PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/)
 	return {halco::hicann_dls::vx::OmnibusChipOverJTAGAddress(pll_base_address + 4)};
 }
 
-template SYMBOL_VISIBLE std::
-    array<halco::hicann_dls::vx::JTAGPLLRegisterOnDLS, PLLClockOutputBlock::config_size_in_words>
-    PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/);
-
-template SYMBOL_VISIBLE std::array<
-    halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,
-    PLLClockOutputBlock::config_size_in_words>
-PLLClockOutputBlock::addresses(coordinate_type const& /*coord*/);
-
 template <typename WordT>
 std::array<WordT, PLLClockOutputBlock::config_size_in_words> PLLClockOutputBlock::encode() const
 {
@@ -336,9 +327,6 @@ void PLLClockOutputBlock::decode(std::array<WordT, config_size_in_words> const& 
 
 	m_switch_spl1_to_madc = bitfield.u.m.switch_spl1_to_madc;
 }
-
-template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
-    std::array<fisch::vx::word_access_type::JTAGPLLRegister, config_size_in_words> const& /*data*/);
 
 template SYMBOL_VISIBLE void PLLClockOutputBlock::decode(
     std::array<
