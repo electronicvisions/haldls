@@ -29,6 +29,9 @@ using namespace stadls::vx::v4;
 using namespace halco::hicann_dls::vx::v4;
 using namespace halco::common;
 
+// Optionally reduced memory test coverage
+extern std::optional<size_t> max_words_per_reduced_test;
+
 // These containers are not supported in the hardware-setups used for automated testing
 typedef hate::type_list<
     haldls::vx::TCA9554Config,
@@ -221,7 +224,7 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 	std::vector<ContainerTicket> read_tickets;
 
 	for (auto const& coord :
-	     iter_sparse<typename Container::coordinate_type>(MAX_WORDS_PER_REDUCED_TEST)) {
+	     iter_sparse<typename Container::coordinate_type>(max_words_per_reduced_test)) {
 		Container reference_container;
 
 		stadls::vx::decode_random(random_generator, reference_container);

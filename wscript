@@ -120,10 +120,9 @@ def build(bld):
 
     if bld.options.disable_coverage_reduction:
         bld.env.SIMTEST_TIMEOUT_SECONDS = 75 * 3600
-        bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=0",
-                                            "MAX_WORDS_PER_REDUCED_TEST=10"]
+        bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=0"]
     else:
-        bld.env.SIMTEST_TIMEOUT_SECONDS = 1 * 14400
+        bld.env.SIMTEST_TIMEOUT_SECONDS = 4 * 3600
         bld.env.REDUCED_SIMTESTS_DEFINES = ["REDUCED_TESTS=1",
                                             "MAX_WORDS_PER_REDUCED_TEST=10"]
 
@@ -330,7 +329,7 @@ def build(bld):
                    + bld.path.ant_glob(f'tests/hw/stadls/vx/v{hx_version}/common/test-*.cpp'),
             test_main = 'tests/hw/stadls/vx/main.cpp',
             use = [f'haldls_vx_v{hx_version}', f'stadls_vx_v{hx_version}', f'stadls_vx_v{hx_version}_serialization', 'GTEST', 'haldls_test_common_inc', 'hate_inc'],
-            defines = ['REDUCED_TESTS=0', 'MAX_WORDS_PER_REDUCED_TEST=10'],
+            defines = ['REDUCED_TESTS=0'],
             install_path = '${PREFIX}/bin',
             linkflags = ['-lboost_program_options-mt'],
             skip_run = not (bld.env.TEST_TARGET == TestTarget.HARDWARE and
