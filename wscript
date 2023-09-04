@@ -155,7 +155,7 @@ def build(bld):
                                        excl=f'src/haldls/vx/v{hx_version}/pyhaldls.cpp'),
             install_path = '${PREFIX}/lib',
             features = 'cxx cxxshlib',
-            use = ['haldls_inc', f'halco_hicann_dls_vx_v{hx_version}', f'fisch_vx_v{hx_version}'],
+            use = ['haldls_inc', f'halco_hicann_dls_vx_v{hx_version}', f'fisch_vx_v{hx_version}', 'logger_obj'],
             uselib = 'HALDLS_LIBRARIES',
         )
 

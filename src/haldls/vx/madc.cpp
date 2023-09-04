@@ -9,6 +9,10 @@
 #include "haldls/vx/omnibus_constants.h"
 #include "hate/join.h"
 
+#ifndef __ppu__
+#include <log4cxx/logger.h>
+#endif
+
 namespace haldls {
 namespace vx {
 
@@ -750,6 +754,14 @@ std::array<WordT, MADCConfig::config_size_in_words> MADCConfig::encode() const
 	MADCConfigBitfield bitfield;
 
 	bitfield.u.m.active_mux_initially_selected_input = m_active_mux_initially_selected_input;
+#ifndef __ppu__
+	if (m_active_mux_input_select_length.value() != 0) {
+		auto logger = log4cxx::Logger::getLogger("haldls.MADCConfig");
+		LOG4CXX_WARN(
+		    logger, "encode(): Active mux input select length != 0, channel assignment lags one "
+		            "sample and can't be reliably used due to possible event loss.");
+	}
+#endif
 	bitfield.u.m.active_mux_input_select_length = m_active_mux_input_select_length;
 	bitfield.u.m.sample_duration_adjust = m_sample_duration_adjust;
 	bitfield.u.m.enable_sar_reset_on_fall = m_enable_sar_reset_on_fall;
