@@ -10,6 +10,7 @@
 #include "haldls/vx/v4/event.h"
 #include "haldls/vx/v4/extoll.h"
 #include "haldls/vx/v4/fpga.h"
+#include "haldls/vx/v4/global_merger_matrix.h"
 #include "haldls/vx/v4/i2c.h"
 #include "haldls/vx/v4/jtag.h"
 #include "haldls/vx/v4/madc.h"

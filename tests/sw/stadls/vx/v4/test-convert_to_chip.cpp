@@ -103,6 +103,13 @@ typedef hate::type_list<
     haldls::vx::v4::EventRecordingConfig,                    // trigger
     haldls::vx::v4::CrossbarInputDropCounter,                // read
     haldls::vx::v4::CrossbarOutputEventCounter,              // read
+    haldls::vx::v4::GlobalMergerMatrixInputDropCounter,      // read
+    haldls::vx::v4::GlobalMergerMatrixOutputEventCounter,    // read
+    haldls::vx::v4::GlobalMergerMatrixOutputConfig,          // FIXME
+    haldls::vx::v4::GlobalMergerMatrixInputDropCounter,      // FIXME
+    haldls::vx::v4::GlobalMergerMatrixOutputEventCounter,    // FIXME
+    haldls::vx::v4::GlobalMergerMatrixNode,                  // FIXME
+    haldls::vx::v4::NeuronLabelToGL1EventLUTEntry,           // FIXME
     haldls::vx::v4::MADCControl,                             // trigger
     haldls::vx::v4::CorrelationReset,                        // trigger
     haldls::vx::v4::NeuronResetQuad,                         // trigger

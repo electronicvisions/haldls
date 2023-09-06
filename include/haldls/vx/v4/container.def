@@ -11,6 +11,11 @@
  *       stadls::vx::v4::Dumper and stadls::vx::v4::DumperDone in `src/stadls/vx/v4/dumper.cpp`.
  */
 
+PLAYBACK_CONTAINER(GlobalMergerMatrixOutputConfig, haldls::vx::v4::GlobalMergerMatrixOutputConfig)
+PLAYBACK_CONTAINER(NeuronLabelToGL1EventLUTEntry, haldls::vx::v4::NeuronLabelToGL1EventLUTEntry)
+PLAYBACK_CONTAINER(GlobalMergerMatrixNode, haldls::vx::v4::GlobalMergerMatrixNode)
+PLAYBACK_CONTAINER(GlobalMergerMatrixInputDropCounter, haldls::vx::v4::GlobalMergerMatrixInputDropCounter)
+PLAYBACK_CONTAINER(GlobalMergerMatrixOutputEventCounter, haldls::vx::v4::GlobalMergerMatrixOutputEventCounter)
 PLAYBACK_CONTAINER(DAC6573ChannelConfig, haldls::vx::v4::DAC6573ChannelConfig)
 PLAYBACK_CONTAINER(AD5252ChannelConfig, haldls::vx::v4::AD5252ChannelConfig)
 PLAYBACK_CONTAINER(AD5252ChannelConfigPersistent, haldls::vx::v4::AD5252ChannelConfigPersistent)
