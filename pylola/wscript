@@ -43,7 +43,6 @@ def build(bld):
             use=[f'lola_vx_v{hx_version}', f'lola_vx_v{hx_version}_serialization',
                  'pyhalco_common_files', f'pyhalco_hicann_dls_vx_v{hx_version}',
                  f'pyhaldls_vx_v{hx_version}', f'pylola_vx_v{hx_version}_obj'],
-            install_path='${PREFIX}/lib',
             semaphore=bld.env['stadls_semaphore'],
         )
 

@@ -43,7 +43,6 @@ def build(bld):
             use=[f'haldls_vx_v{hx_version}', f'haldls_vx_v{hx_version}_serialization',
                  f'pyfisch_vx_v{hx_version}', f'pyhaldls_vx_v{hx_version}_obj',
                  f'pyhalco_hicann_dls_vx_v{hx_version}'],
-            install_path='${PREFIX}/lib',
             # Avoid warning; 1 OoM less and I see warnings (ECM)
             cxxflags='--param=max-vartrack-size=100000000',
             semaphore=bld.env['stadls_semaphore'],
