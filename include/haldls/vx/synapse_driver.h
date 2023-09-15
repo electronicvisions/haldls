@@ -55,6 +55,8 @@ public:
 	    hxcomm::vx::Target::simulation, hxcomm::vx::Target::hardware};
 #endif
 
+	SynapseDriverSRAMTimingConfig() SYMBOL_VISIBLE;
+
 	bool operator==(SynapseDriverSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
 	bool operator!=(SynapseDriverSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
 

@@ -10,6 +10,11 @@
 namespace haldls {
 namespace vx {
 
+SynapseDriverSRAMTimingConfig::SynapseDriverSRAMTimingConfig() : detail::SRAMTimingConfig()
+{
+	set_read_delay(ReadDelay(0b1100'0000));
+}
+
 bool SynapseDriverSRAMTimingConfig::operator==(SynapseDriverSRAMTimingConfig const& other) const
 {
 	return static_cast<SRAMTimingConfig>(*this) == static_cast<SRAMTimingConfig>(other);
