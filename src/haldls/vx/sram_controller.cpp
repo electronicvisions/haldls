@@ -10,7 +10,7 @@
 
 namespace haldls::vx::detail {
 
-SRAMTimingConfig::SRAMTimingConfig() : m_read_delay(), m_address_setup_time(), m_enable_width() {}
+SRAMTimingConfig::SRAMTimingConfig() : m_read_delay(), m_address_setup_time(), m_write_width() {}
 
 typename SRAMTimingConfig::ReadDelay SRAMTimingConfig::get_read_delay() const
 {
@@ -32,21 +32,21 @@ void SRAMTimingConfig::set_address_setup_time(AddressSetupTime const value)
 	m_address_setup_time = value;
 }
 
-typename SRAMTimingConfig::EnableWidth SRAMTimingConfig::get_enable_width() const
+typename SRAMTimingConfig::WriteWidth SRAMTimingConfig::get_write_width() const
 {
-	return m_enable_width;
+	return m_write_width;
 }
 
-void SRAMTimingConfig::set_enable_width(EnableWidth const value)
+void SRAMTimingConfig::set_write_width(WriteWidth const value)
 {
-	m_enable_width = value;
+	m_write_width = value;
 }
 
 bool SRAMTimingConfig::operator==(SRAMTimingConfig const& other) const
 {
 	return m_read_delay == other.m_read_delay &&
 	       m_address_setup_time == other.m_address_setup_time &&
-	       m_enable_width == other.m_enable_width;
+	       m_write_width == other.m_write_width;
 }
 
 bool SRAMTimingConfig::operator!=(SRAMTimingConfig const& other) const
@@ -66,7 +66,7 @@ struct SRAMTimingConfigBitfield
 			uint32_t read_delay         :  8;
 			uint32_t /* unused */       : 24;
 			uint32_t address_setup_time :  4;
-			uint32_t enable_width       :  4;
+			uint32_t write_width        :  4;
 			uint32_t /* unused */       : 24;
 		} m;
 		// clang-format on
@@ -92,7 +92,7 @@ std::array<WordT, SRAMTimingConfig::config_size_in_words> SRAMTimingConfig::enco
 {
 	SRAMTimingConfigBitfield bitfield;
 	bitfield.u.m.address_setup_time = m_address_setup_time;
-	bitfield.u.m.enable_width = m_enable_width;
+	bitfield.u.m.write_width = m_write_width;
 	bitfield.u.m.read_delay = m_read_delay;
 
 	std::array<WordT, SRAMTimingConfig::config_size_in_words> data;
@@ -116,7 +116,7 @@ void SRAMTimingConfig::decode(std::array<WordT, SRAMTimingConfig::config_size_in
 	std::transform(data.begin(), data.end(), raw_data.begin(), [](WordT const& w) { return w; });
 	SRAMTimingConfigBitfield bitfield(raw_data);
 	m_address_setup_time = AddressSetupTime(bitfield.u.m.address_setup_time);
-	m_enable_width = EnableWidth(bitfield.u.m.enable_width);
+	m_write_width = WriteWidth(bitfield.u.m.write_width);
 	m_read_delay = ReadDelay(bitfield.u.m.read_delay);
 }
 

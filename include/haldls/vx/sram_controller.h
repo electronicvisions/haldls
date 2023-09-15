@@ -33,13 +33,20 @@ namespace detail GENPYBIND_MODULE {
 /**
  * Configuration of full-custom SRAM timing.
  *
- *                         enable width
- *                         |---------------|
+ * Read:
+ *
  * address _____/¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\_________
  * enable  ________________/¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\_________
- *                                       ^
- *              |----------|-------------|
- *                address    read delay
+ *              |----------|---------------|
+ *                address     read delay
+ *               setup time
+ *
+ * Write:
+ *
+ * address _____/¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\_________
+ * enable  ________________/¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\_________
+ *              |----------|---------------|
+ *                address     write width
  *               setup time
  */
 // NOTE: This is not a complete container to be used directly but rather a base class for
@@ -77,11 +84,11 @@ public:
 	/**
 	 * Duration of enable signal pull.
 	 */
-	struct GENPYBIND(inline_base("*")) EnableWidth
+	struct GENPYBIND(inline_base("*")) WriteWidth
 	    : public halco::common::detail::
-	          RantWrapper<EnableWidth, uint_fast16_t, hate::math::pow(2, 4) - 1, 0>
+	          RantWrapper<WriteWidth, uint_fast16_t, hate::math::pow(2, 4) - 1, 0>
 	{
-		constexpr explicit EnableWidth(uintmax_t const val = 11) GENPYBIND(implicit_conversion) :
+		constexpr explicit WriteWidth(uintmax_t const val = 11) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
 	};
@@ -99,10 +106,10 @@ public:
 	GENPYBIND(setter_for(address_setup_time))
 	void set_address_setup_time(AddressSetupTime value) SYMBOL_VISIBLE;
 
-	GENPYBIND(getter_for(enable_width))
-	EnableWidth get_enable_width() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_width))
-	void set_enable_width(EnableWidth value) SYMBOL_VISIBLE;
+	GENPYBIND(getter_for(write_width))
+	WriteWidth get_write_width() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(write_width))
+	void set_write_width(WriteWidth value) SYMBOL_VISIBLE;
 
 	bool operator==(SRAMTimingConfig const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
 	bool operator!=(SRAMTimingConfig const& other) const GENPYBIND(hidden) SYMBOL_VISIBLE;
@@ -122,7 +129,7 @@ private:
 
 	ReadDelay m_read_delay;
 	AddressSetupTime m_address_setup_time;
-	EnableWidth m_enable_width;
+	WriteWidth m_write_width;
 };
 
 } // namespace detail

@@ -39,10 +39,10 @@ TEST(SynapseDriverSRAMTimingConfig, General)
 	}
 
 	{
-		auto value = draw_ranged_non_default_value<SynapseDriverSRAMTimingConfig::EnableWidth>(
-		    config.get_enable_width());
-		config.set_enable_width(value);
-		EXPECT_EQ(config.get_enable_width(), value);
+		auto value = draw_ranged_non_default_value<SynapseDriverSRAMTimingConfig::WriteWidth>(
+		    config.get_write_width());
+		config.set_write_width(value);
+		EXPECT_EQ(config.get_write_width(), value);
 	}
 
 	SynapseDriverSRAMTimingConfig config_eq = config;
@@ -62,7 +62,7 @@ TEST(SynapseDriverSRAMTimingConfig, EncodeDecode)
 
 	config.set_read_delay(SynapseDriverSRAMTimingConfig::ReadDelay(100));
 	config.set_address_setup_time(SynapseDriverSRAMTimingConfig::AddressSetupTime(5));
-	config.set_enable_width(SynapseDriverSRAMTimingConfig::EnableWidth(7));
+	config.set_write_width(SynapseDriverSRAMTimingConfig::WriteWidth(7));
 
 	auto coord = SynapseDriverSRAMTimingConfigOnDLS(1);
 
@@ -109,9 +109,9 @@ TEST(SynapseDriverSRAMTimingConfig, CerealizeCoverage)
 		obj1.set_address_setup_time(value);
 	}
 	{
-		auto value = draw_ranged_non_default_value<SynapseDriverSRAMTimingConfig::EnableWidth>(
-		    obj1.get_enable_width());
-		obj1.set_enable_width(value);
+		auto value = draw_ranged_non_default_value<SynapseDriverSRAMTimingConfig::WriteWidth>(
+		    obj1.get_write_width());
+		obj1.set_write_width(value);
 	}
 
 	std::ostringstream ostream;

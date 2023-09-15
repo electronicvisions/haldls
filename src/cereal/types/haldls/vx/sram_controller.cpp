@@ -11,7 +11,7 @@ void serialize(Archive& ar, haldls::vx::detail::SRAMTimingConfig& value, std::ui
 {
 	ar(CEREAL_NVP(value.m_read_delay));
 	ar(CEREAL_NVP(value.m_address_setup_time));
-	ar(CEREAL_NVP(value.m_enable_width));
+	ar(CEREAL_NVP(value.m_write_width));
 }
 
 } // namespace cereal

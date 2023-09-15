@@ -34,7 +34,7 @@ TEST(CADCConfig, EncodeDecode)
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
 
-HALDLS_TEST(CADCOffsetSRAMTimingConfig, (read_delay)(address_setup_time)(enable_width))
+HALDLS_TEST(CADCOffsetSRAMTimingConfig, (read_delay)(address_setup_time)(write_width))
 
 TEST(CADCOffsetSRAMTimingConfig, EncodeDecode)
 {
@@ -42,7 +42,7 @@ TEST(CADCOffsetSRAMTimingConfig, EncodeDecode)
 
 	config.set_read_delay(CADCOffsetSRAMTimingConfig::ReadDelay(100));
 	config.set_address_setup_time(CADCOffsetSRAMTimingConfig::AddressSetupTime(5));
-	config.set_enable_width(CADCOffsetSRAMTimingConfig::EnableWidth(7));
+	config.set_write_width(CADCOffsetSRAMTimingConfig::WriteWidth(7));
 
 	auto coord = CADCOffsetSRAMTimingConfigOnDLS(1);
 

@@ -23,7 +23,7 @@ bool SynapseDriverSRAMTimingConfig::operator!=(SynapseDriverSRAMTimingConfig con
 std::ostream& operator<<(std::ostream& os, SynapseDriverSRAMTimingConfig const& config)
 {
 	os << "SynapseDriverSRAMTimingConfig(" << config.get_read_delay() << ", "
-	   << config.get_address_setup_time() << ", " << config.get_enable_width() << ")";
+	   << config.get_address_setup_time() << ", " << config.get_write_width() << ")";
 	return os;
 }
 

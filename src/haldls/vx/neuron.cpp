@@ -744,7 +744,7 @@ bool NeuronSRAMTimingConfig::operator!=(NeuronSRAMTimingConfig const& other) con
 std::ostream& operator<<(std::ostream& os, NeuronSRAMTimingConfig const& config)
 {
 	os << "NeuronSRAMTimingConfig(" << config.get_read_delay() << ", "
-	   << config.get_address_setup_time() << ", " << config.get_enable_width() << ")";
+	   << config.get_address_setup_time() << ", " << config.get_write_width() << ")";
 	return os;
 }
 
@@ -778,7 +778,7 @@ bool NeuronBackendSRAMTimingConfig::operator!=(NeuronBackendSRAMTimingConfig con
 std::ostream& operator<<(std::ostream& os, NeuronBackendSRAMTimingConfig const& config)
 {
 	os << "NeuronBackendSRAMTimingConfig(" << config.get_read_delay() << ", "
-	   << config.get_address_setup_time() << ", " << config.get_enable_width() << ")";
+	   << config.get_address_setup_time() << ", " << config.get_write_width() << ")";
 	return os;
 }
 

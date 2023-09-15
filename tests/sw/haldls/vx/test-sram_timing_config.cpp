@@ -38,9 +38,9 @@ TEST(SRAMTimingConfig, General)
 
 	{
 		auto value =
-		    draw_ranged_non_default_value<SRAMTimingConfig::EnableWidth>(config.get_enable_width());
-		config.set_enable_width(value);
-		EXPECT_EQ(config.get_enable_width(), value);
+		    draw_ranged_non_default_value<SRAMTimingConfig::WriteWidth>(config.get_write_width());
+		config.set_write_width(value);
+		EXPECT_EQ(config.get_write_width(), value);
 	}
 
 	SRAMTimingConfig config_eq = config;
@@ -69,8 +69,8 @@ TEST(SRAMTimingConfig, CerealizeCoverage)
 	}
 	{
 		auto value =
-		    draw_ranged_non_default_value<SRAMTimingConfig::EnableWidth>(obj1.get_enable_width());
-		obj1.set_enable_width(value);
+		    draw_ranged_non_default_value<SRAMTimingConfig::WriteWidth>(obj1.get_write_width());
+		obj1.set_write_width(value);
 	}
 
 	std::ostringstream ostream;

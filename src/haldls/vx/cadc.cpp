@@ -267,7 +267,7 @@ bool CADCOffsetSRAMTimingConfig::operator!=(CADCOffsetSRAMTimingConfig const& ot
 std::ostream& operator<<(std::ostream& os, CADCOffsetSRAMTimingConfig const& config)
 {
 	os << "CADCOffsetSRAMTimingConfig(" << config.get_read_delay() << ", "
-	   << config.get_address_setup_time() << ", " << config.get_enable_width() << ")";
+	   << config.get_address_setup_time() << ", " << config.get_write_width() << ")";
 	return os;
 }
 

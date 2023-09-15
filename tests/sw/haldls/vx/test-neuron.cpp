@@ -393,10 +393,10 @@ TEST(NeuronSRAMTimingConfig, General)
 	}
 
 	{
-		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::EnableWidth>(
-		    config.get_enable_width());
-		config.set_enable_width(value);
-		EXPECT_EQ(config.get_enable_width(), value);
+		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::WriteWidth>(
+		    config.get_write_width());
+		config.set_write_width(value);
+		EXPECT_EQ(config.get_write_width(), value);
 	}
 
 	NeuronSRAMTimingConfig config_eq = config;
@@ -416,7 +416,7 @@ TEST(NeuronSRAMTimingConfig, EncodeDecode)
 
 	config.set_read_delay(NeuronSRAMTimingConfig::ReadDelay(100));
 	config.set_address_setup_time(NeuronSRAMTimingConfig::AddressSetupTime(5));
-	config.set_enable_width(NeuronSRAMTimingConfig::EnableWidth(7));
+	config.set_write_width(NeuronSRAMTimingConfig::WriteWidth(7));
 
 	auto coord = NeuronSRAMTimingConfigOnDLS(1);
 
@@ -462,9 +462,9 @@ TEST(NeuronSRAMTimingConfig, CerealizeCoverage)
 		obj1.set_address_setup_time(value);
 	}
 	{
-		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::EnableWidth>(
-		    obj1.get_enable_width());
-		obj1.set_enable_width(value);
+		auto value = draw_ranged_non_default_value<NeuronSRAMTimingConfig::WriteWidth>(
+		    obj1.get_write_width());
+		obj1.set_write_width(value);
 	}
 
 	std::ostringstream ostream;
@@ -501,10 +501,10 @@ TEST(NeuronBackendSRAMTimingConfig, General)
 	}
 
 	{
-		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::EnableWidth>(
-		    config.get_enable_width());
-		config.set_enable_width(value);
-		EXPECT_EQ(config.get_enable_width(), value);
+		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::WriteWidth>(
+		    config.get_write_width());
+		config.set_write_width(value);
+		EXPECT_EQ(config.get_write_width(), value);
 	}
 
 	NeuronBackendSRAMTimingConfig config_eq = config;
@@ -524,7 +524,7 @@ TEST(NeuronBackendSRAMTimingConfig, EncodeDecode)
 
 	config.set_read_delay(NeuronBackendSRAMTimingConfig::ReadDelay(100));
 	config.set_address_setup_time(NeuronBackendSRAMTimingConfig::AddressSetupTime(5));
-	config.set_enable_width(NeuronBackendSRAMTimingConfig::EnableWidth(7));
+	config.set_write_width(NeuronBackendSRAMTimingConfig::WriteWidth(7));
 
 	auto coord = NeuronBackendSRAMTimingConfigOnDLS(1);
 
@@ -571,9 +571,9 @@ TEST(NeuronBackendSRAMTimingConfig, CerealizeCoverage)
 		obj1.set_address_setup_time(value);
 	}
 	{
-		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::EnableWidth>(
-		    obj1.get_enable_width());
-		obj1.set_enable_width(value);
+		auto value = draw_ranged_non_default_value<NeuronBackendSRAMTimingConfig::WriteWidth>(
+		    obj1.get_write_width());
+		obj1.set_write_width(value);
 	}
 
 	std::ostringstream ostream;
