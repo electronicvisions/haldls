@@ -292,7 +292,7 @@ public:
 
 	/** Systime value type. */
 	struct GENPYBIND(inline_base("*")) Systime
-	    : public halco::common::detail::RantWrapper<Systime, uint64_t, 0x07ff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<Systime, uint64_t, (1ull << 43) - 1, 0>
 	{
 		constexpr explicit Systime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -622,7 +622,7 @@ public:
 	 * Counts the number of packets sent to the network from this bucket.
 	 */
 	struct GENPYBIND(inline_base("*")) PacketCount
-	    : public halco::common::detail::RantWrapper<PacketCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<PacketCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit PacketCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)
@@ -692,7 +692,7 @@ public:
 	 * Counts the number of events received at this bucket for the given split.
 	 */
 	struct GENPYBIND(inline_base("*")) EventCount
-	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit EventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)
@@ -993,8 +993,7 @@ public:
 	 * Counts the number of lost pulse-events due to disabled routing.
 	 */
 	struct GENPYBIND(inline_base("*")) LostEventCount
-	    : public halco::common::detail::
-	          RantWrapper<LostEventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<LostEventCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit LostEventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -1063,8 +1062,7 @@ public:
 	 * Counts the number of lost pulse-events due to invalid routing-table entries.
 	 */
 	struct GENPYBIND(inline_base("*")) LostEventCount
-	    : public halco::common::detail::
-	          RantWrapper<LostEventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<LostEventCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit LostEventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -1133,7 +1131,7 @@ public:
 	 * Counts the number of routed pulse-events.
 	 */
 	struct GENPYBIND(inline_base("*")) EventCount
-	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit EventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -1246,7 +1244,7 @@ public:
 	 * Counts the number of received spike-events.
 	 */
 	struct GENPYBIND(inline_base("*")) EventCount
-	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit EventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -1431,7 +1429,7 @@ public:
 	 * Counts the number of received spike-events.
 	 */
 	struct GENPYBIND(inline_base("*")) EventCount
-	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit EventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -1505,7 +1503,7 @@ public:
 	 * Counts the number of lost spike-events.
 	 */
 	struct GENPYBIND(inline_base("*")) EventCount
-	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit EventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -1577,7 +1575,7 @@ public:
 	 * Counts the number of lost spike-events.
 	 */
 	struct GENPYBIND(inline_base("*")) EventCount
-	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<EventCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit EventCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -2243,7 +2241,7 @@ public:
 	 * of the barrier- / interrupt-unit.
 	 */
 	struct GENPYBIND(inline_base("*")) ErrorCount
-	    : public halco::common::detail::RantWrapper<ErrorCount, uint64_t, 0xffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<ErrorCount, uint64_t, (1ull << 48) - 1, 0>
 	{
 		constexpr explicit ErrorCount(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    base_t(val)

@@ -177,7 +177,7 @@ public:
 
 	/** Systime value type. */
 	struct GENPYBIND(inline_base("*")) Systime
-	    : public halco::common::detail::RantWrapper<Systime, uint64_t, 0x07ff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<Systime, uint64_t, (1ull << 43) - 1, 0>
 	{
 		constexpr explicit Systime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -244,7 +244,7 @@ public:
 
 	/** Systime value type. */
 	struct GENPYBIND(inline_base("*")) Systime
-	    : public halco::common::detail::RantWrapper<Systime, uint64_t, 0x07ff'ffff'ffff, 0>
+	    : public halco::common::detail::RantWrapper<Systime, uint64_t, (1ull << 43) - 1, 0>
 	{
 		constexpr explicit Systime(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
@@ -371,7 +371,7 @@ public:
 
 	/** Identifier value type. */
 	struct GENPYBIND(inline_base("*")) Value
-	    : public halco::common::detail::RantWrapper<Value, uint64_t, 0x1ff'ffff'ffff'ffffull, 0>
+	    : public halco::common::detail::RantWrapper<Value, uint64_t, (1ull << 57) - 1, 0>
 	{
 		constexpr explicit Value(uintmax_t const val = 0) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
