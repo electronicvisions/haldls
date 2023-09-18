@@ -369,7 +369,9 @@ def build(bld):
             pars = {
                 "PROJECT_NAME": "\"HALDLS\"",
                 "OUTPUT_DIRECTORY": "%s/build/haldls/haldls/doc" % get_toplevel_path(),
-                "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= GENPYBIND_TAG_HALDLS_VX=",
+                "PREDEFINED": "GENPYBIND(...)= "
+                              + "GENPYBIND_MANUAL(...)= "
+                              + "SYMBOL_VISIBLE=",
                 "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/haldls_doxygen_warnings.log"),
                 "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
             },
@@ -384,9 +386,9 @@ def build(bld):
             pars = {
                 "PROJECT_NAME": "\"STADLS\"",
                 "OUTPUT_DIRECTORY": "%s/build/haldls/stadls/doc" % get_toplevel_path(),
-                "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= "
-                              + "GENPYBIND_TAG_STADLS_VX= "
-                              + "GENPYBIND_TAG_HALDLS_VX=",
+                "PREDEFINED": "GENPYBIND(...)= "
+                              + "GENPYBIND_MANUAL(...)= "
+                              + "SYMBOL_VISIBLE=",
                 "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/stadls_doxygen_warnings.log"),
                 "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
             },
@@ -401,9 +403,9 @@ def build(bld):
             pars = {
                 "PROJECT_NAME": "\"LOLA\"",
                 "OUTPUT_DIRECTORY": "%s/build/haldls/lola/doc" % get_toplevel_path(),
-                "PREDEFINED": "GENPYBIND()= GENPYBIND_MANUAL()= "
-                              + "GENPYBIND_TAG_LOLA_VX= "
-                              + "GENPYBIND_TAG_HALDLS_VX=",
+                "PREDEFINED": "GENPYBIND(...)= "
+                              + "GENPYBIND_MANUAL(...)= "
+                              + "SYMBOL_VISIBLE=",
                 "WARN_LOGFILE": join(get_toplevel_path(), "build/haldls/lola_doxygen_warnings.log"),
                 "INCLUDE_PATH": join(get_toplevel_path(), "haldls", "include")
             },
