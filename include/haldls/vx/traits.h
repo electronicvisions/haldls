@@ -1,5 +1,4 @@
 #pragma once
-#include "fisch/vx/traits.h"
 #include "fisch/vx/word_access_type.h"
 #include "haldls/vx/genpybind.h"
 #include "hate/type_list.h"

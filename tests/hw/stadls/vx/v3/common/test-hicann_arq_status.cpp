@@ -56,7 +56,7 @@ TEST(HicannARQStatus, OmnibusReadCount)
 	    SystimeSyncBase::config_size_in_words * fisch::vx::Omnibus::decode_ut_message_count);
 	EXPECT_EQ(
 	    status.get_write_count() - status_ref.get_write_count(),
-	    SystimeSyncBase::config_size_in_words * fisch::vx::Omnibus::encode_read_ut_message_count);
+	    SystimeSyncBase::config_size_in_words * 1 /* UT-messages / Omnibus word */);
 
 	EXPECT_GE(status.get_rx_count(), status.get_read_count());
 	EXPECT_GE(status.get_tx_count(), status.get_write_count());
@@ -95,7 +95,7 @@ TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 	    SystimeSyncBase::config_size_in_words * fisch::vx::Omnibus::decode_ut_message_count);
 	EXPECT_EQ(
 	    status.get_write_count(),
-	    SystimeSyncBase::config_size_in_words * fisch::vx::Omnibus::encode_write_ut_message_count);
+	    SystimeSyncBase::config_size_in_words * 2 /* UT-messages / Omnibus word */);
 
 	EXPECT_GE(status.get_rx_count(), status.get_read_count());
 	EXPECT_GE(status.get_tx_count(), status.get_write_count());
