@@ -354,23 +354,34 @@ bool TCA9554Inputs::operator!=(TCA9554Inputs const& other) const
 	return !(*this == other);
 }
 
-std::array<halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard, TCA9554Inputs::config_size_in_words>
-TCA9554Inputs::addresses(coordinate_type const& coord)
+std::array<
+    halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard,
+    TCA9554Inputs::write_config_size_in_words>
+TCA9554Inputs::write_addresses(coordinate_type const& /* coord */)
+{
+	return {};
+}
+
+std::array<
+    halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard,
+    TCA9554Inputs::read_config_size_in_words>
+TCA9554Inputs::read_addresses(coordinate_type const& coord)
 {
 	return {halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard(
 	    halco::hicann_dls::vx::I2CTCA9554RoRegisterOnTCA9554::inputs, coord.toTCA9554OnBoard())};
 }
 
-std::array<fisch::vx::word_access_type::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words>
+std::array<
+    fisch::vx::word_access_type::I2CTCA9554RoRegister,
+    TCA9554Inputs::write_config_size_in_words>
 TCA9554Inputs::encode() const
 {
-	return {fisch::vx::word_access_type::I2CTCA9554RoRegister(
-	    TypedBoolArrayToUint8Conversion(m_input).raw)};
+	return {};
 }
 
 void TCA9554Inputs::decode(std::array<
                            fisch::vx::word_access_type::I2CTCA9554RoRegister,
-                           TCA9554Inputs::config_size_in_words> const& data)
+                           TCA9554Inputs::read_config_size_in_words> const& data)
 {
 	m_input = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0]).to_array();
 }

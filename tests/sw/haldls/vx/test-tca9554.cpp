@@ -214,38 +214,13 @@ TEST(TCA9554Inputs, EncodeDecode)
 	TCA9554OnBoard coord;
 
 	// Generate reference addresses and data
-	std::array<I2CTCA9554RoRegisterOnBoard, TCA9554Inputs::config_size_in_words> ref_addresses = {
-	    I2CTCA9554RoRegisterOnBoard(I2CTCA9554RoRegisterOnBoard::inputs, coord)};
+	std::array<I2CTCA9554RoRegisterOnBoard, TCA9554Inputs::read_config_size_in_words>
+	    ref_addresses = {I2CTCA9554RoRegisterOnBoard(I2CTCA9554RoRegisterOnBoard::inputs, coord)};
 	std::array<
-	    fisch::vx::word_access_type::I2CTCA9554RoRegister, TCA9554Inputs::config_size_in_words>
+	    fisch::vx::word_access_type::I2CTCA9554RoRegister, TCA9554Inputs::read_config_size_in_words>
 	    ref_data = {fisch::vx::word_access_type::I2CTCA9554RoRegister(0b10101010)};
 
-	{ // test write_addresses
-		std::vector<I2CTCA9554RoRegisterOnBoard> read_addresses;
-		visit_preorder(
-		    config, coord.toTCA9554InputsOnBoard(),
-		    stadls::ReadAddressVisitor<std::vector<I2CTCA9554RoRegisterOnBoard>>{read_addresses});
-		EXPECT_THAT(read_addresses, ::testing::ElementsAreArray(ref_addresses));
-	}
-
-	{ // test data encoding
-		std::vector<fisch::vx::word_access_type::I2CTCA9554RoRegister> data;
-		visit_preorder(
-		    config, coord.toTCA9554InputsOnBoard(),
-		    stadls::EncodeVisitor<std::vector<fisch::vx::word_access_type::I2CTCA9554RoRegister>>{
-		        data});
-		EXPECT_THAT(data, ::testing::ElementsAreArray(ref_data));
-	}
-
-	{ // test data decoding
-		TCA9554Inputs config_decoded;
-		visit_preorder(
-		    config_decoded, coord.toTCA9554InputsOnBoard(),
-		    stadls::DecodeVisitor<std::array<
-		        fisch::vx::word_access_type::I2CTCA9554RoRegister,
-		        TCA9554Inputs::config_size_in_words>>{ref_data});
-		EXPECT_EQ(config, config_decoded);
-	}
+	HALDLS_TEST_DECODE(config, TCA9554InputsOnBoard(), ref_addresses, ref_data)
 }
 
 TEST(TCA9554Inputs, CerealizeCoverage)

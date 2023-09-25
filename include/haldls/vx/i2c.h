@@ -372,14 +372,18 @@ public:
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, TCA9554Inputs const& config) SYMBOL_VISIBLE;
 
-	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
-	static std::array<halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard, config_size_in_words>
-	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
-	std::array<fisch::vx::word_access_type::I2CTCA9554RoRegister, config_size_in_words> encode()
-	    const SYMBOL_VISIBLE GENPYBIND(hidden);
-	void decode(
-	    std::array<fisch::vx::word_access_type::I2CTCA9554RoRegister, config_size_in_words> const&
-	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static size_t constexpr write_config_size_in_words GENPYBIND(hidden) = 0;
+	static size_t constexpr read_config_size_in_words GENPYBIND(hidden) = 1;
+	static std::
+	    array<halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard, write_config_size_in_words>
+	    write_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	static std::array<halco::hicann_dls::vx::I2CTCA9554RoRegisterOnBoard, read_config_size_in_words>
+	read_addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CTCA9554RoRegister, write_config_size_in_words>
+	encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<
+	            fisch::vx::word_access_type::I2CTCA9554RoRegister,
+	            read_config_size_in_words> const& data) SYMBOL_VISIBLE GENPYBIND(hidden);
 
 private:
 	friend struct cereal::access;
