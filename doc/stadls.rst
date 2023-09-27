@@ -1,10 +1,13 @@
-(stadls)=
-# stadls
+.. _stadls:
+
+stadls
+======
 
 This layer provides an representation for hardware runtime control.
 It makes use of {ref}`fisch <fisch>` and {ref}`hxcomm <hxcomm>`.
 
-## Rationale of (low-level) experiment execution
+Rationale of (low-level) experiment execution
+---------------------------------------------
 
 The basic design goal of Playback programs is that we can asynchronously create, run and evaluate these programs.
 A Program typically represents a "atomic" part of an experiment to be executed on hardware.
