@@ -25,13 +25,6 @@ class PlaybackProgramBuilderAdapterImpl;
 class GENPYBIND(visible) ContainerTicket
 {
 public:
-	typedef std::variant<
-#define PLAYBACK_CONTAINER(Name, Type) fisch::vx::ContainerTicket<Type>,
-#define LAST_PLAYBACK_CONTAINER(Name, Type) fisch::vx::ContainerTicket<Type>
-#include "fisch/vx/container.def"
-	    >
-	    ticket_impl_type;
-
 	/**
 	 * Get container data if available.
 	 * Returns constant reference to owned container instance.
@@ -87,6 +80,13 @@ public:
 private:
 	template <typename, typename>
 	friend class detail::PlaybackProgramBuilderAdapterImpl;
+
+	typedef std::variant<
+#define PLAYBACK_CONTAINER(Name, Type) fisch::vx::ContainerTicket<Type>,
+#define LAST_PLAYBACK_CONTAINER(Name, Type) fisch::vx::ContainerTicket<Type>
+#include "fisch/vx/container.def"
+	    >
+	    ticket_impl_type;
 
 	ContainerTicket(
 	    std::unique_ptr<haldls::vx::Container::Coordinate> coord,
