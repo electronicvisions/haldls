@@ -37,8 +37,7 @@ class CompareHostAndPPUWrite(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.CONNECTION = cls.MANAGED_CONNECTION.__enter__()
-
+        cls.CONNECTION = cls.MANAGED_CONNECTION.__enter__()  # pylint: disable=unnecessary-dunder-call
         # Initialize the chip and find chip version
         init_builder, _ = sta.generate(sta.DigitalInit())
         jtag_id_ticket = init_builder.read(halco.JTAGIdCodeOnDLS())
