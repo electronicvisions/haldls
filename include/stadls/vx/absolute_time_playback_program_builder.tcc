@@ -38,7 +38,15 @@ AbsoluteTimePlaybackProgramBuilder<PPBType>& AbsoluteTimePlaybackProgramBuilder<
 template <typename PPBType>
 AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
     haldls::vx::Timer::Value time, haldls::vx::Container::Coordinate const& coord,
-	    haldls::vx::Container const& config) : time(time), coord(coord.clone()), config(config.clone_container())
+	    haldls::vx::Container const& write_config) : time(time), coord(coord.clone()), write_config(write_config.clone_container())
+{
+
+}
+
+template <typename PPBType>
+AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
+    haldls::vx::Timer::Value time, haldls::vx::Container::Coordinate const& coord,
+	std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> const& read_ticket_storage) : time(time), coord(coord.clone()), read_ticket_storage(read_ticket_storage)
 {
 
 }
@@ -57,7 +65,8 @@ AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData& AbsoluteTimePlaybackPr
 	if (this != &other) {
 		time = other.time;
 		coord = other.coord ? other.coord->clone() : nullptr;
-		config = other.config ? other.config->clone_container() : nullptr;
+		write_config = other.write_config ? other.write_config->clone_container() : nullptr;
+		read_ticket_storage = other.read_ticket_storage;
 	}
 	return *this;
 }
@@ -69,21 +78,22 @@ AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData& AbsoluteTimePlaybackPr
 	if (this != &other) {
 		time = other.time;
 		coord = std::move(other.coord);
-		config = std::move(other.config);
+		write_config = std::move(other.write_config);
+		read_ticket_storage = std::move(other.read_ticket_storage);
 	}
 	return *this;
 }
 
 template <typename PPBType>
 AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
-    CommandData const& other) : time(other.time), coord(other.coord ? other.coord->clone() : nullptr), config(other.config ? other.config->clone_container() : nullptr)
+    CommandData const& other) : time(other.time), coord(other.coord ? other.coord->clone() : nullptr), write_config(other.write_config ? other.write_config->clone_container() : nullptr), read_ticket_storage(other.read_ticket_storage)
 {
 
 }
 
 template <typename PPBType>
 AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
-    CommandData&& other) : time(other.time), coord(std::move(other.coord)), config(std::move(other.config))
+    CommandData&& other) : time(other.time), coord(std::move(other.coord)), write_config(std::move(other.write_config)), read_ticket_storage(std::move(other.read_ticket_storage))
 {
 
 }
@@ -99,6 +109,14 @@ void AbsoluteTimePlaybackProgramBuilder<PPBType>::write(
 	}
 	m_commands.push_back(
 	    CommandData(execTime, coord, config));
+}
+
+template <typename PPBType>
+AbsoluteTimePlaybackProgramContainerTicket AbsoluteTimePlaybackProgramBuilder<PPBType>::read(haldls::vx::Timer::Value execTime, haldls::vx::Container::Coordinate const& coord){
+	m_is_write_only = false;
+	std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> ticket_storage = std::make_shared<AbsoluteTimePlaybackProgramContainerTicketStorage>();
+	m_commands.push_back(CommandData(execTime, coord, ticket_storage));
+	return AbsoluteTimePlaybackProgramContainerTicket(ticket_storage);
 }
 
 template <typename PPBType>
@@ -160,8 +178,13 @@ std::ostream& operator<<(
 	os << "AboluteTimePlaybackProgramBuilder command queue: (" << builder.m_commands.size()
 	   << " elements)\n";
 	for (auto const& command : builder.m_commands) {
-		os << "t: " << command.time << ", coord: " << *command.coord
-		   << ", config: " << *command.config << "\n";
+		if(command.write_config){
+			os << "write | t: " << command.time << ", coord: " << *command.coord
+			    << ", config: " << *command.write_config << "\n";
+		} else {
+			os << "read  | t: " << command.time << ", coord: " << *command.coord
+			    << "\n";
+		}
 	}
 	return os;
 }
@@ -188,7 +211,12 @@ PPBType AbsoluteTimePlaybackProgramBuilder<PPBType>::done()
 			    logger, "To be issued event at (" << m_commands[index].time
 			                                      << ") delayed by more than " << max_delay << ".");
 		}
-		builder.write(*m_commands[index].coord, *m_commands[index].config);
+		if(m_commands[index].write_config){
+			builder.write(*m_commands[index].coord, *m_commands[index].write_config);
+		} else {
+			assert(m_commands[index].read_ticket_storage);
+			m_commands[index].read_ticket_storage->container_ticket = builder.read(*m_commands[index].coord);
+		}
 		current_time = current_time + haldls::vx::Timer::Value(1);
 	}
 	m_commands.clear();

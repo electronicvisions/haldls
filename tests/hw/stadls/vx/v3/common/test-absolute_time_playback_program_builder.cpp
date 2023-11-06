@@ -103,15 +103,34 @@ TEST(AbsoluteTimePlaybackProgramBuilder, general)
 	    haldls::vx::v3::Timer::Value(20 * num_spikes),
 	    halco::hicann_dls::vx::EventRecordingConfigOnFPGA(), config);
 
+	halco::hicann_dls::vx::v3::SynapseQuadOnDLS synapse_weight_coord;
+	haldls::vx::v3::SynapseQuad container;
+	auto weights = container.get_weights();
+	weights[halco::hicann_dls::vx::v3::EntryOnQuad()] = haldls::vx::v3::SynapseQuad::Weight(3);
+	container.set_weights(weights);
+	ATPPB_builder.write(
+	    haldls::vx::v3::Timer::Value(num_spikes * 10), synapse_weight_coord, container);
+	EXPECT_TRUE(ATPPB_builder.is_write_only());
+	stadls::vx::AbsoluteTimePlaybackProgramContainerTicket ticket =
+	    ATPPB_builder.read(haldls::vx::v3::Timer::Value(num_spikes * 15), synapse_weight_coord);
+	EXPECT_FALSE(ATPPB_builder.is_write_only());
+	EXPECT_FALSE(ticket.valid());
+
 	auto builder_appendix = ATPPB_builder.done();
 	LOG4CXX_TRACE(logger, "Computing time for ATPPB command queue: " << timer.print() << "\n");
 	builder.merge_back(builder_appendix);
+	EXPECT_FALSE(ticket.valid());
 	auto program = builder.done();
+	EXPECT_FALSE(ticket.valid());
 	auto connection = hxcomm::vx::get_connection_from_env();
 	stadls::vx::v3::run(connection, program);
+	EXPECT_TRUE(ticket.valid());
 	auto spikes = program.get_spikes();
 	EXPECT_LE(spikes.size(), num_spikes);
 	EXPECT_GE(spikes.size(), 0.9 * num_spikes);
+	EXPECT_EQ(ticket.get(), container);
+	EXPECT_EQ(ticket.get_coordinate(), synapse_weight_coord);
+	LOG4CXX_TRACE(logger, "Timestamp of last synapse response: " << ticket.get_fpga_time() << "\n");
 }
 
 
