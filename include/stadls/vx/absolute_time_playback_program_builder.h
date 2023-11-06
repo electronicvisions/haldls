@@ -48,19 +48,26 @@ public:
 
 	/**
 	 * add command to the absolute_time_playback_program_builder
+	 * @param execTime Time stamp for FPGA when to execute command
+	 * @param coord Coordinate value selecting location
+	 * @param config Container configuration data
 	 */
 	void write(
-	    const haldls::vx::Timer::Value execTime,
+	    haldls::vx::Timer::Value execTime,
 	    haldls::vx::Container::Coordinate const& coord,
 	    haldls::vx::Container const& config) SYMBOL_VISIBLE;
 
 	/**
-	 * merge with other absolute_time_playback_program_builder
+	 * merge other absolute_time_playback_program_builder into caller and empty command vector of
+	 * other
+	 * @param other Absolute_time_playback_program_builder to be merged into caller
 	 */
 	void merge(AbsoluteTimePlaybackProgramBuilder<PPBType>& other) SYMBOL_VISIBLE;
 
 	/**
-	 * copy commands vector from other absolute_time_playback_program_builder
+	 * copy command vector from other absolute_time_playback_program_builder and merge it into
+	 * command vector from caller
+	 * @param other Absolute_time_playback_program_builder to be copied from
 	 */
 	void copy(AbsoluteTimePlaybackProgramBuilder<PPBType>& other) SYMBOL_VISIBLE;
 
@@ -78,7 +85,8 @@ public:
 	    AbsoluteTimePlaybackProgramBuilder<BuilderType> const& builder) SYMBOL_VISIBLE;
 
 	/**
-	 * return a playback_program_builder with according command queue
+	 * construct a playback_program_builder with according command queue
+	 * @return Playback_program_builder
 	 */
 	PPBType done() SYMBOL_VISIBLE;
 };
