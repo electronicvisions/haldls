@@ -30,7 +30,16 @@ private:
 		haldls::vx::Timer::Value time;
 		std::unique_ptr<haldls::vx::Container::Coordinate> coord;
 		std::unique_ptr<haldls::vx::Container> config;
+
+		CommandData(
+		    haldls::vx::Timer::Value time,
+		    haldls::vx::Container::Coordinate const& coord,
+		    haldls::vx::Container const& config);
 		bool operator<(CommandData const& other) const;
+		CommandData(CommandData const& other);
+		CommandData& operator=(CommandData const& other);
+		CommandData& operator=(CommandData&& other);
+		CommandData(CommandData&& other);
 	};
 	std::vector<CommandData> m_commands;
 	bool m_is_write_only = true;
@@ -74,6 +83,20 @@ public:
 	bool empty() const SYMBOL_VISIBLE;
 
 	bool is_write_only() const SYMBOL_VISIBLE;
+
+	/**
+	 * add a time offset to all commands
+	 * @param offset Magnitude of time shift in FGPA clock cycles
+	 */
+	void operator+=(haldls::vx::Timer::Value const offset) SYMBOL_VISIBLE;
+
+	/**
+	 * copy caller and add time offset to all commands of this copy
+	 * @param offset Magnitude of time shift in FGPA clock cycles
+	 * @return Absolute_time_playback_program_builder with time offset
+	 */
+	AbsoluteTimePlaybackProgramBuilder<PPBType> operator+(haldls::vx::Timer::Value const offset)
+	    SYMBOL_VISIBLE;
 
 	/**
 	 * print all commands in initial order

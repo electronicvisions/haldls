@@ -59,4 +59,31 @@ TEST(AbsoluteTimePlaybackProgramBuilder, general)
 	        haldls::vx::v3::Timer::Value(10), halco::hicann_dls::vx::v3::TimerOnDLS(),
 	        haldls::vx::v3::Timer()),
 	    std::runtime_error);
+
+	// testing the offset operators + and +=
+	stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder builder4 =
+	    stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder();
+	halco::hicann_dls::vx::v3::SpikeLabel label4(0);
+	haldls::vx::v3::SpikePack1ToChip spike4({label4});
+	builder4.write(
+	    haldls::vx::v3::Timer::Value(0), halco::hicann_dls::vx::v3::SpikePack1ToChipOnDLS(),
+	    spike4);
+
+	stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder builder5 =
+	    builder4 + haldls::vx::v3::Timer::Value(10);
+
+	builder4 += haldls::vx::v3::Timer::Value(10);
+
+	stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder builder6 =
+	    stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder();
+	builder6.write(
+	    haldls::vx::v3::Timer::Value(10), halco::hicann_dls::vx::v3::SpikePack1ToChipOnDLS(),
+	    spike4);
+
+	auto program4 = builder4.done().done();
+	auto program5 = builder5.done().done();
+	auto program6 = builder6.done().done();
+
+	EXPECT_EQ(program4, program5);
+	EXPECT_EQ(program4, program6);
 }

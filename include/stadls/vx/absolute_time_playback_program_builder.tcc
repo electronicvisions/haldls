@@ -36,10 +36,56 @@ AbsoluteTimePlaybackProgramBuilder<PPBType>& AbsoluteTimePlaybackProgramBuilder<
 }
 
 template <typename PPBType>
+AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
+    haldls::vx::Timer::Value time, haldls::vx::Container::Coordinate const& coord,
+	    haldls::vx::Container const& config) : time(time), coord(coord.clone()), config(config.clone_container())
+{
+
+}
+
+template <typename PPBType>
 bool AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::operator<(
     CommandData const& other) const
 {
 	return time < other.time;
+}
+
+template <typename PPBType>
+AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData& AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::operator=(
+    CommandData const& other)
+{
+	if (this != &other) {
+		time = other.time;
+		coord = other.coord ? other.coord->clone() : nullptr;
+		config = other.config ? other.config->clone_container() : nullptr;
+	}
+	return *this;
+}
+
+template <typename PPBType>
+AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData& AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::operator=(
+    CommandData&& other)
+{
+	if (this != &other) {
+		time = other.time;
+		coord = std::move(other.coord);
+		config = std::move(other.config);
+	}
+	return *this;
+}
+
+template <typename PPBType>
+AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
+    CommandData const& other) : time(other.time), coord(other.coord ? other.coord->clone() : nullptr), config(other.config ? other.config->clone_container() : nullptr)
+{
+
+}
+
+template <typename PPBType>
+AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
+    CommandData&& other) : time(other.time), coord(std::move(other.coord)), config(std::move(other.config))
+{
+
 }
 
 template <typename PPBType>
@@ -52,7 +98,7 @@ void AbsoluteTimePlaybackProgramBuilder<PPBType>::write(
 		throw std::runtime_error("Editing the FPGA-Timer is forbidden when using the AbsoluteTimePlaybackProgramBuilder");
 	}
 	m_commands.push_back(
-	    CommandData{.time = execTime, .coord = coord.clone(), .config = config.clone_container()});
+	    CommandData(execTime, coord, config));
 }
 
 template <typename PPBType>
@@ -69,12 +115,10 @@ template <typename PPBType>
 void AbsoluteTimePlaybackProgramBuilder<PPBType>::copy(
     AbsoluteTimePlaybackProgramBuilder<PPBType>& other)
 {
-	for (auto const& command : other.m_commands) {
-		m_commands.push_back(CommandData{
-		    .time = command.time,
-		    .coord = command.coord->clone(),
-		    .config = command.config->clone_container()});
+	if (!is_write_only()) {
+		throw std::runtime_error("Non-write-only AbsoluteTimePlaybackProgramBuilder cannot be copied");
 	}
+	m_commands.insert(m_commands.end(), other.m_commands.begin(), other.m_commands.end());
 }
 
 template <typename PPBType>
@@ -87,6 +131,26 @@ template <typename PPBType>
 bool AbsoluteTimePlaybackProgramBuilder<PPBType>::is_write_only() const
 {
 	return m_is_write_only;
+}
+
+template <typename PPBType>
+void AbsoluteTimePlaybackProgramBuilder<PPBType>::operator+=(haldls::vx::Timer::Value const offset){
+	for (auto& command : m_commands){
+		command.time += offset;
+	}
+}
+
+template <typename PPBType>
+AbsoluteTimePlaybackProgramBuilder<PPBType> AbsoluteTimePlaybackProgramBuilder<PPBType>::operator+(haldls::vx::Timer::Value const offset){
+	if (!is_write_only()) {
+		throw std::runtime_error("'+'-operation is invalid for non-write-only AbsoluteTimePlaybackProgramBuilder (cannot be copied)");
+	}
+	AbsoluteTimePlaybackProgramBuilder<PPBType> offset_builder;
+	offset_builder.m_commands = m_commands;
+	for (auto& command : offset_builder.m_commands){
+		command.time += offset;
+	}
+	return offset_builder;
 }
 
 template <typename PPBType>
