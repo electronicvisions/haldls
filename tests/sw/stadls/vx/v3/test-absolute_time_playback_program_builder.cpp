@@ -1,6 +1,7 @@
 #include "haldls/vx/container.h"
 #include "haldls/vx/v3/event.h"
 #include "stadls/vx/v3/absolute_time_playback_program_builder.h"
+#include "stadls/vx/v3/playback_program_builder.h"
 
 #include <gtest/gtest.h>
 #include <log4cxx/logger.h>
@@ -42,6 +43,38 @@ TEST(AbsoluteTimePlaybackProgramBuilder, general)
 	builder3.write(
 	    haldls::vx::v3::Timer::Value(20), halco::hicann_dls::vx::v3::SpikePack1ToChipOnDLS(),
 	    spike3);
+
+	// testing the differential write function
+	haldls::vx::SynapseQuad synapse_quad1;
+	haldls::vx::SynapseWeightQuad::values_type weights1 = synapse_quad1.get_weights();
+	weights1[halco::hicann_dls::vx::v3::EntryOnQuad()] = haldls::vx::v3::SynapseQuad::Weight(20);
+	synapse_quad1.set_weights(weights1);
+
+	haldls::vx::SynapseQuad synapse_quad2;
+	haldls::vx::SynapseWeightQuad::values_type weights2 = synapse_quad2.get_weights();
+	weights2[halco::hicann_dls::vx::v3::EntryOnQuad()] = haldls::vx::v3::SynapseQuad::Weight(40);
+	synapse_quad2.set_weights(weights2);
+
+	stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder sample_builder =
+	    stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder();
+	sample_builder.write(
+	    haldls::vx::v3::Timer::Value(50), halco::hicann_dls::vx::SynapseQuadOnDLS(), synapse_quad1);
+	sample_builder.write(
+	    haldls::vx::v3::Timer::Value(100), halco::hicann_dls::vx::SynapseQuadOnDLS(), synapse_quad2,
+	    synapse_quad1);
+
+	stadls::vx::v3::PlaybackProgramBuilder reference_builder =
+	    stadls::vx::v3::PlaybackProgramBuilder();
+	reference_builder.write(halco::hicann_dls::vx::v3::TimerOnDLS(), haldls::vx::Timer());
+	reference_builder.block_until(
+	    halco::hicann_dls::vx::v3::TimerOnDLS(), haldls::vx::v3::Timer::Value(49));
+	reference_builder.write(halco::hicann_dls::vx::v3::SynapseQuadOnDLS(), synapse_quad1);
+	reference_builder.block_until(
+	    halco::hicann_dls::vx::v3::TimerOnDLS(), haldls::vx::v3::Timer::Value(99));
+	reference_builder.write(
+	    halco::hicann_dls::vx::v3::SynapseQuadOnDLS(), synapse_quad2, synapse_quad1);
+
+	EXPECT_EQ(sample_builder.done().done(), reference_builder.done());
 
 	// testing the copy function
 	builder.copy(builder3);

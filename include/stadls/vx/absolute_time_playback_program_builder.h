@@ -31,6 +31,7 @@ private:
 		haldls::vx::Timer::Value time;
 		std::unique_ptr<haldls::vx::Container::Coordinate> coord;
 		std::unique_ptr<haldls::vx::Container> write_config = nullptr;
+		std::unique_ptr<haldls::vx::Container> write_config_reference = nullptr;
 		std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> read_ticket_storage =
 		    nullptr;
 
@@ -38,6 +39,11 @@ private:
 		    haldls::vx::Timer::Value time,
 		    haldls::vx::Container::Coordinate const& coord,
 		    haldls::vx::Container const& write_config);
+		CommandData(
+		    haldls::vx::Timer::Value time,
+		    haldls::vx::Container::Coordinate const& coord,
+		    haldls::vx::Container const& write_config,
+		    haldls::vx::Container const& write_config_reference);
 		CommandData(
 		    haldls::vx::Timer::Value time,
 		    haldls::vx::Container::Coordinate const& coord,
@@ -73,6 +79,19 @@ public:
 	    haldls::vx::Timer::Value execTime,
 	    haldls::vx::Container::Coordinate const& coord,
 	    haldls::vx::Container const& config) SYMBOL_VISIBLE;
+
+	/**
+	 * Add command to change given container value at given location
+	 * @param execTime Time stamp for FPGA when to execute command
+	 * @param coord Coordinate value selecting location
+	 * @param config Container configuration data
+	 * @param config_reference Reference configuration for differential write
+	 */
+	void write(
+	    haldls::vx::Timer::Value execTime,
+	    haldls::vx::Container::Coordinate const& coord,
+	    haldls::vx::Container const& config,
+	    haldls::vx::Container const& config_reference) SYMBOL_VISIBLE;
 
 	/**
 	 * Add command to read container data from given location
