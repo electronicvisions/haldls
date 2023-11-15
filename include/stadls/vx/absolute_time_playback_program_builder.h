@@ -136,6 +136,19 @@ public:
 	    SYMBOL_VISIBLE;
 
 	/**
+	 * Scales time of all commands by certain factor
+	 * @param factor Scaling factor
+	 */
+	void operator*=(float const factor) SYMBOL_VISIBLE;
+
+	/**
+	 * Copy caller scale time of all commands of this copy by certain factor
+	 * @param factor Scaling factor
+	 * @return Absolute_time_playback_program_builder with scaled command times
+	 */
+	AbsoluteTimePlaybackProgramBuilder<PPBType> operator*(float const factor) SYMBOL_VISIBLE;
+
+	/**
 	 * Print all commands in initial order
 	 */
 	template <typename BuilderType>

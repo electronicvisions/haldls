@@ -195,6 +195,26 @@ AbsoluteTimePlaybackProgramBuilder<PPBType> AbsoluteTimePlaybackProgramBuilder<P
 }
 
 template <typename PPBType>
+void AbsoluteTimePlaybackProgramBuilder<PPBType>::operator*=(float const factor){
+	for (auto& command : m_commands){
+		command.time = haldls::vx::Timer::Value(static_cast<uint32_t>(round(command.time.value() * factor)));
+	}
+}
+
+template <typename PPBType>
+AbsoluteTimePlaybackProgramBuilder<PPBType> AbsoluteTimePlaybackProgramBuilder<PPBType>::operator*(float const factor){
+	if (!is_write_only()) {
+		throw std::runtime_error("'*'-operation is invalid for non-write-only AbsoluteTimePlaybackProgramBuilder (cannot be copied)");
+	}
+	AbsoluteTimePlaybackProgramBuilder<PPBType> scaled_builder;
+	scaled_builder.m_commands = m_commands;
+	for (auto& command : scaled_builder.m_commands){
+		command.time = haldls::vx::Timer::Value(static_cast<uint32_t>(round(command.time.value() * factor)));
+	}
+	return scaled_builder;
+}
+
+template <typename PPBType>
 std::ostream& operator<<(
     std::ostream& os, AbsoluteTimePlaybackProgramBuilder<PPBType> const& builder)
 {

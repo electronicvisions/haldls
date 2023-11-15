@@ -119,4 +119,31 @@ TEST(AbsoluteTimePlaybackProgramBuilder, general)
 
 	EXPECT_EQ(program4, program5);
 	EXPECT_EQ(program4, program6);
+
+
+	// testing the scaling operators * and *=
+	stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder builder7 =
+	    stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder();
+	halco::hicann_dls::vx::v3::SpikeLabel label7(0);
+	haldls::vx::v3::SpikePack1ToChip spike7({label7});
+	builder7.write(
+	    haldls::vx::v3::Timer::Value(10), halco::hicann_dls::vx::v3::SpikePack1ToChipOnDLS(),
+	    spike7);
+
+	stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder builder8 = builder7 * 10.0;
+
+	builder7 *= 10.0;
+
+	stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder builder9 =
+	    stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder();
+	builder9.write(
+	    haldls::vx::v3::Timer::Value(100), halco::hicann_dls::vx::v3::SpikePack1ToChipOnDLS(),
+	    spike7);
+
+	auto program7 = builder7.done().done();
+	auto program8 = builder8.done().done();
+	auto program9 = builder9.done().done();
+
+	EXPECT_EQ(program7, program8);
+	EXPECT_EQ(program7, program9);
 }
