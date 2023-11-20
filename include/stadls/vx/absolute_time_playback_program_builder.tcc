@@ -153,6 +153,16 @@ void AbsoluteTimePlaybackProgramBuilder<PPBType>::merge(
 }
 
 template <typename PPBType>
+void AbsoluteTimePlaybackProgramBuilder<PPBType>::merge(
+    AbsoluteTimePlaybackProgramBuilder<PPBType>&& other)
+{
+	m_commands.insert(
+	    m_commands.end(), std::make_move_iterator(other.m_commands.begin()),
+	    std::make_move_iterator(other.m_commands.end()));
+	std::vector<CommandData>().swap(other.m_commands);
+}
+
+template <typename PPBType>
 void AbsoluteTimePlaybackProgramBuilder<PPBType>::copy(
     AbsoluteTimePlaybackProgramBuilder<PPBType>& other)
 {

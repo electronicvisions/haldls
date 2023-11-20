@@ -111,6 +111,14 @@ public:
 	void merge(AbsoluteTimePlaybackProgramBuilder<PPBType>& other) SYMBOL_VISIBLE;
 
 	/**
+	 * Merge other absolute_time_playback_program_builder into caller and empty command vector of
+	 * other
+	 * @param other Absolute_time_playback_program_builder to be merged into caller
+	 */
+	void merge(AbsoluteTimePlaybackProgramBuilder<PPBType>&& other)
+	    GENPYBIND(hidden) SYMBOL_VISIBLE;
+
+	/**
 	 * Copy command vector from other absolute_time_playback_program_builder and merge it into
 	 * command vector from caller
 	 * @param other Absolute_time_playback_program_builder to be copied from
