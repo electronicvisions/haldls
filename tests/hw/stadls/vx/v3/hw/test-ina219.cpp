@@ -38,57 +38,38 @@ TEST(INA219, DACVoltages)
 		EXPECT_TRUE(ticket.valid());
 	}
 
-	auto const range12_min = 1100 / 4 /* linear with 4mV/LSB*/;
-	auto const range12_max = 1300 / 4 /* linear with 4mV/LSB*/;
-	auto const range25_min = 2400 / 4 /* linear with 4mV/LSB*/;
-	auto const range25_max = 2600 / 4 /* linear with 4mV/LSB*/;
-	EXPECT_LE(
+	float const expect12 = 1.2 /* V */;
+	float const error12 = 0.05 * expect12 /* V */;
+	float const expect25 = 2.5 /* V */;
+	float const error25 = 0.05 * expect25 /* V */;
+	EXPECT_NEAR(
 	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_digital).get())
-	        .get_bus_voltage(),
-	    range12_max);
-	EXPECT_LE(
+	        .get_bus_voltage()
+	        .toUncalibratedVoltage(),
+	    expect12, error12);
+	EXPECT_NEAR(
 	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_digital).get())
-	        .get_bus_voltage(),
-	    range25_max);
-	EXPECT_LE(
+	        .get_bus_voltage()
+	        .toUncalibratedVoltage(),
+	    expect25, error25);
+	EXPECT_NEAR(
 	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_analog).get())
-	        .get_bus_voltage(),
-	    range12_max);
-	EXPECT_LE(
+	        .get_bus_voltage()
+	        .toUncalibratedVoltage(),
+	    expect12, error12);
+	EXPECT_NEAR(
 	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_analog).get())
-	        .get_bus_voltage(),
-	    range25_max);
-	EXPECT_LE(
+	        .get_bus_voltage()
+	        .toUncalibratedVoltage(),
+	    expect25, error25);
+	EXPECT_NEAR(
 	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_madc).get())
-	        .get_bus_voltage(),
-	    range12_max);
-	EXPECT_LE(
+	        .get_bus_voltage()
+	        .toUncalibratedVoltage(),
+	    expect12, error12);
+	EXPECT_NEAR(
 	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_pll).get())
-	        .get_bus_voltage(),
-	    range12_max);
-
-	EXPECT_GE(
-	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_digital).get())
-	        .get_bus_voltage(),
-	    range12_min);
-	EXPECT_GE(
-	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_digital).get())
-	        .get_bus_voltage(),
-	    range25_min);
-	EXPECT_GE(
-	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_analog).get())
-	        .get_bus_voltage(),
-	    range12_min);
-	EXPECT_GE(
-	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_analog).get())
-	        .get_bus_voltage(),
-	    range25_min);
-	EXPECT_GE(
-	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_madc).get())
-	        .get_bus_voltage(),
-	    range12_min);
-	EXPECT_GE(
-	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_pll).get())
-	        .get_bus_voltage(),
-	    range12_min);
+	        .get_bus_voltage()
+	        .toUncalibratedVoltage(),
+	    expect12, error12);
 }
