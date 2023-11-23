@@ -26,7 +26,7 @@ using namespace stadls::vx::v3;
 TEST(HicannARQStatus, OmnibusReadCount)
 {
 	auto sequence = DigitalInit();
-	sequence.highspeed_link.enable_systime = false;
+	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 
 	// wait to make sure, whole Omnibus access over Highspeed completed
@@ -71,7 +71,7 @@ TEST(HicannARQStatus, OmnibusReadCount)
 TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 {
 	auto sequence = DigitalInit();
-	sequence.highspeed_link.enable_systime = false;
+	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 
 	builder.write(SystimeSyncBaseOnDLS(), SystimeSyncBase(), Backend::Omnibus);

@@ -25,9 +25,10 @@ GENPYBIND_MANUAL({
 	{
 		using ::stadls::vx::PlaybackGenerator::PlaybackGenerator;
 
-		virtual pybind11::tuple generate() const override
+		virtual pybind11::tuple pygenerate() const override
 		{
-			PYBIND11_OVERLOAD_PURE(pybind11::tuple, ::stadls::vx::PlaybackGenerator, generate, );
+			PYBIND11_OVERLOAD_PURE_NAME(
+			    pybind11::tuple, ::stadls::vx::PlaybackGenerator, "generate", pygenerate, );
 		}
 	};
 
@@ -35,11 +36,11 @@ GENPYBIND_MANUAL({
 	parent->py::template class_<::stadls::vx::PlaybackGenerator, PyPlaybackGenerator>(
 	        parent, "PlaybackGenerator")
 	    .def(parent->py::template init<>())
-	    .def("generate", &::stadls::vx::PlaybackGenerator::generate);
+	    .def("generate", &::stadls::vx::PlaybackGenerator::pygenerate);
 	// clang-format on
 
 	parent.def(
-	    "generate", [](::stadls::vx::PlaybackGenerator const& self) { return self.generate(); },
+	    "generate", [](::stadls::vx::PlaybackGenerator const& self) { return self.pygenerate(); },
 	    pybind11::return_value_policy::move);
 })
 

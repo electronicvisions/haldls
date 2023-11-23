@@ -4,14 +4,56 @@
 
 namespace stadls::vx::v3 {
 
-namespace detail {
+PlaybackGeneratorReturn<typename ASICAdapterBoardInit::Result> ASICAdapterBoardInit::generate()
+    const
+{
+	return {};
+}
 
-InitGenerator::InitGenerator() :
-    instruction_timeout(),
+std::unique_ptr<ASICAdapterBoardInit> ASICAdapterBoardInit::copy() const
+{
+	return std::make_unique<ASICAdapterBoardInit>(*this);
+}
+
+
+CubeASICAdapterBoardInit::CubeASICAdapterBoardInit() :
     shift_register(),
     dac_control_block(),
-    dac_channel_block(lola::vx::DACChannelBlock::default_ldo_2),
-    enable_xboard(true),
+    dac_channel_block(lola::vx::DACChannelBlock::default_ldo_2)
+{
+}
+
+PlaybackGeneratorReturn<typename CubeASICAdapterBoardInit::Result>
+CubeASICAdapterBoardInit::generate() const
+{
+	using namespace haldls::vx;
+	using namespace halco::hicann_dls::vx::v3;
+
+	auto [builder, _] = ASICAdapterBoardInit::generate();
+
+	// Set shift register values
+	builder.write(ShiftRegisterOnBoard(), shift_register);
+
+	// Set DAC on xBoard channel values
+	builder.write(DACChannelBlockOnBoard(), dac_channel_block);
+
+	// Set DAC on xBoard enable values
+	builder.write(DACControlBlockOnBoard(), dac_control_block);
+
+	// Wait until DAC config is set
+	builder.write(TimerOnDLS(), Timer());
+	builder.block_until(TimerOnDLS(), xboard_dac_settling_duration);
+
+	return {std::move(builder), Result{}};
+}
+
+std::unique_ptr<ASICAdapterBoardInit> CubeASICAdapterBoardInit::copy() const
+{
+	return std::make_unique<CubeASICAdapterBoardInit>(*this);
+}
+
+
+ChipInit::ChipInit() :
     jtag_clock_scaler(),
     pll_clock_output_block(),
     adplls(),
@@ -28,7 +70,7 @@ InitGenerator::InitGenerator() :
 	event_recording.set_enable_event_recording(true);
 }
 
-InitGenerator::HighspeedLink::HighspeedLink() :
+ChipInit::HighspeedLink::HighspeedLink() :
     common_phy_config_fpga(),
     common_phy_config_chip(),
     phy_configs_fpga(),
@@ -37,31 +79,13 @@ InitGenerator::HighspeedLink::HighspeedLink() :
     enable_systime(true)
 {}
 
-PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate() const
+PlaybackGeneratorReturn<typename ChipInit::Result> ChipInit::generate() const
 {
 	using namespace haldls::vx;
 	using namespace halco::hicann_dls::vx::v3;
 	using namespace halco::common;
 
-	InitGenerator::Builder builder;
-
-	// Configure playback instruction timeout
-	builder.write(InstructionTimeoutConfigOnFPGA(), instruction_timeout);
-
-	if (enable_xboard) {
-		// Set shift register values
-		builder.write(ShiftRegisterOnBoard(), shift_register);
-
-		// Set DAC on xBoard channel values
-		builder.write(DACChannelBlockOnBoard(), dac_channel_block);
-
-		// Set DAC on xBoard enable values
-		builder.write(DACControlBlockOnBoard(), dac_control_block);
-
-		// Wait until DAC config is set
-		builder.write(TimerOnDLS(), Timer());
-		builder.block_until(TimerOnDLS(), xboard_dac_settling_duration);
-	}
+	ChipInit::Builder builder;
 
 	// Reset chip
 	builder.write(ResetChipOnDLS(), ResetChip(true));
@@ -153,6 +177,75 @@ PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate(
 	return {std::move(builder), Result{}};
 }
 
+namespace detail {
+
+InitGenerator::InitGenerator() :
+    instruction_timeout(),
+    enable_asic_adapter_board(true),
+    chip(),
+    enable_chip(true),
+    m_asic_adapter_board(std::make_unique<CubeASICAdapterBoardInit>())
+{
+}
+
+InitGenerator::InitGenerator(InitGenerator const& other) :
+    instruction_timeout(other.instruction_timeout),
+    enable_asic_adapter_board(other.enable_asic_adapter_board),
+    chip(other.chip),
+    enable_chip(other.enable_chip),
+    m_asic_adapter_board(other.m_asic_adapter_board ? other.m_asic_adapter_board->copy() : nullptr)
+{
+}
+
+InitGenerator& InitGenerator::operator=(InitGenerator const& other)
+{
+	if (&other != this) {
+		instruction_timeout = other.instruction_timeout;
+		enable_asic_adapter_board = other.enable_asic_adapter_board;
+		chip = other.chip;
+		enable_chip = other.enable_chip;
+		m_asic_adapter_board =
+		    other.m_asic_adapter_board ? other.m_asic_adapter_board->copy() : nullptr;
+	}
+	return *this;
+}
+
+
+ASICAdapterBoardInit const& InitGenerator::get_asic_adapter_board() const
+{
+	if (!m_asic_adapter_board) {
+		throw std::logic_error("Unexpected access to moved-from object.");
+	}
+	return *m_asic_adapter_board;
+}
+
+void InitGenerator::set_asic_adapter_board(ASICAdapterBoardInit const& value)
+{
+	m_asic_adapter_board = value.copy();
+}
+
+PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate() const
+{
+	using namespace haldls::vx;
+	using namespace halco::hicann_dls::vx::v3;
+
+	InitGenerator::Builder builder;
+
+	// Configure playback instruction timeout
+	builder.write(InstructionTimeoutConfigOnFPGA(), instruction_timeout);
+
+	if (enable_asic_adapter_board) {
+		builder.merge_back(get_asic_adapter_board().generate().builder);
+	}
+
+	if (enable_chip) {
+		auto [chip_builder, _] = stadls::vx::generate(chip);
+		builder.merge_back(chip_builder);
+	}
+
+	return {std::move(builder), Result{}};
+}
+
 std::ostream& operator<<(std::ostream& os, InitGenerator const&)
 {
 	return os;
@@ -170,7 +263,7 @@ ExperimentInit::ExperimentInit() :
     column_current_quad_config(),
     common_correlation_config()
 {
-	this->enable_capmem = true;
+	this->chip.enable_capmem = true;
 }
 
 PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
@@ -179,7 +272,7 @@ PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
 	using namespace halco::hicann_dls::vx::v3;
 	using namespace halco::common;
 
-	auto [builder, res] = stadls::vx::generate(*static_cast<detail::InitGenerator const*>(this));
+	auto [builder, res] = InitGenerator::generate();
 
 	// Write common neuron backend config
 	for (auto coord : iter_all<CommonNeuronBackendConfigOnDLS>()) {

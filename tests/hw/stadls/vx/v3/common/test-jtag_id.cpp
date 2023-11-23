@@ -16,7 +16,8 @@ using namespace halco::hicann_dls::vx::v3;
 TEST(JTAGIdCode, ReadJTAGId)
 {
 	auto sequence = DigitalInit();
-	sequence.enable_highspeed_link = false;
+	sequence.chip.enable_highspeed_link = false;
+	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 	auto jtag_id_ticket = builder.read(JTAGIdCodeOnDLS());
 	builder.block_until(BarrierOnFPGA(), Barrier::jtag);

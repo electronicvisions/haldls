@@ -2,7 +2,8 @@ import unittest
 import inspect
 from typing import get_type_hints
 from pystadls_vx_v3 import PlaybackGenerator, generate, \
-    DigitalInit, ExperimentInit
+    DigitalInit, ExperimentInit, ASICAdapterBoardInit, \
+    CubeASICAdapterBoardInit, ChipInit
 
 
 class PlaybackGeneratorTest(unittest.TestCase):
@@ -48,7 +49,8 @@ class PlaybackGeneratorTest(unittest.TestCase):
         Check that C++ sequences are usable in python.
         """
 
-        for generator in [DigitalInit, ExperimentInit]:
+        for generator in [DigitalInit, ExperimentInit, ASICAdapterBoardInit,
+                          CubeASICAdapterBoardInit, ChipInit]:
             self.assertTrue(isinstance(generator(), PlaybackGenerator),
                             f"Instances of {str(generator)} are not of type "
                             f"'PlaybackGenerator' but {type(generator())}")

@@ -227,7 +227,7 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 	barrier.set_enable_omnibus(true);
 
 	DigitalInit init;
-	init.enable_xboard = !is_simulation;
+	init.enable_asic_adapter_board = !is_simulation;
 	auto [run_builder, _] = generate(init);
 	run_builder.block_until(BarrierOnFPGA(), barrier);
 
