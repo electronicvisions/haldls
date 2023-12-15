@@ -123,7 +123,7 @@ public:
 	 * command vector from caller
 	 * @param other Absolute_time_playback_program_builder to be copied from
 	 */
-	void copy(AbsoluteTimePlaybackProgramBuilder<PPBType>& other) SYMBOL_VISIBLE;
+	void copy(AbsoluteTimePlaybackProgramBuilder<PPBType> const& other) SYMBOL_VISIBLE;
 
 	bool empty() const SYMBOL_VISIBLE;
 
@@ -133,15 +133,24 @@ public:
 	 * Add a time offset to all commands
 	 * @param offset Magnitude of time shift in FGPA clock cycles
 	 */
-	void operator+=(haldls::vx::Timer::Value const offset) SYMBOL_VISIBLE;
+	AbsoluteTimePlaybackProgramBuilder<PPBType>& operator+=(haldls::vx::Timer::Value const offset)
+	    GENPYBIND(hidden) SYMBOL_VISIBLE;
+
+	GENPYBIND_MANUAL({
+		parent.def(
+		    "__iadd__",
+		    [](GENPYBIND_PARENT_TYPE & self, haldls::vx::Timer::Value const offset) -> auto& {
+			    return self += offset;
+		    });
+	})
 
 	/**
 	 * Copy caller and add time offset to all commands of this copy
 	 * @param offset Magnitude of time shift in FGPA clock cycles
 	 * @return Absolute_time_playback_program_builder with time offset
 	 */
-	AbsoluteTimePlaybackProgramBuilder<PPBType> operator+(haldls::vx::Timer::Value const offset)
-	    SYMBOL_VISIBLE;
+	AbsoluteTimePlaybackProgramBuilder<PPBType> operator+(
+	    haldls::vx::Timer::Value const offset) const SYMBOL_VISIBLE;
 
 	/**
 	 * Scales time of all commands by certain factor

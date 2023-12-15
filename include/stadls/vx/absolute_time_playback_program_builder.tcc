@@ -164,7 +164,7 @@ void AbsoluteTimePlaybackProgramBuilder<PPBType>::merge(
 
 template <typename PPBType>
 void AbsoluteTimePlaybackProgramBuilder<PPBType>::copy(
-    AbsoluteTimePlaybackProgramBuilder<PPBType>& other)
+    AbsoluteTimePlaybackProgramBuilder<PPBType> const& other)
 {
 	if (!is_write_only()) {
 		throw std::runtime_error("Non-write-only AbsoluteTimePlaybackProgramBuilder cannot be copied");
@@ -185,22 +185,21 @@ bool AbsoluteTimePlaybackProgramBuilder<PPBType>::is_write_only() const
 }
 
 template <typename PPBType>
-void AbsoluteTimePlaybackProgramBuilder<PPBType>::operator+=(haldls::vx::Timer::Value const offset){
+AbsoluteTimePlaybackProgramBuilder<PPBType>& AbsoluteTimePlaybackProgramBuilder<PPBType>::operator+=(haldls::vx::Timer::Value const offset){
 	for (auto& command : m_commands){
 		command.time += offset;
 	}
+	return *this;
 }
 
 template <typename PPBType>
-AbsoluteTimePlaybackProgramBuilder<PPBType> AbsoluteTimePlaybackProgramBuilder<PPBType>::operator+(haldls::vx::Timer::Value const offset){
+AbsoluteTimePlaybackProgramBuilder<PPBType> AbsoluteTimePlaybackProgramBuilder<PPBType>::operator+(haldls::vx::Timer::Value const offset) const {
 	if (!is_write_only()) {
 		throw std::runtime_error("'+'-operation is invalid for non-write-only AbsoluteTimePlaybackProgramBuilder (cannot be copied)");
 	}
 	AbsoluteTimePlaybackProgramBuilder<PPBType> offset_builder;
-	offset_builder.m_commands = m_commands;
-	for (auto& command : offset_builder.m_commands){
-		command.time += offset;
-	}
+	offset_builder.copy(*this);
+	offset_builder += offset;
 	return offset_builder;
 }
 
