@@ -166,7 +166,7 @@ template <typename PPBType>
 void AbsoluteTimePlaybackProgramBuilder<PPBType>::copy(
     AbsoluteTimePlaybackProgramBuilder<PPBType> const& other)
 {
-	if (!is_write_only()) {
+	if (!other.is_write_only()) {
 		throw std::runtime_error("Non-write-only AbsoluteTimePlaybackProgramBuilder cannot be copied");
 	}
 	m_commands.insert(m_commands.end(), other.m_commands.begin(), other.m_commands.end());
