@@ -70,13 +70,13 @@ c ./bin/stadls_swtest_vx_v3
 
 * Work on the frontend machine, `helvetica`. You should have received instructions how to connect to it.
 * Follow [aforementioned instructions](#github-based-build) with the following simplifications
-  * Replace **steps 3) and 4)** by `module load waf`
-  * Make sure to run **step 6)** within a respective slurm allocation: Prefix `srun -p compile -c8`; depending on your shell, you might need to roll out the `c`-alias.
-  * Replace **step 8)** by `module load localdir`.
+  * Replace **steps 4) and 5)** by `module load waf`
+  * Make sure to run **step 7)** within a respective slurm allocation: Prefix `srun -p compile -c8`; depending on your shell, you might need to roll out the `c`-alias.
+  * Replace **step 9)** by `module load localdir`.
 
 ### Build from internal sources
 
-If you have access to the internal *Gerrit* server, you may drop the `--repo-db-url`-specification in **step 5)** of [aforementioned instructions](#github-based-build).
+If you have access to the internal *Gerrit* server, you may drop the `--repo-db-url`-specification in **step 6)** of [aforementioned instructions](#github-based-build).
 
 
 ## How to add a new container (HICANN-X)
