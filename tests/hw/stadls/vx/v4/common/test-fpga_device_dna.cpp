@@ -32,6 +32,9 @@ TEST(FPGADeviceDNA, Read)
 	auto const connection_unique_identifier =
 	    std::visit([](auto const& conn) { return conn.get_unique_identifier(); }, connection);
 
+#if SIMULATION_TEST
+	FPGADeviceDNA expectation(FPGADeviceDNA::Value(0x15000000000005D));
+#else
 	auto const [hxcube_id, fpga_id, _, __] =
 	    hwdb4cpp::HXCubeSetupEntry::get_ids_from_unique_branch_identifier(
 	        connection_unique_identifier);
@@ -44,6 +47,7 @@ TEST(FPGADeviceDNA, Read)
 	}
 	FPGADeviceDNA expectation(
 	    FPGADeviceDNA::Value(hxcube_setup_entry.fpgas.at(fpga_id).get_dna_port()));
+#endif
 
 	EXPECT_EQ(dynamic_cast<FPGADeviceDNA const&>(ticket.get()), expectation);
 }
