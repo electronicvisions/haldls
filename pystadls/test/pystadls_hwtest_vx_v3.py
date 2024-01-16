@@ -114,6 +114,58 @@ class HwTestPystadlsVxV3(unittest.TestCase):
             spikes.size, total_spikes_sent * 0.98,
             f"Expected at least {total_spikes_sent * 0.98} received spikes")
 
+    def test_highspeed_link_performance(self):
+        # perftest results saturate after 5 links
+        # -> we split into multiple tests
+        tests_enabled_links = [[4], range(5), range(3, 8)]
+        expected_link_rate = 595.0  # Mbit/s
+        runtime_us = 1000
+        for enabled_links in tests_enabled_links:
+            init = stadls.DigitalInit()
+            init.highspeed_link.enable_systime = False
+            for link in range(8):
+                if link not in enabled_links:
+                    # pylint warnings disabled below because attributes for
+                    # nested classes are loaded dynamically upon instantiation
+                    # and therefore not visible for pylint (which is an error).
+                    # pylint: disable=E1101,E1136,E1137
+                    init.highspeed_link.common_phy_config_fpga \
+                                       .set_enable_phy(link, False)
+            builder, _ = init.generate()
+
+            builder.write(halco.PerfTestOnFPGA(), haldls.PerfTest(True))
+            builder.write(halco.TimerOnDLS(), haldls.Timer())
+            builder.block_until(halco.TimerOnDLS(),
+                                haldls.Timer.Value(runtime_us
+                                * fisch.fpga_clock_cycles_per_us))
+            builder.write(halco.PerfTestOnFPGA(), haldls.PerfTest(False))
+            builder.write(halco.TimerOnDLS(), haldls.Timer())
+            builder.block_until(halco.TimerOnDLS(),
+                                haldls.Timer.Value(10
+                                * fisch.fpga_clock_cycles_per_us))
+            result = builder.read(halco.PerfTestStatusOnFPGA())
+            builder.block_until(halco.BarrierOnFPGA(), haldls.Barrier.omnibus)
+
+            program = builder.done()
+            with hxcomm.ManagedConnection() as conn:
+                stadls.run(conn, program)
+            self.assertEqual(result.get().error_word.value(), 0,
+                             f"Expect error_word to be 0 for links"
+                             f"{enabled_links}")
+            recv = result.get().received.value()
+            self.assertEqual(result.get().in_order.value(), recv,
+                             f"Expect in_order and received words to be equal "
+                             f"for links {enabled_links}")
+            expected_data_rate = len(enabled_links) * expected_link_rate
+            # counted words are l2_pkg::loopback_width = 59 bit wide
+            measured_data_rate = recv * 59.0 / runtime_us
+            self.assertGreater(measured_data_rate, expected_data_rate * 0.95,
+                               f"Expected {expected_data_rate} +- 5% Mbps "
+                               f"for links {enabled_links}")
+            self.assertLess(measured_data_rate, expected_data_rate * 1.05,
+                            f"Expected {expected_data_rate} +- 5% Mbps "
+                            f"for links {enabled_links}")
+
     def test_madc_samples(self):
         """
         Observe an MADC test pattern and assert it is accessible
