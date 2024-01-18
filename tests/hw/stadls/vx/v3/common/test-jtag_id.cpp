@@ -1,5 +1,5 @@
 #include "halco/hicann-dls/vx/v3/coordinates.h"
-#include "haldls/vx/v3/timer.h"
+#include "haldls/vx/v3/barrier.h"
 #include "hxcomm/vx/connection_from_env.h"
 #include "stadls/vx/v3/init_generator.h"
 #include "stadls/vx/v3/run.h"
@@ -16,13 +16,10 @@ using namespace halco::hicann_dls::vx::v3;
 TEST(JTAGIdCode, ReadJTAGId)
 {
 	auto sequence = DigitalInit();
-	sequence.highspeed_link.enable_systime = false;
+	sequence.enable_highspeed_link = false;
 	auto [builder, _] = generate(sequence);
 	auto jtag_id_ticket = builder.read(JTAGIdCodeOnDLS());
-
-	// Wait for read
-	builder.write(TimerOnDLS(), Timer());
-	builder.block_until(TimerOnDLS(), Timer::Value(1000));
+	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 	auto program = builder.done();
 
 	auto connection = hxcomm::vx::get_connection_from_env();
