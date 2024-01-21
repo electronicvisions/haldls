@@ -23,6 +23,7 @@ namespace lola::vx::v3 GENPYBIND_TAG_LOLA_VX_V3 {
  */
 class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) Chip
     : public haldls::vx::ContainerBase<Chip>
+    , haldls::vx::DifferentialWriteTrait
 {
 public:
 	typedef halco::hicann_dls::vx::ChipOnDLS coordinate_type;
