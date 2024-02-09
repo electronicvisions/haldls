@@ -71,7 +71,7 @@ c ./bin/stadls_swtest_vx_v3
 * Work on the frontend machine, `helvetica`. You should have received instructions how to connect to it.
 * Follow [aforementioned instructions](#github-based-build) with the following simplifications
   * Replace **steps 4) and 5)** by `module load waf`
-  * Make sure to run **step 7)** within a respective slurm allocation: Prefix `srun -p compile -c8`; depending on your shell, you might need to roll out the `c`-alias.
+  * Make sure to run **step 7)** within a respective slurm allocation: Prefix e.g. `srun -p einc -c128 --mem 0` and remove the `-j1` option; depending on your shell, you might need to roll out the `c`-alias.
   * Replace **step 9)** by `module load localdir`.
 
 ### Build from internal sources
