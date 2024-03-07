@@ -186,8 +186,10 @@ bool AbsoluteTimePlaybackProgramBuilder<PPBType>::is_write_only() const
 
 template <typename PPBType>
 AbsoluteTimePlaybackProgramBuilder<PPBType>& AbsoluteTimePlaybackProgramBuilder<PPBType>::operator+=(haldls::vx::Timer::Value const offset){
-	for (auto& command : m_commands){
-		command.time += offset;
+	if(offset != haldls::vx::Timer::Value(0)){
+		for (auto& command : m_commands){
+			command.time += offset;
+		}
 	}
 	return *this;
 }
@@ -204,10 +206,13 @@ AbsoluteTimePlaybackProgramBuilder<PPBType> AbsoluteTimePlaybackProgramBuilder<P
 }
 
 template <typename PPBType>
-void AbsoluteTimePlaybackProgramBuilder<PPBType>::operator*=(float const factor){
-	for (auto& command : m_commands){
-		command.time = haldls::vx::Timer::Value(static_cast<uint32_t>(round(command.time.value() * factor)));
+AbsoluteTimePlaybackProgramBuilder<PPBType>& AbsoluteTimePlaybackProgramBuilder<PPBType>::operator*=(float const factor){
+	if(factor != 1){
+		for (auto& command : m_commands){
+			command.time = haldls::vx::Timer::Value(static_cast<uint32_t>(round(command.time.value() * factor)));
+		}
 	}
+	return *this;
 }
 
 template <typename PPBType>

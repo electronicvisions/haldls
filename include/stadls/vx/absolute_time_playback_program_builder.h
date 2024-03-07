@@ -156,7 +156,15 @@ public:
 	 * Scales time of all commands by certain factor
 	 * @param factor Scaling factor
 	 */
-	void operator*=(float const factor) SYMBOL_VISIBLE;
+	AbsoluteTimePlaybackProgramBuilder<PPBType>& operator*=(float const factor)
+	    GENPYBIND(hidden) SYMBOL_VISIBLE;
+
+	GENPYBIND_MANUAL({
+		parent.def(
+		    "__imul__", [](GENPYBIND_PARENT_TYPE & self, float const factor) -> auto& {
+			    return self *= factor;
+		    });
+	})
 
 	/**
 	 * Copy caller scale time of all commands of this copy by certain factor
