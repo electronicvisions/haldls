@@ -464,7 +464,7 @@ std::ostream& operator<<(std::ostream& os, CommonPhyConfigFPGA const& config)
 {
 	std::stringstream ss;
 	ss << "CommonPhyConfigFPGA(enable_phy: [" << std::boolalpha;
-	hate::join(ss, config.m_enable_phy.begin(), config.m_enable_phy.end(), ", ");
+	ss << hate::join(config.m_enable_phy.begin(), config.m_enable_phy.end(), ", ");
 	ss << "])";
 	return (os << ss.str());
 }
@@ -528,7 +528,7 @@ std::ostream& operator<<(std::ostream& os, CommonPhyConfigChip const& config)
 {
 	std::stringstream ss;
 	ss << "CommonPhyConfigChip(enable_phy: [" << std::boolalpha;
-	hate::join(ss, config.m_enable_phy.begin(), config.m_enable_phy.end(), ", ");
+	ss << hate::join(config.m_enable_phy.begin(), config.m_enable_phy.end(), ", ");
 	ss << "])";
 	return (os << ss.str());
 }

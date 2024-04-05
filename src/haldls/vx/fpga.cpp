@@ -805,10 +805,9 @@ std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryQuad const& config)
 	using namespace hate::math;
 	std::stringstream out;
 	out << "ExternalPPUMemoryQuad(\n";
-	out << "\t quad: [" << hate::join_string(config.m_quad.begin(), config.m_quad.end(), ", ")
+	out << "\t quad: [" << hate::join(config.m_quad.begin(), config.m_quad.end(), ", ") << "]\n";
+	out << "\t enables: [" << hate::join(config.m_enables.begin(), config.m_enables.end(), ", ")
 	    << "]\n";
-	out << "\t enables: ["
-	    << hate::join_string(config.m_enables.begin(), config.m_enables.end(), ", ") << "]\n";
 	os << out.str() << ")";
 	return os;
 }

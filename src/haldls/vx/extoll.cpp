@@ -2650,9 +2650,9 @@ std::ostream& operator<<(std::ostream& os, ExtollBarrierConfig const& config)
 	std::stringstream ss;
 	ss << "ExtollBarrierConfig(enable: " << std::hex << config.m_enable << ", child_nodes: ("
 	   << std::boolalpha;
-	hate::join(ss, config.m_child_nodes, ",");
+	ss << hate::join(config.m_child_nodes, ",");
 	ss << "), parent_nodes: (" << std::boolalpha;
-	hate::join(ss, config.m_parent_nodes, ",");
+	ss << hate::join(config.m_parent_nodes, ",");
 	ss << "), host_count: " << std::hex << config.m_host_count << ", client_count: " << std::hex
 	   << config.m_client_count << ", enable_reset: " << std::hex << config.m_enable_reset << ")";
 	return (os << ss.str());
@@ -2997,7 +2997,7 @@ std::ostream& operator<<(std::ostream& os, ExtollInterruptConfig const& config)
 	std::stringstream ss;
 	ss << "ExtollInterruptConfig(enable: " << std::hex << config.m_enable << ", child_nodes: ("
 	   << std::boolalpha;
-	hate::join(ss, config.m_child_nodes, ",");
+	ss << hate::join(config.m_child_nodes, ",");
 	ss << "), delay_count: " << std::hex << config.m_delay_count << ", enable_reset: " << std::hex
 	   << config.m_enable_reset << ", enable_measure: " << std::boolalpha << config.m_enable_measure
 	   << ", measure_counter: " << std::hex << config.m_measure_counter << ")";

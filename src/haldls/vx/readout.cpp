@@ -248,29 +248,29 @@ std::ostream& operator<<(std::ostream& os, PadMultiplexerConfig const& config)
 	std::stringstream ss;
 	ss << "PadMultiplexerConfig(\n" << std::boolalpha;
 	ss << "\tcadc_v_ramp_mux:                                    \t[";
-	hate::join(ss, config.m_cadc_v_ramp_mux.begin(), config.m_cadc_v_ramp_mux.end(), ", ");
+	ss << hate::join(config.m_cadc_v_ramp_mux.begin(), config.m_cadc_v_ramp_mux.end(), ", ");
 	ss << "]\n";
 	ss << "\tcadc_v_ramp_mux_to_pad:                             \t"
 	   << config.m_cadc_v_ramp_mux_to_pad << "\n";
 	ss << "\tcapmem_i_out_mux:                                   \t[";
-	hate::join(ss, config.m_capmem_i_out_mux.begin(), config.m_capmem_i_out_mux.end(), ", ");
+	ss << hate::join(config.m_capmem_i_out_mux.begin(), config.m_capmem_i_out_mux.end(), ", ");
 	ss << "]\n";
 	ss << "\tcapmem_i_out_mux_to_capmem_intermediate_mux:        \t"
 	   << config.m_capmem_i_out_mux_to_inter << "\n";
 	ss << "\tcapmem_v_out_mux:                                   \t[";
-	hate::join(ss, config.m_capmem_v_out_mux.begin(), config.m_capmem_v_out_mux.end(), ", ");
+	ss << hate::join(config.m_capmem_v_out_mux.begin(), config.m_capmem_v_out_mux.end(), ", ");
 	ss << "]\n";
 	ss << "\tcapmem_v_out_mux_to_capmem_intermediate_mux:        \t"
 	   << config.m_capmem_v_out_mux_to_inter << "\n";
 	ss << "\tcapmem_intermediate_mux_to_pad:                     \t"
 	   << config.m_capmem_inter_mux_to_pad << "\n";
 	ss << "\tcapmem_v_ref_mux:                                   \t[";
-	hate::join(ss, config.m_capmem_v_ref_mux.begin(), config.m_capmem_v_ref_mux.end(), ", ");
+	ss << hate::join(config.m_capmem_v_ref_mux.begin(), config.m_capmem_v_ref_mux.end(), ", ");
 	ss << "]\n";
 	ss << "\tcapmem_v_ref_mux_to_capmem_intermediate_mux:        \t"
 	   << config.m_capmem_v_ref_mux_to_inter << "\n";
 	ss << "\tneuron_i_stim_mux: [";
-	hate::join(ss, config.m_neuron_i_stim_mux.begin(), config.m_neuron_i_stim_mux.end(), ", ");
+	ss << hate::join(config.m_neuron_i_stim_mux.begin(), config.m_neuron_i_stim_mux.end(), ", ");
 	ss << "]\n";
 	ss << "\tneuron_i_stim_mux_to_pad: " << config.m_neuron_i_stim_mux_to_pad << "\n";
 	ss << "\tcadc_debug_acausal_to_synapse_intermediate_mux:     \t"
@@ -284,7 +284,7 @@ std::ostream& operator<<(std::ostream& os, PadMultiplexerConfig const& config)
 	ss << "\tsynapse_intermediate_mux_to_pad:                    \t"
 	   << config.m_synapse_inter_mux_to_pad << "\n";
 	ss << "\tbuffer_to_pad:                                      \t[";
-	hate::join(ss, config.m_buffer_to_pad.begin(), config.m_buffer_to_pad.end(), ", ");
+	ss << hate::join(config.m_buffer_to_pad.begin(), config.m_buffer_to_pad.end(), ", ");
 	ss << "]\n";
 	ss << "\tdebug_to_pad:                                       \t" << config.m_debug_to_pad
 	   << "\n)";
@@ -712,14 +712,14 @@ std::ostream& operator<<(std::ostream& os, ReadoutSourceSelection::SourceMultipl
 	ss << "\tcadc_debug_causal:      \t" << config.m_cadc_debug_causal << "\n";
 	ss << "\tcadc_debug_acausal:     \t" << config.m_cadc_debug_acausal << "\n";
 	ss << "\tsynapse_driver_debug:   \t[";
-	hate::join(
-	    ss, config.m_synapse_driver_debug.begin(), config.m_synapse_driver_debug.end(), ", ");
+	ss << hate::join(
+	    config.m_synapse_driver_debug.begin(), config.m_synapse_driver_debug.end(), ", ");
 	ss << "]\n";
 	ss << "\tneuron_odd:             \t[";
-	hate::join(ss, config.m_neuron_odd.begin(), config.m_neuron_odd.end(), ", ");
+	ss << hate::join(config.m_neuron_odd.begin(), config.m_neuron_odd.end(), ", ");
 	ss << "]\n";
 	ss << "\tneuron_even:            \t[";
-	hate::join(ss, config.m_neuron_even.begin(), config.m_neuron_even.end(), ", ");
+	ss << hate::join(config.m_neuron_even.begin(), config.m_neuron_even.end(), ", ");
 	ss << "]\n)";
 	return (os << ss.str());
 }
@@ -730,8 +730,8 @@ std::ostream& operator<<(std::ostream& os, ReadoutSourceSelection const& config)
 	ss << "ReadoutSourceSelection(\n" << std::boolalpha;
 	ss << hate::indent(hate::join_string(config.m_buffers, "\n"), "\t");
 	ss << "\n\tenable_buffer_to_pad: [";
-	hate::join(
-	    ss, config.m_enable_buffer_to_pad.begin(), config.m_enable_buffer_to_pad.end(), ", ");
+	ss << hate::join(
+	    config.m_enable_buffer_to_pad.begin(), config.m_enable_buffer_to_pad.end(), ", ");
 	ss << "]\n)";
 	return (os << ss.str());
 }

@@ -275,9 +275,9 @@ std::ostream& operator<<(std::ostream& os, VectorGeneratorControl const& config)
 	   << "\n";
 	ss << "\tresend_count: " << config.m_resend_count << ","
 	   << "\n";
-	ss << "\tsource_waits: [" << hate::join_string(config.m_source_waits, ", ") << "],"
+	ss << "\tsource_waits: [" << hate::join(config.m_source_waits, ", ") << "],"
 	   << "\n";
-	ss << "\tsources: [" << hate::join_string(config.m_sources, ", ") << "],"
+	ss << "\tsources: [" << hate::join(config.m_sources, ", ") << "],"
 	   << "\n";
 	ss << "\tevent_pack: " << config.m_event_pack << ","
 	   << "\n";
@@ -623,9 +623,9 @@ void VectorGeneratorFIFOWord::decode(std::array<
 std::ostream& operator<<(std::ostream& os, VectorGeneratorFIFOWord const& data)
 {
 	os << "VectorGeneratorFIFOWord(" << std::endl
-	   << "values: [" << hate::join_string(data.m_values, ", ") << "]" << std::endl
-	   << "enable: [" << hate::join_string(data.m_enable, ", ") << "]" << std::endl
-	   << "last: [" << hate::join_string(data.m_last, ", ") << "]" << std::endl
+	   << "values: [" << hate::join(data.m_values, ", ") << "]" << std::endl
+	   << "enable: [" << hate::join(data.m_enable, ", ") << "]" << std::endl
+	   << "last: [" << hate::join(data.m_last, ", ") << "]" << std::endl
 	   << ")";
 	return os;
 }

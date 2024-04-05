@@ -32,8 +32,7 @@ namespace haldls::vx {
                                                                                                    \
 	std::ostream& operator<<(std::ostream& os, SpikePack##Num##ToChip const& spike_pack)           \
 	{                                                                                              \
-		os << "SpikePack" << #Num << "ToChip(" << hate::join_string(spike_pack.m_impl, ", ")       \
-		   << ")";                                                                                 \
+		os << "SpikePack" << #Num << "ToChip(" << hate::join(spike_pack.m_impl, ", ") << ")";      \
 		return os;                                                                                 \
 	}                                                                                              \
                                                                                                    \
@@ -237,7 +236,7 @@ std::ostream& operator<<(std::ostream& os, HighspeedLinkNotification const& samp
 	std::stringstream ss;
 	ss << "HighspeedLinkNotification(";
 	ss << sample.m_phy << ", " << sample.m_fpga_time << ": ";
-	hate::join(ss, active_notifications, ", ");
+	ss << hate::join(active_notifications, ", ");
 	ss << ")";
 	return (os << ss.str());
 }

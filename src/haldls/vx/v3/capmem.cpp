@@ -174,12 +174,10 @@ std::ostream& operator<<(std::ostream& os, ReferenceGeneratorConfig const& confi
 	ss << "\treference_control:         \t" << config.m_reference_control << "\n";
 	ss << "\tresistor_control:          \t" << config.m_resistor_control << "\n";
 	ss << "\tenable_reset:              \t" << config.m_enable_reset << "\n";
-	ss << "\tcapmem_amplifier:          \t[" << hate::join_string(config.m_capmem_amplifier, ", ")
+	ss << "\tcapmem_amplifier:          \t[" << hate::join(config.m_capmem_amplifier, ", ")
 	   << "]\n";
-	ss << "\tcapmem_offset:             \t[" << hate::join_string(config.m_capmem_offset, ", ")
-	   << "]\n";
-	ss << "\tcapmem_slope:              \t[" << hate::join_string(config.m_capmem_slope, ", ")
-	   << "]\n)";
+	ss << "\tcapmem_offset:             \t[" << hate::join(config.m_capmem_offset, ", ") << "]\n";
+	ss << "\tcapmem_slope:              \t[" << hate::join(config.m_capmem_slope, ", ") << "]\n)";
 	return (os << ss.str());
 }
 

@@ -347,7 +347,7 @@ struct CADCSampleQuadBitfield
 
 std::ostream& operator<<(std::ostream& os, CADCSampleQuad const& config)
 {
-	os << "CADCSampleQuad(" << hate::join_string(config.m_samples, ", ") << ")";
+	os << "CADCSampleQuad(" << hate::join(config.m_samples, ", ") << ")";
 	return os;
 }
 

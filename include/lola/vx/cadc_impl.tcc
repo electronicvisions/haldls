@@ -127,10 +127,10 @@ std::ostream& operator<<(std::ostream& os, CADCReadoutChain const& config)
 	os << "CADCReadoutChain(" << std::endl;
 	os << "  ramp:\t" << config.ramp << std::endl;
 	os << "  channels_causal:\t[";
-	hate::join(os, config.channels_causal, ", ");
+	os << hate::join(config.channels_causal, ", ");
 	os << "]" << std::endl;
 	os << "  channels_acausal:\t[";
-	hate::join(os, config.channels_acausal, ", ");
+	os << hate::join(config.channels_acausal, ", ");
 	os << "]" << std::endl;
 	os << "  correlation:\t" << config.correlation << std::endl;
 	os << ")";

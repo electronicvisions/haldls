@@ -169,7 +169,7 @@ std::ostream& operator<<(std::ostream& os, PADIEvent const& config)
 	ss << "PADIEvent(\n" << std::boolalpha;
 	// clang-format off
 	ss << "\tfire_bus:           \t[";
-	hate::join(ss, config.m_fire_bus.begin(), config.m_fire_bus.end(), ", ");
+	ss << hate::join(config.m_fire_bus.begin(), config.m_fire_bus.end(), ", ");
 	ss << "]\n"
 	   << "\tevent_address:      \t" << config.m_event_address << "\n"
 	   << "\trow_select_address: \t" << config.m_row_select_address << "\n)";
@@ -371,13 +371,13 @@ std::ostream& operator<<(std::ostream& os, CommonPADIBusConfig const& config)
 	ss << "CommonPADIBusConfig(\n" << std::boolalpha;
 	// clang-format off
 	ss << "\tenable_spl1:            \t[";
-	hate::join(ss, config.m_enable_spl1.begin(), config.m_enable_spl1.end(), ", ");
+	ss << hate::join(config.m_enable_spl1.begin(), config.m_enable_spl1.end(), ", ");
 	ss << "]\n";
 	ss << "\tenable_extended_timing: \t[";
-	hate::join(ss, config.m_enable_extended_timing.begin(), config.m_enable_extended_timing.end(), ", ");
+	ss << hate::join(config.m_enable_extended_timing.begin(), config.m_enable_extended_timing.end(), ", ");
 	ss << "]\n";
 	ss << "\tdacen_pulse_extension:  \t[";
-	hate::join(ss, config.m_dacen_pulse_extension.begin(), config.m_dacen_pulse_extension.end(), ", ");
+	ss << hate::join(config.m_dacen_pulse_extension.begin(), config.m_dacen_pulse_extension.end(), ", ");
 	ss << "]\n)";
 	// clang-format on
 	return (os << ss.str());

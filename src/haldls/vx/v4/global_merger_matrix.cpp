@@ -56,9 +56,9 @@ std::ostream& operator<<(std::ostream& os, GlobalMergerMatrixOutputConfig const&
 	std::stringstream ss;
 	ss << "GlobalMergerMatrixOutputConfig(enable_event_counter: [";
 	ss << std::boolalpha;
-	hate::join(ss, config.m_enable_event_counter, ", ");
+	ss << hate::join(config.m_enable_event_counter, ", ");
 	ss << "], enable_slow: [";
-	hate::join(ss, config.m_enable_slow, ", ");
+	ss << hate::join(config.m_enable_slow, ", ");
 	ss << "])";
 	return (os << ss.str());
 }
@@ -610,7 +610,7 @@ std::ostream& operator<<(std::ostream& os, GlobalMergerMatrixNode const& config)
 	std::stringstream ss;
 	ss << "GlobalMergerMatrixNode(mask: " << config.m_mask << ", target: " << config.m_target
 	   << ", enable_drop_counter: " << std::boolalpha << config.m_enable_drop_counter
-	   << ", accept_gl1_index: [" << hate::join_string(config.m_accept_gl1_index, ", ") << "])";
+	   << ", accept_gl1_index: [" << hate::join(config.m_accept_gl1_index, ", ") << "])";
 	return (os << ss.str());
 }
 

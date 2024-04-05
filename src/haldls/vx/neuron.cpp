@@ -341,7 +341,7 @@ std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& conf
 	   << "\tenable_clocks:                \t" << config.m_en_clocks << "\n"
 	   << "\tclock_scale_slow:             \t" << config.m_clock_scale_slow << "\n"
 	   << "\tclock_scale_fast:             \t" << config.m_clock_scale_fast << "\n"
-	   << "\tsample_positive_edge:         \t[" << hate::join_string(config.m_sample_pos_edge, ", ") << "]\n"
+	   << "\tsample_positive_edge:         \t[" << hate::join(config.m_sample_pos_edge, ", ") << "]\n"
 	   << "\tclock_scale_adaptation_pulse: \t" << config.m_clock_scale_adapt_pulse << "\n"
 	   << "\tclock_scale_post_pulse:       \t" << config.m_clock_scale_post_pulse << "\n"
 	   << "\twait_global_post_pulse:       \t" << config.m_wait_global_post_pulse << "\n"

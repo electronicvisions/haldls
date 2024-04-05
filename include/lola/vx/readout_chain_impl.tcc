@@ -124,7 +124,7 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::PseudoDifferentialConve
 	std::stringstream ss;
 	ss << "PseudoDifferentialConverter(\n";
 	ss << "\tenable_reference: [";
-	hate::join(ss, config.enable_reference.begin(), config.enable_reference.end(), ", ");
+	ss << hate::join(config.enable_reference.begin(), config.enable_reference.end(), ", ");
 	ss << "]\n"
 	   << "\tv_ref:            " << config.v_ref << "\n"
 	   << "\tbuffer_bias:      " << config.buffer_bias << "\n)";
@@ -259,11 +259,12 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::SourceMeasureUnit const
 	   << "\tsampling_window_start:   " << std::boolalpha << config.sampling_window_start << "\n"
 	   << "\tsampling_window_end:     " << config.sampling_window_end << "\n";
 	ss << "\tconnect_neuron_stimulus: [";
-	hate::join(
-	    ss, config.connect_neuron_stimulus.begin(), config.connect_neuron_stimulus.end(), ", ");
+	ss << hate::join(
+	    config.connect_neuron_stimulus.begin(), config.connect_neuron_stimulus.end(), ", ");
 	ss << "]\n";
 	ss << "\tconnect_synapse_debug:   [";
-	hate::join(ss, config.connect_synapse_debug.begin(), config.connect_synapse_debug.end(), ", ");
+	ss << hate::join(
+	    config.connect_synapse_debug.begin(), config.connect_synapse_debug.end(), ", ");
 	ss << "]\n";
 	ss << "\ttest_voltage:            " << config.test_voltage << "\n"
 	   << "\tbuffer_i_bias:           " << config.buffer_i_bias << "\n"
@@ -302,11 +303,12 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::CurrentDAC const& confi
 	   << "\tcurrent:                 " << config.current << "\n"
 	   << "\tsign:                    " << config.sign << "\n"
 	   << "\tconnect_neuron_stimulus: [";
-	hate::join(
-	    ss, config.connect_neuron_stimulus.begin(), config.connect_neuron_stimulus.end(), ", ");
+	ss << hate::join(
+	    config.connect_neuron_stimulus.begin(), config.connect_neuron_stimulus.end(), ", ");
 	ss << "]\n";
 	ss << "\tconnect_synapse_debug:   [";
-	hate::join(ss, config.connect_synapse_debug.begin(), config.connect_synapse_debug.end(), ", ");
+	ss << hate::join(
+	    config.connect_synapse_debug.begin(), config.connect_synapse_debug.end(), ", ");
 	ss << "]\n"
 	   << "\ti_bias:                  " << config.i_bias << "\n"
 	   << "\ti_bias_casc:             " << config.i_bias_casc << "\n)";

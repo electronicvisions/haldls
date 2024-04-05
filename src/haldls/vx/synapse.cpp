@@ -280,16 +280,16 @@ std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
 	std::stringstream ss;
 	ss << "SynapseBiasSelection(\n" << std::boolalpha;
 	ss << "enable_internal_dac_bias:    \t[";
-	hate::join(ss, config.m_int_dac_bias.begin(), config.m_int_dac_bias.end(), ", ");
+	ss << hate::join(config.m_int_dac_bias.begin(), config.m_int_dac_bias.end(), ", ");
 	ss << "]\n";
 	ss << "enable_internal_ramp_bias:   \t[";
-	hate::join(ss, config.m_int_ramp_bias.begin(), config.m_int_ramp_bias.end(), ", ");
+	ss << hate::join(config.m_int_ramp_bias.begin(), config.m_int_ramp_bias.end(), ", ");
 	ss << "]\n";
 	ss << "enable_internal_store_bias:  \t[";
-	hate::join(ss, config.m_int_store_bias.begin(), config.m_int_store_bias.end(), ", ");
+	ss << hate::join(config.m_int_store_bias.begin(), config.m_int_store_bias.end(), ", ");
 	ss << "]\n";
 	ss << "enable_internal_output_bias: \t[";
-	hate::join(ss, config.m_int_output_bias.begin(), config.m_int_output_bias.end(), ", ");
+	ss << hate::join(config.m_int_output_bias.begin(), config.m_int_output_bias.end(), ", ");
 	ss << "]\n)";
 	return (os << ss.str());
 }
@@ -578,7 +578,7 @@ template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
 
 std::ostream& operator<<(std::ostream& os, SynapseWeightQuad const& config)
 {
-	os << "SynapseWeightQuad(" << hate::join_string(config.m_values, ", ") << ")";
+	os << "SynapseWeightQuad(" << hate::join(config.m_values, ", ") << ")";
 	return os;
 }
 
@@ -720,7 +720,7 @@ template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
 
 std::ostream& operator<<(std::ostream& os, SynapseLabelQuad const& config)
 {
-	os << "SynapseLabelQuad(" << hate::join_string(config.m_values, ", ") << ")";
+	os << "SynapseLabelQuad(" << hate::join(config.m_values, ", ") << ")";
 	return os;
 }
 
@@ -910,8 +910,8 @@ template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
 std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibQuad const& config)
 {
 	os << "SynapseCorrelationCalibQuad(\n"
-	   << "\t" << hate::join_string(config.m_time_calibs, ", ") << "\n"
-	   << "\t" << hate::join_string(config.m_amp_calibs, ", ") << "\n)";
+	   << "\t" << hate::join(config.m_time_calibs, ", ") << "\n"
+	   << "\t" << hate::join(config.m_amp_calibs, ", ") << "\n)";
 	return os;
 }
 
@@ -1119,10 +1119,10 @@ template SYMBOL_VISIBLE void SynapseQuad::decode(std::array<
 std::ostream& operator<<(std::ostream& os, SynapseQuad const& config)
 {
 	os << "SynapseQuad(\n"
-	   << "\t" << hate::join_string(config.m_weights, ", ") << "\n"
-	   << "\t" << hate::join_string(config.m_labels, ", ") << "\n"
-	   << "\t" << hate::join_string(config.m_time_calibs, ", ") << "\n"
-	   << "\t" << hate::join_string(config.m_amp_calibs, ", ") << "\n)";
+	   << "\t" << hate::join(config.m_weights, ", ") << "\n"
+	   << "\t" << hate::join(config.m_labels, ", ") << "\n"
+	   << "\t" << hate::join(config.m_time_calibs, ", ") << "\n"
+	   << "\t" << hate::join(config.m_amp_calibs, ", ") << "\n)";
 	return os;
 }
 

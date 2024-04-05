@@ -52,9 +52,9 @@ std::ostream& operator<<(std::ostream& os, CrossbarOutputConfig const& config)
 	std::stringstream ss;
 	ss << "CrossbarOutputConfig(enable_event_counter: [";
 	ss << std::boolalpha;
-	hate::join(ss, config.m_enable_event_counter, ", ");
+	ss << hate::join(config.m_enable_event_counter, ", ");
 	ss << "], enable_slow: [";
-	hate::join(ss, config.m_enable_slow, ", ");
+	ss << hate::join(config.m_enable_slow, ", ");
 	ss << "])";
 	return (os << ss.str());
 }

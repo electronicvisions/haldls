@@ -243,12 +243,12 @@ std::ostream& operator<<(std::ostream& os, ShiftRegister const& config)
 	ss << "\tenable_dac_to_readout_0: \t" << config.m_enable_dac_to_readout_0 << "\n";
 	ss << "\tenable_dac_to_readout_1: \t" << config.m_enable_dac_to_readout_1 << "\n";
 	ss << "\tenable_led:              \t[";
-	hate::join(ss, config.m_enable_led.begin(), config.m_enable_led.end(), ", ");
+	ss << hate::join(config.m_enable_led.begin(), config.m_enable_led.end(), ", ");
 	ss << "]\n";
 	ss << "\tenable_adc_power_down:   \t" << config.m_enable_adc_power_down << "\n";
 	ss << "\tenable_adc_reset:        \t" << config.m_enable_adc_reset << "\n";
 	ss << "\tenable_vdd:              \t[";
-	hate::join(ss, config.m_enable_vdd.begin(), config.m_enable_vdd.end(), ", ");
+	ss << hate::join(config.m_enable_vdd.begin(), config.m_enable_vdd.end(), ", ");
 	ss << "]\n)";
 	return (os << ss.str());
 }
@@ -427,7 +427,7 @@ std::ostream& operator<<(std::ostream& os, DACControl const& config)
 	std::stringstream ss;
 	ss << "DACControl(enable_channel: [";
 	ss << std::boolalpha;
-	hate::join(ss, config.m_enable_channel.begin(), config.m_enable_channel.end(), ", ");
+	ss << hate::join(config.m_enable_channel.begin(), config.m_enable_channel.end(), ", ");
 	ss << "])";
 	return (os << ss.str());
 }

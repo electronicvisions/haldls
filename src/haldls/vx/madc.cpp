@@ -910,7 +910,7 @@ std::ostream& operator<<(std::ostream& os, MADCConfig const& config)
 	   << "\tmadc_clock_scale_value:                \t" << config.m_madc_clock_scale_value << "\n"
 	   << "\tenable_active_mux_amplifiers:          \t" << config.m_enable_active_mux_amplifiers << "\n"
 	   << "\tenable_pseudo_differential_reference:  \t[";
-	hate::join(ss, config.m_enable_pseudo_differential_reference.begin(), config.m_enable_pseudo_differential_reference.end(), ", ");
+	ss << hate::join(config.m_enable_pseudo_differential_reference.begin(), config.m_enable_pseudo_differential_reference.end(), ", ");
 	ss << "]\n"
 	   << "\tsignal_selection_connect_current_meter:\t" << config.m_signal_selection_connect_current_meter << "\n"
 	   << "\tsignal_selection_connect_active_mux:   \t" << config.m_signal_selection_connect_active_mux << "\n"
@@ -918,7 +918,7 @@ std::ostream& operator<<(std::ostream& os, MADCConfig const& config)
 	   << "\tsignal_selection_connect_preamp:       \t" << config.m_signal_selection_connect_preamp << "\n"
 	   << "\tenable_iconv_amplifier:                \t" << config.m_enable_iconv_amplifier << "\n"
 	   << "\tconnect_iconv_neuron                   \t[";
-	hate::join(ss, config.m_connect_iconv_neuron.begin(), config.m_connect_iconv_neuron.end(), ", ");
+	ss << hate::join(config.m_connect_iconv_neuron.begin(), config.m_connect_iconv_neuron.end(), ", ");
 	ss << "]\n"
 	   << "\tconnect_iconv_synapse:                 \t[inhibitory: "
 	   << config.m_connect_iconv_synapse[halco::hicann_dls::vx::SynapticInputOnNeuron::inhibitory]

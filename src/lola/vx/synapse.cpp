@@ -49,7 +49,7 @@ std::ostream& operator<<(std::ostream& os, ColumnCorrelationRow const& row)
 {
 	os << "ColumnCorrelationRow(" << std::endl;
 	std::stringstream ss;
-	ss << hate::join_string(row.values, "\n");
+	ss << hate::join(row.values, "\n");
 	os << hate::indent(ss.str(), "\t") << "\n";
 	os << ")";
 	return os;
@@ -72,7 +72,7 @@ std::ostream& operator<<(std::ostream& os, ColumnCurrentRow const& row)
 {
 	os << "ColumnCurrentRow(" << std::endl;
 	std::stringstream ss;
-	ss << hate::join_string(row.values, "\n");
+	ss << hate::join(row.values, "\n");
 	os << hate::indent(ss.str(), "\t") << "\n";
 	os << ")";
 	return os;

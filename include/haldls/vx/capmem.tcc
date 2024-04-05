@@ -176,7 +176,7 @@ bool CapMemBlock<Coordinates>::operator!=(CapMemBlock<Coordinates> const& other)
 template <typename Coordinates>
 std::ostream& operator<<(std::ostream& os, CapMemBlock<Coordinates> const& block)
 {
-	os << hate::join_string(block.m_capmem_cells, "\n") << std::flush;
+	os << hate::join(block.m_capmem_cells, "\n") << std::flush;
 	return os;
 }
 

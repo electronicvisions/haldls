@@ -32,7 +32,7 @@ RunTimeInfo run(Connection& connection, PlaybackProgram& program)
 		auto logger = log4cxx::Logger::getLogger("stadls.run");
 		std::stringstream ss;
 		ss << "Got highspeed-link notifications:" << std::endl;
-		hate::join(ss, program.get_highspeed_link_notifications(), ",\n");
+		ss << hate::join(program.get_highspeed_link_notifications(), ",\n");
 		LOG4CXX_TRACE(logger, ss.str());
 	}
 	return time_info;
