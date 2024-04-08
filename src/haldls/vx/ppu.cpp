@@ -248,10 +248,10 @@ std::string PPUMemoryBlock::to_string() const
 
 std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 {
-	os << "PPUMemoryBlock(\n";
+	hate::IndentingOstream ios(os);
+	ios << "PPUMemoryBlock(\n" << hate::Indentation("\t");
 	int const words_per_line = 4;
 	auto const words = pmb.get_words();
-	std::stringstream out;
 	for (unsigned int i = 0; i < words.size(); i += words_per_line) {
 		// print halfwords in hex
 		std::stringstream halfwords;
@@ -270,13 +270,12 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 				ascii << (isprint(chars[k]) ? chars[k] : '.');
 			}
 		}
-		out << halfwords.str() << ascii.str();
+		ios << halfwords.str() << ascii.str();
 		if (i != words.size() - words_per_line) {
-			out << "\n";
+			ios << "\n";
 		}
 	}
-	os << hate::indent(out.str(), "\t");
-	os << ")";
+	ios << hate::Indentation() << ")";
 	return os;
 }
 
@@ -398,10 +397,10 @@ bool PPUMemory::operator!=(PPUMemory const& other) const
 
 std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 {
-	os << "PPUMemory(\n";
+	hate::IndentingOstream ios(os);
+	ios << "PPUMemory(\n" << hate::Indentation("\t");
 	int const words_per_line = 4;
 	auto const words = pm.get_words();
-	std::stringstream out;
 	for (unsigned int i = 0; i < words.size(); i += words_per_line) {
 		// break line and print address
 		std::stringstream addr;
@@ -426,13 +425,12 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 				ascii << (isprint(chars[k]) ? chars[k] : '.');
 			}
 		}
-		out << addr.str() << halfwords.str() << ascii.str();
+		ios << addr.str() << halfwords.str() << ascii.str();
 		if (i != words.size() - words_per_line) {
-			out << "\n";
+			ios << "\n";
 		}
 	}
-	os << hate::indent(out.str(), "\t");
-	os << ")";
+	ios << hate::Indentation() << ")";
 	return os;
 }
 

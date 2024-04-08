@@ -22,12 +22,12 @@ bool Crossbar::operator!=(Crossbar const& other) const
 std::ostream& operator<<(std::ostream& os, Crossbar const& config)
 {
 	os << "Crossbar(\n";
-	std::stringstream ss;
+	hate::IndentingOstream ios(os);
+	ios << hate::Indentation("\t");
 	for (auto const n : halco::common::iter_all<halco::hicann_dls::vx::CrossbarNodeOnDLS>()) {
-		ss << n << ": " << config.nodes[n] << "\n";
+		ios << n << ": " << config.nodes[n] << "\n";
 	}
-	ss << config.outputs;
-	os << hate::indent(ss.str(), "\t");
+	ios << config.outputs;
 	os << "\n)";
 	return os;
 }

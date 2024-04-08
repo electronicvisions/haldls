@@ -48,9 +48,10 @@ bool ColumnCorrelationRow::operator!=(ColumnCorrelationRow const& other) const
 std::ostream& operator<<(std::ostream& os, ColumnCorrelationRow const& row)
 {
 	os << "ColumnCorrelationRow(" << std::endl;
-	std::stringstream ss;
-	ss << hate::join(row.values, "\n");
-	os << hate::indent(ss.str(), "\t") << "\n";
+	hate::IndentingOstream ios(os);
+	ios << hate::Indentation("\t");
+	ios << hate::join(row.values, "\n");
+	os << "\n";
 	os << ")";
 	return os;
 }
@@ -71,9 +72,10 @@ bool ColumnCurrentRow::operator!=(ColumnCurrentRow const& other) const
 std::ostream& operator<<(std::ostream& os, ColumnCurrentRow const& row)
 {
 	os << "ColumnCurrentRow(" << std::endl;
-	std::stringstream ss;
-	ss << hate::join(row.values, "\n");
-	os << hate::indent(ss.str(), "\t") << "\n";
+	hate::IndentingOstream ios(os);
+	ios << hate::Indentation("\t");
+	ios << hate::join(row.values, "\n");
+	os << "\n";
 	os << ")";
 	return os;
 }

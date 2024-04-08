@@ -25,12 +25,12 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::InputMux const& config)
 	os << "InputMux(\n";
 	for (auto mux : halco::common::iter_all<
 	         halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection>()) {
-		std::stringstream ss;
-		ss << mux << ":\n";
-		ss << config[mux];
-		os << hate::indent(ss.str(), "\t") << "\n";
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t");
+		ios << mux << ":\n";
+		ios << config[mux];
+		os << "\n";
 	}
-	os << "\n";
 	os << ")";
 	return os;
 }
@@ -40,10 +40,11 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::BufferToPad const& conf
 	os << "BufferToPad(\n";
 	for (auto mux : halco::common::iter_all<
 	         halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection>()) {
-		std::stringstream ss;
-		ss << mux << ":\n";
-		ss << config[mux];
-		os << hate::indent(ss.str(), "\t") << "\n";
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t");
+		ios << mux << ":\n";
+		ios << config[mux];
+		os << "\n";
 	}
 	os << ")";
 	return os;
@@ -53,12 +54,12 @@ std::ostream& operator<<(std::ostream& os, ReadoutChain::PadMux const& config)
 {
 	os << "PadMux(\n";
 	for (auto mux : halco::common::iter_all<halco::hicann_dls::vx::PadMultiplexerConfigOnDLS>()) {
-		std::stringstream ss;
-		ss << mux << ":\n";
-		ss << config[mux];
-		os << hate::indent(ss.str(), "\t") << "\n";
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t");
+		ios << mux << ":\n";
+		ios << config[mux];
+		os << "\n";
 	}
-	os << "\n";
 	os << ")";
 	return os;
 }

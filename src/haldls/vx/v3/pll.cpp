@@ -83,9 +83,10 @@ std::ostream& operator<<(std::ostream& os, PLLClockOutputBlock::ClockOutput cons
 
 std::ostream& operator<<(std::ostream& os, PLLClockOutputBlock const& config)
 {
-	os << "PLLClockOutputBlock(\n"
-	   << hate::indent(hate::join_string(config.m_output, "\n"), "\t") << "\n"
-	   << "\tSPL1 clock source: " << config.get_spl1_source() << "\n)";
+	hate::IndentingOstream ios(os);
+	ios << "PLLClockOutputBlock(\n"
+	    << hate::Indentation("\t") << hate::join(config.m_output, "\n") << "\n"
+	    << "SPL1 clock source: " << config.get_spl1_source() << hate::Indentation() << "\n)";
 	return os;
 }
 

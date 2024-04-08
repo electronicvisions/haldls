@@ -32,21 +32,27 @@ bool SynapseDriverBlock::operator!=(SynapseDriverBlock const& other) const
 std::ostream& operator<<(std::ostream& os, SynapseDriverBlock const& config)
 {
 	os << "SynapseDriverBlock(\n";
-	os << "\tsynapse_drivers:\n"
-	   << hate::indent(
-	          hate::join_string(config.synapse_drivers.begin(), config.synapse_drivers.end(), "\n"),
-	          "\t\t")
-	   << "\n";
+	os << "\tsynapse_drivers:\n";
 	{
-		std::stringstream ss;
-		ss << config.padi_bus << "\n";
-		os << "\tpadi_bus:\n" << hate::indent(ss.str(), "\t\t") << "\n";
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t\t");
+		ios << hate::join(config.synapse_drivers, "\n");
 	}
+	os << "\n";
+	os << "\tpadi_bus:\n";
 	{
-		std::stringstream ss;
-		ss << config.stp << "\n";
-		os << "\tstp:\n" << hate::indent(ss.str(), "\t\t") << "\n";
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t\t");
+		ios << config.padi_bus << "\n";
 	}
+	os << "\n";
+	os << "\tstp:\n";
+	{
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t\t");
+		ios << config.stp << "\n";
+	}
+	os << "\n";
 	os << "\tstp_v_charge_0: "
 	   << "[left: " << config.stp_v_charge_0[halco::hicann_dls::vx::CapMemBlockOnHemisphere::left]
 	   << ", right: "

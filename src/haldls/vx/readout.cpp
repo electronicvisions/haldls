@@ -726,14 +726,14 @@ std::ostream& operator<<(std::ostream& os, ReadoutSourceSelection::SourceMultipl
 
 std::ostream& operator<<(std::ostream& os, ReadoutSourceSelection const& config)
 {
-	std::stringstream ss;
-	ss << "ReadoutSourceSelection(\n" << std::boolalpha;
-	ss << hate::indent(hate::join_string(config.m_buffers, "\n"), "\t");
-	ss << "\n\tenable_buffer_to_pad: [";
-	ss << hate::join(
+	hate::IndentingOstream ios(os);
+	ios << "ReadoutSourceSelection(\n" << std::boolalpha;
+	ios << hate::Indentation("\t");
+	ios << hate::join_string(config.m_buffers, "\n");
+	ios << "\nenable_buffer_to_pad: [";
+	ios << hate::join(
 	    config.m_enable_buffer_to_pad.begin(), config.m_enable_buffer_to_pad.end(), ", ");
-	ss << "]\n)";
-	return (os << ss.str());
+	return os << "]\n)";
 }
 
 template <typename AddressT>

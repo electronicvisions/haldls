@@ -23,12 +23,14 @@ bool MemoryTiming::operator!=(MemoryTiming const& other) const
 std::ostream& operator<<(std::ostream& os, MemoryTiming const& config)
 {
 	os << "MemoryTiming(\n";
+	hate::IndentingOstream ios(os);
 	boost::hana::for_each(boost::hana::keys(config), [&](auto const key) {
-		os << "\t" << key.c_str() << ": [\n"
-		   << hate::indent(hate::join_string(boost::hana::at_key(config, key), ",\n"), "\t\t")
-		   << "\t]\n";
+		ios << hate::Indentation("\t");
+		ios << key.c_str() << ": [\n"
+		    << hate::Indentation("\t\t") << hate::join(boost::hana::at_key(config, key), ",\n")
+		    << hate::Indentation("\t") << "]\n";
 	});
-	os << ")";
+	ios << hate::Indentation() << ")";
 	return os;
 }
 

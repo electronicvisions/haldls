@@ -32,16 +32,16 @@ bool SynapseBlock::operator!=(SynapseBlock const& other) const
 
 std::ostream& operator<<(std::ostream& os, SynapseBlock const& config)
 {
-	os << "SynapseBlock(\n";
-	{
-		std::stringstream ss;
-		ss << config.matrix;
-		os << hate::indent(ss.str(), "\t") << "\n";
-	}
-	os << "\ti_bias_dac: "
-	   << "[left: " << config.i_bias_dac[halco::hicann_dls::vx::CapMemBlockOnHemisphere::left]
-	   << ", right: " << config.i_bias_dac[halco::hicann_dls::vx::CapMemBlockOnHemisphere::right]
-	   << "]\n)";
+	hate::IndentingOstream ios(os);
+	ios << "SynapseBlock(\n";
+	ios << hate::Indentation("\t");
+	ios << config.matrix;
+	ios << "\n";
+	ios << "i_bias_dac: "
+	    << "[left: " << config.i_bias_dac[halco::hicann_dls::vx::CapMemBlockOnHemisphere::left]
+	    << ", right: " << config.i_bias_dac[halco::hicann_dls::vx::CapMemBlockOnHemisphere::right]
+	    << "]";
+	ios << hate::Indentation() << "\n)";
 	return os;
 }
 

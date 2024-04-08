@@ -22,85 +22,74 @@ std::ostream& operator<<(std::ostream& os, Chip const& config)
 	using namespace halco::hicann_dls::vx::v4;
 	using namespace halco::common;
 
-	os << "Chip(\n";
-
-	{
-		os << "\tmemory_timing:\n";
-		std::stringstream ss;
-		ss << config.memory_timing;
-		os << hate::indent(ss.str(), "\t\t") << "\n";
+	hate::IndentingOstream ios(os);
+	ios << "Chip(\n";
+	ios << hate::Indentation("\t");
+	ios << "memory_timing:\n";
+	ios << hate::Indentation("\t\t");
+	ios << config.memory_timing;
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "crossbar:\n";
+	ios << hate::Indentation("\t\t");
+	ios << config.crossbar;
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "background_spike_sources:\n";
+	ios << hate::Indentation("\t\t");
+	for (auto const c : iter_all<BackgroundSpikeSourceOnDLS>()) {
+		ios << c << ": " << config.background_spike_sources[c];
 	}
-	{
-		os << "\tcrossbar:\n";
-		std::stringstream ss;
-		ss << config.crossbar;
-		os << hate::indent(ss.str(), "\t\t") << "\n";
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "capmem:\n";
+	ios << hate::Indentation("\t\t");
+	ios << config.capmem;
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "synapse_driver_blocks:\n";
+	ios << hate::Indentation("\t\t");
+	for (auto const c : iter_all<SynapseDriverBlockOnDLS>()) {
+		ios << c << ": " << config.synapse_driver_blocks[c];
 	}
-	{
-		os << "\tbackground_spike_sources:\n";
-		std::stringstream ss;
-		for (auto const c : iter_all<BackgroundSpikeSourceOnDLS>()) {
-			ss << c << ": " << config.background_spike_sources[c];
-		}
-		os << hate::indent(ss.str(), "\t\t") << "\n";
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "synapse_blocks:\n";
+	ios << hate::Indentation("\t\t");
+	for (auto const c : iter_all<SynapseBlockOnDLS>()) {
+		ios << c << ": " << config.synapse_blocks[c];
 	}
-	{
-		os << "\tcapmem:\n";
-		std::stringstream ss;
-		ss << config.capmem;
-		os << hate::indent(ss.str(), "\t\t") << "\n";
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "neuron_block:\n";
+	ios << hate::Indentation("\t\t");
+	ios << config.neuron_block;
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "cadc_readout_chains:\n";
+	ios << hate::Indentation("\t\t");
+	for (auto const c : iter_all<CADCOnDLS>()) {
+		ios << config.cadc_readout_chains[c];
 	}
-	{
-		os << "\tsynapse_driver_blocks:\n";
-		std::stringstream ss;
-		for (auto const c : iter_all<SynapseDriverBlockOnDLS>()) {
-			ss << c << ": " << config.synapse_driver_blocks[c];
-		}
-		os << hate::indent(ss.str(), "\t\t") << "\n";
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "readout_chain:\n";
+	ios << hate::Indentation("\t\t");
+	ios << config.readout_chain;
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "ppu_memory:\n";
+	for (auto const c : iter_all<PPUMemoryOnDLS>()) {
+		ios << c << ": " << config.ppu_memory[c];
 	}
-	{
-		os << "\tsynapse_blocks:\n";
-		std::stringstream ss;
-		for (auto const c : iter_all<SynapseBlockOnDLS>()) {
-			ss << c << ": " << config.synapse_blocks[c];
-		}
-		os << hate::indent(ss.str(), "\t\t") << "\n";
-	}
-	{
-		os << "\tneuron_block:\n";
-		std::stringstream ss;
-		ss << config.neuron_block;
-		os << hate::indent(ss.str(), "\t\t") << "\n";
-	}
-	{
-		os << "\tcadc_readout_chains:\n";
-		std::stringstream ss;
-		for (auto const c : iter_all<CADCOnDLS>()) {
-			ss << config.cadc_readout_chains[c];
-		}
-		os << hate::indent(ss.str(), "\t\t") << "\n";
-	}
-	{
-		os << "\treadout_chain:\n";
-		std::stringstream ss;
-		ss << config.readout_chain;
-		os << hate::indent(ss.str(), "\t\t") << "\n";
-	}
-	{
-		os << "\tppu_memory:\n";
-		std::stringstream ss;
-		for (auto const c : iter_all<PPUMemoryOnDLS>()) {
-			ss << c << ": " << config.ppu_memory[c];
-		}
-		os << hate::indent(ss.str(), "\t\t") << "\n";
-	}
-	{
-		os << "\texternal_ppu_memory:\n";
-		std::stringstream ss;
-		ss << config.external_ppu_memory;
-		os << hate::indent(ss.str(), "\t\t") << "\n";
-	}
-	os << ")";
+	ios << hate::Indentation("\t");
+	ios << "\n";
+	ios << "external_ppu_memory:\n";
+	ios << hate::Indentation("\t\t");
+	ios << config.external_ppu_memory;
+	ios << hate::Indentation();
+	ios << "\n";
+	ios << ")";
 	return os;
 }
 

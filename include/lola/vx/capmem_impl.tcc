@@ -36,19 +36,27 @@ std::ostream& operator<<(std::ostream& os, CapMem const& config)
 	for (auto block : halco::common::iter_all<
 	         halco::hicann_dls::vx::CHIP_REVISION_STR::CapMemBlockConfigOnDLS>()) {
 		os << block << ":\n";
-		std::stringstream ss;
-		ss << config.blocks[block];
-		os << hate::indent(ss.str(), "\t") << "\n";
+		{
+			hate::IndentingOstream ios(os);
+			ios << hate::Indentation("\t");
+			ios << config.blocks[block];
+		}
+		os << "\n";
 	}
-	std::stringstream ss;
-	ss << config.synapse_bias_selection << "\n";
-	ss << config.reference_generator;
-	os << hate::indent(ss.str(), "\t") << "\n";
-	os << "unused_cells:\n"
-	   << hate::indent(
-	          hate::join_string(config.unused_cells.begin(), config.unused_cells.end(), "\n"), "\t")
-	   << "\n";
-	os << ")";
+	{
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t");
+		ios << config.synapse_bias_selection << "\n";
+		ios << config.reference_generator;
+	}
+	os << "\n";
+	os << "unused_cells:\n";
+	{
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t");
+		ios << hate::join(config.unused_cells, "\n");
+	}
+	os << "\n)";
 	return os;
 }
 

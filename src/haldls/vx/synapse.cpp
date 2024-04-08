@@ -1246,8 +1246,10 @@ std::ostream& operator<<(std::ostream& os, ColumnCurrentQuad::ColumnCurrentSwitc
 
 std::ostream& operator<<(std::ostream& os, ColumnCurrentQuad const& config)
 {
-	os << "ColumnCurrentQuad(\n"
-	   << hate::indent(hate::join_string(config.m_switches, "\n"), "\t") << "\n)";
+	hate::IndentingOstream ios(os);
+	ios << "ColumnCurrentQuad(\n"
+	    << hate::Indentation("\t") << hate::join(config.m_switches, "\n") << "\n"
+	    << hate::Indentation() << ")";
 	return os;
 }
 
@@ -1279,8 +1281,10 @@ std::ostream& operator<<(
 
 std::ostream& operator<<(std::ostream& os, ColumnCorrelationQuad const& config)
 {
-	os << "ColumnCorrelationQuad(\n"
-	   << hate::indent(hate::join_string(config.m_switches, "\n"), "\t") << "\n)";
+	hate::IndentingOstream ios(os);
+	ios << "ColumnCorrelationQuad(\n"
+	    << hate::Indentation("\t") << hate::join(config.m_switches, "\n") << "\n"
+	    << hate::Indentation() << ")";
 	return os;
 }
 

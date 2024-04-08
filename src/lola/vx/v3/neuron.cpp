@@ -518,21 +518,22 @@ std::ostream& operator<<(std::ostream& os, AtomicNeuron const& config)
 	using namespace halco::hicann_dls::vx;
 	std::stringstream ss;
 	os << "AtomicNeuron(\n";
-	ss << "excitatory_input: " << config.excitatory_input << "\n";
-	ss << "inhibitory_input: " << config.inhibitory_input << "\n";
-	ss << config.leak << "\n";
-	ss << config.reset << "\n";
-	ss << config.threshold << "\n";
-	ss << config.multicompartment << "\n";
-	ss << config.constant_current << "\n";
-	ss << config.membrane_capacitance << "\n";
-	ss << config.adaptation << "\n";
-	ss << config.exponential << "\n";
-	ss << config.event_routing << "\n";
-	ss << config.readout << "\n";
-	ss << config.refractory_period << "\n";
-	ss << config.bayesian;
-	os << hate::indent(ss.str(), "\t");
+	hate::IndentingOstream ios(os);
+	ios << hate::Indentation("\t");
+	ios << "excitatory_input: " << config.excitatory_input << "\n";
+	ios << "inhibitory_input: " << config.inhibitory_input << "\n";
+	ios << config.leak << "\n";
+	ios << config.reset << "\n";
+	ios << config.threshold << "\n";
+	ios << config.multicompartment << "\n";
+	ios << config.constant_current << "\n";
+	ios << config.membrane_capacitance << "\n";
+	ios << config.adaptation << "\n";
+	ios << config.exponential << "\n";
+	ios << config.event_routing << "\n";
+	ios << config.readout << "\n";
+	ios << config.refractory_period << "\n";
+	ios << config.bayesian;
 	os << "\n)";
 	return os;
 }
@@ -776,22 +777,25 @@ std::ostream& operator<<(std::ostream& os, NeuronBlock const& config)
 	using namespace halco::common;
 	os << "NeuronBlock(\n";
 	for (auto const an : iter_all<AtomicNeuronOnDLS>()) {
-		std::stringstream sss;
-		sss << config.atomic_neurons[an];
 		os << an << ":\n";
-		os << hate::indent(sss.str(), "\t") << "\n";
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t");
+		ios << config.atomic_neurons[an];
+		os << "\n";
 	}
 	for (auto const block : iter_all<CommonNeuronBackendConfigOnDLS>()) {
-		std::stringstream sss;
-		sss << config.backends[block];
 		os << block << ":\n";
-		os << hate::indent(sss.str(), "\t") << "\n";
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t");
+		ios << config.backends[block];
+		os << "\n";
 	}
 	for (auto const row : iter_all<ColumnCurrentRowOnDLS>()) {
-		std::stringstream sss;
-		sss << config.current_rows[row];
 		os << row << ":\n";
-		os << hate::indent(sss.str(), "\t") << "\n";
+		hate::IndentingOstream ios(os);
+		ios << hate::Indentation("\t");
+		ios << config.current_rows[row];
+		os << "\n";
 	}
 	for (auto const block : iter_all<CapMemBlockOnDLS>()) {
 		os << block << ":\n";
