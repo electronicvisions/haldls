@@ -529,11 +529,6 @@ private:
 	friend haldls::vx::detail::VisitPreorderImpl<ReadoutChain>;
 };
 
-std::ostream& operator<<(std::ostream& os, ReadoutChain::InputMux const& config) SYMBOL_VISIBLE;
-std::ostream& operator<<(std::ostream& os, ReadoutChain::BufferToPad const& config) SYMBOL_VISIBLE;
-std::ostream& operator<<(std::ostream& os, ReadoutChain::PadMux const& config) SYMBOL_VISIBLE;
-
-
 } // lola::vx::CHIP_REVISION_STR
 
 #include "lola/vx/readout_chain.tcc"

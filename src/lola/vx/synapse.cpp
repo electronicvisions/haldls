@@ -47,13 +47,7 @@ bool ColumnCorrelationRow::operator!=(ColumnCorrelationRow const& other) const
 
 std::ostream& operator<<(std::ostream& os, ColumnCorrelationRow const& row)
 {
-	os << "ColumnCorrelationRow(" << std::endl;
-	hate::IndentingOstream ios(os);
-	ios << hate::Indentation("\t");
-	ios << hate::join(row.values, "\n");
-	os << "\n";
-	os << ")";
-	return os;
+	return print(os, row);
 }
 
 
@@ -71,13 +65,7 @@ bool ColumnCurrentRow::operator!=(ColumnCurrentRow const& other) const
 
 std::ostream& operator<<(std::ostream& os, ColumnCurrentRow const& row)
 {
-	os << "ColumnCurrentRow(" << std::endl;
-	hate::IndentingOstream ios(os);
-	ios << hate::Indentation("\t");
-	ios << hate::join(row.values, "\n");
-	os << "\n";
-	os << ")";
-	return os;
+	return print(os, row);
 }
 
 
@@ -95,13 +83,7 @@ bool SynapseWeightRow::operator!=(SynapseWeightRow const& other) const
 
 std::ostream& operator<<(std::ostream& os, SynapseWeightRow const& row)
 {
-	os << "SynapseWeightRow(" << std::endl;
-	boost::hana::for_each(boost::hana::keys(row), [&](auto const key) {
-		os << "  " << key.c_str() << ":\t" << print_row(boost::hana::at_key(row, key)) << std::endl;
-	});
-	os << ")";
-
-	return os;
+	return print(os, row);
 }
 
 
@@ -119,13 +101,7 @@ bool SynapseLabelRow::operator!=(SynapseLabelRow const& other) const
 
 std::ostream& operator<<(std::ostream& os, SynapseLabelRow const& row)
 {
-	os << "SynapseLabelRow(" << std::endl;
-	boost::hana::for_each(boost::hana::keys(row), [&](auto const key) {
-		os << "  " << key.c_str() << ":\t" << print_row(boost::hana::at_key(row, key)) << std::endl;
-	});
-	os << ")";
-
-	return os;
+	return print(os, row);
 }
 
 
@@ -143,13 +119,7 @@ bool SynapseCorrelationCalibRow::operator!=(SynapseCorrelationCalibRow const& ot
 
 std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibRow const& row)
 {
-	os << "SynapseCorrelationCalibRow(" << std::endl;
-	boost::hana::for_each(boost::hana::keys(row), [&](auto const key) {
-		os << "  " << key.c_str() << ":\t" << print_row(boost::hana::at_key(row, key)) << std::endl;
-	});
-	os << ")";
-
-	return os;
+	return print(os, row);
 }
 
 
@@ -167,13 +137,7 @@ bool SynapseRow::operator!=(SynapseRow const& other) const
 
 std::ostream& operator<<(std::ostream& os, SynapseRow const& row)
 {
-	os << "SynapseRow(" << std::endl;
-	boost::hana::for_each(boost::hana::keys(row), [&](auto const key) {
-		os << "  " << key.c_str() << ":\t" << print_row(boost::hana::at_key(row, key)) << std::endl;
-	});
-	os << ")";
-
-	return os;
+	return print(os, row);
 }
 
 

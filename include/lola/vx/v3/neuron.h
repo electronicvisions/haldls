@@ -721,6 +721,12 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<NeuronBlock>;
 };
 
+
+std::ostream& operator<<(std::ostream&, AtomicNeuron::ConstantCurrent::Type const&) SYMBOL_VISIBLE;
+std::ostream& operator<<(std::ostream&, AtomicNeuron::EventRouting::AnalogOutputMode const&)
+    SYMBOL_VISIBLE;
+std::ostream& operator<<(std::ostream&, AtomicNeuron::Bayesian::Operation const&) SYMBOL_VISIBLE;
+
 } // namespace lola::vx::v3
 
 #include "lola/vx/v3/neuron.tcc"

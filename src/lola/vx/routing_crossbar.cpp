@@ -1,9 +1,7 @@
 #include "lola/vx/routing_crossbar.h"
 
 #include "haldls/vx/container.tcc"
-#include "hate/indent.h"
 #include "lola/vx/hana.h"
-#include <sstream>
 
 namespace lola::vx {
 
@@ -21,15 +19,7 @@ bool Crossbar::operator!=(Crossbar const& other) const
 
 std::ostream& operator<<(std::ostream& os, Crossbar const& config)
 {
-	os << "Crossbar(\n";
-	hate::IndentingOstream ios(os);
-	ios << hate::Indentation("\t");
-	for (auto const n : halco::common::iter_all<halco::hicann_dls::vx::CrossbarNodeOnDLS>()) {
-		ios << n << ": " << config.nodes[n] << "\n";
-	}
-	ios << config.outputs;
-	os << "\n)";
-	return os;
+	return print(os, config);
 }
 
 } // namespace lola::vx

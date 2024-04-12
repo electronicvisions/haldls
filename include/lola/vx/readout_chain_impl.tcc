@@ -4,10 +4,7 @@
 
 #include "lola/vx/readout_chain.h"
 
-#include "halco/common/iter_all.h"
 #include "haldls/vx/container.tcc"
-#include "hate/indent.h"
-#include "hate/join.h"
 #include "lola/vx/hana.h"
 
 #if CHIP_REVISION == 3
@@ -19,50 +16,6 @@
 #endif
 
 namespace lola::vx::CHIP_REVISION_STR {
-
-std::ostream& operator<<(std::ostream& os, ReadoutChain::InputMux const& config)
-{
-	os << "InputMux(\n";
-	for (auto mux : halco::common::iter_all<
-	         halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection>()) {
-		hate::IndentingOstream ios(os);
-		ios << hate::Indentation("\t");
-		ios << mux << ":\n";
-		ios << config[mux];
-		os << "\n";
-	}
-	os << ")";
-	return os;
-}
-
-std::ostream& operator<<(std::ostream& os, ReadoutChain::BufferToPad const& config)
-{
-	os << "BufferToPad(\n";
-	for (auto mux : halco::common::iter_all<
-	         halco::hicann_dls::vx::SourceMultiplexerOnReadoutSourceSelection>()) {
-		hate::IndentingOstream ios(os);
-		ios << hate::Indentation("\t");
-		ios << mux << ":\n";
-		ios << config[mux];
-		os << "\n";
-	}
-	os << ")";
-	return os;
-}
-
-std::ostream& operator<<(std::ostream& os, ReadoutChain::PadMux const& config)
-{
-	os << "PadMux(\n";
-	for (auto mux : halco::common::iter_all<halco::hicann_dls::vx::PadMultiplexerConfigOnDLS>()) {
-		hate::IndentingOstream ios(os);
-		ios << hate::Indentation("\t");
-		ios << mux << ":\n";
-		ios << config[mux];
-		os << "\n";
-	}
-	os << ")";
-	return os;
-}
 
 ReadoutChain::BufferToPadT::BufferToPadT() : enable(false), amp_i_bias() {}
 
@@ -78,12 +31,7 @@ bool ReadoutChain::BufferToPadT::operator!=(BufferToPadT const& other) const
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::BufferToPadT const& config)
 {
-	std::stringstream ss;
-	ss << "BufferToPadT(\n"
-	   << "\tenable:     " << std::boolalpha << config.enable << "\n"
-	   << "\tamp_i_bias: " << config.amp_i_bias << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 bool ReadoutChain::DynamicMux::operator==(DynamicMux const& other) const
@@ -98,14 +46,7 @@ bool ReadoutChain::DynamicMux::operator!=(DynamicMux const& other) const
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::DynamicMux const& config)
 {
-	std::stringstream ss;
-	ss << "DynamicMux(\n"
-	   << "\tenable_amplifiers:        " << std::boolalpha << config.enable_amplifiers << "\n"
-	   << "\tinitially_selected_input: " << config.initially_selected_input << "\n"
-	   << "\tinput_select_length:      " << config.input_select_length << "\n"
-	   << "\ti_bias:                   " << config.i_bias << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 bool ReadoutChain::PseudoDifferentialConverter::operator==(
@@ -122,15 +63,7 @@ bool ReadoutChain::PseudoDifferentialConverter::operator!=(
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::PseudoDifferentialConverter const& config)
 {
-	std::stringstream ss;
-	ss << "PseudoDifferentialConverter(\n";
-	ss << "\tenable_reference: [";
-	ss << hate::join(config.enable_reference.begin(), config.enable_reference.end(), ", ");
-	ss << "]\n"
-	   << "\tv_ref:            " << config.v_ref << "\n"
-	   << "\tbuffer_bias:      " << config.buffer_bias << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 ReadoutChain::MADCInputCrossbar::MADCInputCrossbar() :
@@ -152,15 +85,7 @@ bool ReadoutChain::MADCInputCrossbar::operator!=(MADCInputCrossbar const& other)
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::MADCInputCrossbar const& config)
 {
-	std::stringstream ss;
-	ss << "MADCInputCrossbar(\n"
-	   << "\tconnect_source_measure_unit: " << std::boolalpha << config.connect_source_measure_unit
-	   << "\n"
-	   << "\tconnect_dynamic_mux:         " << config.connect_dynamic_mux << "\n"
-	   << "\tconnect_pad_mux:             " << config.connect_pad_mux << "\n"
-	   << "\tconnect_madc_preamp:         " << config.connect_madc_preamp << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 bool ReadoutChain::MADCPreamp::operator==(MADCPreamp const& other) const
@@ -175,15 +100,7 @@ bool ReadoutChain::MADCPreamp::operator!=(MADCPreamp const& other) const
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::MADCPreamp const& config)
 {
-	std::stringstream ss;
-	ss << "MADCPreamp(\n"
-	   << "\tgain_cap_size:         " << std::boolalpha << config.gain_cap_size << "\n"
-	   << "\tsampling_window_start: " << config.sampling_window_start << "\n"
-	   << "\tsampling_window_end:   " << config.sampling_window_end << "\n"
-	   << "\tv_ref:                 " << config.v_ref << "\n"
-	   << "\ti_bias:                " << config.i_bias << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 ReadoutChain::MADCDebugCrossbar::MADCDebugCrossbar() :
@@ -202,13 +119,7 @@ bool ReadoutChain::MADCDebugCrossbar::operator!=(MADCDebugCrossbar const& other)
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::MADCDebugCrossbar const& config)
 {
-	std::stringstream ss;
-	ss << "MADCDebugCrossbar(\n"
-	   << "\tconnect_preamp_to_madc: " << std::boolalpha << config.connect_preamp_to_madc << "\n"
-	   << "\tconnect_pads_to_madc:   " << config.connect_pads_to_madc << "\n"
-	   << "\tconnect_preamp_to_pads: " << config.connect_preamp_to_pads << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 bool ReadoutChain::MADC::operator==(MADC const& other) const
@@ -223,24 +134,7 @@ bool ReadoutChain::MADC::operator!=(MADC const& other) const
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::MADC const& config)
 {
-	std::stringstream ss;
-	ss << "MADC(\n"
-	   << "\tsample_duration_adjust:    " << std::boolalpha << config.sample_duration_adjust << "\n"
-	   << "\tenable_sar_reset_on_fall:  " << config.enable_sar_reset_on_fall << "\n"
-	   << "\tsar_reset_wait:            " << config.sar_reset_wait << "\n"
-	   << "\tsar_reset_length:          " << config.sar_reset_length << "\n"
-	   << "\tpowerup_wait_value:        " << config.powerup_wait_value << "\n"
-	   << "\tconversion_cycles_offset:  " << config.conversion_cycles_offset << "\n"
-	   << "\tenable_calibration:        " << config.enable_calibration << "\n"
-	   << "\tcalibration_wait_value:    " << config.calibration_wait_value << "\n"
-	   << "\tnumber_of_samples:         " << config.number_of_samples << "\n"
-	   << "\tsample_on_positive_edge:   " << config.sample_on_positive_edge << "\n"
-	   << "\tenable_dummy_data:         " << config.enable_dummy_data << "\n"
-	   << "\tenable_madc_clock_scaling: " << config.enable_madc_clock_scaling << "\n"
-	   << "\tclock_scale_value:         " << config.clock_scale_value << "\n"
-	   << "\tin_500na:                  " << config.in_500na << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 bool ReadoutChain::SourceMeasureUnit::operator==(SourceMeasureUnit const& other) const
@@ -255,25 +149,7 @@ bool ReadoutChain::SourceMeasureUnit::operator!=(SourceMeasureUnit const& other)
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::SourceMeasureUnit const& config)
 {
-	std::stringstream ss;
-	ss << "SourceMeasureUnit(\n"
-	   << "\tsampling_window_start:   " << std::boolalpha << config.sampling_window_start << "\n"
-	   << "\tsampling_window_end:     " << config.sampling_window_end << "\n";
-	ss << "\tconnect_neuron_stimulus: [";
-	ss << hate::join(
-	    config.connect_neuron_stimulus.begin(), config.connect_neuron_stimulus.end(), ", ");
-	ss << "]\n";
-	ss << "\tconnect_synapse_debug:   [";
-	ss << hate::join(
-	    config.connect_synapse_debug.begin(), config.connect_synapse_debug.end(), ", ");
-	ss << "]\n";
-	ss << "\ttest_voltage:            " << config.test_voltage << "\n"
-	   << "\tbuffer_i_bias:           " << config.buffer_i_bias << "\n"
-	   << "\tamp_v_ref:               " << config.amp_v_ref << "\n"
-	   << "\tamp_i_bias:              " << config.amp_i_bias << "\n"
-	   << "\tamp_i_bias:              " << config.amp_i_bias << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 ReadoutChain::CurrentDAC::CurrentDAC() :
@@ -298,23 +174,7 @@ bool ReadoutChain::CurrentDAC::operator!=(CurrentDAC const& other) const
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain::CurrentDAC const& config)
 {
-	std::stringstream ss;
-	ss << "CurrentDAC(\n"
-	   << "\tenable_current:          " << std::boolalpha << config.enable_current << "\n"
-	   << "\tcurrent:                 " << config.current << "\n"
-	   << "\tsign:                    " << config.sign << "\n"
-	   << "\tconnect_neuron_stimulus: [";
-	ss << hate::join(
-	    config.connect_neuron_stimulus.begin(), config.connect_neuron_stimulus.end(), ", ");
-	ss << "]\n";
-	ss << "\tconnect_synapse_debug:   [";
-	ss << hate::join(
-	    config.connect_synapse_debug.begin(), config.connect_synapse_debug.end(), ", ");
-	ss << "]\n"
-	   << "\ti_bias:                  " << config.i_bias << "\n"
-	   << "\ti_bias_casc:             " << config.i_bias_casc << "\n)";
-	os << ss.str();
-	return os;
+	return print(os, config);
 }
 
 bool ReadoutChain::operator==(ReadoutChain const& other) const
@@ -329,20 +189,7 @@ bool ReadoutChain::operator!=(ReadoutChain const& other) const
 
 std::ostream& operator<<(std::ostream& os, ReadoutChain const& config)
 {
-	os << "ReadoutChain(\n"
-	   << config.input_mux << "\n"
-	   << config.buffer_to_pad << "\n"
-	   << config.dynamic_mux << "\n"
-	   << config.pseudo_diff_converter << "\n"
-	   << config.madc_input_crossbar << "\n"
-	   << config.madc_preamp << "\n"
-	   << config.madc_debug_crossbar << "\n"
-	   << config.madc << "\n"
-	   << config.pad_mux << "\n"
-	   << config.source_measure_unit << "\n"
-	   << config.current_dac << "\n"
-	   << ")";
-	return os;
+	return print(os, config);
 }
 
 } // lola::vx::CHIP_REVISION

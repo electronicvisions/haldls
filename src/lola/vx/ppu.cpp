@@ -198,12 +198,7 @@ std::string ExternalPPUMemory::to_string() const
 
 std::ostream& operator<<(std::ostream& os, ExternalPPUMemory const& config)
 {
-	os << "ExternalPPUMemory(" << std::endl;
-	for (auto const& byte : config.bytes) {
-		os << "\t" << byte << std::endl;
-	}
-	os << ")";
-	return os;
+	return print(os, config);
 }
 
 
