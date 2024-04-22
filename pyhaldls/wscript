@@ -21,7 +21,7 @@ def configure(cfg):
     cfg.load('pycodestyle')
 
 def build(bld):
-    bld.env.DLSvx_HARDWARE_AVAILABLE = "SLURM_HWDB_YAML" in os.environ
+    bld.env.BBS_HARDWARE_AVAILABLE = "SLURM_HWDB_YAML" in os.environ
 
     if not bld.env.with_pybind:
         bld.fatal('building pyhaldls requires pybind')
