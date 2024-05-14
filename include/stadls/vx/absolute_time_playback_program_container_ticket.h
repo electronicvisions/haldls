@@ -25,6 +25,8 @@ class AbsoluteTimePlaybackProgramBuilder;
 class GENPYBIND(visible) AbsoluteTimePlaybackProgramContainerTicket
 {
 public:
+	AbsoluteTimePlaybackProgramContainerTicket() = default;
+
 	/**
 	 * Get container data if available
 	 * @throws std::runtime_error On container data not available yet
