@@ -25,6 +25,8 @@ class PlaybackProgramBuilderAdapterImpl;
 class GENPYBIND(visible) ContainerTicket
 {
 public:
+	ContainerTicket() = default;
+
 	/**
 	 * Get container data if available.
 	 * Returns constant reference to owned container instance.
