@@ -164,6 +164,7 @@ bool ReferenceGeneratorConfig::operator!=(ReferenceGeneratorConfig const& other)
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, ReferenceGeneratorConfig const& config)
 {
 	std::stringstream ss;
@@ -180,6 +181,7 @@ std::ostream& operator<<(std::ostream& os, ReferenceGeneratorConfig const& confi
 	ss << "\tcapmem_slope:              \t[" << hate::join(config.m_capmem_slope, ", ") << "]\n)";
 	return (os << ss.str());
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, ReferenceGeneratorConfig::config_size_in_words>

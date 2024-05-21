@@ -645,6 +645,7 @@ template SYMBOL_VISIBLE void NeuronConfig::decode<fisch::vx::word_access_type::O
     std::array<fisch::vx::word_access_type::Omnibus, NeuronConfig::config_size_in_words> const&
         data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, NeuronConfig::ReadoutSource const& config)
 {
 	switch (config) {
@@ -665,11 +666,7 @@ std::ostream& operator<<(std::ostream& os, NeuronConfig::ReadoutSource const& co
 			break;
 		}
 		default: {
-#ifndef __ppu__
 			throw std::logic_error("Unknown ReadoutSource.");
-#else
-			exit(1);
-#endif
 		}
 	}
 	return os;
@@ -721,6 +718,7 @@ std::ostream& operator<<(std::ostream& os, NeuronConfig const& config)
 	// clang-format on
 	return (os << ss.str());
 }
+#endif
 
 bool NeuronConfig::operator==(NeuronConfig const& other) const
 {
@@ -845,11 +843,13 @@ template SYMBOL_VISIBLE void NeuronResetQuad::decode<fisch::vx::word_access_type
         fisch::vx::word_access_type::Omnibus,
         NeuronResetQuad::read_config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, NeuronResetQuad const&)
 {
 	os << "NeuronResetQuad()";
 	return os;
 }
+#endif
 
 bool NeuronResetQuad::operator==(NeuronResetQuad const&) const
 {

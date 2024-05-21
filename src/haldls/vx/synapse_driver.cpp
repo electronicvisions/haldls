@@ -25,12 +25,14 @@ bool SynapseDriverSRAMTimingConfig::operator!=(SynapseDriverSRAMTimingConfig con
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SynapseDriverSRAMTimingConfig const& config)
 {
 	os << "SynapseDriverSRAMTimingConfig(" << config.get_read_delay() << ", "
 	   << config.get_address_setup_time() << ", " << config.get_write_width() << ")";
 	return os;
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, SynapseDriverSRAMTimingConfig::config_size_in_words>
@@ -441,6 +443,7 @@ template SYMBOL_VISIBLE void SynapseDriverConfig::decode<fisch::vx::word_access_
         fisch::vx::word_access_type::Omnibus,
         SynapseDriverConfig::config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& mode)
 {
 	switch (mode) {
@@ -453,11 +456,7 @@ std::ostream& operator<<(std::ostream& os, SynapseDriverConfig::RowMode const& m
 		case SynapseDriverConfig::RowMode::excitatory_and_inhibitory:
 			return os << "excitatory_and_inhibitory";
 		default:
-#ifndef __ppu__
 			throw std::logic_error("Ostream operator of specified RowMode not implemented");
-#else
-			exit(1);
-#endif
 	}
 }
 
@@ -486,6 +485,7 @@ std::ostream& operator<<(std::ostream& os, SynapseDriverConfig const& config)
 	// clang-format on
 	return (os << ss.str());
 }
+#endif
 
 bool SynapseDriverConfig::operator==(SynapseDriverConfig const& other) const
 {

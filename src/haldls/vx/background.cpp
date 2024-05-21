@@ -102,6 +102,7 @@ bool BackgroundSpikeSource::operator!=(BackgroundSpikeSource const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, BackgroundSpikeSource const& config)
 {
 	std::stringstream ss;
@@ -111,6 +112,7 @@ std::ostream& operator<<(std::ostream& os, BackgroundSpikeSource const& config)
 	   << config.m_neuron_label << ")";
 	return (os << ss.str());
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, BackgroundSpikeSource::config_size_in_words> BackgroundSpikeSource::addresses(

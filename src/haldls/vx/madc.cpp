@@ -203,6 +203,7 @@ template SYMBOL_VISIBLE void MADCControl::decode<fisch::vx::word_access_type::Om
     std::array<fisch::vx::word_access_type::Omnibus, MADCControl::read_config_size_in_words> const&
         data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, MADCControl const& config)
 {
 	std::stringstream ss;
@@ -219,6 +220,7 @@ std::ostream& operator<<(std::ostream& os, MADCControl const& config)
 	// clang-format on
 	return (os << ss.str());
 }
+#endif
 
 bool MADCControl::operator==(MADCControl const& other) const
 {
@@ -880,6 +882,7 @@ template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::word_access_type::Omn
 template SYMBOL_VISIBLE void MADCConfig::decode<fisch::vx::word_access_type::Omnibus>(
     std::array<fisch::vx::word_access_type::Omnibus, MADCConfig::config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, MADCConfig const& config)
 {
 	std::stringstream ss;
@@ -929,6 +932,7 @@ std::ostream& operator<<(std::ostream& os, MADCConfig const& config)
 
 	return (os << ss.str());
 }
+#endif
 
 bool MADCConfig::operator==(MADCConfig const& other) const
 {

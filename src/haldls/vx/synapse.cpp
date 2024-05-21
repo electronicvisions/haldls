@@ -196,6 +196,7 @@ template SYMBOL_VISIBLE void CommonSynramConfig::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         CommonSynramConfig::config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CommonSynramConfig const& config)
 {
 	os << "CommonSynramConfig(west: " << config.m_pc_conf_west << ", " << config.m_w_conf_west
@@ -203,6 +204,7 @@ std::ostream& operator<<(std::ostream& os, CommonSynramConfig const& config)
 	   << config.m_wait_ctr_clear << ")";
 	return os;
 }
+#endif
 
 
 SynapseBiasSelection::SynapseBiasSelection() :
@@ -275,6 +277,7 @@ bool SynapseBiasSelection::operator!=(SynapseBiasSelection const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
 {
 	std::stringstream ss;
@@ -293,6 +296,7 @@ std::ostream& operator<<(std::ostream& os, SynapseBiasSelection const& config)
 	ss << "]\n)";
 	return (os << ss.str());
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, SynapseBiasSelection::config_size_in_words> SynapseBiasSelection::addresses(
@@ -576,11 +580,13 @@ template SYMBOL_VISIBLE void SynapseWeightQuad::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         SynapseWeightQuad::config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SynapseWeightQuad const& config)
 {
 	os << "SynapseWeightQuad(" << hate::join(config.m_values, ", ") << ")";
 	return os;
 }
+#endif
 
 
 SynapseLabelQuad::SynapseLabelQuad() : m_values() {}
@@ -718,11 +724,13 @@ template SYMBOL_VISIBLE void SynapseLabelQuad::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         SynapseLabelQuad::config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SynapseLabelQuad const& config)
 {
 	os << "SynapseLabelQuad(" << hate::join(config.m_values, ", ") << ")";
 	return os;
 }
+#endif
 
 
 SynapseCorrelationCalibQuad::SynapseCorrelationCalibQuad() : m_time_calibs(), m_amp_calibs() {}
@@ -907,6 +915,7 @@ template SYMBOL_VISIBLE void SynapseCorrelationCalibQuad::decode(
         fisch::vx::word_access_type::OmnibusChipOverJTAG,
         SynapseCorrelationCalibQuad::config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibQuad const& config)
 {
 	os << "SynapseCorrelationCalibQuad(\n"
@@ -914,6 +923,7 @@ std::ostream& operator<<(std::ostream& os, SynapseCorrelationCalibQuad const& co
 	   << "\t" << hate::join(config.m_amp_calibs, ", ") << "\n)";
 	return os;
 }
+#endif
 
 
 SynapseQuad::SynapseQuad() : m_weights(), m_labels(), m_time_calibs(), m_amp_calibs() {}
@@ -1116,6 +1126,7 @@ template SYMBOL_VISIBLE void SynapseQuad::decode(std::array<
                                                  fisch::vx::word_access_type::OmnibusChipOverJTAG,
                                                  SynapseQuad::config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SynapseQuad const& config)
 {
 	os << "SynapseQuad(\n"
@@ -1125,6 +1136,7 @@ std::ostream& operator<<(std::ostream& os, SynapseQuad const& config)
 	   << "\t" << hate::join(config.m_amp_calibs, ", ") << "\n)";
 	return os;
 }
+#endif
 
 
 ColumnCorrelationQuad::ColumnCorrelationSwitch::ColumnCorrelationSwitch() :
@@ -1231,6 +1243,7 @@ void ColumnCorrelationQuad::set_switch(
 	m_switches.at(correlation_switch) = value;
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, ColumnCurrentQuad::ColumnCurrentSwitch const& config)
 {
 	std::stringstream ss;
@@ -1252,6 +1265,7 @@ std::ostream& operator<<(std::ostream& os, ColumnCurrentQuad const& config)
 	    << hate::Indentation() << ")";
 	return os;
 }
+#endif
 
 bool ColumnCorrelationQuad::operator==(ColumnCorrelationQuad const& other) const
 {
@@ -1263,6 +1277,7 @@ bool ColumnCorrelationQuad::operator!=(ColumnCorrelationQuad const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(
     std::ostream& os, ColumnCorrelationQuad::ColumnCorrelationSwitch const& config)
 {
@@ -1287,6 +1302,7 @@ std::ostream& operator<<(std::ostream& os, ColumnCorrelationQuad const& config)
 	    << hate::Indentation() << ")";
 	return os;
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, ColumnCorrelationQuad::config_size_in_words> ColumnCorrelationQuad::addresses(
@@ -1824,11 +1840,13 @@ template SYMBOL_VISIBLE void CorrelationReset::decode<fisch::vx::word_access_typ
         fisch::vx::word_access_type::Omnibus,
         CorrelationReset::read_config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CorrelationReset const&)
 {
 	os << "CorrelationReset()";
 	return os;
 }
+#endif
 
 bool CorrelationReset::operator==(CorrelationReset const&) const
 {

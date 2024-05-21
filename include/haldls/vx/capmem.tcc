@@ -86,9 +86,6 @@ bool CapMemCell<Coordinates>::operator!=(CapMemCell<Coordinates> const& other) c
 	return !(*this == other);
 }
 
-#ifndef __ppu__
-#endif
-
 #define CAPMEM_CELL_UNROLL_PPU(Coordinates)                                                        \
 	template class CapMemCell<Coordinates>;                                                        \
                                                                                                    \

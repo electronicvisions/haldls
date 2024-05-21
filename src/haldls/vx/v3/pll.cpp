@@ -72,6 +72,7 @@ bool PLLClockOutputBlock::ClockOutput::operator!=(ClockOutput const& other) cons
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PLLClockOutputBlock::ClockOutput const& config)
 {
 	std::stringstream ss;
@@ -89,6 +90,7 @@ std::ostream& operator<<(std::ostream& os, PLLClockOutputBlock const& config)
 	    << "SPL1 clock source: " << config.get_spl1_source() << hate::Indentation() << "\n)";
 	return os;
 }
+#endif
 
 PLLClockOutputBlock::PLLClockOutputBlock() : m_output(), m_switch_spl1_to_madc(false)
 {

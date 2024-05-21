@@ -117,11 +117,13 @@ void CADCChannelConfig::decode(
 	m_offset = Offset(static_cast<int32_t>(bitfield.u.m.offset) - 128);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CADCChannelConfig const& config)
 {
 	os << "CADCChannelConfig(" << config.m_offset << ")";
 	return os;
 }
+#endif
 
 CADCConfig::CADCConfig() : m_enable(false), m_reset_wait(), m_dead_time() {}
 
@@ -198,6 +200,7 @@ struct CADCConfigBitfield
 
 } // namespace
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CADCConfig const& config)
 {
 	std::stringstream ss;
@@ -205,6 +208,7 @@ std::ostream& operator<<(std::ostream& os, CADCConfig const& config)
 	   << ", " << config.m_dead_time << ")";
 	return (os << ss.str());
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, CADCConfig::config_size_in_words> CADCConfig::addresses(
@@ -264,12 +268,14 @@ bool CADCOffsetSRAMTimingConfig::operator!=(CADCOffsetSRAMTimingConfig const& ot
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CADCOffsetSRAMTimingConfig const& config)
 {
 	os << "CADCOffsetSRAMTimingConfig(" << config.get_read_delay() << ", "
 	   << config.get_address_setup_time() << ", " << config.get_write_width() << ")";
 	return os;
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, CADCOffsetSRAMTimingConfig::config_size_in_words>
@@ -345,11 +351,13 @@ struct CADCSampleQuadBitfield
 
 } // namespace
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CADCSampleQuad const& config)
 {
 	os << "CADCSampleQuad(" << hate::join(config.m_samples, ", ") << ")";
 	return os;
 }
+#endif
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, CADCSampleQuad::read_config_size_in_words>
 CADCSampleQuad::read_addresses(coordinate_type const& coord)

@@ -47,6 +47,7 @@ bool CrossbarOutputConfig::operator!=(CrossbarOutputConfig const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CrossbarOutputConfig const& config)
 {
 	std::stringstream ss;
@@ -58,6 +59,7 @@ std::ostream& operator<<(std::ostream& os, CrossbarOutputConfig const& config)
 	ss << "])";
 	return (os << ss.str());
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, CrossbarOutputConfig::config_size_in_words> CrossbarOutputConfig::addresses(
@@ -188,10 +190,12 @@ bool CrossbarInputDropCounter::operator!=(CrossbarInputDropCounter const& other)
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CrossbarInputDropCounter const& config)
 {
 	return (os << "CrossbarInputDropCounter(" << config.m_value << ")");
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, CrossbarInputDropCounter::read_config_size_in_words>
@@ -288,10 +292,12 @@ bool CrossbarOutputEventCounter::operator!=(CrossbarOutputEventCounter const& ot
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CrossbarOutputEventCounter const& config)
 {
 	return (os << "CrossbarOutputEventCounter(" << config.m_value << ")");
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, CrossbarOutputEventCounter::read_config_size_in_words>
@@ -411,6 +417,7 @@ bool CrossbarNode::operator!=(CrossbarNode const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CrossbarNode const& config)
 {
 	std::stringstream ss;
@@ -418,6 +425,7 @@ std::ostream& operator<<(std::ostream& os, CrossbarNode const& config)
 	   << ", enable_drop_counter: " << std::boolalpha << config.m_enable_drop_counter << ")";
 	return (os << ss.str());
 }
+#endif
 
 CrossbarNode const CrossbarNode::drop_all = []() {
 	CrossbarNode ret;

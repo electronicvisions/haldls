@@ -163,6 +163,7 @@ template SYMBOL_VISIBLE void PADIEvent::decode<fisch::vx::word_access_type::Omni
     std::array<fisch::vx::word_access_type::Omnibus, PADIEvent::read_config_size_in_words> const&
         data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PADIEvent const& config)
 {
 	std::stringstream ss;
@@ -176,6 +177,7 @@ std::ostream& operator<<(std::ostream& os, PADIEvent const& config)
 	// clang-format on
 	return (os << ss.str());
 }
+#endif
 
 bool PADIEvent::operator==(PADIEvent const& other) const
 {
@@ -365,6 +367,7 @@ template SYMBOL_VISIBLE void CommonPADIBusConfig::decode<fisch::vx::word_access_
         fisch::vx::word_access_type::Omnibus,
         CommonPADIBusConfig::config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CommonPADIBusConfig const& config)
 {
 	std::stringstream ss;
@@ -382,6 +385,7 @@ std::ostream& operator<<(std::ostream& os, CommonPADIBusConfig const& config)
 	// clang-format on
 	return (os << ss.str());
 }
+#endif
 
 bool CommonPADIBusConfig::operator==(CommonPADIBusConfig const& other) const
 {
@@ -500,6 +504,7 @@ template SYMBOL_VISIBLE void CommonSTPConfig::decode<fisch::vx::word_access_type
     std::array<fisch::vx::word_access_type::Omnibus, CommonSTPConfig::config_size_in_words> const&
         data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CommonSTPConfig const& config)
 {
 	std::stringstream ss;
@@ -507,6 +512,7 @@ std::ostream& operator<<(std::ostream& os, CommonSTPConfig const& config)
 	   << config.m_enable_recovery_clock << ", " << config.m_recovery_clock_speed << ")";
 	return (os << ss.str());
 }
+#endif
 
 bool CommonSTPConfig::operator==(CommonSTPConfig const& other) const
 {

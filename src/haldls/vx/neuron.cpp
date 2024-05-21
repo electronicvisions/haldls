@@ -331,6 +331,7 @@ bool CommonNeuronBackendConfig::operator!=(CommonNeuronBackendConfig const& othe
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& config)
 {
 	std::stringstream ss;
@@ -351,6 +352,7 @@ std::ostream& operator<<(std::ostream& os, CommonNeuronBackendConfig const& conf
 	// clang-format on
 	return (os << ss.str());
 }
+#endif
 
 
 NeuronReset::NeuronReset() {}
@@ -421,11 +423,13 @@ template SYMBOL_VISIBLE void NeuronReset::decode<fisch::vx::word_access_type::Om
     std::array<fisch::vx::word_access_type::Omnibus, NeuronReset::read_config_size_in_words> const&
         data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, NeuronReset const&)
 {
 	os << "NeuronReset()";
 	return os;
 }
+#endif
 
 bool NeuronReset::operator==(NeuronReset const&) const
 {
@@ -507,11 +511,13 @@ template SYMBOL_VISIBLE void BlockPostPulse::decode<fisch::vx::word_access_type:
         fisch::vx::word_access_type::Omnibus,
         BlockPostPulse::read_config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, BlockPostPulse const&)
 {
 	os << "BlockPostPulse()";
 	return os;
 }
+#endif
 
 bool BlockPostPulse::operator==(BlockPostPulse const&) const
 {
@@ -619,6 +625,7 @@ template SYMBOL_VISIBLE void SpikeCounterRead::decode<fisch::vx::word_access_typ
         fisch::vx::word_access_type::Omnibus,
         SpikeCounterRead::read_config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SpikeCounterRead const& config)
 {
 	std::stringstream ss;
@@ -626,6 +633,7 @@ std::ostream& operator<<(std::ostream& os, SpikeCounterRead const& config)
 	os << "SpikeCounterRead(" << config.m_count << ", overflow: " << ss.str() << ")";
 	return os;
 }
+#endif
 
 bool SpikeCounterRead::operator==(SpikeCounterRead const& other) const
 {
@@ -714,11 +722,13 @@ template SYMBOL_VISIBLE void SpikeCounterReset::decode<fisch::vx::word_access_ty
         fisch::vx::word_access_type::Omnibus,
         SpikeCounterReset::read_config_size_in_words> const& data);
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, SpikeCounterReset const&)
 {
 	os << "SpikeCounterReset()";
 	return os;
 }
+#endif
 
 bool SpikeCounterReset::operator==(SpikeCounterReset const&) const
 {
@@ -741,12 +751,14 @@ bool NeuronSRAMTimingConfig::operator!=(NeuronSRAMTimingConfig const& other) con
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, NeuronSRAMTimingConfig const& config)
 {
 	os << "NeuronSRAMTimingConfig(" << config.get_read_delay() << ", "
 	   << config.get_address_setup_time() << ", " << config.get_write_width() << ")";
 	return os;
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, NeuronSRAMTimingConfig::config_size_in_words>
@@ -775,12 +787,14 @@ bool NeuronBackendSRAMTimingConfig::operator!=(NeuronBackendSRAMTimingConfig con
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, NeuronBackendSRAMTimingConfig const& config)
 {
 	os << "NeuronBackendSRAMTimingConfig(" << config.get_read_delay() << ", "
 	   << config.get_address_setup_time() << ", " << config.get_write_width() << ")";
 	return os;
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, NeuronBackendSRAMTimingConfig::config_size_in_words>

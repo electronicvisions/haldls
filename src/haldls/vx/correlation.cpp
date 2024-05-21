@@ -136,6 +136,7 @@ struct CommonCorrelationConfigBitfield
 
 } // anonymous namespace
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CommonCorrelationConfig const& config)
 {
 	std::stringstream ss;
@@ -162,6 +163,7 @@ std::ostream& operator<<(std::ostream& os, CommonCorrelationConfig::ResetMode co
 	    os
 	    << (config == CommonCorrelationConfig::ResetMode::normal ? "normal" : "auto_calibrating"));
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, CommonCorrelationConfig::config_size_in_words>

@@ -48,6 +48,7 @@ bool PPUMemoryWord::operator!=(PPUMemoryWord const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
 {
 	os << "PPUMemoryWord(";
@@ -59,6 +60,7 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryWord const& pmw)
 	os << out.str() << ")";
 	return os;
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, PPUMemoryWord::config_size_in_words> PPUMemoryWord::addresses(
@@ -246,6 +248,7 @@ std::string PPUMemoryBlock::to_string() const
 	return ss.str();
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 {
 	hate::IndentingOstream ios(os);
@@ -278,6 +281,7 @@ std::ostream& operator<<(std::ostream& os, PPUMemoryBlock const& pmb)
 	ios << hate::Indentation() << ")";
 	return os;
 }
+#endif
 
 
 PPUMemory::PPUMemory(words_type const& words) : m_words(words) {}
@@ -395,6 +399,7 @@ bool PPUMemory::operator!=(PPUMemory const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 {
 	hate::IndentingOstream ios(os);
@@ -433,6 +438,7 @@ std::ostream& operator<<(std::ostream& os, PPUMemory const& pm)
 	ios << hate::Indentation() << ")";
 	return os;
 }
+#endif
 
 
 PPUControlRegister::PPUControlRegister() :
@@ -482,6 +488,7 @@ void PPUControlRegister::set_force_clock_off(bool const value)
 	m_force_clock_off = value;
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PPUControlRegister const& config)
 {
 	std::stringstream ss;
@@ -491,6 +498,7 @@ std::ostream& operator<<(std::ostream& os, PPUControlRegister const& config)
 	   << ", force_clock_off: " << config.m_force_clock_off << ")";
 	return (os << ss.str());
 }
+#endif
 
 bool PPUControlRegister::operator==(PPUControlRegister const& other) const
 {
@@ -609,12 +617,14 @@ bool PPUStatusRegister::get_sleep() const
 	return m_sleep;
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PPUStatusRegister const& config)
 {
 	std::stringstream ss;
 	ss << "PPUStatusRegister(sleep: " << std::boolalpha << config.m_sleep << ")";
 	return (os << ss.str());
 }
+#endif
 
 bool PPUStatusRegister::operator==(PPUStatusRegister const& other) const
 {

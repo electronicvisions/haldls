@@ -219,6 +219,7 @@ bool PhyConfigBase::operator!=(PhyConfigBase const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PhyConfigBase const& config)
 {
 	std::stringstream ss;
@@ -251,6 +252,7 @@ std::ostream& operator<<(std::ostream& os, PhyConfigBase const& config)
 	ss << "\tenable_auto_init:                         \t" << config.get_enable_auto_init() << "\n";
 	return (os << ss.str());
 }
+#endif
 
 namespace {
 
@@ -361,11 +363,13 @@ bool PhyConfigFPGA::operator!=(PhyConfigFPGA const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PhyConfigFPGA const& config)
 {
 	os << "PhyConfigFPGA(\n" << static_cast<detail::PhyConfigBase>(config) << ")";
 	return os;
 }
+#endif
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, PhyConfigFPGA::config_size_in_words>
 PhyConfigFPGA::addresses(coordinate_type const& coord)
@@ -403,11 +407,13 @@ bool PhyConfigChip::operator!=(PhyConfigChip const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PhyConfigChip const& config)
 {
 	os << "PhyConfigChip(\n" << static_cast<detail::PhyConfigBase>(config) << ")";
 	return os;
 }
+#endif
 
 std::array<halco::hicann_dls::vx::JTAGPhyRegisterOnDLS, PhyConfigChip::write_config_size_in_words>
 PhyConfigChip::write_addresses(coordinate_type const& coord)
@@ -460,6 +466,7 @@ bool CommonPhyConfigFPGA::operator!=(CommonPhyConfigFPGA const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CommonPhyConfigFPGA const& config)
 {
 	std::stringstream ss;
@@ -468,6 +475,7 @@ std::ostream& operator<<(std::ostream& os, CommonPhyConfigFPGA const& config)
 	ss << "])";
 	return (os << ss.str());
 }
+#endif
 
 std::array<halco::hicann_dls::vx::OmnibusAddress, CommonPhyConfigFPGA::config_size_in_words>
 CommonPhyConfigFPGA::addresses(coordinate_type const& /*coord*/)
@@ -524,6 +532,7 @@ bool CommonPhyConfigChip::operator!=(CommonPhyConfigChip const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CommonPhyConfigChip const& config)
 {
 	std::stringstream ss;
@@ -532,6 +541,7 @@ std::ostream& operator<<(std::ostream& os, CommonPhyConfigChip const& config)
 	ss << "])";
 	return (os << ss.str());
 }
+#endif
 
 std::array<
     halco::hicann_dls::vx::OmnibusChipOverJTAGAddress,

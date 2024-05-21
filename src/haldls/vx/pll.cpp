@@ -254,6 +254,7 @@ bool ADPLL::operator!=(ADPLL const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, ADPLL const& config)
 {
 	std::stringstream ss;
@@ -295,15 +296,12 @@ std::ostream& operator<<(std::ostream& os, ADPLL::Output const& config)
 			break;
 		}
 		default: {
-#ifndef __ppu__
 			throw std::logic_error("Unknown ADPLLOutput.");
-#else
-			exit(1);
-#endif
 		}
 	}
 	return os;
 }
+#endif
 
 namespace {
 
@@ -530,6 +528,7 @@ bool PLLSelfTest::operator!=(PLLSelfTest const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PLLSelfTest const& config)
 {
 	std::stringstream ss;
@@ -538,6 +537,7 @@ std::ostream& operator<<(std::ostream& os, PLLSelfTest const& config)
 	   << ", " << config.m_check_value << ")";
 	return (os << ss.str());
 }
+#endif
 
 namespace {
 
@@ -655,6 +655,7 @@ bool PLLSelfTestStatus::operator!=(PLLSelfTestStatus const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PLLSelfTestStatus const& config)
 {
 	std::stringstream ss;
@@ -662,6 +663,7 @@ std::ostream& operator<<(std::ostream& os, PLLSelfTestStatus const& config)
 	   << ", finished: " << config.m_finished << ", success: " << config.m_success << ")";
 	return (os << ss.str());
 }
+#endif
 
 namespace {
 

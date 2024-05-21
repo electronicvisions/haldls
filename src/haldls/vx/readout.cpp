@@ -243,6 +243,7 @@ bool PadMultiplexerConfig::operator!=(PadMultiplexerConfig const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, PadMultiplexerConfig const& config)
 {
 	std::stringstream ss;
@@ -290,6 +291,7 @@ std::ostream& operator<<(std::ostream& os, PadMultiplexerConfig const& config)
 	   << "\n)";
 	return (os << ss.str());
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, PadMultiplexerConfig::config_size_in_words> PadMultiplexerConfig::addresses(
@@ -700,6 +702,7 @@ bool ReadoutSourceSelection::operator!=(ReadoutSourceSelection const& other) con
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, ReadoutSourceSelection::SourceMultiplexer const& config)
 {
 	std::stringstream ss;
@@ -735,6 +738,7 @@ std::ostream& operator<<(std::ostream& os, ReadoutSourceSelection const& config)
 	    config.m_enable_buffer_to_pad.begin(), config.m_enable_buffer_to_pad.end(), ", ");
 	return os << "]\n)";
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, ReadoutSourceSelection::config_size_in_words>

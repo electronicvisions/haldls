@@ -87,6 +87,7 @@ bool CurrentDAC::operator!=(CurrentDAC const& other) const
 	return !(*this == other);
 }
 
+#ifndef __ppu__
 std::ostream& operator<<(std::ostream& os, CurrentDAC::Sign const& config)
 {
 	switch (config) {
@@ -99,11 +100,7 @@ std::ostream& operator<<(std::ostream& os, CurrentDAC::Sign const& config)
 			break;
 		}
 		default: {
-#ifndef __ppu__
 			throw std::logic_error("Unknown Sign.");
-#else
-			exit(1);
-#endif
 		}
 	}
 	return os;
@@ -131,6 +128,7 @@ std::ostream& operator<<(std::ostream& os, CurrentDAC const& config)
 	// clang-format on
 	return (os << ss.str());
 }
+#endif
 
 template <typename AddressT>
 std::array<AddressT, CurrentDAC::config_size_in_words> CurrentDAC::addresses(
