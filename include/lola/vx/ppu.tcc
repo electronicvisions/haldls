@@ -38,7 +38,7 @@ struct VisitPreorderImpl<lola::vx::ExternalPPUMemoryBlock>
 		bool const handling_max =
 		    (quad_min == quad_max) ||
 		    (coord.toMax().value() % sizeof(uint32_t) != sizeof(uint32_t) - 1);
-		{
+		if (quad_max > 0) {
 			hate::Empty<ExternalPPUMemoryQuad> quad_config;
 			auto const max = quad_max - handling_max;
 			assert(
@@ -105,7 +105,7 @@ struct VisitPreorderImpl<lola::vx::ExternalPPUMemoryBlock>
 		bool const handling_max =
 		    (quad_min == quad_max) ||
 		    (coord.toMax().value() % sizeof(uint32_t) != sizeof(uint32_t) - 1);
-		{
+		if (quad_max > 0) {
 			ExternalPPUMemoryQuad quad_config;
 			auto const max = quad_max - handling_max;
 			assert(
