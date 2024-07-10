@@ -16,6 +16,8 @@ using SystimeCorrectionBarrierConfig GENPYBIND(visible) =
     haldls::vx::SystimeCorrectionBarrierConfig;
 using ExternalPPUMemoryByte GENPYBIND(visible) = haldls::vx::ExternalPPUMemoryByte;
 using ExternalPPUMemoryQuad GENPYBIND(visible) = haldls::vx::ExternalPPUMemoryQuad;
+using ExternalPPUDRAMMemoryByte GENPYBIND(visible) = haldls::vx::ExternalPPUDRAMMemoryByte;
+using ExternalPPUDRAMMemoryQuad GENPYBIND(visible) = haldls::vx::ExternalPPUDRAMMemoryQuad;
 using SpikeIOConfig GENPYBIND(visible) = haldls::vx::SpikeIOConfig;
 using SpikeIOInputRoute GENPYBIND(visible) = haldls::vx::SpikeIOInputRoute;
 using SpikeIOOutputRoute GENPYBIND(visible) = haldls::vx::SpikeIOOutputRoute;

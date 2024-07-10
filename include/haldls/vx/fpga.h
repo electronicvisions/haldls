@@ -23,6 +23,8 @@ struct InstructionTimeoutConfig;
 struct SystimeCorrectionBarrierConfig;
 struct ExternalPPUMemoryByte;
 struct ExternalPPUMemoryQuad;
+struct ExternalPPUDRAMMemoryByte;
+struct ExternalPPUDRAMMemoryQuad;
 struct SpikeIOConfig;
 struct SpikeIOInputRoute;
 struct SpikeIOOutputRoute;
@@ -61,6 +63,14 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExternalPPUDRAMMemoryByte& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExternalPPUDRAMMemoryQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive& ar, haldls::vx::SpikeIOConfig& value, std::uint32_t const version);
 
 template <typename Archive>
@@ -95,7 +105,9 @@ struct OmnibusAddress;
 
 namespace lola::vx {
 class ExternalPPUMemoryBlock;
+class ExternalPPUDRAMMemoryBlock;
 class ExternalPPUMemory;
+class ExternalPPUDRAMMemory;
 } // namespace lola::vx
 
 namespace haldls {
@@ -701,6 +713,113 @@ private:
 };
 
 
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExternalPPUDRAMMemoryByte
+    : public ContainerBase<ExternalPPUDRAMMemoryByte>
+{
+public:
+	typedef halco::hicann_dls::vx::ExternalPPUDRAMMemoryByteOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+	typedef std::false_type supports_empty_coordinate;
+
+	struct GENPYBIND(inline_base("*")) Value
+	    : public halco::common::detail::BaseType<Value, uint8_t>
+	{
+		constexpr explicit Value(uintmax_t const val = 0) : base_t(val) {}
+	};
+
+	typedef uint8_t raw_type;
+	// verify that the underlying word size matches the value type size
+	static_assert(
+	    static_cast<raw_type>(-1) == Value::max, "raw_type size does not match Value type.");
+
+	explicit ExternalPPUDRAMMemoryByte(Value value = Value()) : m_value(value) {}
+
+	GENPYBIND(getter_for(value))
+	Value get_value() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(value))
+	void set_value(Value const& value) SYMBOL_VISIBLE;
+
+	bool operator==(ExternalPPUDRAMMemoryByte const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExternalPPUDRAMMemoryByte const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExternalPPUDRAMMemoryByte const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode(
+	    coordinate_type const& coord) const SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    coordinate_type const& coord,
+	    std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend struct cereal::access;
+	template <typename Archive>
+	friend void ::cereal::serialize(Archive& ar, ExternalPPUDRAMMemoryByte& value, std::uint32_t);
+
+	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUDRAMMemoryBlock>;
+	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUDRAMMemory>;
+	Value m_value;
+};
+
+
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExternalPPUDRAMMemoryQuad
+    : public ContainerBase<ExternalPPUDRAMMemoryQuad>
+{
+public:
+	typedef halco::hicann_dls::vx::ExternalPPUDRAMMemoryQuadOnFPGA coordinate_type;
+	typedef std::true_type is_leaf_node;
+
+	typedef ExternalPPUDRAMMemoryByte::Value Value GENPYBIND(visible);
+
+	typedef halco::common::typed_array<Value, halco::hicann_dls::vx::EntryOnQuad> Quad
+	    GENPYBIND(opaque(false));
+	typedef halco::common::typed_array<bool, halco::hicann_dls::vx::EntryOnQuad> Enables
+	    GENPYBIND(opaque(false));
+
+	ExternalPPUDRAMMemoryQuad() SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(quad))
+	Quad const& get_quad() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(quad))
+	void set_quad(Quad const& quad) SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(enables))
+	Enables const& get_enables() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(enables))
+	void set_enables(Enables const& enables) SYMBOL_VISIBLE;
+
+	bool operator==(ExternalPPUDRAMMemoryQuad const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExternalPPUDRAMMemoryQuad const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExternalPPUDRAMMemoryQuad const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::OmnibusAddress, config_size_in_words> addresses(
+	    coordinate_type const& word) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(std::array<fisch::vx::word_access_type::Omnibus, config_size_in_words> const& data)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend struct cereal::access;
+	template <typename Archive>
+	friend void ::cereal::serialize(Archive& ar, ExternalPPUDRAMMemoryQuad& value, std::uint32_t);
+
+	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUDRAMMemoryBlock>;
+	friend haldls::vx::detail::VisitPreorderImpl<lola::vx::ExternalPPUDRAMMemory>;
+	Quad m_quad;
+	Enables m_enables;
+};
+
+
 /**
  * Configuration registers for on-FPGA SpikeIO.
  */
@@ -941,6 +1060,16 @@ struct BackendContainerTrait<ExternalPPUMemoryQuad>
 {};
 
 template <>
+struct BackendContainerTrait<ExternalPPUDRAMMemoryByte>
+    : public BackendContainerBase<ExternalPPUDRAMMemoryByte, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
+struct BackendContainerTrait<ExternalPPUDRAMMemoryQuad>
+    : public BackendContainerBase<ExternalPPUDRAMMemoryQuad, fisch::vx::word_access_type::Omnibus>
+{};
+
+template <>
 struct BackendContainerTrait<SpikeIOConfig>
     : public BackendContainerBase<SpikeIOConfig, fisch::vx::word_access_type::Omnibus>
 {};
@@ -964,6 +1093,7 @@ namespace std {
 
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::FPGADeviceDNA::Value)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::ExternalPPUMemoryByte::Value)
+HALCO_GEOMETRY_HASH_CLASS(haldls::vx::ExternalPPUDRAMMemoryByte::Value)
 HALCO_GEOMETRY_HASH_CLASS(haldls::vx::SpikeIOConfig::DataRateScaler)
 
 } // namespace std

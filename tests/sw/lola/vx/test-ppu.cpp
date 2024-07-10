@@ -42,7 +42,7 @@ TEST(PPUElfFile, General)
 
 	PPUElfFile file(test_ppu_program);
 	auto symbols = file.read_symbols();
-	auto [block, external_block] = file.read_program();
+	auto [block, external_block, external_dram_block] = file.read_program();
 
 	// all numbers below might and will change on changes in build profile, compiler or runtime
 	constexpr size_t program_num_words = 42;

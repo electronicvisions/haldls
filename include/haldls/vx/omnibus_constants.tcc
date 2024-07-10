@@ -183,6 +183,8 @@ constexpr uint32_t fpga_omnibus_mask{0x8000'0000};
 // 	split(27, num_in_flight(8))
 // 		slave(ppumem)
 constexpr uint32_t external_ppu_memory_base_address{0x0000'0000 | fpga_omnibus_mask};
+constexpr uint32_t external_ppu_dram_memory_base_address{
+    0x0400'0000 | external_ppu_memory_base_address};
 // 		split(15, num_in_flight(8))
 // 			split(14)
 // 				split(13)

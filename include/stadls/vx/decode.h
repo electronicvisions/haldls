@@ -65,6 +65,11 @@ typename T::coordinate_type get_coord(T const& config)
 		    ExternalPPUMemoryByteOnFPGA(0),
 		    ExternalPPUMemoryByteOnFPGA(config.get_bytes().size() - 1));
 	}
+	if constexpr (std::is_same<T, lola::vx::ExternalPPUDRAMMemoryBlock>::value) {
+		// default container is one byte large, coordinate created here has to match
+		coord = ExternalPPUDRAMMemoryBlockOnFPGA(
+		    ExternalPPUDRAMMemoryByteOnFPGA(0), ExternalPPUDRAMMemoryByteOnFPGA(0));
+	}
 	return coord;
 }
 

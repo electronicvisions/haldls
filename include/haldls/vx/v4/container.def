@@ -35,6 +35,8 @@ PLAYBACK_CONTAINER(NeuronSRAMTimingConfig, haldls::vx::v4::NeuronSRAMTimingConfi
 PLAYBACK_CONTAINER(NeuronBackendSRAMTimingConfig, haldls::vx::v4::NeuronBackendSRAMTimingConfig)
 PLAYBACK_CONTAINER(ExternalPPUMemoryByte, haldls::vx::v4::ExternalPPUMemoryByte)
 PLAYBACK_CONTAINER(ExternalPPUMemoryQuad, haldls::vx::v4::ExternalPPUMemoryQuad)
+PLAYBACK_CONTAINER(ExternalPPUDRAMMemoryByte, haldls::vx::v4::ExternalPPUDRAMMemoryByte)
+PLAYBACK_CONTAINER(ExternalPPUDRAMMemoryQuad, haldls::vx::v4::ExternalPPUDRAMMemoryQuad)
 PLAYBACK_CONTAINER(SpikeIOConfig, haldls::vx::v4::SpikeIOConfig)
 PLAYBACK_CONTAINER(SpikeIOInputRoute, haldls::vx::v4::SpikeIOInputRoute)
 PLAYBACK_CONTAINER(SpikeIOOutputRoute, haldls::vx::v4::SpikeIOOutputRoute)

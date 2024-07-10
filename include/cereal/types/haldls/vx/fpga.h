@@ -10,6 +10,8 @@ struct InstructionTimeoutConfig;
 struct SystimeCorrectionBarrierConfig;
 struct ExternalPPUMemoryByte;
 struct ExternalPPUMemoryQuad;
+struct ExternalPPUDRAMMemoryByte;
+struct ExternalPPUDRAMMemoryQuad;
 struct SpikeIOConfig;
 struct SpikeIOInputRoute;
 struct SpikeIOOutputRoute;
@@ -48,6 +50,14 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExternalPPUDRAMMemoryByte& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::ExternalPPUDRAMMemoryQuad& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive& ar, haldls::vx::SpikeIOConfig& value, std::uint32_t const version);
 
 template <typename Archive>
@@ -82,6 +92,8 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::InstructionTimeoutConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SystimeCorrectionBarrierConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUMemoryByte)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUMemoryQuad)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUDRAMMemoryByte)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUDRAMMemoryQuad)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SpikeIOConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SpikeIOInputRoute)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SpikeIOOutputRoute)

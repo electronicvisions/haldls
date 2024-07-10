@@ -69,6 +69,19 @@ void serialize(Archive& ar, haldls::vx::ExternalPPUMemoryQuad& value, std::uint3
 }
 
 template <typename Archive>
+void serialize(Archive& ar, haldls::vx::ExternalPPUDRAMMemoryByte& value, std::uint32_t const)
+{
+	ar(CEREAL_NVP(value.m_value));
+}
+
+template <typename Archive>
+void serialize(Archive& ar, haldls::vx::ExternalPPUDRAMMemoryQuad& value, std::uint32_t const)
+{
+	ar(CEREAL_NVP(value.m_quad));
+	ar(CEREAL_NVP(value.m_enables));
+}
+
+template <typename Archive>
 void serialize(Archive& ar, haldls::vx::SpikeIOConfig& value, std::uint32_t const)
 {
 	ar(CEREAL_NVP(value.m_data_rate_scaler));
@@ -101,6 +114,8 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::InstructionTimeoutConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SystimeCorrectionBarrierConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUMemoryByte)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUMemoryQuad)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUDRAMMemoryByte)
+EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUDRAMMemoryQuad)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SpikeIOConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SpikeIOInputRoute)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SpikeIOOutputRoute)
@@ -110,6 +125,8 @@ CEREAL_REGISTER_TYPE(haldls::vx::InstructionTimeoutConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::SystimeCorrectionBarrierConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::ExternalPPUMemoryByte)
 CEREAL_REGISTER_TYPE(haldls::vx::ExternalPPUMemoryQuad)
+CEREAL_REGISTER_TYPE(haldls::vx::ExternalPPUDRAMMemoryByte)
+CEREAL_REGISTER_TYPE(haldls::vx::ExternalPPUDRAMMemoryQuad)
 CEREAL_REGISTER_TYPE(haldls::vx::SpikeIOConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::SpikeIOInputRoute)
 CEREAL_REGISTER_TYPE(haldls::vx::SpikeIOOutputRoute)
@@ -124,6 +141,8 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(
     haldls::vx::Container, haldls::vx::SystimeCorrectionBarrierConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::ExternalPPUMemoryByte)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::ExternalPPUMemoryQuad)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::ExternalPPUDRAMMemoryByte)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::ExternalPPUDRAMMemoryQuad)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::SpikeIOConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::SpikeIOInputRoute)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::SpikeIOOutputRoute)
@@ -141,6 +160,8 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(
     haldls::vx::Encodable, haldls::vx::SystimeCorrectionBarrierConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::ExternalPPUMemoryByte)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::ExternalPPUMemoryQuad)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::ExternalPPUDRAMMemoryByte)
+CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::ExternalPPUDRAMMemoryQuad)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::SpikeIOConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::SpikeIOInputRoute)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::SpikeIOOutputRoute)

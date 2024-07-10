@@ -23,6 +23,7 @@ using PPUMemory = haldls::vx::PPUMemory;
 
 namespace lola::vx {
 class ExternalPPUMemoryBlock;
+class ExternalPPUDRAMMemoryBlock;
 class SynapseCorrelationCalibRow;
 class SynapseCorrelationCalibMatrix;
 class SynapseLabelMatrix;
@@ -38,6 +39,7 @@ class AtomicNeuron;
 class CADCSampleRow;
 class CADCSamples;
 using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
+using ExternalPPUDRAMMemoryBlock = lola::vx::ExternalPPUDRAMMemoryBlock;
 } // namespace lola::vx::v3
 
 namespace haldls::vx::detail {
@@ -74,7 +76,8 @@ typedef hate::type_list<
     lola::vx::v3::AtomicNeuron,
     lola::vx::v3::CADCSampleRow,
     lola::vx::v3::CADCSamples,
-    lola::vx::v3::ExternalPPUMemoryBlock>
+    lola::vx::v3::ExternalPPUMemoryBlock,
+    lola::vx::v3::ExternalPPUDRAMMemoryBlock>
     NonLeafNodeReadableContainerList;
 
 // manually add all non-leaf node containers which are readable

@@ -1,5 +1,6 @@
 #include <random>
 #include <string>
+#include <typeindex>
 #include <vector>
 #include <gtest/gtest.h>
 
@@ -144,6 +145,10 @@ typedef to_testing_types<
     to_container_backend_pairs<ReadableAndWriteableNoSideeffectsContainerList>::type>::type
     ReadableAndWriteableContainers;
 
+std::map<std::type_index, size_t> max_words_per_reduced_test_per_container{
+    {std::type_index(typeid(ExternalPPUDRAMMemoryByte)), 1000},
+    {std::type_index(typeid(ExternalPPUDRAMMemoryQuad)), 1000}};
+
 /**
  * Test fixture for generic write-read memory tests of a single container type.
  * @tparam ContainerUnderTest Container type to be written and read back
@@ -223,8 +228,14 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 	std::vector<Container> reference_containers;
 	std::vector<ContainerTicket> read_tickets;
 
-	for (auto const& coord :
-	     iter_sparse<typename Container::coordinate_type>(max_words_per_reduced_test)) {
+	std::optional<size_t> num_locations = max_words_per_reduced_test;
+	if (!num_locations &&
+	    max_words_per_reduced_test_per_container.contains(std::type_index(typeid(Container)))) {
+		num_locations =
+		    max_words_per_reduced_test_per_container.at(std::type_index(typeid(Container)));
+	}
+
+	for (auto const& coord : iter_sparse<typename Container::coordinate_type>(num_locations)) {
 		Container reference_container;
 
 		stadls::vx::decode_random(random_generator, reference_container);

@@ -138,6 +138,130 @@ std::ostream& operator<<(std::ostream& os, ExternalPPUMemoryBlock const& config)
 }
 
 
+ExternalPPUDRAMMemoryBlock::ExternalPPUDRAMMemoryBlock(size_type const size) : m_bytes(size.value())
+{}
+
+ExternalPPUDRAMMemoryBlock::bytes_type const& ExternalPPUDRAMMemoryBlock::get_bytes() const
+{
+	return m_bytes;
+}
+
+void ExternalPPUDRAMMemoryBlock::set_bytes(bytes_type const& bytes)
+{
+	if (bytes.size() != size()) {
+		std::stringstream ss;
+		ss << "given vector size(" << bytes.size() << ") does not match container size(" << size()
+		   << ")";
+		throw std::range_error(ss.str());
+	}
+	m_bytes = bytes;
+}
+
+haldls::vx::ExternalPPUDRAMMemoryByte& ExternalPPUDRAMMemoryBlock::at(size_t index)
+{
+	if (index >= size()) {
+		std::stringstream ss;
+		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+		throw std::out_of_range(ss.str());
+	}
+	return m_bytes.at(index);
+}
+
+haldls::vx::ExternalPPUDRAMMemoryByte const& ExternalPPUDRAMMemoryBlock::at(size_t index) const
+{
+	if (index >= size()) {
+		std::stringstream ss;
+		ss << "given index(" << index << ") not in range(0 -> " << size() - 1 << ")";
+		throw std::out_of_range(ss.str());
+	}
+	return m_bytes.at(index);
+}
+
+haldls::vx::ExternalPPUDRAMMemoryByte& ExternalPPUDRAMMemoryBlock::operator[](size_t index)
+{
+	return at(index);
+}
+
+haldls::vx::ExternalPPUDRAMMemoryByte const& ExternalPPUDRAMMemoryBlock::operator[](
+    size_t index) const
+{
+	return at(index);
+}
+
+ExternalPPUDRAMMemoryBlock ExternalPPUDRAMMemoryBlock::get_subblock(
+    size_t begin, size_type length) const
+{
+	if (begin + length > size()) {
+		std::stringstream ss;
+		ss << "subblock from index " << begin << " of size " << length
+		   << " larger than block size of " << size();
+		throw std::out_of_range(ss.str());
+	}
+	ExternalPPUDRAMMemoryBlock subblock(length);
+	for (size_t i = 0; i < length; ++i) {
+		subblock.m_bytes.at(i) = m_bytes.at(i + begin);
+	}
+	return subblock;
+}
+
+void ExternalPPUDRAMMemoryBlock::set_subblock(
+    size_t begin, ExternalPPUDRAMMemoryBlock const& subblock)
+{
+	if (begin + subblock.size() > size()) {
+		std::stringstream ss;
+		ss << "subblock from index " << begin << " of size " << subblock.size()
+		   << " larger than block size of " << size();
+		throw std::out_of_range(ss.str());
+	}
+	for (size_t i = 0; i < subblock.size(); ++i) {
+		m_bytes.at(i + begin) = subblock.m_bytes.at(i);
+	}
+}
+
+halco::hicann_dls::vx::ExternalPPUDRAMMemoryBlockSize ExternalPPUDRAMMemoryBlock::size() const
+{
+	return halco::hicann_dls::vx::ExternalPPUDRAMMemoryBlockSize(m_bytes.size());
+}
+
+bool ExternalPPUDRAMMemoryBlock::operator==(ExternalPPUDRAMMemoryBlock const& other) const
+{
+	return (m_bytes == other.get_bytes());
+}
+
+bool ExternalPPUDRAMMemoryBlock::operator!=(ExternalPPUDRAMMemoryBlock const& other) const
+{
+	return !(*this == other);
+}
+
+std::string ExternalPPUDRAMMemoryBlock::to_string() const
+{
+	std::stringstream ss;
+	for (auto x : m_bytes) {
+		auto const c = x.get_value().value();
+		// Return if null byte is found
+		if (c == 0) {
+			return ss.str();
+		}
+
+		// discard non-printable characters
+		if (isprint(c) or isspace(c)) {
+			ss << *reinterpret_cast<char const*>(&c);
+		}
+	}
+	return ss.str();
+}
+
+std::ostream& operator<<(std::ostream& os, ExternalPPUDRAMMemoryBlock const& config)
+{
+	os << "ExternalPPUDRAMMemoryBlock(" << std::endl;
+	for (auto const& byte : config.m_bytes) {
+		os << "\t" << byte << std::endl;
+	}
+	os << ")";
+	return os;
+}
+
+
 ExternalPPUMemory::ExternalPPUMemory() : bytes() {}
 
 ExternalPPUMemoryBlock ExternalPPUMemory::get_subblock(size_t begin, size_type length) const
@@ -324,13 +448,28 @@ PPUElfFile::symbols_type PPUElfFile::read_symbols()
 					}
 				}
 				auto const name = std::string(strtab + x.st_name);
-				if (x.st_value >= external_base_address) { // external memory instructions
+				if (x.st_value >= external_dram_base_address) { // external dram memory instructions
+					auto min = halco::hicann_dls::vx::ExternalPPUDRAMMemoryByteOnFPGA(
+					    x.st_value - external_dram_base_address);
+					auto max =
+					    halco::hicann_dls::vx::ExternalPPUDRAMMemoryByteOnFPGA(min + x.st_size - 1);
+					symbol.coordinate =
+					    halco::hicann_dls::vx::ExternalPPUDRAMMemoryBlockOnFPGA(min, max);
+				} else if (x.st_value >= external_base_address) { // external memory instructions
 					auto min = halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(
 					    x.st_value - external_base_address);
 					auto max =
 					    halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(min + x.st_size - 1);
 					symbol.coordinate =
 					    halco::hicann_dls::vx::ExternalPPUMemoryBlockOnFPGA(min, max);
+				} else if (x.st_value >= external_dram_data_base_address) { // external dram memory
+					                                                        // data
+					auto min = halco::hicann_dls::vx::ExternalPPUDRAMMemoryByteOnFPGA(
+					    x.st_value - external_dram_data_base_address);
+					auto max =
+					    halco::hicann_dls::vx::ExternalPPUDRAMMemoryByteOnFPGA(min + x.st_size - 1);
+					symbol.coordinate =
+					    halco::hicann_dls::vx::ExternalPPUDRAMMemoryBlockOnFPGA(min, max);
 				} else if (x.st_value >= external_data_base_address) { // external memory
 					                                                   // data
 					auto min = halco::hicann_dls::vx::ExternalPPUMemoryByteOnFPGA(
@@ -413,6 +552,30 @@ std::optional<ExternalPPUMemoryBlock> to_external_block(std::vector<char>&& byte
 	return block;
 }
 
+std::optional<ExternalPPUDRAMMemoryBlock> to_external_dram_block(std::vector<char>&& bytes)
+{
+	if (bytes.empty()) {
+		return {};
+	}
+
+	// pad to multiple of raw word size
+	while ((bytes.size() % sizeof(haldls::vx::PPUMemoryWord::raw_type)) != 0) {
+		bytes.push_back(0);
+	}
+
+	ExternalPPUDRAMMemoryBlock block(
+	    halco::hicann_dls::vx::ExternalPPUDRAMMemoryBlockSize(bytes.size()));
+
+	auto ppu_bytes = block.get_bytes();
+	std::transform(bytes.begin(), bytes.end(), ppu_bytes.begin(), [](auto const& byte) {
+		return haldls::vx::ExternalPPUDRAMMemoryByte(haldls::vx::ExternalPPUDRAMMemoryByte::Value(
+		    *reinterpret_cast<haldls::vx::ExternalPPUDRAMMemoryByte::raw_type const*>(&byte)));
+	});
+
+	block.set_bytes(ppu_bytes);
+	return block;
+}
+
 } // namespace
 
 PPUElfFile::Memory PPUElfFile::read_program()
@@ -424,6 +587,7 @@ PPUElfFile::Memory PPUElfFile::read_program()
 
 	std::vector<char> internal_bytes;
 	std::vector<char> external_bytes;
+	std::vector<char> external_dram_bytes;
 
 	auto const copy_scn = [](Elf_Scn* scn, std::vector<char>& bytes, size_t base_address) {
 		Elf_Data* data = nullptr;
@@ -457,8 +621,12 @@ PPUElfFile::Memory PPUElfFile::read_program()
 		if (std::string(name).rfind("int", 0) == 0) {
 			copy_scn(scn, internal_bytes, shdr->sh_addr);
 		} else if (std::string(name).rfind("ext", 0) == 0) {
-			if (shdr->sh_addr >= external_base_address) { // extmem instructions
+			if (shdr->sh_addr >= external_dram_base_address) { // extmem dram instructions
+				copy_scn(scn, external_dram_bytes, shdr->sh_addr - external_dram_base_address);
+			} else if (shdr->sh_addr >= external_base_address) { // extmem instructions
 				copy_scn(scn, external_bytes, shdr->sh_addr - external_base_address);
+			} else if (shdr->sh_addr >= external_dram_data_base_address) { // extmem dram data
+				copy_scn(scn, external_dram_bytes, shdr->sh_addr - external_dram_data_base_address);
 			} else if (shdr->sh_addr >= external_data_base_address) { // extmem data
 				copy_scn(scn, external_bytes, shdr->sh_addr - external_data_base_address);
 			} else {
@@ -479,7 +647,8 @@ PPUElfFile::Memory PPUElfFile::read_program()
 
 	auto const internal_block = to_internal_block(std::move(internal_bytes));
 	auto const external_block = to_external_block(std::move(external_bytes));
-	return {internal_block, external_block};
+	auto const external_dram_block = to_external_dram_block(std::move(external_dram_bytes));
+	return {internal_block, external_block, external_dram_block};
 }
 
 PPUElfFile::~PPUElfFile()
@@ -503,12 +672,23 @@ static std::unique_ptr<haldls::vx::Container> construct_container_ExternalPPUMem
 	        .toExternalPPUMemoryBlockSize());
 }
 
+static std::unique_ptr<haldls::vx::Container> construct_container_ExternalPPUDRAMMemoryBlock(
+    haldls::vx::Container::Coordinate const& coord)
+{
+	return std::make_unique<lola::vx::ExternalPPUDRAMMemoryBlock>(
+	    dynamic_cast<lola::vx::ExternalPPUDRAMMemoryBlock::coordinate_type const&>(coord)
+	        .toExternalPPUDRAMMemoryBlockSize());
+}
+
 } // namespace
 
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE_CUSTOM_CONSTRUCTION(
     lola::vx::ExternalPPUMemoryBlock, construct_container_ExternalPPUMemoryBlock)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE_CUSTOM_CONSTRUCTION(
+    lola::vx::ExternalPPUDRAMMemoryBlock, construct_container_ExternalPPUDRAMMemoryBlock)
 #else
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::ExternalPPUMemoryBlock)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::ExternalPPUDRAMMemoryBlock)
 #endif
 
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(lola::vx::ExternalPPUMemory)

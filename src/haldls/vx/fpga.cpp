@@ -883,6 +883,184 @@ void ExternalPPUMemoryQuad::decode(std::array<
 }
 
 
+ExternalPPUDRAMMemoryByte::Value ExternalPPUDRAMMemoryByte::get_value() const
+{
+	return m_value;
+}
+
+void ExternalPPUDRAMMemoryByte::set_value(ExternalPPUDRAMMemoryByte::Value const& value)
+{
+	m_value = value;
+}
+
+bool ExternalPPUDRAMMemoryByte::operator==(ExternalPPUDRAMMemoryByte const& other) const
+{
+	return m_value == other.m_value;
+}
+
+bool ExternalPPUDRAMMemoryByte::operator!=(ExternalPPUDRAMMemoryByte const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExternalPPUDRAMMemoryByte const& config)
+{
+	using namespace hate::math;
+	auto const w = static_cast<uintmax_t>(config.m_value);
+	std::stringstream out;
+	out << "ExternalPPUDRAMMemoryByte(";
+	out << "0x" << std::setfill('0') << std::hex
+	    << std::setw(round_up_integer_division(num_bits(ExternalPPUDRAMMemoryByte::Value::max), 4))
+	    << w;
+	os << out.str() << ")";
+	return os;
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, ExternalPPUDRAMMemoryByte::config_size_in_words>
+ExternalPPUDRAMMemoryByte::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    external_ppu_dram_memory_base_address + (coord.toEnum() / sizeof(uint32_t)))};
+}
+
+std::array<fisch::vx::word_access_type::Omnibus, ExternalPPUDRAMMemoryByte::config_size_in_words>
+ExternalPPUDRAMMemoryByte::encode(coordinate_type const& coord) const
+{
+	auto const byte_in_word = (sizeof(uint32_t) - 1) - (coord.toEnum() % sizeof(uint32_t));
+	uint32_t const raw_value = static_cast<uint32_t>(m_value) << (byte_in_word * CHAR_BIT);
+	fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables{false, false, false, false};
+	byte_enables[byte_in_word] = true;
+	return {fisch::vx::word_access_type::Omnibus(raw_value, byte_enables)};
+}
+
+void ExternalPPUDRAMMemoryByte::decode(
+    coordinate_type const& coord,
+    std::array<
+        fisch::vx::word_access_type::Omnibus,
+        ExternalPPUDRAMMemoryByte::config_size_in_words> const& data)
+{
+	auto const byte_in_word = (sizeof(uint32_t) - 1) - (coord.toEnum() % sizeof(uint32_t));
+	m_value = Value((data[0] >> (byte_in_word * CHAR_BIT)) & 0xff);
+}
+
+
+ExternalPPUDRAMMemoryQuad::ExternalPPUDRAMMemoryQuad() :
+    m_quad(), m_enables({true, true, true, true})
+{}
+
+ExternalPPUDRAMMemoryQuad::Quad const& ExternalPPUDRAMMemoryQuad::get_quad() const
+{
+	return m_quad;
+}
+
+void ExternalPPUDRAMMemoryQuad::set_quad(ExternalPPUDRAMMemoryQuad::Quad const& quad)
+{
+	m_quad = quad;
+}
+
+ExternalPPUDRAMMemoryQuad::Enables const& ExternalPPUDRAMMemoryQuad::get_enables() const
+{
+	return m_enables;
+}
+
+void ExternalPPUDRAMMemoryQuad::set_enables(ExternalPPUDRAMMemoryQuad::Enables const& enables)
+{
+	m_enables = enables;
+}
+
+bool ExternalPPUDRAMMemoryQuad::operator==(ExternalPPUDRAMMemoryQuad const& other) const
+{
+	return (m_quad == other.m_quad) && (m_enables == other.m_enables);
+}
+
+bool ExternalPPUDRAMMemoryQuad::operator!=(ExternalPPUDRAMMemoryQuad const& other) const
+{
+	return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, ExternalPPUDRAMMemoryQuad const& config)
+{
+	using namespace hate::math;
+	std::stringstream out;
+	out << "ExternalPPUDRAMMemoryQuad(\n";
+	out << "\t quad: [" << hate::join(config.m_quad.begin(), config.m_quad.end(), ", ") << "]\n";
+	out << "\t enables: [" << hate::join(config.m_enables.begin(), config.m_enables.end(), ", ")
+	    << "]\n";
+	os << out.str() << ")";
+	return os;
+}
+
+std::array<halco::hicann_dls::vx::OmnibusAddress, ExternalPPUDRAMMemoryQuad::config_size_in_words>
+ExternalPPUDRAMMemoryQuad::addresses(coordinate_type const& coord)
+{
+	return {halco::hicann_dls::vx::OmnibusAddress(
+	    external_ppu_dram_memory_base_address + coord.toEnum())};
+}
+
+namespace {
+
+struct ExternalPPUDRAMMemoryQuadBitfield
+{
+	union
+	{
+		uint32_t raw;
+		// clang-format off
+		struct __attribute__((packed)) {
+			uint32_t byte_3 : 8;
+			uint32_t byte_2 : 8;
+			uint32_t byte_1 : 8;
+			uint32_t byte_0 : 8;
+		} m;
+		// clang-format on
+		static_assert(sizeof(raw) == sizeof(m), "sizes of union types should match");
+	} u;
+
+	ExternalPPUDRAMMemoryQuadBitfield()
+	{
+		u.raw = 0ul;
+	}
+
+	ExternalPPUDRAMMemoryQuadBitfield(uint32_t data)
+	{
+		u.raw = data;
+	}
+};
+
+} // namespace
+
+std::array<fisch::vx::word_access_type::Omnibus, ExternalPPUDRAMMemoryQuad::config_size_in_words>
+ExternalPPUDRAMMemoryQuad::encode() const
+{
+	static_assert(
+	    std::tuple_size<fisch::vx::word_access_type::Omnibus::ByteEnables>::value ==
+	    std::tuple_size<Enables>::value);
+	fisch::vx::word_access_type::Omnibus::ByteEnables byte_enables;
+	std::copy(m_enables.begin(), m_enables.end(), byte_enables.rbegin());
+
+	ExternalPPUDRAMMemoryQuadBitfield bitfield;
+	bitfield.u.m.byte_0 = m_quad[halco::hicann_dls::vx::EntryOnQuad(0)];
+	bitfield.u.m.byte_1 = m_quad[halco::hicann_dls::vx::EntryOnQuad(1)];
+	bitfield.u.m.byte_2 = m_quad[halco::hicann_dls::vx::EntryOnQuad(2)];
+	bitfield.u.m.byte_3 = m_quad[halco::hicann_dls::vx::EntryOnQuad(3)];
+	return {fisch::vx::word_access_type::Omnibus(bitfield.u.raw, byte_enables)};
+}
+
+void ExternalPPUDRAMMemoryQuad::decode(std::array<
+                                       fisch::vx::word_access_type::Omnibus,
+                                       ExternalPPUDRAMMemoryQuad::config_size_in_words> const& data)
+{
+	static_assert(
+	    std::tuple_size<fisch::vx::word_access_type::Omnibus::ByteEnables>::value ==
+	    std::tuple_size<Enables>::value);
+	std::copy(data[0].byte_enables.begin(), data[0].byte_enables.end(), m_enables.rbegin());
+	ExternalPPUDRAMMemoryQuadBitfield bitfield(data[0]);
+	m_quad[halco::hicann_dls::vx::EntryOnQuad(0)] = Value(bitfield.u.m.byte_0);
+	m_quad[halco::hicann_dls::vx::EntryOnQuad(1)] = Value(bitfield.u.m.byte_1);
+	m_quad[halco::hicann_dls::vx::EntryOnQuad(2)] = Value(bitfield.u.m.byte_2);
+	m_quad[halco::hicann_dls::vx::EntryOnQuad(3)] = Value(bitfield.u.m.byte_3);
+}
+
+
 SpikeIOConfig::SpikeIOConfig() :
     m_data_rate_scaler(DataRateScaler()),
     m_enable_tx(false),
@@ -1136,6 +1314,8 @@ EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::InstructionTimeoutConfig)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SystimeCorrectionBarrierConfig)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExternalPPUMemoryByte)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExternalPPUMemoryQuad)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExternalPPUDRAMMemoryByte)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::ExternalPPUDRAMMemoryQuad)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikeIOConfig)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikeIOInputRoute)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::SpikeIOOutputRoute)

@@ -21,6 +21,7 @@ class Elf;
 namespace lola::vx {
 
 struct ExternalPPUMemoryBlock;
+struct ExternalPPUDRAMMemoryBlock;
 
 } // namespace lola::vx
 
@@ -29,6 +30,10 @@ namespace cereal {
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive& ar, lola::vx::ExternalPPUMemoryBlock& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, lola::vx::ExternalPPUDRAMMemoryBlock& value, std::uint32_t const version);
 
 } // namespace cereal
 
@@ -90,6 +95,58 @@ private:
 
 
 /**
+ * Contiguous block of bytes in the external DRAM PPU memory.
+ */
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExternalPPUDRAMMemoryBlock
+    : public haldls::vx::ContainerBase<ExternalPPUDRAMMemoryBlock>
+{
+public:
+	typedef halco::hicann_dls::vx::ExternalPPUDRAMMemoryBlockOnFPGA coordinate_type;
+	typedef std::false_type has_local_data;
+
+	typedef std::vector<haldls::vx::ExternalPPUDRAMMemoryByte> bytes_type;
+
+	typedef halco::hicann_dls::vx::ExternalPPUDRAMMemoryBlockSize size_type;
+
+	explicit ExternalPPUDRAMMemoryBlock(size_type size = size_type()) SYMBOL_VISIBLE;
+
+	haldls::vx::ExternalPPUDRAMMemoryByte& at(size_t index) SYMBOL_VISIBLE;
+	haldls::vx::ExternalPPUDRAMMemoryByte const& at(size_t index) const SYMBOL_VISIBLE;
+	haldls::vx::ExternalPPUDRAMMemoryByte& operator[](size_t index) SYMBOL_VISIBLE;
+	haldls::vx::ExternalPPUDRAMMemoryByte const& operator[](size_t index) const SYMBOL_VISIBLE;
+
+	ExternalPPUDRAMMemoryBlock get_subblock(size_t begin, size_type length) const SYMBOL_VISIBLE;
+	void set_subblock(size_t begin, ExternalPPUDRAMMemoryBlock const& subblock) SYMBOL_VISIBLE;
+
+	size_type size() const SYMBOL_VISIBLE;
+
+	GENPYBIND(getter_for(bytes))
+	bytes_type const& get_bytes() const SYMBOL_VISIBLE;
+	GENPYBIND(setter_for(bytes))
+	void set_bytes(bytes_type const& bytes) SYMBOL_VISIBLE;
+
+	bool operator==(ExternalPPUDRAMMemoryBlock const& other) const SYMBOL_VISIBLE;
+	bool operator!=(ExternalPPUDRAMMemoryBlock const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, ExternalPPUDRAMMemoryBlock const& config)
+	    SYMBOL_VISIBLE;
+
+	std::string to_string() const SYMBOL_VISIBLE;
+
+	friend haldls::vx::detail::VisitPreorderImpl<ExternalPPUDRAMMemoryBlock>;
+
+private:
+	friend class cereal::access;
+	template <typename Archive>
+	friend void ::cereal::CEREAL_SERIALIZE_FUNCTION_NAME(
+	    Archive& ar, ExternalPPUDRAMMemoryBlock& value, std::uint32_t const version);
+
+	bytes_type m_bytes;
+};
+
+
+/**
  * Complete external PPU memory.
  */
 class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ExternalPPUMemory
@@ -142,7 +199,8 @@ public:
 	public:
 		typedef std::variant<
 		    halco::hicann_dls::vx::PPUMemoryBlockOnPPU,
-		    halco::hicann_dls::vx::ExternalPPUMemoryBlockOnFPGA>
+		    halco::hicann_dls::vx::ExternalPPUMemoryBlockOnFPGA,
+		    halco::hicann_dls::vx::ExternalPPUDRAMMemoryBlockOnFPGA>
 		    Coordinate;
 
 		/**
@@ -208,6 +266,7 @@ public:
 	{
 		haldls::vx::PPUMemoryBlock internal;
 		std::optional<lola::vx::ExternalPPUMemoryBlock> external;
+		std::optional<lola::vx::ExternalPPUDRAMMemoryBlock> external_dram;
 	};
 
 	/**
@@ -234,6 +293,14 @@ private:
 	 * Base address of external memory for data from the view of the PPU.
 	 */
 	constexpr static uint32_t external_data_base_address = 0x4000'0000;
+	/**
+	 * Base address of external DRAM memory for instructions from the view of the PPU.
+	 */
+	constexpr static uint32_t external_dram_base_address = 0x9000'0000;
+	/**
+	 * Base address of external DRAM memory for data from the view of the PPU.
+	 */
+	constexpr static uint32_t external_dram_data_base_address = 0x5000'0000;
 };
 
 } // namespace vx

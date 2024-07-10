@@ -24,6 +24,7 @@ using PPUMemory = haldls::vx::PPUMemory;
 
 namespace lola::vx {
 class ExternalPPUMemoryBlock;
+class ExternalPPUDRAMMemoryBlock;
 class CorrelationResetRow;
 class DACChannelBlock;
 class DACControlBlock;
@@ -44,6 +45,7 @@ class CADCSamples;
 using DACChannelBlock = lola::vx::DACChannelBlock;
 using DACControlBlock = lola::vx::DACControlBlock;
 using ExternalPPUMemoryBlock = lola::vx::ExternalPPUMemoryBlock;
+using ExternalPPUDRAMMemoryBlock = lola::vx::ExternalPPUDRAMMemoryBlock;
 } // namespace lola::vx::v3
 
 namespace haldls::vx::detail {
@@ -81,7 +83,8 @@ typedef hate::type_list<
     lola::vx::v3::AtomicNeuron,
     lola::vx::v3::DACChannelBlock,
     lola::vx::v3::DACControlBlock,
-    lola::vx::v3::ExternalPPUMemoryBlock>
+    lola::vx::v3::ExternalPPUMemoryBlock,
+    lola::vx::v3::ExternalPPUDRAMMemoryBlock>
     NonLeafNodeWriteableContainerList;
 
 // manually add all non-leaf node containers which are writeable

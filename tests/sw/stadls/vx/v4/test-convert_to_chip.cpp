@@ -119,6 +119,9 @@ typedef hate::type_list<
     haldls::vx::v4::PPUMemoryWord,                           // included in PPUMemory
     haldls::vx::v4::ExternalPPUMemoryByte,                   // included in ExternalPPUMemory
     haldls::vx::v4::ExternalPPUMemoryQuad,                   // included in ExternalPPUMemory
+    haldls::vx::v4::ExternalPPUDRAMMemoryByte,               // logically not part of the chip
+    haldls::vx::v4::ExternalPPUDRAMMemoryQuad,               // logically not part of the chip
+    lola::vx::v4::ExternalPPUDRAMMemoryBlock,                // logically not part of the chip
     haldls::vx::v4::SpikeIOConfig,                           // logically not part of the chip
     haldls::vx::v4::SpikeIOInputRoute,                       // logically not part of the chip
     haldls::vx::v4::SpikeIOOutputRoute,                      // logically not part of the chip

@@ -46,6 +46,13 @@ def load_and_start_program(connection: ConnectionHandle,
             halco.ExternalPPUMemoryByteOnFPGA(0),
             halco.ExternalPPUMemoryByteOnFPGA(program.external.size() - 1)
         )
+    program_on_fpga_dram = None
+    if program.external_dram:
+        program_on_fpga_dram = halco.ExternalPPUDRAMMemoryBlockOnFPGA(
+            halco.ExternalPPUDRAMMemoryByteOnFPGA(0),
+            halco.ExternalPPUDRAMMemoryByteOnFPGA(
+                program.external_dram.size() - 1)
+        )
 
     program_on_dls = halco.PPUMemoryBlockOnDLS(program_on_ppu, ppu)
 
@@ -56,6 +63,8 @@ def load_and_start_program(connection: ConnectionHandle,
     builder.write(program_on_dls, program.internal)
     if program_on_fpga:
         builder.write(program_on_fpga, program.external)
+    if program_on_fpga_dram:
+        builder.write(program_on_fpga_dram, program.external_dram)
 
     # Set PPU to run state, start execution
     builder.write(ppu.toPPUControlRegisterOnDLS(), ppu_control_reg_run)
