@@ -47,14 +47,16 @@ DACChannelBlock const DACChannelBlock::default_ldo_2 = []() -> DACChannelBlock {
 	using namespace halco::hicann_dls::vx;
 
 	DACChannelBlock::Value const vdd25ad_value(4095 - 3487);
-	DACChannelBlock::Value const vdd12ad_value(4095 - 2465);
+	// increase VDD12D 50mV for link stability (see Rosenkranz, 2024)
+	DACChannelBlock::Value const vdd12d_value(4095 - 2005);
+	DACChannelBlock::Value const vdd12a_value(4095 - 2465);
 	DACChannelBlock::Value const vdd12mp_value(4095 - 3655);
 
 	DACChannelBlock block;
 	block.value[DACChannelOnBoard::vdd25_digital] = vdd25ad_value;
 	block.value[DACChannelOnBoard::vdd25_analog] = vdd25ad_value;
-	block.value[DACChannelOnBoard::vdd12_digital] = vdd12ad_value;
-	block.value[DACChannelOnBoard::vdd12_analog] = vdd12ad_value;
+	block.value[DACChannelOnBoard::vdd12_digital] = vdd12d_value;
+	block.value[DACChannelOnBoard::vdd12_analog] = vdd12a_value;
 	block.value[DACChannelOnBoard::vdd12_madc] = vdd12mp_value;
 	block.value[DACChannelOnBoard::vdd12_pll] = vdd12mp_value;
 	return block;
