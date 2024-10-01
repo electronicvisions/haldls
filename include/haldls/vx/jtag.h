@@ -63,7 +63,7 @@ public:
 	          fisch::vx::jtag_clock_scaler_max,
 	          fisch::vx::jtag_clock_scaler_min>
 	{
-		constexpr explicit Value(uintmax_t const value = 3) GENPYBIND(implicit_conversion) :
+		constexpr explicit Value(uintmax_t const value = 6) GENPYBIND(implicit_conversion) :
 		    rant_t(value)
 		{}
 	};
