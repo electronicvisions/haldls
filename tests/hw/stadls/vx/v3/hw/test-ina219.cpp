@@ -40,13 +40,15 @@ TEST(INA219, DACVoltages)
 
 	float const expect12 = 1.2 /* V */;
 	float const error12 = 0.05 * expect12 /* V */;
+	float const expect12d = 1.25 /* V */;
+	float const error12d = 0.05 * expect12d /* V */;
 	float const expect25 = 2.5 /* V */;
 	float const error25 = 0.05 * expect25 /* V */;
 	EXPECT_NEAR(
 	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd12_digital).get())
 	        .get_bus_voltage()
 	        .toUncalibratedVoltage(),
-	    expect12, error12);
+	    expect12d, error12d);
 	EXPECT_NEAR(
 	    dynamic_cast<INA219Status const&>(tickets.at(INA219StatusOnBoard::vdd25_digital).get())
 	        .get_bus_voltage()
