@@ -61,6 +61,18 @@ constexpr std::array<uint32_t, 4> capmem_sram_base_addresses = {
     capmem_nw_sram_base_address, capmem_ne_sram_base_address, capmem_sw_sram_base_address,
     capmem_se_sram_base_address};
 
+constexpr uint32_t capmem_nw_sram_timing_base_address{
+    capmem_nw_sram_base_address | 1 << 13 | 1 << 11};
+constexpr uint32_t capmem_ne_sram_timing_base_address{
+    capmem_ne_sram_base_address | 1 << 13 | 1 << 11};
+constexpr uint32_t capmem_sw_sram_timing_base_address{
+    capmem_sw_sram_base_address | 1 << 13 | 1 << 11};
+constexpr uint32_t capmem_se_sram_timing_base_address{
+    capmem_se_sram_base_address | 1 << 13 | 1 << 11};
+constexpr std::array<uint32_t, 4> capmem_sram_timing_base_addresses = {
+    capmem_nw_sram_timing_base_address, capmem_ne_sram_timing_base_address,
+    capmem_sw_sram_timing_base_address, capmem_se_sram_timing_base_address};
+
 constexpr uint32_t capmem_nw_config_base_address{0x144000};
 constexpr uint32_t capmem_ne_config_base_address{0x14c000};
 constexpr uint32_t capmem_sw_config_base_address{0x154000};
