@@ -26,6 +26,10 @@ struct VisitPreorderImpl<lola::vx::MemoryTiming>
 
 		visitor(coord, config);
 
+		for (auto const coord : iter_all<MemoryTiming::CapMem::key_type>()) {
+			hate::Empty<MemoryTiming::CapMem::value_type> config;
+			visit_preorder(config, coord, visitor);
+		}
 		for (auto const coord : iter_all<MemoryTiming::CADCOffset::key_type>()) {
 			hate::Empty<MemoryTiming::CADCOffset::value_type> config;
 			visit_preorder(config, coord, visitor);
@@ -59,6 +63,10 @@ struct VisitPreorderImpl<lola::vx::MemoryTiming>
 
 		visitor(coord, config);
 
+		for (auto const coord : iter_all<MemoryTiming::CapMem::key_type>()) {
+			visit_preorder(
+			    config.capmem[coord], hate::Empty<MemoryTiming::CapMem::key_type>{}, visitor);
+		}
 		for (auto const coord : iter_all<MemoryTiming::CADCOffset::key_type>()) {
 			visit_preorder(
 			    config.cadc_offset[coord], hate::Empty<MemoryTiming::CADCOffset::key_type>{},
@@ -95,6 +103,9 @@ struct VisitPreorderImpl<lola::vx::MemoryTiming>
 
 		visitor(coord, config);
 
+		for (auto const coord : iter_all<MemoryTiming::CapMem::key_type>()) {
+			visit_preorder(config.capmem[coord], coord, visitor);
+		}
 		for (auto const coord : iter_all<MemoryTiming::CADCOffset::key_type>()) {
 			visit_preorder(config.cadc_offset[coord], coord, visitor);
 		}
@@ -116,4 +127,4 @@ struct VisitPreorderImpl<lola::vx::MemoryTiming>
 } // namespace haldls::vx::detail
 
 BOOST_HANA_ADAPT_STRUCT(
-    lola::vx::MemoryTiming, cadc_offset, synapse_driver, neuron, neuron_backend, synram);
+    lola::vx::MemoryTiming, capmem, cadc_offset, synapse_driver, neuron, neuron_backend, synram);

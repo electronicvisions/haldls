@@ -28,6 +28,7 @@ PLAYBACK_CONTAINER(CADCOffsetSRAMTimingConfig, haldls::vx::v3::CADCOffsetSRAMTim
 PLAYBACK_CONTAINER(SynapseDriverSRAMTimingConfig, haldls::vx::v3::SynapseDriverSRAMTimingConfig)
 PLAYBACK_CONTAINER(NeuronSRAMTimingConfig, haldls::vx::v3::NeuronSRAMTimingConfig)
 PLAYBACK_CONTAINER(NeuronBackendSRAMTimingConfig, haldls::vx::v3::NeuronBackendSRAMTimingConfig)
+PLAYBACK_CONTAINER(CapMemSRAMTimingConfig, haldls::vx::v3::CapMemSRAMTimingConfig)
 PLAYBACK_CONTAINER(ExternalPPUMemoryByte, haldls::vx::v3::ExternalPPUMemoryByte)
 PLAYBACK_CONTAINER(ExternalPPUMemoryQuad, haldls::vx::v3::ExternalPPUMemoryQuad)
 PLAYBACK_CONTAINER(ExternalPPUDRAMMemoryByte, haldls::vx::v3::ExternalPPUDRAMMemoryByte)

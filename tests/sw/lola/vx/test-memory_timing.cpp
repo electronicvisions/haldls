@@ -17,6 +17,12 @@ TEST(MemoryTiming, General)
 {
 	{
 		MemoryTiming config;
+		config.capmem[CapMemSRAMTimingConfigOnDLS()].set_read_delay(
+		    CapMemSRAMTimingConfig::ReadDelay(4));
+		EXPECT_NE(config, MemoryTiming());
+	}
+	{
+		MemoryTiming config;
 		config.cadc_offset[CADCOffsetSRAMTimingConfigOnDLS()].set_read_delay(
 		    CADCOffsetSRAMTimingConfig::ReadDelay(0));
 		EXPECT_NE(config, MemoryTiming());
@@ -50,6 +56,7 @@ TEST(MemoryTiming, CerealizeCoverage)
 {
 	MemoryTiming obj1, obj2;
 
+	obj1.capmem[CapMemSRAMTimingConfigOnDLS()].set_read_delay(CapMemSRAMTimingConfig::ReadDelay(4));
 	obj1.cadc_offset[CADCOffsetSRAMTimingConfigOnDLS()].set_read_delay(
 	    CADCOffsetSRAMTimingConfig::ReadDelay(0));
 	obj1.synapse_driver[SynapseDriverSRAMTimingConfigOnDLS()].set_read_delay(
@@ -76,6 +83,8 @@ TEST(MemoryTiming, CerealizeCoverage)
 TEST(MemoryTiming, EncodeDecode)
 {
 	MemoryTiming config;
+	config.capmem[CapMemSRAMTimingConfigOnDLS()].set_read_delay(
+	    CapMemSRAMTimingConfig::ReadDelay(4));
 	config.cadc_offset[CADCOffsetSRAMTimingConfigOnDLS()].set_read_delay(
 	    CADCOffsetSRAMTimingConfig::ReadDelay(0));
 	config.synapse_driver[SynapseDriverSRAMTimingConfigOnDLS()].set_read_delay(
@@ -91,6 +100,12 @@ TEST(MemoryTiming, EncodeDecode)
 
 	addresses_type ref_addresses;
 	words_type ref_data;
+	for (auto const coord : iter_all<MemoryTiming::CapMem::key_type>()) {
+		visit_preorder(
+		    config.capmem[coord], coord,
+		    stadls::WriteAddressVisitor<addresses_type>{ref_addresses});
+		visit_preorder(config.capmem[coord], coord, stadls::EncodeVisitor<words_type>{ref_data});
+	}
 	for (auto const coord : iter_all<MemoryTiming::CADCOffset::key_type>()) {
 		visit_preorder(
 		    config.cadc_offset[coord], coord,

@@ -36,6 +36,8 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 namespace haldls::vx {
 namespace v4 GENPYBIND_TAG_HALDLS_VX_V4 {
 
+using CapMemSRAMTimingConfig GENPYBIND(visible) = haldls::vx::CapMemSRAMTimingConfig;
+
 using CapMemCell GENPYBIND(opaque, inline_base("*ContainerBase*")) =
     haldls::vx::CapMemCell<halco::hicann_dls::vx::v4::Coordinates>;
 

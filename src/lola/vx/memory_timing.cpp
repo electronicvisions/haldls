@@ -7,9 +7,9 @@ namespace lola::vx {
 
 bool MemoryTiming::operator==(MemoryTiming const& other) const
 {
-	return (cadc_offset == other.cadc_offset) && (synapse_driver == other.synapse_driver) &&
-	       (neuron == other.neuron) && (neuron_backend == other.neuron_backend) &&
-	       (synram == other.synram);
+	return (capmem == other.capmem) && (cadc_offset == other.cadc_offset) &&
+	       (synapse_driver == other.synapse_driver) && (neuron == other.neuron) &&
+	       (neuron_backend == other.neuron_backend) && (synram == other.synram);
 }
 
 bool MemoryTiming::operator!=(MemoryTiming const& other) const

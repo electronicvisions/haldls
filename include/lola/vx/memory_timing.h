@@ -4,6 +4,7 @@
 #include "lola/vx/genpybind.h"
 
 #include "haldls/vx/cadc.h"
+#include "haldls/vx/capmem.h"
 #include "haldls/vx/container.h"
 #include "haldls/vx/neuron.h"
 #include "haldls/vx/synapse.h"
@@ -25,6 +26,10 @@ public:
 	MemoryTiming() = default;
 
 	typedef halco::common::typed_array<
+	    haldls::vx::CapMemSRAMTimingConfig,
+	    haldls::vx::CapMemSRAMTimingConfig::coordinate_type>
+	    CapMem GENPYBIND(opaque);
+	typedef halco::common::typed_array<
 	    haldls::vx::CADCOffsetSRAMTimingConfig,
 	    haldls::vx::CADCOffsetSRAMTimingConfig::coordinate_type>
 	    CADCOffset GENPYBIND(opaque);
@@ -44,6 +49,10 @@ public:
 	    typed_array<haldls::vx::CommonSynramConfig, haldls::vx::CommonSynramConfig::coordinate_type>
 	        Synram GENPYBIND(opaque);
 
+	/**
+	 * Memory timing of SRAM of CapMem.
+	 */
+	CapMem capmem;
 	/**
 	 * Memory timing of SRAM of CADC offsets.
 	 */

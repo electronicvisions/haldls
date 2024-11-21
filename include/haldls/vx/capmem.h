@@ -12,6 +12,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"
+#include "haldls/vx/sram_controller.h"
 #include "haldls/vx/traits.h"
 #include "hate/empty.h"
 #include "hate/join.h"
@@ -23,6 +24,8 @@
 #endif
 
 namespace haldls::vx {
+
+struct CapMemSRAMTimingConfig;
 
 template <typename Coordinates>
 struct CapMemCell;
@@ -36,6 +39,10 @@ struct CapMemBlockConfig;
 } // namespace haldls::vx
 
 namespace cereal {
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::CapMemSRAMTimingConfig& value, std::uint32_t const version);
 
 template <typename Archive, typename Coordinates>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
@@ -58,6 +65,45 @@ class Omnibus;
 
 namespace haldls {
 namespace vx GENPYBIND_TAG_HALDLS_VX {
+
+// TODO: Switch to CRTP pattern when https://github.com/kljohann/genpybind/issues/28 is solved
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) CapMemSRAMTimingConfig
+    : public detail::SRAMTimingConfig
+    , public ContainerBase<CapMemSRAMTimingConfig>
+{
+public:
+	typedef halco::hicann_dls::vx::CapMemSRAMTimingConfigOnDLS coordinate_type;
+#ifndef __ppu__
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
+#endif
+
+	// Default constructor.
+	CapMemSRAMTimingConfig() SYMBOL_VISIBLE;
+
+	bool operator==(CapMemSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(CapMemSRAMTimingConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, CapMemSRAMTimingConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	template <typename AddressT>
+	static std::array<AddressT, config_size_in_words> addresses(coordinate_type const& word)
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	template <typename WordT>
+	std::array<WordT, config_size_in_words> encode() const SYMBOL_VISIBLE GENPYBIND(hidden);
+
+	template <typename WordT>
+	void decode(std::array<WordT, config_size_in_words> const& data) SYMBOL_VISIBLE
+	    GENPYBIND(hidden);
+
+private:
+	friend struct cereal::access;
+	template <typename Archive>
+	friend void ::cereal::serialize(Archive& ar, CapMemSRAMTimingConfig& value, std::uint32_t);
+};
 
 template <typename Coordinates>
 class SYMBOL_VISIBLE CapMemCell
@@ -541,6 +587,13 @@ private:
 };
 
 namespace detail {
+template <>
+struct BackendContainerTrait<CapMemSRAMTimingConfig>
+    : public BackendContainerBase<
+          CapMemSRAMTimingConfig,
+          fisch::vx::word_access_type::Omnibus,
+          fisch::vx::word_access_type::OmnibusChipOverJTAG>
+{};
 
 template <typename Coordinates>
 struct BackendContainerTrait<CapMemBlockConfig<Coordinates>>
