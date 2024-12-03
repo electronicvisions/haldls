@@ -26,8 +26,11 @@ typedef hate::type_list<
     haldls::vx::CommonPhyConfigFPGA,
     haldls::vx::v4::CapMemBlockConfig,
     haldls::vx::INA219Status,
-    haldls::vx::SpikeIOInputRoute,  // One'd by default
-    haldls::vx::SpikeIOOutputRoute, // One'd by default
+    haldls::vx::SpikeIOInputRoute,             // One'd by default
+    haldls::vx::SpikeIOOutputRoute,            // One'd by default
+    haldls::vx::CADCOffsetSRAMTimingConfig,    // One'd by default
+    haldls::vx::NeuronSRAMTimingConfig,        // One'd by default
+    haldls::vx::NeuronBackendSRAMTimingConfig, // One'd by default
     haldls::vx::VectorGeneratorControl>
     NotOneableTypes;
 
