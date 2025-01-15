@@ -63,8 +63,7 @@ public:
 	    : public halco::common::detail::
 	          RantWrapper<ReadDelay, uint_fast16_t, hate::math::pow(2, 8) - 1, 0>
 	{
-		constexpr explicit ReadDelay(uintmax_t const val = ReadDelay::max)
-		    GENPYBIND(implicit_conversion) :
+		constexpr explicit ReadDelay(uintmax_t const val = 120) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
 	};
@@ -76,7 +75,7 @@ public:
 	    : public halco::common::detail::
 	          RantWrapper<AddressSetupTime, uint_fast16_t, hate::math::pow(2, 4) - 1, 0>
 	{
-		constexpr explicit AddressSetupTime(uintmax_t const val = AddressSetupTime::max)
+		constexpr explicit AddressSetupTime(uintmax_t const val = 11)
 		    GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
@@ -89,8 +88,7 @@ public:
 	    : public halco::common::detail::
 	          RantWrapper<WriteWidth, uint_fast16_t, hate::math::pow(2, 4) - 1, 0>
 	{
-		constexpr explicit WriteWidth(uintmax_t const val = WriteWidth::max)
-		    GENPYBIND(implicit_conversion) :
+		constexpr explicit WriteWidth(uintmax_t const val = 11) GENPYBIND(implicit_conversion) :
 		    rant_t(val)
 		{}
 	};
