@@ -18,7 +18,8 @@
 #endif
 
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls {
+namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
  * Encodable base class to use for polymorphism.
@@ -184,4 +185,5 @@ struct SYMBOL_VISIBLE EncodableBase : public Base
 #endif
 };
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

@@ -32,7 +32,8 @@
 #error "Unknown CHIP_REVISION"
 #endif
 
-namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
+namespace lola::vx {
+namespace CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 #undef GENPYBIND_TAG_LOLA_VX_VY
 
 /**
@@ -91,6 +92,7 @@ private:
 	friend haldls::vx::detail::VisitPreorderImpl<CapMem>;
 };
 
+}
 }
 
 #include "lola/vx/capmem.tcc"

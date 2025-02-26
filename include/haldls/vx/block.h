@@ -38,7 +38,8 @@ namespace cereal {
 struct access;
 } // namespace cereal
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls {
+namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) PollingOmnibusBlockConfig
     : public ContainerBase<PollingOmnibusBlockConfig>
@@ -178,4 +179,5 @@ struct BackendContainerTrait<PollingOmnibusBlock>
 
 #endif
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

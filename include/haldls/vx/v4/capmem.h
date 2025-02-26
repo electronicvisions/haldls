@@ -33,7 +33,8 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 } // namespace cereal
 
-namespace haldls::vx::v4 GENPYBIND_TAG_HALDLS_VX_V4 {
+namespace haldls::vx {
+namespace v4 GENPYBIND_TAG_HALDLS_VX_V4 {
 
 using CapMemCell GENPYBIND(opaque, inline_base("*ContainerBase*")) =
     haldls::vx::CapMemCell<halco::hicann_dls::vx::v4::Coordinates>;
@@ -205,7 +206,8 @@ private:
 	bool m_enable_reset;
 };
 
-} // namespace haldls::vx::v4
+} // namespace v4
+} // namespace haldls::vx
 
 namespace haldls::vx::detail {
 

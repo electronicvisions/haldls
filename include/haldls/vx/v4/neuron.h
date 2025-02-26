@@ -53,7 +53,8 @@ namespace haldls::vx {
 NEURON_EXTERN_TEMPLATE(halco::hicann_dls::vx::v4::Coordinates)
 } // namespace haldls::vx
 
-namespace haldls::vx::v4 GENPYBIND_TAG_HALDLS_VX_V4 {
+namespace haldls::vx {
+namespace v4 GENPYBIND_TAG_HALDLS_VX_V4 {
 
 using CommonNeuronBackendConfig GENPYBIND(visible) = haldls::vx::CommonNeuronBackendConfig;
 using NeuronBackendConfig GENPYBIND(opaque, inline_base("*ContainerBase*")) =
@@ -440,7 +441,8 @@ private:
 	    Archive& ar, NeuronResetQuad& value, std::uint32_t const version) SYMBOL_VISIBLE;
 };
 
-} // namespace haldls::vx::v4
+} // namespace v4
+} // namespace haldls::vx
 
 namespace haldls::vx::detail {
 

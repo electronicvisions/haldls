@@ -14,7 +14,8 @@ namespace cereal {
 struct access;
 } // namespace cereal
 
-namespace lola::vx GENPYBIND_TAG_LOLA_VX {
+namespace lola {
+namespace vx GENPYBIND_TAG_LOLA_VX {
 
 /**
  * Container for configuration of the routing crossbar.
@@ -52,6 +53,7 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::Crossbar>;
 };
 
-} // namespace lola::vx
+} // namespace vx
+} // namespace lola
 
 #include "lola/vx/routing_crossbar.tcc"

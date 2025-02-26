@@ -47,7 +47,8 @@ namespace fisch::vx {
 class PlaybackProgramBuilder;
 } // namespace fisch::vx
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls {
+namespace vx GENPYBIND_TAG_STADLS_VX {
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 namespace v3 {
@@ -263,4 +264,5 @@ private:
 
 } // namespace detail
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls

@@ -7,7 +7,8 @@
 #endif
 
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls {
+namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
  * BlockUntil base class to use for polymorphism in en-/decoding
@@ -54,4 +55,5 @@ struct SYMBOL_VISIBLE GENPYBIND(inline_base("*EncodableBase*")) BlockUntilBase
 #endif
 };
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

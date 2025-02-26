@@ -38,7 +38,8 @@ namespace cereal {
 class access;
 } // namespace cereal
 
-namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
+namespace lola::vx {
+namespace CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 #undef GENPYBIND_TAG_LOLA_VX_VY
 
 class LogicalNeuron;
@@ -481,6 +482,7 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<LogicalNeuron>;
 };
 
-} // namespace lola::vx
+} // namespace vx
+} // namespace lola
 
 #include "lola/vx/morphology.tcc"

@@ -7,7 +7,8 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/variant.hpp>
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls {
+namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
  * Trait signalling derived-from container type support differential write operation.
@@ -153,4 +154,5 @@ struct HasLocalData<T, typename boost::enable_if_has_type<typename T::is_leaf_no
     : public T::is_leaf_node
 {};
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

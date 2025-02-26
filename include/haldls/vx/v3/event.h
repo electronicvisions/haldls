@@ -2,7 +2,8 @@
 #include "haldls/vx/event.h"
 #include "haldls/vx/genpybind.h"
 
-namespace haldls::vx::v3 GENPYBIND_TAG_HALDLS_VX_V3 {
+namespace haldls::vx {
+namespace v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
 using SpikePack1ToChip GENPYBIND(visible) = haldls::vx::SpikePack1ToChip;
 using SpikePack2ToChip GENPYBIND(visible) = haldls::vx::SpikePack2ToChip;
@@ -15,4 +16,5 @@ using MADCSampleFromChip GENPYBIND(visible) = haldls::vx::MADCSampleFromChip;
 using HighspeedLinkNotification GENPYBIND(visible) = haldls::vx::HighspeedLinkNotification;
 #endif
 
-} // namespace haldls::vx::v3
+} // namespace v3
+} // namespace haldls::vx

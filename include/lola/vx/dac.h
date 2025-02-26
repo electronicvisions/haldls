@@ -11,7 +11,8 @@
 #include "lola/vx/genpybind.h"
 #include <boost/hana/adapt_struct.hpp>
 
-namespace lola::vx GENPYBIND_TAG_LOLA_VX {
+namespace lola {
+namespace vx GENPYBIND_TAG_LOLA_VX {
 
 /**
  * Container for configuration of all DAC channels on the xBoard.
@@ -100,7 +101,8 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<lola::vx::DACControlBlock>;
 };
 
-} // namespace lola::vx
+} // namespace vx
+} // namespace lola
 
 namespace haldls::vx::detail {
 

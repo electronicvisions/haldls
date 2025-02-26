@@ -33,7 +33,8 @@ class Omnibus;
 
 } // namespace fisch::vx
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls {
+namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
  * Configuration of the current DAC of the readout chain.
@@ -148,4 +149,5 @@ struct BackendContainerTrait<CurrentDAC>
 
 } // namespace detail
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

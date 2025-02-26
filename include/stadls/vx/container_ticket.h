@@ -10,7 +10,8 @@
 #include <variant>
 #include <vector>
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls {
+namespace vx GENPYBIND_TAG_STADLS_VX {
 
 namespace detail {
 
@@ -104,4 +105,5 @@ private:
 	ticket_impl_type m_ticket_impl;
 }; // ContainerTicket
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls

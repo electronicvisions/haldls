@@ -19,7 +19,8 @@
 #endif
 
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls {
+namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
  * Container base class to use for polymorphism in en-/decoding
@@ -145,4 +146,5 @@ std::unique_ptr<Container> construct_container(Container::Coordinate const& coor
     SYMBOL_VISIBLE;
 #endif
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

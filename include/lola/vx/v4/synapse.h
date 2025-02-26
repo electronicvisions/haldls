@@ -2,7 +2,8 @@
 #include "lola/vx/genpybind.h"
 #include "lola/vx/synapse.h"
 
-namespace lola::vx::v4 GENPYBIND_TAG_LOLA_VX_V4 {
+namespace lola::vx {
+namespace v4 GENPYBIND_TAG_LOLA_VX_V4 {
 
 using ColumnCorrelationRow GENPYBIND(visible) = lola::vx::ColumnCorrelationRow;
 using ColumnCurrentRow GENPYBIND(visible) = lola::vx::ColumnCurrentRow;
@@ -16,4 +17,5 @@ using SynapseCorrelationCalibMatrix GENPYBIND(visible) = lola::vx::SynapseCorrel
 using SynapseMatrix GENPYBIND(visible) = lola::vx::SynapseMatrix;
 using CorrelationResetRow GENPYBIND(visible) = lola::vx::CorrelationResetRow;
 
-} // namespace lola::vx::v4
+} // namespace v4
+} // namespace lola::vx

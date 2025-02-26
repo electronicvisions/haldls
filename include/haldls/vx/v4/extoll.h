@@ -2,7 +2,8 @@
 #include "haldls/vx/extoll.h"
 #include "haldls/vx/genpybind.h"
 
-namespace haldls::vx::v4 GENPYBIND_TAG_HALDLS_VX_V4 {
+namespace haldls::vx {
+namespace v4 GENPYBIND_TAG_HALDLS_VX_V4 {
 
 using EventSwitchSource GENPYBIND(visible) = haldls::vx::EventSwitchSource;
 using EventSwitchReadout GENPYBIND(visible) = haldls::vx::EventSwitchReadout;
@@ -56,4 +57,5 @@ using ExtollBarrierInterruptInportErrorCount GENPYBIND(visible) =
 using ExtollBarrierInterruptInportCounterReset GENPYBIND(visible) =
     haldls::vx::ExtollBarrierInterruptInportCounterReset;
 
-} // namespace haldls::vx::v4
+} // namespace v4
+} // namespace haldls::vx

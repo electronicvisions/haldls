@@ -2,7 +2,8 @@
 #include "haldls/vx/constants.h"
 #include "haldls/vx/genpybind.h"
 
-namespace haldls::vx::v3 GENPYBIND_TAG_HALDLS_VX_V3 {
+namespace haldls::vx {
+namespace v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
 inline static const GENPYBIND(visible) Timer::Value pll_and_omnibus_settling_duration =
     haldls::vx::pll_and_omnibus_settling_duration;
@@ -15,4 +16,5 @@ inline static const GENPYBIND(visible) Timer::Value chip_reset_low_duration =
 inline static const GENPYBIND(visible) Timer::Value reference_generator_reset_duration =
     haldls::vx::reference_generator_reset_duration;
 
-} // namespace haldls::vx::v3
+} // namespace v3
+} // namespace haldls::vx

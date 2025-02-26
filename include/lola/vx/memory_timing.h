@@ -9,7 +9,8 @@
 #include "haldls/vx/synapse.h"
 #include "haldls/vx/synapse_driver.h"
 
-namespace lola::vx GENPYBIND_TAG_LOLA_VX {
+namespace lola {
+namespace vx GENPYBIND_TAG_LOLA_VX {
 
 /**
  * Timing configuration of memories.
@@ -74,6 +75,7 @@ private:
 	friend haldls::vx::detail::VisitPreorderImpl<MemoryTiming>;
 };
 
-} // namespace lola::vx
+} // namespace vx
+} // namespace lola
 
 #include "lola/vx/memory_timing.tcc"

@@ -29,7 +29,8 @@ struct Omnibus;
 struct OmnibusChipOverJTAG;
 } // namespace fisch::vx::word_access_type
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls {
+namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
  * Correlation reset and readout timing configuration container.
@@ -173,7 +174,8 @@ private:
 std::ostream& operator<<(std::ostream& os, CommonCorrelationConfig::ResetMode const& config)
     SYMBOL_VISIBLE;
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls
 
 namespace haldls::vx::detail {
 

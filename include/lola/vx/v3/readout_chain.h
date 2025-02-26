@@ -3,7 +3,8 @@
 #include "lola/vx/readout_chain.h"
 #undef CHIP_REVISION
 
-namespace lola::vx::v3 GENPYBIND_TAG_LOLA_VX_V3 {
+namespace lola::vx {
+namespace v3 GENPYBIND_TAG_LOLA_VX_V3 {
 
 GENPYBIND(postamble)
 GENPYBIND_MANUAL({
@@ -40,4 +41,5 @@ GENPYBIND_MANUAL({
 	}
 })
 
-} // lola::vx::v3
+} // v3
+} // lola::vx
