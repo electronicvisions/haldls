@@ -8,7 +8,7 @@
 #include <pybind11/pybind11.h>
 #endif
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls { namespace vx GENPYBIND_TAG_STADLS_VX {
 
 /**
  * Return type of generate() call on playback sequence.
@@ -74,4 +74,5 @@ pybind11::tuple py_generate_impl(T const& seq)
 
 #endif // defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls

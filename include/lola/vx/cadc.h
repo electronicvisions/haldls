@@ -40,7 +40,7 @@
 #error "Unknown CHIP_REVISION"
 #endif
 
-namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
+namespace lola::vx { namespace CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 #undef GENPYBIND_TAG_LOLA_VX_VY
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
@@ -462,7 +462,8 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<CADCSamples>;
 };
 
-} // namespace lola::vx
+} // namespace vx
+} // namespace lola
 
 namespace haldls::vx::detail {
 

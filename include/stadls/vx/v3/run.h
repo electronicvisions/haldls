@@ -2,7 +2,7 @@
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/run.h"
 
-namespace stadls::vx::v3 GENPYBIND_TAG_STADLS_VX_V3 {
+namespace stadls::vx { namespace v3 GENPYBIND_TAG_STADLS_VX_V3 {
 
 template <typename... Ts>
 auto run(Ts&&... args) -> decltype(stadls::vx::run(std::forward<Ts>(args)...))
@@ -16,4 +16,5 @@ GENPYBIND_MANUAL({
 	    helper(parent);
 })
 
-} // namespace stadls::vx::v3
+} // namespace v3
+} // namespace stadls::vx

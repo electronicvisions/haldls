@@ -2,7 +2,7 @@
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/synapse.h"
 
-namespace haldls::vx::v3 GENPYBIND_TAG_HALDLS_VX_V3 {
+namespace haldls::vx { namespace v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
 using CommonSynramConfig GENPYBIND(visible) = haldls::vx::CommonSynramConfig;
 using SynapseBiasSelection GENPYBIND(visible) = haldls::vx::SynapseBiasSelection;
@@ -14,4 +14,5 @@ using ColumnCorrelationQuad GENPYBIND(visible) = haldls::vx::ColumnCorrelationQu
 using ColumnCurrentQuad GENPYBIND(visible) = haldls::vx::ColumnCurrentQuad;
 using CorrelationReset GENPYBIND(visible) = haldls::vx::CorrelationReset;
 
-} // namespace haldls::vx::v3
+} // namespace v3
+} // namespace haldls::vx

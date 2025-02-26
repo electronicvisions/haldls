@@ -2,7 +2,7 @@
 #include "stadls/vx/genpybind.h"
 #include "stadls/vx/reinit_stack_entry.h"
 
-namespace stadls::vx::v4 GENPYBIND_TAG_STADLS_VX_V4 {
+namespace stadls::vx { namespace v4 GENPYBIND_TAG_STADLS_VX_V4 {
 
 typedef stadls::vx::ReinitStackEntry ReinitStackEntry;
 
@@ -20,4 +20,5 @@ GENPYBIND_MANUAL({
 	    pybind11::arg("pbmem_snapshot") = std::nullopt, pybind11::arg("enforce") = true);
 })
 
-} // namespace stadls::vx::v4
+} // namespace v4
+} // namespace stadls::vx

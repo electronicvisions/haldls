@@ -2,7 +2,7 @@
 #include "haldls/vx/genpybind.h"
 #include "haldls/vx/timer.h"
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls { namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 inline static const GENPYBIND(visible) Timer::Value pll_and_omnibus_settling_duration =
     Timer::Value(Timer::Value::fpga_clock_cycles_per_us * 100);
@@ -24,4 +24,5 @@ inline static const GENPYBIND(visible) double nominal_pll_f_reference = 5e7;
 // https://gerrit.bioai.eu/gitweb?p=hicann-dls-private.git;a=blob_plain;f=hicann-dls/units/hx_madc/doc/MADC.pdf;hb=HEAD;js=1).
 static constexpr GENPYBIND(visible) uint_fast8_t minimal_madc_clock_cycles_per_sample = 12;
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

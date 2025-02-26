@@ -14,7 +14,7 @@
 #include <pybind11/numpy.h>
 #endif
 
-namespace lola::vx GENPYBIND_TAG_LOLA_VX {
+namespace lola { namespace vx GENPYBIND_TAG_LOLA_VX {
 
 class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) ColumnCorrelationRow
     : public haldls::vx::DifferentialWriteTrait
@@ -428,7 +428,8 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<CorrelationResetRow>;
 };
 
-} // namespace lola::vx
+} // namespace vx
+} // namespace lola
 
 namespace haldls::vx::detail {
 

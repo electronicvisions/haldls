@@ -16,7 +16,7 @@
 #include "lola/vx/v3/synapse_driver.h"
 #include <boost/hana/adapt_struct.hpp>
 
-namespace lola::vx::v3 GENPYBIND_TAG_LOLA_VX_V3 {
+namespace lola::vx { namespace v3 GENPYBIND_TAG_LOLA_VX_V3 {
 
 /**
  * Complete static configuration of one chip.
@@ -121,6 +121,7 @@ private:
 	friend haldls::vx::detail::VisitPreorderImpl<Chip>;
 };
 
-} // namespace lola::vx::v3
+} // namespace v3
+} // namespace lola::vx
 
 #include "lola/vx/v3/chip.tcc"

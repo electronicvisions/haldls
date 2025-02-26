@@ -9,7 +9,7 @@ class PlaybackProgram;
 
 } // namespace fisch::vx
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls { namespace vx GENPYBIND_TAG_STADLS_VX {
 
 /**
  * Transfer and execute the given playback program and fetch results.
@@ -44,7 +44,8 @@ RunTimeInfo run(Connection& connection, PlaybackProgram&& program);
 template <typename Connection>
 RunTimeInfo run(Connection& connection, std::shared_ptr<fisch::vx::PlaybackProgram> const& program);
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 

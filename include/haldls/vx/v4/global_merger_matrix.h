@@ -62,7 +62,7 @@ class OmnibusChipOverJTAG;
 class Omnibus;
 } // namespace fisch::vx
 
-namespace haldls::vx::v4 GENPYBIND_TAG_HALDLS_VX_V4 {
+namespace haldls::vx { namespace v4 GENPYBIND_TAG_HALDLS_VX_V4 {
 
 class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) GlobalMergerMatrixOutputConfig
     : public ContainerBase<GlobalMergerMatrixOutputConfig>
@@ -458,7 +458,8 @@ private:
 	GlobalMergerMatrixNode::GL1Index m_gl1_index;
 };
 
-} // namespace haldls::vx::v4
+} // namespace v4
+} // namespace haldls::vx
 
 namespace haldls::vx::detail {
 

@@ -2,7 +2,7 @@
 #include "haldls/vx/common.h"
 #include "haldls/vx/genpybind.h"
 
-namespace haldls::vx::v3 GENPYBIND_TAG_HALDLS_VX_V3 {
+namespace haldls::vx { namespace v3 GENPYBIND_TAG_HALDLS_VX_V3 {
 
 template <typename... Ts>
 auto visit_preorder(Ts&&... args) -> decltype(haldls::vx::visit_preorder(std::forward<Ts>(args)...))
@@ -10,4 +10,5 @@ auto visit_preorder(Ts&&... args) -> decltype(haldls::vx::visit_preorder(std::fo
 	return haldls::vx::visit_preorder(std::forward<Ts>(args)...);
 }
 
-} // namespace haldls::vx::v3
+} // namespace v3
+} // namespace haldls::vx

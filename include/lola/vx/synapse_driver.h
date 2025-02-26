@@ -37,7 +37,7 @@
 #error "Unknown CHIP_REVISION"
 #endif
 
-namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
+namespace lola::vx { namespace CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 
 /**
  * Block on synapse drivers and global configuration of one hemisphere.
@@ -103,7 +103,8 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<SynapseDriverBlock>;
 };
 
-} // namespace lola::vx::vY
+} // namespace vY
+} // namespace lola::vx
 
 namespace haldls::vx::detail {
 

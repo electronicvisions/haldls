@@ -2,7 +2,7 @@
 #include "haldls/vx/fpga.h"
 #include "haldls/vx/genpybind.h"
 
-namespace haldls::vx::v4 GENPYBIND_TAG_HALDLS_VX_V4 {
+namespace haldls::vx { namespace v4 GENPYBIND_TAG_HALDLS_VX_V4 {
 
 using FPGASystimeSyncNumRetries GENPYBIND(visible) = haldls::vx::FPGASystimeSyncNumRetries;
 using FPGASystimeSyncLastRTT GENPYBIND(visible) = haldls::vx::FPGASystimeSyncLastRTT;
@@ -20,4 +20,5 @@ using SpikeIOConfig GENPYBIND(visible) = haldls::vx::SpikeIOConfig;
 using SpikeIOInputRoute GENPYBIND(visible) = haldls::vx::SpikeIOInputRoute;
 using SpikeIOOutputRoute GENPYBIND(visible) = haldls::vx::SpikeIOOutputRoute;
 
-} // namespace haldls::vx::v4
+} // namespace v4
+} // namespace haldls::vx

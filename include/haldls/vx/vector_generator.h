@@ -59,7 +59,7 @@ struct OmnibusAddress;
 struct PPUMemoryWordOnDLS;
 } // namespace halco::hicann_dls::vx
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls { namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) VectorGeneratorControl
     : public ContainerBase<VectorGeneratorControl>
@@ -577,4 +577,5 @@ struct BackendContainerTrait<VectorGeneratorFIFOWord>
 
 } // namespace detail
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

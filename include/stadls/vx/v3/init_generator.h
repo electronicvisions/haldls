@@ -3,7 +3,7 @@
 #include "stadls/vx/v3/playback_generator.h"
 #include "stadls/vx/v3/playback_program_builder.h"
 
-namespace stadls::vx::v3 GENPYBIND_TAG_STADLS_VX_V3 {
+namespace stadls::vx { namespace v3 GENPYBIND_TAG_STADLS_VX_V3 {
 
 namespace detail {
 
@@ -256,4 +256,5 @@ GENPYBIND_MANUAL({
 	    pybind11::return_value_policy::move);
 })
 
-} // namespace stadls::vx::v3
+} // namespace v3
+} // namespace stadls::vx

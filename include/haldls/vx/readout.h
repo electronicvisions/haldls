@@ -45,7 +45,7 @@ class Omnibus;
 
 } // namespace fisch::vx
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls { namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 /**
  * A configuration container for the top-level readout mux, selecting the connections between
@@ -444,4 +444,5 @@ struct BackendContainerTrait<ReadoutSourceSelection>
 
 } // namespace detail
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

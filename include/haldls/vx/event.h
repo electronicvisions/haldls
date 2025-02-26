@@ -54,7 +54,7 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 } // namespace cereal
 
-namespace haldls::vx GENPYBIND_TAG_HALDLS_VX {
+namespace haldls { namespace vx GENPYBIND_TAG_HALDLS_VX {
 
 #define SpikePackToChip(Num)                                                                       \
 	class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) SpikePack##Num##ToChip          \
@@ -512,4 +512,5 @@ private:
 
 #endif
 
-} // namespace haldls::vx
+} // namespace vx
+} // namespace haldls

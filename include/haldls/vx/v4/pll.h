@@ -19,7 +19,7 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 } // namespace cereal
 
-namespace haldls::vx::v4 GENPYBIND_TAG_HALDLS_VX_V4 {
+namespace haldls::vx { namespace v4 GENPYBIND_TAG_HALDLS_VX_V4 {
 
 using ADPLL GENPYBIND(visible) = haldls::vx::ADPLL;
 using PLLSelfTest GENPYBIND(visible) = haldls::vx::PLLSelfTest;
@@ -176,7 +176,8 @@ private:
 	bool m_switch_spl1_to_madc;
 };
 
-} // namespace haldls::vx::v4
+} // namespace v4
+} // namespace haldls::vx
 
 namespace haldls::vx::detail {
 

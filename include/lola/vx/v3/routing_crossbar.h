@@ -2,8 +2,9 @@
 #include "lola/vx/genpybind.h"
 #include "lola/vx/routing_crossbar.h"
 
-namespace lola::vx::v3 GENPYBIND_TAG_LOLA_VX_V3 {
+namespace lola::vx { namespace v3 GENPYBIND_TAG_LOLA_VX_V3 {
 
 using Crossbar GENPYBIND(visible) = lola::vx::Crossbar;
 
-} // namespace lola::vx::v3
+} // namespace v3
+} // namespace lola::vx

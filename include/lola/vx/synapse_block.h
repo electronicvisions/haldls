@@ -37,7 +37,7 @@
 #error "Unknown CHIP_REVISION"
 #endif
 
-namespace lola::vx::CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
+namespace lola::vx { namespace CHIP_REVISION_STR GENPYBIND_TAG_LOLA_VX_VY {
 
 /**
  * Synapses of one hemisphere in conjunction with hemisphere-global configuration.
@@ -79,7 +79,8 @@ private:
 	friend struct haldls::vx::detail::VisitPreorderImpl<SynapseBlock>;
 };
 
-} // namespace lola::vx::vY
+} // namespace vY
+} // namespace lola::vx
 
 namespace haldls::vx::detail {
 

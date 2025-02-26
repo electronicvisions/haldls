@@ -5,7 +5,7 @@
 #include <memory>
 #include <optional>
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls { namespace vx GENPYBIND_TAG_STADLS_VX {
 
 class ReinitStackEntry
 {
@@ -45,6 +45,7 @@ private:
 	std::unique_ptr<Impl> m_impl;
 };
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls
 
 #include "stadls/vx/reinit_stack_entry.tcc"

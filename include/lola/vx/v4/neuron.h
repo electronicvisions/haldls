@@ -6,7 +6,7 @@
 #include "lola/vx/genpybind.h"
 #include "lola/vx/v4/synapse.h"
 
-namespace lola::vx::v4 GENPYBIND_TAG_LOLA_VX_V4 {
+namespace lola::vx { namespace v4 GENPYBIND_TAG_LOLA_VX_V4 {
 
 /**
  * Configuration of digital and analog parameters for a single-denmem neuron.
@@ -727,6 +727,7 @@ std::ostream& operator<<(std::ostream&, AtomicNeuron::EventRouting::AnalogOutput
     SYMBOL_VISIBLE;
 std::ostream& operator<<(std::ostream&, AtomicNeuron::Bayesian::Operation const&) SYMBOL_VISIBLE;
 
-} // namespace lola::vx::v4
+} // namespace v4
+} // namespace lola::vx
 
 #include "lola/vx/v4/neuron.tcc"

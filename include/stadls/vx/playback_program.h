@@ -34,7 +34,7 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 } // namespace cereal
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls { namespace vx GENPYBIND_TAG_STADLS_VX {
 
 namespace detail {
 
@@ -223,7 +223,8 @@ private:
 	std::unordered_set<hxcomm::vx::Target> m_unsupported_targets;
 };
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 // disable pybind11's automatic conversion to python types via its `list_caster`

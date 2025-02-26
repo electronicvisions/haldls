@@ -9,7 +9,7 @@
 #include <memory>
 #include <optional>
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX {
+namespace stadls { namespace vx GENPYBIND_TAG_STADLS_VX {
 
 struct AbsoluteTimePlaybackProgramContainerTicketStorage
 {
@@ -65,4 +65,5 @@ private:
 	    std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> const& ticket_storage);
 }; // AbsoluteTimePlaybackProgramContainerTicket
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls

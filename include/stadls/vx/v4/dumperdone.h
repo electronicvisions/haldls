@@ -28,7 +28,7 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 
 } // namespace cereal
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX_V4 {
+namespace stadls { namespace vx GENPYBIND_TAG_STADLS_VX_V4 {
 
 namespace v4 GENPYBIND_TAG_STADLS_VX_V4 {
 
@@ -144,4 +144,5 @@ GENPYBIND_MANUAL({
 	::haldls::vx::WrapToFromFunctions<stadls::vx::v4::DumperDone>::apply(parent);
 })
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls

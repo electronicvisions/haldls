@@ -8,7 +8,7 @@
 #include "stadls/vx/v4/dumperdone.h"
 #include <cereal/macros.hpp>
 
-namespace stadls::vx GENPYBIND_TAG_STADLS_VX_V4 {
+namespace stadls { namespace vx GENPYBIND_TAG_STADLS_VX_V4 {
 
 namespace v4 GENPYBIND_TAG_STADLS_VX_V4 {
 
@@ -56,7 +56,8 @@ PlaybackProgramBuilderDumper GENPYBIND(visible)
 extern template SYMBOL_VISIBLE std::ostream& stadls::vx::detail::operator<<(
     std::ostream&, stadls::vx::detail::Dumper<stadls::vx::v4::DumperDone> const&);
 
-} // namespace stadls::vx
+} // namespace vx
+} // namespace stadls
 
 #if defined(__GENPYBIND_GENERATED__)
 #include <pybind11/pybind11.h>
