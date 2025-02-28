@@ -20,6 +20,7 @@ TEST(JTAGIdCode, ReadJTAGId)
 	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
 	sequence.chip.enable_highspeed_link = false;
 	sequence.chip.highspeed_link.enable_systime = false;
+	sequence.chip.enable_capmem = false;
 	auto [builder, _] = generate(sequence);
 	auto jtag_id_ticket = builder.read(JTAGIdCodeOnDLS());
 	builder.block_until(BarrierOnFPGA(), Barrier::jtag);

@@ -119,11 +119,8 @@ ChipInit::ChipInit(hxcomm::HwdbEntry const& hwdb_entry) :
     enable_highspeed_link(true),
     event_recording(),
     memory_timing(),
-    synapse_bias_selection(),
-    enable_capmem(false),
-    reference_generator_config(),
-    capmem_block_config(),
-    capmem_config()
+    enable_capmem(true),
+    reference_generator_config()
 {
 	event_recording.set_enable_event_recording(true);
 	fill_synram_timing(hwdb_entry);
@@ -201,9 +198,6 @@ PlaybackGeneratorReturn<typename ChipInit::Result> ChipInit::generate() const
 			throw std::runtime_error("Highspeed link needs to be enabled to configure CapMem.");
 		}
 
-		// Enable internal synapse bias currents
-		builder.write(SynapseBiasSelectionOnDLS(), synapse_bias_selection);
-
 		// Generate usable reference current for the CapMem
 		haldls::vx::v3::ReferenceGeneratorConfig config_with_reset = reference_generator_config;
 		config_with_reset.set_enable_reset(true);
@@ -213,16 +207,6 @@ PlaybackGeneratorReturn<typename ChipInit::Result> ChipInit::generate() const
 		builder.write(TimerOnDLS(), Timer());
 		builder.block_until(TimerOnDLS(), reference_generator_reset_duration);
 		builder.write(ReferenceGeneratorConfigOnDLS(), reference_generator_config);
-
-		// Initialize the CapMem with usable default values.
-		for (auto coord : iter_all<CapMemBlockConfigOnDLS>()) {
-			builder.write(coord, capmem_block_config[coord]);
-		}
-
-		// Set all CapMem cells
-		for (auto coord : iter_all<halco::hicann_dls::vx::v3::CapMemBlockOnDLS>()) {
-			builder.write(coord, capmem_config[coord]);
-		}
 	}
 
 	// Set memory timing configs
@@ -292,9 +276,7 @@ void ChipInit::fill_synram_timing(hxcomm::HwdbEntry const& hwdb_entry)
 	}
 }
 
-namespace detail {
-
-InitGenerator::InitGenerator(hxcomm::HwdbEntry const& hwdb_entry) :
+DigitalInit::DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) :
     instruction_timeout(), enable_asic_adapter_board(true), chip(hwdb_entry), enable_chip(true)
 {
 	std::visit(
@@ -318,7 +300,7 @@ InitGenerator::InitGenerator(hxcomm::HwdbEntry const& hwdb_entry) :
 	}
 }
 
-InitGenerator::InitGenerator(InitGenerator const& other) :
+DigitalInit::DigitalInit(DigitalInit const& other) :
     instruction_timeout(other.instruction_timeout),
     enable_asic_adapter_board(other.enable_asic_adapter_board),
     chip(other.chip),
@@ -327,7 +309,7 @@ InitGenerator::InitGenerator(InitGenerator const& other) :
 {
 }
 
-InitGenerator& InitGenerator::operator=(InitGenerator const& other)
+DigitalInit& DigitalInit::operator=(DigitalInit const& other)
 {
 	if (&other != this) {
 		instruction_timeout = other.instruction_timeout;
@@ -341,7 +323,7 @@ InitGenerator& InitGenerator::operator=(InitGenerator const& other)
 }
 
 
-ASICAdapterBoardInit const& InitGenerator::get_asic_adapter_board() const
+ASICAdapterBoardInit const& DigitalInit::get_asic_adapter_board() const
 {
 	if (!m_asic_adapter_board) {
 		throw std::logic_error("Unexpected access to moved-from object.");
@@ -349,17 +331,17 @@ ASICAdapterBoardInit const& InitGenerator::get_asic_adapter_board() const
 	return *m_asic_adapter_board;
 }
 
-void InitGenerator::set_asic_adapter_board(ASICAdapterBoardInit const& value)
+void DigitalInit::set_asic_adapter_board(ASICAdapterBoardInit const& value)
 {
 	m_asic_adapter_board = value.copy();
 }
 
-PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate() const
+PlaybackGeneratorReturn<typename DigitalInit::Result> DigitalInit::generate() const
 {
 	using namespace haldls::vx;
 	using namespace halco::hicann_dls::vx::v3;
 
-	InitGenerator::Builder builder;
+	DigitalInit::Builder builder;
 
 	// Configure playback instruction timeout
 	builder.write(InstructionTimeoutConfigOnFPGA(), instruction_timeout);
@@ -376,55 +358,9 @@ PlaybackGeneratorReturn<typename InitGenerator::Result> InitGenerator::generate(
 	return {std::move(builder), Result{}};
 }
 
-std::ostream& operator<<(std::ostream& os, InitGenerator const&)
+std::ostream& operator<<(std::ostream& os, DigitalInit const&)
 {
 	return os;
-}
-
-} // namespace detail
-
-
-DigitalInit::DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) : detail::InitGenerator(hwdb_entry) {}
-
-ExperimentInit::ExperimentInit(hxcomm::HwdbEntry const& hwdb_entry) :
-    detail::InitGenerator(hwdb_entry),
-    common_neuron_backend_config(),
-    column_correlation_quad_config(),
-    column_current_quad_config(),
-    common_correlation_config()
-{
-	this->chip.enable_capmem = true;
-}
-
-PlaybackGeneratorReturn<ExperimentInit::Result> ExperimentInit::generate() const
-{
-	using namespace haldls::vx;
-	using namespace halco::hicann_dls::vx::v3;
-	using namespace halco::common;
-
-	auto [builder, res] = InitGenerator::generate();
-
-	// Write common neuron backend config
-	for (auto coord : iter_all<CommonNeuronBackendConfigOnDLS>()) {
-		builder.write(coord, common_neuron_backend_config[coord]);
-	}
-
-	// Set column correlation quad config
-	for (auto coord : iter_all<ColumnCorrelationQuadOnDLS>()) {
-		builder.write(coord, column_correlation_quad_config[coord]);
-	}
-
-	// Set column current quad config
-	for (auto coord : iter_all<ColumnCurrentQuadOnDLS>()) {
-		builder.write(coord, column_current_quad_config[coord]);
-	}
-
-	// Write common correlation config
-	for (auto coord : iter_all<CommonCorrelationConfigOnDLS>()) {
-		builder.write(coord, common_correlation_config[coord]);
-	}
-
-	return {std::move(builder), res};
 }
 
 } // namespace stadls::vx::v3

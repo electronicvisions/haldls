@@ -7,11 +7,8 @@
 namespace stadls::vx {
 namespace v3 GENPYBIND_TAG_STADLS_VX_V3 {
 
-namespace detail {
+class DigitalInit;
 
-class InitGenerator;
-
-} // namespace detail
 
 class GENPYBIND(expose_as(_ASICAdapterBoardInit)) SYMBOL_VISIBLE ASICAdapterBoardInit
 {
@@ -38,7 +35,7 @@ protected:
 	 */
 	virtual std::unique_ptr<ASICAdapterBoardInit> copy() const;
 
-	friend class detail::InitGenerator;
+	friend class DigitalInit;
 
 private:
 	friend auto stadls::vx::generate<ASICAdapterBoardInit>(ASICAdapterBoardInit const&);
@@ -183,9 +180,6 @@ public:
 	/** Memory timing settings. */
 	lola::vx::v3::MemoryTiming memory_timing;
 
-	/** Select internal bias currents for synapses. */
-	haldls::vx::SynapseBiasSelection synapse_bias_selection;
-
 	/**
 	 * Select whether the CapMem should be enabled.
 	 * @note The CapMem initialization requires highspeed access.
@@ -194,20 +188,6 @@ public:
 
 	/** Generate usable reference current for the CapMem. */
 	haldls::vx::v3::ReferenceGeneratorConfig reference_generator_config;
-
-	/** Initialize the CapMem with usable default values. */
-	typedef halco::common::typed_array<
-	    haldls::vx::v3::CapMemBlockConfig,
-	    halco::hicann_dls::vx::v3::CapMemBlockConfigOnDLS>
-	    capmem_block_config_type GENPYBIND(visible);
-	capmem_block_config_type capmem_block_config;
-
-	/** Set initial CapMem config.
-	 * By default, a value of zero is written to all cells. */
-	typedef halco::common::
-	    typed_array<haldls::vx::v3::CapMemBlock, halco::hicann_dls::vx::v3::CapMemBlockOnDLS>
-	        capmem_block_type GENPYBIND(opaque(false));
-	capmem_block_type capmem_config;
 
 	typedef hate::Nil Result;
 
@@ -228,18 +208,16 @@ private:
 };
 
 
-namespace detail {
-
-class SYMBOL_VISIBLE GENPYBIND(expose_as(_InitGenerator)) InitGenerator
+class SYMBOL_VISIBLE GENPYBIND(expose_as("_DigitalInit")) DigitalInit
 {
 public:
-	InitGenerator(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
+	DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
 
 	// needed because of unique_ptr, for which contained type can be copied
-	InitGenerator(InitGenerator const& other) SYMBOL_VISIBLE;
-	InitGenerator(InitGenerator&& other) = default;
-	InitGenerator& operator=(InitGenerator const& other) SYMBOL_VISIBLE;
-	InitGenerator& operator=(InitGenerator&& other) = default;
+	DigitalInit(DigitalInit const& other) SYMBOL_VISIBLE;
+	DigitalInit(DigitalInit&& other) = default;
+	DigitalInit& operator=(DigitalInit const& other) SYMBOL_VISIBLE;
+	DigitalInit& operator=(DigitalInit&& other) = default;
 
 	/** Builder typedef (e.g. for usage in generators). */
 	typedef v3::PlaybackProgramBuilder Builder;
@@ -261,7 +239,7 @@ public:
 	typedef hate::Nil Result;
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, InitGenerator const& sequence) SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, DigitalInit const& sequence) SYMBOL_VISIBLE;
 
 protected:
 	/**
@@ -271,81 +249,11 @@ protected:
 	virtual PlaybackGeneratorReturn<Result> generate() const SYMBOL_VISIBLE;
 
 private:
-	friend auto stadls::vx::generate<InitGenerator>(InitGenerator const&);
+	friend auto stadls::vx::generate<DigitalInit>(DigitalInit const&);
 
 	std::unique_ptr<ASICAdapterBoardInit> m_asic_adapter_board;
 };
 
-} // namespace detail
-
-/**
- * Generator for initialization of the chip up to digital communication.
- *
- * Uses the default InitGenerator() to establish digital communication to the chip.
- */
-class DigitalInit : public detail::InitGenerator
-{
-public:
-	DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
-
-private:
-	friend auto stadls::vx::generate<DigitalInit>(DigitalInit const&);
-};
-
-/**
- * Generator for initialization required for typical experiments.
- * Uses the InitGenerator() to establish digital communication to the chip, and
- * further initializes the CapMem in a working state and selects internal bias currents for
- * synapses.
- */
-class SYMBOL_VISIBLE ExperimentInit : public detail::InitGenerator
-{
-public:
-	ExperimentInit(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
-
-	/** Builder typedef (e.g. for usage in generators). */
-	typedef PlaybackProgramBuilder Builder;
-
-	/** Set common neuron backend with clocks enabled.
-	 * If clocks are disabled, it may behave strangely. */
-	typedef halco::common::typed_array<
-	    haldls::vx::CommonNeuronBackendConfig,
-	    halco::hicann_dls::vx::v3::CommonNeuronBackendConfigOnDLS>
-	    common_neuron_backend_config_type GENPYBIND(visible);
-	common_neuron_backend_config_type common_neuron_backend_config;
-
-	/** Set ColumnCorrelationQuad/Switch connections. */
-	typedef halco::common::typed_array<
-	    haldls::vx::v3::ColumnCorrelationQuad,
-	    halco::hicann_dls::vx::v3::ColumnCorrelationQuadOnDLS>
-	    column_correlation_quad_type GENPYBIND(opaque(false));
-	column_correlation_quad_type column_correlation_quad_config;
-
-	/** Set ColumnCurrentQuad/Switch connections. */
-	typedef halco::common::typed_array<
-	    haldls::vx::v3::ColumnCurrentQuad,
-	    halco::hicann_dls::vx::v3::ColumnCurrentQuadOnDLS>
-	    column_current_quad_type GENPYBIND(opaque(false));
-	column_current_quad_type column_current_quad_config;
-
-	/** Set common correlation config. */
-	typedef halco::common::typed_array<
-	    haldls::vx::v3::CommonCorrelationConfig,
-	    halco::hicann_dls::vx::v3::CommonCorrelationConfigOnDLS>
-	    common_correlation_config_type GENPYBIND(opaque(false));
-	common_correlation_config_type common_correlation_config;
-
-	typedef detail::InitGenerator::Result Result;
-
-private:
-	friend auto stadls::vx::generate<ExperimentInit>(ExperimentInit const&);
-
-	/**
-	 * Generate PlaybackProgramBuilder.
-	 * @return PlaybackGeneratorReturn instance with sequence embodied and specified Result value
-	 */
-	virtual PlaybackGeneratorReturn<Result> generate() const override SYMBOL_VISIBLE;
-};
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 namespace detail {
@@ -395,20 +303,8 @@ struct GENPYBIND(expose_as(ChipInit)) PyChipInit
 	}
 };
 
-struct GENPYBIND(expose_as(ExperimentInit), inline_base("*ExperimentInit*")) PyExperimentInit
-    : public ExperimentInit
-    , public PlaybackGenerator
-{
-	PyExperimentInit(hxcomm::HwdbEntry const& hwdb_entry) : ExperimentInit(hwdb_entry) {}
-
-	virtual pybind11::tuple GENPYBIND(expose_as("generate")) pygenerate() const override
-	{
-		return stadls::vx::detail::py_generate_impl(static_cast<ExperimentInit const&>(*this));
-	}
-};
-
 // TODO: we can't use the alias above, cf. https://github.com/kljohann/genpybind/issues/32
-struct GENPYBIND(expose_as(DigitalInit), inline_base("*DigitalInit*")) PyDigitalInit
+struct GENPYBIND(expose_as(DigitalInit)) PyDigitalInit
     : public DigitalInit
     , public PlaybackGenerator
 {
@@ -454,15 +350,6 @@ GENPYBIND_MANUAL({
 	parent.def(
 	    "generate",
 	    [](::stadls::vx::v3::ChipInit const& seq) {
-		    return ::stadls::vx::detail::py_generate_impl(seq);
-	    },
-	    pybind11::return_value_policy::move);
-})
-
-GENPYBIND_MANUAL({
-	parent.def(
-	    "generate",
-	    [](::stadls::vx::v3::ExperimentInit const& seq) {
 		    return ::stadls::vx::detail::py_generate_impl(seq);
 	    },
 	    pybind11::return_value_policy::move);
