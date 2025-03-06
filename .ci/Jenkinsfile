@@ -33,7 +33,7 @@ try {
 	conditionalStage(name: "Module Deployment", skip: !deploy) {
 		runOnSlave(label: "frontend") {
 			inSingularity(app: "dls-nodev") {
-				deployModule([name: "haldls", source: "bin/ lib/ doc/ repos_log.txt"])
+				deployModule([name: "haldls", source: "bin/ lib/ lib64/ doc/ repos_log.txt"])
 			}
 		}
 	}
