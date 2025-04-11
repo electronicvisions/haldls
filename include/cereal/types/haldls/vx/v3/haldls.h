@@ -7,7 +7,6 @@
 #include "cereal/types/haldls/vx/correlation.h"
 #include "cereal/types/haldls/vx/current_dac.h"
 #include "cereal/types/haldls/vx/event.h"
-#include "cereal/types/haldls/vx/extoll.h"
 #include "cereal/types/haldls/vx/fpga.h"
 #include "cereal/types/haldls/vx/i2c.h"
 #include "cereal/types/haldls/vx/jtag.h"

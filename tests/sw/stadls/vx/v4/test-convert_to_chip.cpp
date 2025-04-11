@@ -125,35 +125,6 @@ typedef hate::type_list<
     haldls::vx::v4::SpikeIOConfig,                           // logically not part of the chip
     haldls::vx::v4::SpikeIOInputRoute,                       // logically not part of the chip
     haldls::vx::v4::SpikeIOOutputRoute,                      // logically not part of the chip
-    haldls::vx::v4::EventSwitchSource,                       // logically not part of the chip
-    haldls::vx::v4::EventSwitchReadout,                      // logically not part of the chip
-    haldls::vx::v4::EventSwitchConfig,                       // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommBucketTriggerConfig,      // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommBucketDestinationConfig,  // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommBucketNumPktsSent,        // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommBucketNumEvtsRcvd,        // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommBucketCounterReset,       // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommRouterLookupConfig,       // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommRouterConfig,             // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommRouterEventLossDisabled,  // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommRouterEventLossMisconf,   // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommRouterEventsRouted,       // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommRouterCounterReset,       // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommDecoderNumEventsReceived, // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommDecoderCounterReset,      // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommTimestampDelayConfig,     // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommTimestampDelayNumEventsReceived, // logically not part of the
-                                                                    // chip
-    haldls::vx::v4::ExtollSpikeCommTimestampDelayEventLossFull,    // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommTimestampDelayEventLossExpired, // logically not part of the chip
-    haldls::vx::v4::ExtollSpikeCommTimestampDelayCounterReset,     // logically not part of the chip
-    haldls::vx::v4::ExtollBarrierTriggerReached,                   // logically not part of the chip
-    haldls::vx::v4::ExtollBarrierReleased,                         // logically not part of the chip
-    haldls::vx::v4::ExtollBarrierConfig,                           // logically not part of the chip
-    haldls::vx::v4::ExtollInterruptControl,                        // logically not part of the chip
-    haldls::vx::v4::ExtollInterruptConfig,                         // logically not part of the chip
-    haldls::vx::v4::ExtollBarrierInterruptInportErrorCount,        // logically not part of the chip
-    haldls::vx::v4::ExtollBarrierInterruptInportCounterReset,      // logically not part of the chip
     haldls::vx::v4::FPGASystimeSyncNumRetries,                     // logically not part of the chip
     haldls::vx::v4::FPGASystimeSyncLastRTT,                        // logically not part of the chip
     haldls::vx::v4::FPGASystimeSyncLastAsicSystime,                // logically not part of the chip

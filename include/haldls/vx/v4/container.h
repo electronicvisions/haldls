@@ -8,7 +8,6 @@
 #include "haldls/vx/v4/correlation.h"
 #include "haldls/vx/v4/current_dac.h"
 #include "haldls/vx/v4/event.h"
-#include "haldls/vx/v4/extoll.h"
 #include "haldls/vx/v4/fpga.h"
 #include "haldls/vx/v4/global_merger_matrix.h"
 #include "haldls/vx/v4/i2c.h"

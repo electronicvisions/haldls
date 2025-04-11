@@ -8,7 +8,6 @@
 #include "haldls/vx/v3/correlation.h"
 #include "haldls/vx/v3/current_dac.h"
 #include "haldls/vx/v3/event.h"
-#include "haldls/vx/v3/extoll.h"
 #include "haldls/vx/v3/fpga.h"
 #include "haldls/vx/v3/i2c.h"
 #include "haldls/vx/v3/jtag.h"
