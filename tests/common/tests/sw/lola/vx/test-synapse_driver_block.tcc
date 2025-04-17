@@ -14,9 +14,6 @@
 #if CHIP_REVISION == 3
 #define CHIP_REVISION_STR v3
 #include "cereal/types/lola/vx/v3/synapse_driver.h"
-#elif CHIP_REVISION == 4
-#define CHIP_REVISION_STR v4
-#include "cereal/types/lola/vx/v4/synapse_driver.h"
 #else
 #error "Unknown CHIP_REVISION"
 #endif

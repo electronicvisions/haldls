@@ -12,8 +12,6 @@
 
 #if CHIP_REVISION == 3
 #define CHIP_REVISION_STR v3
-#elif CHIP_REVISION == 4
-#define CHIP_REVISION_STR v4
 #else
 #error "Unknown CHIP_REVISION"
 #endif
