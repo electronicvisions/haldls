@@ -1,4 +1,4 @@
-#include "haldls/vx/v4/global_merger_matrix.h"
+#include "haldls/vx/global_merger_matrix.h"
 
 #include "fisch/vx/word_access/type/jtag.h"
 #include "fisch/vx/word_access/type/omnibus.h"
@@ -6,12 +6,12 @@
 #include "halco/hicann-dls/vx/omnibus.h"
 #include "haldls/expand_word.h"
 #include "haldls/vx/container.tcc"
-#include "haldls/vx/v4/omnibus_constants.h"
+#include "haldls/vx/omnibus_constants.h"
 #include "hate/bitset.h"
 #include "hate/join.h"
 #include "hate/math.h"
 
-namespace haldls::vx::v4 {
+namespace haldls::vx {
 
 GlobalMergerMatrixOutputConfig::GlobalMergerMatrixOutputConfig() :
     m_enable_event_counter(), m_enable_slow()
@@ -735,10 +735,10 @@ template SYMBOL_VISIBLE void GlobalMergerMatrixNode::decode<fisch::vx::word_acce
         fisch::vx::word_access_type::Omnibus,
         GlobalMergerMatrixNode::config_size_in_words> const& data);
 
-} // namespace haldls::vx::v4
+} // namespace haldls::vx
 
-EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v4::GlobalMergerMatrixOutputConfig)
-EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v4::NeuronLabelToGL1EventLUTEntry)
-EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v4::GlobalMergerMatrixInputDropCounter)
-EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v4::GlobalMergerMatrixOutputEventCounter)
-EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::v4::GlobalMergerMatrixNode)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::GlobalMergerMatrixOutputConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::NeuronLabelToGL1EventLUTEntry)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::GlobalMergerMatrixInputDropCounter)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::GlobalMergerMatrixOutputEventCounter)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::GlobalMergerMatrixNode)

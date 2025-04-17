@@ -263,3 +263,15 @@ constexpr uint32_t fpga_spikeio_mask{executor_omnibus_mask | 1u << 17};
 constexpr uint32_t fpga_spikeio_output_routing_base_address{fpga_spikeio_mask};
 constexpr uint32_t fpga_spikeio_input_routing_base_address{fpga_spikeio_mask | 1u << 16};
 constexpr uint32_t fpga_spikeio_config_base_address{fpga_spikeio_mask | 1u << 16 | 1u << 15};
+
+constexpr uint32_t global_merger_matrix_base_address{pll_base_address + 0x0002'0000};
+constexpr uint32_t global_merger_matrix_out_mux_base_address{global_merger_matrix_base_address};
+constexpr uint32_t global_merger_matrix_node_base_address{global_merger_matrix_base_address + 1};
+constexpr uint32_t neuron_label_to_gl1_index_lut_entry_base_address{
+    global_merger_matrix_node_base_address + 54 * 2};
+constexpr uint32_t global_merger_matrix_input_config_to_crossbar_base_address{
+    neuron_label_to_gl1_index_lut_entry_base_address + 8 * 64};
+constexpr uint32_t global_merger_matrix_input_drop_counter_base_address{
+    global_merger_matrix_input_config_to_crossbar_base_address + 4};
+constexpr uint32_t global_merger_matrix_output_event_counter_base_address{
+    global_merger_matrix_input_drop_counter_base_address + 4};
