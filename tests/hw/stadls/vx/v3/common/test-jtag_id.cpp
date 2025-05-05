@@ -15,7 +15,9 @@ using namespace halco::hicann_dls::vx::v3;
  */
 TEST(JTAGIdCode, ReadJTAGId)
 {
-	auto sequence = DigitalInit();
+	auto connection = hxcomm::vx::get_connection_from_env();
+	auto sequence = DigitalInit(
+	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
 	sequence.chip.enable_highspeed_link = false;
 	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
@@ -23,7 +25,6 @@ TEST(JTAGIdCode, ReadJTAGId)
 	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 	auto program = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	ASSERT_TRUE(jtag_id_ticket.valid());

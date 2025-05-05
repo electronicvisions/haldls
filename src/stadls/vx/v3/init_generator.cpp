@@ -1,6 +1,9 @@
 #include "stadls/vx/v3/init_generator.h"
 
 #include "haldls/vx/constants.h"
+#include "hwdb4cpp/hwdb4cpp.h"
+#include "hxcomm/common/hwdb_entry.h"
+#include <variant>
 
 namespace stadls::vx::v3 {
 
@@ -228,13 +231,16 @@ PlaybackGeneratorReturn<typename ChipInit::Result> ChipInit::generate() const
 
 namespace detail {
 
-InitGenerator::InitGenerator() :
+InitGenerator::InitGenerator(hxcomm::HwdbEntry const& hwdb_entry) :
     instruction_timeout(),
     enable_asic_adapter_board(true),
     chip(),
     enable_chip(true),
     m_asic_adapter_board(std::make_unique<CubeASICAdapterBoardInit>())
 {
+	if (std::holds_alternative<hwdb4cpp::JboaSetupEntry>(hwdb_entry)) {
+		throw std::logic_error("jBOA adapter board init not implemented yet.");
+	}
 }
 
 InitGenerator::InitGenerator(InitGenerator const& other) :
@@ -303,10 +309,10 @@ std::ostream& operator<<(std::ostream& os, InitGenerator const&)
 } // namespace detail
 
 
-DigitalInit::DigitalInit() : detail::InitGenerator() {}
+DigitalInit::DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) : detail::InitGenerator(hwdb_entry) {}
 
-ExperimentInit::ExperimentInit() :
-    detail::InitGenerator(),
+ExperimentInit::ExperimentInit(hxcomm::HwdbEntry const& hwdb_entry) :
+    detail::InitGenerator(hwdb_entry),
     common_neuron_backend_config(),
     column_correlation_quad_config(),
     column_current_quad_config(),

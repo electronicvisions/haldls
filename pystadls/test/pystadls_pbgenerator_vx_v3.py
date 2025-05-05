@@ -4,6 +4,7 @@ from typing import get_type_hints
 from pystadls_vx_v3 import PlaybackGenerator, generate, \
     DigitalInit, ExperimentInit, ASICAdapterBoardInit, \
     CubeASICAdapterBoardInit, ChipInit
+from pyhxcomm_vx import ZeroMockEntry
 
 
 class PlaybackGeneratorTest(unittest.TestCase):
@@ -49,13 +50,15 @@ class PlaybackGeneratorTest(unittest.TestCase):
         Check that C++ sequences are usable in python.
         """
 
-        for generator in [DigitalInit, ExperimentInit, ASICAdapterBoardInit,
-                          CubeASICAdapterBoardInit, ChipInit]:
-            self.assertTrue(isinstance(generator(), PlaybackGenerator),
+        for generator in [DigitalInit(ZeroMockEntry()),
+                          ExperimentInit(ZeroMockEntry()),
+                          ASICAdapterBoardInit(),
+                          CubeASICAdapterBoardInit(), ChipInit()]:
+            self.assertTrue(isinstance(generator, PlaybackGenerator),
                             f"Instances of {str(generator)} are not of type "
-                            f"'PlaybackGenerator' but {type(generator())}")
+                            f"'PlaybackGenerator' but {type(generator)}")
 
-            self.assertTrue(isinstance(generate(generator()),
+            self.assertTrue(isinstance(generate(generator),
                                        tuple),
                             f"'generate({str(generator)})' does not "
                             "produce results of type 'tuple'.")

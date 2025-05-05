@@ -18,7 +18,9 @@ using namespace stadls::vx::v3;
 #define TEST_SPIKE(Num)                                                                            \
 	TEST(SpikePack##Num##ToChip, Loopback)                                                         \
 	{                                                                                              \
-		auto sequence = DigitalInit();                                                             \
+		auto connection = hxcomm::vx::get_connection_from_env();                                   \
+		auto sequence = DigitalInit(std::visit(                                                    \
+		    [](auto const& connection) { return connection.get_hwdb_entry(); }, connection));      \
 		auto [builder, _] = generate(sequence);                                                    \
                                                                                                    \
 		constexpr size_t num_spikes = 1000;                                                        \
@@ -39,7 +41,6 @@ using namespace stadls::vx::v3;
 		builder.block_until(TimerOnDLS(), Timer::Value(1000));                                     \
 		auto program = builder.done();                                                             \
                                                                                                    \
-		auto connection = hxcomm::vx::get_connection_from_env();                                   \
 		run(connection, program);                                                                  \
                                                                                                    \
 		auto spikes = program.get_spikes();                                                        \

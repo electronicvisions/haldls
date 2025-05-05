@@ -18,17 +18,25 @@ TEST(Run, ExecutableRestriction)
 	PlaybackProgramBuilder builder;
 	auto program_unrestricted = builder.done();
 
-	auto sim_builder = generate(DigitalInit()).builder;
+	auto connection = hxcomm::vx::get_connection_from_env();
+
+	auto sim_builder =
+	    generate(
+	        DigitalInit(std::visit(
+	            [](auto const& connection) { return connection.get_hwdb_entry(); }, connection)))
+	        .builder;
 	sim_builder.read(CrossbarNodeOnDLS());
 	sim_builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program_simulation_restricted = sim_builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
-
 	EXPECT_NO_THROW(run(connection, program_unrestricted));
 	EXPECT_NO_THROW(run(connection, program_simulation_restricted));
 
-	auto hw_builder = generate(DigitalInit()).builder;
+	auto hw_builder =
+	    generate(
+	        DigitalInit(std::visit(
+	            [](auto const& connection) { return connection.get_hwdb_entry(); }, connection)))
+	        .builder;
 	hw_builder.read(NeuronConfigOnDLS());
 	hw_builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program_hw_restricted = hw_builder.done();

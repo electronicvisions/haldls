@@ -227,18 +227,20 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 	barrier.set_enable_jtag(true);
 	barrier.set_enable_omnibus(true);
 
-	DigitalInit init;
-	init.enable_asic_adapter_board = !is_simulation;
-	auto [run_builder, _] = generate(init);
-	run_builder.block_until(BarrierOnFPGA(), barrier);
-
-	run_builder.merge_back(write_builder);
-	run_builder.merge_back(read_builder);
-
-	run_builder.block_until(BarrierOnFPGA(), barrier);
-	auto run_program = run_builder.done();
 	{
 		auto connection = hxcomm::vx::get_connection_from_env();
+
+		DigitalInit init(std::visit(
+		    [](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
+		init.enable_asic_adapter_board = !is_simulation;
+		auto [run_builder, _] = generate(init);
+		run_builder.block_until(BarrierOnFPGA(), barrier);
+
+		run_builder.merge_back(write_builder);
+		run_builder.merge_back(read_builder);
+
+		run_builder.block_until(BarrierOnFPGA(), barrier);
+		auto run_program = run_builder.done();
 
 		// check that operation for given connection is permitted
 		auto const target_unsupported = [run_program](auto& conn) {

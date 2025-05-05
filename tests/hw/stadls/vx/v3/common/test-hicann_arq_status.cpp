@@ -25,7 +25,9 @@ using namespace stadls::vx::v3;
  */
 TEST(HicannARQStatus, OmnibusReadCount)
 {
-	auto sequence = DigitalInit();
+	auto connection = hxcomm::vx::get_connection_from_env();
+	auto sequence = DigitalInit(
+	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
 	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 
@@ -44,7 +46,6 @@ TEST(HicannARQStatus, OmnibusReadCount)
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	EXPECT_TRUE(ticket_ref.valid());
@@ -70,7 +71,9 @@ TEST(HicannARQStatus, OmnibusReadCount)
  */
 TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 {
-	auto sequence = DigitalInit();
+	auto connection = hxcomm::vx::get_connection_from_env();
+	auto sequence = DigitalInit(
+	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
 	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 
@@ -84,7 +87,6 @@ TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	EXPECT_TRUE(ticket.valid());

@@ -56,7 +56,8 @@ class HwTestPystadlsVxV3(unittest.TestCase):
     @unittest.skip("Issue #3578")
     def test_event(self):
         # ported from C++ test-event
-        sequence = stadls.DigitalInit()
+        with hxcomm.ManagedConnection() as conn:
+            sequence = stadls.DigitalInit(conn.get_hwdb_entry())
         builder, _ = sequence.generate()
 
         num_spikes = 1000
@@ -121,7 +122,8 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         expected_link_rate = 595.0  # Mbit/s
         runtime_us = 1000
         for enabled_links in tests_enabled_links:
-            init = stadls.DigitalInit()
+            with hxcomm.ManagedConnection() as conn:
+                init = stadls.DigitalInit(conn.get_hwdb_entry())
             init.chip.highspeed_link.enable_systime = False  # pylint: disable=no-member
             for link in range(8):
                 if link not in enabled_links:
@@ -174,7 +176,9 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         samples than configurable in the MADC config.
         """
 
-        builder, _ = stadls.DigitalInit().generate()
+        with hxcomm.ManagedConnection() as conn:
+            builder, _ = stadls.DigitalInit(
+                conn.get_hwdb_entry()).generate()
 
         madc_config = haldls.MADCConfig()
         madc_config.enable_dummy_data = True
@@ -272,7 +276,9 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         for madc_clock_scale_value in madc_clock_scale_values:
             for sample_duration_adjust in sample_duration_adjusts:
                 for enable_madc_clock_scaling in enable_madc_clock_scalings:
-                    builder, _ = stadls.DigitalInit().generate()
+                    with hxcomm.ManagedConnection() as conn:
+                        builder, _ = stadls.DigitalInit(
+                            conn.get_hwdb_entry()).generate()
 
                     # configure MADC
                     madc_config = haldls.MADCConfig()
@@ -368,15 +374,16 @@ class HwTestPystadlsVxV3(unittest.TestCase):
 
     @staticmethod
     def test_reinit_stack_entry():
-        builder, _ = stadls.DigitalInit().generate()
-        builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(100))
-        init = builder.done()
-
-        builder = stadls.PlaybackProgramBuilder()
-        builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(400))
-        program = builder.done()
-
         with hxcomm.ManagedConnection() as conn:
+            builder, _ = stadls.DigitalInit(
+                conn.get_hwdb_entry()).generate()
+            builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(100))
+            init = builder.done()
+
+            builder = stadls.PlaybackProgramBuilder()
+            builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(400))
+            program = builder.done()
+
             reinit = stadls.ReinitStackEntry(conn)
             reinit.set(init, enforce=True)
             stadls.run(conn, program)

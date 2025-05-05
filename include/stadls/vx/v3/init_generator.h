@@ -1,5 +1,6 @@
 #pragma once
 #include "hate/visibility.h"
+#include "hxcomm/common/hwdb_entry.h"
 #include "stadls/vx/v3/playback_generator.h"
 #include "stadls/vx/v3/playback_program_builder.h"
 
@@ -228,8 +229,7 @@ namespace detail {
 class SYMBOL_VISIBLE GENPYBIND(expose_as(_InitGenerator)) InitGenerator
 {
 public:
-	/** Default constructor. */
-	InitGenerator() SYMBOL_VISIBLE;
+	InitGenerator(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
 
 	// needed because of unique_ptr, for which contained type can be copied
 	InitGenerator(InitGenerator const& other) SYMBOL_VISIBLE;
@@ -282,8 +282,7 @@ private:
 class DigitalInit : public detail::InitGenerator
 {
 public:
-	/** Default constructor. */
-	DigitalInit() SYMBOL_VISIBLE;
+	DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
 
 private:
 	friend auto stadls::vx::generate<DigitalInit>(DigitalInit const&);
@@ -298,8 +297,7 @@ private:
 class SYMBOL_VISIBLE ExperimentInit : public detail::InitGenerator
 {
 public:
-	/** Default constructor. */
-	ExperimentInit() SYMBOL_VISIBLE;
+	ExperimentInit(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
 
 	/** Builder typedef (e.g. for usage in generators). */
 	typedef PlaybackProgramBuilder Builder;
@@ -395,6 +393,8 @@ struct GENPYBIND(expose_as(ExperimentInit), inline_base("*ExperimentInit*")) PyE
     : public ExperimentInit
     , public PlaybackGenerator
 {
+	PyExperimentInit(hxcomm::HwdbEntry const& hwdb_entry) : ExperimentInit(hwdb_entry) {}
+
 	virtual pybind11::tuple GENPYBIND(expose_as("generate")) pygenerate() const override
 	{
 		return stadls::vx::detail::py_generate_impl(static_cast<ExperimentInit const&>(*this));
@@ -406,6 +406,8 @@ struct GENPYBIND(expose_as(DigitalInit), inline_base("*DigitalInit*")) PyDigital
     : public DigitalInit
     , public PlaybackGenerator
 {
+	PyDigitalInit(hxcomm::HwdbEntry const& hwdb_entry) : DigitalInit(hwdb_entry) {}
+
 	virtual pybind11::tuple GENPYBIND(expose_as("generate")) pygenerate() const override
 	{
 		return stadls::vx::detail::py_generate_impl(static_cast<DigitalInit const&>(*this));

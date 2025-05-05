@@ -29,7 +29,9 @@ using namespace stadls::vx::v3;
  */
 void test_spikeio_nodrop(SpikeIOConfig const config)
 {
-	auto sequence = DigitalInit();
+	auto connection = hxcomm::vx::get_connection_from_env();
+	auto sequence = DigitalInit(
+	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
 	auto [config_builder, _] = generate(sequence);
 
 	config_builder.write(SpikeIOConfigOnFPGA(), config);
@@ -88,11 +90,8 @@ void test_spikeio_nodrop(SpikeIOConfig const config)
 	auto config_program = config_builder.done();
 	auto stim_program = stim_builder.done();
 
-	{
-		auto connection = hxcomm::vx::get_connection_from_env();
-		run(connection, config_program);
-		run(connection, stim_program);
-	}
+	run(connection, config_program);
+	run(connection, stim_program);
 
 	auto spikes = stim_program.get_spikes();
 	EXPECT_EQ(spikes.size(), num_expected_trace_events) << "Unexpected number of events received.";

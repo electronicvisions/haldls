@@ -18,7 +18,9 @@ using namespace stadls::vx::v3;
 void test_background_spike_source_regular(
     BackgroundSpikeSource::Period period, Timer::Value running_period, size_t spike_count_deviation)
 {
-	auto sequence = DigitalInit();
+	auto connection = hxcomm::vx::get_connection_from_env();
+	auto sequence = DigitalInit(
+	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
 	auto [builder, _] = generate(sequence);
 
 	size_t expected_count =
@@ -62,7 +64,6 @@ void test_background_spike_source_regular(
 
 	auto program = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
 	run(connection, program);
 
 	auto spikes = program.get_spikes();
