@@ -2,7 +2,9 @@
 #include "cereal/types/haldls/cereal.h"
 #include "hate/type_list.h"
 #include <iosfwd>
+#include <sstream>
 #include <vector>
+#include <cereal/archives/portable_binary.hpp>
 #include <pybind11/pybind11.h>
 
 namespace haldls::vx {
@@ -57,7 +59,12 @@ private:
 		auto ism = pybind11::is_method(attr);
 		auto const getattr = [](pybind11::object const& self) {
 			auto& thing = self.cast<T const&>();
-			std::string serialized{haldls::vx::to_portablebinary(thing)};
+			std::stringstream ss;
+			{
+				cereal::PortableBinaryOutputArchive ar(ss);
+				ar(thing);
+			}
+			std::string serialized{ss.str()};
 			if (pybind11::hasattr(self, "__dict__")) {
 				return pybind11::make_tuple(pybind11::bytes(serialized), self.attr("__dict__"));
 			} else {
@@ -68,7 +75,11 @@ private:
 		auto const setattr = [](pybind11::object& self, pybind11::tuple const& data) {
 			auto& thing = self.cast<T&>();
 			new (&thing) T();
-			haldls::vx::from_portablebinary(thing, data[0].cast<std::string>());
+			{
+				std::stringstream ss(data[0].cast<std::string>());
+				cereal::PortableBinaryInputArchive ar(ss);
+				ar(thing);
+			}
 			if (pybind11::hasattr(self, "__dict__")) {
 				self.attr("__dict__") = data[1];
 			}
