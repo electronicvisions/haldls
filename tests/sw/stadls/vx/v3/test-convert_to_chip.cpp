@@ -56,6 +56,7 @@ typedef hate::type_list<
     haldls::vx::v3::AD5252ChannelConfigPersistent,      // init
     haldls::vx::v3::TCA9554Config,                      // init
     haldls::vx::v3::TCA9554Inputs,                      // init
+    haldls::vx::v3::TCA9546ChannelConfig,               // init
     haldls::vx::v3::VectorGeneratorFIFOWord,            // trigger
     haldls::vx::v3::VectorGeneratorTrigger,             // trigger
     haldls::vx::v3::VectorGeneratorNotificationAddress, // not covered

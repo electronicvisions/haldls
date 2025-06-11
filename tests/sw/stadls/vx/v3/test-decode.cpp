@@ -29,6 +29,7 @@ typedef hate::type_list<
     haldls::vx::INA219Status,
     haldls::vx::SpikeIOInputRoute,             // One'd by default
     haldls::vx::SpikeIOOutputRoute,            // One'd by default
+    haldls::vx::TCA9546ChannelConfig,          // One'd by default
     haldls::vx::CADCOffsetSRAMTimingConfig,    // One'd by default
     haldls::vx::NeuronSRAMTimingConfig,        // One'd by default
     haldls::vx::NeuronBackendSRAMTimingConfig, // One'd by default

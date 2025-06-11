@@ -36,6 +36,7 @@ extern std::optional<size_t> max_words_per_reduced_test;
 // These containers are not supported in the hardware-setups used for automated testing
 typedef hate::type_list<
     haldls::vx::TCA9554Config,
+    haldls::vx::TCA9546ChannelConfig,
     haldls::vx::AD5252ChannelConfig,
     haldls::vx::AD5252ChannelConfigPersistent, // Persistent register. DO NOT change randomly
     haldls::vx::DAC6573ChannelConfig,

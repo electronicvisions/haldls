@@ -14,6 +14,7 @@
 PLAYBACK_CONTAINER(DAC6573ChannelConfig, haldls::vx::v3::DAC6573ChannelConfig)
 PLAYBACK_CONTAINER(AD5252ChannelConfig, haldls::vx::v3::AD5252ChannelConfig)
 PLAYBACK_CONTAINER(AD5252ChannelConfigPersistent, haldls::vx::v3::AD5252ChannelConfigPersistent)
+PLAYBACK_CONTAINER(TCA9546ChannelConfig, haldls::vx::v3::TCA9546ChannelConfig)
 PLAYBACK_CONTAINER(TCA9554Config, haldls::vx::v3::TCA9554Config)
 PLAYBACK_CONTAINER(TCA9554Inputs, haldls::vx::v3::TCA9554Inputs)
 PLAYBACK_CONTAINER(VectorGeneratorFIFOWord, haldls::vx::v3::VectorGeneratorFIFOWord)

@@ -12,6 +12,7 @@ struct TCA9554Config;
 struct AD5252ChannelConfig;
 struct AD5252ChannelConfigPersistent;
 struct DAC6573ChannelConfig;
+struct TCA9546ChannelConfig;
 
 } // namespace haldls::vx
 
@@ -49,6 +50,10 @@ template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive& ar, haldls::vx::DAC6573ChannelConfig& value, std::uint32_t const version);
 
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::TCA9546ChannelConfig& value, std::uint32_t const version);
+
 } // namespace cereal
 
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::TMP112Status)
@@ -59,5 +64,6 @@ EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::TCA9554Config)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::AD5252ChannelConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::AD5252ChannelConfigPersistent)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::DAC6573ChannelConfig)
+EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::TCA9546ChannelConfig)
 
 CEREAL_FORCE_DYNAMIC_INIT(haldls_vx_i2c)

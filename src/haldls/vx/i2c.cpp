@@ -738,6 +738,82 @@ std::ostream& operator<<(std::ostream& os, DAC6573ChannelConfig const& config)
 	return os << hate::name<DAC6573ChannelConfig>() << "(value: " << config.m_value << ")";
 }
 
+
+TCA9546ChannelConfig::TCA9546ChannelConfig() : m_status()
+{
+	m_status.fill(true);
+}
+
+TCA9546ChannelConfig::EnableChannels const& TCA9546ChannelConfig::get_enable_channels() const
+{
+	return m_status;
+}
+
+void TCA9546ChannelConfig::set_enable_channels(const EnableChannels& value)
+{
+	m_status = value;
+}
+
+bool TCA9546ChannelConfig::operator==(TCA9546ChannelConfig const& other) const
+{
+	return m_status == other.m_status;
+}
+
+bool TCA9546ChannelConfig::operator!=(TCA9546ChannelConfig const& other) const
+{
+	return !(*this == other);
+}
+
+std::array<
+    halco::hicann_dls::vx::I2CTCA9546RegisterOnBoard,
+    TCA9546ChannelConfig::config_size_in_words>
+TCA9546ChannelConfig::addresses(coordinate_type const& /*coord*/)
+{
+	return {halco::hicann_dls::vx::I2CTCA9546RegisterOnBoard()};
+}
+
+std::array<
+    fisch::vx::word_access_type::I2CTCA9546Register,
+    TCA9546ChannelConfig::config_size_in_words>
+TCA9546ChannelConfig::encode() const
+{
+	return {fisch::vx::word_access_type::I2CTCA9546Register(
+	    TypedBoolArrayToUint8Conversion<
+	        EnableChannels, halco::hicann_dls::vx::TCA9546ChannelOnBoard>(m_status)
+	        .raw)};
+}
+
+void TCA9546ChannelConfig::decode(std::array<
+                                  fisch::vx::word_access_type::I2CTCA9546Register,
+                                  TCA9546ChannelConfig::config_size_in_words> const& data)
+{
+	m_status = TypedBoolArrayToUint8Conversion<
+	               EnableChannels, halco::hicann_dls::vx::TCA9546ChannelOnBoard>(data[0])
+	               .to_array();
+}
+
+std::ostream& operator<<(std::ostream& os, TCA9546ChannelConfig const& config)
+{
+	std::stringstream ss_status;
+
+	for (auto coord : halco::common::iter_all<halco::hicann_dls::vx::TCA9546ChannelOnBoard>()) {
+		bool const is_last = coord == halco::hicann_dls::vx::TCA9546ChannelOnBoard::max;
+
+		ss_status << (config.m_status[coord] == true ? "enabled  " : "disabled")
+		          << (is_last ? "" : " ");
+	}
+
+	return os << hate::name<TCA9546ChannelConfig>() << "(\n"
+	          << "\tstatus: \t" << ss_status.str() << "\n";
+}
+
+TCA9546ChannelConfig const TCA9546ChannelConfig::default_mux = []() -> TCA9546ChannelConfig {
+	TCA9546ChannelConfig::EnableChannels const channel_status = {true, true, true, false};
+	TCA9546ChannelConfig mux_config;
+	mux_config.m_status = channel_status;
+	return mux_config;
+}();
+
 } // namespace haldls::vx
 
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::TMP112Status)
@@ -748,3 +824,4 @@ EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::TCA9554Config)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::AD5252ChannelConfig)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::AD5252ChannelConfigPersistent)
 EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::DAC6573ChannelConfig)
+EXPLICIT_INSTANTIATE_HALDLS_CONTAINER_BASE(haldls::vx::TCA9546ChannelConfig)

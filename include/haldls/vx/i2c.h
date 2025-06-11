@@ -31,6 +31,7 @@ struct TCA9554Config;
 struct AD5252ChannelConfig;
 struct AD5252ChannelConfigPersistent;
 struct DAC6573ChannelConfig;
+struct TCA9546ChannelConfig;
 
 } // namespace haldls::vx
 
@@ -67,6 +68,10 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive& ar, haldls::vx::DAC6573ChannelConfig& value, std::uint32_t const version);
+
+template <typename Archive>
+void CEREAL_SERIALIZE_FUNCTION_NAME(
+    Archive& ar, haldls::vx::TCA9546ChannelConfig& value, std::uint32_t const version);
 
 } // namespace cereal
 #endif
@@ -853,6 +858,83 @@ struct BackendContainerTrait<DAC6573ChannelConfig>
     : public BackendContainerBase<
           DAC6573ChannelConfig,
           fisch::vx::word_access_type::I2CDAC6573RwRegister>
+{};
+
+} // namespace detail
+
+
+class SYMBOL_VISIBLE GENPYBIND(inline_base("*ContainerBase*")) TCA9546ChannelConfig
+    : public ContainerBase<TCA9546ChannelConfig>
+{
+public:
+	typedef halco::hicann_dls::vx::TCA9546OnBoard coordinate_type;
+	typedef std::true_type is_leaf_node;
+#ifndef __ppu__
+	constexpr static auto unsupported_read_targets GENPYBIND(hidden) = {
+	    hxcomm::vx::Target::simulation};
+#endif
+
+	typedef GENPYBIND(opaque) halco::common::
+	    typed_array<bool, halco::hicann_dls::vx::TCA9546ChannelOnBoard> EnableChannels;
+
+	/** Default constructor. */
+	TCA9546ChannelConfig() SYMBOL_VISIBLE;
+
+	/**
+	 * Default channel enable/disable configuration for multiplexer.
+	 */
+	static const SYMBOL_VISIBLE GENPYBIND(visible) TCA9546ChannelConfig default_mux;
+
+	/**
+	 * Get enable/disable setting for all channels.
+	 * @return Array of channel enable/disable settings
+	 **/
+	GENPYBIND(getter_for(channel_status), return_value_policy(reference_internal))
+	EnableChannels const& get_enable_channels() const SYMBOL_VISIBLE;
+
+	/**
+	 * Set enable/disable setting for all channels.
+	 * @param value Array of channel enable/disable settings
+	 **/
+	GENPYBIND(setter_for(channel_status))
+	void set_enable_channels(EnableChannels const& value) SYMBOL_VISIBLE;
+
+	bool operator==(TCA9546ChannelConfig const& other) const SYMBOL_VISIBLE;
+	bool operator!=(TCA9546ChannelConfig const& other) const SYMBOL_VISIBLE;
+
+	GENPYBIND(stringstream)
+	friend std::ostream& operator<<(std::ostream& os, TCA9546ChannelConfig const& config)
+	    SYMBOL_VISIBLE;
+
+	static size_t constexpr config_size_in_words GENPYBIND(hidden) = 1;
+	static std::array<halco::hicann_dls::vx::I2CTCA9546RegisterOnBoard, config_size_in_words>
+	addresses(coordinate_type const& coord) SYMBOL_VISIBLE GENPYBIND(hidden);
+	std::array<fisch::vx::word_access_type::I2CTCA9546Register, config_size_in_words> encode() const
+	    SYMBOL_VISIBLE GENPYBIND(hidden);
+	void decode(
+	    std::array<fisch::vx::word_access_type::I2CTCA9546Register, config_size_in_words> const&
+	        data) SYMBOL_VISIBLE GENPYBIND(hidden);
+
+private:
+	friend struct cereal::access;
+	template <typename Archive>
+	friend void ::cereal::serialize(
+	    Archive& ar, TCA9546ChannelConfig& value, std::uint32_t const version) SYMBOL_VISIBLE;
+
+	EnableChannels m_status;
+};
+
+#ifndef __ppu__
+
+#endif
+
+namespace detail {
+
+template <>
+struct BackendContainerTrait<TCA9546ChannelConfig>
+    : public BackendContainerBase<
+          TCA9546ChannelConfig,
+          fisch::vx::word_access_type::I2CTCA9546Register>
 {};
 
 } // namespace detail
