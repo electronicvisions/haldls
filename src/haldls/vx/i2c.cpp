@@ -636,6 +636,20 @@ std::ostream& operator<<(std::ostream& os, AD5252ChannelConfig const& config)
 	return os << hate::name<AD5252ChannelConfig>() << "(value: " << config.m_value << ")";
 }
 
+AD5252ChannelConfig const AD5252ChannelConfig::default_pot_25 = []() -> AD5252ChannelConfig {
+	AD5252ChannelConfig::WiperSetting const pot_setting(0xA7);
+	AD5252ChannelConfig poti_config;
+	poti_config.m_value = pot_setting;
+	return poti_config;
+}();
+
+AD5252ChannelConfig const AD5252ChannelConfig::default_pot_12 = []() -> AD5252ChannelConfig {
+	AD5252ChannelConfig::WiperSetting const pot_setting(0xA8);
+	AD5252ChannelConfig poti_config;
+	poti_config.m_value = pot_setting;
+	return poti_config;
+}();
+
 
 AD5252ChannelConfigPersistent::AD5252ChannelConfigPersistent() : m_value() {}
 
