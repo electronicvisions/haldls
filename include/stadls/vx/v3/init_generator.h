@@ -76,6 +76,43 @@ private:
 };
 
 
+class GENPYBIND(expose_as(_JboaASICAdapterBoardInit)) SYMBOL_VISIBLE JboaASICAdapterBoardInit
+    : public ASICAdapterBoardInit
+{
+public:
+	/** Default constructor. */
+	JboaASICAdapterBoardInit();
+
+	/** Multiplexer config on jboa. */
+	haldls::vx::TCA9546ChannelConfig multiplexer;
+
+	/** General purpose input/output expander config on jboa. */
+	haldls::vx::TCA9554Config io_expander;
+
+	/** Digital potentiometers config on jboa. */
+	typedef halco::common::typed_array<
+	    haldls::vx::AD5252ChannelConfig,
+	    halco::hicann_dls::vx::AD5252ChannelConfigOnBoard>
+	    DigitalPotiConfigArray GENPYBIND(opaque(false));
+	DigitalPotiConfigArray DigitalPotiArray;
+
+protected:
+	/**
+	 * Generate PlaybackProgramBuilder.
+	 * @return PlaybackGeneratorReturn instance with sequence embodied and specified Result value
+	 */
+	virtual PlaybackGeneratorReturn<Result> generate() const override;
+
+	/**
+	 * Copy derived type.
+	 */
+	virtual std::unique_ptr<ASICAdapterBoardInit> copy() const override;
+
+private:
+	friend auto stadls::vx::generate<JboaASICAdapterBoardInit>(JboaASICAdapterBoardInit const&);
+};
+
+
 class SYMBOL_VISIBLE GENPYBIND(expose_as("_ChipInit")) ChipInit
 {
 public:
@@ -333,6 +370,17 @@ struct GENPYBIND(expose_as(CubeASICAdapterBoardInit)) PyCubeASICAdapterBoardInit
 	}
 };
 
+struct GENPYBIND(expose_as(JboaASICAdapterBoardInit)) PyJboaASICAdapterBoardInit
+    : public JboaASICAdapterBoardInit
+    , public PlaybackGenerator
+{
+	virtual pybind11::tuple GENPYBIND(expose_as("generate")) pygenerate() const
+	{
+		return stadls::vx::detail::py_generate_impl(
+		    static_cast<JboaASICAdapterBoardInit const&>(*this));
+	}
+};
+
 struct GENPYBIND(expose_as(ChipInit)) PyChipInit
     : public ChipInit
     , public PlaybackGenerator
@@ -380,6 +428,15 @@ GENPYBIND_MANUAL({
 	parent.def(
 	    "generate",
 	    [](::stadls::vx::v3::CubeASICAdapterBoardInit const& seq) {
+		    return ::stadls::vx::detail::py_generate_impl(seq);
+	    },
+	    pybind11::return_value_policy::move);
+})
+
+GENPYBIND_MANUAL({
+	parent.def(
+	    "generate",
+	    [](::stadls::vx::v3::JboaASICAdapterBoardInit const& seq) {
 		    return ::stadls::vx::detail::py_generate_impl(seq);
 	    },
 	    pybind11::return_value_policy::move);

@@ -55,6 +55,53 @@ std::unique_ptr<ASICAdapterBoardInit> CubeASICAdapterBoardInit::copy() const
 }
 
 
+JboaASICAdapterBoardInit::JboaASICAdapterBoardInit() :
+    multiplexer(haldls::vx::TCA9546ChannelConfig::default_mux),
+    io_expander(), // default constructor is sufficient
+    // 3 potentiometers with 2 channels each with different register addresses
+    DigitalPotiArray(
+        {haldls::vx::AD5252ChannelConfig::default_pot_25,
+         haldls::vx::AD5252ChannelConfig::default_pot_12,
+         haldls::vx::AD5252ChannelConfig::default_pot_12,
+         haldls::vx::AD5252ChannelConfig::default_pot_12,
+         haldls::vx::AD5252ChannelConfig::default_pot_12,
+         haldls::vx::AD5252ChannelConfig::default_pot_25})
+{
+}
+
+PlaybackGeneratorReturn<typename JboaASICAdapterBoardInit::Result>
+JboaASICAdapterBoardInit::generate() const
+{
+	using namespace haldls::vx;
+	using namespace halco::hicann_dls::vx::v3;
+	using namespace halco::common;
+
+	auto [builder, _] = ASICAdapterBoardInit::generate();
+
+	// Configure multiplexer
+	builder.write(TCA9546OnBoard(), multiplexer);
+
+	// Configure potentiometers
+	for (auto coord : iter_all<AD5252ChannelConfigOnBoard>()) {
+		builder.write(coord, DigitalPotiArray[coord]);
+	}
+
+	// Configure pins of input/output expander as outputs
+	builder.write(TCA9554ConfigOnBoard(), io_expander);
+
+	// Wait until DAC config is set
+	builder.write(TimerOnDLS(), Timer());
+	builder.block_until(TimerOnDLS(), jboa_dac_settling_duration);
+
+	return {std::move(builder), Result{}};
+}
+
+std::unique_ptr<ASICAdapterBoardInit> JboaASICAdapterBoardInit::copy() const
+{
+	return std::make_unique<JboaASICAdapterBoardInit>(*this);
+}
+
+
 ChipInit::ChipInit() :
     jtag_clock_scaler(),
     pll_clock_output_block(),
