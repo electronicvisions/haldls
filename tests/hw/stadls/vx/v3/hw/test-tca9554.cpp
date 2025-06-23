@@ -2,7 +2,7 @@
 
 #include "halco/common/iter_all.h"
 #include "halco/hicann-dls/vx/v3/coordinates.h"
-#include "halco/hicann-dls/vx/v3/ultra96.h"
+#include "halco/hicann-dls/vx/v3/jboa.h"
 #include "haldls/vx/i2c.h"
 #include "haldls/vx/v3/barrier.h"
 #include "haldls/vx/v3/i2c.h"

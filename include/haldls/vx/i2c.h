@@ -10,7 +10,7 @@
 #include "halco/common/typed_array.h"
 #include "halco/hicann-dls/vx/chip_carrier.h"
 #include "halco/hicann-dls/vx/i2c.h"
-#include "halco/hicann-dls/vx/ultra96.h"
+#include "halco/hicann-dls/vx/jboa.h"
 #include "halco/hicann-dls/vx/xboard.h"
 #include "haldls/vx/container.h"
 #include "haldls/vx/genpybind.h"

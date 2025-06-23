@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "halco/common/iter_all.h"
-#include "halco/hicann-dls/vx/ultra96.h"
+#include "halco/hicann-dls/vx/jboa.h"
 #include "haldls/vx/i2c.h"
 
 #include "fisch/vx/word_access/type/i2c.h"
