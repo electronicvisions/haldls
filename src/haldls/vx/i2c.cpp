@@ -367,31 +367,31 @@ void INA219Status::decode(std::array<
 
 namespace {
 
-template <typename T>
+template <typename TypedArray, typename CoordinateType>
 struct TypedBoolArrayToUint8Conversion
 {
 	uint8_t raw;
 
 	TypedBoolArrayToUint8Conversion(uint8_t const& data = 0u) : raw(data) {}
-	TypedBoolArrayToUint8Conversion(T const& array)
+	TypedBoolArrayToUint8Conversion(TypedArray const& array)
 	{
 		from_array(array);
 	}
 
-	void from_array(T const& arr)
+	void from_array(TypedArray const& arr)
 	{
 		raw = 0u;
-		for (auto coord : halco::common::iter_all<halco::hicann_dls::vx::TCA9554ChannelOnBoard>()) {
+		for (auto coord : halco::common::iter_all<CoordinateType>()) {
 			raw |= static_cast<bool>(arr[coord]) << coord.toEnum();
 		}
 	}
 
-	T to_array() const
+	TypedArray to_array() const
 	{
-		T arr;
-		for (auto coord : halco::common::iter_all<halco::hicann_dls::vx::TCA9554ChannelOnBoard>()) {
+		TypedArray arr;
+		for (auto coord : halco::common::iter_all<CoordinateType>()) {
 			uint8_t const i = coord.toEnum();
-			arr[coord] = static_cast<typename T::value_type>((bool) (raw & (1 << i)));
+			arr[coord] = static_cast<typename TypedArray::value_type>((bool) (raw & (1 << i)));
 		}
 		return arr;
 	}
@@ -450,7 +450,9 @@ void TCA9554Inputs::decode(std::array<
                            fisch::vx::word_access_type::I2CTCA9554RoRegister,
                            TCA9554Inputs::read_config_size_in_words> const& data)
 {
-	m_input = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0]).to_array();
+	m_input = TypedBoolArrayToUint8Conversion<
+	              ChannelsBooleanArray, halco::hicann_dls::vx::TCA9554ChannelOnBoard>(data[0])
+	              .to_array();
 }
 
 std::ostream& operator<<(std::ostream& os, TCA9554Inputs const& config)
@@ -530,20 +532,32 @@ TCA9554Config::encode() const
 {
 	return {
 	    fisch::vx::word_access_type::I2CTCA9554RwRegister(
-	        TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(m_output).raw),
+	        TypedBoolArrayToUint8Conversion<
+	            ChannelsBooleanArray, halco::hicann_dls::vx::TCA9554ChannelOnBoard>(m_output)
+	            .raw),
 	    fisch::vx::word_access_type::I2CTCA9554RwRegister(
-	        TypedBoolArrayToUint8Conversion<ChannelsPolarityArray>(m_polarity).raw),
+	        TypedBoolArrayToUint8Conversion<
+	            ChannelsPolarityArray, halco::hicann_dls::vx::TCA9554ChannelOnBoard>(m_polarity)
+	            .raw),
 	    fisch::vx::word_access_type::I2CTCA9554RwRegister(
-	        TypedBoolArrayToUint8Conversion<ChannelsModeArray>(m_mode).raw)};
+	        TypedBoolArrayToUint8Conversion<
+	            ChannelsModeArray, halco::hicann_dls::vx::TCA9554ChannelOnBoard>(m_mode)
+	            .raw)};
 }
 
 void TCA9554Config::decode(std::array<
                            fisch::vx::word_access_type::I2CTCA9554RwRegister,
                            TCA9554Config::config_size_in_words> const& data)
 {
-	m_output = TypedBoolArrayToUint8Conversion<ChannelsBooleanArray>(data[0]).to_array();
-	m_polarity = TypedBoolArrayToUint8Conversion<ChannelsPolarityArray>(data[1]).to_array();
-	m_mode = TypedBoolArrayToUint8Conversion<ChannelsModeArray>(data[2]).to_array();
+	m_output = TypedBoolArrayToUint8Conversion<
+	               ChannelsBooleanArray, halco::hicann_dls::vx::TCA9554ChannelOnBoard>(data[0])
+	               .to_array();
+	m_polarity = TypedBoolArrayToUint8Conversion<
+	                 ChannelsPolarityArray, halco::hicann_dls::vx::TCA9554ChannelOnBoard>(data[1])
+	                 .to_array();
+	m_mode = TypedBoolArrayToUint8Conversion<
+	             ChannelsModeArray, halco::hicann_dls::vx::TCA9554ChannelOnBoard>(data[2])
+	             .to_array();
 }
 
 std::ostream& operator<<(std::ostream& os, TCA9554Config const& config)
