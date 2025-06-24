@@ -26,7 +26,7 @@ using namespace stadls::vx::v3;
 TEST(NeuronBackend, ResetCounterTest)
 {
 	auto sequence = ExperimentInit();
-	sequence.highspeed_link.enable_systime = false;
+	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
 
 	// Set the Neuron Configuration

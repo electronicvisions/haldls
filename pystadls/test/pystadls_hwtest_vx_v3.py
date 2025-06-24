@@ -122,15 +122,15 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         runtime_us = 1000
         for enabled_links in tests_enabled_links:
             init = stadls.DigitalInit()
-            init.highspeed_link.enable_systime = False
+            init.chip.highspeed_link.enable_systime = False  # pylint: disable=no-member
             for link in range(8):
                 if link not in enabled_links:
                     # pylint warnings disabled below because attributes for
                     # nested classes are loaded dynamically upon instantiation
                     # and therefore not visible for pylint (which is an error).
                     # pylint: disable=E1101,E1136,E1137
-                    init.highspeed_link.common_phy_config_fpga \
-                                       .set_enable_phy(link, False)
+                    init.chip.highspeed_link.common_phy_config_fpga \
+                                            .set_enable_phy(link, False)
             builder, _ = init.generate()
 
             builder.write(halco.PerfTestOnFPGA(), haldls.PerfTest(True))
