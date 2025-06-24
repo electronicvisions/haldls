@@ -117,8 +117,7 @@ private:
 class SYMBOL_VISIBLE GENPYBIND(expose_as("_ChipInit")) ChipInit
 {
 public:
-	/** Default constructor. */
-	ChipInit() SYMBOL_VISIBLE;
+	ChipInit(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
 
 	/** Builder typedef (e.g. for usage in generators). */
 	typedef v3::PlaybackProgramBuilder Builder;
@@ -221,6 +220,11 @@ protected:
 
 private:
 	friend auto stadls::vx::generate<ChipInit>(ChipInit const&);
+
+	/**
+	 * Extract the synram timing from a hwdb entry and fill @ref ChipInit::memory_timing.
+	 */
+	void fill_synram_timing(hxcomm::HwdbEntry const& hwdb_entry);
 };
 
 
@@ -383,6 +387,8 @@ struct GENPYBIND(expose_as(ChipInit)) PyChipInit
     : public ChipInit
     , public PlaybackGenerator
 {
+	PyChipInit(hxcomm::HwdbEntry const& hwdb_entry) : ChipInit(hwdb_entry) {}
+
 	virtual pybind11::tuple GENPYBIND(expose_as("generate")) pygenerate() const override
 	{
 		return stadls::vx::detail::py_generate_impl(static_cast<ChipInit const&>(*this));

@@ -5,6 +5,7 @@
 #include "hwdb4cpp/hwdb4cpp.h"
 #include "hxcomm/common/hwdb_entry.h"
 #include <variant>
+#include <log4cxx/logger.h>
 
 namespace stadls::vx::v3 {
 
@@ -106,7 +107,7 @@ std::unique_ptr<ASICAdapterBoardInit> JboaASICAdapterBoardInit::copy() const
 }
 
 
-ChipInit::ChipInit() :
+ChipInit::ChipInit(hxcomm::HwdbEntry const& hwdb_entry) :
     jtag_clock_scaler(),
     pll_clock_output_block(),
     adplls(),
@@ -121,6 +122,7 @@ ChipInit::ChipInit() :
     capmem_config()
 {
 	event_recording.set_enable_event_recording(true);
+	fill_synram_timing(hwdb_entry);
 }
 
 ChipInit::HighspeedLink::HighspeedLink() :
@@ -230,10 +232,66 @@ PlaybackGeneratorReturn<typename ChipInit::Result> ChipInit::generate() const
 	return {std::move(builder), Result{}};
 }
 
+void ChipInit::fill_synram_timing(hxcomm::HwdbEntry const& hwdb_entry)
+{
+	auto logger = log4cxx::Logger::getLogger("stadls.ChipInit");
+	bool incomplete_data = false;
+
+	std::visit(
+	    hate::overloaded{
+	        [&](hxcomm::SimulationEntry const&) { return; },
+	        [&](hxcomm::ZeroMockEntry const&) { return; },
+	        [&](auto const& setup) {
+		        if (setup.fpgas.size() != 1) {
+			        throw std::runtime_error("Expected exactly one FPGA hwdb entry.");
+		        }
+		        auto const& fpga_entry = setup.fpgas.begin()->second;
+
+		        if (fpga_entry.wing) {
+			        auto const& wing_entry = fpga_entry.wing.value();
+
+			        for (auto cfg_coord : halco::common::iter_all<
+			                 halco::hicann_dls::vx::CommonSynramConfigOnDLS>()) {
+				        auto hemisphere = cfg_coord.toHemisphereOnDLS();
+				        auto& cfg = memory_timing.synram[cfg_coord];
+
+				        using PCConf = haldls::vx::CommonSynramConfig::PCConf;
+				        using WConf = haldls::vx::CommonSynramConfig::WConf;
+
+				        if (wing_entry.synram_timing_pcconf) {
+					        auto const& synram_timing_pcconf =
+					            wing_entry.synram_timing_pcconf.value();
+					        cfg.set_pc_conf_west(PCConf(synram_timing_pcconf[hemisphere][0]));
+					        cfg.set_pc_conf_east(PCConf(synram_timing_pcconf[hemisphere][1]));
+				        } else {
+					        incomplete_data = true;
+				        }
+
+				        if (wing_entry.synram_timing_wconf) {
+					        auto const& synram_timing_wconf =
+					            wing_entry.synram_timing_wconf.value();
+					        cfg.set_w_conf_west(WConf(synram_timing_wconf[hemisphere][0]));
+					        cfg.set_w_conf_east(WConf(synram_timing_wconf[hemisphere][1]));
+				        } else {
+					        incomplete_data = true;
+				        }
+			        }
+		        } else {
+			        incomplete_data = true;
+		        }
+	        }},
+	    hwdb_entry);
+
+	if (incomplete_data) {
+		LOG4CXX_WARN(
+		    logger, "Incomplete data for synram timing found in hwdb. Using default values.");
+	}
+}
+
 namespace detail {
 
 InitGenerator::InitGenerator(hxcomm::HwdbEntry const& hwdb_entry) :
-    instruction_timeout(), enable_asic_adapter_board(true), chip(), enable_chip(true)
+    instruction_timeout(), enable_asic_adapter_board(true), chip(hwdb_entry), enable_chip(true)
 {
 	std::visit(
 	    hate::overloaded{

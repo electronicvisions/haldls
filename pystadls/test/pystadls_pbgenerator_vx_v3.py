@@ -55,7 +55,8 @@ class PlaybackGeneratorTest(unittest.TestCase):
                           ExperimentInit(ZeroMockEntry()),
                           ASICAdapterBoardInit(),
                           CubeASICAdapterBoardInit(),
-                          JboaASICAdapterBoardInit(), ChipInit()]:
+                          JboaASICAdapterBoardInit(),
+                          ChipInit(ZeroMockEntry())]:
             self.assertTrue(isinstance(generator, PlaybackGenerator),
                             f"Instances of {str(generator)} are not of type "
                             f"'PlaybackGenerator' but {type(generator)}")
