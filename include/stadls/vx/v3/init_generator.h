@@ -18,6 +18,8 @@ public:
 	/** Default constructor. */
 	ASICAdapterBoardInit() = default;
 
+	virtual ~ASICAdapterBoardInit();
+
 	/** Builder typedef (e.g. for usage in generators). */
 	typedef v3::PlaybackProgramBuilder Builder;
 

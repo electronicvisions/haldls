@@ -4,6 +4,8 @@
 
 namespace stadls::vx::v3 {
 
+ASICAdapterBoardInit::~ASICAdapterBoardInit() {}
+
 PlaybackGeneratorReturn<typename ASICAdapterBoardInit::Result> ASICAdapterBoardInit::generate()
     const
 {
