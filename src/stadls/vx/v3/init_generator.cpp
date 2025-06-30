@@ -1,6 +1,7 @@
 #include "stadls/vx/v3/init_generator.h"
 
 #include "haldls/vx/constants.h"
+#include "hate/variant.h"
 #include "hwdb4cpp/hwdb4cpp.h"
 #include "hxcomm/common/hwdb_entry.h"
 #include <variant>
@@ -232,14 +233,26 @@ PlaybackGeneratorReturn<typename ChipInit::Result> ChipInit::generate() const
 namespace detail {
 
 InitGenerator::InitGenerator(hxcomm::HwdbEntry const& hwdb_entry) :
-    instruction_timeout(),
-    enable_asic_adapter_board(true),
-    chip(),
-    enable_chip(true),
-    m_asic_adapter_board(std::make_unique<CubeASICAdapterBoardInit>())
+    instruction_timeout(), enable_asic_adapter_board(true), chip(), enable_chip(true)
 {
-	if (std::holds_alternative<hwdb4cpp::JboaSetupEntry>(hwdb_entry)) {
-		throw std::logic_error("jBOA adapter board init not implemented yet.");
+	std::visit(
+	    hate::overloaded{
+	        [&](hwdb4cpp::JboaSetupEntry const&) {
+		        m_asic_adapter_board = std::make_unique<JboaASICAdapterBoardInit>();
+	        },
+	        [&](hwdb4cpp::HXCubeSetupEntry const&) {
+		        m_asic_adapter_board = std::make_unique<CubeASICAdapterBoardInit>();
+	        },
+	        [&](hxcomm::SimulationEntry const&) {
+		        m_asic_adapter_board = std::make_unique<CubeASICAdapterBoardInit>();
+	        },
+	        [&](hxcomm::ZeroMockEntry const&) {
+		        m_asic_adapter_board = std::make_unique<CubeASICAdapterBoardInit>();
+	        },
+	    },
+	    hwdb_entry);
+	if (!m_asic_adapter_board) {
+		throw std::logic_error("Unknown hardware database entry.");
 	}
 }
 

@@ -3,7 +3,8 @@ import inspect
 from typing import get_type_hints
 from pystadls_vx_v3 import PlaybackGenerator, generate, \
     DigitalInit, ExperimentInit, ASICAdapterBoardInit, \
-    CubeASICAdapterBoardInit, ChipInit
+    CubeASICAdapterBoardInit, JboaASICAdapterBoardInit, \
+    ChipInit
 from pyhxcomm_vx import ZeroMockEntry
 
 
@@ -53,7 +54,8 @@ class PlaybackGeneratorTest(unittest.TestCase):
         for generator in [DigitalInit(ZeroMockEntry()),
                           ExperimentInit(ZeroMockEntry()),
                           ASICAdapterBoardInit(),
-                          CubeASICAdapterBoardInit(), ChipInit()]:
+                          CubeASICAdapterBoardInit(),
+                          JboaASICAdapterBoardInit(), ChipInit()]:
             self.assertTrue(isinstance(generator, PlaybackGenerator),
                             f"Instances of {str(generator)} are not of type "
                             f"'PlaybackGenerator' but {type(generator)}")
