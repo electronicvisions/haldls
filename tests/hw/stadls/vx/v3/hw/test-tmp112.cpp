@@ -30,23 +30,24 @@ TEST(TMP112, Temperature)
 
 	EXPECT_TRUE(temp.valid());
 
-	auto const connection_unique_identifier =
-	    std::visit([](auto const& conn) { return conn.get_unique_identifier(); }, connection);
+	auto const hwdb_entry =
+	    std::visit([](auto const& conn) { return conn.get_hwdb_entry(); }, connection);
 
-	auto const [hxcube_id, fpga_id, _, __] =
-	    hwdb4cpp::HXCubeSetupEntry::get_ids_from_unique_branch_identifier(
-	        connection_unique_identifier);
+	hwdb4cpp::HXCubeFPGAEntry fpga_entry;
 
-	hwdb4cpp::database hwdb;
-	hwdb.load(hwdb4cpp::database::get_default_path());
-	auto& hxcube_setup_entry = hwdb.get_hxcube_setup_entry(hxcube_id);
-	if (!hxcube_setup_entry.fpgas.contains(fpga_id)) {
-		throw std::runtime_error("HXCubeSetupEntry doesn't feature FPGA ID from connection.");
+	if (std::holds_alternative<hwdb4cpp::HXCubeSetupEntry>(hwdb_entry)) {
+		auto cube_entry = std::get<hwdb4cpp::HXCubeSetupEntry>(hwdb_entry);
+		EXPECT_EQ(cube_entry.fpgas.size(), 1);
+		fpga_entry = cube_entry.fpgas.begin()->second;
+	} else if (std::holds_alternative<hwdb4cpp::JboaSetupEntry>(hwdb_entry)) {
+		auto jboa_entry = std::get<hwdb4cpp::JboaSetupEntry>(hwdb_entry);
+		EXPECT_EQ(jboa_entry.fpgas.size(), 1);
+		fpga_entry = jboa_entry.fpgas.begin()->second;
+	} else {
+		throw std::runtime_error("Connection does not support this test.");
 	}
-	if (!hxcube_setup_entry.fpgas[fpga_id].wing.has_value()) {
-		throw std::runtime_error("HXCubeFPGAEntry doesn't feature wing.");
-	}
-	if (hxcube_setup_entry.fpgas[fpga_id].wing.value().handwritten_chip_serial < 75) {
+
+	if (fpga_entry.wing.value().handwritten_chip_serial < 75) {
 		// old chip carrier version, no temperature sensor available
 		EXPECT_ANY_THROW(temp.get());
 		return;
