@@ -29,24 +29,27 @@ TEST(FPGADeviceDNA, Read)
 	EXPECT_TRUE(ticket.valid());
 	EXPECT_NO_THROW(ticket.get());
 
-	auto const connection_unique_identifier =
-	    std::visit([](auto const& conn) { return conn.get_unique_identifier(); }, connection);
+	auto const hwdb_entry =
+	    std::visit([](auto const& conn) { return conn.get_hwdb_entry(); }, connection);
 
 #if SIMULATION_TEST
 	FPGADeviceDNA expectation(FPGADeviceDNA::Value(0x15000000000005D));
 #else
-	auto const [hxcube_id, fpga_id, _, __] =
-	    hwdb4cpp::HXCubeSetupEntry::get_ids_from_unique_branch_identifier(
-	        connection_unique_identifier);
+	hwdb4cpp::HXCubeFPGAEntry fpga_entry;
 
-	hwdb4cpp::database hwdb;
-	hwdb.load(hwdb4cpp::database::get_default_path());
-	auto const& hxcube_setup_entry = hwdb.get_hxcube_setup_entry(hxcube_id);
-	if (!hxcube_setup_entry.fpgas.contains(fpga_id)) {
-		throw std::runtime_error("HXCubeSetupEntry doesn't feature FPGA ID from connection.");
+	if (std::holds_alternative<hwdb4cpp::HXCubeSetupEntry>(hwdb_entry)) {
+		auto cube_entry = std::get<hwdb4cpp::HXCubeSetupEntry>(hwdb_entry);
+		EXPECT_EQ(cube_entry.fpgas.size(), 1);
+		fpga_entry = cube_entry.fpgas.begin()->second;
+	} else if (std::holds_alternative<hwdb4cpp::JboaSetupEntry>(hwdb_entry)) {
+		auto jboa_entry = std::get<hwdb4cpp::JboaSetupEntry>(hwdb_entry);
+		EXPECT_EQ(jboa_entry.fpgas.size(), 1);
+		fpga_entry = jboa_entry.fpgas.begin()->second;
+	} else {
+		throw std::runtime_error("Connection does not support this test.");
 	}
-	FPGADeviceDNA expectation(
-	    FPGADeviceDNA::Value(hxcube_setup_entry.fpgas.at(fpga_id).get_dna_port()));
+
+	FPGADeviceDNA expectation(FPGADeviceDNA::Value(fpga_entry.get_dna_port()));
 #endif
 
 	EXPECT_EQ(dynamic_cast<FPGADeviceDNA const&>(ticket.get()), expectation);
