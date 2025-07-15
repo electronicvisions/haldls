@@ -28,19 +28,19 @@ RunTimeInfo run(Connection& connection, PlaybackProgram& program)
 
 		return stadls::vx::run(conn, program.m_program_impl);
 	};
-	auto const log_highspeed_notifications = [program]() {
-		auto logger = log4cxx::Logger::getLogger("stadls.run");
+	auto const print_highspeed_notifications = [program]() {
 		std::stringstream ss;
 		ss << "Got highspeed-link notifications:" << std::endl;
 		ss << hate::join(program.get_highspeed_link_notifications(), ",\n");
-		LOG4CXX_TRACE(logger, ss.str());
+		return ss.str();
 	};
+	auto logger = log4cxx::Logger::getLogger("stadls.run");
 	RunTimeInfo time_info;
 	try {
 		time_info = hxcomm::visit_connection(run_impl, connection);
-		log_highspeed_notifications();
+		LOG4CXX_TRACE(logger, print_highspeed_notifications());
 	} catch (std::runtime_error const& error) {
-		log_highspeed_notifications();
+		LOG4CXX_WARN(logger, print_highspeed_notifications());
 		throw error;
 	}
 	return time_info;
