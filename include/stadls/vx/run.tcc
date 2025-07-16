@@ -30,8 +30,12 @@ RunTimeInfo run(Connection& connection, PlaybackProgram& program)
 	};
 	auto const print_highspeed_notifications = [program]() {
 		std::stringstream ss;
-		ss << "Got highspeed-link notifications:" << std::endl;
-		ss << hate::join(program.get_highspeed_link_notifications(), ",\n");
+		if (program.get_highspeed_link_notifications().empty()) {
+			ss << "Got no highspeed-link notifications.";
+		} else {
+			ss << "Got highspeed-link notifications:" << std::endl;
+			ss << hate::join(program.get_highspeed_link_notifications(), ",\n");
+		}
 		return ss.str();
 	};
 	auto logger = log4cxx::Logger::getLogger("stadls.run");
@@ -40,7 +44,7 @@ RunTimeInfo run(Connection& connection, PlaybackProgram& program)
 		time_info = hxcomm::visit_connection(run_impl, connection);
 		LOG4CXX_TRACE(logger, print_highspeed_notifications());
 	} catch (std::runtime_error const& error) {
-		LOG4CXX_WARN(logger, print_highspeed_notifications());
+		LOG4CXX_INFO(logger, print_highspeed_notifications());
 		throw error;
 	}
 	return time_info;
