@@ -186,6 +186,9 @@ try {
 	throw t
 }
 
+if (currentBuild.currentResult != "SUCCESS") {
+	notifyFailure(mattermostChannel: "#alerts-bss-2")
+}
 
 /**
  * Compile html-based table of check results.
