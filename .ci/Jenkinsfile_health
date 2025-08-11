@@ -2,6 +2,7 @@
 
 import com.cloudbees.groovy.cps.NonCPS
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
+import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 import hudson.AbortException
 
 
@@ -130,6 +131,11 @@ try {
 				}
 			} catch (FlowInterruptedException ignored) {
 				echo "Setup ${setup_local} not free for 5 minutes, aborting."
+				Utils.markStageSkippedForConditional(setup_local.toString())
+			}
+
+			if (!success[setup_local]) {
+				unstable("Setup ${setup_local.toString()} did not test OK.")
 			}
 		}
 	}
@@ -158,10 +164,6 @@ try {
 				String result = compileHtml(setups, success)
 				currentBuild.description = result
 				setJobDescription(result)
-			}
-
-			if (success.any { key, value -> !value }) {
-				setBuildState(state: "UNSTABLE", reason: "Not all tested setups are OK.")
 			}
 		}
 	} catch (FlowInterruptedException ignored) {
