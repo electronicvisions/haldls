@@ -55,9 +55,9 @@ private:
 	template <typename T>
 	static void apply_single(pybind11::module& parent, std::string const& name)
 	{
-		auto attr = parent.attr(name.c_str());
-		auto ism = pybind11::is_method(attr);
-		auto const getattr = [](pybind11::object const& self) {
+		auto cls = parent.attr(name.c_str());
+		auto ism = pybind11::is_method(cls);
+		auto custom_getstate = [](pybind11::object const& self) {
 			auto& thing = self.cast<T const&>();
 			std::stringstream ss;
 			{
@@ -72,21 +72,38 @@ private:
 			}
 		};
 
-		auto const setattr = [](pybind11::object& self, pybind11::tuple const& data) {
-			auto& thing = self.cast<T&>();
-			new (&thing) T();
+		auto custom_setstate = [](pybind11::detail::value_and_holder& v_h,
+		                          pybind11::tuple const& data) {
+			std::unique_ptr<T> thing = std::make_unique<T>();
+
 			{
+				// restore serialized C++ state
 				std::stringstream ss(data[0].cast<std::string>());
 				cereal::PortableBinaryInputArchive ar(ss);
-				ar(thing);
+				ar(*thing);
 			}
-			if (pybind11::hasattr(self, "__dict__")) {
-				self.attr("__dict__") = data[1];
+
+			using Base = pybind11::class_<T>;
+			// use new-style pickle implementation (detail namespace :/)
+			if (data.size() == 1) {
+				pybind11::detail::initimpl::setstate<Base>(
+				    v_h, std::move(thing), Py_TYPE(v_h.inst) != v_h.type->type);
+			} else if (data.size() == 2) {
+				auto state = std::make_pair(std::move(thing), data[1].cast<pybind11::dict>());
+				pybind11::detail::initimpl::setstate<Base>(
+				    v_h, std::move(state), Py_TYPE(v_h.inst) != v_h.type->type);
+			} else {
+				std::stringstream ss;
+				ss << "Wrong state tuple size: " << data.size();
+				throw std::runtime_error(ss.str());
 			}
 		};
 
-		attr.attr("__getstate__") = pybind11::cpp_function(getattr, ism);
-		attr.attr("__setstate__") = pybind11::cpp_function(setattr, ism);
+
+		cls.attr("__getstate__") = pybind11::cpp_function(custom_getstate, ism);
+		cls.attr("__setstate__") = pybind11::cpp_function(
+		    custom_setstate, pybind11::detail::is_new_style_constructor(),
+		    pybind11::name("__setstate__"), ism, pybind11::arg("state"), pybind11::pos_only());
 	}
 };
 

@@ -4,6 +4,7 @@ import os
 import unittest
 from random import randrange
 from copy import deepcopy
+import resource
 import numpy as np
 import pyhalco_hicann_dls_vx_v3 as halco
 import pylola_vx_v3 as lola
@@ -194,6 +195,44 @@ class TestPylolaVXV3(unittest.TestCase):
             obj = container()
             dump = pickle.dumps(obj)
             self.assertEqual(obj, pickle.loads(dump))
+
+    def test_pickle_memleak(self):
+        def rss_usage():
+            return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
+        mem_rss_mib_initial = rss_usage()
+        chip = lola.Chip()
+        size_serialized = len(str(chip.__getstate__()))
+
+        # test for __new__ed object
+        for _ in range(100):
+            # pylint: disable=no-value-for-parameter
+            obj = lola.Chip.__new__(lola.Chip)
+            state = chip.__getstate__()
+            preid_obj = id(obj)
+            obj.__setstate__(state)
+            postid_obj = id(obj)
+            self.assertEqual(preid_obj, postid_obj)
+        mem_rss_mib = rss_usage()
+        self.assertLess(mem_rss_mib - mem_rss_mib_initial, size_serialized * 3)
+
+        # test for __init__ed object
+        for _ in range(100):
+            obj = lola.Chip()
+            state = chip.__getstate__()
+            preid_obj = id(obj)
+            obj.__setstate__(state)
+            postid_obj = id(obj)
+            self.assertEqual(preid_obj, postid_obj)
+        mem_rss_mib = rss_usage()
+        self.assertLess(mem_rss_mib - mem_rss_mib_initial, size_serialized * 3)
+
+        # test for pickle
+        for _ in range(100):
+            dump = pickle.dumps(chip)
+            # pylint: disable=unused-variable
+            restored_chip = pickle.loads(dump)
+        mem_rss_mib = rss_usage()
+        self.assertLess(mem_rss_mib - mem_rss_mib_initial, size_serialized * 3)
 
     def test_neuron_synaptic_input_exc(self):
         neuron = lola.AtomicNeuron()
