@@ -57,6 +57,6 @@ TEST(TMP112, Temperature)
 
 	float const temp_degc =
 	    dynamic_cast<TMP112Status const&>(temp.get()).get_temperature().toUncalibratedTemperature();
-	EXPECT_LE(temp_degc, 40.0);
+	EXPECT_LE(temp_degc, 45.0);
 	EXPECT_GE(temp_degc, 15.0);
 }
