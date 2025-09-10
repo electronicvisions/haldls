@@ -1250,10 +1250,10 @@ std::ostream& operator<<(std::ostream& os, ColumnCurrentQuad::ColumnCurrentSwitc
 	ss << "ColumnCurrentSwitch(\n" << std::boolalpha;
 	ss << "\tenable_synaptic_current_excitatory: \t" << config.m_enable_synaptic_current_excitatory
 	   << "\n";
-	ss << "\tenable_synaptic_current_excitatory: \t" << config.m_enable_synaptic_current_excitatory
+	ss << "\tenable_synaptic_current_inhibitory: \t" << config.m_enable_synaptic_current_inhibitory
 	   << "\n";
 	ss << "\tenable_debug_excitatory:            \t" << config.m_enable_debug_excitatory << "\n";
-	ss << "\tenable_debug_excitatory:            \t" << config.m_enable_debug_excitatory << "\n)";
+	ss << "\tenable_debug_inhibitory:            \t" << config.m_enable_debug_inhibitory << "\n)";
 	return (os << ss.str());
 }
 
