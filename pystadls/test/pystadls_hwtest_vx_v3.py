@@ -2,6 +2,7 @@
 
 import unittest
 import numpy
+from scipy.stats import trim_mean
 
 from pyhalco_common import iter_all
 import pyhalco_hicann_dls_vx_v3 as halco
@@ -364,7 +365,8 @@ class HwTestPystadlsVxV3(unittest.TestCase):
                     # get time between two samples
                     time_between_samples = numpy.diff(sample_times)
                     # calculate average sample rate from measured samples (MHz)
-                    average_rate = 1 / numpy.mean(time_between_samples)
+                    # ignore outliers (random event loss/generation may happen)
+                    average_rate = 1 / trim_mean(time_between_samples, 0.01)
                     # compare measurement with prediction and check that the
                     # error is less than 1%
                     self.assertAlmostEqual(
