@@ -66,7 +66,7 @@ JboaASICAdapterBoardInit::JboaASICAdapterBoardInit() :
     // 3 potentiometers with 2 channels each with different register addresses
     DigitalPotiArray(
         {haldls::vx::AD5252ChannelConfig::default_pot_25,
-         haldls::vx::AD5252ChannelConfig::default_pot_12,
+         haldls::vx::AD5252ChannelConfig::default_pot_12_digital,
          haldls::vx::AD5252ChannelConfig::default_pot_12,
          haldls::vx::AD5252ChannelConfig::default_pot_12,
          haldls::vx::AD5252ChannelConfig::default_pot_12,

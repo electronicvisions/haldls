@@ -650,6 +650,14 @@ AD5252ChannelConfig const AD5252ChannelConfig::default_pot_12 = []() -> AD5252Ch
 	return poti_config;
 }();
 
+AD5252ChannelConfig const AD5252ChannelConfig::default_pot_12_digital =
+    []() -> AD5252ChannelConfig {
+	AD5252ChannelConfig::WiperSetting const pot_setting(0x93);
+	AD5252ChannelConfig poti_config;
+	poti_config.m_value = pot_setting;
+	return poti_config;
+}();
+
 
 AD5252ChannelConfigPersistent::AD5252ChannelConfigPersistent() : m_value() {}
 

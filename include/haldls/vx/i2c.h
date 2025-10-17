@@ -654,6 +654,11 @@ public:
 	static const SYMBOL_VISIBLE GENPYBIND(visible) AD5252ChannelConfig default_pot_12;
 
 	/**
+	 * Default value for digital potentiometer RDAC register corresponding to 1.25V input.
+	 */
+	static const SYMBOL_VISIBLE GENPYBIND(visible) AD5252ChannelConfig default_pot_12_digital;
+
+	/**
 	 * Get wiper setting for digital potentiometer.
 	 * @return Wiper setting
 	 */
