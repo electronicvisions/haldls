@@ -11,7 +11,9 @@ inline static const GENPYBIND(visible) Timer::Value pll_and_omnibus_settling_dur
 inline static const GENPYBIND(visible) Timer::Value xboard_dac_settling_duration =
     Timer::Value(Timer::Value::fpga_clock_cycles_per_us * 1000);
 inline static const GENPYBIND(visible) Timer::Value jboa_dac_settling_duration =
-    Timer::Value(Timer::Value::fpga_clock_cycles_per_us * 1000);
+    Timer::Value(Timer::Value::fpga_clock_cycles_per_us * 500);
+inline static const GENPYBIND(visible) Timer::Value jboa_powerup_settling_duration =
+    Timer::Value(Timer::Value::fpga_clock_cycles_per_us * 3000);
 inline static const GENPYBIND(visible) Timer::Value chip_reset_high_duration = Timer::Value(10);
 inline static const GENPYBIND(visible) Timer::Value chip_reset_low_duration = Timer::Value(100);
 inline static const GENPYBIND(visible) Timer::Value reference_generator_reset_duration =

@@ -94,7 +94,11 @@ JboaASICAdapterBoardInit::generate() const
 	// Configure pins of input/output expander as outputs
 	builder.write(TCA9554ConfigOnBoard(), io_expander);
 
-	// Wait until DAC config is set
+	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
+	// Wait for system to be stable in case of power-up
+	builder.write(TimerOnDLS(), Timer());
+	builder.block_until(TimerOnDLS(), jboa_powerup_settling_duration);
+	// Additionally wait for maximum LDO settling time
 	builder.write(TimerOnDLS(), Timer());
 	builder.block_until(TimerOnDLS(), jboa_dac_settling_duration);
 
