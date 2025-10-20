@@ -7,18 +7,18 @@ import hudson.AbortException
 
 
 class HXCubeWing implements Serializable {
-	static final int GERRIT_HXCUBE_ID = 2
-
 	int hxcubeId
 	int fpgaId
 	int chipRevision
+	boolean ciTestNode
 	Integer fpgaBitfileVersion = null
 	String fpgaBitfileBuildTime = null
 
-	HXCubeWing(int hxcubeId, int fpgaId, int chipRevision) {
+	HXCubeWing(int hxcubeId, int fpgaId, int chipRevision, boolean ciTestNode) {
 		this.hxcubeId = hxcubeId
 		this.fpgaId = fpgaId
 		this.chipRevision = chipRevision
+		this.ciTestNode = ciTestNode
 	}
 
 	@NonCPS
@@ -33,9 +33,9 @@ class HXCubeWing implements Serializable {
 		                   "for cube_id in db.get_hxcube_ids():\n" +
 		                   "    cube = db.get_hxcube_setup_entry(cube_id)\n" +
 		                   "    for fpga_id in cube.fpgas:\n" +
-		                   "        wing = cube.fpgas[fpga_id].wing\n" +
-		                   "        if wing is not None:\n" +
-		                   "            print(f\"{cube_id},{fpga_id},{wing.chip_revision}\")\n"
+		                   "        fpga = cube.fpgas[fpga_id]\n" +
+		                   "        if fpga.wing is not None:\n" +
+		                   "            print(f\"{cube_id},{fpga_id},{fpga.wing.chip_revision},{int(fpga.ci_test_node)}\")\n"
 		String hwdbResult = null
 		pipeline.inSingularity(app: "dls-core") {
 			pipeline.withModules(modules: ["hwdb_bss2"]) {
@@ -61,7 +61,8 @@ class HXCubeWing implements Serializable {
 			int cubeId = results[0].toInteger()
 			int fpgaId = results[1].toInteger()
 			int chipRevision = results[2].toInteger()
-			allSetups.add(new HXCubeWing(cubeId, fpgaId, chipRevision))
+			boolean ciTestNode = results[3].toBoolean()
+			allSetups.add(new HXCubeWing(cubeId, fpgaId, chipRevision, ciTestNode))
 		}
 		return allSetups
 	}
@@ -108,7 +109,7 @@ try {
 					// no timeout for Gerrit-triggered jobs
 					conditionalTimeout(enable: !isTriggeredByGerrit(), time: 5, unit: "MINUTES") {
 						onSlurmResource(partition: "batch", wafer: setup_local.waferId, "fpga-without-aout": setup_local.fpgaId) {
-							if (setup_local.hxcubeId == setup_local.GERRIT_HXCUBE_ID) {
+							if (setup_local.ciTestNode) {
 								configureHxCubeBitfile()
 							}
 
