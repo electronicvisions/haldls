@@ -121,8 +121,8 @@ struct SYMBOL_VISIBLE GENPYBIND(inline_base("*EncodableBase*")) ContainerBase
 	 */
 	virtual std::unique_ptr<Container> clone_container() const GENPYBIND(hidden) SYMBOL_VISIBLE;
 
-	virtual bool operator==(Container const& other) const SYMBOL_VISIBLE;
-	virtual bool operator!=(Container const& other) const SYMBOL_VISIBLE;
+	bool operator==(Container const& other) const SYMBOL_VISIBLE;
+	bool operator!=(Container const& other) const SYMBOL_VISIBLE;
 #endif
 };
 

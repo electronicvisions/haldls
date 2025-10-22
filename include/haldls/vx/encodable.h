@@ -180,8 +180,8 @@ struct SYMBOL_VISIBLE EncodableBase : public Base
 	 */
 	virtual std::ostream& print(std::ostream& os) const GENPYBIND(hidden) SYMBOL_VISIBLE;
 
-	virtual bool operator==(Encodable const& other) const SYMBOL_VISIBLE;
-	virtual bool operator!=(Encodable const& other) const SYMBOL_VISIBLE;
+	bool operator==(Encodable const& other) const SYMBOL_VISIBLE;
+	bool operator!=(Encodable const& other) const SYMBOL_VISIBLE;
 #endif
 };
 
