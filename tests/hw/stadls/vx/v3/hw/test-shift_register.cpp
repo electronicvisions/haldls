@@ -24,8 +24,8 @@ using namespace stadls::vx::v3;
 TEST(ShiftRegister, ToggleLEDs)
 {
 	auto connection = hxcomm::vx::get_connection_from_env();
-	auto sequence = DigitalInit(
-	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
+	auto sequence = DigitalInit(std::visit(
+	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	auto [builder, _] = generate(sequence);
 
 	// disable LEDs

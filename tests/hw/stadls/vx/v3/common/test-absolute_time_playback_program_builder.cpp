@@ -20,8 +20,8 @@ TEST(AbsoluteTimePlaybackProgramBuilder, reference)
 	auto logger =
 	    log4cxx::Logger::getLogger("test.hw.AbsoluteTimePlaybackProgramBuilder.reference");
 	auto connection = hxcomm::vx::get_connection_from_env();
-	auto sequence = stadls::vx::v3::DigitalInit(
-	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
+	auto sequence = stadls::vx::v3::DigitalInit(std::visit(
+	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	auto [builder, _] = stadls::vx::v3::generate(sequence);
 	hate::Timer timer;
 	builder.write(halco::hicann_dls::vx::v3::TimerOnDLS(), haldls::vx::v3::Timer());
@@ -76,8 +76,8 @@ TEST(AbsoluteTimePlaybackProgramBuilder, general)
 {
 	auto logger = log4cxx::Logger::getLogger("test.hw.AbsoluteTimePlaybackProgramBuilder.general");
 	auto connection = hxcomm::vx::get_connection_from_env();
-	auto sequence = stadls::vx::v3::DigitalInit(
-	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
+	auto sequence = stadls::vx::v3::DigitalInit(std::visit(
+	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	auto [builder, _] = stadls::vx::v3::generate(sequence);
 	hate::Timer timer;
 	auto ATPPB_builder = stadls::vx::v3::AbsoluteTimePlaybackProgramBuilder();

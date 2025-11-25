@@ -231,7 +231,7 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 		auto connection = hxcomm::vx::get_connection_from_env();
 
 		DigitalInit init(std::visit(
-		    [](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
+		    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 		init.enable_asic_adapter_board = !is_simulation;
 		init.chip.enable_capmem = false;
 		auto [run_builder, _] = generate(init);

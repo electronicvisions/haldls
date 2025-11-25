@@ -30,7 +30,7 @@ TEST(FPGADeviceDNA, Read)
 	EXPECT_NO_THROW(ticket.get());
 
 	auto const hwdb_entry =
-	    std::visit([](auto const& conn) { return conn.get_hwdb_entry(); }, connection);
+	    std::visit([](auto const& conn) { return conn.get_hwdb_entry().at(0); }, connection);
 
 #if SIMULATION_TEST
 	FPGADeviceDNA expectation(FPGADeviceDNA::Value(0x15000000000005D));

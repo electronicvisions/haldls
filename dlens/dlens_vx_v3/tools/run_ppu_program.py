@@ -164,7 +164,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     with ManagedConnection() as conn:
-        init_builder, _ = generate(DigitalInit(conn.get_hwdb_entry()))
+        init_builder, _ = generate(DigitalInit(conn.get_hwdb_entry()[0]))
         run(conn, init_builder.done())
 
         load_and_start_program(conn, args.program,

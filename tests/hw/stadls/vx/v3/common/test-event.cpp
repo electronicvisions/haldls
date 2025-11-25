@@ -20,7 +20,8 @@ using namespace stadls::vx::v3;
 	{                                                                                              \
 		auto connection = hxcomm::vx::get_connection_from_env();                                   \
 		auto sequence = DigitalInit(std::visit(                                                    \
-		    [](auto const& connection) { return connection.get_hwdb_entry(); }, connection));      \
+		    [](auto const& connection) { return connection.get_hwdb_entry().at(0); },              \
+		    connection));                                                                          \
 		auto [builder, _] = generate(sequence);                                                    \
                                                                                                    \
 		constexpr size_t num_spikes = 1000;                                                        \

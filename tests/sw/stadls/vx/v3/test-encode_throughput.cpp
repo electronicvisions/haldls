@@ -8,7 +8,7 @@
 #include "hate/timer.h"
 #include "hate/type_index.h"
 #include "hate/type_list.h"
-#include "hxcomm/vx/zeromockconnection.h"
+#include "hxcomm/vx/multi_zeromockconnection.h"
 #include "lola/vx/v3/container.h"
 #include "stadls/visitors.h"
 #include "stadls/vx/container_ticket.h"
@@ -169,7 +169,7 @@ test_read_get()
 	// execute the read commands with the zero mock connection in order to inject response data to
 	// decode in the tickets afterwards. test, that the execution is supported on the zero mock
 	// target and if not skip the test.
-	hxcomm::vx::ZeroMockConnection conn;
+	hxcomm::vx::MultiZeroMockConnection conn;
 	auto const supported = std::set(conn.supported_targets);
 	auto program = builder.done();
 	auto const& unsupported_unsorted = program.get_unsupported_targets();

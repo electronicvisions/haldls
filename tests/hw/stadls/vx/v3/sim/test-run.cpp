@@ -21,9 +21,9 @@ TEST(Run, ExecutableRestriction)
 	auto connection = hxcomm::vx::get_connection_from_env();
 
 	auto sim_builder =
-	    generate(
-	        DigitalInit(std::visit(
-	            [](auto const& connection) { return connection.get_hwdb_entry(); }, connection)))
+	    generate(DigitalInit(std::visit(
+	                 [](auto const& connection) { return connection.get_hwdb_entry().at(0); },
+	                 connection)))
 	        .builder;
 	sim_builder.read(CrossbarNodeOnDLS());
 	sim_builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
@@ -33,9 +33,9 @@ TEST(Run, ExecutableRestriction)
 	EXPECT_NO_THROW(run(connection, program_simulation_restricted));
 
 	auto hw_builder =
-	    generate(
-	        DigitalInit(std::visit(
-	            [](auto const& connection) { return connection.get_hwdb_entry(); }, connection)))
+	    generate(DigitalInit(std::visit(
+	                 [](auto const& connection) { return connection.get_hwdb_entry().at(0); },
+	                 connection)))
 	        .builder;
 	hw_builder.read(NeuronConfigOnDLS());
 	hw_builder.block_until(BarrierOnFPGA(), Barrier::omnibus);

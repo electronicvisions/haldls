@@ -16,8 +16,8 @@ using namespace halco::hicann_dls::vx::v3;
 TEST(JTAGIdCode, ReadJTAGId)
 {
 	auto connection = hxcomm::vx::get_connection_from_env();
-	auto sequence = DigitalInit(
-	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
+	auto sequence = DigitalInit(std::visit(
+	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	sequence.chip.enable_highspeed_link = false;
 	sequence.chip.highspeed_link.enable_systime = false;
 	sequence.chip.enable_capmem = false;

@@ -19,8 +19,8 @@ void test_background_spike_source_regular(
     BackgroundSpikeSource::Period period, Timer::Value running_period, size_t spike_count_deviation)
 {
 	auto connection = hxcomm::vx::get_connection_from_env();
-	auto sequence = DigitalInit(
-	    std::visit([](auto const& connection) { return connection.get_hwdb_entry(); }, connection));
+	auto sequence = DigitalInit(std::visit(
+	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	auto [builder, _] = generate(sequence);
 
 	size_t expected_count =

@@ -8,7 +8,7 @@ class TestDlensHealthCheckVXV3(unittest.TestCase):
     def test_digital_init(cls):
         with hxcomm.ManagedConnection() as connection:
             builder, _ = sta.generate(sta.DigitalInit(
-                connection.get_hwdb_entry()))
+                connection.get_hwdb_entry()[0]))
             program = builder.done()
             sta.run(connection, program)
 

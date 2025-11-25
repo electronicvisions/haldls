@@ -31,7 +31,7 @@ TEST(TMP112, Temperature)
 	EXPECT_TRUE(temp.valid());
 
 	auto const hwdb_entry =
-	    std::visit([](auto const& conn) { return conn.get_hwdb_entry(); }, connection);
+	    std::visit([](auto const& conn) { return conn.get_hwdb_entry().at(0); }, connection);
 
 	hwdb4cpp::HXCubeFPGAEntry fpga_entry;
 
