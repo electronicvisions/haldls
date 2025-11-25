@@ -115,7 +115,9 @@ PLAYBACK_CONTAINER(FPGASystimeSyncNumRetries, haldls::vx::v3::FPGASystimeSyncNum
 PLAYBACK_CONTAINER(FPGASystimeSyncLastRTT, haldls::vx::v3::FPGASystimeSyncLastRTT)
 PLAYBACK_CONTAINER(FPGASystimeSyncLastAsicSystime, haldls::vx::v3::FPGASystimeSyncLastAsicSystime)
 PLAYBACK_CONTAINER(FPGASystimeSyncActiveState, haldls::vx::v3::FPGASystimeSyncActiveState)
-LAST_PLAYBACK_CONTAINER(SystimeSync, haldls::vx::v3::SystimeSync)
+PLAYBACK_CONTAINER(SystimeSync, haldls::vx::v3::SystimeSync)
+PLAYBACK_CONTAINER(OutputRoutingTableEntry, haldls::vx::v3::OutputRoutingTableEntry)
+LAST_PLAYBACK_CONTAINER(InputRoutingTableEntry, haldls::vx::v3::InputRoutingTableEntry)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER

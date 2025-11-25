@@ -39,7 +39,9 @@ PLAYBACK_CONTAINER(ExternalPPUMemoryBlock, lola::vx::v3::ExternalPPUMemoryBlock)
 PLAYBACK_CONTAINER(ExternalPPUMemory, lola::vx::v3::ExternalPPUMemory)
 PLAYBACK_CONTAINER(ExternalPPUDRAMMemoryBlock, lola::vx::v3::ExternalPPUDRAMMemoryBlock)
 PLAYBACK_CONTAINER(MemoryTiming, lola::vx::v3::MemoryTiming)
-LAST_PLAYBACK_CONTAINER(SynapseRow, lola::vx::v3::SynapseRow)
+PLAYBACK_CONTAINER(SynapseRow, lola::vx::v3::SynapseRow)
+PLAYBACK_CONTAINER(OutputRoutingTable, lola::vx::v3::OutputRoutingTable)
+LAST_PLAYBACK_CONTAINER(InputRoutingTable, lola::vx::v3::InputRoutingTable)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER

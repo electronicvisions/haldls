@@ -22,6 +22,7 @@
 #include "haldls/vx/v3/readout.h"
 #include "haldls/vx/v3/reset.h"
 #include "haldls/vx/v3/routing_crossbar.h"
+#include "haldls/vx/v3/routing_table_entry.h"
 #include "haldls/vx/v3/spi.h"
 #include "haldls/vx/v3/sram_controller.h"
 #include "haldls/vx/v3/synapse.h"

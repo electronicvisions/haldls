@@ -43,6 +43,14 @@ typedef hate::type_list<
     haldls::vx::Timer>
     WriteTestsDisabledContainers;
 
+// These containers are only supported on jboa hardware-setups
+typedef hate::type_list<
+    haldls::vx::OutputRoutingTableEntry,
+    haldls::vx::InputRoutingTableEntry,
+    lola::vx::OutputRoutingTable,
+    lola::vx::InputRoutingTable>
+    JboaSetupOnlyContainers;
+
 /**
  * Random generator for this test.
  * Initialized with random seed because it leads to coverage over time.
@@ -229,6 +237,19 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 
 	{
 		auto connection = hxcomm::vx::get_connection_from_env();
+		std::vector<hxcomm::HwdbEntry> hwdb_entries =
+		    std::visit([](auto& conn) { return conn.get_hwdb_entry(); }, connection);
+
+		if constexpr (hate::is_in_type_list<
+		                  typename TypeParam::first_type, JboaSetupOnlyContainers>::value) {
+			if (!std::all_of(
+			        hwdb_entries.begin(), hwdb_entries.end(), [](hxcomm::HwdbEntry const& entry) {
+				        return std::holds_alternative<hwdb4cpp::JboaSetupEntry>(entry);
+			        })) {
+				GTEST_SKIP();
+			}
+		}
+
 
 		SystemInit init(std::visit(
 		    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));

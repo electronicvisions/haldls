@@ -137,6 +137,10 @@ typedef hate::type_list<
     lola::vx::v3::SynapseLabelRow,                      // included in SynapseRow
     lola::vx::v3::SynapseCorrelationCalibRow,           // included in SynapseRow
     haldls::vx::v3::SynapseQuad,                        // included in SynapseRow
+    haldls::vx::v3::OutputRoutingTableEntry,            // included in OutputRoutingTable
+    haldls::vx::v3::InputRoutingTableEntry,             // included in InputRoutingTable
+    lola::vx::v3::OutputRoutingTable,                   // logically not part of the chip
+    lola::vx::v3::InputRoutingTable,                    // logically not part of the chip
     lola::vx::v3::CorrelationResetRow>
     ContainersNotCoveredByChip;
 

@@ -275,3 +275,8 @@ constexpr uint32_t global_merger_matrix_input_drop_counter_base_address{
     global_merger_matrix_input_config_to_crossbar_base_address + 4};
 constexpr uint32_t global_merger_matrix_output_event_counter_base_address{
     global_merger_matrix_input_drop_counter_base_address + 4};
+
+constexpr uint32_t output_routing_table_base_address{
+    fpga_omnibus_mask | (1 << 27) | (1 << 19) | (1 << 18) | (1 << 16)};
+constexpr uint32_t input_routing_table_base_address{
+    fpga_omnibus_mask | (1 << 27) | (1 << 19) | (1 << 18)};
