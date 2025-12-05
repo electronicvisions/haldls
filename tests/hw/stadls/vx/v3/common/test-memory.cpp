@@ -12,6 +12,7 @@
 #include "haldls/vx/v3/container.h"
 #include "haldls/vx/v3/traits.h"
 #include "hate/type_index.h"
+#include "hxcomm/common/hwdb_entry.h"
 #include "hxcomm/vx/connection_from_env.h"
 #include "stadls/vx/v3/container_ticket.h"
 #include "stadls/vx/v3/decode.h"
@@ -48,7 +49,9 @@ typedef hate::type_list<
     haldls::vx::OutputRoutingTableEntry,
     haldls::vx::InputRoutingTableEntry,
     lola::vx::OutputRoutingTable,
-    lola::vx::InputRoutingTable>
+    lola::vx::InputRoutingTable,
+    lola::vx::MultichipJboaLeafFPGA,
+    lola::vx::ChipAndMultichipJboaLeafFPGA>
     JboaSetupOnlyContainers;
 
 /**

@@ -41,7 +41,11 @@ PLAYBACK_CONTAINER(ExternalPPUDRAMMemoryBlock, lola::vx::v3::ExternalPPUDRAMMemo
 PLAYBACK_CONTAINER(MemoryTiming, lola::vx::v3::MemoryTiming)
 PLAYBACK_CONTAINER(SynapseRow, lola::vx::v3::SynapseRow)
 PLAYBACK_CONTAINER(OutputRoutingTable, lola::vx::v3::OutputRoutingTable)
-LAST_PLAYBACK_CONTAINER(InputRoutingTable, lola::vx::v3::InputRoutingTable)
+PLAYBACK_CONTAINER(InputRoutingTable, lola::vx::v3::InputRoutingTable)
+PLAYBACK_CONTAINER(MultichipJboaLeafFPGA, lola::vx::v3::MultichipJboaLeafFPGA)
+PLAYBACK_CONTAINER(ChipAndMultichipJboaLeafFPGA, lola::vx::v3::ChipAndMultichipJboaLeafFPGA)
+PLAYBACK_CONTAINER(SinglechipFPGA, lola::vx::v3::SinglechipFPGA)
+LAST_PLAYBACK_CONTAINER(ChipAndSinglechipFPGA, lola::vx::v3::ChipAndSinglechipFPGA)
 
 #undef PLAYBACK_CONTAINER
 #undef LAST_PLAYBACK_CONTAINER

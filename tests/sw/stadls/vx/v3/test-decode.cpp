@@ -14,7 +14,9 @@ typedef hate::type_list<
     haldls::vx::TMP112Status,
     lola::vx::v3::AtomicNeuron,
     lola::vx::v3::Chip,
-    lola::vx::v3::LogicalNeuron>
+    lola::vx::v3::LogicalNeuron,
+    lola::vx::v3::ChipAndMultichipJboaLeafFPGA,
+    lola::vx::v3::ChipAndSinglechipFPGA>
     NotRandomizableTypes;
 
 typedef hate::type_list<
@@ -24,7 +26,9 @@ typedef hate::type_list<
     lola::vx::v3::AtomicNeuron,
     lola::vx::v3::CapMem,
     lola::vx::v3::Chip,
-    lola::vx::v3::LogicalNeuron>
+    lola::vx::v3::LogicalNeuron,
+    lola::vx::v3::ChipAndMultichipJboaLeafFPGA, // Not oneable as chip is not oneable
+    lola::vx::v3::ChipAndSinglechipFPGA>        // Not oneable as chip is not oneable
     NotOneableTypes;
 
 #define PLAYBACK_CONTAINER(Name, Type)                                                             \

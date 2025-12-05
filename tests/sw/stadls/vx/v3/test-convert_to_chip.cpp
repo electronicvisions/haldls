@@ -141,6 +141,10 @@ typedef hate::type_list<
     haldls::vx::v3::InputRoutingTableEntry,             // included in InputRoutingTable
     lola::vx::v3::OutputRoutingTable,                   // logically not part of the chip
     lola::vx::v3::InputRoutingTable,                    // logically not part of the chip
+    lola::vx::v3::MultichipJboaLeafFPGA,                // logically not part of the chip
+    lola::vx::v3::SinglechipFPGA,                       // logically not part of the chip
+    lola::vx::v3::ChipAndMultichipJboaLeafFPGA,         // logically more than the chip
+    lola::vx::v3::ChipAndSinglechipFPGA,                // logically more than the chip
     lola::vx::v3::CorrelationResetRow>
     ContainersNotCoveredByChip;
 

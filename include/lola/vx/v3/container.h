@@ -3,6 +3,7 @@
 #include "lola/vx/v3/capmem.h"
 #include "lola/vx/v3/chip.h"
 #include "lola/vx/v3/dac.h"
+#include "lola/vx/v3/fpga.h"
 #include "lola/vx/v3/memory_timing.h"
 #include "lola/vx/v3/morphology.h"
 #include "lola/vx/v3/neuron.h"
@@ -13,3 +14,4 @@
 #include "lola/vx/v3/synapse.h"
 #include "lola/vx/v3/synapse_block.h"
 #include "lola/vx/v3/synapse_driver.h"
+#include "lola/vx/v3/system.h"
