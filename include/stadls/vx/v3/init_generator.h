@@ -7,7 +7,7 @@
 namespace stadls::vx {
 namespace v3 GENPYBIND_TAG_STADLS_VX_V3 {
 
-class DigitalInit;
+class SystemInit;
 
 
 class GENPYBIND(expose_as(_ASICAdapterBoardInit)) SYMBOL_VISIBLE ASICAdapterBoardInit
@@ -35,7 +35,7 @@ protected:
 	 */
 	virtual std::unique_ptr<ASICAdapterBoardInit> copy() const;
 
-	friend class DigitalInit;
+	friend class SystemInit;
 
 private:
 	friend auto stadls::vx::generate<ASICAdapterBoardInit>(ASICAdapterBoardInit const&);
@@ -208,16 +208,16 @@ private:
 };
 
 
-class SYMBOL_VISIBLE GENPYBIND(expose_as("_DigitalInit")) DigitalInit
+class SYMBOL_VISIBLE GENPYBIND(expose_as("_SystemInit")) SystemInit
 {
 public:
-	DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
+	SystemInit(hxcomm::HwdbEntry const& hwdb_entry) SYMBOL_VISIBLE;
 
 	// needed because of unique_ptr, for which contained type can be copied
-	DigitalInit(DigitalInit const& other) SYMBOL_VISIBLE;
-	DigitalInit(DigitalInit&& other) = default;
-	DigitalInit& operator=(DigitalInit const& other) SYMBOL_VISIBLE;
-	DigitalInit& operator=(DigitalInit&& other) = default;
+	SystemInit(SystemInit const& other) SYMBOL_VISIBLE;
+	SystemInit(SystemInit&& other) = default;
+	SystemInit& operator=(SystemInit const& other) SYMBOL_VISIBLE;
+	SystemInit& operator=(SystemInit&& other) = default;
 
 	/** Builder typedef (e.g. for usage in generators). */
 	typedef v3::PlaybackProgramBuilder Builder;
@@ -239,7 +239,7 @@ public:
 	typedef hate::Nil Result;
 
 	GENPYBIND(stringstream)
-	friend std::ostream& operator<<(std::ostream& os, DigitalInit const& sequence) SYMBOL_VISIBLE;
+	friend std::ostream& operator<<(std::ostream& os, SystemInit const& sequence) SYMBOL_VISIBLE;
 
 protected:
 	/**
@@ -249,7 +249,7 @@ protected:
 	virtual PlaybackGeneratorReturn<Result> generate() const SYMBOL_VISIBLE;
 
 private:
-	friend auto stadls::vx::generate<DigitalInit>(DigitalInit const&);
+	friend auto stadls::vx::generate<SystemInit>(SystemInit const&);
 
 	std::unique_ptr<ASICAdapterBoardInit> m_asic_adapter_board;
 };
@@ -304,15 +304,15 @@ struct GENPYBIND(expose_as(ChipInit)) PyChipInit
 };
 
 // TODO: we can't use the alias above, cf. https://github.com/kljohann/genpybind/issues/32
-struct GENPYBIND(expose_as(DigitalInit)) PyDigitalInit
-    : public DigitalInit
+struct GENPYBIND(expose_as(SystemInit)) PySystemInit
+    : public SystemInit
     , public PlaybackGenerator
 {
-	PyDigitalInit(hxcomm::HwdbEntry const& hwdb_entry) : DigitalInit(hwdb_entry) {}
+	PySystemInit(hxcomm::HwdbEntry const& hwdb_entry) : SystemInit(hwdb_entry) {}
 
 	virtual pybind11::tuple GENPYBIND(expose_as("generate")) pygenerate() const override
 	{
-		return stadls::vx::detail::py_generate_impl(static_cast<DigitalInit const&>(*this));
+		return stadls::vx::detail::py_generate_impl(static_cast<SystemInit const&>(*this));
 	}
 };
 
@@ -358,7 +358,7 @@ GENPYBIND_MANUAL({
 GENPYBIND_MANUAL({
 	parent.def(
 	    "generate",
-	    [](::stadls::vx::v3::DigitalInit const& seq) {
+	    [](::stadls::vx::v3::SystemInit const& seq) {
 		    return ::stadls::vx::detail::py_generate_impl(seq);
 	    },
 	    pybind11::return_value_policy::move);

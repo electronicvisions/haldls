@@ -2,7 +2,7 @@ import unittest
 import inspect
 from typing import get_type_hints
 from pystadls_vx_v3 import PlaybackGenerator, generate, \
-    DigitalInit, ASICAdapterBoardInit, \
+    SystemInit, ASICAdapterBoardInit, \
     CubeASICAdapterBoardInit, JboaASICAdapterBoardInit, \
     ChipInit
 from pyhxcomm_vx import ZeroMockEntry
@@ -51,7 +51,7 @@ class PlaybackGeneratorTest(unittest.TestCase):
         Check that C++ sequences are usable in python.
         """
 
-        for generator in [DigitalInit(ZeroMockEntry()),
+        for generator in [SystemInit(ZeroMockEntry()),
                           ASICAdapterBoardInit(),
                           CubeASICAdapterBoardInit(),
                           JboaASICAdapterBoardInit(),

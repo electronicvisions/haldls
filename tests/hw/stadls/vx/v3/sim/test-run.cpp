@@ -21,7 +21,7 @@ TEST(Run, ExecutableRestriction)
 	auto connection = hxcomm::vx::get_connection_from_env();
 
 	auto sim_builder =
-	    generate(DigitalInit(std::visit(
+	    generate(SystemInit(std::visit(
 	                 [](auto const& connection) { return connection.get_hwdb_entry().at(0); },
 	                 connection)))
 	        .builder;
@@ -33,7 +33,7 @@ TEST(Run, ExecutableRestriction)
 	EXPECT_NO_THROW(run(connection, program_simulation_restricted));
 
 	auto hw_builder =
-	    generate(DigitalInit(std::visit(
+	    generate(SystemInit(std::visit(
 	                 [](auto const& connection) { return connection.get_hwdb_entry().at(0); },
 	                 connection)))
 	        .builder;

@@ -30,7 +30,7 @@ using namespace stadls::vx::v3;
 void test_spikeio_nodrop(SpikeIOConfig const config)
 {
 	auto connection = hxcomm::vx::get_connection_from_env();
-	auto sequence = DigitalInit(std::visit(
+	auto sequence = SystemInit(std::visit(
 	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	auto [config_builder, _] = generate(sequence);
 

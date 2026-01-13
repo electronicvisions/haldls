@@ -2,7 +2,7 @@ import ctypes
 import argparse
 
 from dlens_vx_v3 import halco
-from dlens_vx_v3.sta import PlaybackProgramBuilder, DigitalInit, \
+from dlens_vx_v3.sta import PlaybackProgramBuilder, SystemInit, \
     generate, run
 from dlens_vx_v3.hal import PPUControlRegister, Timer, Barrier
 from dlens_vx_v3.lola import PPUElfFile
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     with ManagedConnection() as conn:
-        init_builder, _ = generate(DigitalInit(conn.get_hwdb_entry()[0]))
+        init_builder, _ = generate(SystemInit(conn.get_hwdb_entry()[0]))
         run(conn, init_builder.done())
 
         load_and_start_program(conn, args.program,

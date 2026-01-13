@@ -58,7 +58,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
     def test_event(self):
         # ported from C++ test-event
         with hxcomm.ManagedConnection() as conn:
-            sequence = stadls.DigitalInit(conn.get_hwdb_entry()[0])
+            sequence = stadls.SystemInit(conn.get_hwdb_entry()[0])
         builder, _ = sequence.generate()
 
         num_spikes = 1000
@@ -124,7 +124,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         runtime_us = 1000
         for enabled_links in tests_enabled_links:
             with hxcomm.ManagedConnection() as conn:
-                init = stadls.DigitalInit(conn.get_hwdb_entry()[0])
+                init = stadls.SystemInit(conn.get_hwdb_entry()[0])
             init.chip.highspeed_link.enable_systime = False  # pylint: disable=no-member
             for link in range(8):
                 if link not in enabled_links:
@@ -178,7 +178,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         """
 
         with hxcomm.ManagedConnection() as conn:
-            builder, _ = stadls.DigitalInit(
+            builder, _ = stadls.SystemInit(
                 conn.get_hwdb_entry()[0]).generate()
 
         madc_config = haldls.MADCConfig()
@@ -278,7 +278,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
             for sample_duration_adjust in sample_duration_adjusts:
                 for enable_madc_clock_scaling in enable_madc_clock_scalings:
                     with hxcomm.ManagedConnection() as conn:
-                        builder, _ = stadls.DigitalInit(
+                        builder, _ = stadls.SystemInit(
                             conn.get_hwdb_entry()[0]).generate()
 
                     # configure MADC
@@ -377,7 +377,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
     @staticmethod
     def test_reinit_stack_entry():
         with hxcomm.ManagedConnection() as conn:
-            builder, _ = stadls.DigitalInit(
+            builder, _ = stadls.SystemInit(
                 conn.get_hwdb_entry()[0]).generate()
             builder.block_until(halco.TimerOnDLS(), haldls.Timer.Value(100))
             init = builder.done()

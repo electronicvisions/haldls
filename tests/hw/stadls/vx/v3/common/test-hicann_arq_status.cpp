@@ -26,7 +26,7 @@ using namespace stadls::vx::v3;
 TEST(HicannARQStatus, OmnibusReadCount)
 {
 	auto connection = hxcomm::vx::get_connection_from_env();
-	auto sequence = DigitalInit(std::visit(
+	auto sequence = SystemInit(std::visit(
 	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);
@@ -72,7 +72,7 @@ TEST(HicannARQStatus, OmnibusReadCount)
 TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 {
 	auto connection = hxcomm::vx::get_connection_from_env();
-	auto sequence = DigitalInit(std::visit(
+	auto sequence = SystemInit(std::visit(
 	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	sequence.chip.highspeed_link.enable_systime = false;
 	auto [builder, _] = generate(sequence);

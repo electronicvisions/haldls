@@ -276,7 +276,7 @@ void ChipInit::fill_synram_timing(hxcomm::HwdbEntry const& hwdb_entry)
 	}
 }
 
-DigitalInit::DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) :
+SystemInit::SystemInit(hxcomm::HwdbEntry const& hwdb_entry) :
     instruction_timeout(), enable_asic_adapter_board(true), chip(hwdb_entry), enable_chip(true)
 {
 	std::visit(
@@ -300,7 +300,7 @@ DigitalInit::DigitalInit(hxcomm::HwdbEntry const& hwdb_entry) :
 	}
 }
 
-DigitalInit::DigitalInit(DigitalInit const& other) :
+SystemInit::SystemInit(SystemInit const& other) :
     instruction_timeout(other.instruction_timeout),
     enable_asic_adapter_board(other.enable_asic_adapter_board),
     chip(other.chip),
@@ -309,7 +309,7 @@ DigitalInit::DigitalInit(DigitalInit const& other) :
 {
 }
 
-DigitalInit& DigitalInit::operator=(DigitalInit const& other)
+SystemInit& SystemInit::operator=(SystemInit const& other)
 {
 	if (&other != this) {
 		instruction_timeout = other.instruction_timeout;
@@ -323,7 +323,7 @@ DigitalInit& DigitalInit::operator=(DigitalInit const& other)
 }
 
 
-ASICAdapterBoardInit const& DigitalInit::get_asic_adapter_board() const
+ASICAdapterBoardInit const& SystemInit::get_asic_adapter_board() const
 {
 	if (!m_asic_adapter_board) {
 		throw std::logic_error("Unexpected access to moved-from object.");
@@ -331,17 +331,17 @@ ASICAdapterBoardInit const& DigitalInit::get_asic_adapter_board() const
 	return *m_asic_adapter_board;
 }
 
-void DigitalInit::set_asic_adapter_board(ASICAdapterBoardInit const& value)
+void SystemInit::set_asic_adapter_board(ASICAdapterBoardInit const& value)
 {
 	m_asic_adapter_board = value.copy();
 }
 
-PlaybackGeneratorReturn<typename DigitalInit::Result> DigitalInit::generate() const
+PlaybackGeneratorReturn<typename SystemInit::Result> SystemInit::generate() const
 {
 	using namespace haldls::vx;
 	using namespace halco::hicann_dls::vx::v3;
 
-	DigitalInit::Builder builder;
+	SystemInit::Builder builder;
 
 	// Configure playback instruction timeout
 	builder.write(InstructionTimeoutConfigOnFPGA(), instruction_timeout);
@@ -358,7 +358,7 @@ PlaybackGeneratorReturn<typename DigitalInit::Result> DigitalInit::generate() co
 	return {std::move(builder), Result{}};
 }
 
-std::ostream& operator<<(std::ostream& os, DigitalInit const&)
+std::ostream& operator<<(std::ostream& os, SystemInit const&)
 {
 	return os;
 }
