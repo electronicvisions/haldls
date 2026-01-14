@@ -23,10 +23,10 @@ TEST(TMP112, Temperature)
 	auto temp = builder.read(TMP112StatusOnBoard());
 
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
-	auto program = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
-	run(connection, program);
+	auto connection = hxcomm::vx::get_connection_from_env(1);
+	auto program = builder.done();
+	run(connection, {program});
 
 	EXPECT_TRUE(temp.valid());
 

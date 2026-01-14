@@ -42,7 +42,7 @@ protected:
 	void test_run_program(PlaybackProgram& program)
 	{
 		auto connection = hxcomm::vx::get_connection_from_env();
-		run(connection, program);
+		stadls::vx::v3::run(connection, {program});
 	}
 
 	PlaybackProgramBuilder builder;

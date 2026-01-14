@@ -43,7 +43,8 @@ class CompareHostAndPPUWrite(unittest.TestCase):
             cls.CONNECTION.get_hwdb_entry()[0]))
         jtag_id_ticket = init_builder.read(halco.JTAGIdCodeOnDLS())
         init_builder.block_until(halco.BarrierOnFPGA(), hal.Barrier.jtag)
-        sta.run(cls.CONNECTION, init_builder.done())
+        program = init_builder.done()
+        sta.run(cls.CONNECTION, [program])
         jtag_id = jtag_id_ticket.get()
         cls.CHIP_REVISION = int(jtag_id.version)
 
@@ -66,8 +67,8 @@ class CompareHostAndPPUWrite(unittest.TestCase):
         config = hal.CommonNeuronBackendConfig()
         config.enable_clocks = enable_clocks
         builder.write(halco.CommonNeuronBackendConfigOnDLS(), config)
-
-        sta.run(self.CONNECTION, builder.done())
+        program = builder.done()
+        sta.run(self.CONNECTION, [program])
 
         # PPU program should flip value enable_fire
         program = join(TEST_BINARY_PATH,
@@ -78,7 +79,8 @@ class CompareHostAndPPUWrite(unittest.TestCase):
         ticket = builder.read(halco.CommonNeuronBackendConfigOnDLS())
         builder.write(halco.TimerOnDLS(), hal.Timer(0))
         builder.block_until(halco.TimerOnDLS(), hal.Timer.Value(10000))
-        sta.run(self.CONNECTION, builder.done())
+        program = builder.done()
+        sta.run(self.CONNECTION, [program])
 
         self.assertEqual(ticket.get().enable_clocks, not enable_clocks)
 

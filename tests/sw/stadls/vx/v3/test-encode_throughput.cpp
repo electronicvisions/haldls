@@ -55,19 +55,20 @@ template <typename Type>
 std::enable_if_t<
     !std::is_base_of_v<haldls::vx::Container, Type> ||
     !haldls::vx::detail::IsWriteable<Type>::value ||
-    !fisch::vx::IsWritable<decltype(
-        fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
-                                      Type>::default_container>()))>::value>
+    !fisch::vx::IsWritable<decltype(fisch::vx::container_cast(
+        std::declval<typename haldls::vx::detail::BackendContainerTrait<
+            Type>::default_container>()))>::value>
 test_write()
-{}
+{
+}
 
 template <typename Type>
 std::enable_if_t<
     std::is_base_of_v<haldls::vx::Container, Type> &&
     haldls::vx::detail::IsWriteable<Type>::value &&
-    fisch::vx::IsWritable<decltype(
-        fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
-                                      Type>::default_container>()))>::value>
+    fisch::vx::IsWritable<decltype(fisch::vx::container_cast(
+        std::declval<typename haldls::vx::detail::BackendContainerTrait<
+            Type>::default_container>()))>::value>
 test_write()
 {
 	std::vector<Type> configs;
@@ -103,18 +104,19 @@ template <typename Type>
 std::enable_if_t<
     !std::is_base_of_v<haldls::vx::Container, Type> ||
     !haldls::vx::detail::IsReadable<Type>::value ||
-    !fisch::vx::IsReadable<decltype(
-        fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
-                                      Type>::default_container>()))>::value>
+    !fisch::vx::IsReadable<decltype(fisch::vx::container_cast(
+        std::declval<typename haldls::vx::detail::BackendContainerTrait<
+            Type>::default_container>()))>::value>
 test_read()
-{}
+{
+}
 
 template <typename Type>
 std::enable_if_t<
     std::is_base_of_v<haldls::vx::Container, Type> && haldls::vx::detail::IsReadable<Type>::value &&
-    fisch::vx::IsReadable<decltype(
-        fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
-                                      Type>::default_container>()))>::value>
+    fisch::vx::IsReadable<decltype(fisch::vx::container_cast(
+        std::declval<typename haldls::vx::detail::BackendContainerTrait<
+            Type>::default_container>()))>::value>
 test_read()
 {
 	typename Type::coordinate_type coord = stadls::vx::detail::get_coord(Type());
@@ -143,19 +145,20 @@ template <typename Type>
 std::enable_if_t<
     !std::is_base_of_v<haldls::vx::Container, Type> ||
     !haldls::vx::detail::IsReadable<Type>::value ||
-    !fisch::vx::IsReadable<decltype(
-        fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
-                                      Type>::default_container>()))>::value ||
+    !fisch::vx::IsReadable<decltype(fisch::vx::container_cast(
+        std::declval<typename haldls::vx::detail::BackendContainerTrait<
+            Type>::default_container>()))>::value ||
     hate::is_in_type_list<Type, NotZeroReadable>::value>
 test_read_get()
-{}
+{
+}
 
 template <typename Type>
 std::enable_if_t<
     std::is_base_of_v<haldls::vx::Container, Type> && haldls::vx::detail::IsReadable<Type>::value &&
-    fisch::vx::IsReadable<decltype(
-        fisch::vx::container_cast(std::declval<typename haldls::vx::detail::BackendContainerTrait<
-                                      Type>::default_container>()))>::value &&
+    fisch::vx::IsReadable<decltype(fisch::vx::container_cast(
+        std::declval<typename haldls::vx::detail::BackendContainerTrait<
+            Type>::default_container>()))>::value &&
     !hate::is_in_type_list<Type, NotZeroReadable>::value>
 test_read_get()
 {
@@ -181,7 +184,9 @@ test_read_get()
 	if (remaining.empty()) {
 		return;
 	}
-	stadls::vx::v3::run(conn, program);
+
+	std::vector<std::reference_wrapper<stadls::vx::PlaybackProgram>> programs{program};
+	stadls::vx::v3::run(conn, programs);
 	hate::Timer timer;
 	for (size_t i = 0; i < num_containers; ++i) {
 		tickets[i].get();

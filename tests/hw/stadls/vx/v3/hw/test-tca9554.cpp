@@ -66,10 +66,10 @@ TEST(TCA9554Config, DISABLED_ToggleChannels)
 	builder.write(TCA9554ConfigOnBoard(), config_off);
 
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
-	auto program = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
-	run(connection, program);
+	auto connection = hxcomm::vx::get_connection_from_env(1);
+	auto program = builder.done();
+	run(connection, {program});
 }
 
 
@@ -90,10 +90,10 @@ TEST(TCA9554Inputs, DISABLED_ReadChannels)
 	ContainerTicket ticket = builder.read(TCA9554InputsOnBoard());
 
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
-	auto program = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
-	run(connection, program);
+	auto connection = hxcomm::vx::get_connection_from_env(1);
+	auto program = builder.done();
+	run(connection, {program});
 
 	auto channel_inputs = dynamic_cast<TCA9554Inputs const&>(ticket.get()).get_channel_input();
 	for (auto channel : iter_all<TCA9554ChannelOnBoard>()) {

@@ -65,7 +65,8 @@ TEST(AbsoluteTimePlaybackProgramBuilder, reference)
 	}
 	LOG4CXX_TRACE(logger, "Computing time for PPB command queue: " << timer.print() << "\n");
 	auto program = builder.done();
-	stadls::vx::v3::run(connection, program);
+
+	stadls::vx::v3::run(connection, {program});
 	auto spikes = program.get_spikes();
 	EXPECT_LE(spikes.size(), num_spikes);
 	EXPECT_GT(spikes.size(), 0.9 * num_spikes);
@@ -122,7 +123,9 @@ TEST(AbsoluteTimePlaybackProgramBuilder, general)
 	EXPECT_FALSE(ticket.valid());
 	auto program = builder.done();
 	EXPECT_FALSE(ticket.valid());
-	stadls::vx::v3::run(connection, program);
+
+	stadls::vx::v3::run(connection, {program});
+
 	EXPECT_TRUE(ticket.valid());
 	auto spikes = program.get_spikes();
 	EXPECT_LE(spikes.size(), num_spikes);

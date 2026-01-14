@@ -21,8 +21,8 @@ public:
 
 	/**
 	 * Set and maybe enforce reinit stack entry value.
-	 * @param pbmem_request Playback program to be executed once a reinit is required.
-	 * @param pbmem_snapshot Playback program to be executed once the exclusive access to the
+	 * @param pbmem_requests Playback programs to be executed once a reinit is required.
+	 * @param pbmem_snapshots Playback programs to be executed once the exclusive access to the
 	 * hardware is relinquished. All read commands within this program are translated to writes and
 	 * replace the pbmem_request for future reinit operations. This is to be used to snapshot (parts
 	 * of) the current state of the hardware prior to releasing the exclusive access to other users
@@ -33,12 +33,13 @@ public:
 	 * reinit.
 	 */
 	void set(
-	    PlaybackProgram const& pbmem_request,
-	    std::optional<PlaybackProgram> const& pbmem_snapshot = std::nullopt,
+	    std::vector<std::reference_wrapper<PlaybackProgram>> const& pbmem_requests,
+	    std::optional<std::vector<std::reference_wrapper<PlaybackProgram>>> const& pbmem_snapshots =
+	        std::nullopt,
 	    bool enforce = true) SYMBOL_VISIBLE;
 	void set(
-	    PlaybackProgram&& pbmem_request,
-	    std::optional<PlaybackProgram>&& pbmem_snapshot = std::nullopt,
+	    std::vector<PlaybackProgram>&& pbmem_requests,
+	    std::optional<std::vector<PlaybackProgram>>&& pbmem_snapshots = std::nullopt,
 	    bool enforce = true) SYMBOL_VISIBLE;
 
 	void enforce() SYMBOL_VISIBLE;

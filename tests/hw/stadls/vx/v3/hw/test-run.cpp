@@ -15,8 +15,13 @@ TEST(Run, ExecutableRestriction)
 	builder.read(halco::hicann_dls::vx::v3::CrossbarNodeOnDLS());
 	auto program_simulation_restricted = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
+	auto connection = hxcomm::vx::get_connection_from_env(1);
 
-	EXPECT_NO_THROW(run(connection, program_unrestricted));
-	EXPECT_THROW(run(connection, program_simulation_restricted), std::runtime_error);
+	std::vector<std::reference_wrapper<PlaybackProgram>> programs_unrestricted{
+	    program_unrestricted};
+	EXPECT_NO_THROW(run(connection, programs_unrestricted));
+
+	std::vector<std::reference_wrapper<PlaybackProgram>> programs_simulation_restricted{
+	    program_simulation_restricted};
+	EXPECT_THROW(run(connection, programs_simulation_restricted), std::runtime_error);
 }

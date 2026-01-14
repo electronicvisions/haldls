@@ -42,7 +42,7 @@ using namespace stadls::vx::v3;
 		builder.block_until(TimerOnDLS(), Timer::Value(1000));                                     \
 		auto program = builder.done();                                                             \
                                                                                                    \
-		run(connection, program);                                                                  \
+		stadls::vx::v3::run(connection, {program});                                                \
                                                                                                    \
 		auto spikes = program.get_spikes();                                                        \
                                                                                                    \

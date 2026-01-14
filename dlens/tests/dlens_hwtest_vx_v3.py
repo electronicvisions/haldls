@@ -7,7 +7,8 @@ class TestDlensVXV3(unittest.TestCase):
     @classmethod
     def test_connection(cls):
         with hxcomm.ManagedConnection() as connection:
-            sta.run(connection, sta.PlaybackProgramBuilder().done())
+            program = sta.PlaybackProgramBuilder().done()
+            sta.run(connection, [program])
 
 
 if __name__ == "__main__":

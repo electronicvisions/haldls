@@ -16,7 +16,7 @@ using namespace stadls::vx::v3;
 
 TEST(INA219, DACVoltages)
 {
-	auto connection = hxcomm::vx::get_connection_from_env();
+	auto connection = hxcomm::vx::get_connection_from_env(1);
 	auto sequence = SystemInit(std::visit(
 	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	auto [builder, _] = generate(sequence);
@@ -31,9 +31,9 @@ TEST(INA219, DACVoltages)
 	}
 
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
-	auto program = builder.done();
 
-	run(connection, program);
+	auto program = builder.done();
+	run(connection, {program});
 
 	for (auto const& ticket : tickets) {
 		EXPECT_TRUE(ticket.valid());

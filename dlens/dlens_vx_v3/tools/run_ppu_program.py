@@ -68,7 +68,8 @@ def load_and_start_program(connection: ConnectionHandle,
 
     # Set PPU to run state, start execution
     builder.write(ppu.toPPUControlRegisterOnDLS(), ppu_control_reg_run)
-    run(connection, builder.done())
+    program = builder.done()
+    run(connection, [program])
 
 
 def stop_program(connection: ConnectionHandle,
@@ -101,7 +102,8 @@ def stop_program(connection: ConnectionHandle,
     builder.block_until(halco.BarrierOnFPGA(), Barrier.omnibus)
 
     # Run builder
-    run(connection, builder.done())
+    program = builder.done()
+    run(connection, [program])
 
     # Print Mailbox
     if print_mailbox:
@@ -139,10 +141,10 @@ def wait_until_ppu_finished(connection: ConnectionHandle,
     poll_builder.block_until(halco.BarrierOnFPGA(), Barrier.omnibus)
     poll_program = poll_builder.done()
 
-    run(connection, poll_program)
+    run(connection, [poll_program])
     num_polls = 1
     while status_handle.get().sleep is not True:
-        run(connection, poll_program)
+        run(connection, [poll_program])
 
         if timeout is not None and num_polls > max_num_polls:
             raise PPUTimeoutError("PPU execution did not finish in time.")
@@ -165,7 +167,8 @@ if __name__ == "__main__":
 
     with ManagedConnection() as conn:
         init_builder, _ = generate(SystemInit(conn.get_hwdb_entry()[0]))
-        run(conn, init_builder.done())
+        init_program = init_builder.done()
+        run(conn, [init_program])
 
         load_and_start_program(conn, args.program,
                                halco.PPUOnDLS(args.ppu_id))

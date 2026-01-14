@@ -50,9 +50,6 @@ class PlaybackProgram;
 
 class ReinitStackEntry;
 
-template <typename Connection>
-RunTimeInfo run(Connection&, PlaybackProgram&);
-
 /**
  * Sequential stream of executable instructions for the executor and result-container for event
  * response data during execution.
@@ -205,7 +202,8 @@ private:
 	friend class stadls::vx::detail::PlaybackProgramBuilderAdapterImpl;
 
 	template <typename Connection>
-	friend RunTimeInfo run(Connection&, PlaybackProgram&);
+	friend RunTimeInfo run(
+	    Connection&, std::vector<std::reference_wrapper<PlaybackProgram>> const&);
 
 	friend ReinitStackEntry;
 

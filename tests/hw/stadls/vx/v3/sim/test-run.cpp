@@ -16,9 +16,8 @@ using namespace stadls::vx::v3;
 TEST(Run, ExecutableRestriction)
 {
 	PlaybackProgramBuilder builder;
-	auto program_unrestricted = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
+	auto connection = hxcomm::vx::get_connection_from_env(1);
 
 	auto sim_builder =
 	    generate(SystemInit(std::visit(
@@ -27,10 +26,11 @@ TEST(Run, ExecutableRestriction)
 	        .builder;
 	sim_builder.read(CrossbarNodeOnDLS());
 	sim_builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
-	auto program_simulation_restricted = sim_builder.done();
 
-	EXPECT_NO_THROW(run(connection, program_unrestricted));
-	EXPECT_NO_THROW(run(connection, program_simulation_restricted));
+	auto program = builder.done();
+	EXPECT_NO_THROW(run(connection, {program}));
+	auto sim_program = sim_builder.done();
+	EXPECT_NO_THROW(run(connection, {sim_program}));
 
 	auto hw_builder =
 	    generate(SystemInit(std::visit(
@@ -39,6 +39,6 @@ TEST(Run, ExecutableRestriction)
 	        .builder;
 	hw_builder.read(NeuronConfigOnDLS());
 	hw_builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
-	auto program_hw_restricted = hw_builder.done();
-	EXPECT_THROW(run(connection, program_hw_restricted), std::runtime_error);
+	auto hw_program = hw_builder.done();
+	EXPECT_THROW(run(connection, {hw_program}), std::runtime_error);
 }

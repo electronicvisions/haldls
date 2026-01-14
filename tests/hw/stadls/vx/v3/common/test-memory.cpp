@@ -284,7 +284,7 @@ TYPED_TEST(SingleContainerWriteReadMemoryTest, SequentialRandomWriteRead)
 			GTEST_SKIP() << "Unsupported target.";
 		}
 
-		stadls::vx::run(connection, run_program);
+		stadls::vx::v3::run(connection, {run_program});
 	}
 
 	for (size_t i = 0; i < reference_containers.size(); ++i) {

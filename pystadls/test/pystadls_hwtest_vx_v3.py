@@ -51,7 +51,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
 
         # execute playback program
         with hxcomm.ManagedConnection() as conn:
-            stadls.run(conn, program)
+            stadls.run(conn, [program])
 
     # pylint: disable=R0914
     @unittest.skip("Issue #3578")
@@ -84,7 +84,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         program = builder.done()
 
         with hxcomm.ManagedConnection() as conn:
-            stadls.run(conn, program)
+            stadls.run(conn, [program])
 
         spikes = program.spikes
 
@@ -151,7 +151,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
 
             program = builder.done()
             with hxcomm.ManagedConnection() as conn:
-                stadls.run(conn, program)
+                stadls.run(conn, [program])
             self.assertEqual(result.get().error_word.value(), 0,
                              f"Expect error_word to be 0 for links"
                              f"{enabled_links}")
@@ -221,7 +221,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
         # run program
         program = builder.done()
         with hxcomm.ManagedConnection() as conn:
-            stadls.run(conn, program)
+            stadls.run(conn, [program])
 
         # inspect MADC samples
         samples = program.madc_samples.to_numpy()
@@ -334,7 +334,7 @@ class HwTestPystadlsVxV3(unittest.TestCase):
                     # run program
                     program = builder.done()
                     with hxcomm.ManagedConnection() as conn:
-                        stadls.run(conn, program)
+                        stadls.run(conn, [program])
 
                     # inspect MADC samples
                     samples = program.madc_samples.to_numpy()
@@ -387,8 +387,8 @@ class HwTestPystadlsVxV3(unittest.TestCase):
             program = builder.done()
 
             reinit = stadls.ReinitStackEntry(conn)
-            reinit.set(init, enforce=True)
-            stadls.run(conn, program)
+            reinit.set([init], enforce=True)
+            stadls.run(conn, [program])
 
 
 if __name__ == "__main__":

@@ -5,11 +5,7 @@
 namespace stadls::vx {
 namespace v3 GENPYBIND_TAG_STADLS_VX_V3 {
 
-template <typename... Ts>
-auto run(Ts&&... args) -> decltype(stadls::vx::run(std::forward<Ts>(args)...))
-{
-	return stadls::vx::run(std::forward<Ts>(args)...);
-}
+using ::stadls::vx::run;
 
 GENPYBIND_MANUAL({
 	[[maybe_unused]] ::stadls::vx::detail::RunUnrollPyBind11Helper<

@@ -64,7 +64,8 @@ void test_background_spike_source_regular(
 
 	auto program = builder.done();
 
-	run(connection, program);
+	std::vector<std::reference_wrapper<stadls::vx::PlaybackProgram>> programs{program};
+	stadls::vx::v3::run(connection, programs);
 
 	auto spikes = program.get_spikes();
 

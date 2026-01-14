@@ -103,10 +103,10 @@ TEST(NeuronBackend, ResetCounterTest)
 	}
 
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
-	auto program = builder.done();
 
-	auto connection = hxcomm::vx::get_connection_from_env();
-	run(connection, program);
+	auto connection = hxcomm::vx::get_connection_from_env(1);
+	auto program = builder.done();
+	run(connection, {program});
 
 	for (auto cnt_value_ticket : cnt_value_read) {
 		auto const& cnt_value = dynamic_cast<SpikeCounterRead const&>(cnt_value_ticket.get());

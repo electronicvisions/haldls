@@ -46,7 +46,7 @@ TEST(HicannARQStatus, OmnibusReadCount)
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
-	run(connection, program);
+	stadls::vx::v3::run(connection, {program});
 
 	EXPECT_TRUE(ticket_ref.valid());
 	EXPECT_TRUE(ticket.valid());
@@ -87,7 +87,7 @@ TEST(HicannARQStatus, DISABLED_OmnibusWriteCount)
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
 
-	run(connection, program);
+	stadls::vx::v3::run(connection, {program});
 
 	EXPECT_TRUE(ticket.valid());
 	auto const& status = dynamic_cast<HicannARQStatus const&>(ticket.get());

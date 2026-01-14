@@ -87,11 +87,10 @@ void test_spikeio_nodrop(SpikeIOConfig const config)
 	stim_builder.block_until(
 	    TimerOnDLS(), Timer::Value(100 * Timer::Value::fpga_clock_cycles_per_us));
 
-	auto config_program = config_builder.done();
 	auto stim_program = stim_builder.done();
-
-	run(connection, config_program);
-	run(connection, stim_program);
+	auto program = config_builder.done();
+	stadls::vx::v3::run(connection, {program});
+	stadls::vx::v3::run(connection, {stim_program});
 
 	auto spikes = stim_program.get_spikes();
 	EXPECT_EQ(spikes.size(), num_expected_trace_events) << "Unexpected number of events received.";

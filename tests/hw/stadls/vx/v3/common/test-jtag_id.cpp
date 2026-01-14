@@ -26,7 +26,7 @@ TEST(JTAGIdCode, ReadJTAGId)
 	builder.block_until(BarrierOnFPGA(), Barrier::jtag);
 	auto program = builder.done();
 
-	run(connection, program);
+	stadls::vx::v3::run(connection, {program});
 
 	ASSERT_TRUE(jtag_id_ticket.valid());
 	auto const& jtag_id = dynamic_cast<JTAGIdCode const&>(jtag_id_ticket.get());

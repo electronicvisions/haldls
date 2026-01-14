@@ -18,8 +18,10 @@ GENPYBIND_MANUAL({
 	wrapped.def("pop", &ReinitStackEntry::pop);
 	wrapped.def(
 	    "set",
-	    [](ReinitStackEntry& self, PlaybackProgram const& pbmem_request,
-	       std::optional<PlaybackProgram> const& pbmem_snapshot,
+	    [](ReinitStackEntry& self,
+	       std::vector<std::reference_wrapper<PlaybackProgram>> const& pbmem_request,
+	       std::optional<std::vector<std::reference_wrapper<PlaybackProgram>>> const&
+	           pbmem_snapshot,
 	       bool enforce) { return self.set(pbmem_request, pbmem_snapshot, enforce); },
 	    pybind11::arg("pbmem_request"), pybind11::arg("pbmem_snapshot") = std::nullopt,
 	    pybind11::arg("enforce") = true);

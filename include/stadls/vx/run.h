@@ -21,18 +21,8 @@ namespace vx GENPYBIND_TAG_STADLS_VX {
  * @return Run time information
  */
 template <typename Connection>
-RunTimeInfo run(Connection& connection, PlaybackProgram& program);
-
-/**
- * Transfer and execute the given playback program and fetch results.
- *
- * @tparam Connection Connection type to be used for running the program
- * @param connection Connection instance to be used for running the program
- * @param program PlaybackProgram to run
- * @return Run time information
- */
-template <typename Connection>
-RunTimeInfo run(Connection& connection, PlaybackProgram&& program);
+RunTimeInfo run(
+    Connection& connection, std::vector<std::reference_wrapper<PlaybackProgram>> const& program);
 
 /**
  * Transfer and execute the given fisch playback program and fetch results.
@@ -43,15 +33,17 @@ RunTimeInfo run(Connection& connection, PlaybackProgram&& program);
  * @return Run time information
  */
 template <typename Connection>
-RunTimeInfo run(Connection& connection, std::shared_ptr<fisch::vx::PlaybackProgram> const& program);
+RunTimeInfo run(
+    Connection& connection,
+    std::vector<std::shared_ptr<fisch::vx::PlaybackProgram>> const& programs);
 
 } // namespace vx
 } // namespace stadls
 
 #if defined(__GENPYBIND__) or defined(__GENPYBIND_GENERATED__)
 
-#include <pybind11/pybind11.h>
 #include "pyhxcomm/vx/connection_handle.h"
+#include <pybind11/pybind11.h>
 
 namespace stadls::vx {
 
@@ -73,14 +65,16 @@ struct RunUnrollPyBind11Helper<std::variant<T, Ts...>>
 	{
 		m.def(
 		    "run",
-		    [](T& conn, ::stadls::vx::PlaybackProgram& prog) {
-			    return ::stadls::vx::run<T>(conn, prog);
+		    [](T& conn,
+		       std::vector<std::reference_wrapper<::stadls::vx::PlaybackProgram>> const& programs) {
+			    return ::stadls::vx::run<T>(conn, programs);
 		    },
 		    pybind11::call_guard<pybind11::gil_scoped_release>());
 		m.def(
 		    "run",
-		    [](T& conn, std::shared_ptr<::fisch::vx::PlaybackProgram> const& prog) {
-			    return ::stadls::vx::run<T>(conn, prog);
+		    [](T& conn,
+		       std::vector<std::shared_ptr<::fisch::vx::PlaybackProgram>> const& programs) {
+			    return ::stadls::vx::run<T>(conn, programs);
 		    },
 		    pybind11::call_guard<pybind11::gil_scoped_release>());
 	}

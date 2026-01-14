@@ -23,7 +23,7 @@ using namespace stadls::vx::v3;
  */
 TEST(ShiftRegister, ToggleLEDs)
 {
-	auto connection = hxcomm::vx::get_connection_from_env();
+	auto connection = hxcomm::vx::get_connection_from_env(1);
 	auto sequence = SystemInit(std::visit(
 	    [](auto const& connection) { return connection.get_hwdb_entry().at(0); }, connection));
 	auto [builder, _] = generate(sequence);
@@ -51,6 +51,5 @@ TEST(ShiftRegister, ToggleLEDs)
 
 	builder.block_until(BarrierOnFPGA(), Barrier::omnibus);
 	auto program = builder.done();
-
-	run(connection, program);
+	run(connection, {program});
 }

@@ -10,7 +10,7 @@ class TestDlensHealthCheckVXV3(unittest.TestCase):
             builder, _ = sta.generate(sta.SystemInit(
                 connection.get_hwdb_entry()[0]))
             program = builder.done()
-            sta.run(connection, program)
+            sta.run(connection, [program])
 
 
 if __name__ == "__main__":

@@ -11,5 +11,5 @@ TEST(PlaybackProgram, DefaultConstructor)
 	PlaybackProgram program;
 
 	auto connection = hxcomm::vx::get_connection_from_env();
-	run(connection, program);
+	run(connection, {program});
 }
