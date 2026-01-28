@@ -49,12 +49,6 @@ void serialize(Archive& ar, haldls::vx::InstructionTimeoutConfig& value, std::ui
 	ar(CEREAL_NVP(value.m_value));
 }
 
-template <class Archive>
-void serialize(Archive& ar, haldls::vx::SystimeCorrectionBarrierConfig& value, std::uint32_t const)
-{
-	ar(CEREAL_NVP(value.m_enable_interrupt));
-}
-
 template <typename Archive>
 void serialize(Archive& ar, haldls::vx::ExternalPPUMemoryByte& value, std::uint32_t const)
 {
@@ -111,7 +105,6 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::FPGASystimeSyncActiveStat
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::FPGADeviceDNA)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::EventRecordingConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::InstructionTimeoutConfig)
-EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SystimeCorrectionBarrierConfig)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUMemoryByte)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUMemoryQuad)
 EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUDRAMMemoryByte)
@@ -122,7 +115,6 @@ EXPLICIT_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SpikeIOOutputRoute)
 CEREAL_REGISTER_TYPE(haldls::vx::FPGADeviceDNA)
 CEREAL_REGISTER_TYPE(haldls::vx::EventRecordingConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::InstructionTimeoutConfig)
-CEREAL_REGISTER_TYPE(haldls::vx::SystimeCorrectionBarrierConfig)
 CEREAL_REGISTER_TYPE(haldls::vx::ExternalPPUMemoryByte)
 CEREAL_REGISTER_TYPE(haldls::vx::ExternalPPUMemoryQuad)
 CEREAL_REGISTER_TYPE(haldls::vx::ExternalPPUDRAMMemoryByte)
@@ -137,8 +129,6 @@ CEREAL_REGISTER_TYPE(haldls::vx::FPGASystimeSyncNumRetries)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::FPGADeviceDNA)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::EventRecordingConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::InstructionTimeoutConfig)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(
-    haldls::vx::Container, haldls::vx::SystimeCorrectionBarrierConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::ExternalPPUMemoryByte)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::ExternalPPUMemoryQuad)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Container, haldls::vx::ExternalPPUDRAMMemoryByte)
@@ -156,8 +146,6 @@ CEREAL_REGISTER_DYNAMIC_INIT(haldls_vx_fpga)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::FPGADeviceDNA)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::EventRecordingConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::InstructionTimeoutConfig)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(
-    haldls::vx::Encodable, haldls::vx::SystimeCorrectionBarrierConfig)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::ExternalPPUMemoryByte)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::ExternalPPUMemoryQuad)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(haldls::vx::Encodable, haldls::vx::ExternalPPUDRAMMemoryByte)

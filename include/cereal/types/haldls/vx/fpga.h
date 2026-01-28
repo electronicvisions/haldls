@@ -7,7 +7,6 @@ namespace haldls::vx {
 struct FPGADeviceDNA;
 struct EventRecordingConfig;
 struct InstructionTimeoutConfig;
-struct SystimeCorrectionBarrierConfig;
 struct ExternalPPUMemoryByte;
 struct ExternalPPUMemoryQuad;
 struct ExternalPPUDRAMMemoryByte;
@@ -35,10 +34,6 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
     Archive& ar, haldls::vx::InstructionTimeoutConfig& value, std::uint32_t const version);
-
-template <typename Archive>
-void CEREAL_SERIALIZE_FUNCTION_NAME(
-    Archive& ar, haldls::vx::SystimeCorrectionBarrierConfig& value, std::uint32_t const version);
 
 template <typename Archive>
 void CEREAL_SERIALIZE_FUNCTION_NAME(
@@ -89,7 +84,6 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::FPGADeviceDNA)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::EventRecordingConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::InstructionTimeoutConfig)
-EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::SystimeCorrectionBarrierConfig)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUMemoryByte)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUMemoryQuad)
 EXTERN_INSTANTIATE_CEREAL_SERIALIZE_FREE(haldls::vx::ExternalPPUDRAMMemoryByte)

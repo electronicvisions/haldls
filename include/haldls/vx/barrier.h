@@ -38,7 +38,6 @@ public:
 	static SYMBOL_VISIBLE const Barrier jtag GENPYBIND(visible);
 	static SYMBOL_VISIBLE const Barrier systime GENPYBIND(visible);
 	static SYMBOL_VISIBLE const Barrier multi_fpga GENPYBIND(visible);
-	static SYMBOL_VISIBLE const Barrier systime_correction GENPYBIND(visible);
 
 	GENPYBIND(getter_for(enable_omnibus))
 	bool get_enable_omnibus() const SYMBOL_VISIBLE;
@@ -59,11 +58,6 @@ public:
 	bool get_enable_multi_fpga() const SYMBOL_VISIBLE;
 	GENPYBIND(setter_for(enable_multi_fpga))
 	void set_enable_multi_fpga(bool value) SYMBOL_VISIBLE;
-
-	GENPYBIND(getter_for(enable_systime_correction))
-	bool get_enable_systime_correction() const SYMBOL_VISIBLE;
-	GENPYBIND(setter_for(enable_systime_correction))
-	void set_enable_systime_correction(bool value) SYMBOL_VISIBLE;
 
 	bool operator==(Barrier const& other) const SYMBOL_VISIBLE;
 	bool operator!=(Barrier const& other) const SYMBOL_VISIBLE;
@@ -87,7 +81,6 @@ private:
 	bool m_enable_jtag;
 	bool m_enable_systime;
 	bool m_enable_multi_fpga;
-	bool m_enable_systime_correction;
 };
 
 namespace detail {

@@ -12,7 +12,6 @@ void CEREAL_SERIALIZE_FUNCTION_NAME(Archive& ar, haldls::vx::Barrier& value, std
 	ar(CEREAL_NVP(value.m_enable_jtag));
 	ar(CEREAL_NVP(value.m_enable_systime));
 	ar(CEREAL_NVP(value.m_enable_multi_fpga));
-	ar(CEREAL_NVP(value.m_enable_systime_correction));
 }
 
 } // namespace cereal

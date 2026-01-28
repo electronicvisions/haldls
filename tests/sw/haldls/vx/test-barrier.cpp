@@ -9,9 +9,7 @@
 
 using namespace haldls::vx;
 
-HALDLS_TEST(
-    Barrier,
-    (enable_omnibus)(enable_jtag)(enable_systime)(enable_multi_fpga)(enable_systime_correction))
+HALDLS_TEST(Barrier, (enable_omnibus) (enable_jtag) (enable_systime) (enable_multi_fpga))
 
 TEST(Barrier, Encode)
 {
@@ -20,7 +18,6 @@ TEST(Barrier, Encode)
 	config.set_enable_jtag(true);
 	config.set_enable_systime(true);
 	config.set_enable_multi_fpga(true);
-	config.set_enable_systime_correction(false);
 
 	EXPECT_EQ(config.encode().at(0), 0xe);
 }
