@@ -24,6 +24,23 @@ void ReinitStackEntry::set(
 	}
 }
 
+void ReinitStackEntry::set(
+    PlaybackProgram&& pbmem_request,
+    std::optional<PlaybackProgram>&& pbmem_snapshot,
+    bool const enforce)
+{
+	if (!m_impl) {
+		throw std::runtime_error("Unexpected access to moved-from object.");
+	}
+	if (pbmem_snapshot) {
+		m_impl->set(
+		    std::move(pbmem_request.m_program_impl), std::move(pbmem_snapshot->m_program_impl),
+		    enforce);
+	} else {
+		m_impl->set(std::move(pbmem_request.m_program_impl), std::nullopt, enforce);
+	}
+}
+
 void ReinitStackEntry::enforce()
 {
 	if (!m_impl) {

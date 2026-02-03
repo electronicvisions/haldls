@@ -17,8 +17,12 @@ GENPYBIND_MANUAL({
 
 	wrapped.def("pop", &ReinitStackEntry::pop);
 	wrapped.def(
-	    "set", &ReinitStackEntry::set, pybind11::arg("pbmem_request"),
-	    pybind11::arg("pbmem_snapshot") = std::nullopt, pybind11::arg("enforce") = true);
+	    "set",
+	    [](ReinitStackEntry& self, PlaybackProgram const& pbmem_request,
+	       std::optional<PlaybackProgram> const& pbmem_snapshot,
+	       bool enforce) { return self.set(pbmem_request, pbmem_snapshot, enforce); },
+	    pybind11::arg("pbmem_request"), pybind11::arg("pbmem_snapshot") = std::nullopt,
+	    pybind11::arg("enforce") = true);
 })
 
 } // namespace v3

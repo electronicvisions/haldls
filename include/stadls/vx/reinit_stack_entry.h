@@ -36,6 +36,10 @@ public:
 	    PlaybackProgram const& pbmem_request,
 	    std::optional<PlaybackProgram> const& pbmem_snapshot = std::nullopt,
 	    bool enforce = true) SYMBOL_VISIBLE;
+	void set(
+	    PlaybackProgram&& pbmem_request,
+	    std::optional<PlaybackProgram>&& pbmem_snapshot = std::nullopt,
+	    bool enforce = true) SYMBOL_VISIBLE;
 
 	void enforce() SYMBOL_VISIBLE;
 
