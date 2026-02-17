@@ -3,6 +3,7 @@
 #include <iosfwd>
 
 #include "halco/common/geometry.h"
+#include "halco/common/typed_heap_array.h"
 #include "halco/hicann-dls/vx/routing_table.h"
 
 #include "haldls/vx/common.h"
@@ -39,7 +40,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, OutputRoutingTable const& config)
 	    SYMBOL_VISIBLE;
 
-	typedef halco::common::typed_array<
+	typedef halco::common::typed_heap_array<
 	    haldls::vx::OutputRoutingTableEntry,
 	    typename haldls::vx::OutputRoutingTableEntry::coordinate_type>
 	    Entries GENPYBIND(opaque(false));
@@ -70,7 +71,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, InputRoutingTable const& config)
 	    SYMBOL_VISIBLE;
 
-	typedef halco::common::typed_array<
+	typedef halco::common::typed_heap_array<
 	    haldls::vx::InputRoutingTableEntry,
 	    typename haldls::vx::InputRoutingTableEntry::coordinate_type>
 	    Entries GENPYBIND(opaque(false));

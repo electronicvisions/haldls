@@ -1,6 +1,6 @@
 #include "cereal/types/lola/vx/routing_table.h"
 
-#include "cereal/types/halco/common/typed_array.h"
+#include "cereal/types/halco/common/typed_heap_array.h"
 #include "cereal/types/haldls/cereal.tcc"
 #include "cereal/types/lola/detail/hana.tcc"
 #include "lola/vx/routing_table.h"

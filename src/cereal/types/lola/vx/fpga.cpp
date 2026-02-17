@@ -1,7 +1,7 @@
 #include "cereal/types/lola/vx/fpga.h"
 
 #include "cereal/types/halco/common/geometry.h"
-#include "cereal/types/halco/common/typed_array.h"
+#include "cereal/types/halco/common/typed_heap_array.h"
 #include "cereal/types/haldls/cereal.tcc"
 #include "cereal/types/lola/detail/hana.tcc"
 #include "lola/vx/fpga.h"
