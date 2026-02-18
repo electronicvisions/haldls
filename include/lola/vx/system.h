@@ -31,7 +31,12 @@ public:
 	typedef halco::hicann_dls::vx::ChipAndMultichipJboaLeafFPGAOnSystem coordinate_type;
 	typedef std::false_type has_local_data;
 
+	using FPGA = MultichipJboaLeafFPGA;
+	using Chip = v3::Chip;
+
 	ChipAndMultichipJboaLeafFPGA() SYMBOL_VISIBLE;
+	ChipAndMultichipJboaLeafFPGA(Chip chip);
+	ChipAndMultichipJboaLeafFPGA(Chip chip, FPGA fpga);
 
 	bool operator==(ChipAndMultichipJboaLeafFPGA const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ChipAndMultichipJboaLeafFPGA const& other) const SYMBOL_VISIBLE;
@@ -40,11 +45,8 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, ChipAndMultichipJboaLeafFPGA const& config)
 	    SYMBOL_VISIBLE;
 
-	using FPGA = MultichipJboaLeafFPGA;
-	using Chip = v3::Chip;
-
-	FPGA fpga;
 	Chip chip;
+	FPGA fpga;
 
 private:
 	friend haldls::vx::detail::VisitPreorderImpl<ChipAndMultichipJboaLeafFPGA>;
@@ -61,7 +63,12 @@ public:
 	typedef halco::hicann_dls::vx::ChipAndSinglechipFPGAOnSystem coordinate_type;
 	typedef std::false_type has_local_data;
 
+	using FPGA = SinglechipFPGA;
+	using Chip = v3::Chip;
+
 	ChipAndSinglechipFPGA() SYMBOL_VISIBLE;
+	ChipAndSinglechipFPGA(Chip chip);
+	ChipAndSinglechipFPGA(Chip chip, FPGA fpga);
 
 	bool operator==(ChipAndSinglechipFPGA const& other) const SYMBOL_VISIBLE;
 	bool operator!=(ChipAndSinglechipFPGA const& other) const SYMBOL_VISIBLE;
@@ -70,11 +77,8 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, ChipAndSinglechipFPGA const& config)
 	    SYMBOL_VISIBLE;
 
-	using FPGA = SinglechipFPGA;
-	using Chip = v3::Chip;
-
-	FPGA fpga;
 	Chip chip;
+	FPGA fpga;
 
 private:
 	friend haldls::vx::detail::VisitPreorderImpl<ChipAndSinglechipFPGA>;
