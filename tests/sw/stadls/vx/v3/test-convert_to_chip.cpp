@@ -145,6 +145,13 @@ typedef hate::type_list<
     lola::vx::v3::SinglechipFPGA,                       // logically not part of the chip
     lola::vx::v3::ChipAndMultichipJboaLeafFPGA,         // logically more than the chip
     lola::vx::v3::ChipAndSinglechipFPGA,                // logically more than the chip
+    lola::vx::v3::MemoryTiming,                         // init
+    haldls::vx::v3::CADCOffsetSRAMTimingConfig,         // init
+    haldls::vx::v3::SynapseDriverSRAMTimingConfig,      // init
+    haldls::vx::v3::NeuronSRAMTimingConfig,             // init
+    haldls::vx::v3::NeuronBackendSRAMTimingConfig,      // init
+    haldls::vx::v3::CapMemSRAMTimingConfig,             // init
+    haldls::vx::v3::CommonSynramConfig,                 // init
     lola::vx::v3::CorrelationResetRow>
     ContainersNotCoveredByChip;
 

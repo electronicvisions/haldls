@@ -23,8 +23,6 @@ struct VisitPreorderImpl<lola::vx::v3::Chip>
 
 		visitor(coord, config);
 
-		hate::Empty<lola::vx::v3::MemoryTiming> memory_timing;
-		visit_preorder(memory_timing, MemoryTimingOnDLS(), visitor);
 		hate::Empty<lola::vx::v3::Crossbar> crossbar;
 		visit_preorder(crossbar, CrossbarOnDLS(), visitor);
 
@@ -76,7 +74,6 @@ struct VisitPreorderImpl<lola::vx::v3::Chip>
 
 		visitor(coord, config);
 
-		visit_preorder(config.memory_timing, hate::Empty<MemoryTimingOnDLS>{}, visitor);
 		visit_preorder(config.crossbar, hate::Empty<CrossbarOnDLS>{}, visitor);
 
 		for (auto const c : iter_all<BackgroundSpikeSourceOnDLS>()) {
@@ -119,7 +116,6 @@ struct VisitPreorderImpl<lola::vx::v3::Chip>
 
 		visitor(coord, config);
 
-		visit_preorder(config.memory_timing, MemoryTimingOnDLS(), visitor);
 		visit_preorder(config.crossbar, CrossbarOnDLS(), visitor);
 
 		for (auto const c : iter_all<BackgroundSpikeSourceOnDLS>()) {
@@ -155,7 +151,6 @@ struct VisitPreorderImpl<lola::vx::v3::Chip>
 
 BOOST_HANA_ADAPT_STRUCT(
     lola::vx::v3::Chip,
-    memory_timing,
     crossbar,
     background_spike_sources,
     capmem,

@@ -15,7 +15,6 @@ inline void decode_random(std::mt19937& gen, lola::vx::v3::Chip& config)
 	using namespace halco::hicann_dls::vx::v3;
 	using namespace halco::common;
 
-	decode_random(gen, config.memory_timing);
 	decode_random(gen, config.crossbar);
 
 	for (auto const c : iter_all<BackgroundSpikeSourceOnDLS>()) {

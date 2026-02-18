@@ -7,7 +7,6 @@
 #include "lola/vx/genpybind.h"
 #include "lola/vx/v3/cadc.h"
 #include "lola/vx/v3/capmem.h"
-#include "lola/vx/v3/memory_timing.h"
 #include "lola/vx/v3/neuron.h"
 #include "lola/vx/v3/ppu.h"
 #include "lola/vx/v3/readout_chain.h"
@@ -31,12 +30,6 @@ public:
 	typedef std::false_type has_local_data;
 
 	Chip() = default;
-
-	/**
-	 * Timing of memory cells, SynRAM, CADC offsets, analog and digital neuron and synapse driver
-	 * configuration.
-	 */
-	MemoryTiming memory_timing;
 
 	/**
 	 * Event routing crossbar configuration.
