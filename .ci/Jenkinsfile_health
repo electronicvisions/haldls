@@ -75,7 +75,7 @@ static int readBitfileVersion(WorkflowScript pipeline) {
 	               "pylogging.default_config()\n" +
 	               "from pyhxcomm_vx import ManagedConnection\n" +
 	               "with ManagedConnection() as connection:\n" +
-	               "    bitfile_info = yaml.safe_load(connection.bitfile_info)\n" +
+	               "    bitfile_info = yaml.safe_load(connection.bitfile_info[0])\n" +
 	               "    print(bitfile_info[\"version\"])"
 	return pipeline.jesh(script: "python -c '${query}'", returnStdout: true).trim().toInteger()
 }
@@ -87,7 +87,7 @@ static String readBitfileBuildTime(WorkflowScript pipeline) {
 	               "pylogging.default_config()\n" +
 	               "from pyhxcomm_vx import ManagedConnection\n" +
 	               "with ManagedConnection() as connection:\n" +
-	               "    bitfile_info = yaml.safe_load(connection.bitfile_info)\n" +
+	               "    bitfile_info = yaml.safe_load(connection.bitfile_info[0])\n" +
 	               "    print(bitfile_info[\"build_time\"].strftime(\"%Y-%m-%d %H:%M\"))"
 	return pipeline.jesh(script: "python -c '${query}'", returnStdout: true).trim()
 }
