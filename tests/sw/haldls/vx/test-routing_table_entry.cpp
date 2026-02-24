@@ -24,7 +24,7 @@ TEST(OutputRoutingTableEntry, EncodeDecode)
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusAddress(output_routing_table_base_address)};
 
 	std::array<fisch::vx::word_access_type::Omnibus, OutputRoutingTableEntry::config_size_in_words>
-	    ref_data = {fisch::vx::word_access_type::Omnibus((1ul << 0) | (7ul << 1))};
+	    ref_data = {fisch::vx::word_access_type::Omnibus((1ul << 15) | (7ul << 0))};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data)
 }
@@ -41,7 +41,7 @@ TEST(InputRoutingTableEntry, EncodeDecode)
 	    ref_addresses = {halco::hicann_dls::vx::OmnibusAddress(input_routing_table_base_address)};
 
 	std::array<fisch::vx::word_access_type::Omnibus, InputRoutingTableEntry::config_size_in_words>
-	    ref_data = {fisch::vx::word_access_type::Omnibus((1ul << 0) | (7ul << 1))};
+	    ref_data = {fisch::vx::word_access_type::Omnibus((1ul << 16) | (7ul << 0))};
 
 	HALDLS_TEST_ENCODE_DECODE(config, coord, ref_addresses, ref_data);
 }

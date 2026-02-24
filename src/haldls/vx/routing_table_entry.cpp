@@ -74,8 +74,8 @@ struct OutputRoutingTableEntryBitfield
 		std::array<uint32_t, OutputRoutingTableEntry::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t enable        :  1;
 			uint32_t label         : 15;
+			uint32_t enable        :  1;
 			uint32_t /*unused*/    : 16;
 		} m;
 		// clang-format on
@@ -192,8 +192,8 @@ struct InputRoutingTableEntryBitfield
 		std::array<uint32_t, InputRoutingTableEntry::config_size_in_words> raw;
 		// clang-format off
 		struct __attribute__((packed)) {
-			uint32_t enable        :  1;
 			uint32_t label         : 16;
+			uint32_t enable        :  1;
 			uint32_t /*unused*/    : 15;
 		} m;
 		// clang-format on
