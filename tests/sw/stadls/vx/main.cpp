@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 
 // logger include directory structure omits prefix
-#include "logging_ctrl.h"
+#include "logger/log4cxx/logging_ctrl.h"
 
 int main(int argc, char* argv[])
 {

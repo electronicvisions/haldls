@@ -155,7 +155,7 @@ def build(bld):
                                        excl=f'src/haldls/vx/v{hx_version}/pyhaldls.cpp'),
             install_path = '${PREFIX}/lib',
             features = 'cxx cxxshlib',
-            use = ['haldls_inc', f'halco_hicann_dls_vx_v{hx_version}', f'fisch_vx_v{hx_version}', 'logger_obj', 'hate'],
+            use = ['haldls_inc', f'halco_hicann_dls_vx_v{hx_version}', f'fisch_vx_v{hx_version}', 'logger', 'hate'],
             uselib = 'HALDLS_LIBRARIES',
         )
 
@@ -215,7 +215,7 @@ def build(bld):
                                        excl=f'src/stadls/vx/v{hx_version}/pystadls.cpp'),
             install_path = '${PREFIX}/lib',
             features = 'cxx cxxshlib apply_semaphore',
-            use = [f'haldls_vx_v{hx_version}', f'lola_vx_v{hx_version}', 'logger_obj'],
+            use = [f'haldls_vx_v{hx_version}', f'lola_vx_v{hx_version}', 'logger'],
             uselib = 'HALDLS_LIBRARIES',
             semaphore = bld.env['stadls_semaphore'],
         )
@@ -226,7 +226,7 @@ def build(bld):
                    + bld.path.ant_glob(f'src/cereal/types/stadls/vx/v{hx_version}/*.cpp'),
             install_path = '${PREFIX}/lib',
             features = 'cxx cxxshlib apply_semaphore',
-            use = [f'stadls_vx_v{hx_version}', f'haldls_vx_v{hx_version}_serialization', f'lola_vx_v{hx_version}_serialization', 'logger_obj', f'fisch_vx_v{hx_version}_serialization'],
+            use = [f'stadls_vx_v{hx_version}', f'haldls_vx_v{hx_version}_serialization', f'lola_vx_v{hx_version}_serialization', 'logger', f'fisch_vx_v{hx_version}_serialization'],
             semaphore = bld.env['stadls_semaphore'],
         )
 
