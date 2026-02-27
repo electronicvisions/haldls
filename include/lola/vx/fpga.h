@@ -7,6 +7,7 @@
 
 #include "haldls/vx/common.h"
 #include "haldls/vx/container.h"
+#include "haldls/vx/fpga.h"
 #include "hate/visibility.h"
 #include "lola/vx/genpybind.h"
 #include "lola/vx/routing_table.h"
@@ -63,6 +64,19 @@ public:
 
 	GENPYBIND(stringstream)
 	friend std::ostream& operator<<(std::ostream& os, SinglechipFPGA const& config) SYMBOL_VISIBLE;
+
+	using SpikeIOInputRoutes GENPYBIND(opaque(false)) = halco::common::typed_heap_array<
+	    haldls::vx::SpikeIOInputRoute,
+	    halco::hicann_dls::vx::SpikeIOInputRouteOnFPGA>;
+
+	using SpikeIOOutputRoutes GENPYBIND(opaque(false)) = halco::common::typed_heap_array<
+	    haldls::vx::SpikeIOOutputRoute,
+	    halco::hicann_dls::vx::SpikeIOOutputRouteOnFPGA>;
+
+
+	haldls::vx::SpikeIOConfig spikeio_config;
+	SpikeIOInputRoutes spikeio_input_routes;
+	SpikeIOOutputRoutes spikeio_output_routes;
 
 private:
 	friend haldls::vx::detail::VisitPreorderImpl<SinglechipFPGA>;

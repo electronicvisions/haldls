@@ -81,6 +81,19 @@ struct VisitPreorderImpl<lola::vx::SinglechipFPGA>
 	    VisitorT&& visitor)
 	{
 		visitor(coordinate, config);
+
+		visit_preorder(
+		    config.spikeio_config, halco::hicann_dls::vx::SpikeIOConfigOnFPGA{}, visitor);
+
+		for (auto const c :
+		     halco::common::iter_all<halco::hicann_dls::vx::SpikeIOInputRouteOnFPGA>()) {
+			visit_preorder(config.spikeio_input_routes[c], c, visitor);
+		}
+
+		for (auto const c :
+		     halco::common::iter_all<halco::hicann_dls::vx::SpikeIOOutputRouteOnFPGA>()) {
+			visit_preorder(config.spikeio_output_routes[c], c, visitor);
+		}
 	}
 
 	template <typename ContainerT, typename VisitorT>
@@ -90,6 +103,21 @@ struct VisitPreorderImpl<lola::vx::SinglechipFPGA>
 	    VisitorT&& visitor)
 	{
 		visitor(coordinate, config);
+
+		hate::Empty<haldls::vx::SpikeIOConfig> empty_cfg;
+		visit_preorder(empty_cfg, halco::hicann_dls::vx::SpikeIOConfigOnFPGA{}, visitor);
+
+		for (auto const c :
+		     halco::common::iter_all<halco::hicann_dls::vx::SpikeIOInputRouteOnFPGA>()) {
+			hate::Empty<haldls::vx::SpikeIOInputRoute> empty_in;
+			visit_preorder(empty_in, c, visitor);
+		}
+
+		for (auto const c :
+		     halco::common::iter_all<halco::hicann_dls::vx::SpikeIOOutputRouteOnFPGA>()) {
+			hate::Empty<haldls::vx::SpikeIOOutputRoute> empty_out;
+			visit_preorder(empty_out, c, visitor);
+		}
 	}
 
 	template <typename ContainerT, typename VisitorT>
@@ -99,10 +127,26 @@ struct VisitPreorderImpl<lola::vx::SinglechipFPGA>
 	    VisitorT&& visitor)
 	{
 		visitor(coordinate, config);
+
+		visit_preorder(
+		    config.spikeio_config, halco::hicann_dls::vx::SpikeIOConfigOnFPGA{}, visitor);
+
+		for (auto const c :
+		     halco::common::iter_all<halco::hicann_dls::vx::SpikeIOInputRouteOnFPGA>()) {
+			visit_preorder(config.spikeio_input_routes[c], c, visitor);
+		}
+
+		for (auto const c :
+		     halco::common::iter_all<halco::hicann_dls::vx::SpikeIOOutputRouteOnFPGA>()) {
+			visit_preorder(config.spikeio_output_routes[c], c, visitor);
+		}
+		// TODO all 3 overloads needed for sio? real coordintes yes; emtpy? idk ; emtpy coord? idk
+		// lets keep for now and mirror jboa visit later
 	}
 };
 
 } // namespace haldls::vx::detail
 
 BOOST_HANA_ADAPT_STRUCT(lola::vx::MultichipJboaLeafFPGA, output_routing_table, input_routing_table);
-BOOST_HANA_ADAPT_STRUCT(lola::vx::SinglechipFPGA);
+BOOST_HANA_ADAPT_STRUCT(
+    lola::vx::SinglechipFPGA, spikeio_config, spikeio_input_routes, spikeio_output_routes);
