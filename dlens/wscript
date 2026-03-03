@@ -93,11 +93,9 @@ def build(bld):
 
         bld(name=f'dlens_hwtest_vx_v{hx_version}',
             tests=f'tests/dlens_hwtest_vx_v{hx_version}.py',
-            features='use pytest pylint pycodestyle',
+            features='use pytest',
             use=[f'dlens_vx_v{hx_version}'],
             install_path='${PREFIX}/bin',
-            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
             skip_run = not (((bld.env.TEST_TARGET == TestTarget.HARDWARE) or
                              (bld.env.TEST_TARGET == TestTarget.SIMULATION))
                             and
@@ -107,12 +105,10 @@ def build(bld):
 
         bld(name=f'dlens_hwtest_with_ppu_vx_v{hx_version}',
             tests=f'tests/dlens_hwtest_with_ppu_vx_v{hx_version}.py',
-            features='use pytest pylint pycodestyle',
+            features='use pytest',
             use=[f'dlens_vx_v{hx_version}',
                  f'dlens_hwtest_with_ppu_vx_v{hx_version}-ppu_code'],
             install_path="${PREFIX}/bin/tests/ppu_code",
-            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
             skip_run = not (((bld.env.TEST_TARGET == TestTarget.HARDWARE) or
                              (bld.env.TEST_TARGET == TestTarget.SIMULATION))
                             and
@@ -127,16 +123,24 @@ def build(bld):
 
         bld(name=f'dlens_health_check_vx_v{hx_version}',
             tests=f'tests/dlens_health_check_vx_v{hx_version}.py',
-            features='use pytest pylint pycodestyle',
+            features='use pytest',
             use=[f'dlens_vx_v{hx_version}'],
             install_path='${PREFIX}/bin',
-            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
             skip_run = not (((bld.env.TEST_TARGET == TestTarget.HARDWARE) or
                              (bld.env.TEST_TARGET == TestTarget.SIMULATION))
                             and
                             int(bld.env.CURRENT_SETUP["chip_revision"]) == hx_version),
             test_timeout=1000 if (bld.env.TEST_TARGET == TestTarget.SIMULATION) else 30
+        )
+
+        bld(name=f'dlens_hwtests_vx_v{hx_version}_python_code_analysis',
+            tests=[f'tests/dlens_hwtest_vx_v{hx_version}.py',
+                   f'tests/dlens_hwtest_with_ppu_vx_v{hx_version}.py',
+                   f'tests/dlens_health_check_vx_v{hx_version}.py'],
+            features='use pylint pycodestyle',
+            use=[f'dlens_vx_v{hx_version}'],
+            pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
+            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
         )
 
         # PPU code
