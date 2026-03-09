@@ -695,7 +695,7 @@ public:
 		    parent->py::arg("key"), parent->py::arg("value"));
 		av.def(
 		    "__iter__",
-		    [av](::lola::vx::v3::NeuronBlock::AnalogValues& self) {
+		    [](::lola::vx::v3::NeuronBlock::AnalogValues& self) {
 			    return pybind11::make_iterator(self);
 		    },
 		    parent->py::template keep_alive<0, 1>());

@@ -114,7 +114,7 @@ void ContainerBase<Derived, Base>::decode_read(
 	auto const& real_coordinate =
 	    dynamic_cast<typename Derived::coordinate_type const&>(coordinate);
 
-	auto const visitor = [this, real_coordinate](auto const& visited_data) {
+	auto const visitor = [this, &real_coordinate](auto const& visited_data) {
 		typedef typename std::decay_t<decltype(visited_data)>::value_type backend_container_type;
 		if constexpr (hate::is_in_type_list<
 		                  backend_container_type,

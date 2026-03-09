@@ -28,7 +28,7 @@ RunTimeInfo run(Connection& connection, PlaybackProgram& program)
 
 		return stadls::vx::run(conn, program.m_program_impl);
 	};
-	auto const print_highspeed_notifications = [program]() {
+	auto const print_highspeed_notifications = [&program]() {
 		std::stringstream ss;
 		if (program.get_highspeed_link_notifications().empty()) {
 			ss << "Got no highspeed-link notifications.";

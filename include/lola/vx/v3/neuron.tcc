@@ -28,7 +28,7 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 
 		auto capmem_block = coord.toCapMemBlockOnDLS();
 		auto capmem_column = coord.toCapMemColumnOnCapMemBlock();
-		auto to_capmem_cell = [capmem_block, capmem_column](CapMemRowOnCapMemBlock row) {
+		auto to_capmem_cell = [&capmem_block, &capmem_column](CapMemRowOnCapMemBlock row) {
 			return CapMemCellOnDLS(CapMemCellOnCapMemBlock(capmem_column, row), capmem_block);
 		};
 
@@ -233,7 +233,7 @@ struct VisitPreorderImpl<lola::vx::v3::AtomicNeuron>
 
 		auto capmem_block = coord.toCapMemBlockOnDLS();
 		auto capmem_column = coord.toCapMemColumnOnCapMemBlock();
-		auto to_capmem_cell = [capmem_block, capmem_column](CapMemRowOnCapMemBlock row) {
+		auto to_capmem_cell = [&capmem_block, &capmem_column](CapMemRowOnCapMemBlock row) {
 			return CapMemCellOnDLS(CapMemCellOnCapMemBlock(capmem_column, row), capmem_block);
 		};
 

@@ -363,7 +363,7 @@ public:
 		    parent->py::arg("key"), parent->py::arg("value"));
 		av.def(
 		    "__iter__",
-		    [av](::lola::vx::CHIP_REVISION_STR::CADCReadoutChain::AnalogValues& self) {
+		    [](::lola::vx::CHIP_REVISION_STR::CADCReadoutChain::AnalogValues& self) {
 			    return pybind11::make_iterator(self);
 		    },
 		    parent->py::template keep_alive<0, 1>());
