@@ -645,10 +645,9 @@ PPUElfFile::Memory PPUElfFile::read_program()
 		/* else drop silently */
 	}
 
-	auto const internal_block = to_internal_block(std::move(internal_bytes));
-	auto const external_block = to_external_block(std::move(external_bytes));
-	auto const external_dram_block = to_external_dram_block(std::move(external_dram_bytes));
-	return {internal_block, external_block, external_dram_block};
+	return {
+	    to_internal_block(std::move(internal_bytes)), to_external_block(std::move(external_bytes)),
+	    to_external_dram_block(std::move(external_dram_bytes))};
 }
 
 PPUElfFile::~PPUElfFile()
