@@ -108,7 +108,7 @@ try {
 				lock(label: "haldls_CONCURRENT_HEALTH_CHECK", quantity: 1) { // workaround for issue #4043
 					// no timeout for Gerrit-triggered jobs
 					conditionalTimeout(enable: !isTriggeredByGerrit(), time: 5, unit: "MINUTES") {
-						onSlurmResource(partition: "batch", wafer: setup_local.waferId, "fpga-without-aout": setup_local.fpgaId) {
+						onSlurmResource(partition: "batch", wafer: setup_local.waferId, "fpga-without-aout": setup_local.fpgaId, "time": "00:04:59", "deadline": "now+5minutes") {
 							if (setup_local.ciTestNode) {
 								configureHxCubeBitfile()
 							}
