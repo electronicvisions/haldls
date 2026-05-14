@@ -26,34 +26,31 @@ template <typename PPBType>
 class SYMBOL_VISIBLE AbsoluteTimePlaybackProgramBuilder
 {
 private:
-	struct CommandData
+	struct ReadCommandAction
 	{
-		haldls::vx::Timer::Value time;
+		std::unique_ptr<haldls::vx::Container::Coordinate> coord;
+		std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> read_ticket_storage =
+		    nullptr;
+	};
+	struct WriteCommandAction
+	{
+		std::unique_ptr<haldls::vx::Container::Coordinate> coord;
+		std::unique_ptr<haldls::vx::Container> write_config = nullptr;
+	};
+	struct WriteDifferentialCommandAction
+	{
 		std::unique_ptr<haldls::vx::Container::Coordinate> coord;
 		std::unique_ptr<haldls::vx::Container> write_config = nullptr;
 		std::unique_ptr<haldls::vx::Container> write_config_reference = nullptr;
-		std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> read_ticket_storage =
-		    nullptr;
+	};
+	typedef std::variant<WriteCommandAction, WriteDifferentialCommandAction, ReadCommandAction>
+	    CommandAction;
+	struct CommandData
+	{
+		haldls::vx::Timer::Value time;
+		CommandAction action;
 
-		CommandData(
-		    haldls::vx::Timer::Value time,
-		    haldls::vx::Container::Coordinate const& coord,
-		    haldls::vx::Container const& write_config);
-		CommandData(
-		    haldls::vx::Timer::Value time,
-		    haldls::vx::Container::Coordinate const& coord,
-		    haldls::vx::Container const& write_config,
-		    haldls::vx::Container const& write_config_reference);
-		CommandData(
-		    haldls::vx::Timer::Value time,
-		    haldls::vx::Container::Coordinate const& coord,
-		    std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> const&
-		        read_ticket_storage);
 		bool operator<(CommandData const& other) const;
-		CommandData(CommandData const& other);
-		CommandData& operator=(CommandData const& other);
-		CommandData& operator=(CommandData&& other);
-		CommandData(CommandData&& other);
 	};
 	std::vector<CommandData> m_commands;
 	bool m_is_write_only = true;

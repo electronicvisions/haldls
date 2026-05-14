@@ -1,6 +1,7 @@
 #include "stadls/vx/absolute_time_playback_program_builder.h"
 #include "halco/hicann-dls/vx/timing.h"
 
+#include "hate/variant.h"
 #include <algorithm>
 #include <iterator>
 #include <ostream>
@@ -36,76 +37,10 @@ AbsoluteTimePlaybackProgramBuilder<PPBType>& AbsoluteTimePlaybackProgramBuilder<
 }
 
 template <typename PPBType>
-AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
-    haldls::vx::Timer::Value time, haldls::vx::Container::Coordinate const& coord,
-	    haldls::vx::Container const& write_config) : time(time), coord(coord.clone()), write_config(write_config.clone_container())
-{
-
-}
-
-template <typename PPBType>
-AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
-    haldls::vx::Timer::Value time, haldls::vx::Container::Coordinate const& coord,
-	    haldls::vx::Container const& write_config, haldls::vx::Container const& write_config_reference) : time(time), coord(coord.clone()), write_config(write_config.clone_container()), write_config_reference(write_config_reference.clone_container())
-{
-
-}
-
-template <typename PPBType>
-AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
-    haldls::vx::Timer::Value time, haldls::vx::Container::Coordinate const& coord,
-	std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> const& read_ticket_storage) : time(time), coord(coord.clone()), read_ticket_storage(read_ticket_storage)
-{
-
-}
-
-template <typename PPBType>
 bool AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::operator<(
     CommandData const& other) const
 {
 	return time < other.time;
-}
-
-template <typename PPBType>
-AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData& AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::operator=(
-    CommandData const& other)
-{
-	if (this != &other) {
-		time = other.time;
-		coord = other.coord ? other.coord->clone() : nullptr;
-		write_config = other.write_config ? other.write_config->clone_container() : nullptr;
-		write_config_reference = other.write_config_reference ? other.write_config_reference->clone_container() : nullptr;
-		read_ticket_storage = other.read_ticket_storage;
-	}
-	return *this;
-}
-
-template <typename PPBType>
-AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData& AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::operator=(
-    CommandData&& other)
-{
-	if (this != &other) {
-		time = other.time;
-		coord = std::move(other.coord);
-		write_config = std::move(other.write_config);
-		write_config_reference = std::move(other.write_config_reference);
-		read_ticket_storage = std::move(other.read_ticket_storage);
-	}
-	return *this;
-}
-
-template <typename PPBType>
-AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
-    CommandData const& other) : time(other.time), coord(other.coord ? other.coord->clone() : nullptr), write_config(other.write_config ? other.write_config->clone_container() : nullptr), write_config_reference(other.write_config_reference ? other.write_config_reference->clone_container() : nullptr), read_ticket_storage(other.read_ticket_storage)
-{
-
-}
-
-template <typename PPBType>
-AbsoluteTimePlaybackProgramBuilder<PPBType>::CommandData::CommandData(
-    CommandData&& other) : time(other.time), coord(std::move(other.coord)), write_config(std::move(other.write_config)), write_config_reference(std::move(other.write_config_reference)), read_ticket_storage(std::move(other.read_ticket_storage))
-{
-
 }
 
 template <typename PPBType>
@@ -114,11 +49,11 @@ void AbsoluteTimePlaybackProgramBuilder<PPBType>::write(
     haldls::vx::Container::Coordinate const& coord,
     haldls::vx::Container const& config)
 {
-	if (dynamic_cast<halco::hicann_dls::vx::TimerOnDLS const*>(&coord) != nullptr) {
-		throw std::runtime_error("Editing the FPGA-Timer is forbidden when using the AbsoluteTimePlaybackProgramBuilder");
+	if (typeid(coord) == typeid(halco::hicann_dls::vx::TimerOnDLS)) {
+		throw std::runtime_error("Editing the FPGA-Timer is forbidden when using the "
+		                         "AbsoluteTimePlaybackProgramBuilder");
 	}
-	m_commands.push_back(
-	    CommandData(execTime, coord, config));
+	m_commands.emplace_back(execTime, WriteCommandAction{coord.clone(), config.clone_container()});
 }
 
 template <typename PPBType>
@@ -127,18 +62,20 @@ void AbsoluteTimePlaybackProgramBuilder<PPBType>::write(
     haldls::vx::Container::Coordinate const& coord,
     haldls::vx::Container const& config, haldls::vx::Container const& config_reference)
 {
-	if (dynamic_cast<halco::hicann_dls::vx::TimerOnDLS const*>(&coord) != nullptr) {
-		throw std::runtime_error("Editing the FPGA-Timer is forbidden when using the AbsoluteTimePlaybackProgramBuilder");
+	if (typeid(coord) == typeid(halco::hicann_dls::vx::TimerOnDLS)) {
+		throw std::runtime_error("Editing the FPGA-Timer is forbidden when using the "
+		                         "AbsoluteTimePlaybackProgramBuilder");
 	}
-	m_commands.push_back(
-	    CommandData(execTime, coord, config, config_reference));
+	m_commands.emplace_back(
+	    execTime, WriteDifferentialCommandAction{
+	                  coord.clone(), config.clone_container(), config_reference.clone_container()});
 }
 
 template <typename PPBType>
 AbsoluteTimePlaybackProgramContainerTicket AbsoluteTimePlaybackProgramBuilder<PPBType>::read(haldls::vx::Timer::Value execTime, haldls::vx::Container::Coordinate const& coord){
 	m_is_write_only = false;
 	std::shared_ptr<AbsoluteTimePlaybackProgramContainerTicketStorage> ticket_storage = std::make_shared<AbsoluteTimePlaybackProgramContainerTicketStorage>();
-	m_commands.push_back(CommandData(execTime, coord, ticket_storage));
+	m_commands.emplace_back(execTime, ReadCommandAction{coord.clone(), ticket_storage});
 	return AbsoluteTimePlaybackProgramContainerTicket(ticket_storage);
 }
 
@@ -169,7 +106,25 @@ void AbsoluteTimePlaybackProgramBuilder<PPBType>::copy(
 	if (!other.is_write_only()) {
 		throw std::runtime_error("Non-write-only AbsoluteTimePlaybackProgramBuilder cannot be copied");
 	}
-	m_commands.insert(m_commands.end(), other.m_commands.begin(), other.m_commands.end());
+	for (auto const& command : other.m_commands) {
+		m_commands.emplace_back(
+		    command.time,
+		    std::visit(
+		        hate::overloaded{
+		            [](WriteCommandAction const& action) -> CommandAction {
+			            return WriteCommandAction(
+			                action.coord->clone(), action.write_config->clone_container());
+		            },
+		            [](WriteDifferentialCommandAction const& action) -> CommandAction {
+			            return WriteDifferentialCommandAction(
+			                action.coord->clone(), action.write_config->clone_container(),
+			                action.write_config_reference->clone_container());
+		            },
+		            [](ReadCommandAction const& action) -> CommandAction {
+			            return ReadCommandAction(action.coord->clone(), action.read_ticket_storage);
+		            }},
+		        command.action));
+	}
 }
 
 template <typename PPBType>
@@ -221,10 +176,8 @@ AbsoluteTimePlaybackProgramBuilder<PPBType> AbsoluteTimePlaybackProgramBuilder<P
 		throw std::runtime_error("'*'-operation is invalid for non-write-only AbsoluteTimePlaybackProgramBuilder (cannot be copied)");
 	}
 	AbsoluteTimePlaybackProgramBuilder<PPBType> scaled_builder;
-	scaled_builder.m_commands = m_commands;
-	for (auto& command : scaled_builder.m_commands){
-		command.time = haldls::vx::Timer::Value(static_cast<uint32_t>(round(command.time.value() * factor)));
-	}
+	scaled_builder.copy(*this);
+	scaled_builder *= factor;
 	return scaled_builder;
 }
 
@@ -235,13 +188,25 @@ std::ostream& operator<<(
 	os << "AboluteTimePlaybackProgramBuilder command queue: (" << builder.m_commands.size()
 	   << " elements)\n";
 	for (auto const& command : builder.m_commands) {
-		if(command.write_config){
-			os << "write | t: " << command.time << ", coord: " << *command.coord
-			    << ", config: " << *command.write_config << "\n";
-		} else {
-			os << "read  | t: " << command.time << ", coord: " << *command.coord
-			    << "\n";
-		}
+		std::visit(
+		    hate::overloaded{
+		        [&command, &os](
+		            typename AbsoluteTimePlaybackProgramBuilder<PPBType>::WriteCommandAction const&
+		                action) {
+			        os << "write | t: " << command.time << ", coord: " << *action.coord
+			           << ", config: " << *action.write_config << "\n";
+		        },
+		        [&command, &os](typename AbsoluteTimePlaybackProgramBuilder<
+		                        PPBType>::WriteDifferentialCommandAction const& action) {
+			        os << "write | t: " << command.time << ", coord: " << *action.coord
+			           << ", config: " << *action.write_config << "\n";
+		        },
+		        [&command,
+		         &os](typename AbsoluteTimePlaybackProgramBuilder<PPBType>::ReadCommandAction const&
+		                  action) {
+			        os << "read  | t: " << command.time << ", coord: " << *action.coord << "\n";
+		        }},
+		    command.action);
 	}
 	return os;
 }
@@ -257,30 +222,35 @@ PPBType AbsoluteTimePlaybackProgramBuilder<PPBType>::done()
 	std::stable_sort(m_commands.begin(), m_commands.end());
 	builder.write(halco::hicann_dls::vx::TimerOnDLS(), haldls::vx::Timer());
 	haldls::vx::Timer::Value current_time(0);
-	for (size_t index = 0; index < m_commands.size(); index++) {
-		if (m_commands[index].time > current_time) {
+	for (auto& command : m_commands) {
+		if (command.time > current_time) {
+			current_time = command.time;
 			builder.block_until(
 			    halco::hicann_dls::vx::TimerOnDLS(),
-			    haldls::vx::Timer::Value(m_commands[index].time - haldls::vx::Timer::Value(1)));
-			current_time = m_commands[index].time;
-		} else if (m_commands[index].time + max_delay < current_time) {
+			    haldls::vx::Timer::Value(current_time.value() - 1));
+		} else if (command.time + max_delay < current_time) {
 			LOG4CXX_WARN(
-			    logger, "To be issued event at (" << m_commands[index].time
-			                                      << ") delayed by more than " << max_delay << ".");
+			    logger, "To be issued event at (" << command.time << ") delayed by more than "
+			                                      << max_delay << ".");
 		}
-		if(m_commands[index].write_config){
-			if(m_commands[index].write_config_reference){
-				builder.write(*m_commands[index].coord, *m_commands[index].write_config, *m_commands[index].write_config_reference);
-			} else {
-				builder.write(*m_commands[index].coord, *m_commands[index].write_config);
-			}
-		} else {
-			assert(m_commands[index].read_ticket_storage);
-			m_commands[index].read_ticket_storage->container_ticket = builder.read(*m_commands[index].coord);
-		}
-		current_time = current_time + haldls::vx::Timer::Value(1);
+		std::visit(
+		    hate::overloaded{
+		        [&builder](WriteCommandAction const& action) {
+			        builder.write(*action.coord, *action.write_config);
+		        },
+		        [&builder](WriteDifferentialCommandAction const& action) {
+			        builder.write(
+			            *action.coord, *action.write_config, *action.write_config_reference);
+		        },
+		        [&builder](ReadCommandAction& action) {
+			        assert(action.read_ticket_storage);
+			        action.read_ticket_storage->container_ticket = builder.read(*action.coord);
+		        }},
+		    command.action);
+		current_time += haldls::vx::Timer::Value(1);
 	}
 	m_commands.clear();
 	return builder;
 }
+
 } // namespace stadls::vx
