@@ -138,7 +138,7 @@ try {
 				Utils.markStageSkippedForConditional(setup_local.toString())
 			}
 
-			if (!success[setup_local]) {
+			if (success[setup_local] == false) { // ignore untested setups (null)
 				unstable("Setup ${setup_local.toString()} did not test OK.")
 			}
 		}
