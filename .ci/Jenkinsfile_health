@@ -142,10 +142,12 @@ try {
 
 			if (success[setup_local] == false) { // ignore untested setups (null)
 				unstable("Setup ${setup_local.toString()} did not test OK.")
-				archiveArtifacts(
-						artifacts: testLog,
-						allowEmptyArchive: true,
-						)
+				runOnSlave(label: "frontend") {
+					archiveArtifacts(
+							artifacts: testLog,
+							allowEmptyArchive: true,
+							)
+				}
 			}
 		}
 	}
