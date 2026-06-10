@@ -103,6 +103,7 @@ try {
 
 	for (HXCubeWing setup : setups) {
 		HXCubeWing setup_local = setup
+		String testLog = "stadls_hwtest_W${setup_local.waferId}F${setup_local.fpgaId}.txt"
 		parallelTests[setup_local.toString()] = {
 			try {
 				lock(label: "haldls_CONCURRENT_HEALTH_CHECK", quantity: 1) { // workaround for issue #4043
@@ -117,7 +118,8 @@ try {
 								timeout(time: 90, unit: "SECONDS") {
 									success[setup_local] = jesh(
 											script: "stadls_hwtest_vx_v${setup_local.chipRevision} " +
-											        "--gtest_filter='-SingleContainerWriteReadMemoryTest/*Quad_OmnibusChipOverJTAG*'",  // issue 4061
+											        "--gtest_filter='-SingleContainerWriteReadMemoryTest/*Quad_OmnibusChipOverJTAG*' " +  // issue 4061
+											        "|& tee ${testLog}",
 											returnStatus: true
 									) == 0
 									try {
@@ -140,6 +142,10 @@ try {
 
 			if (success[setup_local] == false) { // ignore untested setups (null)
 				unstable("Setup ${setup_local.toString()} did not test OK.")
+				archiveArtifacts(
+						artifacts: testLog,
+						allowEmptyArchive: true,
+						)
 			}
 		}
 	}
