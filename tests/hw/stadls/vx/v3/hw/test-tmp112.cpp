@@ -48,9 +48,8 @@ TEST(TMP112, Temperature)
 	}
 
 	if (fpga_entry.wing.value().handwritten_chip_serial < 75) {
-		// old chip carrier version, no temperature sensor available
-		EXPECT_ANY_THROW(temp.get());
-		return;
+		ASSERT_ANY_THROW(temp.get());
+		GTEST_SKIP() << "old chip carrier version, no temperature sensor available";
 	}
 
 	EXPECT_NO_THROW(temp.get());
