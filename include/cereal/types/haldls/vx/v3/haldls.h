@@ -28,4 +28,3 @@
 #include "cereal/types/haldls/vx/v3/capmem.h"
 #include "cereal/types/haldls/vx/v3/neuron.h"
 #include "cereal/types/haldls/vx/v3/pll.h"
-#include "cereal/types/haldls/vx/vector_generator.h"
