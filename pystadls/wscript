@@ -124,7 +124,8 @@ def build(bld):
                  'pyhalco_common_files', 'pyhxcomm_vx', 'pylogging'],
             install_path='${PREFIX}/bin',
             pylint_config=join(get_toplevel_path(), "code-format", "pylintrc"),
-            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle")
+            pycodestyle_config=join(get_toplevel_path(), "code-format", "pycodestyle"),
+            test_timeout=60
         )
 
     bld.add_post_fun(summary)
