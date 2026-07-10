@@ -10,6 +10,14 @@ class ReinitStackEntry::Impl : public fisch::vx::ReinitStackEntry
 
 template <typename Connection>
 ReinitStackEntry::ReinitStackEntry(Connection& connection) : m_impl(new Impl{connection})
-{}
+{
+}
+
+template <typename Connection>
+void ReinitStackEntry::update_connection(Connection& connection)
+{
+	m_impl->update_connection(connection);
+}
+
 
 } // namespace stadls::vx
